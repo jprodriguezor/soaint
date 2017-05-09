@@ -1,0 +1,23 @@
+package co.com.soaint.foundation.framework.components.adapters;
+
+/**
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * Soaint Generic Artifact
+ * Created: 31-Abr-2017
+ * Author: jprodriguez
+ * Type: JAVA class Artifact
+ * Purpose: Protocol gateway contract
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ */
+
+public interface ProtocolGateway<I,O>{
+
+    // [oneway dispatching logic] -------------------------------------
+
+	void send(I input);
+
+    // [twoway dispatching logic] -------------------------------------
+
+	O sendAndReceive(I input);
+	
+}

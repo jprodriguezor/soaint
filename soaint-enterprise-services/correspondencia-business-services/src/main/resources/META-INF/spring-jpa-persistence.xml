@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="correspondencia-pu">
+
+        <class>co.com.soaint.correspondencia.domain.entity.DctAsignacion</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDserial</class>
+        <class>co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPais</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorCorrespondencia</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorPlanAgen</class>
+        <class>co.com.soaint.correspondencia.domain.entity.DctAsigUltimo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsMunicipio</class>
+        <class>co.com.soaint.correspondencia.domain.entity.Funcionarios</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorAnexo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDatosContacto</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsOrganigramaAdministrativo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorPlanillas</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsConstantes</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDepartamento</class>
+        <class>co.com.soaint.correspondencia.domain.entity.PpdDocumento</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorReferido</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorAgente</class>
+
+        <properties>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.weaving" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>
