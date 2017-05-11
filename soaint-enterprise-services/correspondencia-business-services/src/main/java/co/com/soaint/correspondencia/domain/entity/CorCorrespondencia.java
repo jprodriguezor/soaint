@@ -5,11 +5,11 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +18,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -31,10 +29,9 @@ import javax.persistence.TemporalType;
 
 @Data
 @Builder(builderMethodName="newInstance")
+@AllArgsConstructor
 @Entity
 @Table(name = "COR_CORRESPONDENCIA")
-@NamedQueries({
-        @NamedQuery(name = "CorCorrespondencia.findAll", query = "SELECT c FROM CorCorrespondencia c")})
 public class CorCorrespondencia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -128,32 +125,13 @@ public class CorCorrespondencia implements Serializable {
     private List<CorReferido> corReferidoList;
 
     public CorCorrespondencia() {
+        super();
     }
 
-    public CorCorrespondencia(BigInteger ideDocumento, String descripcion, BigInteger tiempoRespuesta, String codUnidadTiempo,
-                              String codMedioRecepcion, Date fecRadicado, String nroRadicado, Date fecDocumento, String codTipoDoc,
-                              String codTipoCmc, String ideInstancia, String reqDistFisica, String codFuncRadica, String codSede,
-                              String codDependencia, String reqDigita, String codEmpMsj, String nroGuia, Date fecVenGestion, String codEstado) {
+
+    public CorCorrespondencia(BigInteger ideDocumento, String descripcion, BigInteger tiempoRespuesta) {
         this.ideDocumento = ideDocumento;
         this.descripcion = descripcion;
         this.tiempoRespuesta = tiempoRespuesta;
-        this.codUnidadTiempo = codUnidadTiempo;
-        this.codMedioRecepcion = codMedioRecepcion;
-        this.fecRadicado = fecRadicado;
-        this.nroRadicado = nroRadicado;
-        this.fecDocumento = fecDocumento;
-        this.codTipoDoc = codTipoDoc;
-        this.codTipoCmc = codTipoCmc;
-        this.ideInstancia = ideInstancia;
-        this.reqDistFisica = reqDistFisica;
-        this.codFuncRadica = codFuncRadica;
-        this.codSede = codSede;
-        this.codDependencia = codDependencia;
-        this.reqDigita = reqDigita;
-        this.codEmpMsj = codEmpMsj;
-        this.nroGuia = nroGuia;
-        this.fecVenGestion = fecVenGestion;
-        this.codEstado = codEstado;
     }
-
 }
