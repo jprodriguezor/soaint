@@ -16,7 +16,6 @@
     -->
 
     <import resource="classpath:spring/db-persistence-integration.xml"/>
-    <import resource="classpath:spring/mq-integration.xml"/>
 
 
     <context:component-scan base-package="co.com.soaint.correspondencia.business"/>

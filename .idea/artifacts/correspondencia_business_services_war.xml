@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="correspondencia-business-services:war">
-    <output-path>$PROJECT_DIR$/soaint-enterprise-services/correspondencia-business-services/target</output-path>
-    <root id="archive" name="pagos-business-services.war">
-      <element id="artifact" artifact-name="correspondencia-business-services:war exploded" />
-    </root>
-  </artifact>
-</component>
