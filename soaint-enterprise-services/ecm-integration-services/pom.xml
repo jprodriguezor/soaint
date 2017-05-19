@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>correspondencia-business-services</artifactId>
+    <artifactId>ecm-integration-services</artifactId>
     <packaging>war</packaging>
 
-    <name>correspondencia-business-services</name>
+    <name>ecm-integration-services</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -187,7 +187,7 @@
     </dependencies>
 
     <build>
-        <finalName>pagos-business-services</finalName>
+        <finalName>ecm-integration-services</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -237,6 +237,4 @@
 
         </plugins>
     </build>
-
-
 </project>

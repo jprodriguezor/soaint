@@ -15,10 +15,7 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     -->
 
-    <import resource="classpath:spring/db-persistence-integration.xml"/>
-
-
-    <context:component-scan base-package="co.com.soaint.correspondencia.business"/>
-    <context:component-scan base-package="co.com.soaint.correspondencia.integration"/>
+    <context:component-scan base-package="co.com.soaint.ecm.business"/>
+    <context:component-scan base-package="co.com.soaint.ecm.integration"/>
 
 </beans>
