@@ -22,19 +22,20 @@ import javax.persistence.TemporalType;
  * @author jrodriguez
  */
 @Entity
-@Table(name = "TVS_PAIS")
+@Table(name = "TVS_DEPARTAMENTO")
 @NamedQueries({
-    @NamedQuery(name = "TvsPais.findAll", query = "SELECT t FROM TvsPais t")})
-public class TvsPais implements Serializable {
+    @NamedQuery(name = "TvsDepartamento.findAll", query = "SELECT t FROM TvsDepartamento t")})
+public class TvsDepartamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "IDE_PAIS")
-    private Long idePais;
-    @Column(name = "NOMBRE_PAIS")
-    private String nombrePais;
-    @Basic(optional = false)
+    @Column(name = "IDE_DEPAR")
+    private Long ideDepar;
+    @Column(name = "NOMBRE_DEPAR")
+    private String nombreDepar;
+    @Column(name = "COD_DEPAR")
+    private String codDepar;
     @Column(name = "COD_PAIS")
     private String codPais;
     @Column(name = "ESTADO")
@@ -48,32 +49,35 @@ public class TvsPais implements Serializable {
     @Column(name = "COD_USUARIO_CREA")
     private String codUsuarioCrea;
 
-    public TvsPais() {
+    public TvsDepartamento() {
     }
 
-    public TvsPais(Long idePais) {
-        this.idePais = idePais;
+    public TvsDepartamento(Long ideDepar) {
+        this.ideDepar = ideDepar;
     }
 
-    public TvsPais(Long idePais, String codPais) {
-        this.idePais = idePais;
-        this.codPais = codPais;
+    public Long getIdeDepar() {
+        return ideDepar;
     }
 
-    public Long getIdePais() {
-        return idePais;
+    public void setIdeDepar(Long ideDepar) {
+        this.ideDepar = ideDepar;
     }
 
-    public void setIdePais(Long idePais) {
-        this.idePais = idePais;
+    public String getNombreDepar() {
+        return nombreDepar;
     }
 
-    public String getNombrePais() {
-        return nombrePais;
+    public void setNombreDepar(String nombreDepar) {
+        this.nombreDepar = nombreDepar;
     }
 
-    public void setNombrePais(String nombrePais) {
-        this.nombrePais = nombrePais;
+    public String getCodDepar() {
+        return codDepar;
+    }
+
+    public void setCodDepar(String codDepar) {
+        this.codDepar = codDepar;
     }
 
     public String getCodPais() {
@@ -119,18 +123,18 @@ public class TvsPais implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idePais != null ? idePais.hashCode() : 0);
+        hash += (ideDepar != null ? ideDepar.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TvsPais)) {
+        if (!(object instanceof TvsDepartamento)) {
             return false;
         }
-        TvsPais other = (TvsPais) object;
-        if ((this.idePais == null && other.idePais != null) || (this.idePais != null && !this.idePais.equals(other.idePais))) {
+        TvsDepartamento other = (TvsDepartamento) object;
+        if ((this.ideDepar == null && other.ideDepar != null) || (this.ideDepar != null && !this.ideDepar.equals(other.ideDepar))) {
             return false;
         }
         return true;
@@ -138,7 +142,7 @@ public class TvsPais implements Serializable {
 
     @Override
     public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.TvsPais[ idePais=" + idePais + " ]";
+        return "co.com.soaint.correspondencia.domain.entity.TvsDepartamento[ ideDepar=" + ideDepar + " ]";
     }
     
 }

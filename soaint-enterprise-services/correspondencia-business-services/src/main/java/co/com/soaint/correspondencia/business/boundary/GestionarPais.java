@@ -22,6 +22,8 @@ public class GestionarPais {
     @PersistenceContext
     private EntityManager em;
 
+
+
     // ----------------------
 
     public GestionarPais() {

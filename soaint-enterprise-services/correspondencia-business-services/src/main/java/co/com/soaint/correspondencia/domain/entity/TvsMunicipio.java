@@ -22,21 +22,23 @@ import javax.persistence.TemporalType;
  * @author jrodriguez
  */
 @Entity
-@Table(name = "TVS_PAIS")
+@Table(name = "TVS_MUNICIPIO")
 @NamedQueries({
-    @NamedQuery(name = "TvsPais.findAll", query = "SELECT t FROM TvsPais t")})
-public class TvsPais implements Serializable {
+    @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT t FROM TvsMunicipio t")})
+public class TvsMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "IDE_PAIS")
-    private Long idePais;
-    @Column(name = "NOMBRE_PAIS")
-    private String nombrePais;
+    @Column(name = "IDE_MUNIC")
+    private Long ideMunic;
+    @Column(name = "NOMBRE_MUNIC")
+    private String nombreMunic;
+    @Column(name = "COD_MUNIC")
+    private String codMunic;
     @Basic(optional = false)
-    @Column(name = "COD_PAIS")
-    private String codPais;
+    @Column(name = "COD_DEPAR")
+    private String codDepar;
     @Column(name = "ESTADO")
     private String estado;
     @Column(name = "FEC_CAMBIO")
@@ -48,40 +50,48 @@ public class TvsPais implements Serializable {
     @Column(name = "COD_USUARIO_CREA")
     private String codUsuarioCrea;
 
-    public TvsPais() {
+    public TvsMunicipio() {
     }
 
-    public TvsPais(Long idePais) {
-        this.idePais = idePais;
+    public TvsMunicipio(Long ideMunic) {
+        this.ideMunic = ideMunic;
     }
 
-    public TvsPais(Long idePais, String codPais) {
-        this.idePais = idePais;
-        this.codPais = codPais;
+    public TvsMunicipio(Long ideMunic, String codDepar) {
+        this.ideMunic = ideMunic;
+        this.codDepar = codDepar;
     }
 
-    public Long getIdePais() {
-        return idePais;
+    public Long getIdeMunic() {
+        return ideMunic;
     }
 
-    public void setIdePais(Long idePais) {
-        this.idePais = idePais;
+    public void setIdeMunic(Long ideMunic) {
+        this.ideMunic = ideMunic;
     }
 
-    public String getNombrePais() {
-        return nombrePais;
+    public String getNombreMunic() {
+        return nombreMunic;
     }
 
-    public void setNombrePais(String nombrePais) {
-        this.nombrePais = nombrePais;
+    public void setNombreMunic(String nombreMunic) {
+        this.nombreMunic = nombreMunic;
     }
 
-    public String getCodPais() {
-        return codPais;
+    public String getCodMunic() {
+        return codMunic;
     }
 
-    public void setCodPais(String codPais) {
-        this.codPais = codPais;
+    public void setCodMunic(String codMunic) {
+        this.codMunic = codMunic;
+    }
+
+    public String getCodDepar() {
+        return codDepar;
+    }
+
+    public void setCodDepar(String codDepar) {
+        this.codDepar = codDepar;
     }
 
     public String getEstado() {
@@ -119,18 +129,18 @@ public class TvsPais implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idePais != null ? idePais.hashCode() : 0);
+        hash += (ideMunic != null ? ideMunic.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TvsPais)) {
+        if (!(object instanceof TvsMunicipio)) {
             return false;
         }
-        TvsPais other = (TvsPais) object;
-        if ((this.idePais == null && other.idePais != null) || (this.idePais != null && !this.idePais.equals(other.idePais))) {
+        TvsMunicipio other = (TvsMunicipio) object;
+        if ((this.ideMunic == null && other.ideMunic != null) || (this.ideMunic != null && !this.ideMunic.equals(other.ideMunic))) {
             return false;
         }
         return true;
@@ -138,7 +148,7 @@ public class TvsPais implements Serializable {
 
     @Override
     public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.TvsPais[ idePais=" + idePais + " ]";
+        return "co.com.soaint.correspondencia.domain.entity.TvsMunicipio[ ideMunic=" + ideMunic + " ]";
     }
     
 }
