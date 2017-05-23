@@ -23,7 +23,7 @@
 
     <tx:annotation-driven/>
     
-    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/correspondencia-ds" expected-type="javax.sql.DataSource"/>
+    <jee:jndi-lookup id="dataSource" jndi-name="java:/correspondencia-ds" expected-type="javax.sql.DataSource"/>
     
     
  	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +33,7 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" />
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
         </property>
         <property name="persistenceXmlLocation" value="classpath*:META-INF/spring-jpa-persistence.xml"/>
     </bean>
