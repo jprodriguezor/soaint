@@ -32,7 +32,7 @@ public class EstructuraTrdDTO {
         contenidoDependenciaList =new ArrayList<>();
     }
 
-    public EstructuraTrdDTO(List<ContenidoDependenciaTrdDTO> contenidoDependenciaList, List<OrganigramaDTO> organigramaItemList) {
+    public EstructuraTrdDTO(List<OrganigramaDTO> organigramaItemList, List<ContenidoDependenciaTrdDTO> contenidoDependenciaList) {
         this.contenidoDependenciaList = contenidoDependenciaList;
         this.organigramaItemList = organigramaItemList;
     }
