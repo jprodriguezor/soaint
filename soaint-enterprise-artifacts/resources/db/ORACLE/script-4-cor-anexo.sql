@@ -1,0 +1,25 @@
+/*-------------------------------------------------------------------
+  --Crear COR_ANEXO
+------------------------------------------------------------------- */
+CREATE TABLE COR_ANEXO 
+(
+  IDE_ANEXO NUMBER(18, 0) NOT NULL 
+, IDE_PPD_DOCUMENTO NUMBER(18, 0) 
+, COD_ANEXO VARCHAR2(8 BYTE) 
+, DESCRIPCION VARCHAR2(100 BYTE) 
+, CONSTRAINT COR_ANEXO_PK PRIMARY KEY 
+  (
+    IDE_ANEXO 
+  )
+  ENABLE 
+);
+
+ALTER TABLE COR_ANEXO
+ADD CONSTRAINT COR_ANEXO_IDE_PP_DOC_FK FOREIGN KEY
+(
+  IDE_PPD_DOCUMENTO 
+)
+REFERENCES PPD_DOCUMENTO
+(
+  )
+ENABLE
