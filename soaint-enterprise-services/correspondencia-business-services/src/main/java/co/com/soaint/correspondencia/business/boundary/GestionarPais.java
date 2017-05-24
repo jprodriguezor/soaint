@@ -1,7 +1,6 @@
 package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.domain.entity.TvsPais;
-import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
