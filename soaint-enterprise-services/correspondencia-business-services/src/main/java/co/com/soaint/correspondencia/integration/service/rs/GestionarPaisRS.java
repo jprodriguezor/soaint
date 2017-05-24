@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rs;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPais;
 import co.com.soaint.correspondencia.domain.entity.TvsPais;
+import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class GestionarPaisRS {
 
     @GET
     @Path("pais/")
-    public List<TvsPais> listarPaisesByEstado() throws BusinessException, SystemException {
-        return boundary.listarPaisesByEstado();
+    public List<PaisDTO> listarPaisesByEstado() throws BusinessException, SystemException {
+        return boundary.listarPaisesByEstado("ACTIVO");
     }
 }

@@ -20,6 +20,8 @@ import java.util.List;
 /**
  * Created by jrodriguez on 24/05/2017.
  */
+
+@Path("/paises-web-api")
 public class GestionarPaisWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(GestionarPaisWebApi.class.getName());

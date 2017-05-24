@@ -40,7 +40,7 @@ public class GestionarPais {
     public GestionarPais() {
         super();
     }
-    
+
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<PaisDTO> listarPaisesByEstado(String estado) {
 
