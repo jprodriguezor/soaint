@@ -16,8 +16,8 @@ public class GestionarPaisTest extends  JPAHibernateTest {
     @Test
     public void testTvsPais_findAll_success() {
         String estado = "ACTIVO";
-        List<TvsPais> paises = em.createNamedQuery("TvsPais.findAll").getResultList();
+        List<PaisDTO> paises = em.createNamedQuery("TvsPais.findAll").setParameter("ESTADO",estado).getResultList();
         assertEquals(1, paises.size());
-        assertEquals("CUBA",paises.get(0).getNombrePais());
+        assertEquals("CUBA",paises.get(0).getNombre());
     }
 }

@@ -5,7 +5,12 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,20 +23,25 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *
  * @author jrodriguez
  */
+
+@Data
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
 @Entity
 @Table(name = "TVS_PAIS")
 @NamedQueries({
-    @NamedQuery(name = "TvsPais.findAll", query = "SELECT t FROM TvsPais t")})
+        @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
+                "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE t.estado =:ESTADO")})
+
 public class TvsPais implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "IDE_PAIS")
-    private Long idePais;
+    private BigInteger idePais;
     @Column(name = "NOMBRE_PAIS")
     private String nombrePais;
     @Basic(optional = false)
@@ -48,97 +58,15 @@ public class TvsPais implements Serializable {
     @Column(name = "COD_USUARIO_CREA")
     private String codUsuarioCrea;
 
-    public TvsPais() {
-    }
-
-    public TvsPais(Long idePais) {
+    public TvsPais(BigInteger idePais, String nombrePais, String codPais, String estado, Date fecCambio, Date fecCreacion,
+                   String codUsuarioCrea) {
+        super();
         this.idePais = idePais;
-    }
-
-    public TvsPais(Long idePais, String codPais) {
-        this.idePais = idePais;
-        this.codPais = codPais;
-    }
-
-    public Long getIdePais() {
-        return idePais;
-    }
-
-    public void setIdePais(Long idePais) {
-        this.idePais = idePais;
-    }
-
-    public String getNombrePais() {
-        return nombrePais;
-    }
-
-    public void setNombrePais(String nombrePais) {
         this.nombrePais = nombrePais;
-    }
-
-    public String getCodPais() {
-        return codPais;
-    }
-
-    public void setCodPais(String codPais) {
         this.codPais = codPais;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
         this.estado = estado;
-    }
-
-    public Date getFecCambio() {
-        return fecCambio;
-    }
-
-    public void setFecCambio(Date fecCambio) {
         this.fecCambio = fecCambio;
-    }
-
-    public Date getFecCreacion() {
-        return fecCreacion;
-    }
-
-    public void setFecCreacion(Date fecCreacion) {
         this.fecCreacion = fecCreacion;
-    }
-
-    public String getCodUsuarioCrea() {
-        return codUsuarioCrea;
-    }
-
-    public void setCodUsuarioCrea(String codUsuarioCrea) {
         this.codUsuarioCrea = codUsuarioCrea;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idePais != null ? idePais.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TvsPais)) {
-            return false;
-        }
-        TvsPais other = (TvsPais) object;
-        if ((this.idePais == null && other.idePais != null) || (this.idePais != null && !this.idePais.equals(other.idePais))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.TvsPais[ idePais=" + idePais + " ]";
-    }
-    
 }
