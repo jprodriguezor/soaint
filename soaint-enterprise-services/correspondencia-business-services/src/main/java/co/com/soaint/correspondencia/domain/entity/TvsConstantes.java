@@ -21,7 +21,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TVS_CONSTANTES")
 @NamedQueries({
-    @NamedQuery(name = "TvsConstantes.findAll", query = "SELECT t FROM TvsConstantes t")})
+    @NamedQuery(name = "TvsConstantes.findAll", query = "SELECT t FROM TvsConstantes t"),
+        @NamedQuery(name = "TvsConstantes.findAllByCodigo", query = "SELECT t FROM TvsConstantes t WHERE t.codigo = :CODIGO")})
 public class TvsConstantes implements Serializable {
 
     private static final long serialVersionUID = 1L;

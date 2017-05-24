@@ -1,4 +1,4 @@
-package co.com.soaint.correspondencia.integration.service.ws;
+package co.com.soaint.correspondencia.integration.service.rs;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPais;
 import co.com.soaint.correspondencia.domain.entity.TvsPais;
@@ -6,27 +6,28 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import javax.jws.WebMethod;
-import javax.jws.WebService;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 /**
- * Created by jrodriguez on 12/05/2017.
+ * Created by esanchez on 5/24/2017.
  */
-@WebService(targetNamespace = "http://co.com.soaint.sgd.correspondencia.service")
-public class GestionarPaisWS {
+@Path("/")
+public class GestionarPaisRS {
 
     @Autowired
-    public GestionarPais boundary;
+    private GestionarPais boundary;
 
-
-    public GestionarPaisWS() {
+    public GestionarPaisRS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @WebMethod(action = "listarPaises", operationName = "listarPaises")
-    public List<TvsPais> listarPaises() throws BusinessException, SystemException {
+    @GET
+    @Path("pais/")
+    public List<TvsPais> listarPaisesByEstado() throws BusinessException, SystemException {
         return boundary.listarPaisesByEstado();
     }
-
 }
