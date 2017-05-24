@@ -1,4 +1,4 @@
-package co.com.soaint.correspondencia.config;
+package co.com.soaint.correspondencia.integration.service.config;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
