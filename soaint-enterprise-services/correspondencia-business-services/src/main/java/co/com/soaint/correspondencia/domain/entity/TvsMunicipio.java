@@ -24,7 +24,8 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TVS_MUNICIPIO")
 @NamedQueries({
-    @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT t FROM TvsMunicipio t")})
+    @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT t FROM TvsMunicipio t"),
+        @NamedQuery(name = "TvsMunicipio.findAllByCodDepar", query = "SELECT t FROM TvsMunicipio t WHERE t.codDepar = :COD_DEPAR")})
 public class TvsMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;
