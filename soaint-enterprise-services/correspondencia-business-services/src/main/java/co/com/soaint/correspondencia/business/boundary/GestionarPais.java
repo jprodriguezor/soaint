@@ -1,5 +1,6 @@
 package co.com.soaint.correspondencia.business.boundary;
 
+import co.com.soaint.correspondencia.domain.entity.TvsPais;
 import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +31,8 @@ public class GestionarPais {
         super();
     }
 
-    public List<PaisDTO> listarPaisesByEstado(String estado) {
-        return em.createNamedQuery("TvsPais.findAll", PaisDTO.class).setParameter("ESTADO", estado).getResultList();
+    public List<TvsPais> listarPaisesByEstado() {
+        return em.createNamedQuery("TvsPais.findAll").getResultList();
     }
 
 }

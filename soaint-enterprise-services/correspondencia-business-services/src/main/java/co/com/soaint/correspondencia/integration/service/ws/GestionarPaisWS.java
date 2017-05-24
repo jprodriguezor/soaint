@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarPais;
+import co.com.soaint.correspondencia.domain.entity.TvsPais;
 import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -27,8 +28,8 @@ public class GestionarPaisWS {
     }
 
     @WebMethod(action = "listarPaisesByEstado", operationName = "listarPaisesByEstado")
-    public List<PaisDTO> listarPaisesByEstado(@WebParam(name = "estado") String estado) throws BusinessException, SystemException {
-        return boundary.listarPaisesByEstado(estado);
+    public List<TvsPais> listarPaisesByEstado() throws BusinessException, SystemException {
+        return boundary.listarPaisesByEstado();
     }
 
 }
