@@ -28,7 +28,6 @@ public class GestionarPaisRS {
     @GET
     @Path("pais/")
     public List<TvsPais> listarPaisesByEstado() throws BusinessException, SystemException {
-        List<TvsPais> paises = boundary.listarPaisesByEstado();
-        return paises;
+        return boundary.listarPaisesByEstado();
     }
 }
