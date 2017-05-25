@@ -1,14 +1,17 @@
 package co.com.soaint.correspondencia.business.boundary;
 
-import co.com.soaint.correspondencia.domain.entity.TvsMunicipio;
+import co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,13 +27,44 @@ public class GestionarMunicipio {
     @PersistenceContext
     private EntityManager em;
 
-
-
     // ----------------------
 
     public GestionarMunicipio(){super();}
 
-    public List<TvsMunicipio> listarMunicipiosByCodDepar(String codDepar) throws BusinessException, SystemException{
-        return em.createNamedQuery("TvsMunicipio.findAllByCodDepar").setParameter("COD_DEPAR", codDepar).getResultList();
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<MunicipioDTO> listarMunicipiosByCodDeparAndEstado(String codDepar, String estado) throws BusinessException, SystemException{
+        List<MunicipioDTO> municipios = new ArrayList<>();
+        em.createNamedQuery("TvsMunicipio.findAllByCodDeparAndEstado", MunicipioDTO.class)
+                .setParameter("COD_DEPAR", codDepar)
+                .setParameter("ESTADO", estado)
+                .getResultList()
+        .stream().forEach((municipio)-> {
+        MunicipioDTO municipioDTO = MunicipioDTO.newInstance()
+                .ideMunic(municipio.getIdeMunic())
+                .nombreMunic(municipio.getNombreMunic())
+                .codMunic(municipio.getCodMunic())
+                .codDepar(municipio.getCodDepar())
+                .build();
+            municipios.add(municipioDTO);
+        });
+        return municipios;
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<MunicipioDTO> listarMunicipiosByEstado(String estado) throws BusinessException, SystemException{
+        List<MunicipioDTO> municipios = new ArrayList<>();
+        em.createNamedQuery("TvsMunicipio.findAll", MunicipioDTO.class)
+                .setParameter("ESTADO", estado)
+                .getResultList()
+                .stream().forEach((municipio)-> {
+            MunicipioDTO municipioDTO = MunicipioDTO.newInstance()
+                    .ideMunic(municipio.getIdeMunic())
+                    .nombreMunic(municipio.getNombreMunic())
+                    .codMunic(municipio.getCodMunic())
+                    .codDepar(municipio.getCodDepar())
+                    .build();
+            municipios.add(municipioDTO);
+        });
+        return municipios;
     }
 }

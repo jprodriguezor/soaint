@@ -1,4 +1,4 @@
-package co.com.soaint.correspondencia.integration.service.ws;
+package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarMunicipio;
 import co.com.soaint.correspondencia.domain.entity.TvsMunicipio;
@@ -8,31 +8,36 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 /**
  * Created by esanchez on 5/24/2017.
  */
-@WebService(targetNamespace = "http://co.com.soaint.sgd.correspondencia.service")
-public class GestionarMunicipioWS {
+@Path("/municipios-web-api")
+public class MunicipiosWebApi {
 
     @Autowired
     private GestionarMunicipio boundary;
 
-    public GestionarMunicipioWS() {
+    public MunicipiosWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @WebMethod(action = "listarMunicipiosByCodDeparAndEstado", operationName = "listarMunicipiosByCodDeparAndEstado")
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@WebParam(name = "codDepar") final String codDepar, @WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    @GET
+    @Path("/municipios/{codDepar}/{estado}")
+    @Produces({"application/json", "application/xml"})
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws BusinessException, SystemException{
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
-    @WebMethod(action = "listarMunicipiosByEstado", operationName = "listarMunicipiosByEstado")
-    public MunicipiosDTO listarMunicipiosByEstado(@WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    @GET
+    @Path("/municipios/{estado}")
+    @Produces({"application/json", "application/xml"})
+    public MunicipiosDTO listarMunicipiosByEstado(@PathParam("estado") final String estado)throws BusinessException, SystemException{
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
     }
 }
