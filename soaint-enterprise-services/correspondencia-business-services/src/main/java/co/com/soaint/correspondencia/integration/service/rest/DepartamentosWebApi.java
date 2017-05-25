@@ -1,4 +1,4 @@
-package co.com.soaint.correspondencia.integration.service.ws;
+package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarDepartamento;
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentosDTO;
@@ -7,29 +7,35 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 /**
  * Created by esanchez on 5/24/2017.
  */
-@WebService(targetNamespace = "http://co.com.soaint.sgd.correspondencia.service")
-public class GestionarDepartamentoWS {
+@Path("/departamentos-web-api")
+public class DepartamentosWebApi {
+
     @Autowired
     private GestionarDepartamento boundary;
 
-    public GestionarDepartamentoWS() {
+    public DepartamentosWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @WebMethod(action = "listarDepartamentosByCodPaisAndEstado", operationName = "listarDepartamentosByCodPaisAndEstado")
-    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@WebParam(name = "codPais") final String codPais, @WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    @GET
+    @Path("/departamentos/{codPais}/{estado}")
+    @Produces({"application/json", "application/xml"})
+    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@PathParam("codPais") final String codPais, @PathParam("estado") final String estado) throws BusinessException, SystemException{
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByCodPaisAndEstado(codPais, estado)).build();
     }
 
-    @WebMethod(action = "listarDepartamentosByEstado", operationName = "listarDepartamentosByEstado")
-    public DepartamentosDTO listarDepartamentosByEstado(@WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    @GET
+    @Path("/departamentos/{estado}")
+    @Produces({"application/json", "application/xml"})
+    public DepartamentosDTO listarDepartamentosByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByEstado(estado)).build();
     }
 }

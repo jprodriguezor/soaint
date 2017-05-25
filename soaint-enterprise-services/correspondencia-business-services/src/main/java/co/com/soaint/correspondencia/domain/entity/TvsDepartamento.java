@@ -5,7 +5,13 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -21,18 +27,24 @@ import javax.persistence.TemporalType;
  *
  * @author jrodriguez
  */
+@Data
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "TVS_DEPARTAMENTO")
 @NamedQueries({
-    @NamedQuery(name = "TvsDepartamento.findAll", query = "SELECT t FROM TvsDepartamento t"),
-        @NamedQuery(name = "TvsDepartamento.findAllByCodPais", query = "SELECT t FROM TvsDepartamento t WHERE t.codPais = :COD_PAIS")})
+    @NamedQuery(name = "TvsDepartamento.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
+            "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) FROM TvsDepartamento t WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsDepartamento.findAllByCodPaisAndEstado", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
+                "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) FROM TvsDepartamento t WHERE TRIM(t.codPais) = TRIM(:COD_PAIS) AND TRIM(t.estado) = TRIM(:ESTADO)")})
 public class TvsDepartamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "IDE_DEPAR")
-    private Long ideDepar;
+    private BigInteger ideDepar;
     @Column(name = "NOMBRE_DEPAR")
     private String nombreDepar;
     @Column(name = "COD_DEPAR")
@@ -49,101 +61,5 @@ public class TvsDepartamento implements Serializable {
     private Date fecCreacion;
     @Column(name = "COD_USUARIO_CREA")
     private String codUsuarioCrea;
-
-    public TvsDepartamento() {
-    }
-
-    public TvsDepartamento(Long ideDepar) {
-        this.ideDepar = ideDepar;
-    }
-
-    public Long getIdeDepar() {
-        return ideDepar;
-    }
-
-    public void setIdeDepar(Long ideDepar) {
-        this.ideDepar = ideDepar;
-    }
-
-    public String getNombreDepar() {
-        return nombreDepar;
-    }
-
-    public void setNombreDepar(String nombreDepar) {
-        this.nombreDepar = nombreDepar;
-    }
-
-    public String getCodDepar() {
-        return codDepar;
-    }
-
-    public void setCodDepar(String codDepar) {
-        this.codDepar = codDepar;
-    }
-
-    public String getCodPais() {
-        return codPais;
-    }
-
-    public void setCodPais(String codPais) {
-        this.codPais = codPais;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Date getFecCambio() {
-        return fecCambio;
-    }
-
-    public void setFecCambio(Date fecCambio) {
-        this.fecCambio = fecCambio;
-    }
-
-    public Date getFecCreacion() {
-        return fecCreacion;
-    }
-
-    public void setFecCreacion(Date fecCreacion) {
-        this.fecCreacion = fecCreacion;
-    }
-
-    public String getCodUsuarioCrea() {
-        return codUsuarioCrea;
-    }
-
-    public void setCodUsuarioCrea(String codUsuarioCrea) {
-        this.codUsuarioCrea = codUsuarioCrea;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (ideDepar != null ? ideDepar.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TvsDepartamento)) {
-            return false;
-        }
-        TvsDepartamento other = (TvsDepartamento) object;
-        if ((this.ideDepar == null && other.ideDepar != null) || (this.ideDepar != null && !this.ideDepar.equals(other.ideDepar))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.TvsDepartamento[ ideDepar=" + ideDepar + " ]";
-    }
     
 }
