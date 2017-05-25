@@ -1,6 +1,5 @@
 package co.com.soaint.correspondencia.business.boundary;
 
-import co.com.soaint.correspondencia.domain.entity.TvsPais;
 import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import org.apache.logging.log4j.LogManager;
@@ -10,8 +9,6 @@ import org.springframework.transaction.annotation.Propagation;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -54,7 +51,6 @@ public class GestionarPais {
                     .nombre(pais.getNombre())
                     .codigo(pais.getCodigo())
                     .build();
-
             paises.add(paisDTO);
         });
         return paises;

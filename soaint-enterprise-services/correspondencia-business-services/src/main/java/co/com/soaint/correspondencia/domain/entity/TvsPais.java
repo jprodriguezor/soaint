@@ -5,6 +5,7 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,11 +30,12 @@ import javax.persistence.TemporalType;
 @Data
 @Builder(builderMethodName = "newInstance")
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "TVS_PAIS")
 @NamedQueries({
         @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
-                "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE t.estado =:ESTADO")})
+                "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE TRIM(t.estado) = TRIM(:ESTADO)")})
 
 public class TvsPais implements Serializable {
 
@@ -58,15 +60,4 @@ public class TvsPais implements Serializable {
     @Column(name = "COD_USUARIO_CREA")
     private String codUsuarioCrea;
 
-    public TvsPais(BigInteger idePais, String nombrePais, String codPais, String estado, Date fecCambio, Date fecCreacion,
-                   String codUsuarioCrea) {
-        super();
-        this.idePais = idePais;
-        this.nombrePais = nombrePais;
-        this.codPais = codPais;
-        this.estado = estado;
-        this.fecCambio = fecCambio;
-        this.fecCreacion = fecCreacion;
-        this.codUsuarioCrea = codUsuarioCrea;
-    }
 }
