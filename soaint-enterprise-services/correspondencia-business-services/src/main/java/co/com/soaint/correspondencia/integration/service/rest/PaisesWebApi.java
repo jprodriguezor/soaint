@@ -32,7 +32,7 @@ public class PaisesWebApi {
 
     @GET
     @Path("/paises/{estado}")
-    @Produces({"application/json"})
+    @Produces({"application/json", "application/xml"})
     public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado)throws SystemException, BusinessException {
         LOGGER.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
