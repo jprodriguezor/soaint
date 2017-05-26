@@ -4,6 +4,8 @@ import co.com.soaint.correspondencia.business.boundary.GestionarDepartamento;
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -18,6 +20,8 @@ import javax.ws.rs.Produces;
 @Path("/departamentos-web-api")
 public class DepartamentosWebApi {
 
+    private static Logger LOGGER = LogManager.getLogger(DepartamentosWebApi.class.getName());
+
     @Autowired
     private GestionarDepartamento boundary;
 
@@ -29,6 +33,7 @@ public class DepartamentosWebApi {
     @Path("/departamentos/{codPais}/{estado}")
     @Produces({"application/json", "application/xml"})
     public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@PathParam("codPais") final String codPais, @PathParam("estado") final String estado) throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar departamentos por codigo del pais y estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByCodPaisAndEstado(codPais, estado)).build();
     }
 
@@ -36,6 +41,7 @@ public class DepartamentosWebApi {
     @Path("/departamentos/{estado}")
     @Produces({"application/json", "application/xml"})
     public DepartamentosDTO listarDepartamentosByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar departamentos por estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByEstado(estado)).build();
     }
 }
