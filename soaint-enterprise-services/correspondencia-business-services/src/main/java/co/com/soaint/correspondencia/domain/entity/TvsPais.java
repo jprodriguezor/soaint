@@ -13,15 +13,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  * @author jrodriguez
@@ -36,13 +28,15 @@ import javax.persistence.TemporalType;
 @NamedQueries({
         @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
                 "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE TRIM(t.estado) = TRIM(:ESTADO)")})
-
+@TableGenerator(name = "TVS_PAIS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_PAIS_SEQ", allocationSize = 1)
 public class TvsPais implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "IDE_PAIS")
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "TVS_PAIS_GENERATOR")
     private BigInteger idePais;
     @Column(name = "NOMBRE_PAIS")
     private String nombrePais;
