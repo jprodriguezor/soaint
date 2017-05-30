@@ -1,0 +1,25 @@
+<p-growl [value]="msgs"></p-growl>
+<div class="card login-panel ui-fluid">
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <img src="/assets/layout/images/logo-ultima.svg">
+    </div>
+    <div class="ui-g-12">
+      <span class="md-inputfield">
+            <input type="text" autocomplete="off" [(ngModel)]="model.user.login" pInputText>
+            <label>Username</label>
+      </span>
+    </div>
+    <div class="ui-g-12">
+      <span class="md-inputfield">
+            <input type="password" autocomplete="off" [(ngModel)]="model.user.password" pInputText>
+            <label>Password</label>
+      </span>
+    </div>
+    <div class="ui-g-12">
+      <button pButton type="button" label="Sign In" style="margin-bottom:10px" class="blue-grey-btn" icon="ui-icon-person" (click)="login()"></button>
+      <button pButton type="button" label="Forgot password" style="margin-bottom:10px" class="green-btn" icon="ui-icon-help">
+      </button>
+    </div>
+  </div>
+</div>
