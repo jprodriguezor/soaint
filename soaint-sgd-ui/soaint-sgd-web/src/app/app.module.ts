@@ -88,7 +88,7 @@ import {AuthGuard} from 'app/infrastructure/security/auth-guard';
 import {ProductsService} from 'app/infrastructure/api/products.service';
 import {ProductosComponent} from './ui/page-components/productos/productos.component';
 import {RadicarComunicacionesComponent} from './ui/page-components/radicar-comunicaciones/radicar-comunicaciones.component';
-import {DatosGeneralesComponent} from './ui/page-components/radicar-comunicaciones/datos-generales/datos-generales.component';
+import {DatosGeneralesComponent} from './ui/bussiness-components/datos-generales/datos-generales.component';
 
 @NgModule({
   imports: [

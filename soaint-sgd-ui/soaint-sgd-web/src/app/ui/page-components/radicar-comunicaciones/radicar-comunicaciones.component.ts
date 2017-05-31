@@ -11,7 +11,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   ngOnInit() {
-    
   }
 
 }
+
