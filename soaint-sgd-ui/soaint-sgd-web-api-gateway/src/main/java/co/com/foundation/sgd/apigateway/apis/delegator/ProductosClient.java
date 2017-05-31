@@ -21,7 +21,7 @@ public class ProductosClient {
 	public Response list() {
 		System.out.println("ProductosClient - [trafic] - listing products with endpoint: " + endpoint);
 		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/productos-web-api")
+		return wt.path("/productos-web-api/")
 				.request()
 				.get();
 	}

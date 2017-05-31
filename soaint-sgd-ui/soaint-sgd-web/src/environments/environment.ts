@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  security_endpoint : 'http://localhost:28080/soaint-sgd-web-api-gateway/apis/securidad-gateway-api',
-  product_endpoint : 'http://localhost:28080/soaint-sgd-web-api-gateway/apis/productos-gateway-api'
+  security_endpoint: 'http://localhost:8081/soaint-sgd-web-api-gateway/apis/securidad-gateway-api',
+  product_endpoint: 'http://localhost:8081/soaint-sgd-web-api-gateway/apis/productos-gateway-api'
 };
