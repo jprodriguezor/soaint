@@ -85,6 +85,8 @@ import { AuthenticationService } from "app/infrastructure/security/authenticatio
 import { AuthGuard } from "app/infrastructure/security/auth-guard";
 import { ProductsService } from "app/infrastructure/api/products.service";
 import { ProductosComponent } from './ui/page-components/productos/productos.component';
+import { DatosRemitenteComponent } from './datos-remitente/datos-remitente.component';
+import { DatosDestinatarioComponent } from './datos-destinatario/datos-destinatario.component';
 
 @NgModule({
     imports: [
@@ -172,6 +174,8 @@ import { ProductosComponent } from './ui/page-components/productos/productos.com
         HomeComponent,
         LoginComponent,
         ProductosComponent,
+        DatosRemitenteComponent,
+        DatosDestinatarioComponent,
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy}, 

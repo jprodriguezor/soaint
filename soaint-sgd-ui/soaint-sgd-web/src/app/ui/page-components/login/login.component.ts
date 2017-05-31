@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginModel } from "app/ui/page-components/login/login.model";
-import { Router } from "@angular/router";
-import { SessionService, WebModel } from "app/infrastructure/web/session.service";
-import { MessageBridgeService, MessageType } from "app/infrastructure/web/message-bridge.service";
-import { AuthenticationService } from "app/infrastructure/security/authentication.service";
-import { Message } from "primeng/primeng";
+import { LoginModel } from 'app/ui/page-components/login/login.model';
+import { Router } from '@angular/router';
+import { SessionService, WebModel } from 'app/infrastructure/web/session.service';
+import { MessageBridgeService, MessageType } from 'app/infrastructure/web/message-bridge.service';
+import { AuthenticationService } from 'app/infrastructure/security/authentication.service';
+import { Message } from 'primeng/primeng';
 
 @Component({
   selector: 'app-login',
