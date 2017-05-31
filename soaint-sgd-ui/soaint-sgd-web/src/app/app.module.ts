@@ -73,20 +73,20 @@ import {TreeTableModule} from 'primeng/primeng';
 
 import {AppComponent}  from './app.component';
 import {InlineProfileComponent}  from 'app/ui/layout-components/app.profile.component';
-import { AppFooter } from "app/ui/layout-components/app.footer.component";
-import { AppTopBar } from "app/ui/layout-components/app.topbar.component";
-import { AppMenuComponent, AppSubMenu } from "app/ui/layout-components/app.menu.component";
+import { AppFooter } from 'app/ui/layout-components/app.footer.component';
+import { AppTopBar } from 'app/ui/layout-components/app.topbar.component';
+import { AppMenuComponent, AppSubMenu } from 'app/ui/layout-components/app.menu.component';
 import { HomeComponent } from './ui/page-components/home/home.component';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { LoginComponent } from './ui/page-components/login/login.component';
-import { SessionService } from "app/infrastructure/web/session.service";
-import { MessageBridgeService } from "app/infrastructure/web/message-bridge.service";
-import { AuthenticationService } from "app/infrastructure/security/authentication.service";
-import { AuthGuard } from "app/infrastructure/security/auth-guard";
-import { ProductsService } from "app/infrastructure/api/products.service";
+import { SessionService } from 'app/infrastructure/web/session.service';
+import { MessageBridgeService } from 'app/infrastructure/web/message-bridge.service';
+import { AuthenticationService } from 'app/infrastructure/security/authentication.service';
+import { AuthGuard } from 'app/infrastructure/security/auth-guard';
+import { ProductsService } from 'app/infrastructure/api/products.service';
 import { ProductosComponent } from './ui/page-components/productos/productos.component';
-import { DatosRemitenteComponent } from './datos-remitente/datos-remitente.component';
-import { DatosDestinatarioComponent } from './datos-destinatario/datos-destinatario.component';
+import { DatosRemitenteComponent } from './ui/bussiness-components/datos-remitente/datos-remitente.component';
+import { DatosDestinatarioComponent } from './ui/bussiness-components/datos-destinatario/datos-destinatario.component';
 
 @NgModule({
     imports: [
@@ -178,7 +178,7 @@ import { DatosDestinatarioComponent } from './datos-destinatario/datos-destinata
         DatosDestinatarioComponent,
     ],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy}, 
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
         SessionService, MessageBridgeService, AuthenticationService,
         AuthGuard, ProductsService
     ],

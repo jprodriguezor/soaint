@@ -1,8 +1,8 @@
 import { Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit } from '@angular/core';
-import { MessageBridgeService, MessageType } from "app/infrastructure/web/message-bridge.service";
-import { Subscription } from "rxjs/Subscription";
-import { SessionService, WebModel } from "app/infrastructure/web/session.service";
-import { LoginModel } from "app/ui/page-components/login/login.model";
+import { MessageBridgeService, MessageType } from 'app/infrastructure/web/message-bridge.service';
+import { Subscription } from 'rxjs/Subscription';
+import { SessionService, WebModel } from 'app/infrastructure/web/session.service';
+import { LoginModel } from 'app/ui/page-components/login/login.model';
 
 enum MenuOrientation {
   STATIC,
@@ -117,12 +117,12 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     if (this.layoutMode === MenuOrientation.OVERLAY) {
       this.overlayMenuActive = !this.overlayMenuActive;
-    }
-    else {
-      if (this.isDesktop())
+    } else {
+      if (this.isDesktop()) {
         this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
-      else
+      } else {
         this.staticMenuMobileActive = !this.staticMenuMobileActive;
+      }
     }
 
     event.preventDefault();
