@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
  * Created by esanchez on 5/24/2017.
  */
 @Path("/departamentos-web-api")
+@Produces({"application/json", "application/xml"})
 public class DepartamentosWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(DepartamentosWebApi.class.getName());
@@ -31,7 +32,6 @@ public class DepartamentosWebApi {
 
     @GET
     @Path("/departamentos/{codPais}/{estado}")
-    @Produces({"application/json", "application/xml"})
     public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@PathParam("codPais") final String codPais, @PathParam("estado") final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar departamentos por codigo del pais y estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByCodPaisAndEstado(codPais, estado)).build();
@@ -39,7 +39,6 @@ public class DepartamentosWebApi {
 
     @GET
     @Path("/departamentos/{estado}")
-    @Produces({"application/json", "application/xml"})
     public DepartamentosDTO listarDepartamentosByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar departamentos por estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByEstado(estado)).build();
