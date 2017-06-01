@@ -1,31 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ListaSeleccionSimple} from '../../../domain/lista.seleccion.simple';
+import {TipoDestinatarioService} from '../../../infrastructure/api/tipo.destinatario.service';
+import {DatosGeneralesModel} from '../datos-generales/datos-generales.model';
 
 @Component({
   selector: 'app-datos-destinatario',
-  templateUrl: './datos-destinatario.component.html',
-  styleUrls: ['./datos-destinatario.component.css']
+  templateUrl: './datos-destinatario.component.html'
 })
 export class DatosDestinatarioComponent implements OnInit {
 
+  tipoDestinatarioSeleccionado: ListaSeleccionSimple;
 
-  brands: string[] = ['Audi','BMW','Fiat','Ford','Honda','Jaguar','Mercedes','Renault','Volvo','VW'];
+  tiposDestinatariosFiltrados: Array<ListaSeleccionSimple>;
 
-  filteredBrands: any[];
+  model: DatosGeneralesModel;
 
-  selectedBrands: string[];
-
-  constructor() {}
+  constructor(private _tipoDestinatarioApi: TipoDestinatarioService) {
+  }
 
   ngOnInit() {
   }
 
-  handleACDropdownClick() {
-    this.filteredBrands = [];
+  filtrarTiposDestinatarios(event) {
+    this.tiposDestinatariosFiltrados = [];
+    for (let i = 0; i < this.model.tiposDestinatarios.length; i++) {
+      const tipoDestinatario = this.model.tiposDestinatarios[i];
+      if (tipoDestinatario.nombre.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+        this.tiposDestinatariosFiltrados.push(tipoDestinatario);
+      }
+    }
+  }
 
-    //mimic remote call
-    setTimeout(() => {
-      this.filteredBrands = this.brands;
-    }, 100)
+  onTiposDestinatariosDropDownClick() {
+    this.tiposDestinatariosFiltrados = [];
+
+    this._tipoDestinatarioApi.list().subscribe(
+      data => this.tiposDestinatariosFiltrados = data,
+      error => console.log('Error searching in products api ' + error)
+    );
   }
 
 }

@@ -93,6 +93,9 @@ import {TipoComunicacionService} from './infrastructure/api/tipo.comunicacion.se
 import {MedioRecepcionService} from './infrastructure/api/medio.recepcion.service';
 import {TipologiaDocumentalService} from './infrastructure/api/tipologia.documental.service';
 import {UnidadTiempoService} from './infrastructure/api/unidad.tiempo.service';
+import {DatosDestinatarioComponent} from './ui/bussiness-components/datos-destinatario/datos-destinatario.component';
+import {DatosRemitenteComponent} from './ui/bussiness-components/datos-remitente/datos-remitente.component';
+import {TipoDestinatarioService} from './infrastructure/api/tipo.destinatario.service';
 
 @NgModule({
   imports: [
@@ -181,13 +184,15 @@ import {UnidadTiempoService} from './infrastructure/api/unidad.tiempo.service';
     LoginComponent,
     ProductosComponent,
     DatosGeneralesComponent,
+    DatosDestinatarioComponent,
+    DatosRemitenteComponent,
     RadicarComunicacionesComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     SessionService, MessageBridgeService, AuthenticationService,
     AuthGuard, ProductsService, TipoComunicacionService, MedioRecepcionService,
-    TipologiaDocumentalService, UnidadTiempoService
+    TipologiaDocumentalService, UnidadTiempoService, TipoDestinatarioService
   ],
   bootstrap: [AppComponent]
 })

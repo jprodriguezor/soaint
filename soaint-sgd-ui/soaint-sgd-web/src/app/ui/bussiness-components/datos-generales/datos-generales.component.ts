@@ -27,7 +27,6 @@ export class DatosGeneralesComponent implements OnInit {
 
   unidadesTiempoFiltradas: Array<ListaSeleccionSimple>;
 
-
   checkboxValues: string[] = [];
 
   constructor(private _tipoComunicacionApi: TipoComunicacionService, private _medioRecepcionApi: MedioRecepcionService,

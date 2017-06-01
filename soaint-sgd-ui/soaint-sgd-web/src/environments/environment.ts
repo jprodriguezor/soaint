@@ -10,5 +10,6 @@ export const environment = {
   tipo_comunicacion_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/tipo-comunicacion-gateway-api`,
   medio_recepcion_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/medio-recepcion-gateway-api`,
   tipologia_documental_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/tipologia-documental-gateway-api`,
-  unidad_tiempo_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/unidad-tiempo-gateway-api`
+  unidad_tiempo_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/unidad-tiempo-gateway-api`,
+  tipo_destinatario_endpoint: `${host}/soaint-sgd-web-api-gateway/apis/tipo-destinatario-gateway-api`
 };
