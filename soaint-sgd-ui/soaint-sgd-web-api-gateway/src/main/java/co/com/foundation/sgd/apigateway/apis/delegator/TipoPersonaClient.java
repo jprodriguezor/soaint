@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipoPersonaClient {
 
-	@Value( "${productos.backapi.endpoint.url}" )
+	@Value("${backapi.endpoint.url}")
 	private String endpoint = "";
 
 	public TipoPersonaClient() {

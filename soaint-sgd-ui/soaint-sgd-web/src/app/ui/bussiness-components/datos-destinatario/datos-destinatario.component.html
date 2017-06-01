@@ -5,7 +5,7 @@
       <label for="acAdvanced">Tipo Persona</label>
     </div>
     <div class="ui-g-12">
-      <p-autoComplete id="acAdvanced" [(ngModel)]="selectedBrands" [suggestions]="filteredBrands" (completeMethod)="filterBrands($event)" [size]="30"
+      <p-autoComplete id="acAdvanced" [(ngModel)]="selectedBrands" [suggestions]="filteredBrands" (completeMethod)="filtrarTiposComunicacion($event)" [size]="30"
                       [minLength]="1" placeholder="Hint: type 'v' or 'f'" [dropdown]="true" (onDropdownClick)="handleACDropdownClick($event)" multiple="true">
         <ng-template let-brand pTemplate="item">
           <div class="ui-helper-clearfix">

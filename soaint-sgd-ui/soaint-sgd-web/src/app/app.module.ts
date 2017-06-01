@@ -89,6 +89,10 @@ import {ProductsService} from 'app/infrastructure/api/products.service';
 import {ProductosComponent} from './ui/page-components/productos/productos.component';
 import {RadicarComunicacionesComponent} from './ui/page-components/radicar-comunicaciones/radicar-comunicaciones.component';
 import {DatosGeneralesComponent} from './ui/bussiness-components/datos-generales/datos-generales.component';
+import {TipoComunicacionService} from './infrastructure/api/tipo.comunicacion.service';
+import {MedioRecepcionService} from './infrastructure/api/medio.recepcion.service';
+import {TipologiaDocumentalService} from './infrastructure/api/tipologia.documental.service';
+import {UnidadTiempoService} from './infrastructure/api/unidad.tiempo.service';
 
 @NgModule({
   imports: [
@@ -182,7 +186,8 @@ import {DatosGeneralesComponent} from './ui/bussiness-components/datos-generales
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     SessionService, MessageBridgeService, AuthenticationService,
-    AuthGuard, ProductsService
+    AuthGuard, ProductsService, TipoComunicacionService, MedioRecepcionService,
+    TipologiaDocumentalService, UnidadTiempoService
   ],
   bootstrap: [AppComponent]
 })
