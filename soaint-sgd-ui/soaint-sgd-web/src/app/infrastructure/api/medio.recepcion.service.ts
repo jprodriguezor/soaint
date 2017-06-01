@@ -3,7 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
 import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
-import {ListaSeleccionSimple} from '../../domain/lista-seleccion-simple';
+import {ListaSeleccionSimple} from '../../domain/lista.seleccion.simple';
 
 @Injectable()
 export class MedioRecepcionService {

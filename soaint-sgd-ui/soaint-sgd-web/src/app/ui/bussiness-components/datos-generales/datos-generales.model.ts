@@ -1,4 +1,4 @@
-import {ListaSeleccionSimple} from '../../../domain/lista-seleccion-simple';
+import {ListaSeleccionSimple} from '../../../domain/lista.seleccion.simple';
 export class DatosGeneralesModel {
 
   tiposComunicacion: Array<ListaSeleccionSimple> = [];

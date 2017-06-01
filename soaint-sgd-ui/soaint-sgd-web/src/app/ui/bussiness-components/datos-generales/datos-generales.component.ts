@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DatosGeneralesModel} from './datos-generales.model';
-import {ListaSeleccionSimple} from '../../../domain/lista-seleccion-simple';
+import {ListaSeleccionSimple} from '../../../domain/lista.seleccion.simple';
 import {MedioRecepcionService} from '../../../infrastructure/api/medio.recepcion.service';
 import {TipoComunicacionService} from '../../../infrastructure/api/tipo.comunicacion.service';
 import {TipologiaDocumentalService} from '../../../infrastructure/api/tipologia.documental.service';
