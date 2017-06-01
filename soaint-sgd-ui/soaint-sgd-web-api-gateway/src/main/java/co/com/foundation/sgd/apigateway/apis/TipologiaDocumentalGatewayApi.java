@@ -1,7 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.TipologiaDocumentalClient;
-import co.com.foundation.sgd.apigateway.apis.delegator.UnidadTiempoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -18,25 +17,25 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class TipologiaDocumentalGatewayApi {
 
-	@Autowired
-	private TipologiaDocumentalClient client;
+    @Autowired
+    private TipologiaDocumentalClient tipologiaDocumentalClient;
 
-	public TipologiaDocumentalGatewayApi() {
-		super();
-		 SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	}
+    public TipologiaDocumentalGatewayApi() {
+        super();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
-	@GET
-	@Path("/")
-	@JWTTokenSecurity
-	public Response list() {
-		//TODO: add trafic log
-		System.out.println("TipologiaDocumentalGatewayApi - [trafic] - listing TipologiaDocumental");
-		Response response = client.list();
-		String responseContent = response.readEntity(String.class);
-		System.out.println("TipologiaDocumentalGatewayApi - [content] : " + responseContent);
-		
-		return Response.status( response.getStatus() ).entity(responseContent).build();
-	}
+    @GET
+    @Path("/")
+    @JWTTokenSecurity
+    public Response list() {
+        //TODO: add trafic log
+        System.out.println("TipologiaDocumentalGatewayApi - [trafic] - listing TipologiaDocumental");
+        Response response = tipologiaDocumentalClient.list();
+        String responseContent = response.readEntity(String.class);
+        System.out.println("TipologiaDocumentalGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }

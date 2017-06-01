@@ -11,7 +11,7 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 @ApiDelegator
 public class ProductosClient {
 
-	@Value( "${productos.backapi.endpoint.url}" )
+	@Value("${backapi.endpoint.url}")
 	private String endpoint = "";
 	
 	public ProductosClient() {

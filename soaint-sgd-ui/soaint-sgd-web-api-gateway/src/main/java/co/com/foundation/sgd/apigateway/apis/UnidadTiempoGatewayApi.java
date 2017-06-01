@@ -1,6 +1,5 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.TipoDestinatarioClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadTiempoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +17,25 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UnidadTiempoGatewayApi {
 
-	@Autowired
-	private UnidadTiempoClient client;
+    @Autowired
+    private UnidadTiempoClient unidadTiempoClient;
 
-	public UnidadTiempoGatewayApi() {
-		super();
-		 SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	}
+    public UnidadTiempoGatewayApi() {
+        super();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
-	@GET
-	@Path("/")
-	@JWTTokenSecurity
-	public Response list() {
-		//TODO: add trafic log
-		System.out.println("UnidadTiempoGatewayApi - [trafic] - listing UnidadTiempo");
-		Response response = client.list();
-		String responseContent = response.readEntity(String.class);
-		System.out.println("UnidadTiempoGatewayApi - [content] : " + responseContent);
-		
-		return Response.status( response.getStatus() ).entity(responseContent).build();
-	}
+    @GET
+    @Path("/")
+    @JWTTokenSecurity
+    public Response list() {
+        //TODO: add trafic log
+        System.out.println("UnidadTiempoGatewayApi - [trafic] - listing UnidadTiempo");
+        Response response = unidadTiempoClient.list();
+        String responseContent = response.readEntity(String.class);
+        System.out.println("UnidadTiempoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }
