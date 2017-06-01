@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ProductsService} from 'app/infrastructure/api/products.service';
+import {ProductsService} from 'app/infrastructure/__api.include';
 
 @Component({
   selector: 'app-radicar-comunicaciones',

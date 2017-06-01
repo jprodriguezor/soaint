@@ -1,6 +1,4 @@
-export class ListaSeleccionSimple {
-
+export interface ListaSeleccionSimple {
   id: number;
   nombre: string;
-
 }

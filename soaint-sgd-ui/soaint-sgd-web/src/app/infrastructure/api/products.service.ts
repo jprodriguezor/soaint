@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions, Headers } from "@angular/http";
-import { SessionService, WebModel } from "app/infrastructure/web/session.service";
-import { Observable } from "rxjs/Observable";
-import { Producto } from "app/domain/producto";
-import { environment } from "environments/environment";
+import { Http, RequestOptions, Headers } from '@angular/http';
+import { SessionService, WebModel } from 'app/infrastructure/web/session.service';
+import { Observable } from 'rxjs/Observable';
+import { Producto } from 'app/domain/producto';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class ProductsService {

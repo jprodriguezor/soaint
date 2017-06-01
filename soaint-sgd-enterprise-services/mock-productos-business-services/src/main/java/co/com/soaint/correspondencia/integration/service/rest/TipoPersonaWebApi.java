@@ -21,7 +21,6 @@ public class TipoPersonaWebApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-
 	@GET
 	@Path("/")
 	public List<ListaSeleccionSimpleDTO> list() {

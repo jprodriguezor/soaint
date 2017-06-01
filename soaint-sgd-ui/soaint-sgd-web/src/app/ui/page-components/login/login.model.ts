@@ -1,11 +1,11 @@
-import { Usuario } from "app/domain/usuario";
+import { Usuario } from 'app/domain/usuario';
 
 export class LoginModel {
 
     user: Usuario;
     loggedin: boolean;
 
-    constructor(){
+    constructor() {
         this.loggedin = false;
         this.user = new Usuario();
     }

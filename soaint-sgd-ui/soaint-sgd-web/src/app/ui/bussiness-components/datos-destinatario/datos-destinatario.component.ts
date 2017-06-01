@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ListaSeleccionSimple} from '../../../domain/lista.seleccion.simple';
-import {TipoDestinatarioService} from '../../../infrastructure/api/tipo.destinatario.service';
+import {TipoDestinatarioApiService} from 'app/infrastructure/__api.include';
 import {DatosGeneralesModel} from '../datos-generales/datos-generales.model';
 
 @Component({
@@ -15,7 +15,7 @@ export class DatosDestinatarioComponent implements OnInit {
 
   model: DatosGeneralesModel;
 
-  constructor(private _tipoDestinatarioApi: TipoDestinatarioService) {
+  constructor(private _tipoDestinatarioApi: TipoDestinatarioApiService) {
   }
 
   ngOnInit() {
