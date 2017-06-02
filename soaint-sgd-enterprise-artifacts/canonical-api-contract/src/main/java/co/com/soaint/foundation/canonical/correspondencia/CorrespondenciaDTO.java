@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +46,9 @@ public class CorrespondenciaDTO implements Serializable {
     private String nroGuia;
     private Date fecVenGestion;
     private String codEstado;
+    private List<CorAgenteDTO> corAgenteList;
+    private List<PpdDocumentoDTO> ppdDocumentoList;
+    private List<CorReferidoDTO> corReferidoList;
 
     public CorrespondenciaDTO() {
         super();
@@ -54,7 +58,8 @@ public class CorrespondenciaDTO implements Serializable {
                               String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,
                               Date fecDocumento, String codTipoDoc, String codTipoCmc, String reqDistFisica,
                               String ideInstancia, String codFuncRadica, String codSede, String codDependencia,
-                              String reqDigita, String nroGuia, String codEmpMsj, Date fecVenGestion, String codEstado) {
+                              String reqDigita, String nroGuia, String codEmpMsj, Date fecVenGestion, String codEstado,
+                              List<CorAgenteDTO> corAgenteList, List<PpdDocumentoDTO> ppdDocumentoList, List<CorReferidoDTO> corReferidoList) {
         this.ideDocumento = ideDocumento;
         this.descripcion = descripcion;
         this.tiempoRespuesta = tiempoRespuesta;
@@ -75,5 +80,8 @@ public class CorrespondenciaDTO implements Serializable {
         this.codEmpMsj = codEmpMsj;
         this.fecVenGestion = fecVenGestion;
         this.codEstado = codEstado;
+        this.corAgenteList = corAgenteList;
+        this.ppdDocumentoList = ppdDocumentoList;
+        this.corReferidoList = corReferidoList;
     }
 }
