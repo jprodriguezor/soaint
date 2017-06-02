@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from 'app/infrastructure/api/products.service';
+import {SelectItem} from 'primeng/primeng';
 
 @Component({
   selector: 'app-datos-remitente',
@@ -8,39 +9,24 @@ import { ProductsService } from 'app/infrastructure/api/products.service';
 })
 export class DatosRemitenteComponent implements OnInit {
 
-  selectedBrands: string[];
+  selected: any;
 
-  brands: string[] = ['Audi', 'BMW', 'Fiat', 'Ford', 'Honda', 'Jaguar', 'Mercedes', 'Renault', 'Volvo', 'VW'];
-
-  filteredBrands: any[];
-
-
-  checkboxValues: string[] = [];
+  personsType: SelectItem[];
 
   constructor(private _productApi: ProductsService) {
   }
 
-
   ngOnInit(): void {
+    this.personsType = [];
+    this.personsType.push({
+      label: 'PERSONA JURIDICA',
+      value: {id: 1, name: 'PERSONA JURIDICA'}
+    });
+    this.personsType.push({
+      label: 'PERSONA NATURAL',
+      value: {id: 2, name: 'PERSONA NATURAL'}
+    });
   }
 
-  filterBrands(event) {
-    this.filteredBrands = [];
-    for (let i = 0; i < this.brands.length; i++) {
-      const brand = this.brands[i];
-      if (brand.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-        this.filteredBrands.push(brand);
-      }
-    }
-  }
-
-  handleACDropdownClick() {
-    this.filteredBrands = [];
-
-    // mimic remote call
-    setTimeout(() => {
-      this.filteredBrands = this.brands;
-    }, 100)
-  }
 
 }
