@@ -5,32 +5,37 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import java.math.BigInteger;
+import javax.persistence.*;
 
 /**
  *
  * @author jrodriguez
  */
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "COR_ANEXO")
 @NamedQueries({
     @NamedQuery(name = "CorAnexo.findAll", query = "SELECT c FROM CorAnexo c")})
+@javax.persistence.TableGenerator(name = "COR_ANEXO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_ANEXO_SEQ", allocationSize = 1)
 public class CorAnexo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_ANEXO_GENERATOR")
     @Column(name = "IDE_ANEXO")
-    private Long ideAnexo;
+    private BigInteger ideAnexo;
     @Column(name = "COD_ANEXO")
     private String codAnexo;
     @Column(name = "DESCRIPCION")
@@ -39,68 +44,4 @@ public class CorAnexo implements Serializable {
     @ManyToOne
     private PpdDocumento ppdDocumento;
 
-    public CorAnexo() {
-    }
-
-    public CorAnexo(Long ideAnexo) {
-        this.ideAnexo = ideAnexo;
-    }
-
-    public Long getIdeAnexo() {
-        return ideAnexo;
-    }
-
-    public void setIdeAnexo(Long ideAnexo) {
-        this.ideAnexo = ideAnexo;
-    }
-
-    public String getCodAnexo() {
-        return codAnexo;
-    }
-
-    public void setCodAnexo(String codAnexo) {
-        this.codAnexo = codAnexo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public PpdDocumento getPpdDocumento() {
-        return ppdDocumento;
-    }
-
-    public void setPpdDocumento(PpdDocumento ppdDocumento) {
-        this.ppdDocumento = ppdDocumento;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (ideAnexo != null ? ideAnexo.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CorAnexo)) {
-            return false;
-        }
-        CorAnexo other = (CorAnexo) object;
-        if ((this.ideAnexo == null && other.ideAnexo != null) || (this.ideAnexo != null && !this.ideAnexo.equals(other.ideAnexo))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.CorAnexo[ ideAnexo=" + ideAnexo + " ]";
-    }
-    
 }
