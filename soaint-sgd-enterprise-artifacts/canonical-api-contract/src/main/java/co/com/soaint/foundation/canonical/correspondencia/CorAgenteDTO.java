@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
 public class CorAgenteDTO {
-    private Long ideAgente;
+    private BigInteger ideAgente;
     private String codTipoRemite;
     private String codTipoPers;
     private String nombre;
@@ -41,7 +42,7 @@ public class CorAgenteDTO {
 
     public CorAgenteDTO(){super();}
 
-    public CorAgenteDTO(Long ideAgente, String codTipoRemite, String codTipoPers, String nombre, String nroDocumentoIden,
+    public CorAgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String nroDocumentoIden,
                         String razonSocial, String nit, String codCortesia, String codCargo, String codEnCalidad,
                         String codTipDocIdent, String nroDocuIdentidad, String codSede, String codDependencia,
                         String codFuncRemite, String fecAsignacion, Long ideContacto, String codTipAgent, String indOriginal){

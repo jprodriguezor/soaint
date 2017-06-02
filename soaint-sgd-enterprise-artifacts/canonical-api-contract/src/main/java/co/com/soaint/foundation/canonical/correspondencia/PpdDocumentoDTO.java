@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ppd-documento/1.0.0")
 public class PpdDocumentoDTO {
-    private Long idePpdDocumento;
+    private BigInteger idePpdDocumento;
     private String codTipoDoc;
     private Date fecDocumento;
     private String codAsunto;
@@ -35,7 +36,7 @@ public class PpdDocumentoDTO {
 
     public PpdDocumentoDTO(){super();}
 
-    public PpdDocumentoDTO(Long idePpdDocumento, String codTipoDoc, Date fecDocumento, String codAsunto, Long nroFolios,
+    public PpdDocumentoDTO(BigInteger idePpdDocumento, String codTipoDoc, Date fecDocumento, String codAsunto, Long nroFolios,
                            Long nroAnexos, String codEstDoc, String ideEcm, String codTipoSoporte, String codEstArchivado,
                            List<CorAnexoDTO> corAnexoList){
         this.idePpdDocumento = idePpdDocumento;

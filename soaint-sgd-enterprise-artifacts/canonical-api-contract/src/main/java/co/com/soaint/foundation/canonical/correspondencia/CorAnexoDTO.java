@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,13 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-anexo/1.0.0")
 public class CorAnexoDTO {
-    private Long ideAnexo;
+    private BigInteger ideAnexo;
     private String codAnexo;
     private String descripcion;
 
     public CorAnexoDTO(){super();}
 
-    public CorAnexoDTO(Long ideAnexo, String codAnexo, String descripcion){
+    public CorAnexoDTO(BigInteger ideAnexo, String codAnexo, String descripcion){
         this.ideAnexo = ideAnexo;
         this.codAnexo = codAnexo;
         this.descripcion = descripcion;
