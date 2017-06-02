@@ -15,7 +15,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 /**
- * Created by esanchez on 5/24/2017.
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * SGD Enterprise Services
+ * Created: 24-May-2017
+ * Author: esanchez
+ * Type: JAVA class Artifact
+ * Purpose: SERVICE - rest services
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @Path("/municipios-web-api")
 public class MunicipiosWebApi {
@@ -32,7 +38,8 @@ public class MunicipiosWebApi {
     @GET
     @Path("/municipios/{codDepar}/{estado}")
     @Produces({"application/json", "application/xml"})
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar,
+                                                             @PathParam("estado") final String estado)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar municipios por codigo del departamento y estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
