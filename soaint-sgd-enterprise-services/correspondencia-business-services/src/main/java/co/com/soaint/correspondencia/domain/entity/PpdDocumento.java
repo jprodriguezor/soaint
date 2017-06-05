@@ -65,7 +65,7 @@ public class PpdDocumento implements Serializable {
     private String codEstArchivado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ppdDocumento")
     private List<PpdTrazDocumento> ppdTrazDocumentoList;
-    @OneToMany(mappedBy = "ppdDocumento")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ppdDocumento")
     private List<CorAnexo> corAnexoList;
     @JoinColumn(name = "IDE_DOCUMENTO", referencedColumnName = "IDE_DOCUMENTO")
     @ManyToOne

@@ -73,17 +73,17 @@ public class CorCorrespondencia implements Serializable {
     private Date fecVenGestion;
     @Column(name = "COD_ESTADO")
     private String codEstado;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorAgente> corAgenteList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<DctAsignacion> dctAsignacionList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorPlanAgen> corPlanAgenList;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<PpdDocumento> ppdDocumentoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<DctAsigUltimo> dctAsigUltimoList;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorReferido> corReferidoList;
     
 }

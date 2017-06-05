@@ -83,5 +83,8 @@ public class CorrespondenciaDTO implements Serializable {
         this.corAgenteList = corAgenteList;
         this.ppdDocumentoList = ppdDocumentoList;
         this.corReferidoList = corReferidoList;
+        this.corAgenteList = corAgenteList;
+        this.ppdDocumentoList = ppdDocumentoList;
+        this.corReferidoList = corReferidoList;
     }
 }
