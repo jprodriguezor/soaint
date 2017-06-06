@@ -1,18 +1,59 @@
-<div class="card card-w-title">
-  <h1>AutoComplete</h1>
-  <div class="ui-g form-group">
-    <div class="ui-g-12">
-      <label for="tipoComunicacion">Tipo Persona</label>
-    </div>
-    <div class="ui-g-12">
-      <p-autoComplete id="tipoComunicacion" [(ngModel)]="tipoDestinatarioSeleccionado"
-                      [suggestions]="tiposDestinatariosFiltrados"
-                      field="nombre"
-                      (completeMethod)="filtrarTiposDestinatarios($event)" [size]="30"
-                      [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                      (onDropdownClick)="onTiposDestinatariosDropDownClick($event)">
+<p-panel header="Datos destinatario">
+  <h1>Datos generales</h1>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-lg-12">
+      <div class="ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoDestinatario">Tipo de destinatario</label>
+          </div>
+          <div class="ui-g-12">
+            <p-autoComplete id="tipoDestinatario" [(ngModel)]="tipoDestinatarioSeleccionado"
+                            [suggestions]="tiposDestinatariosFiltrados"
+                            field="nombre"
+                            (completeMethod)="filtrarTiposDestinatarios($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onTiposDestinatariosDropDownClick($event)">
 
-      </p-autoComplete>
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="sedeAdministrativa">Sede administrativa</label>
+          </div>
+          <div class="ui-g-12">
+            <p-autoComplete id="sedeAdministrativa" [(ngModel)]="sedeAdministrativaSeleccionada"
+                            [suggestions]="sedesAdministrativasFiltradas"
+                            field="nombre"
+                            (completeMethod)="filtrarSedesAdministrativas($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onSedesAdministrativasDropDownClick($event)">
+
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="dependenciaGrupo">Dependencia/Grupo</label>
+          </div>
+          <div class="ui-g-12">
+            <p-autoComplete id="dependenciaGrupo" [(ngModel)]="dependenciaGrupoSeleccionada"
+                            [suggestions]="dependenciasGruposFiltradas"
+                            field="nombre"
+                            (completeMethod)="filtrarDependenciasGrupos($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onDependenciasGruposDropDownClick($event)">
+
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</p-panel>
+

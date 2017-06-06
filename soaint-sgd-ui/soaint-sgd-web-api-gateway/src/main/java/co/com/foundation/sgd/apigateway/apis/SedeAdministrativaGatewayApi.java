@@ -12,13 +12,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/sede-administrativa-tiempo-gateway-api")
+@Path("/sede-administrativa-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SedeAdministrativaGatewayApi {
 
 	@Autowired
-	private SedeAdministrativaClient client;
+	private SedeAdministrativaClient sedeAdministrativaClient;
 
 	public SedeAdministrativaGatewayApi() {
 		super();
@@ -31,7 +31,7 @@ public class SedeAdministrativaGatewayApi {
 	public Response list() {
 		//TODO: add trafic log
 		System.out.println("SedeAdministrativaGatewayApi - [trafic] - listing SedeAdministrativa");
-		Response response = client.list();
+		Response response = sedeAdministrativaClient.list();
 		String responseContent = response.readEntity(String.class);
 		System.out.println("SedeAdministrativaGatewayApi - [content] : " + responseContent);
 		

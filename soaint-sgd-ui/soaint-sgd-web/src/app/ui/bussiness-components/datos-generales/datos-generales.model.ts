@@ -9,8 +9,6 @@ export class DatosGeneralesModel {
 
   unidadesTiempo: Array<ListaSeleccionSimple> = [];
 
-  tiposDestinatarios: Array<ListaSeleccionSimple> = [];
-
   constructor() {
   }
 
