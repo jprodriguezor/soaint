@@ -1,7 +1,7 @@
 package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.domain.entity.*;
-import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,7 @@ public class GestionarCorrespondencia {
             Date fecha = new Date();
             CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
                     .descripcion(correspondenciaDTO.getDescripcion())
-                    .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta().toString())
+                    .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
                     .codUnidadTiempo(correspondenciaDTO.getCodUnidadTiempo())
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .fecRadicado(correspondenciaDTO.getFecRadicado())
@@ -92,6 +93,7 @@ public class GestionarCorrespondencia {
                         .build();
                 correspondencia.getCorAgenteList().add(corAgente);
             });
+
             correspondenciaDTO.getPpdDocumentoList().stream().forEach((ppdDocumentoDTO) -> {
                 PpdDocumento ppdDocumento = PpdDocumento.newInstance()
                         .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
@@ -117,7 +119,8 @@ public class GestionarCorrespondencia {
                 });
                 correspondencia.getPpdDocumentoList().add(ppdDocumento);
             });
-            correspondenciaDTO.getCorReferidoList().stream().forEach((corReferidoDTO)->{
+
+            correspondenciaDTO.getCorReferidoList().stream().forEach((corReferidoDTO) -> {
                 CorReferido corReferido = CorReferido.newInstance()
                         .nroRadRef(corReferidoDTO.getNroRadRef())
                         .corCorrespondencia(correspondencia)
@@ -128,6 +131,41 @@ public class GestionarCorrespondencia {
             em.persist(correspondencia);
             em.flush();
 
+            return obtenerCorrespondenciaByNroRadicado(nroRadicado);
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(MessageUtil.getInstance("system.generic.error").getMessage("system.generic.error"))
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public CorrespondenciaDTO obtenerCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getSingleResult();
+
+            correspondenciaDTO.setCorAgenteList(em.createNamedQuery("CorAgente.findByIdeDocumento", CorAgenteDTO.class)
+                    .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
+                    .getResultList());
+
+            List<PpdDocumentoDTO> ppdDocumentoDTOs = new ArrayList<>();
+            em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+                    .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
+                    .getResultList().stream().forEach((ppdDocumentoDTO) -> {
+                ppdDocumentoDTO.setCorAnexoList(em.createNamedQuery("CorAnexo.findByIdePpdDocumento", CorAnexoDTO.class)
+                .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
+                .getResultList());
+                ppdDocumentoDTOs.add(ppdDocumentoDTO);
+            });
+
+            correspondenciaDTO.setPpdDocumentoList(ppdDocumentoDTOs);
+
+            correspondenciaDTO.setCorReferidoList(em.createNamedQuery("CorReferido.findByIdeDocumento", CorReferidoDTO.class)
+            .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
+            .getResultList());
             return correspondenciaDTO;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);

@@ -25,7 +25,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "COR_REFERIDO")
 @NamedQueries({
-    @NamedQuery(name = "CorReferido.findAll", query = "SELECT c FROM CorReferido c")})
+    @NamedQuery(name = "CorReferido.findAll", query = "SELECT c FROM CorReferido c"),
+        @NamedQuery(name = "CorReferido.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorReferidoDTO " +
+                "(c.ideReferido, c.nroRadRef) " +
+                "FROM CorReferido c " +
+                "INNER JOIN c.corCorrespondencia co " +
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
 @javax.persistence.TableGenerator(name = "COR_REFERIDO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_REFERIDO_SEQ", allocationSize = 1)
 public class CorReferido implements Serializable {

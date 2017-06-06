@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +51,19 @@ public class PpdDocumentoDTO {
         this.codTipoSoporte = codTipoSoporte;
         this.codEstArchivado = codEstArchivado;
         this.corAnexoList = corAnexoList;
+    }
 
+    public PpdDocumentoDTO(BigInteger idePpdDocumento, String codTipoDoc, Date fecDocumento, String codAsunto, Long nroFolios,
+                           Long nroAnexos, String codEstDoc, String ideEcm, String codTipoSoporte, String codEstArchivado){
+        this.idePpdDocumento = idePpdDocumento;
+        this.codTipoDoc = codTipoDoc;
+        this.fecDocumento = fecDocumento;
+        this.codAsunto = codAsunto;
+        this.nroFolios = nroFolios;
+        this.nroAnexos = nroAnexos;
+        this.codEstDoc = codEstDoc;
+        this.ideEcm = ideEcm;
+        this.codTipoSoporte = codTipoSoporte;
+        this.codEstArchivado = codEstArchivado;
     }
 }

@@ -27,7 +27,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PPD_DOCUMENTO")
 @NamedQueries({
-    @NamedQuery(name = "PpdDocumento.findAll", query = "SELECT p FROM PpdDocumento p")})
+    @NamedQuery(name = "PpdDocumento.findAll", query = "SELECT p FROM PpdDocumento p"),
+        @NamedQuery(name = "PpdDocumento.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO " +
+                "(p.idePpdDocumento, p.codTipoDoc, p.fecDocumento, p.codAsunto, p.nroFolios, p.nroAnexos, p.codEstDoc, p.ideEcm, " +
+                "p.codTipoSoporte, p.codEstArchivado) " +
+                "FROM PpdDocumento p " +
+                "INNER JOIN p.corCorrespondencia co " +
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
 @javax.persistence.TableGenerator(name = "PPD_DOCUMENTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "PPD_DOCUMENTO_SEQ", allocationSize = 1)
 public class PpdDocumento implements Serializable {
