@@ -28,9 +28,9 @@ export class DatosDestinatarioComponent implements OnInit {
 
   model: DatosDestinatarioModel;
 
-  products: Array<any>;
+  destinatarios: Array<any> = [];
 
-  selectedProducto: any;
+  selectedDestinatario: any;
 
   constructor(private _tipoDestinatarioApi: TipoDestinatarioApiService, private _sedeAdministrativaApi: SedeAdministrativaApiService,
               private _dependenciaGrupoApi: DependenciaGrupoApiService) {
@@ -38,6 +38,16 @@ export class DatosDestinatarioComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  adicionarDestinatario() {
+    let destinatarios = [...this.destinatarios];
+    destinatarios.push({
+      dependencia: this.dependenciaGrupoSeleccionada.nombre,
+      tipo: this.tipoDestinatarioSeleccionado.nombre,
+      sede: this.sedeAdministrativaSeleccionada.nombre,
+    });
+    this.destinatarios = destinatarios;
   }
 
   filtrarTiposDestinatarios(event) {

@@ -53,15 +53,21 @@
           </div>
         </div>
       </div>
+      <div class="ui-g-3 ui-lg-3">
+        <div class="ui-g form-group" style="padding-left: 125px;padding-top: 47px">
+          <button pButton type="button" label="Agregar"
+                  style="margin-bottom:10px;width:auto" (click)="adicionarDestinatario()"></button>
+        </div>
+      </div>
     </div>
 
     <div class="ui-g-12 ui-lg-12" style="padding: 10px">
-      <p-dataTable [value]="productos" selectionMode="single" [(selection)]="selectedProducto"
+      <p-dataTable [value]="destinatarios" selectionMode="single" [(selection)]="selectedDestinatario"
                    [responsive]="true">
         <p-header>Listado</p-header>
-        <p-column field="id" header="Tipo destinatario"></p-column>
-        <p-column field="nombre" header="Sede administrativa"></p-column>
-        <p-column field="costo" header="Dependencia/Grupo"></p-column>
+        <p-column field="tipo" header="Tipo destinatario"></p-column>
+        <p-column field="sede" header="Sede administrativa"></p-column>
+        <p-column field="dependencia" header="Dependencia/Grupo"></p-column>
       </p-dataTable>
     </div>
   </div>
