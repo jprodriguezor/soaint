@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class UnidadTiempoClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public UnidadTiempoClient() {
-		super();
-	}
+    public UnidadTiempoClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("Unidad de Tiempo - [trafic] - listing UnidadTiempo with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/unidad-tiempo-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("Unidad de Tiempo - [trafic] - listing UnidadTiempo with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/UNI-TI/A")
+                .request()
+                .get();
+    }
 
 }
