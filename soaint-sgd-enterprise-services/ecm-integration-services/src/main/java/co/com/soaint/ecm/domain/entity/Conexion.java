@@ -1,17 +1,12 @@
 package co.com.soaint.ecm.domain.entity;
 
 import lombok.Data;
-
-import java.util.HashMap;
+import org.apache.chemistry.opencmis.client.api.Session;
 
 /**
  * Created by Dasiel on 29/05/2017.
  */
 @Data
-public class Conexion {
-    public Conexion() {}
-
-private String id;
-
-
+public class  Conexion {
+    Session session= null;
 }

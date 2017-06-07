@@ -3,25 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package co.com.foundation.soaint.documentmanager.mediator.content.interfaces;
+package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
-import co.com.foundation.soaint.documentmanager.domain.EstructuraTrdVO;
-import co.com.foundation.soaint.documentmanager.domain.MessageResponse;
-import co.com.foundation.soaint.documentmanager.exception.ECMIntegrationException;
-import com.filenet.api.core.Folder;
-import com.ibm.jarm.api.core.FilePlan;
-import com.ibm.jarm.api.core.FilePlanRepository;
-import com.ibm.jarm.api.core.RMFactory.RecordFolder;
+import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  *
  * @author sarias
  */
-public interface ContentManagerMediator {
-    
-    MessageResponse createStructureContent(List<EstructuraTrdVO> structure) throws ECMIntegrationException;
+public abstract class ContentManagerMediator {
+
+    public ContentManagerMediator(){
+
+    }
+    public abstract MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException;
 
 }

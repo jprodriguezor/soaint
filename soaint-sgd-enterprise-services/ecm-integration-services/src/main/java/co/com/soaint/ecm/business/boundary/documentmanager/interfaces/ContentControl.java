@@ -1,4 +1,4 @@
-package co.com.soaint.ecm.business.boundary.documentmanager;
+package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;

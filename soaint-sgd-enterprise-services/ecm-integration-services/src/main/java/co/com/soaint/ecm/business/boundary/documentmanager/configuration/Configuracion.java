@@ -1,4 +1,4 @@
-package co.com.foundation.soaint.documentmanager.configuration;
+package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;

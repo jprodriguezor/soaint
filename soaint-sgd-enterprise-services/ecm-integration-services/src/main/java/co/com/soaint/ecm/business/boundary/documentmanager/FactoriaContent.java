@@ -5,11 +5,12 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
  */
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
 
 /**
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
  * */
-public class FactoriaContentControl {
+public class FactoriaContent {
 
     public static ContentControl getContentControl(String tipo) {
 
@@ -19,6 +20,18 @@ public class FactoriaContentControl {
         }
         else {
             return new ContentControlAlfresco();
+        }
+
+    }
+
+    public static ContentManagerMediator getContentManager(String tipo) {
+
+        if (tipo.equals("alfresco")) {
+
+            return new ContentManagerAlfresco();
+        }
+        else {
+            return new ContentManagerAlfresco();
         }
 
     }

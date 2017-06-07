@@ -1,58 +1,100 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
+import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configuracion;
+import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
+import co.com.soaint.ecm.business.boundary.mediator.EcmManagerAlfresco;
+import co.com.soaint.ecm.domain.entity.Carpeta;
+import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
 
+import static java.lang.System.in;
+
 /**
  * Created by dasiel on 1/06/2017.
  */
 @Service
-public class ContentManager implements ContentManagerMediator {
+public class ContentManagerAlfresco extends ContentManagerMediator {
 
-    Logger LOGGER = Logger.getLogger(ContentManager.class.getName());
+    Logger LOGGER = Logger.getLogger(ContentManagerAlfresco.class.getName());
 
     @Autowired
-    ContentControl control;
+    Utilities utils;
 
+    @Autowired
+    Carpeta carpeta;
+
+    @Autowired
+    FactoriaContent factoriaContent;
+
+
+    ContentControl control = factoriaContent.getContentControl("alfresco");
     @Override
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta();
-        //ContentControl control = new ContentControl();
+/* TODO   Revisar esto para que lo utilizo
+    //ContentControl control = new ContentControl(); */
         try {
+
+            /**
+             * Se establece la conexion*/
             response = control.establecerConexiones();
+
             Utilities utils = new Utilities();
-            for (EstructuraTrdDTO estructuraTrdVO : structure) {
+            Conexion conexion=new Conexion ();
+        for (EstructuraTrdDTO estructuraTrdVO : structure) {
                 utils.ordenarListaOrganigrama(estructuraTrdVO.getOrganigramaItemList());
             }
-            String nombreCarpetaPadre = Configuracion.getPropiedad("dominio");
-            LOGGER.info("### Carpeta padre: "+nombreCarpetaPadre);
-            Folder carpetaPadre = control.verificarCarpetaPadre(nombreCarpetaPadre);
 
-            if (carpetaPadre == null) {
-                LOGGER.info("### No existe la carpeta padre: "+nombreCarpetaPadre);
-                carpetaPadre = control.crearCarpeta(nombreCarpetaPadre);
-                response = control.generarArbol(structure, carpetaPadre);
-            } else {
-                LOGGER.info("### Si existe la carpeta padre: "+nombreCarpetaPadre);
-                response = control.generarArbol(structure, carpetaPadre);
+            try {
+                conexion= factoriaContent.getContentControl("alfresco").obtenerConexion ();
+            } catch (SystemException e) {
+                e.printStackTrace ( );
             }
-            response.setCodMessage(MessageUtil.getMessage("cod00"));
-            response.setMessage(MessageUtil.getMessage("msj00"));
+            response = control.generarArbol(structure, carpeta);
+//            /**
+//             * Obtener carpeta raíz
+//             * */
+//             Folder carpetaPadre = control.verificarCarpetaPadre(nombreCarpetaPadre);
+//            LOGGER.info("### Carpeta padre: "+nombreCarpetaPadre);
+//            Carpeta carpeta=new Carpeta ();
+//             carpeta.setFolder (carpetaPadre);
+//
+//             //TODO eliminar la inicializacion de carpeta padre en null
+//            carpetaPadre=null;
+//            if (carpetaPadre == null) {
+//                LOGGER.info("### No existe la carpeta padre: "+nombreCarpetaPadre);
+//                carpeta = control.crearCarpeta(nombreCarpetaPadre);
+//                //TODO el metodo generarArbol hay que hacerlo
+//                response = control.generarArbol(structure, carpeta);
+//            } else {
+//                LOGGER.info("### Si existe la carpeta padre: "+nombreCarpetaPadre);
+//                response = control.generarArbol(structure, carpeta);
+//            }
+            /**TODO Revisar el tema de los metodos de getMessage*/
+//            response.setCodMensaje(MessageUtil.getMessage("cod00"));
+//            response.setMensaje(MessageUtil.getMessage("msj00"));
             control.cerrarConexionContent();
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.setCodMessage(MessageUtil.getMessage("cod08"));
-            response.setMessage(MessageUtil.getMessage("msj08"));
+            /**TODO Revisar el tema de los metodos de getMessage*/
+//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
+//            response.setMensaje(MessageUtil.getMessage("msj08"));
             control.cerrarConexionContent();
         }
         return response;

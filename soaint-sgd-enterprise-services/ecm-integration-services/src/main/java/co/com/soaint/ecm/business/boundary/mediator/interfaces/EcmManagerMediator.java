@@ -1,4 +1,4 @@
-package co.com.soaint.ecm.domain.mediator;
+package co.com.soaint.ecm.business.boundary.mediator.interfaces;
 
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;

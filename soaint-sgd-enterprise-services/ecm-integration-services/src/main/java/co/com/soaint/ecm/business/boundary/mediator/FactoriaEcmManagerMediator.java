@@ -1,8 +1,10 @@
-package co.com.soaint.ecm.domain.mediator;
+package co.com.soaint.ecm.business.boundary.mediator;
 
 /**
  * Created by Dasiel on 01/06/2017.
  */
+
+import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediator;
 
 /**
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
