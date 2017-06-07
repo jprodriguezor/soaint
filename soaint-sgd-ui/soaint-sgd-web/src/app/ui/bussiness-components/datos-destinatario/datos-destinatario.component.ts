@@ -28,11 +28,16 @@ export class DatosDestinatarioComponent implements OnInit {
 
   model: DatosDestinatarioModel;
 
+  products: Array<any>;
+
+  selectedProducto: any;
+
   constructor(private _tipoDestinatarioApi: TipoDestinatarioApiService, private _sedeAdministrativaApi: SedeAdministrativaApiService,
               private _dependenciaGrupoApi: DependenciaGrupoApiService) {
   }
 
   ngOnInit() {
+
   }
 
   filtrarTiposDestinatarios(event) {
