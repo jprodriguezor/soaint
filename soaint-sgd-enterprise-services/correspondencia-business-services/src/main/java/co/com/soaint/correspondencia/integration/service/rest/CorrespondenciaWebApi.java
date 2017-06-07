@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +49,7 @@ public class CorrespondenciaWebApi {
         Date fecha = new Date();
         CorrespondenciaDTO correspondenciaDTO = CorrespondenciaDTO.newInstance()
                 .descripcion("Correspondencia DTO test")
-                .tiempoRespuesta(BigInteger.valueOf(1))
+                .tiempoRespuesta("1")
                 .codUnidadTiempo("UT")
                 .codMedioRecepcion("CMR")
                 .fecRadicado(fecha)
