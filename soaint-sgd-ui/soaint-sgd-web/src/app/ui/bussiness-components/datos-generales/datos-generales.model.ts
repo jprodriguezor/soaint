@@ -9,6 +9,8 @@ export class DatosGeneralesModel {
 
   unidadesTiempo: Array<ListaSeleccionSimple> = [];
 
+  referidos: Array<string> = ['Juan Manuel Hernandez', 'Miguel Perez Bertran', 'Daniel Barrios Cardoso'];
+
   constructor() {
   }
 

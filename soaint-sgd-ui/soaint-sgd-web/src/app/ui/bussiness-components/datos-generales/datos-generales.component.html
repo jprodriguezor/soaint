@@ -119,5 +119,33 @@
         </div>
       </div>
     </div>
+    <div class="ui-g-12 ui-lg-12">
+      <p-fieldset legend="Referidos">
+        <div class="ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="numeroFolio">Referidos</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete [(ngModel)]="referido" [suggestions]="referidos"
+                              (completeMethod)="buscarReferidos($event)"></p-autoComplete>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-3 ui-lg-3">
+          <div class="ui-g form-group" style="padding-left: 125px;padding-top: 47px">
+            <button pButton type="button" label="Agregar"
+                    style="margin-bottom:10px;width:auto" (click)="adicionarReferido()"></button>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12" style="padding: 10px">
+          <p-dataTable [value]="referidosData" selectionMode="single" [(selection)]="selectedReferido"
+                       [responsive]="true">
+            <p-header>Listado</p-header>
+            <p-column field="nombre" header="Referido"></p-column>
+          </p-dataTable>
+        </div>
+      </p-fieldset>
+    </div>
   </div>
 </p-panel>

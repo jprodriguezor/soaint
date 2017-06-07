@@ -31,8 +31,17 @@ export class DatosGeneralesComponent implements OnInit {
 
   checkboxValues: string[] = [];
 
+  referidos: string[] = [];
+
+  referidosData: any[] = [];
+
+  referido: string;
+
+  selectedReferido: any;
+
   constructor(private _tipoComunicacionApi: TipoComunicacionApiService, private _medioRecepcionApi: MediosRecepcionApiService,
               private _tipologiaDocumentalApi: TipologiaDocumentalApiService, private _unidadTiempoApi: UnidadTiempoApiService) {
+    this.model = new DatosGeneralesModel();
   }
 
 
@@ -115,5 +124,26 @@ export class DatosGeneralesComponent implements OnInit {
     );
   }
 
+  buscarReferidos(event) {
+    let referidosFiltrados = [];
+    for (let i = 0; i < this.model.referidos.length; i++) {
+      const referido = this.model.referidos[i];
+      console.log(referido);
+      console.log(event.query);
+      if (referido.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
+        referidosFiltrados.push(referido);
+      }
+    }
+
+    this.referidos = referidosFiltrados;
+  }
+
+  adicionarReferido() {
+    let referidos = [...this.referidosData];
+    referidos.push({
+      nombre: this.referido
+    });
+    this.referidosData = referidos;
+  }
 
 }
