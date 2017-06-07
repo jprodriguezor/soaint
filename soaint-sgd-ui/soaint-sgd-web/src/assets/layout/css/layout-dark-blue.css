@@ -1237,7 +1237,7 @@ body {
           font-size: 12px;
           line-height: 12px; }
       .layout-container .topbar-items > li .topbar-icon {
-        font-size: 36px;
+        font-size: 30px;
         color: #ffffff;
         -moz-transition: color 0.3s;
         -o-transition: color 0.3s;
@@ -1555,3 +1555,5 @@ body .layout-wrapper.layout-compact {
       font-size: 14px; }
   .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
     padding-top: 130px; } }
+
+/*# sourceMappingURL=layout-dark-blue.css.map */
