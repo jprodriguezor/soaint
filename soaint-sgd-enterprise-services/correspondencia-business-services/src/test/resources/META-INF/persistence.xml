@@ -8,6 +8,7 @@
         <!-- add classes -->
         <class>co.com.soaint.correspondencia.domain.entity.TvsPais</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsMunicipio</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDepartamento</class>
 
         <properties>
             <!-- Configuring JDBC properties -->
