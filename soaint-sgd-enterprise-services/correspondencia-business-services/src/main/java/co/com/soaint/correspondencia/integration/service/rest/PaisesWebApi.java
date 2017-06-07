@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
  */
 
 @Path("/paises-web-api")
+@Produces({"application/json", "application/xml"})
 public class PaisesWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(PaisesWebApi.class.getName());
@@ -38,7 +39,6 @@ public class PaisesWebApi {
 
     @GET
     @Path("/paises/{estado}")
-    @Produces({"application/json", "application/xml"})
     public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado)throws SystemException, BusinessException {
         LOGGER.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();

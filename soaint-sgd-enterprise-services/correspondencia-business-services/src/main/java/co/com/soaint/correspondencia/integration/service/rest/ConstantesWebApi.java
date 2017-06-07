@@ -15,15 +15,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 /**
- * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * SGD Enterprise Services
- * Created: 24-May-2017
- * Author: esanchez
- * Type: JAVA class Artifact
- * Purpose: SERVICE - rest services
- * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * Created by esanchez on 5/24/2017.
  */
 @Path("/constantes-web-api")
+@Produces({"application/json", "application/xml"})
 public class ConstantesWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(ConstantesWebApi.class.getName());
@@ -37,7 +32,6 @@ public class ConstantesWebApi {
 
     @GET
     @Path("constantes/{estado}")
-    @Produces({"application/json", "application/xml"})
     public ConstantesDTO listarConstantesByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar constantes por estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByEstado(estado)).build();
@@ -45,18 +39,14 @@ public class ConstantesWebApi {
 
     @GET
     @Path("constantes/{codigo}/{estado}")
-    @Produces({"application/json", "application/xml"})
-    public ConstantesDTO listarConstantesByCodigoAndEstado(@PathParam("codigo") final String codigo,
-                                                           @PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodigoAndEstado(@PathParam("codigo") final String codigo, @PathParam("estado") final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar constantes por codigo y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodigoAndEstado(codigo, estado)).build();
     }
 
     @GET
     @Path("constantes/hijos/{cod-padre}/{estado}")
-    @Produces({"application/json", "application/xml"})
-    public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre,
-                                                             @PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre, @PathParam("estado") final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar constantes por codigo del padre y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
     }

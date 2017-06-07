@@ -15,15 +15,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 /**
- * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * SGD Enterprise Services
- * Created: 24-May-2017
- * Author: esanchez
- * Type: JAVA class Artifact
- * Purpose: SERVICE - rest services
- * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * Created by esanchez on 5/24/2017.
  */
 @Path("/municipios-web-api")
+@Produces({"application/json", "application/xml"})
 public class MunicipiosWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(MunicipiosWebApi.class.getName());
@@ -37,16 +32,13 @@ public class MunicipiosWebApi {
 
     @GET
     @Path("/municipios/{codDepar}/{estado}")
-    @Produces({"application/json", "application/xml"})
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar,
-                                                             @PathParam("estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar municipios por codigo del departamento y estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
     @GET
     @Path("/municipios/{estado}")
-    @Produces({"application/json", "application/xml"})
     public MunicipiosDTO listarMunicipiosByEstado(@PathParam("estado") final String estado)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar municipios por estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
