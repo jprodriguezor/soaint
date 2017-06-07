@@ -20,7 +20,7 @@ public class UnidadTiempoClient {
     public Response list() {
         System.out.println("Unidad de Tiempo - [trafic] - listing UnidadTiempo with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/UNI-TI/A")
+        return wt.path("/constantes-web-api/constantes/hijos/UNID-TIE/A")
                 .request()
                 .get();
     }

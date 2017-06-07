@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, RequestOptions, Headers} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
 import {Observable} from 'rxjs/Observable';
 import {ListaSeleccionSimple} from 'app/domain/lista.seleccion.simple';
@@ -15,7 +15,7 @@ export class UnidadTiempoApiService {
     let token = this._session.retrieve(WebModel.SECURITY_TOKEN);
     let headers = new Headers({'Authorization': 'Bearer ' + token});
     let options = new RequestOptions({headers: headers});
-    return this._http.get(environment.unidadTiempo_endpoint, options).map(response => response.json());
+    return this._http.get(environment.unidadTiempo_endpoint, options).map(response => response.json().constantes);
   }
 
 }
