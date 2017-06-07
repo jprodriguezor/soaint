@@ -23,7 +23,7 @@ public abstract class ContentControl  {
 
 
     /* -- Obtener coneccion -- */
-    public abstract Conexion obtenerConexion(String ceUri, String user, String pass, String stanza) throws SystemException ;
+    public abstract Conexion obtenerConexion() throws SystemException ;
 
     /* -- Obtener dominio -- */
     public abstract Dominio obtenerDominio(Conexion con) throws SystemException ;

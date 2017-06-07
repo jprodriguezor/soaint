@@ -4,6 +4,8 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
  * Created by Dasiel on 29/05/2017.
  */
 
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
+
 /**
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
  * */
