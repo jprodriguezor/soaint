@@ -5,6 +5,7 @@ import {AuthGuard} from './security/auth-guard';
 import {AuthenticationService} from './security/authentication.service';
 import {MessageBridgeService} from './web/message-bridge.service';
 import {SessionService} from './web/session.service';
+import {HttpHandler} from './security/http-handler';
 
 export * from './security/auth-guard';
 export * from './security/authentication.service';
@@ -12,8 +13,9 @@ export * from './web/message-bridge.service';
 export * from './web/session.service';
 
 export const INFRASTRUCTURE_SERVICES = [
-  AuthGuard,
-  AuthenticationService,
+  // AuthGuard,
+  // AuthenticationService,
   MessageBridgeService,
-  SessionService
+  SessionService,
+  HttpHandler
 ];

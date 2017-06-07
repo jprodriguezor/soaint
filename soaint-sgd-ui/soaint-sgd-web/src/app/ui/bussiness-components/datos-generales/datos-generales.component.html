@@ -1,123 +1,123 @@
-<p-panel header="Datos generales">
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-12 ui-lg-12">
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipoComunicacion">Tipo de comunicación</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="tipoComunicacion" [(ngModel)]="tipoComunicacionSeleccionado"
-                            [suggestions]="tiposComunicacionFiltrados"
-                            field="nombre"
-                            (completeMethod)="filtrarTiposComunicacion($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onTiposComunicacionDropDownClick($event)">
+<!--<p-panel header="Datos generales">-->
+  <!--<div class="ui-g ui-fluid">-->
+    <!--<div class="ui-g-12 ui-lg-12">-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="tipoComunicacion">Tipo de comunicación</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+            <!--<p-autoComplete id="tipoComunicacion" [(ngModel)]="tipoComunicacionSeleccionado"-->
+                            <!--[suggestions]="tiposComunicacionFiltrados"-->
+                            <!--field="nombre"-->
+                            <!--(completeMethod)="filtrarTiposComunicacion($event)" [size]="30"-->
+                            <!--[minLength]="1" placeholder="Seleccione" [dropdown]="true"-->
+                            <!--(onDropdownClick)="onTiposComunicacionDropDownClick($event)">-->
 
-            </p-autoComplete>
-          </div>
-        </div>
-      </div>
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="medioRecepcion">Medio de recepción</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="medioRecepcion" [(ngModel)]="medioRecepcionSeleccionado"
-                            [suggestions]="mediosRecepcionFiltrados"
-                            field="nombre"
-                            (completeMethod)="filtrarMeidosRecepcion($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onMediosRecepcionDropDownClick($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-lg-12">
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipologiaDocumental">Tipología documental</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="tipologiaDocumental" [(ngModel)]="tipologiaDocumentalSeleccionada"
-                            [suggestions]="tipologiasDocumentalesFiltradas"
-                            field="nombre"
-                            (completeMethod)="filtrarTipologiasDocumentales($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onTipologiasDocumentalesDropDownClick($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-      </div>
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tiempoRespuesta">Tiempo de respuesta</label>
-          </div>
-          <div class="ui-g-12">
-                    <span class="md-inputfield">
-                        <input type="text" pInputText id="tiempoRespuesta">
-                        <label>Tiempo de respuesta</label>
-                    </span>
-          </div>
-        </div>
-      </div>
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="unidadTiempo">Unidad de tiempo</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="unidadTiempo" [(ngModel)]="unidadTiempoSeleccionada"
-                            [suggestions]="unidadesTiempoFiltradas"
-                            field="nombre"
-                            (completeMethod)="filtrarUnidadesTiempo($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onUnidadesTiempoDropDownClick($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-lg-12">
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="numeroFolio">No. de folio</label>
-          </div>
-          <div class="ui-g-12">
-                    <span class="md-inputfield">
-                        <input type="text" pInputText id="numeroFolio">
-                        <label>No. de folio</label>
-                    </span>
-          </div>
-        </div>
-      </div>
-      <div class="ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label>Cantidad de anexos</label>
-          </div>
-          <div class="ui-g-12">
-            <label>0</label>
-          </div>
-        </div>
-      </div>
-      <div class="ui-g-6 ui-lg-6">
-        <div class="ui-g">
-          <div class="ui-g-6" style="padding-top: 60px">
-            <p-checkbox name="cg" value="Ultima" label="Requiere digitalización"
-                        [(ngModel)]="checkboxValues"></p-checkbox>
-          </div>
-          <div class="ui-g-6" style="padding-top: 60px">
-            <p-checkbox name="cg" value="Ultima" label="Requiere distribución física"
-                        [(ngModel)]="checkboxValues"></p-checkbox>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</p-panel>
+            <!--</p-autoComplete>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="medioRecepcion">Medio de recepción</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+            <!--<p-autoComplete id="medioRecepcion" [(ngModel)]="medioRecepcionSeleccionado"-->
+                            <!--[suggestions]="mediosRecepcionFiltrados"-->
+                            <!--field="nombre"-->
+                            <!--(completeMethod)="filtrarMeidosRecepcion($event)" [size]="30"-->
+                            <!--[minLength]="1" placeholder="Seleccione" [dropdown]="true"-->
+                            <!--(onDropdownClick)="onMediosRecepcionDropDownClick($event)">-->
+            <!--</p-autoComplete>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="ui-g-12 ui-lg-12">-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="tipologiaDocumental">Tipología documental</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+            <!--<p-autoComplete id="tipologiaDocumental" [(ngModel)]="tipologiaDocumentalSeleccionada"-->
+                            <!--[suggestions]="tipologiasDocumentalesFiltradas"-->
+                            <!--field="nombre"-->
+                            <!--(completeMethod)="filtrarTipologiasDocumentales($event)" [size]="30"-->
+                            <!--[minLength]="1" placeholder="Seleccione" [dropdown]="true"-->
+                            <!--(onDropdownClick)="onTipologiasDocumentalesDropDownClick($event)">-->
+            <!--</p-autoComplete>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="tiempoRespuesta">Tiempo de respuesta</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+                    <!--<span class="md-inputfield">-->
+                        <!--<input type="text" pInputText id="tiempoRespuesta">-->
+                        <!--<label>Tiempo de respuesta</label>-->
+                    <!--</span>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="unidadTiempo">Unidad de tiempo</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+            <!--<p-autoComplete id="unidadTiempo" [(ngModel)]="unidadTiempoSeleccionada"-->
+                            <!--[suggestions]="unidadesTiempoFiltradas"-->
+                            <!--field="nombre"-->
+                            <!--(completeMethod)="filtrarUnidadesTiempo($event)" [size]="30"-->
+                            <!--[minLength]="1" placeholder="Seleccione" [dropdown]="true"-->
+                            <!--(onDropdownClick)="onUnidadesTiempoDropDownClick($event)">-->
+            <!--</p-autoComplete>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="ui-g-12 ui-lg-12">-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label for="numeroFolio">No. de folio</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+                    <!--<span class="md-inputfield">-->
+                        <!--<input type="text" pInputText id="numeroFolio">-->
+                        <!--<label>No. de folio</label>-->
+                    <!--</span>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-3 ui-lg-3">-->
+        <!--<div class="ui-g form-group">-->
+          <!--<div class="ui-g-12">-->
+            <!--<label>Cantidad de anexos</label>-->
+          <!--</div>-->
+          <!--<div class="ui-g-12">-->
+            <!--<label>0</label>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6 ui-lg-6">-->
+        <!--<div class="ui-g">-->
+          <!--<div class="ui-g-6" style="padding-top: 60px">-->
+            <!--<p-checkbox name="cg" value="Ultima" label="Requiere digitalización"-->
+                        <!--[(ngModel)]="checkboxValues"></p-checkbox>-->
+          <!--</div>-->
+          <!--<div class="ui-g-6" style="padding-top: 60px">-->
+            <!--<p-checkbox name="cg" value="Ultima" label="Requiere distribución física"-->
+                        <!--[(ngModel)]="checkboxValues"></p-checkbox>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</p-panel>-->

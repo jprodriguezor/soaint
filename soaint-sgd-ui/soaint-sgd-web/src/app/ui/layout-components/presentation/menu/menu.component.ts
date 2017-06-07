@@ -1,9 +1,10 @@
-import {Component, EventEmitter, forwardRef, Inject, Input, OnInit} from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Component, Input, OnInit, EventEmitter, ViewChild, Inject, forwardRef} from '@angular/core';
+import {trigger, state, style, transition, animate} from '@angular/animations';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {MenuItem} from 'primeng/primeng';
-import {AppComponent} from 'app/app.component';
+import {AdminLayoutComponent} from '../../container/admin-layout/admin-layout.component';
+import {MENU_OPTIONS} from './menu-options';
 
 @Component({
   selector: 'app-menu',
@@ -18,20 +19,16 @@ export class AppMenuComponent implements OnInit {
 
   model: any[];
 
-  constructor(@Inject(forwardRef(() => AppComponent)) public app: AppComponent) {
+  constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent) {
   }
 
   ngOnInit() {
-    this.model = [
-      {label: 'Home', icon: 'build', routerLink: ['/home']},
-      {label: 'Productos', icon: 'build', routerLink: ['/productos']},
-      {label: 'Radicar comunicaciones', icon: 'build', routerLink: ['/radicar-comunicaciones']}
-    ];
+    this.model = MENU_OPTIONS;
   }
 
   changeTheme(theme) {
-    let themeLink: HTMLLinkElement = <HTMLLinkElement>document.getElementById('theme-css');
-    let layoutLink: HTMLLinkElement = <HTMLLinkElement>document.getElementById('layout-css');
+    let themeLink: HTMLLinkElement = <HTMLLinkElement> document.getElementById('theme-css');
+    let layoutLink: HTMLLinkElement = <HTMLLinkElement> document.getElementById('layout-css');
 
     themeLink.href = 'assets/theme/theme-' + theme + '.css';
     layoutLink.href = 'assets/layout/css/layout-' + theme + '.css';
@@ -76,7 +73,7 @@ export class AppMenuComponent implements OnInit {
     ])
   ]
 })
-export class AppSubMenu {
+export class AppSubMenuComponent {
 
   @Input() item: MenuItem;
 
@@ -88,20 +85,20 @@ export class AppSubMenu {
 
   activeIndex: number;
 
-  constructor(@Inject(forwardRef(() => AppComponent)) public app: AppComponent, public router: Router, public location: Location) {
+  constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent, public router: Router, public location: Location) {
   }
 
   itemClick(event: Event, item: MenuItem, index: number) {
-    //avoid processing disabled items
+    // avoid processing disabled items
     if (item.disabled) {
       event.preventDefault();
       return true;
     }
 
-    //activate current item and deactivate active sibling if any
+    // activate current item and deactivate active sibling if any
     this.activeIndex = (this.activeIndex === index) ? null : index;
 
-    //execute command
+    // execute command
     if (item.command) {
       if (!item.eventEmitter) {
         item.eventEmitter = new EventEmitter();
@@ -114,12 +111,12 @@ export class AppSubMenu {
       });
     }
 
-    //prevent hash change
+    // prevent hash change
     if (item.items || (!item.url && !item.routerLink)) {
       event.preventDefault();
     }
 
-    //hide menu
+    // hide menu
     if (!item.items) {
       if (this.app.isHorizontal())
         this.app.resetMenu = true;

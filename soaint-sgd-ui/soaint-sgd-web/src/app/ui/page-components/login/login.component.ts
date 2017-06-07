@@ -1,49 +1,61 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginModel } from 'app/ui/page-components/login/login.model';
-import { Router } from '@angular/router';
-import { SessionService, WebModel } from 'app/infrastructure/web/session.service';
-import { MessageBridgeService, MessageType } from 'app/infrastructure/web/message-bridge.service';
-import { AuthenticationService } from 'app/infrastructure/security/authentication.service';
-import { Message } from 'primeng/primeng';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
+
+import {LoginSandbox} from './redux-state/login-sandbox';
+import {Observable} from 'rxjs/Observable';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import * as actions from './redux-state/login-actions';
+
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  // providers: [LoginSandbox],
+  templateUrl: './login.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {
 
-  model: LoginModel;
-  msgs: Message[] = [];
+  public loading$: Observable<boolean>;
+  public error$: Observable<string>;
+  public form: FormGroup;
 
-  constructor(private _session: SessionService, private _router: Router, private _bridge: MessageBridgeService,
-    private _authService: AuthenticationService) { }
+  constructor(private _sandbox: LoginSandbox,
+              private _formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
-    this.model = this._session.restoreStatus(WebModel.LOGIN, new LoginModel());
+
+    this.form = this._formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+
+    this.loading$ = this._sandbox.selectorLoading();
+    this.error$ = this._sandbox.selectorError();
+
   }
 
-  public login(): void {
+  /**
+   * Submit the authentication form.
+   * @method submit
+   */
+  public submit() {
+    // get email and password values
+    const username: string = this.form.get('username').value;
+    const password: string = this.form.get('password').value;
 
-    this._authService.login(this.model.user).subscribe(data => {
-      if (data === true) {
-        // login successful
-        this.model.loggedin = true;
-        this._session.save(WebModel.LOGIN, this.model);
-        this._bridge.sendMessage({ type: MessageType.LOGIN_DONE, payload: this.model });
-        this._router.navigate(['/home']);
+    // trim values
+    username.trim();
+    password.trim();
 
-      } else {
-        // login failed
-        this.showErrorOnLogin()
-      }
-    },
-      (err) => this.showErrorOnLogin());
+    // set payload
+    const payload = {
+      username: username,
+      password: password
+    };
+
+    this._sandbox.loginDispatch(payload);
   }
 
-
-  private showErrorOnLogin(): void {
-    this.msgs = [];
-    this.msgs.push({ severity: 'warn', summary: 'Warn Message', detail: 'Invalid credentials' });
-  }
 
 }

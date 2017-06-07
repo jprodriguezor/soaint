@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocalStorageService } from "angular-2-local-storage/dist";
+import { LocalStorageService } from 'angular-2-local-storage/dist';
 
 @Injectable()
 export class SessionService {

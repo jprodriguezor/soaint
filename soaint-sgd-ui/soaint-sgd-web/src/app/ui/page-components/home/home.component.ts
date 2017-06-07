@@ -1,8 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginModel } from "app/ui/page-components/login/login.model";
-import { SessionService, WebModel } from "app/infrastructure/web/session.service";
-import { ProductsService } from "app/infrastructure/api/products.service";
-import { HomeModel } from "app/ui/page-components/home/home.model";
+import {Component, OnInit} from '@angular/core';
+
 
 @Component({
   selector: 'app-home',
@@ -10,14 +7,11 @@ import { HomeModel } from "app/ui/page-components/home/home.model";
 })
 export class HomeComponent implements OnInit {
 
-  loginModel: LoginModel;
-  homeModel: HomeModel;
-
-  constructor(private _session: SessionService) { }
+  constructor() {
+  }
 
   ngOnInit() {
-    this.loginModel = this._session.restoreStatus(WebModel.LOGIN,new LoginModel());
-    this.homeModel = new HomeModel();
+
   }
 
 }

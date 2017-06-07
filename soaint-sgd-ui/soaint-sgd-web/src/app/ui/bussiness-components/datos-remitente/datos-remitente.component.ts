@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductsService } from 'app/infrastructure/api/products.service';
 import {SelectItem} from 'primeng/primeng';
 
 @Component({
@@ -13,7 +12,7 @@ export class DatosRemitenteComponent implements OnInit {
 
   personsType: SelectItem[];
 
-  constructor(private _productApi: ProductsService) {
+  constructor() {
   }
 
   ngOnInit(): void {
