@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class MediosRecepcionClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public MediosRecepcionClient() {
-		super();
-	}
+    public MediosRecepcionClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("MediosRecepcion - [trafic] - listing MediosRecepcion with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/medios-recepcion-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("MediosRecepcion - [trafic] - listing MediosRecepcion with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/MED-RECE/A")
+                .request()
+                .get();
+    }
 
 }

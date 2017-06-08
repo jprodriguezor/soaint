@@ -20,7 +20,7 @@ public class TipoComunicacionClient {
     public Response list() {
         System.out.println("TipoComunicacion - [trafic] - listing TipoComunicacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/tipo-comunicacion-web-api")
+        return wt.path("/constantes-web-api/constantes/hijos/TIP-COMU/A")
                 .request()
                 .get();
     }

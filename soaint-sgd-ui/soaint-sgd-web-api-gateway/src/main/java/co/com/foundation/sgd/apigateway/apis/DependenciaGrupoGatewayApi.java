@@ -5,10 +5,7 @@ import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -17,25 +14,25 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class DependenciaGrupoGatewayApi {
 
-	@Autowired
-	private DependeciaGrupoClient client;
+    @Autowired
+    private DependeciaGrupoClient client;
 
-	public DependenciaGrupoGatewayApi() {
-		super();
-		 SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	}
+    public DependenciaGrupoGatewayApi() {
+        super();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
-	@GET
-	@Path("/")
-	@JWTTokenSecurity
-	public Response list() {
-		//TODO: add trafic log
-		System.out.println("DependenciaGrupoGatewayApi - [trafic] - listing Dependencia");
-		Response response = client.list();
-		String responseContent = response.readEntity(String.class);
-		System.out.println("DependenciaGrupoGatewayApi - [content] : " + responseContent);
-		
-		return Response.status( response.getStatus() ).entity(responseContent).build();
-	}
+    @GET
+    @Path("/{cod-sede-administrativa}")
+    @JWTTokenSecurity
+    public Response listBySedeAdministrativa(@PathParam("cod-sede-administrativa") String codSedeAdministrativa) {
+        //TODO: add trafic log
+        System.out.println("DependenciaGrupoGatewayApi - [trafic] - listing Dependencia");
+        Response response = client.listBySedeAdministrativa(codSedeAdministrativa);
+        String responseContent = response.readEntity(String.class);
+        System.out.println("DependenciaGrupoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }

@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipoAnexosClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public TipoAnexosClient() {
-		super();
-	}
+    public TipoAnexosClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("TipoAnexos - [trafic] - listing TipoAnexos with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/tipo-anexos-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("TipoAnexos - [trafic] - listing TipoAnexos with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/TIPO-ANE/A")
+                .request()
+                .get();
+    }
 
 }

@@ -20,7 +20,7 @@ public class TipoDocumentoClient {
 	public Response list() {
 		System.out.println("TipoDocumento - [trafic] - listing TipoDocumento with endpoint: " + endpoint);
 		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/tipo-documento-web-api")
+		return wt.path("/constantes-web-api/constantes/hijos/TIPO-DOC/A")
 				.request()
 				.get();
 	}
