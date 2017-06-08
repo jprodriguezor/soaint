@@ -9,6 +9,8 @@
     <module>ecm-integration-services</module>
 	<module>mock-productos-business-services</module>
     <module>bpm-integration-services</module>
+    <module>bpm-integration-services</module>
+    <module>bpm-integration-services</module>
   </modules>
   <packaging>pom</packaging>
   <name>soaint-sgd-enterprise-services</name>
