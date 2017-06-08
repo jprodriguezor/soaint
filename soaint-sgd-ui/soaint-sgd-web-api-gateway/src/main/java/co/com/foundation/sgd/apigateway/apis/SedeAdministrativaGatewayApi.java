@@ -12,30 +12,30 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/sede-administrativa-tiempo-gateway-api")
+@Path("/sede-administrativa-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SedeAdministrativaGatewayApi {
 
-	@Autowired
-	private SedeAdministrativaClient client;
+    @Autowired
+    private SedeAdministrativaClient client;
 
-	public SedeAdministrativaGatewayApi() {
-		super();
-		 SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	}
+    public SedeAdministrativaGatewayApi() {
+        super();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
-	@GET
-	@Path("/")
-	@JWTTokenSecurity
-	public Response list() {
-		//TODO: add trafic log
-		System.out.println("SedeAdministrativaGatewayApi - [trafic] - listing SedeAdministrativa");
-		Response response = client.list();
-		String responseContent = response.readEntity(String.class);
-		System.out.println("SedeAdministrativaGatewayApi - [content] : " + responseContent);
-		
-		return Response.status( response.getStatus() ).entity(responseContent).build();
-	}
+    @GET
+    @Path("/")
+    @JWTTokenSecurity
+    public Response list() {
+        //TODO: add trafic log
+        System.out.println("SedeAdministrativaGatewayApi - [trafic] - listing SedeAdministrativa");
+        Response response = client.list();
+        String responseContent = response.readEntity(String.class);
+        System.out.println("SedeAdministrativaGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }
