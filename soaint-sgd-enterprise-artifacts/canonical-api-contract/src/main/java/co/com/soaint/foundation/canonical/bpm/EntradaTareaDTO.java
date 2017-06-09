@@ -19,8 +19,9 @@ import java.util.Map;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/entradatarea/1.0.0")
 public class EntradaTareaDTO {
-    private String idTarea;
+    private Long idTarea;
     private String usuario;
+    private Long idProceso;
     private Map<String, Object> parametros;
 
 }

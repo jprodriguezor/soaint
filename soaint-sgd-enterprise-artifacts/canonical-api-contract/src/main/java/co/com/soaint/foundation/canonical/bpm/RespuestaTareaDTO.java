@@ -18,7 +18,7 @@ import java.util.Date;
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/respuestatarea/1.0.0")
 public class RespuestaTareaDTO {
 
-    private Long id;
+    private Long idTarea;
     private String nombre;
     private String estado;
     private Integer prioridad;
@@ -28,7 +28,7 @@ public class RespuestaTareaDTO {
     private Date tiempoActivacion;
     private Date tiempoExpiracion;
     private String idProceso;
-    private Long idInstanciaPorceso;
+    private Long idInstanciaProceso;
     private String idDespliegue;
     private Long idParent;
 

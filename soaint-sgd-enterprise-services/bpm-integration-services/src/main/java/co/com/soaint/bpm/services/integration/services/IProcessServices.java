@@ -7,6 +7,7 @@ import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 /**
@@ -14,11 +15,9 @@ import java.util.List;
  */
 public interface IProcessServices {
 
-      RespuestaProcesoDTO inicarProceso( EntradaProcesoDTO entradaProceso);
-
-//       List<RespuestaTareaDTO> listarTareas();
-
-//      RespuestaTareaDTO completarTarea(EntradaTareaDTO entradaTarea);
+      RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws MalformedURLException;
+      List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
+      RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
 
 
 

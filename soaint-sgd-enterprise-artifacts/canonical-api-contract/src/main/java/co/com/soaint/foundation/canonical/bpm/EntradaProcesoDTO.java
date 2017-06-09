@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +21,11 @@ import java.util.Map;
 public class EntradaProcesoDTO {
     private String idDespliegue;
     private String idProceso;
+    private Long idTarea;
     private String usuario;
     private String pass;
     private Map<String, Object> parametros;
+    private List<EstadosEnum> estados;
+
+
 }
