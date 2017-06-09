@@ -131,7 +131,7 @@ public class GestionarCorrespondencia {
             em.persist(correspondencia);
             em.flush();
 
-            return obtenerCorrespondenciaByNroRadicado(nroRadicado);
+            return listarCorrespondenciaByNroRadicado(nroRadicado);
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -141,7 +141,7 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public CorrespondenciaDTO obtenerCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+    public CorrespondenciaDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         try {
             CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
