@@ -135,7 +135,7 @@ public class GestionarCorrespondencia {
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage(MessageUtil.getInstance("system.generic.error").getMessage("system.generic.error"))
+                    .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -147,6 +147,12 @@ public class GestionarCorrespondencia {
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getSingleResult();
 
+            if (correspondenciaDTO == null) {
+                ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                        .buildBusinessException();
+            }
+
             correspondenciaDTO.setCorAgenteList(em.createNamedQuery("CorAgente.findByIdeDocumento", CorAgenteDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList());
@@ -156,21 +162,21 @@ public class GestionarCorrespondencia {
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList().stream().forEach((ppdDocumentoDTO) -> {
                 ppdDocumentoDTO.setCorAnexoList(em.createNamedQuery("CorAnexo.findByIdePpdDocumento", CorAnexoDTO.class)
-                .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
-                .getResultList());
+                        .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
+                        .getResultList());
                 ppdDocumentoDTOs.add(ppdDocumentoDTO);
             });
 
             correspondenciaDTO.setPpdDocumentoList(ppdDocumentoDTOs);
 
             correspondenciaDTO.setCorReferidoList(em.createNamedQuery("CorReferido.findByIdeDocumento", CorReferidoDTO.class)
-            .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-            .getResultList());
+                    .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
+                    .getResultList());
             return correspondenciaDTO;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage(MessageUtil.getInstance("system.generic.error").getMessage("system.generic.error"))
+                    .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
         }

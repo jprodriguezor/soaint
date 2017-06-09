@@ -49,7 +49,7 @@ public class GestionarDepartamento {
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage(MessageUtil.getInstance("system.generic.error").getMessage("system.generic.error"))
+                    .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -65,7 +65,7 @@ public class GestionarDepartamento {
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage(MessageUtil.getInstance("system.generic.error").getMessage("system.generic.error"))
+                    .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
         }
