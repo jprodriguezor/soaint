@@ -159,5 +159,25 @@ public class Utilities {
 
         }
     }
+
+
+    /**
+     * Metodo para mover un documento de una carpeta a otra
+     * @param targetFolder
+     * @param sourceFolder
+     * @param document
+     */
+    public void moverDocumento(String document, Folder sourceFolder, Folder targetFolder, Session session) {
+        try {
+            CmisObject object = session.getObjectByPath(sourceFolder.getPath()+"/"+document);
+            Document mvndocument = (Document) object;
+            mvndocument.move(sourceFolder,targetFolder);
+        } catch (CmisObjectNotFoundException e) {
+            System.err.println("Document is not found: " + document);
+        }
+
+    }
+
+
     
 }
