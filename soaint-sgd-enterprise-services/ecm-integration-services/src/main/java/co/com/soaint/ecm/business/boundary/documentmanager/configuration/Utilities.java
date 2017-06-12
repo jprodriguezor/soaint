@@ -138,5 +138,26 @@ public class Utilities {
         }
 
     }
+
+    /**
+     * Método que, dado el nombre de una Carpeta y un documento, elimina el docuemtno(carpeta)
+     * @param target
+     * @param delDocName
+     * @param session
+     */
+    private void eliminarDocumento(Folder target, String delDocName,Session session) {
+
+
+        try {
+
+            CmisObject object = session.getObjectByPath(target.getPath()+ delDocName);
+            Document delDoc = (Document) object;
+            delDoc.delete(true);
+
+        } catch (CmisObjectNotFoundException e) {
+            System.err.println("Document is not found: " + delDocName);
+
+        }
+    }
     
 }
