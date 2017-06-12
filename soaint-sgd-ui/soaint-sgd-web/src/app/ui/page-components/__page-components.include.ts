@@ -1,7 +1,7 @@
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 // import {ProductosComponent} from './productos/productos.component';
-// import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
+import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -17,7 +17,7 @@ export const PAGE_COMPONENTS = [
   HomeComponent,
   LoginComponent,
   // ProductosComponent,
-  // RadicarComunicacionesComponent,
+  RadicarComunicacionesComponent
 ];
 
 export * from './__page-providers.include';

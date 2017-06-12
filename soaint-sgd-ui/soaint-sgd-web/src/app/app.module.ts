@@ -9,7 +9,7 @@ import 'rxjs/add/operator/toPromise';
 
 // APP COMPONENTS
 import {AppComponent} from './app.component';
-import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS} from 'app/ui/__ui.include';
+import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, BUSSINESS_COMPONENTS_PROVIDERS} from 'app/ui/__ui.include';
 
 // APP MODULES
 // import { PAGE_MODULES } from './ui/page-components/__page-components.include';
@@ -19,12 +19,12 @@ import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 import {LocalStorageModule} from 'angular-2-local-storage';
 
 // APP SERVICES
-import {INFRASTRUCTURE_SERVICES, API_SERVICES} from './infrastructure/__infrastructure.include';
+import {INFRASTRUCTURE_SERVICES, API_SERVICES, EFFECTS_MODULES} from './infrastructure/__infrastructure.include';
 
 // Redux Store and Colaterals
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {ReduxStore, EFFECTS_MODULES} from './redux-store/__redux-states';
+import {ReduxStore} from './infrastructure/redux-store/__redux-states';
 import { RouterStoreModule } from '@ngrx/router-store';
 
 
@@ -91,7 +91,8 @@ import { RouterStoreModule } from '@ngrx/router-store';
     ...INFRASTRUCTURE_SERVICES,
     ...API_SERVICES,
     ...PAGE_COMPONENTS_PROVIDERS,
-    ...LAYOUT_COMPONENTS_PROVIDERS
+    ...LAYOUT_COMPONENTS_PROVIDERS,
+    ...BUSSINESS_COMPONENTS_PROVIDERS
   ],
   bootstrap: [AppComponent]
 })

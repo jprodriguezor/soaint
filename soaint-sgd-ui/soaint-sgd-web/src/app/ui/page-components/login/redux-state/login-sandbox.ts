@@ -6,11 +6,12 @@ import {HttpHandler} from 'app/infrastructure/security/http-handler';
 import {Usuario} from 'app/domain/usuario';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {State} from 'app/redux-store/redux-store';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as selectors from './login-selectors';
 import * as actions from './login-actions';
-import {UserCredentials} from '../models/user-credentials.model';
 import {go} from '@ngrx/router-store';
+import {UserCredentials} from '../models/user-credentials.model';
+
 
 @Injectable()
 export class LoginSandbox {
@@ -20,9 +21,6 @@ export class LoginSandbox {
               private _store: Store<State>) {
   }
 
-  getStore(): Store<State> {
-    return this._store;
-  }
 
   login(user: Usuario): Observable<Response> {
     return this._http.post(environment.security_endpoint + '/login', user);
@@ -34,7 +32,8 @@ export class LoginSandbox {
   }
 
   routeToLogin(): void {
-    this._router.navigate(['/login']);
+    // this._router.navigate(['/login']);
+    this._store.dispatch(go('/login'));
   }
 
   selectorLoading(): Observable<boolean> {

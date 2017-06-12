@@ -29,8 +29,7 @@ import { storeLogger } from 'ngrx-store-logger';
  * More: https://egghead.io/lessons/javascript-redux-implementing-combinereducers-from-scratch
  */
 import { combineReducers } from '@ngrx/store';
-import { State } from './redux-store';
-import { reducers } from './redux-reducers';
+import { State, reducers } from './redux-reducers';
 
 export const developmentReducer: ActionReducer<State> = compose(storeFreeze, storeLogger(), combineReducers)(reducers);
 export const productionReducer: ActionReducer<State> = combineReducers(reducers);
@@ -42,5 +41,3 @@ export function ReduxStore(state: any, action: any) {
     return developmentReducer(state, action);
   }
 }
-
-export * from './redux-effects';

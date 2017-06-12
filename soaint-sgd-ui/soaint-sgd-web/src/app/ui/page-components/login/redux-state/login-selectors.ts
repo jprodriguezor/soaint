@@ -1,6 +1,6 @@
 import {State} from './login-reducers';
 import { createSelector } from 'reselect';
-import * as rootStore from 'app/redux-store/redux-store';
+import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
 
 const loginStore = (state: rootStore.State) => state.auth;
 

@@ -1,4 +1,4 @@
-// import {DatosGeneralesComponent} from './datos-generales/datos-generales.component';
+import {DatosGeneralesComponent} from './datos-generales/datos-generales.component';
 // import {DatosDestinatarioComponent} from './datos-destinatario/datos-destinatario.component';
 import {DatosRemitenteComponent} from './datos-remitente/datos-remitente.component';
 
@@ -12,7 +12,7 @@ import {DatosRemitenteComponent} from './datos-remitente/datos-remitente.compone
  */
 
 export const BUSSINESS_COMPONENTS = [
-  // DatosGeneralesComponent,
-  // DatosDestinatarioComponent,
-  // DatosRemitenteComponent
+  DatosGeneralesComponent,
 ];
+
+export * from './__bussiness-providers.include';
