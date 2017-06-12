@@ -31,6 +31,19 @@ public class BpmIntegrationServicesClientRest {
     public BpmIntegrationServicesClientRest(){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
+
+    @POST
+    @Path("/proceso/listar/")
+    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - listar procesos");
+        try {
+            return proceso.listarProcesos(entradaProceso);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     @POST
     @Path("/proceso/iniciar/")
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, MalformedURLException {

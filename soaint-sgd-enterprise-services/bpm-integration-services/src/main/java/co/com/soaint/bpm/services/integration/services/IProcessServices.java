@@ -15,6 +15,7 @@ import java.util.List;
  */
 public interface IProcessServices {
 
+      List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws MalformedURLException;
       RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws MalformedURLException;
       List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
       RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;

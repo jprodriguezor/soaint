@@ -12,9 +12,11 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.stereotype.Service;
 
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,20 +31,39 @@ public class ProcessService implements IProcessServices {
     private KieSession ksession;
     private TaskService taskService;
     private AuditService auditService;
-
+    protected RuntimeDataService dataService;
 
     private ProcessService() throws MalformedURLException {
 
     }
+
+    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws MalformedURLException {
+        ksession = obtenerEngine(entrada).getKieSession();
+        Collection <ProcessInstance> processInstances = ksession.getProcessInstances();
+        List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
+        for (ProcessInstance processInstance : processInstances) {
+
+            RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(processInstance.getId()))
+                    .nombreProceso(processInstance.getProcessId())
+                    .estado(String.valueOf(processInstance.getState()))
+                    .build();
+            listaProcesos.add(respuesta);
+        }
+
+        return listaProcesos;
+    }
+
     @Override
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
-        RespuestaProcesoDTO respuesta = new RespuestaProcesoDTO();
         ksession = obtenerEngine(entrada).getKieSession();
         ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
         long procId = processInstance.getId();
-        respuesta.setCodigoProceso(String.valueOf(processInstance.getId()));
-        respuesta.setEstado(String.valueOf(processInstance.getState()));
-        respuesta.setNombreProceso(processInstance.getProcessId());
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .codigoProceso(String.valueOf(processInstance.getId()))
+                .nombreProceso(processInstance.getProcessId())
+                .estado(String.valueOf(processInstance.getState()))
+                .build();
         return respuesta;
     }
 
@@ -53,6 +74,7 @@ public class ProcessService implements IProcessServices {
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
         taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), "en-UK");
+
         long taskId = -1;
         for (TaskSummary task : tasks) {
             if (task.getProcessId().equals(entrada.getIdProceso())  ) {
@@ -110,7 +132,8 @@ public class ProcessService implements IProcessServices {
             }
         }
         taskService = obtenerEngine(entrada).getTaskService();
-        List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
+        //List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), "en-UK");
         long taskId = -1;
         for (TaskSummary task : tasks) {
             if (task.getProcessId().equals(entrada.getIdProceso())  ) {
