@@ -34,6 +34,7 @@
     "jquery": "^3.1.1",
     "moment": "^2.17.1",
     "nanoscroller": "0.8.7",
+    "ngrx-store-logger": "^0.1.8",
     "primeng": "^4.0.0-rc.1",
     "quill": "^1.1.8",
     "reselect": "^3.0.1",
