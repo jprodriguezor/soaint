@@ -65,7 +65,9 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             } catch (SystemException e) {
                 e.printStackTrace ( );
             }
-            response = control.generarArbol(structure, carpeta);
+            carpeta=new Carpeta ();
+            carpeta.setFolder (conexion.getSession ().getRootFolder () );
+            response = control.generarArbol(structure,carpeta);
 //            /**
 //             * Obtener carpeta raíz
 //             * */

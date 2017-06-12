@@ -339,19 +339,29 @@ return null;
     public Carpeta verificarCarpetaPadre(String nombre) throws SystemException {
         LOGGER.info("### Verificando carpeta padre");
         Carpeta carpetaPadre = null;
-        List<Folder> listaCarpetas = (List <Folder>) obtenerConexion ().getSession ().getRootFolder ().getChildren ();
+        List<Folder> listaCarpetas = new ArrayList <> ();
+
+        ItemIterable<CmisObject> it = obtenerConexion ().getSession ().getRootFolder ().getChildren ();
+        for (CmisObject obj : it) {
+//            writer.addChild(obj.getId(), obj.getName());
+            Folder folder = (Folder) obj;
+
+
+
         for (Folder lista : listaCarpetas) {
             if (lista.getName ().equals(nombre)) {
                 carpetaPadre.setFolder (lista);
             }
         }
+
+         }
         return carpetaPadre;
     }
 
-    public  List<Carpeta> obtenerCarpetas(String path, ObjetoECM os) throws SystemException {
-//        List<Folder> listaCarpetas = new ArrayList<Folder>();
-//        try {
-//            Folder carpeta = null;
+    public   List<Carpeta> obtenerCarpetas(String path, ObjetoECM os) throws SystemException {
+        List<Folder> listaCarpetas = new ArrayList<Folder>();
+        try {
+            Folder carpeta = null;
 //            Folder currentFolder = os.getSession().getRootFolder ().fetchInstance(os, path, null);
 //            FolderSet subFolders = currentFolder.get_SubFolders();
 //            Iterator<Folder> iterator = subFolders.iterator();
@@ -360,12 +370,13 @@ return null;
 //                carpeta = subFolder;
 //                listaCarpetas.add(carpeta);
 //            }
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al obtenerCarpetas ***");
-//        }
+        } catch (Exception e) {
+            LOGGER.info("*** Error al obtenerCarpetas ***");
+        }
 //TODO Arrelgar este metodo        return listaCarpetas;
 return null;
     }
+
 
     public  boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre)throws SystemException{
 //        LOGGER.info("### Actualizando nombre folder: "+nombre);
@@ -386,29 +397,32 @@ return null;
         Folder folderReturn = null;
 //        folderFather.save(RefreshMode.REFRESH);
         //TODO obtener carpetas hijas a partir de la carpeta padre
-        FolderSet subFolders = folderFather.get_SubFolders();
-        Iterator<Folder> iterator = subFolders.iterator();
-        while (iterator.hasNext()) {
-            Folder aux = iterator.next();
-            Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
-            String description = carpeta.get_ClassDescription().get_Name();
-            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-                    folderReturn = aux;
-                }
-            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-                    folderReturn = aux;
-                }
-            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-                    folderReturn = aux;
-                }
-            }
-        }
+//        ItemIterable<CmisObject> subFolders=folderFather.getChildren ();
+        ItemIterable<CmisObject> listaObjetos = folderFather.getChildren ();
+
+        while (listaObjetos.iterator ().hasNext ()) {
+            CmisObject aux = listaObjetos.iterator ().next();
+            aux.get
+//            Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
+//            String description = carpeta.get_ClassDescription().get_Name();
+//            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
+//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
+//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
+//                    folderReturn = aux;
+//                }
+//            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
+//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")) != null &&
+//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
+//                    folderReturn = aux;
+//                }
+//            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
+//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
+//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
+//                    folderReturn = aux;
+//                }
+//            }
+//        }
+        folderReturn=folderFather;
         return folderReturn;
     }
 
