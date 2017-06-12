@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class DependeciaGrupoClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public DependeciaGrupoClient() {
-		super();
-	}
+    public DependeciaGrupoClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/dependencia-grupo-web-api")
-				.request()
-				.get();
-	}
+    public Response listBySedeAdministrativa(String codigoSedeAdministrativa) {
+        System.out.println("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/" + codigoSedeAdministrativa + "/A")
+                .request()
+                .get();
+    }
 
 }

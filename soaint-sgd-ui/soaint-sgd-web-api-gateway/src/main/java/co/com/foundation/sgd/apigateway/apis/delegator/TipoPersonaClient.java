@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipoPersonaClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public TipoPersonaClient() {
-		super();
-	}
+    public TipoPersonaClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("Tipo Persona - [trafic] - listing TipoPersona with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/tipo-persona-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("Tipo Persona - [trafic] - listing TipoPersona with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/TIPO-PERS/A")
+                .request()
+                .get();
+    }
 
 }

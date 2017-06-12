@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipologiaDocumentalClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public TipologiaDocumentalClient() {
-		super();
-	}
+    public TipologiaDocumentalClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("TipologiaDocumental - [trafic] - listing TipologiaDocumental with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/tipologia-documental-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("TipologiaDocumental - [trafic] - listing TipologiaDocumental with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/TIPOL-DO/A")
+                .request()
+                .get();
+    }
 
 }

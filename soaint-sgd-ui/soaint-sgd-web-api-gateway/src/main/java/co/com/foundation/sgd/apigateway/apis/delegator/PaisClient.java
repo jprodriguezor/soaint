@@ -10,19 +10,19 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class PaisClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public PaisClient() {
-		super();
-	}
+    public PaisClient() {
+        super();
+    }
 
-	public Response list() {
-		System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/pais-web-api")
-				.request()
-				.get();
-	}
+    public Response list() {
+        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/paises-web-api/paises/A")
+                .request()
+                .get();
+    }
 
 }
