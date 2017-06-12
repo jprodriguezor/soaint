@@ -118,5 +118,25 @@ public class Utilities {
         return carpeta;
 
     }
+
+    /**
+     * Método que, dado una Carpeta y la profundidad necesaria, devuelve una lista de las carpetas (carpeta)
+     * @param depth
+     * @param target
+     * @return
+     */
+    private static void obtenerlistaCarpetas(int depth, Folder target) {
+        String indent = StringUtils.repeat("\t", depth);
+        for (Iterator<CmisObject> it = target.getChildren().iterator(); it.hasNext();) {
+            CmisObject o = it.next();
+            if (BaseTypeId.CMIS_DOCUMENT.equals(o.getBaseTypeId())) {
+                System.out.println(indent + "[Docment] " + o.getName());
+            } else if (BaseTypeId.CMIS_FOLDER.equals(o.getBaseTypeId())) {
+                System.out.println(indent + "[Folder] " + o.getName());
+                obtenerlistaCarpetas(++depth, (Folder) o);
+            }
+        }
+
+    }
     
 }
