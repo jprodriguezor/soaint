@@ -4,7 +4,6 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.foundation.canonical.ecm.*;
-import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.*;
@@ -249,7 +248,7 @@ public class ContentControlAlfresco extends ContentControl {
     public  Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental) throws SystemException {
         Carpeta newFolder = null;
         try {
-            Map <String, String> props = new HashMap <String, String> ( );
+            Map <String, String> props = new HashMap <> ( );
 
             props.put (PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
             //Se define como nombre de la carpeta nameOrg
@@ -497,14 +496,16 @@ return null;
         List<Folder> listaCarpetas = new ArrayList<Folder>();
         try {
             Folder carpeta = null;
-//            Folder currentFolder = os.getSession().getRootFolder ().fetchInstance(os, path, null);
-//            FolderSet subFolders = currentFolder.get_SubFolders();
-//            Iterator<Folder> iterator = subFolders.iterator();
-//            while (iterator.hasNext()) {
-//                Folder subFolder = iterator.next();
-//                carpeta = subFolder;
-//                listaCarpetas.add(carpeta);
-//            }
+/*
+Folder currentFolder = os.getSession().getRootFolder ().fetchInstance(os, path, null);
+FolderSet subFolders = currentFolder.get_SubFolders();
+Iterator<Folder> iterator = subFolders.iterator();
+while (iterator.hasNext()) {
+Folder subFolder = iterator.next();
+carpeta = subFolder;
+listaCarpetas.add(carpeta);
+}
+*/
         } catch (Exception e) {
             LOGGER.info("*** Error al obtenerCarpetas ***");
         }
@@ -528,12 +529,12 @@ return null;
         return true;
     }
 
-    public static Folder checkFolderParent(Folder folderFather, String nameFolder, String codFolder) throws BusinessException, IOException {
+    public static Folder chequearCapetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws BusinessException, IOException {
         Folder folderReturn = null;
 //        folderFather.save(RefreshMode.REFRESH);
         //TODO obtener carpetas hijas a partir de la carpeta padre
 //        ItemIterable<CmisObject> subFolders=folderFather.getChildren ();
-        ItemIterable<CmisObject> listaObjetos = folderFather.getChildren ();
+        ItemIterable<CmisObject> listaObjetos = folderFather.getFolder ().getChildren ();
 
         while (listaObjetos.iterator ().hasNext ()) {
             CmisObject aux = listaObjetos.iterator ().next();
@@ -557,37 +558,12 @@ return null;
 //                }
 //            }
 //        }
-        folderReturn=folderFather;
+        folderReturn=folderFather.getFolder ();
 
     }
     return folderReturn;
     }
 
-
-
-//
-//        Folder carpeta = null;
-//        try {
-//            carpeta = Factory.Folder.createInstance(os, classDocumental, null);
-//            carpeta..set_Parent(folder);
-//            carpeta.set_FolderName(nameOrg);
-//            carpeta.save(RefreshMode.REFRESH);
-//            carpeta = Factory.Folder.fetchInstance(os, folder.get_PathName() + "/" + nameOrg, null);
-//            String description = carpeta.get_ClassDescription().get_Name();
-//            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodDependencia"), codOrg);
-//            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodSerie"), codOrg);
-//            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodSubserie"), codOrg);
-//            }
-//            carpeta.save(RefreshMode.REFRESH);
-//            carpeta.get_ClassDescription();
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al crear folder ***");
-//        }
-//        return carpeta;
-    }
     public static boolean actualizarNombreFolder(Folder carpeta, String nombre)throws SystemException{
         LOGGER.info("### Actualizando nombre folder: "+nombre);
         boolean estado;
@@ -604,125 +580,7 @@ return null;
     public MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
         LOGGER.info ("### Generando arbol");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        try {
-            int bandera = 0;
-            //Recorremos la lista general
-            for (EstructuraTrdDTO estructura : estructuraList) {
-                List <OrganigramaDTO> organigramaList = estructura.getOrganigramaItemList ( );
-                List <ContenidoDependenciaTrdDTO> trdList = estructura.getContenidoDependenciaList ( );
-                Utilities utils = new Utilities ( );
-                utils.ordenarListaOrganigrama (organigramaList);
-                Folder folderFather = null;
-                Folder folderSon = null;
-                Folder folderContainer = null;
-                Folder folderFatherContainer = null;
-                //Recorremos la lista organigrama
-                for (OrganigramaDTO organigrama : organigramaList) {
-                    switch (bandera) {
-                        case 0:
-                            folderFather = checkFolderParent (folder.getFolder ( ), organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
-                            if (folderFather == null) {
-                                LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderFather = crearCarpeta (folder.getFolder (), organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia");
-                            } else {
-                                //LOGGER.info("Organigrama --  El folder ya esta creado2: " + folderFather.get_Name());
-                                //Actualización de folder
-                                if (!(organigrama.getNomOrg ( ).equals (folderFather.getName ( )))) {
-                                    LOGGER.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
-                                    actualizarNombreFolder (folderFather, organigrama.getNomOrg ( ));
-                                } else {
-                                    LOGGER.info ("Organigrama --  El folder ya esta creado: " + organigrama.getNomOrg ( ));
-                                }
-                            }
-                            bandera++;
-                            break;
-
-                        default:
-                            folderSon = checkFolderParent (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
-                            if (folderSon == null) {
-                                LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderSon = crearFolder (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia");
-                            } else {
-                                //LOGGER.info("Organigrama --  El folder ya esta creado2: " + folderSon.get_Name());
-                                //Actualización de folder
-                                if (!(organigrama.getNomOrg ( ).equals (folderSon.getName ( )))) {
-                                    LOGGER.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
-                                    actualizarNombreFolder (folderSon, organigrama.getNomOrg ( ));
-                                } else {
-                                    LOGGER.info ("Organigrama --  El folder ya esta creado: " + organigrama.getNomOrg ( ));
-                                }
-                            }
-                            folderFather = folderSon;
-                            folderFatherContainer = folderSon;
-                            folderContainer = folderFather;
-                            bandera++;
-                            break;
-                    }
-                }
-                //Recorremos la lista TRD
-                for (ContenidoDependenciaTrdDTO dependencias : trdList) {
-                    String[] dependenciasArray = {dependencias.getIdOrgAdm ( ),
-                            dependencias.getIdOrgOfc ( ),
-                            dependencias.getCodSerie ( ),
-                            dependencias.getNomSerie ( ),
-                            dependencias.getCodSubSerie ( ),
-                            dependencias.getNomSubSerie ( ),
-                    };
-                    String nombreSerie = formatearNombre (dependenciasArray, "formatoNombreSerie");
-                    folderSon = checkFolderParent (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ));
-                    if (folderSon == null) {
-                        if (nombreSerie != null) {
-                            LOGGER.info ("TRD --  Creando folder: " + nombreSerie);
-                            folderSon = crearFolder (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ), "claseSerie");
-                        } else {
-                            LOGGER.info ("El formato para el nombre de la serie no es valido.");
-                            break;
-                        }
-                    } else {
-                        //LOGGER.info("TRD --  El folder ya esta creado2: " + folderSon.get_Name());
-                        //Actualización de folder
-                        if (!(nombreSerie.equals (folderSon.getName ( )))) {
-                            LOGGER.info ("Se debe cambiar el nombre: " + nombreSerie);
-                            actualizarNombreFolder (folderSon, nombreSerie);
-                        } else {
-                            LOGGER.info ("TRD --  El folder ya esta creado: " + nombreSerie);
-                        }
-                    }
-                    folderFather = folderSon;
-                    if (dependencias.getCodSubSerie ( ) != null && !dependencias.getCodSubSerie ( ).equals ("")) {
-                        folderContainer = folderFather;
-                        String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
-                        folderSon = checkFolderParent (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ));
-                        if (folderSon == null) {
-                            if (nombreSubserie != null) {
-                                LOGGER.info ("TRD --  Creando folder: " + nombreSubserie);
-                                folderSon = crearFolder (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ), "claseSubserie");
-                            } else {
-                                LOGGER.info ("El formato para el nombre de la subserie no es valido.");
-                                break;
-                            }
-                        } else {
-                            //LOGGER.info("TRD --  El folder ya esta creado2: " + folderSon.get_Name());
-                            //Actualización de folder
-                            if (!(nombreSubserie.equals (folderSon.getName ( )))) {
-                                LOGGER.info ("Se debe cambiar el nombre: " + nombreSubserie);
-                                actualizarNombreFolder (folderSon, nombreSubserie);
-                            } else {
-                                LOGGER.info ("TRD --  El folder ya esta creado: " + nombreSubserie);
-                            }
-                        }
-                        folderFather = folderSon;
-                    }
-                }
-                bandera = 0;
-            }
-        } catch (Exception e) {
-            LOGGER.info ("Error al crear arbol content");
-            e.printStackTrace ( );
-            //TODO revisar el tema del response
-//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
-//            response.setMensaje(MessageUtil.getMessage("msj08"));
-        }
+       
         return response;
     }
     }
