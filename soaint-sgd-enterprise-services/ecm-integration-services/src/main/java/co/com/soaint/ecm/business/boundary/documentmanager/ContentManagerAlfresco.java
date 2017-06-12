@@ -1,27 +1,19 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configuracion;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
-import co.com.soaint.ecm.business.boundary.mediator.EcmManagerAlfresco;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
-
-import static java.lang.System.in;
 
 /**
  * Created by dasiel on 1/06/2017.
@@ -41,7 +33,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     FactoriaContent factoriaContent;
 
 
-    ContentControl control = factoriaContent.getContentControl("alfresco");
+    ContentControl control = FactoriaContent.getContentControl("alfresco");
     @Override
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info("### Creando estructura content..");
@@ -61,7 +53,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             }
 
             try {
-                conexion= factoriaContent.getContentControl("alfresco").obtenerConexion ();
+                conexion= FactoriaContent.getContentControl("alfresco").obtenerConexion ();
             } catch (SystemException e) {
                 e.printStackTrace ( );
             }
