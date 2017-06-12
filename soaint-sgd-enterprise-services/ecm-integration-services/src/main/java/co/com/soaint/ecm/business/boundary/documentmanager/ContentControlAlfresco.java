@@ -77,7 +77,7 @@ public class ContentControlAlfresco extends ContentControl {
             parameter.put(SessionParameter.USER, propiedadALFRESCO_USER);
             parameter.put(SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
-            // Configuración de conexion
+            // Configuracion de conexion
             parameter.put(SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
             parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
             parameter.put(SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
@@ -139,7 +139,7 @@ public class ContentControlAlfresco extends ContentControl {
                     parameter.put(SessionParameter.USER, propiedadALFRESCO_USER);
                     parameter.put(SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
-                    // Configuración de conexion
+                    // Configuracion de conexion
                     parameter.put(SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
                     parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
                     parameter.put(SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
@@ -238,7 +238,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado el nombre de la carpeta padre y la nueva Carpeta, crea el documento
+     * Metodo que, dado el nombre de la carpeta padre y la nueva Carpeta, crea el documento
      * @param folder
      * @param nameOrg
      * @param  codOrg
@@ -264,7 +264,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado el nombre de un espacio, devuelve su Id (nodeRef)
+     * Metodo que, dado el nombre de un espacio, devuelve su Id (nodeRef)
      * @param session
      * @param nombre
      * @return nodeRef (id)
@@ -288,7 +288,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado la sesión y el nombre del documento, devuelve su contenido (InputStream)
+     * Metodo que, dado la sesion y el nombre del documento, devuelve su contenido (InputStream)
      * @param session
      * @param nombre
      * @return InputStream(stream)
@@ -309,7 +309,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado el nombre de una Carpeta, devuelve la carpeta(carpeta)
+     * Metodo que, dado el nombre de una Carpeta, devuelve la carpeta(carpeta)
      * @param session
      * @param nombre
      * @return Folder (carpeta)
@@ -339,7 +339,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado una Carpeta y la profundidad necesaria, devuelve una lista de las carpetas (carpeta)
+     * Metodo que, dado una Carpeta y la profundidad necesaria, devuelve una lista de las carpetas (carpeta)
      * @param depth
      * @param target
      * @return
@@ -359,7 +359,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Método que, dado el nombre de una Carpeta y un documento, elimina el docuemtno(carpeta)
+     * Metodo que, dado el nombre de una Carpeta y un documento, elimina el docuemtno(carpeta)
      * @param target
      * @param delDocName
      * @param session
