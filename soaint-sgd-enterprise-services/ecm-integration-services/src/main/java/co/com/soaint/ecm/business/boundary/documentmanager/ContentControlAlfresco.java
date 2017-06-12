@@ -238,29 +238,30 @@ public class ContentControlAlfresco extends ContentControl {
         return null;
     }
 
+    /**
+     * Método que, dado el nombre de la carpeta padre y la nueva Carpeta, crea el documento
+     * @param folder
+     * @param nameOrg
+     * @param  codOrg
+     * @param classDocumental
+     * @return newly created folder(newFolder)
+     */
     public  Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental) throws SystemException {
-//        Folder carpeta = null;
-//        try {
-//            carpeta = Factory.Folder.createInstance(os, classDocumental, null);
-//            carpeta.set_Parent(folder);
-//            carpeta.set_FolderName(nameOrg);
-//            carpeta.save(RefreshMode.REFRESH);
-//            carpeta = Factory.Folder.fetchInstance(os, folder.get_PathName() + "/" + nameOrg, null);
-//            String description = carpeta.get_ClassDescription().get_Name();
-//            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodDependencia"), codOrg);
-//            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodSerie"), codOrg);
-//            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-//                carpeta.getProperties().putValue(Configuracion.getPropiedad("metadatoCodSubserie"), codOrg);
-//            }
-//            carpeta.save(RefreshMode.REFRESH);
-//            carpeta.get_ClassDescription();
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al crear folder ***");
-//        }
-//        return carpeta;
-        return null;
+        Carpeta newFolder = null;
+        try {
+            Map <String, String> props = new HashMap <String, String> ( );
+
+            props.put (PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
+            //Se define como nombre de la carpeta nameOrg
+            props.put (PropertyIds.NAME, nameOrg);
+            //Se crea la carpeta dentro de la carpeta folder
+            newFolder = new Carpeta ( );
+            newFolder.setFolder (folder.getFolder ( ).createFolder (props));
+
+        } catch (Exception e) {
+            LOGGER.info ("*** Error al crear folder ***");
+        }
+        return newFolder;
     }
 
     public String  formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
@@ -401,7 +402,7 @@ return null;
         ItemIterable<CmisObject> listaObjetos = folderFather.getChildren ();
 
         while (listaObjetos.iterator ().hasNext ()) {
-            CmisObject aux = listaObjetos.iterator ().next();}
+            CmisObject aux = listaObjetos.iterator ().next();
 //            aux.get
 //            Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
 //            String description = carpeta.get_ClassDescription().get_Name();
@@ -423,15 +424,12 @@ return null;
 //            }
 //        }
         folderReturn=folderFather;
-        return folderReturn;
+
+    }
+    return folderReturn;
     }
 
-    public static Folder crearFolder(Folder folder, String nameOrg, String codOrg, String classDocumental) throws SystemException {
-        Map<String, String> props = new HashMap<String, String>();
-        props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
-        props.put(PropertyIds.NAME, nameOrg);
-        Folder newFolder = folder.createFolder(props);
-        return newFolder;
+
 
 //
 //        Folder carpeta = null;
@@ -491,7 +489,7 @@ return null;
                             folderFather = checkFolderParent (folder.getFolder ( ), organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
                             if (folderFather == null) {
                                 LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderFather = crearFolder (folder.getFolder (), organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia");
+                                folderFather = crearCarpeta (folder.getFolder (), organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia");
                             } else {
                                 //LOGGER.info("Organigrama --  El folder ya esta creado2: " + folderFather.get_Name());
                                 //Actualización de folder
