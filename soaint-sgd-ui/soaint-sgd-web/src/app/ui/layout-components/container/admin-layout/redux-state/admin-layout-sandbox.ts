@@ -6,7 +6,7 @@ import {HttpHandler} from 'app/infrastructure/security/http-handler';
 import {Usuario} from 'app/domain/usuario';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {State} from 'app/redux-store/redux-store';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as selectors from './admin-layout-selectors';
 import * as actions from './admin-layout-actions';
 import * as models from '../models/admin-layout.model';

@@ -10,4 +10,5 @@ export const UI_COMPONENTS = [
 
 export * from './page-components/__page-components.include';
 export * from './layout-components/__layout-components.include';
+export * from './bussiness-components/__bussiness-components.include';
 
