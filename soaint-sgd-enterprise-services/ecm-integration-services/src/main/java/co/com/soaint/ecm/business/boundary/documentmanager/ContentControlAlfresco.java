@@ -194,32 +194,6 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     public  Carpeta chequearCarpetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws SystemException, IOException {
-//            Folder folderReturn = null;
-//            folderFather.save(RefreshMode.REFRESH);
-//            FolderSet subFolders = folderFather.get_SubFolders();
-//            Iterator<Folder> iterator = subFolders.iterator();
-//            while (iterator.hasNext()) {
-//                Folder aux = iterator.next();
-//                Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
-//                String description = carpeta.get_ClassDescription().get_Name();
-//                if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-//                    if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-//                        folderReturn = aux;
-//                    }
-//                } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-//                    if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-//                        folderReturn = aux;
-//                    }
-//                } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-//                    if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-//                        folderReturn = aux;
-//                    }
-//                }
-//            }
-//        return folderReturn;
         return null;
     }
 
@@ -482,16 +456,6 @@ return null;
         List<Folder> listaCarpetas = new ArrayList<Folder>();
         try {
             Folder carpeta = null;
-/*
-Folder currentFolder = os.getSession().getRootFolder ().fetchInstance(os, path, null);
-FolderSet subFolders = currentFolder.get_SubFolders();
-Iterator<Folder> iterator = subFolders.iterator();
-while (iterator.hasNext()) {
-Folder subFolder = iterator.next();
-carpeta = subFolder;
-listaCarpetas.add(carpeta);
-}
-*/
         } catch (Exception e) {
             LOGGER.info("*** Error al obtenerCarpetas ***");
         }
@@ -501,18 +465,16 @@ return null;
 
 
     public  boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre)throws SystemException{
-//        LOGGER.info("### Actualizando nombre folder: "+nombre);
-//        boolean estado;
-//        try{
-//            carpeta.set_FolderName(nombre);
-//            carpeta.save(RefreshMode.REFRESH);
-//            estado = true;
-//        }catch(Exception e){
-//            estado = false;
-//            LOGGER.info("*** Error al actualizar nombre folder ***");
-//        }
-//        return estado;
-        return true;
+        LOGGER.info("### Actualizando nombre folder: "+nombre);
+        boolean estado;
+        try{
+            carpeta.getFolder ().rename (nombre);
+            estado = true;
+        }catch(Exception e){
+            estado = false;
+            LOGGER.info("*** Error al actualizar nombre folder ***");
+        }
+        return estado;
     }
 
     public static Folder chequearCapetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws BusinessException, IOException {
