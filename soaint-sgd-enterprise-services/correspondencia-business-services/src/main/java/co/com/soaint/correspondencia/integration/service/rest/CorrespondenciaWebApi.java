@@ -35,14 +35,14 @@ public class CorrespondenciaWebApi {
 
     @POST
     @Path("/correspondencia")
-    public CorrespondenciaDTO radicarCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         LOGGER.info("processing rest request - radicar correspondencia");
-        return boundary.radicarCorrespondencia(correspondenciaDTO);
+        return boundary.radicarCorrespondencia(comunicacionOficialDTO);
     }
 
     @GET
     @Path("/correspondencia/{nro_radicado}")
-    public CorrespondenciaDTO listarCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         LOGGER.info("processing rest request - radicar correspondencia");
         return boundary.listarCorrespondenciaByNroRadicado(nroRadicado);
     }

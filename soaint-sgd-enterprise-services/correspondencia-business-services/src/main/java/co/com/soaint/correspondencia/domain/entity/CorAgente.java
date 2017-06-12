@@ -27,7 +27,7 @@ import javax.persistence.*;
 @Table(name = "COR_AGENTE")
 @NamedQueries({
     @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
-        @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorAgenteDTO " +
+        @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.nroDocumentoIden, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
                 "c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +

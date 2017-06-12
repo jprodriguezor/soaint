@@ -26,7 +26,7 @@ import javax.persistence.*;
 @Table(name = "COR_ANEXO")
 @NamedQueries({
     @NamedQuery(name = "CorAnexo.findAll", query = "SELECT c FROM CorAnexo c"),
-        @NamedQuery(name = "CorAnexo.findByIdePpdDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorAnexoDTO " +
+        @NamedQuery(name = "CorAnexo.findByIdePpdDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AnexoDTO " +
                 "(c.ideAnexo, c.codAnexo, c.descripcion) " +
                 "FROM CorAnexo c " +
                 "INNER JOIN c.ppdDocumento pp " +

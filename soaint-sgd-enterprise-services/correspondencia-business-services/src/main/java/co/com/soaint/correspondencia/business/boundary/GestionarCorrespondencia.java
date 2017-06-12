@@ -41,88 +41,84 @@ public class GestionarCorrespondencia {
         super();
     }
 
-    public CorrespondenciaDTO radicarCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
-            String nroRadicado = generarNumeroRadicado(correspondenciaDTO.getCodSede(), correspondenciaDTO.getCodTipoCmc());
-            correspondenciaDTO.setNroRadicado(nroRadicado);
+            String nroRadicado = generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia().getCodSede(), comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc());
+            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(nroRadicado);
             Date fecha = new Date();
             CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
-                    .descripcion(correspondenciaDTO.getDescripcion())
-                    .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
-                    .codUnidadTiempo(correspondenciaDTO.getCodUnidadTiempo())
-                    .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
-                    .fecRadicado(correspondenciaDTO.getFecRadicado())
-                    .nroRadicado(correspondenciaDTO.getNroRadicado())
-                    .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
-                    .ideInstancia(correspondenciaDTO.getIdeInstancia())
-                    .reqDistFisica(correspondenciaDTO.getReqDistFisica())
-                    .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .codSede(correspondenciaDTO.getCodSede())
-                    .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .reqDigita(correspondenciaDTO.getReqDigita())
-                    .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
-                    .nroGuia(correspondenciaDTO.getNroGuia())
-                    .fecVenGestion(correspondenciaDTO.getFecVenGestion())
-                    .codEstado(correspondenciaDTO.getCodEstado())
+                    .descripcion(comunicacionOficialDTO.getCorrespondencia().getDescripcion())
+                    .tiempoRespuesta(comunicacionOficialDTO.getCorrespondencia().getTiempoRespuesta())
+                    .codUnidadTiempo(comunicacionOficialDTO.getCorrespondencia().getCodUnidadTiempo())
+                    .codMedioRecepcion(comunicacionOficialDTO.getCorrespondencia().getCodMedioRecepcion())
+                    .fecRadicado(comunicacionOficialDTO.getCorrespondencia().getFecRadicado())
+                    .nroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado())
+                    .codTipoCmc(comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc())
+                    .ideInstancia(comunicacionOficialDTO.getCorrespondencia().getIdeInstancia())
+                    .reqDistFisica(comunicacionOficialDTO.getCorrespondencia().getReqDistFisica())
+                    .codFuncRadica(comunicacionOficialDTO.getCorrespondencia().getCodFuncRadica())
+                    .codSede(comunicacionOficialDTO.getCorrespondencia().getCodSede())
+                    .codDependencia(comunicacionOficialDTO.getCorrespondencia().getCodDependencia())
+                    .reqDigita(comunicacionOficialDTO.getCorrespondencia().getReqDigita())
+                    .codEmpMsj(comunicacionOficialDTO.getCorrespondencia().getCodEmpMsj())
+                    .nroGuia(comunicacionOficialDTO.getCorrespondencia().getNroGuia())
+                    .fecVenGestion(comunicacionOficialDTO.getCorrespondencia().getFecVenGestion())
+                    .codEstado(comunicacionOficialDTO.getCorrespondencia().getCodEstado())
                     .corAgenteList(new ArrayList<>())
                     .ppdDocumentoList(new ArrayList<>())
                     .corReferidoList(new ArrayList<>())
                     .build();
 
-            correspondenciaDTO.getCorAgenteList().stream().forEach((corAgenteDTO) -> {
-                CorAgente corAgente = CorAgente.newInstance()
-                        .codTipoRemite(corAgenteDTO.getCodTipoRemite())
-                        .codTipoPers(corAgenteDTO.getCodTipoPers())
-                        .nombre(corAgenteDTO.getNombre())
-                        .nroDocumentoIden(corAgenteDTO.getNroDocumentoIden())
-                        .razonSocial(corAgenteDTO.getRazonSocial())
-                        .nit(corAgenteDTO.getNit())
-                        .codCortesia(corAgenteDTO.getCodCortesia())
-                        .codCargo(corAgenteDTO.getCodCargo())
-                        .codEnCalidad(corAgenteDTO.getCodEnCalidad())
-                        .codTipDocIdent(corAgenteDTO.getCodTipDocIdent())
-                        .nroDocuIdentidad(corAgenteDTO.getNroDocuIdentidad())
-                        .codSede(corAgenteDTO.getCodSede())
-                        .codDependencia(corAgenteDTO.getCodDependencia())
-                        .codFuncRemite(corAgenteDTO.getCodFuncRemite())
-                        .fecAsignacion(corAgenteDTO.getFecAsignacion())
-                        .ideContacto(corAgenteDTO.getIdeContacto())
-                        .codTipAgent(corAgenteDTO.getCodTipAgent())
-                        .indOriginal(corAgenteDTO.getIndOriginal())
-                        .corCorrespondencia(correspondencia)
-                        .build();
-                correspondencia.getCorAgenteList().add(corAgente);
-            });
+            CorAgente corAgente = CorAgente.newInstance()
+                    .codTipoRemite(comunicacionOficialDTO.getAgente().getCodTipoRemite())
+                    .codTipoPers(comunicacionOficialDTO.getAgente().getCodTipoPers())
+                    .nombre(comunicacionOficialDTO.getAgente().getNombre())
+                    .nroDocumentoIden(comunicacionOficialDTO.getAgente().getNroDocumentoIden())
+                    .razonSocial(comunicacionOficialDTO.getAgente().getRazonSocial())
+                    .nit(comunicacionOficialDTO.getAgente().getNit())
+                    .codCortesia(comunicacionOficialDTO.getAgente().getCodCortesia())
+                    .codCargo(comunicacionOficialDTO.getAgente().getCodCargo())
+                    .codEnCalidad(comunicacionOficialDTO.getAgente().getCodEnCalidad())
+                    .codTipDocIdent(comunicacionOficialDTO.getAgente().getCodTipDocIdent())
+                    .nroDocuIdentidad(comunicacionOficialDTO.getAgente().getNroDocuIdentidad())
+                    .codSede(comunicacionOficialDTO.getAgente().getCodSede())
+                    .codDependencia(comunicacionOficialDTO.getAgente().getCodDependencia())
+                    .codFuncRemite(comunicacionOficialDTO.getAgente().getCodFuncRemite())
+                    .fecAsignacion(comunicacionOficialDTO.getAgente().getFecAsignacion())
+                    .ideContacto(comunicacionOficialDTO.getAgente().getIdeContacto())
+                    .codTipAgent(comunicacionOficialDTO.getAgente().getCodTipAgent())
+                    .indOriginal(comunicacionOficialDTO.getAgente().getIndOriginal())
+                    .corCorrespondencia(correspondencia)
+                    .build();
+            correspondencia.getCorAgenteList().add(corAgente);
 
-            correspondenciaDTO.getPpdDocumentoList().stream().forEach((ppdDocumentoDTO) -> {
-                PpdDocumento ppdDocumento = PpdDocumento.newInstance()
-                        .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
-                        .fecDocumento(ppdDocumentoDTO.getFecDocumento())
-                        .codAsunto(ppdDocumentoDTO.getCodAsunto())
-                        .nroFolios(ppdDocumentoDTO.getNroFolios())
-                        .nroAnexos(ppdDocumentoDTO.getNroAnexos())
-                        .codEstDoc(ppdDocumentoDTO.getCodEstDoc())
-                        .ideEcm(ppdDocumentoDTO.getIdeEcm())
-                        .codTipoSoporte(ppdDocumentoDTO.getCodTipoSoporte())
-                        .codEstArchivado(ppdDocumentoDTO.getCodEstArchivado())
-                        .fecCreacion(fecha)
-                        .corCorrespondencia(correspondencia)
+            PpdDocumento ppdDocumento = PpdDocumento.newInstance()
+                    .codTipoDoc(comunicacionOficialDTO.getPpdDocumento().getCodTipoDoc())
+                    .fecDocumento(comunicacionOficialDTO.getPpdDocumento().getFecDocumento())
+                    .codAsunto(comunicacionOficialDTO.getPpdDocumento().getCodAsunto())
+                    .nroFolios(comunicacionOficialDTO.getPpdDocumento().getNroFolios())
+                    .nroAnexos(comunicacionOficialDTO.getPpdDocumento().getNroAnexos())
+                    .codEstDoc(comunicacionOficialDTO.getPpdDocumento().getCodEstDoc())
+                    .ideEcm(comunicacionOficialDTO.getPpdDocumento().getIdeEcm())
+                    .codTipoSoporte(comunicacionOficialDTO.getPpdDocumento().getCodTipoSoporte())
+                    .codEstArchivado(comunicacionOficialDTO.getPpdDocumento().getCodEstArchivado())
+                    .fecCreacion(fecha)
+                    .corCorrespondencia(correspondencia)
+                    .build();
+            ppdDocumento.setCorAnexoList(new ArrayList<>());
+            comunicacionOficialDTO.getAnexoList().stream().forEach((anexoDTO) -> {
+                CorAnexo corAnexo = CorAnexo.newInstance()
+                        .codAnexo(anexoDTO.getCodAnexo())
+                        .descripcion(anexoDTO.getDescripcion())
+                        .ppdDocumento(ppdDocumento)
                         .build();
-                ppdDocumento.setCorAnexoList(new ArrayList<>());
-                ppdDocumentoDTO.getCorAnexoList().stream().forEach((corAnexoDTO) -> {
-                    CorAnexo corAnexo = CorAnexo.newInstance()
-                            .codAnexo(corAnexoDTO.getCodAnexo())
-                            .descripcion(corAnexoDTO.getDescripcion())
-                            .ppdDocumento(ppdDocumento)
-                            .build();
-                    ppdDocumento.getCorAnexoList().add(corAnexo);
-                });
-                correspondencia.getPpdDocumentoList().add(ppdDocumento);
+                ppdDocumento.getCorAnexoList().add(corAnexo);
             });
+            correspondencia.getPpdDocumentoList().add(ppdDocumento);
 
-            correspondenciaDTO.getCorReferidoList().stream().forEach((corReferidoDTO) -> {
+            comunicacionOficialDTO.getReferidoList().stream().forEach((referidoDTO) -> {
                 CorReferido corReferido = CorReferido.newInstance()
-                        .nroRadRef(corReferidoDTO.getNroRadRef())
+                        .nroRadRef(referidoDTO.getNroRadRef())
                         .corCorrespondencia(correspondencia)
                         .build();
                 correspondencia.getCorReferidoList().add(corReferido);
@@ -141,7 +137,7 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public CorrespondenciaDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         try {
             CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
@@ -153,26 +149,32 @@ public class GestionarCorrespondencia {
                         .buildBusinessException();
             }
 
-            correspondenciaDTO.setCorAgenteList(em.createNamedQuery("CorAgente.findByIdeDocumento", CorAgenteDTO.class)
+            AgenteDTO agenteDTO = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                    .getResultList());
+                    .getSingleResult();
 
-            List<PpdDocumentoDTO> ppdDocumentoDTOs = new ArrayList<>();
-            em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+            PpdDocumentoDTO ppdDocumentoDTO =  em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                    .getResultList().stream().forEach((ppdDocumentoDTO) -> {
-                ppdDocumentoDTO.setCorAnexoList(em.createNamedQuery("CorAnexo.findByIdePpdDocumento", CorAnexoDTO.class)
+                    .getSingleResult();
+
+
+            List<AnexoDTO> anexoList = em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
                         .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
-                        .getResultList());
-                ppdDocumentoDTOs.add(ppdDocumentoDTO);
-            });
+                        .getResultList();
 
-            correspondenciaDTO.setPpdDocumentoList(ppdDocumentoDTOs);
-
-            correspondenciaDTO.setCorReferidoList(em.createNamedQuery("CorReferido.findByIdeDocumento", CorReferidoDTO.class)
+            List<ReferidoDTO> referidoList = em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                    .getResultList());
-            return correspondenciaDTO;
+                    .getResultList();
+
+            ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+                    .correspondencia(correspondenciaDTO)
+                    .agente(agenteDTO)
+                    .ppdDocumento(ppdDocumentoDTO)
+                    .anexoList(anexoList)
+                    .referidoList(referidoList)
+                    .build();
+
+            return comunicacionOficialDTO;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
