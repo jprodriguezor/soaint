@@ -401,8 +401,8 @@ return null;
         ItemIterable<CmisObject> listaObjetos = folderFather.getChildren ();
 
         while (listaObjetos.iterator ().hasNext ()) {
-            CmisObject aux = listaObjetos.iterator ().next();
-            aux.get
+            CmisObject aux = listaObjetos.iterator ().next();}
+//            aux.get
 //            Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
 //            String description = carpeta.get_ClassDescription().get_Name();
 //            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
