@@ -183,28 +183,14 @@ public class ContentControlAlfresco extends ContentControl {
 
     }
 
-//    public ObjectStore obtenerObjectStore(Dominio dominio) throws ECMIntegrationException {
-//        LOGGER.info("*** obtenerObjectStore ***");
-//        try {
-//            if (os == null) {
-//                os = Factory.ObjectStore.fetchInstance(dominio,Configuracion.getPropiedad("ecm"), null);
-//            }
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al obtener objectstore ***");
-//        }
-//        return os;
-//
-//    }
-
     public void cerrarConexionContent() {
-//        try {
-//            LOGGER.info("*** Cerrando conexiones... ***");
-//            conexion = null;
-//            os = null;
-//            dominio = null;
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al cerrar conexiones ***");
-//        }
+        try {
+            LOGGER.info("*** Cerrando conexiones... ***");
+            conexion = null;
+            dominio = null;
+        } catch (Exception e) {
+            LOGGER.info("*** Error al cerrar conexiones ***");
+        }
     }
 
     public  Carpeta chequearCarpetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws SystemException, IOException {
