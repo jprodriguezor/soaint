@@ -19,7 +19,7 @@ import java.util.Date;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-plan-agen/1.0.0")
-public class CorPlanAgenDTO {
+public class PlanAgenDTO {
     private Long idePlanAgen;
     private String varPeso;
     private String varValor;
@@ -31,10 +31,10 @@ public class CorPlanAgenDTO {
     private String codCauDevo;
     private Date fecCarguePla;
 
-    public CorPlanAgenDTO(){super();}
+    public PlanAgenDTO(){super();}
 
-    public CorPlanAgenDTO(Long idePlanAgen, String varPeso, String varValor, String varNumeroGuia, Date fecObservacion,
-                          String codNuevaSede, String codNuevaDepen, String observaciones, String codCauDevo, Date fecCarguePla){
+    public PlanAgenDTO(Long idePlanAgen, String varPeso, String varValor, String varNumeroGuia, Date fecObservacion,
+                       String codNuevaSede, String codNuevaDepen, String observaciones, String codCauDevo, Date fecCarguePla){
         this.idePlanAgen = idePlanAgen;
         this.varPeso = varPeso;
         this.varValor = varValor;

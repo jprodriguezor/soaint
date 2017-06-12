@@ -18,17 +18,15 @@ import java.math.BigInteger;
 
 @Data
 @Builder(builderMethodName = "newInstance")
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-anexo/1.0.0")
-public class CorAnexoDTO {
-    private BigInteger ideAnexo;
-    private String codAnexo;
-    private String descripcion;
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-referido/1.0.0")
+public class ReferidoDTO {
+    private BigInteger ideReferido;
+    private String nroRadRef;
 
-    public CorAnexoDTO(){super();}
+    public ReferidoDTO(){super();}
 
-    public CorAnexoDTO(BigInteger ideAnexo, String codAnexo, String descripcion){
-        this.ideAnexo = ideAnexo;
-        this.codAnexo = codAnexo;
-        this.descripcion = descripcion;
+    public ReferidoDTO(BigInteger ideReferido, String nroRadRef){
+        this.ideReferido = ideReferido;
+        this.nroRadRef = nroRadRef;
     }
 }
