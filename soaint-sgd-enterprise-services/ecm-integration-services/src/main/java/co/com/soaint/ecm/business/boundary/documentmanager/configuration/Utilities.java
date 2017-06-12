@@ -89,6 +89,33 @@ public class Utilities {
         return stream;
     }
 
+    /**
+     * Método que, dado el nombre de una Carpeta, devuelve su Id (nodeRef)
+     * @param session
+     * @param nombre
+     * @return String (id)
+     */
+
+
+    public  String obtenerIdCarpeta(Session session, String nombre){
+
+        String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombre+"'";
+
+        ItemIterable<QueryResult> results = session.query(queryString, false);
+
+        String id = "";
+
+        for (QueryResult qResult : results) {
+            String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
+            Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
+            id = folder.getId();
+            System.out.println("Listado de carpetas: "+folder.getId());
+        }
+
+
+        return id;
+
+    }
 
 
     
