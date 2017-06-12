@@ -486,45 +486,14 @@ return null;
 
         while (listaObjetos.iterator ().hasNext ()) {
             CmisObject aux = listaObjetos.iterator ().next();
-//            aux.get
-//            Folder carpeta = Factory.Folder.fetchInstance(os, folderFather.get_PathName() + "/" + aux.get_Name(), null);
-//            String description = carpeta.get_ClassDescription().get_Name();
-//            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
-//            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
-//            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
-//            }
-//        }
+
         folderReturn=folderFather.getFolder ();
 
     }
     return folderReturn;
     }
 
-    public static boolean actualizarNombreFolder(Folder carpeta, String nombre)throws SystemException{
-        LOGGER.info("### Actualizando nombre folder: "+nombre);
-        boolean estado;
 
-        try{
-            carpeta.rename (nombre);
-            estado = true;
-        }catch(Exception e){
-            estado = false;
-            LOGGER.info("*** Error al actualizar nombre folder ***");
-        }
-        return estado;
-    }
     public MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
         LOGGER.info ("### Generando arbol");
         MensajeRespuesta response = new MensajeRespuesta ( );

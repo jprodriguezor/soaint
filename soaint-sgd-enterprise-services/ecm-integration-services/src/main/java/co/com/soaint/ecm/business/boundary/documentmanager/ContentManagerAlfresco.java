@@ -61,7 +61,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             carpeta.setFolder (conexion.getSession ().getRootFolder () );
             response = control.generarArbol(structure,carpeta);
 //            /**
-//             * Obtener carpeta raíz
+//             * Obtener carpeta raiz
 //             * */
 //             Folder carpetaPadre = control.verificarCarpetaPadre(nombreCarpetaPadre);
 //            LOGGER.info("### Carpeta padre: "+nombreCarpetaPadre);
