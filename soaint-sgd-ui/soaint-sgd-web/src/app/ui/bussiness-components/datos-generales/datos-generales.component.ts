@@ -3,8 +3,16 @@ import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import { Sandbox } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import { getTipoComunicacionArrayData } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {Sandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+import {
+  getTipoComunicacionArrayData,
+  getUnidadTiempoArrayData,
+  getTipoPersonaArrayData,
+  getTipoAnexosArrayData,
+  getTipoTelefonoArrayData,
+  getMediosRecepcionArrayData,
+  getTipologiaDocumentalArrayData
+} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 @Component({
   selector: 'app-datos-generales',
@@ -20,6 +28,12 @@ export class DatosGeneralesComponent implements OnInit {
 
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
+  unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
+  tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
+  tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
+  tipoTelefonoSuggestions$: Observable<ConstanteDTO[]>;
+  medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
+  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
 
 
   constructor(private _store: Store<State>, private _sandbox: Sandbox) {
@@ -27,6 +41,12 @@ export class DatosGeneralesComponent implements OnInit {
 
   ngOnInit(): void {
     this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
+    this.unidadTiempoSuggestions$ = this._store.select(getUnidadTiempoArrayData);
+    this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
+    this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
+    this.tipoTelefonoSuggestions$ = this._store.select(getTipoTelefonoArrayData);
+    this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
+    this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
   }
 
   onSelectTipoComunicacion(value) {
@@ -35,7 +55,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoComunicacion($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoComunicacion' , query);
+    this._sandbox.filterDispatch('tipoComunicacion', query);
   }
 
   onDropdownClickTipoComunicacion($event) {
@@ -45,7 +65,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoPersona($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoPersona' , query);
+    this._sandbox.filterDispatch('tipoPersona', query);
   }
 
   onDropdownClickTipoPersona($event) {
@@ -55,7 +75,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoAnexos($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoAnexos' , query);
+    this._sandbox.filterDispatch('tipoAnexos', query);
   }
 
   onDropdownClickTipoAnexos($event) {
@@ -65,7 +85,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoDocumento($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoDocumento' , query);
+    this._sandbox.filterDispatch('tipoDocumento', query);
   }
 
   onDropdownClickTipoDocumento($event) {
@@ -75,7 +95,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoTelefono($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoTelefono' , query);
+    this._sandbox.filterDispatch('tipoTelefono', query);
   }
 
   onDropdownClickTipoTelefono($event) {
@@ -85,7 +105,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterTipoDestinatario($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoDestinatario' , query);
+    this._sandbox.filterDispatch('tipoDestinatario', query);
   }
 
   onDropdownClickTipoDestinatario($event) {
@@ -95,7 +115,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterUnidadTiempo($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('unidadTiempo' , query);
+    this._sandbox.filterDispatch('unidadTiempo', query);
   }
 
   onDropdownClickUnidadTiempo($event) {
@@ -105,7 +125,7 @@ export class DatosGeneralesComponent implements OnInit {
 
   onFilterMediosRecepcion($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('mediosRecepcion' , query);
+    this._sandbox.filterDispatch('mediosRecepcion', query);
   }
 
   onDropdownClickMediosRecepcion($event) {
@@ -113,6 +133,15 @@ export class DatosGeneralesComponent implements OnInit {
     this._sandbox.loadDispatch('mediosRecepcion');
   }
 
+  onFilterTipologiaDocumental($event) {
+    const query = $event.query;
+    this._sandbox.filterDispatch('tipologiaDocumental', query);
+  }
+
+  onDropdownClickTipologiaDocumental($event) {
+    // this method triggers load of suggestions
+    this._sandbox.loadDispatch('tipologiaDocumental');
+  }
 
 
 }

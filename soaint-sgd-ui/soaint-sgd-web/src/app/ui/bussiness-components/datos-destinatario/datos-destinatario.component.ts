@@ -1,43 +1,66 @@
-// import {Component, OnInit} from '@angular/core';
-// import {ListaSeleccionSimple} from '../../../domain/lista.seleccion.simple';
-// import {TipoDestinatarioApiService} from 'app/infrastructure/__api.include';
-// import {DatosGeneralesModel} from '../datos-generales/datos-generales.model';
-//
-// @Component({
-//   selector: 'app-datos-destinatario',
-//   templateUrl: './datos-destinatario.component.html'
-// })
-// export class DatosDestinatarioComponent implements OnInit {
-//
-//   tipoDestinatarioSeleccionado: ListaSeleccionSimple;
-//
-//   tiposDestinatariosFiltrados: Array<ListaSeleccionSimple>;
-//
-//   model: DatosGeneralesModel;
-//
-//   constructor(private _tipoDestinatarioApi: TipoDestinatarioApiService) {
-//   }
-//
-//   ngOnInit() {
-//   }
-//
-//   filtrarTiposDestinatarios(event) {
-//     this.tiposDestinatariosFiltrados = [];
-//     for (let i = 0; i < this.model.tiposDestinatarios.length; i++) {
-//       const tipoDestinatario = this.model.tiposDestinatarios[i];
-//       if (tipoDestinatario.nombre.toLowerCase().indexOf(event.query.toLowerCase()) == 0) {
-//         this.tiposDestinatariosFiltrados.push(tipoDestinatario);
-//       }
-//     }
-//   }
-//
-//   onTiposDestinatariosDropDownClick() {
-//     this.tiposDestinatariosFiltrados = [];
-//
-//     this._tipoDestinatarioApi.list().subscribe(
-//       data => this.tiposDestinatariosFiltrados = data,
-//       error => console.log('Error searching in products api ' + error)
-//     );
-//   }
-//
-// }
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/operator/filter';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {Store} from '@ngrx/store';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
+import {Sandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+import {
+  getTipoDestinatarioArrayData,
+  getSedeAdministrativaArrayData,
+  getDependenciaGrupoArrayData
+} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+
+@Component({
+  selector: 'app-datos-destinatario',
+  templateUrl: './datos-destinatario.component.html'
+})
+export class DatosDestinatarioComponent implements OnInit {
+
+
+  tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
+  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
+
+
+  constructor(private _store: Store<State>, private _sandbox: Sandbox) {
+  }
+
+  ngOnInit(): void {
+    this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
+    this.sedeAdministrativaSuggestions$ = this._store.select(getSedeAdministrativaArrayData);
+    this.dependenciaGrupoSuggestions$ = this._store.select(getDependenciaGrupoArrayData);
+  }
+
+  onFilterTipoDestinatario($event) {
+    const query = $event.query;
+    this._sandbox.filterDispatch('tipoDestinatario', query);
+  }
+
+  onDropdownClickTipoDestinatario($event) {
+    // this method triggers load of suggestions
+    this._sandbox.loadDispatch('tipoDestinatario');
+  }
+
+  onFilterSedeAdministrativa($event) {
+    const query = $event.query;
+    this._sandbox.filterDispatch('sedeAdministrativa', query);
+  }
+
+  onDropdownClickSedeAdministrativa($event) {
+    // this method triggers load of suggestions
+    this._sandbox.loadDispatch('sedeAdministrativa');
+  }
+
+  onFilterDependenciaGrupo($event) {
+    const query = $event.query;
+    this._sandbox.filterDispatch('dependenciaGrupo', query);
+  }
+
+  onDropdownClickDependenciaGrupo($event) {
+    // this method triggers load of suggestions
+    this._sandbox.loadDispatch('dependenciaGrupo');
+  }
+
+
+}

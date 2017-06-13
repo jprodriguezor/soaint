@@ -13,18 +13,18 @@ export const rootPath = (state: rootStore.State) => state.constantes;
  * use-case.
  */
 
-export const getTipoComunicacionEntities = createSelector(rootPath, (state: State) => state.tipoComunicacion.entities);
+export const getTipoPersonaEntities = createSelector(rootPath, (state: State) => state.tipoPersona.entities);
 
-export const getTipoComunicacionIds = createSelector(rootPath, (state: State) => state.tipoComunicacion.ids);
+export const getTipoPersonaIds = createSelector(rootPath, (state: State) => state.tipoPersona.ids);
 
-export const getTipoComunicacionSelectedId = createSelector(rootPath, (state: State) => state.tipoComunicacion.selectedId);
+export const getTipoPersonaSelectedId = createSelector(rootPath, (state: State) => state.tipoPersona.selectedId);
 
-export const getTipoComunicacionSelectedEntity =
-  createSelector(getTipoComunicacionEntities, getTipoComunicacionSelectedId, (entities, selectedId) => {
+export const getTipoPersonaSelectedEntity =
+  createSelector(getTipoPersonaEntities, getTipoPersonaSelectedId, (entities, selectedId) => {
     return entities[selectedId];
   });
 
-export const getTipoComunicacionArrayData = createSelector(getTipoComunicacionEntities, getTipoComunicacionIds, (entities, ids) => {
+export const getTipoPersonaArrayData = createSelector(getTipoPersonaEntities, getTipoPersonaIds, (entities, ids) => {
   return ids.map(id => entities[id]);
 });
 

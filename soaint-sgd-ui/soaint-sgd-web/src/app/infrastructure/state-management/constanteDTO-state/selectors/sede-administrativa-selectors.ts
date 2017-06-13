@@ -13,18 +13,18 @@ const rootPath = (state: rootStore.State) => state.constantes;
  * use-case.
  */
 
-export const getTipoTelefonoEntities = createSelector(rootPath, (state: State) => state.tipoTelefono.entities);
+export const getSedeAdministrativaEntities = createSelector(rootPath, (state: State) => state.sedeAdministrativa.entities);
 
-export const getTipoTelefonoIds = createSelector(rootPath, (state: State) => state.tipoTelefono.ids);
+export const getSedeAdministrativaIds = createSelector(rootPath, (state: State) => state.sedeAdministrativa.ids);
 
-export const getTipoTelefonoSelectedId = createSelector(rootPath, (state: State) => state.tipoTelefono.selectedId);
+export const getSedeAdministrativaSelectedId = createSelector(rootPath, (state: State) => state.sedeAdministrativa.selectedId);
 
-export const getTipoTelefonoSelectedEntity =
-  createSelector(getTipoTelefonoEntities, getTipoTelefonoSelectedId, (entities, selectedId) => {
+export const getSedeAdministrativaSelectedEntity =
+  createSelector(getSedeAdministrativaEntities, getSedeAdministrativaSelectedId, (entities, selectedId) => {
     return entities[selectedId];
   });
 
-export const getTipoTelefonoArrayData = createSelector(getTipoTelefonoEntities, getTipoTelefonoIds, (entities, ids) => {
+export const getSedeAdministrativaArrayData = createSelector(getSedeAdministrativaEntities, getSedeAdministrativaIds, (entities, ids) => {
   return ids.map(id => entities[id]);
 });
 

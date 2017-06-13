@@ -2,7 +2,7 @@ import {State} from '../constanteDTO-reducers';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
 
-export const rootPath = (state: rootStore.State) => state.constantes;
+const rootPath = (state: rootStore.State) => state.constantes;
 
 /**
  * Because the data structure is defined within the reducer it is optimal to
