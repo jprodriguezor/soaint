@@ -21,6 +21,7 @@ import java.util.Map;
 public class EntradaProcesoDTO {
     private String idDespliegue;
     private String idProceso;
+    private Long instanciaProceso;
     private Long idTarea;
     private String usuario;
     private String pass;
