@@ -63,9 +63,12 @@ public class GestionarCorrespondencia {
 
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
 
-            CorAgente corAgente = agenteControl.corAgenteTransform(comunicacionOficialDTO.getAgente());
-            corAgente.setCorCorrespondencia(correspondencia);
-            correspondencia.getCorAgenteList().add(corAgente);
+            comunicacionOficialDTO.getAgenteList().stream().forEach((agenteDTO) -> {
+                CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
+                corAgente.setCorCorrespondencia(correspondencia);
+                correspondencia.getCorAgenteList().add(corAgente);
+            });
+
 
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumento());
             ppdDocumento.setCorCorrespondencia(correspondencia);
@@ -108,9 +111,9 @@ public class GestionarCorrespondencia {
                         .buildBusinessException();
             }
 
-            AgenteDTO agenteDTO = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
+            List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                    .getSingleResult();
+                    .getResultList();
 
             PpdDocumentoDTO ppdDocumentoDTO =  em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
@@ -127,7 +130,7 @@ public class GestionarCorrespondencia {
 
             ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
                     .correspondencia(correspondenciaDTO)
-                    .agente(agenteDTO)
+                    .agenteList(agenteDTOList)
                     .ppdDocumento(ppdDocumentoDTO)
                     .anexoList(anexoList)
                     .referidoList(referidoList)

@@ -17,7 +17,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
  */
 @BusinessControl
 public class AgenteControl {
-    public CorAgente corAgenteTransform(AgenteDTO agenteDTO)throws BusinessException, SystemException{
+    public CorAgente corAgenteTransform(AgenteDTO agenteDTO){
         return CorAgente.newInstance()
                 .codTipoRemite(agenteDTO.getCodTipoRemite())
                 .codTipoPers(agenteDTO.getCodTipoPers())

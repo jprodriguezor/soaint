@@ -27,7 +27,7 @@ import java.util.List;
 public class ComunicacionOficialDTO implements Serializable {
 
     private CorrespondenciaDTO correspondencia;
-    private AgenteDTO agente;
+    private List<AgenteDTO> agenteList;
     private PpdDocumentoDTO ppdDocumento;
     private List<AnexoDTO> anexoList;
     private List<ReferidoDTO> referidoList;
