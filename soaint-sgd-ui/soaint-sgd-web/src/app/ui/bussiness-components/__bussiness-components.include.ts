@@ -13,6 +13,7 @@ import {DatosRemitenteComponent} from './datos-remitente/datos-remitente.compone
 
 export const BUSSINESS_COMPONENTS = [
   DatosGeneralesComponent,
+  DatosRemitenteComponent
 ];
 
 export * from './__bussiness-providers.include';
