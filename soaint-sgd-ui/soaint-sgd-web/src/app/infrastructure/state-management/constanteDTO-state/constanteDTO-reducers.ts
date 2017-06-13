@@ -4,7 +4,7 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 
 interface ConstanteDTOStateInterface {
   ids: number[];
-  entities: { [id: number]: ConstanteDTO };
+  entities: { [ideConst: number]: ConstanteDTO };
   selectedId?: number | null;
 }
 
@@ -47,14 +47,15 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
+      console.log(action.payload);
       const target = action.payload.key;
-      const values = action.payload.data;
-      const newValues = values.filter(data => !state[target].entities[data.id]);
+      const values = action.payload.data.constantes;
+      const newValues = values.filter(data => !state[target].entities[data.ideConst]);
 
-      const newValuesIds = newValues.map(data => data.id);
-      const newValuesEntities = newValues.reduce((entities: { [id: number]: ConstanteDTO }, value: ConstanteDTO) => {
+      const newValuesIds = newValues.map(data => data.ideConst);
+      const newValuesEntities = newValues.reduce((entities: { [ideConst: number]: ConstanteDTO }, value: ConstanteDTO) => {
         return Object.assign(entities, {
-          [value.id]: value
+          [value.ideConst]: value
         });
       }, {});
       const cloneState = Object.assign({}, state);
