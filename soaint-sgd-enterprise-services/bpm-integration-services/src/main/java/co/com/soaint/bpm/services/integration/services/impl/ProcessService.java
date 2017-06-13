@@ -1,8 +1,10 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
-import co.com.soaint.foundation.canonical.bpm.*;
-import com.sun.deploy.config.ClientConfig;
+import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -11,31 +13,22 @@ import org.apache.http.util.EntityUtils;
 import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
-import org.jbpm.services.api.RuntimeDataService;
-import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.stereotype.Service;
 
-
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
-import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Created by Arce on 6/7/2017.
