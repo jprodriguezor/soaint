@@ -43,6 +43,12 @@ export class Sandbox {
       case 'mediosRecepcion':
         endpoint = environment.mediosRecepcion_endpoint;
         break;
+      case 'sedeAdministrativa':
+        endpoint = environment.sedeAdministrativa_endpoint;
+        break;
+      case 'dependenciaGrupo':
+        endpoint = environment.dependenciaGrupo_endpoint;
+        break;
     }
 
     if (endpoint !== null) {

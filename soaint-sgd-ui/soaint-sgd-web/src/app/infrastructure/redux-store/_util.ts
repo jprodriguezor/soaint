@@ -20,6 +20,12 @@ export function type<T>(label: T | ''): T {
   return <T>label;
 }
 
+// export const shouldLoad = (entity: string, key: string): Saga<any> => {
+//   return saga$ => saga$.filter(saga$ => {
+//     return !saga$.state.entities[entity][saga$.action[key]];
+//   });
+// };
+
 import { Store } from '@ngrx/store';
 
 // import 'rxjs/add/operator/take';

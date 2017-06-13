@@ -9,21 +9,43 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/pairwise';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/let';
+import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/operator/distinctUntilChanged';
+
 import {Store} from '@ngrx/store';
 import * as actions from './constanteDTO-actions';
 import {Sandbox} from './constanteDTO-sandbox';
 import {go} from '@ngrx/router-store'
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+
+function isEmptyObject(obj) {
+  return (obj && (Object.keys(obj).length === 0));
+}
+function isLoaded() {
+  return (source) =>
+    source.filter(values => {
+      console.log(values);
+      return true
+    })
+}
+
 
 @Injectable()
 export class Effects {
 
   constructor(private actions$: Actions,
+              private _store$: Store<RootState>,
               private _sandbox: Sandbox) {
   }
 
   @Effect()
   login: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
+    // .withLatestFrom(this._store$, (action, state) => state.constantes[action.payload.key].ids)
+    // .distinctUntilChanged()
+    // .let(isLoaded())
     .map(toPayload)
     .switchMap(
         (payload) => this._sandbox.loadData(payload)

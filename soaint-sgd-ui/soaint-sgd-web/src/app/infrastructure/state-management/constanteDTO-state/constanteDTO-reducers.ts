@@ -23,6 +23,9 @@ export interface State {
   tipoDestinatario: ConstanteDTOStateInterface;
   unidadTiempo: ConstanteDTOStateInterface;
   mediosRecepcion: ConstanteDTOStateInterface;
+  sedeAdministrativa: ConstanteDTOStateInterface;
+  dependenciaGrupo: ConstanteDTOStateInterface;
+  tipologiaDocumental: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -33,7 +36,10 @@ const initialState: State = {
   tipoTelefono: new ConstanteDTOStateInstance(),
   tipoDestinatario: new ConstanteDTOStateInstance(),
   unidadTiempo: new ConstanteDTOStateInstance(),
-  mediosRecepcion: new ConstanteDTOStateInstance()
+  mediosRecepcion: new ConstanteDTOStateInstance(),
+  sedeAdministrativa: new ConstanteDTOStateInstance(),
+  dependenciaGrupo: new ConstanteDTOStateInstance(),
+  tipologiaDocumental: new ConstanteDTOStateInstance()
 }
 
 /**

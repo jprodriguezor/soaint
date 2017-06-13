@@ -46,12 +46,11 @@
           </div>
           <div class="ui-g-12">
             <p-autoComplete id="tipologiaDocumental"
-                            [suggestions]="tipoComunicacionSuggestions$ | async"
+                            [suggestions]="tipologiaDocumentalSuggestions$ | async"
                             field="nombre"
-                            (onSelect)="onSelectTipoComunicacion()"
-                            (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
+                            (completeMethod)="onFilterTipologiaDocumental($event)" [size]="30"
                             [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
+                            (onDropdownClick)="onDropdownClickTipologiaDocumental($event)">
             </p-autoComplete>
           </div>
         </div>
@@ -62,12 +61,11 @@
           </div>
           <div class="ui-g-12">
             <p-autoComplete id="unidadTiempo"
-                            [suggestions]="tipoComunicacionSuggestions$ | async"
+                            [suggestions]="unidadTiempoSuggestions$ | async"
                             field="nombre"
-                            (onSelect)="onSelectTipoComunicacion()"
-                            (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
+                            (completeMethod)="onFilterUnidadTiempo($event)" [size]="30"
                             [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
+                            (onDropdownClick)="onDropdownClickUnidadTiempo($event)">
             </p-autoComplete>
           </div>
         </div>
@@ -110,13 +108,13 @@
         <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
           <div style="padding: 20px 0 0 10px">
             <p-checkbox name="cg" value="Ultima" label="Requiere digitalización"
-                        [(ngModel)]="checkboxValues"></p-checkbox>
+                        ></p-checkbox>
           </div>
         </div>
         <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
           <div style="padding: 20px 0 0 10px">
             <p-checkbox name="cg" value="Ultima" label="Requiere distribución física"
-                        [(ngModel)]="checkboxValues"></p-checkbox>
+                        ></p-checkbox>
           </div>
         </div>
       </div>
@@ -154,7 +152,7 @@
       <div class="ui-g-12 ui-lg-12">
         <div class="ui-g form-group">
           <div class="ui-g-12">
-            <label for="tipologiaDocumental">Asunto</label>
+            <label>Asunto</label>
           </div>
           <div class="ui-g-12">
               <textarea [rows]="3" [cols]="30" pInputTextarea placeholder="Your Message"
@@ -176,12 +174,11 @@
         </div>
         <div class="ui-g-12">
           <p-autoComplete id="tipoAnexos"
-                          [suggestions]="tipoComunicacionSuggestions$ | async"
+                          [suggestions]="tipoAnexosSuggestions$ | async"
                           field="nombre"
-                          (onSelect)="onSelectTipoComunicacion()"
-                          (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
+                          (completeMethod)="onFilterTipoAnexos($event)" [size]="30"
                           [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                          (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
+                          (onDropdownClick)="onDropdownClickTipoAnexos($event)">
           </p-autoComplete>
         </div>
       </div>
@@ -190,11 +187,11 @@
     <div class="ui-sm-12 ui-g-6 ui-lg-5">
       <div class="ui-g form-group">
         <div class="ui-g-12">
-          <label for="tipologiaDocumental">Descripción</label>
+          <label for="descripcionAnexos">Descripción</label>
         </div>
         <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="numeroFolio">
+              <input type="text" pInputText id="descripcionAnexos">
               </span>
         </div>
       </div>
@@ -205,7 +202,7 @@
     </div>
 
     <div class="ui-g-12">
-      <p-dataTable [value]="cars1" selectionMode="single" [(selection)]="selectedCar"
+      <p-dataTable selectionMode="single"
                    [paginator]="true" [rows]="10" [responsive]="true">
         <p-header>List of Cars</p-header>
         <p-column field="vin" header="Tipo anexos" [sortable]="true"  ></p-column>
