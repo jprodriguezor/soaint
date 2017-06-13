@@ -6,10 +6,12 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hornetq.utils.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class BpmIntegrationServicesClientRest {
 
     @POST
     @Path("/proceso/listar/")
-    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, MalformedURLException {
+    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
         LOGGER.info("processing rest request - listar procesos");
         try {
             return proceso.listarProcesos(entradaProceso);

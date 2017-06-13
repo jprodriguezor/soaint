@@ -20,5 +20,6 @@ public class RespuestaProcesoDTO {
     private String codigoProceso;
     private String estado;
     private String nombreProceso;
+    private String idDespliegue;
 
 }
