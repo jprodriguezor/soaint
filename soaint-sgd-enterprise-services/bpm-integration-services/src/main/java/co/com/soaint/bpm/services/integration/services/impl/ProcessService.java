@@ -96,7 +96,6 @@ public class ProcessService implements IProcessServices {
 
     @Override
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
-        RespuestaTareaDTO tarea = new RespuestaTareaDTO();
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
         taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
@@ -108,7 +107,7 @@ public class ProcessService implements IProcessServices {
                 .idDespliegue(entrada.getIdDespliegue())
                 .build();
 
-        return tarea;
+        return respuestaTarea;
     }
 
     @Override
@@ -158,7 +157,69 @@ public class ProcessService implements IProcessServices {
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), "en-UK");
         long taskId = -1;
         for (TaskSummary task : tasks) {
-            if (task.getProcessId().equals(entrada.getIdProceso())  ) {
+            if (task.getDeploymentId() == entrada.getIdDespliegue() ) {
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(task.getId())
+                        .estado(task.getStatusId())
+                        .idProceso(task.getProcessId())
+                        .idDespliegue(task.getDeploymentId())
+                        .nombre(task.getName())
+                        .prioridad(task.getPriority())
+                        .build();
+                tareas.add(respuestaTarea);
+            }
+        }
+        return tareas;
+    }
+
+    @Override
+    public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+        List<Status> estadosActivos = new ArrayList<>();
+        Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
+        while (estadosEnviados.hasNext()) {
+            switch (estadosEnviados.next()) {
+                case CREADO:
+                    estadosActivos.add(Status.Created);
+                    break;
+                case LISTO:
+                    estadosActivos.add(Status.Ready);
+                    break;
+                case RESERVADO:
+                    estadosActivos.add(Status.Reserved);
+                    break;
+                case SUSPENDIDO:
+                    estadosActivos.add(Status.Suspended);
+                    break;
+                case ENPROGRESO:
+                    estadosActivos.add(Status.InProgress);
+                    break;
+                case COMPLETADO:
+                    estadosActivos.add(Status.Completed);
+                    break;
+                case  FALLIDO:
+                    estadosActivos.add(Status.Failed);
+                    break;
+                case  ERROR:
+                    estadosActivos.add(Status.Error);
+                    break;
+                case  SALIDO:
+                    estadosActivos.add(Status.Exited);
+                    break;
+                case  OBSOLETO:
+                    estadosActivos.add(Status.Obsolete);
+                    break;
+                default:
+                    System.out.println("Invalid selection");
+                    break;
+            }
+        }
+        taskService = obtenerEngine(entrada).getTaskService();
+        //List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), "en-UK");
+        long taskId = -1;
+        for (TaskSummary task : tasks) {
+            if (task.getProcessInstanceId().longValue() == entrada.getInstanciaProceso().longValue() ) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
                         .estado(task.getStatusId())
