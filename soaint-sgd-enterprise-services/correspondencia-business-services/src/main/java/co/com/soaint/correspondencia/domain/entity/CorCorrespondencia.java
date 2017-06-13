@@ -5,36 +5,41 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.*;
+
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  *
  * @author jrodriguez
  */
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "COR_CORRESPONDENCIA")
 @NamedQueries({
-    @NamedQuery(name = "CorCorrespondencia.findAll", query = "SELECT c FROM CorCorrespondencia c")})
+    @NamedQuery(name = "CorCorrespondencia.findAll", query = "SELECT c FROM CorCorrespondencia c"),
+        @NamedQuery(name = "CorCorrespondencia.findByNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)")})
+@javax.persistence.TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
 public class CorCorrespondencia implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_CORRESPONDENCIA_GENERATOR")
     @Column(name = "IDE_DOCUMENTO")
-    private Long ideDocumento;
+    private BigInteger ideDocumento;
     @Column(name = "DESCRIPCION")
     private String descripcion;
     @Column(name = "TIEMPO_RESPUESTA")
@@ -73,247 +78,17 @@ public class CorCorrespondencia implements Serializable {
     private Date fecVenGestion;
     @Column(name = "COD_ESTADO")
     private String codEstado;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorAgente> corAgenteList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<DctAsignacion> dctAsignacionList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorPlanAgen> corPlanAgenList;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<PpdDocumento> ppdDocumentoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<DctAsigUltimo> dctAsigUltimoList;
-    @OneToMany(mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorReferido> corReferidoList;
-
-    public CorCorrespondencia() {
-    }
-
-    public CorCorrespondencia(Long ideDocumento) {
-        this.ideDocumento = ideDocumento;
-    }
-
-    public CorCorrespondencia(Long ideDocumento, Date fecRadicado, String nroRadicado) {
-        this.ideDocumento = ideDocumento;
-        this.fecRadicado = fecRadicado;
-        this.nroRadicado = nroRadicado;
-    }
-
-    public Long getIdeDocumento() {
-        return ideDocumento;
-    }
-
-    public void setIdeDocumento(Long ideDocumento) {
-        this.ideDocumento = ideDocumento;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getTiempoRespuesta() {
-        return tiempoRespuesta;
-    }
-
-    public void setTiempoRespuesta(String tiempoRespuesta) {
-        this.tiempoRespuesta = tiempoRespuesta;
-    }
-
-    public String getCodUnidadTiempo() {
-        return codUnidadTiempo;
-    }
-
-    public void setCodUnidadTiempo(String codUnidadTiempo) {
-        this.codUnidadTiempo = codUnidadTiempo;
-    }
-
-    public String getCodMedioRecepcion() {
-        return codMedioRecepcion;
-    }
-
-    public void setCodMedioRecepcion(String codMedioRecepcion) {
-        this.codMedioRecepcion = codMedioRecepcion;
-    }
-
-    public Date getFecRadicado() {
-        return fecRadicado;
-    }
-
-    public void setFecRadicado(Date fecRadicado) {
-        this.fecRadicado = fecRadicado;
-    }
-
-    public String getNroRadicado() {
-        return nroRadicado;
-    }
-
-    public void setNroRadicado(String nroRadicado) {
-        this.nroRadicado = nroRadicado;
-    }
-
-    public String getCodTipoCmc() {
-        return codTipoCmc;
-    }
-
-    public void setCodTipoCmc(String codTipoCmc) {
-        this.codTipoCmc = codTipoCmc;
-    }
-
-    public String getIdeInstancia() {
-        return ideInstancia;
-    }
-
-    public void setIdeInstancia(String ideInstancia) {
-        this.ideInstancia = ideInstancia;
-    }
-
-    public String getReqDistFisica() {
-        return reqDistFisica;
-    }
-
-    public void setReqDistFisica(String reqDistFisica) {
-        this.reqDistFisica = reqDistFisica;
-    }
-
-    public String getCodFuncRadica() {
-        return codFuncRadica;
-    }
-
-    public void setCodFuncRadica(String codFuncRadica) {
-        this.codFuncRadica = codFuncRadica;
-    }
-
-    public String getCodSede() {
-        return codSede;
-    }
-
-    public void setCodSede(String codSede) {
-        this.codSede = codSede;
-    }
-
-    public String getCodDependencia() {
-        return codDependencia;
-    }
-
-    public void setCodDependencia(String codDependencia) {
-        this.codDependencia = codDependencia;
-    }
-
-    public String getReqDigita() {
-        return reqDigita;
-    }
-
-    public void setReqDigita(String reqDigita) {
-        this.reqDigita = reqDigita;
-    }
-
-    public String getCodEmpMsj() {
-        return codEmpMsj;
-    }
-
-    public void setCodEmpMsj(String codEmpMsj) {
-        this.codEmpMsj = codEmpMsj;
-    }
-
-    public String getNroGuia() {
-        return nroGuia;
-    }
-
-    public void setNroGuia(String nroGuia) {
-        this.nroGuia = nroGuia;
-    }
-
-    public Date getFecVenGestion() {
-        return fecVenGestion;
-    }
-
-    public void setFecVenGestion(Date fecVenGestion) {
-        this.fecVenGestion = fecVenGestion;
-    }
-
-    public String getCodEstado() {
-        return codEstado;
-    }
-
-    public void setCodEstado(String codEstado) {
-        this.codEstado = codEstado;
-    }
-
-    public List<CorAgente> getCorAgenteList() {
-        return corAgenteList;
-    }
-
-    public void setCorAgenteList(List<CorAgente> corAgenteList) {
-        this.corAgenteList = corAgenteList;
-    }
-
-    public List<DctAsignacion> getDctAsignacionList() {
-        return dctAsignacionList;
-    }
-
-    public void setDctAsignacionList(List<DctAsignacion> dctAsignacionList) {
-        this.dctAsignacionList = dctAsignacionList;
-    }
-
-    public List<CorPlanAgen> getCorPlanAgenList() {
-        return corPlanAgenList;
-    }
-
-    public void setCorPlanAgenList(List<CorPlanAgen> corPlanAgenList) {
-        this.corPlanAgenList = corPlanAgenList;
-    }
-
-    public List<PpdDocumento> getPpdDocumentoList() {
-        return ppdDocumentoList;
-    }
-
-    public void setPpdDocumentoList(List<PpdDocumento> ppdDocumentoList) {
-        this.ppdDocumentoList = ppdDocumentoList;
-    }
-
-    public List<DctAsigUltimo> getDctAsigUltimoList() {
-        return dctAsigUltimoList;
-    }
-
-    public void setDctAsigUltimoList(List<DctAsigUltimo> dctAsigUltimoList) {
-        this.dctAsigUltimoList = dctAsigUltimoList;
-    }
-
-    public List<CorReferido> getCorReferidoList() {
-        return corReferidoList;
-    }
-
-    public void setCorReferidoList(List<CorReferido> corReferidoList) {
-        this.corReferidoList = corReferidoList;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (ideDocumento != null ? ideDocumento.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CorCorrespondencia)) {
-            return false;
-        }
-        CorCorrespondencia other = (CorCorrespondencia) object;
-        if ((this.ideDocumento == null && other.ideDocumento != null) || (this.ideDocumento != null && !this.ideDocumento.equals(other.ideDocumento))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.CorCorrespondencia[ ideDocumento=" + ideDocumento + " ]";
-    }
     
 }
