@@ -6,3 +6,4 @@ target/
 *.classpath
 *.springBeans
 !pom.xml
+soaint-sgd-enterprise-services/bpm-integration-services/src/main/java/co/com/soaint/bpm/services/App.java

@@ -15,10 +15,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 /**
- * Created by jrodriguez on 24/05/2017.
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * SGD Enterprise Services
+ * Created: 24-May-2017
+ * Author: esanchez
+ * Type: JAVA class Artifact
+ * Purpose: SERVICE - rest services
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
 @Path("/paises-web-api")
+@Produces({"application/json", "application/xml"})
 public class PaisesWebApi {
 
     private static Logger LOGGER = LogManager.getLogger(PaisesWebApi.class.getName());
@@ -32,7 +39,6 @@ public class PaisesWebApi {
 
     @GET
     @Path("/paises/{estado}")
-    @Produces({"application/json", "application/xml"})
     public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado)throws SystemException, BusinessException {
         LOGGER.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
