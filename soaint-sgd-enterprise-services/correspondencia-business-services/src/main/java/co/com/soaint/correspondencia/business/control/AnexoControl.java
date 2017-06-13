@@ -16,10 +16,9 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 @BusinessControl
 public class AnexoControl {
     public CorAnexo corAnexoTransform(AnexoDTO anexoDTO){
-        CorAnexo corAnexo = CorAnexo.newInstance()
+        return CorAnexo.newInstance()
                 .codAnexo(anexoDTO.getCodAnexo())
                 .descripcion(anexoDTO.getDescripcion())
                 .build();
-        return corAnexo;
     }
 }

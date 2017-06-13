@@ -16,9 +16,8 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 @BusinessControl
 public class ReferidoControl {
     public CorReferido corReferidoTransform(ReferidoDTO referidoDTO){
-        CorReferido corReferido = CorReferido.newInstance()
+        return CorReferido.newInstance()
                 .nroRadRef(referidoDTO.getNroRadRef())
                 .build();
-        return corReferido;
     }
 }

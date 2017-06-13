@@ -21,7 +21,7 @@ import java.util.Date;
 public class PpdDocumentoControl {
     public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO)throws BusinessException, SystemException{
         Date fecha = new Date();
-        PpdDocumento ppdDocumento = PpdDocumento.newInstance()
+        return PpdDocumento.newInstance()
                 .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
                 .fecDocumento(ppdDocumentoDTO.getFecDocumento())
                 .codAsunto(ppdDocumentoDTO.getCodAsunto())
@@ -33,6 +33,5 @@ public class PpdDocumentoControl {
                 .codEstArchivado(ppdDocumentoDTO.getCodEstArchivado())
                 .fecCreacion(fecha)
                 .build();
-        return ppdDocumento;
     }
 }

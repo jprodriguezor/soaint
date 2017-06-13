@@ -1,13 +1,10 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +22,7 @@ import java.util.Random;
 @BusinessControl
 public class CorrespondenciaControl {
     public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
-        CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
+        return CorCorrespondencia.newInstance()
                 .descripcion(correspondenciaDTO.getDescripcion())
                 .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
                 .codUnidadTiempo(correspondenciaDTO.getCodUnidadTiempo())
@@ -47,7 +44,6 @@ public class CorrespondenciaControl {
                 .ppdDocumentoList(new ArrayList<>())
                 .corReferidoList(new ArrayList<>())
                 .build();
-        return correspondencia;
     }
 
     public String generarNumeroRadicado(String sede, String tipoComunicacion) {//TODO
