@@ -1,20 +1,20 @@
 package co.com.soaint.correspondencia.business.boundary;
 
+import co.com.soaint.correspondencia.business.control.*;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +35,21 @@ public class GestionarCorrespondencia {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    CorrespondenciaControl correspondenciaControl;
+
+    @Autowired
+    AgenteControl agenteControl;
+
+    @Autowired
+    PpdDocumentoControl ppdDocumentoControl;
+
+    @Autowired
+    AnexoControl anexoControl;
+
+    @Autowired
+    ReferidoControl referidoControl;
     // ----------------------
 
     public GestionarCorrespondencia() {
@@ -43,84 +58,28 @@ public class GestionarCorrespondencia {
 
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
-            String nroRadicado = generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia().getCodSede(), comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc());
+            String nroRadicado = correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia().getCodSede(), comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc());
             comunicacionOficialDTO.getCorrespondencia().setNroRadicado(nroRadicado);
-            Date fecha = new Date();
-            CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
-                    .descripcion(comunicacionOficialDTO.getCorrespondencia().getDescripcion())
-                    .tiempoRespuesta(comunicacionOficialDTO.getCorrespondencia().getTiempoRespuesta())
-                    .codUnidadTiempo(comunicacionOficialDTO.getCorrespondencia().getCodUnidadTiempo())
-                    .codMedioRecepcion(comunicacionOficialDTO.getCorrespondencia().getCodMedioRecepcion())
-                    .fecRadicado(comunicacionOficialDTO.getCorrespondencia().getFecRadicado())
-                    .nroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado())
-                    .codTipoCmc(comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc())
-                    .ideInstancia(comunicacionOficialDTO.getCorrespondencia().getIdeInstancia())
-                    .reqDistFisica(comunicacionOficialDTO.getCorrespondencia().getReqDistFisica())
-                    .codFuncRadica(comunicacionOficialDTO.getCorrespondencia().getCodFuncRadica())
-                    .codSede(comunicacionOficialDTO.getCorrespondencia().getCodSede())
-                    .codDependencia(comunicacionOficialDTO.getCorrespondencia().getCodDependencia())
-                    .reqDigita(comunicacionOficialDTO.getCorrespondencia().getReqDigita())
-                    .codEmpMsj(comunicacionOficialDTO.getCorrespondencia().getCodEmpMsj())
-                    .nroGuia(comunicacionOficialDTO.getCorrespondencia().getNroGuia())
-                    .fecVenGestion(comunicacionOficialDTO.getCorrespondencia().getFecVenGestion())
-                    .codEstado(comunicacionOficialDTO.getCorrespondencia().getCodEstado())
-                    .corAgenteList(new ArrayList<>())
-                    .ppdDocumentoList(new ArrayList<>())
-                    .corReferidoList(new ArrayList<>())
-                    .build();
 
-            CorAgente corAgente = CorAgente.newInstance()
-                    .codTipoRemite(comunicacionOficialDTO.getAgente().getCodTipoRemite())
-                    .codTipoPers(comunicacionOficialDTO.getAgente().getCodTipoPers())
-                    .nombre(comunicacionOficialDTO.getAgente().getNombre())
-                    .nroDocumentoIden(comunicacionOficialDTO.getAgente().getNroDocumentoIden())
-                    .razonSocial(comunicacionOficialDTO.getAgente().getRazonSocial())
-                    .nit(comunicacionOficialDTO.getAgente().getNit())
-                    .codCortesia(comunicacionOficialDTO.getAgente().getCodCortesia())
-                    .codCargo(comunicacionOficialDTO.getAgente().getCodCargo())
-                    .codEnCalidad(comunicacionOficialDTO.getAgente().getCodEnCalidad())
-                    .codTipDocIdent(comunicacionOficialDTO.getAgente().getCodTipDocIdent())
-                    .nroDocuIdentidad(comunicacionOficialDTO.getAgente().getNroDocuIdentidad())
-                    .codSede(comunicacionOficialDTO.getAgente().getCodSede())
-                    .codDependencia(comunicacionOficialDTO.getAgente().getCodDependencia())
-                    .codFuncRemite(comunicacionOficialDTO.getAgente().getCodFuncRemite())
-                    .fecAsignacion(comunicacionOficialDTO.getAgente().getFecAsignacion())
-                    .ideContacto(comunicacionOficialDTO.getAgente().getIdeContacto())
-                    .codTipAgent(comunicacionOficialDTO.getAgente().getCodTipAgent())
-                    .indOriginal(comunicacionOficialDTO.getAgente().getIndOriginal())
-                    .corCorrespondencia(correspondencia)
-                    .build();
+            CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
+
+            CorAgente corAgente = agenteControl.corAgenteTransform(comunicacionOficialDTO.getAgente());
+            corAgente.setCorCorrespondencia(correspondencia);
             correspondencia.getCorAgenteList().add(corAgente);
 
-            PpdDocumento ppdDocumento = PpdDocumento.newInstance()
-                    .codTipoDoc(comunicacionOficialDTO.getPpdDocumento().getCodTipoDoc())
-                    .fecDocumento(comunicacionOficialDTO.getPpdDocumento().getFecDocumento())
-                    .codAsunto(comunicacionOficialDTO.getPpdDocumento().getCodAsunto())
-                    .nroFolios(comunicacionOficialDTO.getPpdDocumento().getNroFolios())
-                    .nroAnexos(comunicacionOficialDTO.getPpdDocumento().getNroAnexos())
-                    .codEstDoc(comunicacionOficialDTO.getPpdDocumento().getCodEstDoc())
-                    .ideEcm(comunicacionOficialDTO.getPpdDocumento().getIdeEcm())
-                    .codTipoSoporte(comunicacionOficialDTO.getPpdDocumento().getCodTipoSoporte())
-                    .codEstArchivado(comunicacionOficialDTO.getPpdDocumento().getCodEstArchivado())
-                    .fecCreacion(fecha)
-                    .corCorrespondencia(correspondencia)
-                    .build();
+            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumento());
+            ppdDocumento.setCorCorrespondencia(correspondencia);
             ppdDocumento.setCorAnexoList(new ArrayList<>());
             comunicacionOficialDTO.getAnexoList().stream().forEach((anexoDTO) -> {
-                CorAnexo corAnexo = CorAnexo.newInstance()
-                        .codAnexo(anexoDTO.getCodAnexo())
-                        .descripcion(anexoDTO.getDescripcion())
-                        .ppdDocumento(ppdDocumento)
-                        .build();
+                CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                corAnexo.setPpdDocumento(ppdDocumento);
                 ppdDocumento.getCorAnexoList().add(corAnexo);
             });
             correspondencia.getPpdDocumentoList().add(ppdDocumento);
 
             comunicacionOficialDTO.getReferidoList().stream().forEach((referidoDTO) -> {
-                CorReferido corReferido = CorReferido.newInstance()
-                        .nroRadRef(referidoDTO.getNroRadRef())
-                        .corCorrespondencia(correspondencia)
-                        .build();
+                CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                corReferido.setCorCorrespondencia(correspondencia);
                 correspondencia.getCorReferidoList().add(corReferido);
             });
 
@@ -184,18 +143,4 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public String generarNumeroRadicado(String sede, String tipoComunicacion) {//TODO
-        String consecutivo = "00001";
-        int anno = Calendar.getInstance().get(Calendar.YEAR);
-        String numeroRadicado = "";
-        numeroRadicado = numeroRadicado
-                .concat(sede)
-                .concat("-")
-                .concat(tipoComunicacion)
-                .concat("-")
-                .concat(String.valueOf(anno))
-                .concat("-")
-                .concat(consecutivo);
-        return numeroRadicado;
-    }
 }
