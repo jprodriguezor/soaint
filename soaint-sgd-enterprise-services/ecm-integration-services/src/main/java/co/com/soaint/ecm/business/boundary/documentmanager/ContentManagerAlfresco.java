@@ -38,8 +38,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta();
-/* TODO   Revisar esto para que lo utilizo
-    //ContentControl control = new ContentControl(); */
+
         try {
 
             /**
