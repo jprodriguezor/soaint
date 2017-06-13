@@ -3,9 +3,13 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DependeciaGrupoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,9 +27,9 @@ public class DependenciaGrupoGatewayApi {
     }
 
     @GET
-    @Path("/{cod-sede-administrativa}")
+    @Path("/")
     @JWTTokenSecurity
-    public Response listBySedeAdministrativa(@PathParam("cod-sede-administrativa") String codSedeAdministrativa) {
+    public Response listBySedeAdministrativa(@RequestParam("cod-sede-administrativa") String codSedeAdministrativa) {
         //TODO: add trafic log
         System.out.println("DependenciaGrupoGatewayApi - [trafic] - listing Dependencia");
         Response response = client.listBySedeAdministrativa(codSedeAdministrativa);
