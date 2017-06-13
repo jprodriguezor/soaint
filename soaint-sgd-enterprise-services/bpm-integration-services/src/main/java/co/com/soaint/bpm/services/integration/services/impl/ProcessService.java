@@ -56,7 +56,7 @@ public class ProcessService implements IProcessServices {
 
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario()+":"+entrada.getPass()).getBytes());
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet("http://192.168.3.242:28080/jbpm-console/rest/deployment/processes");
+        HttpGet getRequest = new HttpGet("http://192.168.1.81:28080/jbpm-console/rest/deployment/processes");
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader("Accept", "application/json");
         getRequest.addHeader("Authorization",  "Basic " + encoding);
@@ -186,7 +186,7 @@ public class ProcessService implements IProcessServices {
                 .addDeploymentId(entrada.getIdDespliegue())
                 .addUserName(entrada.getUsuario())
                 .addPassword(entrada.getPass())
-                .addUrl(new URL("http://192.168.3.242:28080/jbpm-console"))
+                .addUrl(new URL("http://192.168.1.81:28080/jbpm-console"))
                         //.addExtraJaxbClasses(ProcessRequestContext.class)
                 .build();
         return engine;
