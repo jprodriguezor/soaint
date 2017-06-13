@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,9 @@ public class CorrespondenciaControl {
     }
 
     public String generarNumeroRadicado(String sede, String tipoComunicacion) {//TODO
-        String consecutivo = "00001";
+        Random rand = new Random();
+        int  n = rand.nextInt(99999) + 1;
+        String consecutivo = String.format("%05d", n);
         int anno = Calendar.getInstance().get(Calendar.YEAR);
         String numeroRadicado = "";
         numeroRadicado = numeroRadicado
