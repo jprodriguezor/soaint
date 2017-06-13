@@ -7,7 +7,9 @@ import lombok.Data;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,7 @@ public class CorrespondenciaDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private BigInteger ideDocumento;
     private String descripcion;
-    private BigInteger tiempoRespuesta;
+    private String tiempoRespuesta;
     private String codUnidadTiempo;
     private String codMedioRecepcion;
     private Date fecRadicado;
@@ -50,7 +52,7 @@ public class CorrespondenciaDTO implements Serializable {
         super();
     }
 
-    public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, BigInteger tiempoRespuesta,
+    public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
                               String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,
                               Date fecDocumento, String codTipoDoc, String codTipoCmc, String reqDistFisica,
                               String ideInstancia, String codFuncRadica, String codSede, String codDependencia,
@@ -64,6 +66,31 @@ public class CorrespondenciaDTO implements Serializable {
         this.nroRadicado = nroRadicado;
         this.fecDocumento = fecDocumento;
         this.codTipoDoc = codTipoDoc;
+        this.codTipoCmc = codTipoCmc;
+        this.reqDistFisica = reqDistFisica;
+        this.ideInstancia = ideInstancia;
+        this.codFuncRadica = codFuncRadica;
+        this.codSede = codSede;
+        this.codDependencia = codDependencia;
+        this.reqDigita = reqDigita;
+        this.nroGuia = nroGuia;
+        this.codEmpMsj = codEmpMsj;
+        this.fecVenGestion = fecVenGestion;
+        this.codEstado = codEstado;
+    }
+
+    public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
+                              String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,
+                              String codTipoCmc, String reqDistFisica,
+                              String ideInstancia, String codFuncRadica, String codSede, String codDependencia,
+                              String reqDigita, String nroGuia, String codEmpMsj, Date fecVenGestion, String codEstado){
+        this.ideDocumento = ideDocumento;
+        this.descripcion = descripcion;
+        this.tiempoRespuesta = tiempoRespuesta;
+        this.codUnidadTiempo = codUnidadTiempo;
+        this.codMedioRecepcion = codMedioRecepcion;
+        this.fecRadicado = fecRadicado;
+        this.nroRadicado = nroRadicado;
         this.codTipoCmc = codTipoCmc;
         this.reqDistFisica = reqDistFisica;
         this.ideInstancia = ideInstancia;
