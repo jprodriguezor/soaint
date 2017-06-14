@@ -26,12 +26,11 @@
           </div>
           <div class="ui-g-12">
             <p-autoComplete id="medioRecepcion"
-                            [suggestions]="tipoComunicacionSuggestions$ | async"
+                            [suggestions]="medioRecepcionSuggestions$ | async"
                             field="nombre"
-                            (onSelect)="onSelectTipoComunicacion()"
-                            (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
+                            (completeMethod)="onFilterMediosRecepcion($event)" [size]="30"
                             [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
+                            (onDropdownClick)="onDropdownClickMediosRecepcion($event)">
             </p-autoComplete>
           </div>
         </div>

@@ -49,12 +49,15 @@ export class Sandbox {
       case 'dependenciaGrupo':
         endpoint = environment.dependenciaGrupo_endpoint;
         break;
+      case 'tratamientoCortesia':
+        endpoint = environment.tratamientoCortesia_endpoint;
+        break;
     }
 
     if (endpoint !== null) {
       return this._listSelectionService.list(endpoint, payload);
     }
-    return Observable.of([]);
+    return Observable.of(<any>[]);
   }
 
   filterDispatch(target, query) {

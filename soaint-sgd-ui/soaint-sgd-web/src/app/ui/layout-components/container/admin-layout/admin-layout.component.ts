@@ -6,6 +6,7 @@ import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
 import {MenuOrientation} from './models/admin-layout.model';
 import {Observable} from 'rxjs/Observable';
 import {AdminLayoutSandbox} from './redux-state/admin-layout-sandbox';
+import {MENU_OPTIONS} from './menu-options';
 
 declare var jQuery: any;
 
@@ -14,6 +15,8 @@ declare var jQuery: any;
   templateUrl: './admin-layout.component.html'
 })
 export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
+
+  menuOptions$: Observable<any[]>;
 
   layoutCompact: boolean = false;
 
@@ -57,13 +60,31 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // const self = this;
+    // this.menuOptions = [
+    //   {label: 'Workspace', icon: 'dashboard', routerLink: ['/home']},
+    //   // {label: 'Productos', icon: 'build', routerLink: ['/productos']},
+    //   {
+    //     label: 'Procesos', icon: 'dashboard', expanded: true,
+    //     items: [
+    //       {
+    //         label: 'Datos generales', icon: 'assignment', command: (event) => self.triggerProccess(this, {data: 'daniel'})
+    //
+    //       }
+    //     ]
+    //   },
+    // ];
+
+    this.menuOptions$ = this._sandbox.selectorMenuOptions();
 
     this.isAuthenticated$ = this._sandbox.selectorIsAutenticated();
+
     this.hideMenu();
 
     this.isAuthenticated$.subscribe(isAuthenticated => {
       // console.info(isAuthenticated);
       if (isAuthenticated) {
+        this._sandbox.dispatchMenuOptionsLoad();
         this.displayMenu();
       } else {
         this.hideMenu();
@@ -191,6 +212,10 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   changeToHorizontalMenu() {
     this.layoutMode = MenuOrientation.HORIZONTAL;
+  }
+
+  triggerProccess(param1, param2) {
+    console.log(param1, param2, this);
   }
 
   ngOnDestroy() {

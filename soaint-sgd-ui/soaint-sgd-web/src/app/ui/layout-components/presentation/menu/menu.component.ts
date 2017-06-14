@@ -4,7 +4,6 @@ import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {MenuItem} from 'primeng/primeng';
 import {AdminLayoutComponent} from '../../container/admin-layout/admin-layout.component';
-import {MENU_OPTIONS} from './menu-options';
 
 @Component({
   selector: 'app-menu',
@@ -13,17 +12,12 @@ import {MENU_OPTIONS} from './menu-options';
         visible="true"></ul>
   `
 })
-export class AppMenuComponent implements OnInit {
+export class AppMenuComponent {
 
   @Input() reset: boolean;
-
-  model: any[];
+  @Input() model: any[];
 
   constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent) {
-  }
-
-  ngOnInit() {
-    this.model = MENU_OPTIONS;
   }
 
   changeTheme(theme) {

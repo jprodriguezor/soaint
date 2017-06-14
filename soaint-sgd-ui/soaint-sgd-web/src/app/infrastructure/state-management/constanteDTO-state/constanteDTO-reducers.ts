@@ -26,6 +26,7 @@ export interface State {
   sedeAdministrativa: ConstanteDTOStateInterface;
   dependenciaGrupo: ConstanteDTOStateInterface;
   tipologiaDocumental: ConstanteDTOStateInterface;
+  tratamientoCortesia: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -39,7 +40,8 @@ const initialState: State = {
   mediosRecepcion: new ConstanteDTOStateInstance(),
   sedeAdministrativa: new ConstanteDTOStateInstance(),
   dependenciaGrupo: new ConstanteDTOStateInstance(),
-  tipologiaDocumental: new ConstanteDTOStateInstance()
+  tipologiaDocumental: new ConstanteDTOStateInstance(),
+  tratamientoCortesia: new ConstanteDTOStateInstance()
 }
 
 /**

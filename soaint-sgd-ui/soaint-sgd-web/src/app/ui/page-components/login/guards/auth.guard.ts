@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/take';
 import {LoginSandbox} from '../redux-state/login-sandbox';
 
 
@@ -25,11 +25,12 @@ export class AuthenticatedGuard implements CanActivate, CanLoad {
     // get observable
     const observable = this._sandbox.selectorAuthenticated();
     // redirect to sign in page if user is not authenticated
-    observable.first().subscribe( authenticated => {
+    observable.take(1).subscribe( authenticated => {
       console.info('canActivate');
       if (!authenticated) {
         this._sandbox.routeToLogin();
       }
+
     });
 
     return observable;
@@ -43,7 +44,7 @@ export class AuthenticatedGuard implements CanActivate, CanLoad {
     // get observable
     const observable = this._sandbox.selectorAuthenticated();
     // redirect to sign in page if user is not authenticated
-    observable.first().subscribe(authenticated => {
+    observable.take(1).subscribe(authenticated => {
       console.info('canLoad');
       if (!authenticated) {
         this._sandbox.routeToLogin();

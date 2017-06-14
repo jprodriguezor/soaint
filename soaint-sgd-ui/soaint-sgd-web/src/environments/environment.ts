@@ -19,5 +19,9 @@ export const environment = {
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
-  dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`
+  dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
+  tratamientoCortesia_endpoint: `${host}/tratamiento-cortesia-gateway-api`,
+  proceso_endpoint: `${host}/proceso-gateway-api`,
+  startProcess_endpoint: `${host}/proceso-gateway-api/iniciar`,
+  tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`,
 };

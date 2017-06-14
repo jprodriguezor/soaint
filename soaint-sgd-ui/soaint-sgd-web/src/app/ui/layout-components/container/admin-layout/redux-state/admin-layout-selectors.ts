@@ -1,6 +1,7 @@
 import {State} from './admin-layout-reducers';
 import { createSelector } from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
+import * as procesoSelectors from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-selectors';
 
 // External Modules Selector Bound to this container component
 const loginStore = (state: rootStore.State) => state.auth;

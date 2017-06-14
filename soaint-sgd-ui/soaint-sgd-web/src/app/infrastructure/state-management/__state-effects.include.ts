@@ -1,6 +1,7 @@
 import { EffectsModule } from '@ngrx/effects';
 import { LoginEffects } from 'app/ui/page-components/login/redux-state/login-effects';
 import { Effects as ConstanteDtoEffects } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-effects';
+import { Effects as ProcesoDtoEffects } from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-effects';
 
 
 /**
@@ -23,5 +24,6 @@ import { Effects as ConstanteDtoEffects } from 'app/infrastructure/state-managem
 
 export const EFFECTS_MODULES = [
   EffectsModule.run(LoginEffects),
-  EffectsModule.run(ConstanteDtoEffects)
+  EffectsModule.run(ConstanteDtoEffects),
+  EffectsModule.run(ProcesoDtoEffects)
 ];

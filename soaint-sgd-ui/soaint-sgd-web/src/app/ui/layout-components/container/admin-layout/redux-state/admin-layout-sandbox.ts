@@ -11,10 +11,14 @@ import * as selectors from './admin-layout-selectors';
 import * as actions from './admin-layout-actions';
 import * as models from '../models/admin-layout.model';
 
+import * as processActions from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-actions';
+import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
+
+
 @Injectable()
 export class AdminLayoutSandbox {
 
-  constructor(private _store: Store<State>) {
+  constructor(private _store: Store<State>, private _processSandbox: ProcessSandbox) {
   }
 
   selectorLayoutMode(): Observable<models.MenuOrientation> {
@@ -33,8 +37,16 @@ export class AdminLayoutSandbox {
     return this._store.select(selectors.DarkMenu);
   }
 
+  selectorMenuOptions(): Observable<any[]> {
+    return this._store.select(this._processSandbox.selectorMenuOptions());
+  }
+
   dispatchChangeOnMenu(payload) {
     this._store.dispatch(new actions.ChangeMenuOrientationAction(payload));
+  }
+
+  dispatchMenuOptionsLoad() {
+    this._store.dispatch(new processActions.LoadAction());
   }
 
 }

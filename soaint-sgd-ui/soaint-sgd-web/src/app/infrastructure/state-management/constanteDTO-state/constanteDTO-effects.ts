@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Effect, Actions, toPayload} from '@ngrx/effects';
-import {Action} from '@ngrx/store';
+import {Store, Action} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -14,7 +14,6 @@ import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import {Store} from '@ngrx/store';
 import * as actions from './constanteDTO-actions';
 import {Sandbox} from './constanteDTO-sandbox';
 import {go} from '@ngrx/router-store'
@@ -25,9 +24,9 @@ function isEmptyObject(obj) {
 }
 function isLoaded() {
   return (source) =>
-    source.filter(values => {
-      console.log(values);
-      return true
+    source.filter(([action, state]) => {
+      console.log(action);
+      return state.constantes[action.payload.key].ids !== [];
     })
 }
 
@@ -41,10 +40,9 @@ export class Effects {
   }
 
   @Effect()
-  login: Observable<Action> = this.actions$
+  load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     // .withLatestFrom(this._store$, (action, state) => state.constantes[action.payload.key].ids)
-    // .distinctUntilChanged()
     // .let(isLoaded())
     .map(toPayload)
     .switchMap(
