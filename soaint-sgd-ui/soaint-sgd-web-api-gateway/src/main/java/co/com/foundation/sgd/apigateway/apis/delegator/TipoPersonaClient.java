@@ -20,7 +20,7 @@ public class TipoPersonaClient {
     public Response list() {
         System.out.println("Tipo Persona - [trafic] - listing TipoPersona with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIPO-PERS/A")
+        return wt.path("/constantes-web-api/constantes/hijos/TIP-PERS/A")
                 .request()
                 .get();
     }

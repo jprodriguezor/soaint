@@ -1,17 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {
-  getTipoComunicacionArrayData,
-  getUnidadTiempoArrayData,
-  getTipoPersonaArrayData,
-  getTipoAnexosArrayData,
-  getTipoTelefonoArrayData,
   getMediosRecepcionArrayData,
-  getTipologiaDocumentalArrayData
+  getTipoAnexosArrayData,
+  getTipoComunicacionArrayData,
+  getTipologiaDocumentalArrayData,
+  getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 @Component({
@@ -33,6 +31,11 @@ export class DatosGeneralesComponent implements OnInit {
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
 
+  radicadosReferidos: Array<{ nombre: string }> = [];
+  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
+  radicadoReferido: { nombre: string } = {nombre: ''};
+  tipoAnexoDescripcion: { tipoAnexo: ConstanteDTO, descripcion: string } = {tipoAnexo: null, descripcion: ''};
+
   constructor(private _store: Store<State>, private _sandbox: Sandbox) {
   }
 
@@ -42,6 +45,39 @@ export class DatosGeneralesComponent implements OnInit {
     this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
+  }
+
+
+  addRadicadosReferidos() {
+    let radref = [...this.radicadosReferidos];
+    radref.push(this.radicadoReferido);
+    this.radicadosReferidos = radref;
+    this.radicadoReferido = {
+      nombre: ''
+    };
+  }
+
+  deleteRadicadoReferido(index) {
+    let radref = [...this.radicadosReferidos];
+    radref.splice(index, 1);
+    this.radicadosReferidos = radref;
+  }
+
+
+  addTipoAnexosDescripcion() {
+    let radref = [...this.descripcionAnexos];
+    console.log(this.tipoAnexoDescripcion);
+    radref.push(this.tipoAnexoDescripcion);
+    this.descripcionAnexos = radref;
+    this.tipoAnexoDescripcion = {
+      tipoAnexo: null, descripcion: ''
+    };
+  }
+
+  deleteTipoAnexoDescripcion(index) {
+    let radref = [...this.descripcionAnexos];
+    radref.splice(index, 1);
+    this.descripcionAnexos = radref;
   }
 
   onSelectTipoComunicacion(value) {

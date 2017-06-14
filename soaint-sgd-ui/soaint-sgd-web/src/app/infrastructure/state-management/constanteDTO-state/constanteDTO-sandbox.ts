@@ -23,7 +23,7 @@ export class Sandbox {
         endpoint = environment.tipoComunicacion_endpoint;
         break;
       case 'tipoTelefono':
-        endpoint = environment.tipoComunicacion_endpoint;
+        endpoint = environment.tipoTelefono_endpoint;
         break;
       case 'tipoPersona':
         endpoint = environment.tipoPersona_endpoint;

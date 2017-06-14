@@ -107,13 +107,13 @@
         <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
           <div style="padding: 20px 0 0 10px">
             <p-checkbox name="cg" value="Ultima" label="Requiere digitalización"
-                        ></p-checkbox>
+            ></p-checkbox>
           </div>
         </div>
         <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
           <div style="padding: 20px 0 0 10px">
             <p-checkbox name="cg" value="Ultima" label="Requiere distribución física"
-                        ></p-checkbox>
+            ></p-checkbox>
           </div>
         </div>
       </div>
@@ -125,27 +125,29 @@
         <div class="ui-g form-group">
           <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="radicados referidos">
+              <input type="text" pInputText id="radicados_referidos" [(ngModel)]="radicadoReferido.nombre">
               <label>Referidos</label>
               </span>
           </div>
         </div>
       </div>
       <div class="ui-sm-12 ui-md-2 ui-g-2 ui-lg-2">
-        <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"></button>
+        <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                (click)="addRadicadosReferidos()"></button>
       </div>
       <div class="ui-g-12 ui-lg-12 padding-12">
-        <p-dataList [value]="cars3" [rows]="5" styleClass="cars-datalist">
-          <p-header>
-            Radicados Referidos
-          </p-header>
-          <ng-template let-car pTemplate="item">
-            <div style="border-bottom: 1px solid #bdbdbd" class="clearfix car-item">
-              <p>{{car.brand}}</p>
-              <button type="button" pButton icon="ui-icon-search" style="margin:24px 24px 0 0;float:right"></button>
-            </div>
-          </ng-template>
-        </p-dataList>
+
+        <p-dataTable [value]="radicadosReferidos" selectionMode="single"
+                     [paginator]="true" [rows]="10" [responsive]="true">
+          <p-header>Radicados referidos</p-header>
+          <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton (click)="deleteRadicadoReferido(i)"
+                      class="ui-button ui-button-icon ui-button-danger"></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
       </div>
 
       <div class="ui-g-12 ui-lg-12">
@@ -175,6 +177,7 @@
           <p-autoComplete id="tipoAnexos"
                           [suggestions]="tipoAnexosSuggestions$ | async"
                           field="nombre"
+                          [(ngModel)]="tipoAnexoDescripcion.tipoAnexo"
                           (completeMethod)="onFilterTipoAnexos($event)" [size]="30"
                           [minLength]="1" placeholder="Seleccione" [dropdown]="true"
                           (onDropdownClick)="onDropdownClickTipoAnexos($event)">
@@ -190,23 +193,29 @@
         </div>
         <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="descripcionAnexos">
+              <input type="text" pInputText id="descripcionAnexos" [(ngModel)]="tipoAnexoDescripcion.descripcion">
               </span>
         </div>
       </div>
     </div>
 
     <div class="ui-sm-12 ui-md-12 ui-g-2 ui-lg-2" style="text-align: right">
-        <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+      <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
+              style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
     </div>
 
     <div class="ui-g-12">
       <p-dataTable selectionMode="single"
-                   [paginator]="true" [rows]="10" [responsive]="true">
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="descripcionAnexos">
         <p-header>List of Cars</p-header>
-        <p-column field="vin" header="Tipo anexos" [sortable]="true"  ></p-column>
-        <p-column field="year" header="Descripción" [sortable]="true" ></p-column>
-        <p-column field="brand" header="Opciones" [sortable]="true" [style]="{'width': '100px'}" ></p-column>
+        <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
+        <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+        <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+          <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+            <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
+                    class="ui-button ui-button-icon ui-button-danger"></button>
+          </ng-template>
+        </p-column>
       </p-dataTable>
     </div>
 
