@@ -105,7 +105,7 @@ public class GestionarCorrespondencia {
                     .getSingleResult();
 
             if (correspondenciaDTO == null) {
-                ExceptionBuilder.newBuilder()
+                throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
                         .buildBusinessException();
             }
@@ -127,15 +127,15 @@ public class GestionarCorrespondencia {
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList();
 
-            ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+            return ComunicacionOficialDTO.newInstance()
                     .correspondencia(correspondenciaDTO)
                     .agenteList(agenteDTOList)
                     .ppdDocumento(ppdDocumentoDTO)
                     .anexoList(anexoList)
                     .referidoList(referidoList)
                     .build();
-
-            return comunicacionOficialDTO;
+        } catch (BusinessException e) {
+            throw e;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -148,7 +148,7 @@ public class GestionarCorrespondencia {
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         try {
             if (!correspondenciaControl.verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {
-                ExceptionBuilder.newBuilder()
+                throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
                         .buildBusinessException();
             }
@@ -157,6 +157,8 @@ public class GestionarCorrespondencia {
                     .setParameter("COD_ESTADO", correspondenciaDTO.getCodEstado())
                     .executeUpdate();
 
+        } catch (BusinessException e) {
+            throw e;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
