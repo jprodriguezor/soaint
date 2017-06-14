@@ -32,4 +32,29 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
+    public Response iniciar(String idProceso) {
+        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
+        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
+        entradaProcesoDTO.setIdProceso(idProceso);
+        entradaProcesoDTO.setUsuario("krisv");
+        entradaProcesoDTO.setPass("krisv");
+        return wt.path("/bpm/proceso/iniciar")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
+    public Response listarPorIdProceso(EntradaProcesoDTO entrada) {
+        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        EntradaProcesoDTO entradaProcesoDTO = entrada;
+        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
+        entradaProcesoDTO.setUsuario("krisv");
+        entradaProcesoDTO.setPass("krisv");
+        return wt.path("/bpm/tareas/listar/estados-instancia/")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
 }
