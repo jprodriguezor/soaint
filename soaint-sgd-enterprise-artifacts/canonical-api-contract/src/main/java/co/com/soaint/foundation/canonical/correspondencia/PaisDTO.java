@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
@@ -20,7 +21,9 @@ import java.math.BigInteger;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/pais/1.0.0")
-public class PaisDTO {
+public class PaisDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private BigInteger id;
     private String nombre;
