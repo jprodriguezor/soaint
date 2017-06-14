@@ -6,6 +6,8 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
@@ -21,6 +23,9 @@ import java.util.Random;
  */
 @BusinessControl
 public class CorrespondenciaControl {
+    @PersistenceContext
+    private EntityManager em;
+
     public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         return CorCorrespondencia.newInstance()
                 .descripcion(correspondenciaDTO.getDescripcion())
@@ -44,6 +49,13 @@ public class CorrespondenciaControl {
                 .ppdDocumentoList(new ArrayList<>())
                 .corReferidoList(new ArrayList<>())
                 .build();
+    }
+
+    public Boolean verificarByNroRadicado(String nroRadicado)throws BusinessException, SystemException{
+        long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
+                .setParameter("NRO_RADICADO", nroRadicado)
+                .getSingleResult();
+        return cantidad > 0;
     }
 
     public String generarNumeroRadicado(String sede, String tipoComunicacion) {//TODO

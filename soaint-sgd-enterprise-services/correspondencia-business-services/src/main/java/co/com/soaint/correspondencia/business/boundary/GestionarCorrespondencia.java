@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -115,14 +114,14 @@ public class GestionarCorrespondencia {
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList();
 
-            PpdDocumentoDTO ppdDocumentoDTO =  em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+            PpdDocumentoDTO ppdDocumentoDTO = em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getSingleResult();
 
 
             List<AnexoDTO> anexoList = em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
-                        .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
-                        .getResultList();
+                    .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
+                    .getResultList();
 
             List<ReferidoDTO> referidoList = em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
@@ -137,6 +136,27 @@ public class GestionarCorrespondencia {
                     .build();
 
             return comunicacionOficialDTO;
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        try {
+            if (!correspondenciaControl.verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {
+                ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                        .buildBusinessException();
+            }
+            em.createNamedQuery("CorCorrespondencia.updateEstado")
+                    .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
+                    .setParameter("COD_ESTADO", correspondenciaDTO.getCodEstado())
+                    .executeUpdate();
+
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
