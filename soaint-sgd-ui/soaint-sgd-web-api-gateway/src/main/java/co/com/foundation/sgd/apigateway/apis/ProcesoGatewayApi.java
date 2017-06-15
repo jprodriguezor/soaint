@@ -41,7 +41,7 @@ public class ProcesoGatewayApi {
     @JWTTokenSecurity
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
         //TODO: add trafic log
-        System.out.println("ProcesoGatewayApi - [trafic] - listing Procesos");
+        System.out.println("ProcesoGatewayApi - [trafic] - starting Process");
         Response response = procesoClient.iniciar(entrada.getIdProceso());
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
@@ -54,8 +54,21 @@ public class ProcesoGatewayApi {
     @JWTTokenSecurity
     public Response listTareasIdProceso(EntradaProcesoDTO entrada) {
         //TODO: add trafic log
-        System.out.println("ProcesoGatewayApi - [trafic] - listing Procesos");
+        System.out.println("ProcesoGatewayApi - [trafic] - listing Precess");
         Response response = procesoClient.listarPorIdProceso(entrada);
+        String responseContent = response.readEntity(String.class);
+        System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/tareas/listar/estados")
+    @JWTTokenSecurity
+    public Response listTareas(EntradaProcesoDTO entrada) {
+        //TODO: add trafic log
+        System.out.println("ProcesoGatewayApi - [trafic] - listing Tasks");
+        Response response = procesoClient.listarTareas(entrada);
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
 
