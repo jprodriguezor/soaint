@@ -1,226 +1,252 @@
-<div class="ui-g ui-fluid">
-  <div class="card card-w-title">
-    <h1>Datos Generales</h1>
-    <div class="ui-g ui-fluid">
-      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+<form [formGroup]="form">
+  <div class="ui-g ui-fluid">
+    <div class="card card-w-title">
+      <h1>Datos Generales</h1>
+      <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
 
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipoComunicacion">Tipo de comunicación</label>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <p-autoComplete id="tipoComunicacion"
+                              [suggestions]="tipoComunicacionSuggestions$ | async"
+                              field="nombre"
+                              formControlName="tipoComunicacion"
+                              (onSelect)="onSelectTipoComunicacion()"
+                              (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
+              </p-autoComplete>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="tipoComunicacionControl.touched && !tipoComunicacionControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
           </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="tipoComunicacion"
-                            [suggestions]="tipoComunicacionSuggestions$ | async"
-                            field="nombre"
-                            (onSelect)="onSelectTipoComunicacion()"
-                            (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
-            </p-autoComplete>
+
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="medioRecepcion"><span class="text-danger">*</span>Medio de recepción</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <p-autoComplete id="medioRecepcion"
+                              formControlName="medioRecepcion"
+                              [suggestions]="medioRecepcionSuggestions$ | async"
+                              field="nombre"
+                              (completeMethod)="onFilterMediosRecepcion($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickMediosRecepcion($event)">
+              </p-autoComplete>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="medioRecepcionControl.touched && !medioRecepcionControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipologiaDocumental"><span class="text-danger">*</span>Tipología documental</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <p-autoComplete id="tipologiaDocumental"
+                              [suggestions]="tipologiaDocumentalSuggestions$ | async"
+                              field="nombre"
+                              formControlName="tipologiaDocumental"
+                              (completeMethod)="onFilterTipologiaDocumental($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickTipologiaDocumental($event)">
+              </p-autoComplete>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="tipologiaDocumentalControl.touched && !tipologiaDocumentalControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="unidadTiempo">Unidad de tiempo</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="unidadTiempo"
+                              [suggestions]="unidadTiempoSuggestions$ | async"
+                              field="nombre"
+                              (completeMethod)="onFilterUnidadTiempo($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickUnidadTiempo($event)">
+              </p-autoComplete>
+            </div>
           </div>
         </div>
 
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="medioRecepcion">Medio de recepción</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="medioRecepcion"
-                            [suggestions]="medioRecepcionSuggestions$ | async"
-                            field="nombre"
-                            (completeMethod)="onFilterMediosRecepcion($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickMediosRecepcion($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="ui-sm-12 ui-g-6 ui-lg-6">
-
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipologiaDocumental">Tipología documental</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="tipologiaDocumental"
-                            [suggestions]="tipologiaDocumentalSuggestions$ | async"
-                            field="nombre"
-                            (completeMethod)="onFilterTipologiaDocumental($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickTipologiaDocumental($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="unidadTiempo">Unidad de tiempo</label>
-          </div>
-          <div class="ui-g-12">
-            <p-autoComplete id="unidadTiempo"
-                            [suggestions]="unidadTiempoSuggestions$ | async"
-                            field="nombre"
-                            (completeMethod)="onFilterUnidadTiempo($event)" [size]="30"
-                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                            (onDropdownClick)="onDropdownClickUnidadTiempo($event)">
-            </p-autoComplete>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 25px">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 25px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="numeroFolio">
-              <label>No. de folio</label>
+              <input type="text" pInputText id="numeroFolio" formControlName="numeroFolio">
+              <label><span class="text-danger">*</span>No. de folio</label>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="numeroFolioControl.touched && !numeroFolioControl.valid">
+                Este campo es requerido
+              </div>
               </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 25px">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
+        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 25px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
           <span class="md-inputfield">
           <input type="text" pInputText id="tiempoRespuesta">
           <label>Tiempo de respuesta</label>
           </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 25px">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
+        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 25px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
           <span class="md-inputfield">
           <input type="text" pInputText id="cantidadAnexos" readonly value="0">
           <label>Cantidad de Anexos</label>
           </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
+              <p-checkbox name="cg" value="Ultima" label="Requiere digitalización"
+              ></p-checkbox>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
+              <p-checkbox name="cg" value="Ultima" label="Requiere distribución física"
+              ></p-checkbox>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
-          <div style="padding: 20px 0 0 10px">
-            <p-checkbox name="cg" value="Ultima" label="Requiere digitalización"
-            ></p-checkbox>
+
+      <div class="ui-g ui-fluid" style="margin-top: 30px">
+        <div class="ui-sm-12 ui-md-9 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="radicadosReferidos" formControlName="radicadoReferido"
+                     [(ngModel)]="radicadoReferido.nombre">
+              <label>Referidos</label>
+              </span>
+            </div>
           </div>
         </div>
-        <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
-          <div style="padding: 20px 0 0 10px">
-            <p-checkbox name="cg" value="Ultima" label="Requiere distribución física"
-            ></p-checkbox>
+        <div class="ui-sm-12 ui-md-2 ui-g-2 ui-lg-2">
+          <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                  (click)="addRadicadosReferidos()"></button>
+        </div>
+        <div class="ui-g-12 ui-lg-12 padding-12">
+
+          <p-dataTable [value]="radicadosReferidos" selectionMode="single"
+                       [paginator]="true" [rows]="10" [responsive]="true">
+            <p-header>Radicados referidos</p-header>
+            <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+              <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                <button type="button" icon="ui-icon-close" pButton (click)="deleteRadicadoReferido(i)"
+                        class="ui-button ui-button-icon ui-button-danger"></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+
+        <div class="ui-g-12 ui-lg-12">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label><span class="text-danger">*</span>Asunto</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <textarea [rows]="3" [cols]="30" pInputTextarea placeholder="Your Message"
+                        autoResize="autoResize" formControlName="asunto"></textarea>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="asuntoControl.touched && !asuntoControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
 
+    <div class="card card-w-title">
+      <h1>Descripción anexos</h1>
 
-    <div class="ui-g ui-fluid" style="margin-top: 30px">
-      <div class="ui-sm-12 ui-md-9 ui-g-6 ui-lg-6">
+      <div class="ui-sm-12 ui-g-6 ui-lg-5">
         <div class="ui-g form-group">
           <div class="ui-g-12">
+            <label for="tipoAnexos">Tipo anexos</label>
+          </div>
+          <div class="ui-g-12">
+            <p-autoComplete id="tipoAnexos"
+                            [suggestions]="tipoAnexosSuggestions$ | async"
+                            field="nombre"
+                            formControlName="tipoAnexoDescripcionTipoAnexo"
+                            [(ngModel)]="tipoAnexoDescripcion.tipoAnexo"
+                            (completeMethod)="onFilterTipoAnexos($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onDropdownClickTipoAnexos($event)">
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-6 ui-lg-5">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="descripcionAnexos">Descripción</label>
+          </div>
+          <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="radicados_referidos" [(ngModel)]="radicadoReferido.nombre">
-              <label>Referidos</label>
+              <input type="text" pInputText id="descripcionAnexos" [(ngModel)]="tipoAnexoDescripcion.descripcion"
+                     formControlName="tipoAnexoDescripcionDescripcion">
               </span>
           </div>
         </div>
       </div>
-      <div class="ui-sm-12 ui-md-2 ui-g-2 ui-lg-2">
-        <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                (click)="addRadicadosReferidos()"></button>
-      </div>
-      <div class="ui-g-12 ui-lg-12 padding-12">
 
-        <p-dataTable [value]="radicadosReferidos" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true">
-          <p-header>Radicados referidos</p-header>
-          <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+      <div class="ui-sm-12 ui-md-12 ui-g-2 ui-lg-2" style="text-align: right">
+        <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
+                style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+      </div>
+
+      <div class="ui-g-12">
+        <p-dataTable selectionMode="single"
+                     [paginator]="true" [rows]="10" [responsive]="true" [value]="descripcionAnexos">
+          <p-header>List of Cars</p-header>
+          <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
+          <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
           <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" icon="ui-icon-close" pButton (click)="deleteRadicadoReferido(i)"
+            <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
                       class="ui-button ui-button-icon ui-button-danger"></button>
             </ng-template>
           </p-column>
         </p-dataTable>
       </div>
 
-      <div class="ui-g-12 ui-lg-12">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label>Asunto</label>
-          </div>
-          <div class="ui-g-12">
-              <textarea [rows]="3" [cols]="30" pInputTextarea placeholder="Your Message"
-                        autoResize="autoResize"></textarea>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
-
-  <div class="card card-w-title">
-    <h1>Descripción anexos</h1>
-
-    <div class="ui-sm-12 ui-g-6 ui-lg-5">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
-          <label for="tipoAnexos">Tipo anexos</label>
-        </div>
-        <div class="ui-g-12">
-          <p-autoComplete id="tipoAnexos"
-                          [suggestions]="tipoAnexosSuggestions$ | async"
-                          field="nombre"
-                          [(ngModel)]="tipoAnexoDescripcion.tipoAnexo"
-                          (completeMethod)="onFilterTipoAnexos($event)" [size]="30"
-                          [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                          (onDropdownClick)="onDropdownClickTipoAnexos($event)">
-          </p-autoComplete>
-        </div>
-      </div>
-    </div>
-
-    <div class="ui-sm-12 ui-g-6 ui-lg-5">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
-          <label for="descripcionAnexos">Descripción</label>
-        </div>
-        <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="descripcionAnexos" [(ngModel)]="tipoAnexoDescripcion.descripcion">
-              </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="ui-sm-12 ui-md-12 ui-g-2 ui-lg-2" style="text-align: right">
-      <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
-              style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
-    </div>
-
-    <div class="ui-g-12">
-      <p-dataTable selectionMode="single"
-                   [paginator]="true" [rows]="10" [responsive]="true" [value]="descripcionAnexos">
-        <p-header>List of Cars</p-header>
-        <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
-        <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-        <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-          <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-            <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
-                    class="ui-button ui-button-icon ui-button-danger"></button>
-          </ng-template>
-        </p-column>
-      </p-dataTable>
-    </div>
-
-
-  </div>
-</div>
-
-
+</form>

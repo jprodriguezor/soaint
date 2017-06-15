@@ -11,6 +11,7 @@ import {
   getTipologiaDocumentalArrayData,
   getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-datos-generales',
@@ -24,6 +25,20 @@ import {
 })
 export class DatosGeneralesComponent implements OnInit {
 
+  form: FormGroup;
+  tipoComunicacionControl: AbstractControl;
+  medioRecepcionControl: AbstractControl;
+  tipologiaDocumentalControl: AbstractControl;
+  unidadTiempoControl: AbstractControl;
+  numeroFolioControl: AbstractControl;
+  tiempoRespuestaControl: AbstractControl;
+  cantidadAnexosControl: AbstractControl;
+  asuntoControl: AbstractControl;
+  tipoAnexosControl: AbstractControl;
+  radicadoReferidoControl: AbstractControl;
+  tipoAnexoDescripcionTipoAnexoControl: AbstractControl;
+  tipoAnexoDescripcionDescripcionControl: AbstractControl;
+
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
@@ -36,7 +51,39 @@ export class DatosGeneralesComponent implements OnInit {
   radicadoReferido: { nombre: string } = {nombre: ''};
   tipoAnexoDescripcion: { tipoAnexo: ConstanteDTO, descripcion: string } = {tipoAnexo: null, descripcion: ''};
 
-  constructor(private _store: Store<State>, private _sandbox: Sandbox) {
+  constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
+    this.initForm();
+  }
+
+  initForm() {
+    this.tipoComunicacionControl = new FormControl(null, Validators.required);
+    this.medioRecepcionControl = new FormControl(null, Validators.required);
+    this.tipologiaDocumentalControl = new FormControl(null, Validators.required);
+    this.unidadTiempoControl = new FormControl(null);
+    this.numeroFolioControl = new FormControl(null, Validators.required);
+    this.tiempoRespuestaControl = new FormControl(null);
+    this.cantidadAnexosControl = new FormControl(null);
+    this.asuntoControl = new FormControl(null, Validators.required);
+    this.tipoAnexosControl = new FormControl(null);
+    this.radicadoReferidoControl = new FormControl(null);
+    this.tipoAnexoDescripcionTipoAnexoControl = new FormControl(null);
+    this.tipoAnexoDescripcionDescripcionControl = new FormControl(null);
+    this.form = this.formBuilder.group({
+      'tipoComunicacion': this.tipoComunicacionControl,
+      'medioRecepcion': this.medioRecepcionControl,
+      'tipologiaDocumental': this.tipologiaDocumentalControl,
+      'unidadTiempo': this.unidadTiempoControl,
+      'numeroFolio': this.numeroFolioControl,
+      'tiempoRespuesta': this.tiempoRespuestaControl,
+      'cantidadAnexos': this.cantidadAnexosControl,
+      'asunto': this.asuntoControl,
+      'tipoAnexos': this.tipoAnexosControl,
+      'radicadoReferido': this.radicadoReferidoControl,
+      'tipoAnexoDescripcionTipoAnexo': this.tipoAnexoDescripcionTipoAnexoControl,
+      'tipoAnexoDescripcionDescripcion': this.tipoAnexoDescripcionDescripcionControl,
+    });
+
+    // this.form
   }
 
   ngOnInit(): void {
