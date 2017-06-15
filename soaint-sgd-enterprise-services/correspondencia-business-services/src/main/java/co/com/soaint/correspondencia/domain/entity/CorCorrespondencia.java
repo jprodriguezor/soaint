@@ -33,6 +33,9 @@ import javax.persistence.*;
         @NamedQuery(name = "CorCorrespondencia.countByNroRadicado", query = "SELECT COUNT(*) " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", query = "SELECT MAX(c.nroRadicado) " +
+                "FROM CorCorrespondencia c " +
+                "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC)"),
         @NamedQuery(name = "CorCorrespondencia.updateEstado", query = "UPDATE CorCorrespondencia c " +
                 "SET c.codEstado = :COD_ESTADO " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)")})

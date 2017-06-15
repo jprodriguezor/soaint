@@ -57,8 +57,7 @@ public class GestionarCorrespondencia {
 
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
-            String nroRadicado = correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia().getCodSede(), comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc());
-            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(nroRadicado);
+            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
 
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
 
@@ -88,7 +87,7 @@ public class GestionarCorrespondencia {
             em.persist(correspondencia);
             em.flush();
 
-            return listarCorrespondenciaByNroRadicado(nroRadicado);
+            return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
