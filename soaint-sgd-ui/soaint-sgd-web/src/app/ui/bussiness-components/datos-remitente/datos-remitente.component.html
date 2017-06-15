@@ -126,12 +126,11 @@
             </div>
             <div class="ui-g-12">
               <p-autoComplete id="pais"
-                              [suggestions]="tipoPersonaSuggestions$ | async"
+                              [suggestions]="paisSuggestions$ | async"
                               field="nombre"
-                              (onSelect)="onSelectTipoComunicacion()"
-                              (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                              (completeMethod)="onFilterPais($event)" [size]="30"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                              (onDropdownClick)="onDropdownClickPais($event)">
               </p-autoComplete>
             </div>
           </div>
@@ -143,12 +142,11 @@
             </div>
             <div class="ui-g-12">
               <p-autoComplete id="departamento"
-                              [suggestions]="tipoPersonaSuggestions$ | async"
+                              [suggestions]="departamentoSuggestions$ | async"
                               field="nombre"
-                              (onSelect)="onSelectTipoComunicacion()"
-                              (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                              (completeMethod)="onFilterDepartamento($event)" [size]="30"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                              (onDropdownClick)="onDropdownClickDepartamento($event)">
               </p-autoComplete>
             </div>
           </div>
@@ -160,12 +158,11 @@
             </div>
             <div class="ui-g-12">
               <p-autoComplete id="municipio"
-                              [suggestions]="tipoPersonaSuggestions$ | async"
+                              [suggestions]="municipioSuggestions$ | async"
                               field="nombre"
-                              (onSelect)="onSelectTipoComunicacion()"
-                              (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                              (completeMethod)="onFilterMunicipio($event)" [size]="30"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                              (onDropdownClick)="onDropdownClickMunicipio($event)">
               </p-autoComplete>
             </div>
           </div>

@@ -8,12 +8,11 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import * as actions from './constanteDTO-actions';
 
-
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService,) {
+              private _listSelectionService: ListForSelectionApiService) {
   }
 
   loadData(payload: actions.GenericFilterAutocomplete) {
@@ -57,7 +56,7 @@ export class Sandbox {
     if (endpoint !== null) {
       return this._listSelectionService.list(endpoint, payload);
     }
-    return Observable.of(<any>[]);
+    // return Observable.of(any);
   }
 
   filterDispatch(target, query) {

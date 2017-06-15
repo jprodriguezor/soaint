@@ -6,12 +6,14 @@ import {ProcesoDTO} from 'app/domain/procesoDTO';
 export interface State {
   ids: string[];
   entities: { [codigoProceso: number]: ProcesoDTO };
+  menuOptions: any[]
   selectedId: number;
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
+  menuOptions: [],
   selectedId: null
 }
 
@@ -37,7 +39,7 @@ export function reducer(state = initialState, action: Actions) {
         });
       }, {});
 
-      return tassign( state, {
+      return tassign(state, {
         ids: [...state.ids, ...newValuesIds],
         entities: tassign(state.entities, newValuesEntities),
         selectedId: state.selectedId
