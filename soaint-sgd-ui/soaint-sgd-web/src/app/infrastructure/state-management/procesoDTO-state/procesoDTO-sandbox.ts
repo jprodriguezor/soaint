@@ -24,7 +24,7 @@ export class Sandbox {
 
   startProcess(payload: any) {
 
-    return this._listSelectionService.post(environment.startProcess_endpoint, {idProceso: payload.codigoProceso });
+    return this._listSelectionService.post(environment.startProcess_endpoint, { idProceso: payload.codigoProceso, idDespliegue: payload.idDespliegue });
   }
 
   loadTasksInsideProcess(payload: any) {
