@@ -187,7 +187,7 @@
 
         <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: left">
           <button pButton type="button" label="Agregar"
-                  style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+                  style="width: auto; margin-left: 12px; margin-bottom: 10px" (click)="showDialog()"></button>
         </div>
 
         <div class="ui-g-12">
@@ -201,4 +201,7 @@
     </div>
   </div>
 </form>
+
+
+<app-datos-direccion [display]="display" (dialogHide)="hideDialog()"></app-datos-direccion>
 

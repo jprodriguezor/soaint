@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -56,6 +56,8 @@ export class DatosRemitenteComponent implements OnInit {
   selectedPais: any;
   selectedDepartamento: any;
 
+  display: boolean = false;
+
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _municipioSandbox: MunicipioSandbox,
@@ -63,6 +65,10 @@ export class DatosRemitenteComponent implements OnInit {
               private _paisSandbox: PaisSandbox,
               private formBuilder: FormBuilder) {
     this.initForm();
+  }
+
+  showDialog() {
+    this.display = true;
   }
 
   ngOnInit(): void {
@@ -73,6 +79,10 @@ export class DatosRemitenteComponent implements OnInit {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+  }
+
+  hideDialog() {
+    this.display = false;
   }
 
   initForm() {

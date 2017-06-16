@@ -1,0 +1,109 @@
+<p-dialog [(visible)]="display" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
+          (onHide)="hideDialog()">
+
+  <p-header>
+    Datos de direccion
+  </p-header>
+  <form [formGroup]="form">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoVia">Tipo Via</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="tipoVia"
+                              formControlName="tipoVia"
+                              [suggestions]="(tipoViaSuggestions$ | async)"
+                              field="nombre"
+                              (completeMethod)="onFilterTipoVia($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickTipoVia($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="prefijoCuadrante">Prefijo cuadrante</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="prefijoCuadrante"
+                              [suggestions]="prefijoCuadranteSuggestions$ | async"
+                              field="nombre"
+                              formControlName="prefijoCuadrante"
+                              (completeMethod)="onFilterPrefijoCuadrante($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickPrefijoCuadrante($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="prefijoCuadrante">Orientacion</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="orientacion"
+                              [suggestions]="orientacionSuggestions$ | async"
+                              field="nombre"
+                              formControlName="orientacion"
+                              (completeMethod)="onFilterOrientacion($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickOrientacion($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+        </div>
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal">
+              <label for="noViaPrincipal">No. Via Principal</label>
+              </span>
+            </div>
+          </div>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="bis">Bis</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="bis"
+                              [suggestions]="bisSuggestons$ | async"
+                              field="nombre"
+                              formControlName="bis"
+                              (completeMethod)="onFilterBis($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickBis($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="noVia" formControlName="noVia">
+              <label for="noVia">No. Via</label>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group" style="padding-top: 25px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="placa" formControlName="placa">
+              <label for="placa">Placa</label>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" (click)="addAddress()" pButton icon="fa-external-link-square" label="Aceptar"></button>
+    </div>
+  </p-footer>
+</p-dialog>
