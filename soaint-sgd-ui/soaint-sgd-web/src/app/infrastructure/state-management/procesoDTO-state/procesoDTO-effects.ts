@@ -74,7 +74,10 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadTasksInsideProcess(payload)
-        .map(() => go('/radicar-comunicaciones'))
+        .mergeMap((response) => [
+          new actions.LoadTaskSuccessAction({data: response}),
+          go('/radicar-comunicaciones')
+        ])
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
     )

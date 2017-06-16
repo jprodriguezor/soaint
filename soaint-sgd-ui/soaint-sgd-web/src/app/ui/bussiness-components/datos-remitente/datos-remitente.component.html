@@ -135,13 +135,13 @@
               </div>
               <div class="ui-g-12">
                 <p-autoComplete id="pais"
-                                [suggestions]="tipoPersonaSuggestions$ | async"
+                                [suggestions]="paisSuggestions$ | async"
                                 field="nombre"
+                                (onSelect)="onSelectPais($event)"
                                 formControlName="pais"
-                                (onSelect)="onSelectTipoComunicacion()"
-                                (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                                (completeMethod)="onFilterPais($event)" [size]="30"
                                 [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                                (onDropdownClick)="onDropdownClickPais($event)">
                 </p-autoComplete>
               </div>
             </div>
@@ -153,13 +153,14 @@
               </div>
               <div class="ui-g-12">
                 <p-autoComplete id="departamento"
-                                [suggestions]="tipoPersonaSuggestions$ | async"
-                                field="nombre"
+                                [disabled]="!selectedPais"
+                                [suggestions]="departamentoSuggestions$ | async"
+                                field="nombreDepar"
+                                (onSelect)="onSelectDepartamento($event)"
                                 formControlName="departamento"
-                                (onSelect)="onSelectTipoComunicacion()"
-                                (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                                (completeMethod)="onFilterDepartamento($event)" [size]="30"
                                 [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                                (onDropdownClick)="onDropdownClickDepartamento($event)">
                 </p-autoComplete>
               </div>
             </div>
@@ -171,13 +172,13 @@
               </div>
               <div class="ui-g-12">
                 <p-autoComplete id="municipio"
-                                [suggestions]="tipoPersonaSuggestions$ | async"
-                                field="nombre"
+                                [suggestions]="municipioSuggestions$ | async"
+                                [disabled]="!selectedDepartamento"
+                                field="nombreMunic"
                                 formControlName="municipio"
-                                (onSelect)="onSelectTipoComunicacion()"
-                                (completeMethod)="onFilterTipoPersona($event)" [size]="30"
+                                (completeMethod)="onFilterMunicipio($event)" [size]="30"
                                 [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickTipoPersona($event)">
+                                (onDropdownClick)="onDropdownClickMunicipio($event)">
                 </p-autoComplete>
               </div>
             </div>

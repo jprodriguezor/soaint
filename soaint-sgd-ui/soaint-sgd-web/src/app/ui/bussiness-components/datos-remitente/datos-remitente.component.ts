@@ -1,16 +1,27 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {Sandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+
 import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
   getTipoTelefonoArrayData,
   getTratamientoCortesiaArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
+import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
+import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
+import {PaisDTO} from 'app/domain/paisDTO';
+import {MunicipioDTO} from 'app/domain/municipioDTO';
+import {DepartamentoDTO} from 'app/domain/departamentoDTO';
+import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
+import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
+import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
 
 
 @Component({
@@ -38,8 +49,19 @@ export class DatosRemitenteComponent implements OnInit {
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
   tipoDocumentoSuggestons$: Observable<ConstanteDTO[]>;
   tratamientoCortesiaSuggestons$: Observable<ConstanteDTO[]>;
+  paisSuggestions$: Observable<PaisDTO[]>;
+  departamentoSuggestions$: Observable<DepartamentoDTO[]>;
+  municipioSuggestions$: Observable<MunicipioDTO[]>;
 
-  constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
+  selectedPais: any;
+  selectedDepartamento: any;
+
+  constructor(private _store: Store<State>,
+              private _constanteSandbox: ConstanteSandbox,
+              private _municipioSandbox: MunicipioSandbox,
+              private _departamentoSandbox: DepartamentoSandbox,
+              private _paisSandbox: PaisSandbox,
+              private formBuilder: FormBuilder) {
     this.initForm();
   }
 
@@ -48,6 +70,9 @@ export class DatosRemitenteComponent implements OnInit {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestons$ = this._store.select(getTipoDocumentoArrayData);
     this.tratamientoCortesiaSuggestons$ = this._store.select(getTratamientoCortesiaArrayData);
+    this.paisSuggestions$ = this._store.select(paisArrayData);
+    this.municipioSuggestions$ = this._store.select(municipioArrayData);
+    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
   }
 
   initForm() {
@@ -82,38 +107,80 @@ export class DatosRemitenteComponent implements OnInit {
     });
   }
 
+
   onFilterTipoTelefono($event) {
-    this._sandbox.filterDispatch('tipoTelefono', $event.query);
+    this._constanteSandbox.filterDispatch('tipoTelefono', $event.query);
   }
 
   onDropdownClickTipoTelefono($event) {
     // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipoTelefono');
+    this._constanteSandbox.loadDispatch('tipoTelefono');
   }
 
   onFilterTipoPersona($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoPersona', query);
+    this._constanteSandbox.filterDispatch('tipoPersona', query);
   }
 
   onDropdownClickTipoPersona($event) {
     // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipoPersona');
+    this._constanteSandbox.loadDispatch('tipoPersona');
   }
 
   onFilterTipoDocumento($event) {
     const query = $event.query;
-    this._sandbox.filterDispatch('tipoDocumento', query);
+    this._constanteSandbox.filterDispatch('tipoDocumento', query);
   }
 
   onDropdownClickTipoDocumento($event) {
     // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipoDocumento');
+    this._constanteSandbox.loadDispatch('tipoDocumento');
+  }
+
+  onSelectPais(value) {
+    this.selectedPais = value.codigo;
+    console.log(this.selectedPais);
+  }
+
+  onFilterPais($event) {
+    this._paisSandbox.filterDispatch($event.query);
+  }
+
+  onDropdownClickPais() {
+    this._paisSandbox.loadDispatch();
+  }
+
+  onSelectDepartamento(value) {
+    this.selectedDepartamento = value.codDepar;
+  }
+
+  onFilterDepartamento($event) {
+    if (this.selectedPais) {
+      this._departamentoSandbox.filterDispatch({query: $event.query, codPais: this.selectedPais});
+    }
+  }
+
+  onDropdownClickDepartamento($event) {
+    if (this.selectedPais) {
+      this._departamentoSandbox.loadDispatch({codPais: this.selectedPais});
+    }
+  }
+
+  onFilterMunicipio($event) {
+    if (this.selectedDepartamento) {
+      this._departamentoSandbox.filterDispatch({query: $event.query, codDepar: this.selectedDepartamento});
+    }
+  }
+
+  onDropdownClickMunicipio($event) {
+    if (this.selectedDepartamento) {
+      this._municipioSandbox.loadDispatch({codDepar: this.selectedDepartamento});
+    }
   }
 
   onDropdownClickTratamientoCortesia($event) {
     // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tratamientoCortesia');
+    this._constanteSandbox.loadDispatch('tratamientoCortesia');
   }
 
 }
