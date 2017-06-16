@@ -1,9 +1,10 @@
 import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
 import {HomeComponent} from 'app/ui/page-components/home/home.component';
-import {LoginComponent, AuthenticatedGuard} from 'app/ui/page-components/login/__login.include';
+import {AuthenticatedGuard, LoginComponent} from 'app/ui/page-components/login/__login.include';
 import {RadicarComunicacionesComponent} from './ui/page-components/radicar-comunicaciones/radicar-comunicaciones.component';
 import {WorkspaceComponent} from './ui/page-components/workspace/workspace.component';
+import {ProcessComponent} from './ui/page-components/process/process.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -11,6 +12,7 @@ export const routes: Routes = [
     {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
     {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
     {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
+    {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
   ]
 ;
 

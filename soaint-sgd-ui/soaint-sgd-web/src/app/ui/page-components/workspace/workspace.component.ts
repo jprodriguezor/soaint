@@ -6,6 +6,13 @@ import {Component, OnInit} from '@angular/core';
 })
 export class WorkspaceComponent implements OnInit {
 
+  tasks: Array<any> = [{idTarea: 1, nombre: 'User Task 1', estado: 'Reservada'}, {
+    ideTarea: 2,
+    nombre: 'User Task 2',
+    estado: 'Completada'
+  },];
+
+  selectedTask: any;
 
   constructor() {
   }

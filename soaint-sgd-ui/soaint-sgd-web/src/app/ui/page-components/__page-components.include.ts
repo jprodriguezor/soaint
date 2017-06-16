@@ -3,6 +3,7 @@ import {HomeComponent} from './home/home.component';
 import {WorkspaceComponent} from './workspace/workspace.component';
 // import {ProductosComponent} from './productos/productos.component';
 import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
+import {ProcessComponent} from './process/process.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -19,7 +20,8 @@ export const PAGE_COMPONENTS = [
   LoginComponent,
   // ProductosComponent,
   RadicarComunicacionesComponent,
-  WorkspaceComponent
+  WorkspaceComponent,
+  ProcessComponent
 ];
 
 export * from './__page-providers.include';
