@@ -47,4 +47,11 @@ public class CorrespondenciaWebApi {
         return boundary.listarCorrespondenciaByNroRadicado(nroRadicado);
     }
 
+    @PUT
+    @Path("/correspondencia")
+    public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        LOGGER.info("processing rest request - actualizar estado correspondencia");
+        boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+    }
+
 }
