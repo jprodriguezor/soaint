@@ -17,14 +17,14 @@ export class WorkspaceComponent implements OnInit {
   selectedTask: any;
 
   constructor(private _store: Store<RootState>, private _taskSandbox: TaskDtoSandbox) {
-      this.tasks$ = this._store.select(getArrayData);
+    this.tasks$ = this._store.select(getArrayData);
   }
 
   ngOnInit() {
     this._taskSandbox.loadDispatch();
   }
 
-  iniciarProceso(process) {
+  iniciarTarea(task) {
     this._taskSandbox.initTaskDispatch();
   }
 
