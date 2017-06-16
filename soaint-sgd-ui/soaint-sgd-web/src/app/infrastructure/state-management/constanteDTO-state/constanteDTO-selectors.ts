@@ -9,5 +9,9 @@ export * from './selectors/tipo-persona-selectors';
 export * from './selectors/tipo-telefono-selectors';
 export * from './selectors/tipologia-documental-selectors';
 export * from './selectors/tratamiento-cortesia-selectors';
+export * from './selectors/tipo-via-selectors';
+export * from './selectors/bis-selectors';
+export * from './selectors/prefijo-cuadrante-selectors';
+export * from './selectors/orientacion-selectors';
 
 

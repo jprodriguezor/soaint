@@ -1,5 +1,4 @@
-import {ActionTypes as Autocomplete, Actions} from './constanteDTO-actions';
-import {tassign} from 'tassign';
+import {Actions, ActionTypes as Autocomplete} from './constanteDTO-actions';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 
 interface ConstanteDTOStateInterface {
@@ -27,6 +26,10 @@ export interface State {
   dependenciaGrupo: ConstanteDTOStateInterface;
   tipologiaDocumental: ConstanteDTOStateInterface;
   tratamientoCortesia: ConstanteDTOStateInterface;
+  tipoVia: ConstanteDTOStateInterface;
+  prefijoCuadrante: ConstanteDTOStateInterface;
+  bis: ConstanteDTOStateInterface;
+  orientacion: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -41,7 +44,11 @@ const initialState: State = {
   sedeAdministrativa: new ConstanteDTOStateInstance(),
   dependenciaGrupo: new ConstanteDTOStateInstance(),
   tipologiaDocumental: new ConstanteDTOStateInstance(),
-  tratamientoCortesia: new ConstanteDTOStateInstance()
+  tratamientoCortesia: new ConstanteDTOStateInstance(),
+  tipoVia: new ConstanteDTOStateInstance(),
+  prefijoCuadrante: new ConstanteDTOStateInstance(),
+  bis: new ConstanteDTOStateInstance(),
+  orientacion: new ConstanteDTOStateInstance()
 }
 
 /**

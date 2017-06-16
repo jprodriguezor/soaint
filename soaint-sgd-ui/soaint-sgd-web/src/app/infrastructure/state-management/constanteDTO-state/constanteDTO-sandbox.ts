@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
 
 import {Store} from '@ngrx/store';
@@ -49,6 +48,18 @@ export class Sandbox {
         break;
       case 'tipologiaDocumental':
         endpoint = environment.tipologiaDocumental_endpoint;
+        break;
+      case 'tipoVia':
+        endpoint = environment.tipoVia_endpoint;
+        break;
+      case 'orientacion':
+        endpoint = environment.orientacion_endpoint;
+        break;
+      case 'bis':
+        endpoint = environment.bis_endpoint;
+        break;
+      case 'prefijoCuadrante':
+        endpoint = environment.prefijoCuadrante_endpoint;
         break;
     }
 

@@ -82,42 +82,42 @@ export class DatosDireccionComponent implements OnInit {
 
 
   onFilterTipoVia($event) {
-    this._constanteSandbox.filterDispatch('tipoDocumento', $event.query);
+    this._constanteSandbox.filterDispatch('tipoVia', $event.query);
   }
 
   onDropdownClickTipoVia($event) {
     // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDocumento');
+    this._constanteSandbox.loadDispatch('tipoVia');
   }
 
   onFilterPrefijoCuadrante($event) {
     const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoDocumento', query);
+    this._constanteSandbox.filterDispatch('prefijoCuadrante', query);
   }
 
   onDropdownClickPrefijoCuadrante($event) {
     // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDocumento');
+    this._constanteSandbox.loadDispatch('prefijoCuadrante');
   }
 
   onFilterOrientacion($event) {
     const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoDocumento', query);
+    this._constanteSandbox.filterDispatch('orientacion', query);
   }
 
   onDropdownClickOrientacion($event) {
     // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDocumento');
+    this._constanteSandbox.loadDispatch('orientacion');
   }
 
   onFilterBis($event) {
     const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoDocumento', query);
+    this._constanteSandbox.filterDispatch('bis', query);
   }
 
   onDropdownClickBis($event) {
     // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDocumento');
+    this._constanteSandbox.loadDispatch('bis');
   }
 
 }
