@@ -32,12 +32,12 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
-    public Response iniciar(String idProceso) {
+    public Response iniciar(EntradaProcesoDTO entradaProcesoDTO) {
         System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
-        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
-        entradaProcesoDTO.setIdProceso(idProceso);
+//        EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
+//        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
+//        entradaProcesoDTO.setIdProceso(idProceso);
         entradaProcesoDTO.setUsuario("krisv");
         entradaProcesoDTO.setPass("krisv");
         return wt.path("/bpm/proceso/iniciar")

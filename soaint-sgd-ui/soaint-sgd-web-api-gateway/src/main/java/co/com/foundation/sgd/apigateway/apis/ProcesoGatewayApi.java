@@ -42,7 +42,7 @@ public class ProcesoGatewayApi {
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
         //TODO: add trafic log
         System.out.println("ProcesoGatewayApi - [trafic] - starting Process");
-        Response response = procesoClient.iniciar(entrada.getIdProceso());
+        Response response = procesoClient.iniciar(entrada);
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
 
