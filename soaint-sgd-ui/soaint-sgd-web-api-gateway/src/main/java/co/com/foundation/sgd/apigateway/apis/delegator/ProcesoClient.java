@@ -57,4 +57,16 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
+    public Response listarTareas(EntradaProcesoDTO entrada) {
+        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        EntradaProcesoDTO entradaProcesoDTO = entrada;
+        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
+        entradaProcesoDTO.setUsuario("krisv");
+        entradaProcesoDTO.setPass("krisv");
+        return wt.path("/bpm//tareas/listar/estados/")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
 }

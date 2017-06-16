@@ -11,6 +11,7 @@ import {
   getTratamientoCortesiaArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
@@ -29,6 +30,21 @@ import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDT
 })
 export class DatosRemitenteComponent implements OnInit {
 
+  form: FormGroup;
+  tipoPersonaControl: AbstractControl;
+  nitControl: AbstractControl;
+  actuaCalidadControl: AbstractControl;
+  tipoDocumentoControl: AbstractControl;
+  razonSocialControl: AbstractControl;
+  nombreApellidosControl: AbstractControl;
+  tipoTelefonoControl: AbstractControl;
+  inactivoControl: AbstractControl;
+  numeroTelControl: AbstractControl;
+  correoEleControl: AbstractControl;
+  paisControl: AbstractControl;
+  departamentoControl: AbstractControl;
+  municipioControl: AbstractControl;
+
   tipoTelefonoSuggestions$: Observable<ConstanteDTO[]>;
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
   tipoDocumentoSuggestons$: Observable<ConstanteDTO[]>;
@@ -37,12 +53,16 @@ export class DatosRemitenteComponent implements OnInit {
   departamentoSuggestions$: Observable<DepartamentoDTO[]>;
   municipioSuggestions$: Observable<MunicipioDTO[]>;
 
+  selectedPais: any;
+  selectedDepartamento: any;
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
-              private _paisSandbox: PaisSandbox) {
+              private _paisSandbox: PaisSandbox,
+              private formBuilder: FormBuilder) {
+    this.initForm();
   }
 
   ngOnInit(): void {
@@ -54,6 +74,39 @@ export class DatosRemitenteComponent implements OnInit {
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
   }
+
+  initForm() {
+    this.tipoPersonaControl = new FormControl(null);
+    this.nitControl = new FormControl(null);
+    this.actuaCalidadControl = new FormControl(null);
+    this.tipoDocumentoControl = new FormControl(null);
+    this.razonSocialControl = new FormControl(null);
+    this.nombreApellidosControl = new FormControl(null, Validators.required);
+    this.tipoTelefonoControl = new FormControl(null);
+    this.inactivoControl = new FormControl(null);
+    this.numeroTelControl = new FormControl(null);
+    this.correoEleControl = new FormControl(null);
+    this.paisControl = new FormControl(null);
+    this.departamentoControl = new FormControl(null);
+    this.municipioControl = new FormControl(null);
+
+    this.form = this.formBuilder.group({
+      'tipoPersona': this.tipoPersonaControl,
+      'nit': this.nitControl,
+      'actuaCalidad': this.actuaCalidadControl,
+      'tipoDocumento': this.tipoDocumentoControl,
+      'razonSocial': this.razonSocialControl,
+      'nombreApellidos': this.nombreApellidosControl,
+      'tipoTelefono': this.tipoTelefonoControl,
+      'inactivo': this.inactivoControl,
+      'numeroTel': this.numeroTelControl,
+      'correoEle': this.correoEleControl,
+      'pais': this.paisControl,
+      'departamento': this.departamentoControl,
+      'municipio': this.municipioControl,
+    });
+  }
+
 
   onFilterTipoTelefono($event) {
     this._constanteSandbox.filterDispatch('tipoTelefono', $event.query);
@@ -84,28 +137,45 @@ export class DatosRemitenteComponent implements OnInit {
     this._constanteSandbox.loadDispatch('tipoDocumento');
   }
 
+  onSelectPais(value) {
+    this.selectedPais = value.codigo;
+    console.log(this.selectedPais);
+  }
+
   onFilterPais($event) {
     this._paisSandbox.filterDispatch($event.query);
   }
 
-  onDropdownClickPais($event) {
+  onDropdownClickPais() {
     this._paisSandbox.loadDispatch();
   }
 
-  onFilterMunicipio($event) {
-    this._municipioSandbox.filterDispatch($event.query);
-  }
-
-  onDropdownClickMunicipio($event) {
-    this._municipioSandbox.loadDispatch();
+  onSelectDepartamento(value) {
+    this.selectedDepartamento = value.codDepar;
   }
 
   onFilterDepartamento($event) {
-    this._departamentoSandbox.filterDispatch($event.query);
+    if (this.selectedPais) {
+      this._departamentoSandbox.filterDispatch({query: $event.query, codPais: this.selectedPais});
+    }
   }
 
   onDropdownClickDepartamento($event) {
-    this._departamentoSandbox.loadDispatch();
+    if (this.selectedPais) {
+      this._departamentoSandbox.loadDispatch({codPais: this.selectedPais});
+    }
+  }
+
+  onFilterMunicipio($event) {
+    if (this.selectedDepartamento) {
+      this._departamentoSandbox.filterDispatch({query: $event.query, codDepar: this.selectedDepartamento});
+    }
+  }
+
+  onDropdownClickMunicipio($event) {
+    if (this.selectedDepartamento) {
+      this._municipioSandbox.loadDispatch({codDepar: this.selectedDepartamento});
+    }
   }
 
   onDropdownClickTratamientoCortesia($event) {

@@ -5,6 +5,7 @@ import { Effects as ProcesoDtoEffects } from 'app/infrastructure/state-managemen
 import { Effects as PaisDtoEffects } from 'app/infrastructure/state-management/paisDTO-state/paisDTO-effects';
 import { Effects as DepartamentoDtoEffects } from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-effects';
 import { Effects as MunicipioDtoEffects } from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-effects';
+import { Effects as DependenciaGrupoDtoEffects } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-effects';
 
 
 /**
@@ -31,5 +32,6 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(ProcesoDtoEffects),
   EffectsModule.run(PaisDtoEffects),
   EffectsModule.run(DepartamentoDtoEffects),
-  EffectsModule.run(MunicipioDtoEffects)
+  EffectsModule.run(MunicipioDtoEffects),
+  EffectsModule.run(DependenciaGrupoDtoEffects)
 ];

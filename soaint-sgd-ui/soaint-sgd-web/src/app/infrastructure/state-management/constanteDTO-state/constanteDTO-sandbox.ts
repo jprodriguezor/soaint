@@ -1,4 +1,3 @@
-import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
@@ -45,11 +44,11 @@ export class Sandbox {
       case 'sedeAdministrativa':
         endpoint = environment.sedeAdministrativa_endpoint;
         break;
-      case 'dependenciaGrupo':
-        endpoint = environment.dependenciaGrupo_endpoint;
-        break;
       case 'tratamientoCortesia':
         endpoint = environment.tratamientoCortesia_endpoint;
+        break;
+      case 'tipologiaDocumental':
+        endpoint = environment.tipologiaDocumental_endpoint;
         break;
     }
 

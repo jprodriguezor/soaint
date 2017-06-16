@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -6,10 +6,16 @@ import {Component, OnInit} from '@angular/core';
 })
 export class RadicarComunicacionesComponent implements OnInit {
 
+  @ViewChild('datosGenerales') datosGenerales;
+
   constructor() {
   }
 
   ngOnInit() {
+  }
+
+  printForm() {
+    console.log(this.datosGenerales.form);
   }
 
 }
