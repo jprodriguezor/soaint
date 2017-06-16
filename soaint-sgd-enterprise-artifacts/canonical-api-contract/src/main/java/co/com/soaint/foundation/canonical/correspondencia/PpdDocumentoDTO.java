@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,9 @@ import java.util.List;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ppd-documento/1.0.0")
-public class PpdDocumentoDTO {
+public class PpdDocumentoDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private BigInteger idePpdDocumento;
     private String codTipoDoc;
     private Date fecDocumento;

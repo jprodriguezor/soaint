@@ -82,8 +82,6 @@ export class DatosGeneralesComponent implements OnInit {
       'tipoAnexoDescripcionTipoAnexo': this.tipoAnexoDescripcionTipoAnexoControl,
       'tipoAnexoDescripcionDescripcion': this.tipoAnexoDescripcionDescripcionControl,
     });
-
-    // this.form
   }
 
   ngOnInit(): void {

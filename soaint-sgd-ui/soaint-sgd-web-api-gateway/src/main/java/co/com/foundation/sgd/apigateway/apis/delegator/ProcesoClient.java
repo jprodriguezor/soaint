@@ -64,7 +64,7 @@ public class ProcesoClient {
         entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
         entradaProcesoDTO.setUsuario("krisv");
         entradaProcesoDTO.setPass("krisv");
-        return wt.path("/bpm//tareas/listar/estados/")
+        return wt.path("/bpm/tareas/listar/estados/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
