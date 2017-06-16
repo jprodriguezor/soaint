@@ -49,6 +49,10 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadAction({key: target}));
   }
 
+  initProcessDispatch(entity) {
+    this._store.dispatch(new actions.StartProcessAction(entity));
+  }
+
   selectorMenuOptions() {
     return createSelector(selectors.getEntities, selectors.getGrupoIds, (entities, ids) => {
       return ids.map(id => {
