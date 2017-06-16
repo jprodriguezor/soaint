@@ -1,14 +1,14 @@
 <div class="card card-w-title">
   <h1>Listado de tareas</h1>
-  <p-dataTable [value]="tasks" selectionMode="single" [(selection)]="selectedTask"
+  <p-dataTable [value]="(tasks$ | async)" selectionMode="single" [(selection)]="selectedTask"
                [paginator]="true" [rows]="10" [responsive]="true">
     <p-header>Lista De Productos</p-header>
     <p-column field="idTarea" header="ID" [sortable]="true"></p-column>
-    <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+    <p-column field="nombre" header="Tarea" [sortable]="true"></p-column>
     <p-column field="estado" header="Estado" [sortable]="true"></p-column>
     <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-      <ng-template let-car pTemplate="item">
-        <button type="button" icon="ui-icon-close" pButton class="ui-button ui-button-icon"></button>
+      <ng-template let-task="rowData" pTemplate="item">
+        <button pButton type="button" label="Iniciar" (click)="iniciarTarea(task)"></button>
       </ng-template>
     </p-column>
   </p-dataTable>

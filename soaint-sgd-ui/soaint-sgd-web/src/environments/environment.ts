@@ -25,5 +25,6 @@ export const environment = {
   municipio_endpoint: `${host}/municipio-gateway-api`,
   proceso_endpoint: `${host}/proceso-gateway-api`,
   startProcess_endpoint: `${host}/proceso-gateway-api/iniciar`,
-  tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`
+  tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`,
+  tasksForStatus_endpoint: `${host}/proceso-gateway-api/tareas/listar/estados`,
 };

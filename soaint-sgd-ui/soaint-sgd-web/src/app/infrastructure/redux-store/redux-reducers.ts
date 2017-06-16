@@ -7,6 +7,7 @@ import * as paisStore from 'app/infrastructure/state-management/paisDTO-state/pa
 import * as municipioStore from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-reducers';
 import * as departamentoStore from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-reducers';
 import * as dependenciaGrupoStore from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-reducers';
+import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -21,6 +22,7 @@ export interface State {
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,
+  tareas: tareasStore.State,
   proceso: procesoStore.State,
   router: fromRouter.RouterState;
 }
@@ -42,6 +44,7 @@ export const reducers = {
   municipios: municipioStore.reducer,
   departamentos: departamentoStore.reducer,
   dependenciaGrupo: dependenciaGrupoStore.reducer,
+  tareas: tareasStore.reducer,
   router: fromRouter.routerReducer,
 };
 

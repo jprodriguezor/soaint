@@ -4,6 +4,7 @@ import { Sandbox as MunicipioDtoSandbox } from 'app/infrastructure/state-managem
 import { Sandbox as PaisDtoSandbox } from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
 import { Sandbox as DepartamentoDtoSandbox } from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
 import { Sandbox as DependenciaGrupoDtoSandbox } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import { Sandbox as tareasDtoSandbox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 export const STATE_MANAGEMENT_PROVIDERS = [
   ConstanteDtoSandbox,
@@ -11,5 +12,6 @@ export const STATE_MANAGEMENT_PROVIDERS = [
   PaisDtoSandbox,
   DepartamentoDtoSandbox,
   MunicipioDtoSandbox,
-  DependenciaGrupoDtoSandbox
+  DependenciaGrupoDtoSandbox,
+  tareasDtoSandbox
 ];
