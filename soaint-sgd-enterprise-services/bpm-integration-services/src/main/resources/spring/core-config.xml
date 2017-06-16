@@ -14,6 +14,7 @@
       Purpose: define generic configurations
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     -->
+    <context:property-placeholder location="classpath:sgd-service.properties" />
     <context:component-scan base-package="co.com.soaint.bpm.services.integration.services"/>
 
 </beans>

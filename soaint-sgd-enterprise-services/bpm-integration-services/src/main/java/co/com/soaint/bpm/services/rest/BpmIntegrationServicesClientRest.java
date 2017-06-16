@@ -84,6 +84,19 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/tareas/listar/estados-usuario/")
+    public List<RespuestaTareaDTO> listarTareaPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - listar tareas con sus estados por usuario");
+        try {
+            return proceso.listarTareasEstadosPorUsuario(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+
+        }
+    }
+
+    @POST
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - listar tareas con sus estados");
