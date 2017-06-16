@@ -6,9 +6,10 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Random;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,9 @@ import java.util.Random;
  */
 @BusinessControl
 public class CorrespondenciaControl {
+    @PersistenceContext
+    private EntityManager em;
+
     public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         return CorCorrespondencia.newInstance()
                 .descripcion(correspondenciaDTO.getDescripcion())
@@ -46,20 +50,35 @@ public class CorrespondenciaControl {
                 .build();
     }
 
-    public String generarNumeroRadicado(String sede, String tipoComunicacion) {//TODO
-        Random rand = new Random();
-        int  n = rand.nextInt(99999) + 1;
-        String consecutivo = String.format("%05d", n);
-        int anno = Calendar.getInstance().get(Calendar.YEAR);
-        String numeroRadicado = "";
-        numeroRadicado = numeroRadicado
-                .concat(sede)
-                .concat("-")
-                .concat(tipoComunicacion)
-                .concat("-")
-                .concat(String.valueOf(anno))
-                .concat("-")
-                .concat(consecutivo);
-        return numeroRadicado;
+    public Boolean verificarByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
+                .setParameter("NRO_RADICADO", nroRadicado)
+                .getSingleResult();
+        return cantidad > 0;
     }
+
+    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) throws BusinessException, SystemException {//TODO
+        String nroR = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
+                .setParameter("COD_SEDE", correspondencia.getCodSede())
+                .setParameter("COD_TIPO_CMC", correspondencia.getCodTipoCmc())
+                .getSingleResult();
+        int consecRadicado = 0;
+        if (nroR != null) {
+            CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
+                    .setParameter("NRO_RADICADO", nroR)
+                    .getSingleResult();
+            Calendar calendar = Calendar.getInstance();
+            int anno = calendar.get(Calendar.YEAR);
+            calendar.setTime(correspondenciaDTO.getFecRadicado());
+            if (anno == calendar.get(Calendar.YEAR)) {
+                consecRadicado = Integer.parseInt(nroR.substring(nroR.length() - 6));
+            }
+        }
+        consecRadicado++;
+        return correspondencia.getCodSede()
+                .concat(correspondencia.getCodTipoCmc())
+                .concat(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))
+                .concat(String.format("%06d", consecRadicado));
+    }
+
 }

@@ -157,7 +157,7 @@ public class ProcessService implements IProcessServices {
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), "en-UK");
         long taskId = -1;
         for (TaskSummary task : tasks) {
-            if (task.getDeploymentId() == entrada.getIdDespliegue() ) {
+            if (task.getProcessId().equals(entrada.getIdProceso() )) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
                         .estado(task.getStatusId())

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,7 +20,9 @@ import java.util.Date;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/dct-asig-ultimo/1.0.0")
-public class DctAsigUltimoDTO {
+public class DctAsigUltimoDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long ideAsigUltimo;
     private String numRedirecciones;
     private Short nivLectura;
