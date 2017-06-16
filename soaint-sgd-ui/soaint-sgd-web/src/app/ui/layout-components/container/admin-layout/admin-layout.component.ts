@@ -17,6 +17,7 @@ declare var jQuery: any;
 export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   menuOptions$: Observable<any[]>;
+  menuOptions: any;
 
   layoutCompact: boolean = false;
 
@@ -75,7 +76,9 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     //   },
     // ];
 
-    this.menuOptions$ = this._sandbox.selectorMenuOptions();
+    this.menuOptions = MENU_OPTIONS;
+
+    // this.menuOptions$ = this._sandbox.selectorMenuOptions();
 
     this.isAuthenticated$ = this._sandbox.selectorIsAutenticated();
 

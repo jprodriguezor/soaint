@@ -3,8 +3,8 @@ const triggerProcess = (data) => {
 };
 
 export const MENU_OPTIONS = [
-  {label: 'Workspace', icon: 'dashboard', routerLink: ['/home']},
-  {label: 'Productos', icon: 'build', routerLink: ['/productos']}
+  {label: 'Vista Corporativa', icon: 'dashboard', routerLink: ['/home']},
+  {label: 'Tareas', icon: 'dashboard', routerLink: ['/workspace']},
 ];
 
 export const PROCESS_OPTION = {
