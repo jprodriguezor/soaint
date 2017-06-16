@@ -1,5 +1,6 @@
 <div class="ui-g dashboard">
-  <div class="ui-g-12 ui-md-4">
+
+  <div class="ui-g-12 ui-md-6">
     <div class="card overview">
       <div class="overview-content clearfix">
         <span class="overview-title">Sales</span>
@@ -11,7 +12,7 @@
       </div>
     </div>
   </div>
-  <div class="ui-g-12 ui-md-4">
+  <div class="ui-g-12 ui-md-6">
     <div class="card overview">
       <div class="overview-content clearfix">
         <span class="overview-title">Views</span>
@@ -20,18 +21,6 @@
       </div>
       <div class="overview-footer">
         <img src="assets/layout/images/dashboard/views.svg" style="width: 100%" />
-      </div>
-    </div>
-  </div>
-  <div class="ui-g-12 ui-md-4">
-    <div class="card overview">
-      <div class="overview-content clearfix">
-        <span class="overview-title">Users</span>
-        <span class="overview-badge">+%45</span>
-        <span class="overview-detail">5,200 / day</span>
-      </div>
-      <div class="overview-footer">
-        <img src="assets/layout/images/dashboard/progress.svg" style="width: 100%" />
       </div>
     </div>
   </div>
@@ -81,174 +70,202 @@
     </div>
   </div>
 
-  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
+  <div class="ui-g-12 ui-md-6 ui-lg-3 task-list">
     <p-panel header="Tasks">
       <ul>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">Sales Reports</span>
-          <i class="material-icons">&#xE8C9;</i>
         </li>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">Pay Invoices</span>
-          <i class="material-icons">&#xE8A1;</i>
         </li>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">Dinner with Tony</span>
-          <i class="material-icons">&#xE561;</i>
         </li>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">Client Meeting</span>
-          <i class="material-icons">&#xE7FB;</i>
         </li>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">New Theme</span>
-          <i class="material-icons">&#xE3AE;</i>
         </li>
         <li>
           <p-checkbox binary="true"></p-checkbox>
           <span class="task-name">Flight Ticket</span>
-          <i class="material-icons">&#xE01B;</i>
         </li>
       </ul>
     </p-panel>
   </div>
-  <div class="ui-g-12 ui-md-6 ui-lg-4 ui-fluid contact-form">
-    <p-panel header="Contact Us">
-      <div class="ui-g">
-        <div class="ui-g-12">
-          <p-dropdown [options]="cities" [autoWidth]="false" [(ngModel)]="selectedCity"></p-dropdown>
-        </div>
-        <div class="ui-g-12">
-                    <span class="md-inputfield">
-                        <input id="name" type="text" pInputText />
-                        <label for="name">Name</label>
-                    </span>
-        </div>
-        <div class="ui-g-12">
-                    <span class="md-inputfield">
-                        <input id="age" type="text" pInputText />
-                        <label for="age">Age</label>
-                    </span>
-        </div>
-        <div class="ui-g-12">
-                    <span class="md-inputfield">
-                        <input id="message" type="text" pInputText />
-                        <label for="message">Message</label>
-                    </span>
-        </div>
-      </div>
-      <button type="button" label="Send" icon="ui-icon-send" pButton></button>
-    </p-panel>
-  </div>
-  <div class="ui-g-12 ui-lg-4 contacts">
-    <p-panel header="Contacts">
+
+  <div class="ui-g-12 ui-md-6 ui-lg-3 task-list">
+    <p-panel header="Tasks">
       <ul>
         <li>
-          <a href="#">
-            <img src="assets/layout/images/avatar1.png" width="45">
-            <span class="name">Joshua Williams</span>
-            <span class="email">joshua@pf-ultima.com</span>
-          </a>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Sales Reports</span>
         </li>
         <li>
-          <a href="#">
-            <img src="assets/layout/images/avatar2.png" width="45">
-            <span class="name">Emily Clark</span>
-            <span class="email">emily@pf-ultima.com</span>
-          </a>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Pay Invoices</span>
         </li>
         <li>
-          <a href="#">
-            <img src="assets/layout/images/avatar3.png" width="45">
-            <span class="name">Susan Johnson</span>
-            <span class="email">susan@pf-ultima.com</span>
-          </a>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Dinner with Tony</span>
+
         </li>
         <li>
-          <a href="#">
-            <img src="assets/layout/images/avatar4.png" width="45">
-            <span class="name">Kelly Stark</span>
-            <span class="email">kelly@pf-ultima.com</span>
-          </a>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Client Meeting</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">New Theme</span>
+
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Flight Ticket</span>
         </li>
       </ul>
     </p-panel>
   </div>
 
-  <div class="ui-g-12 ui-md-4">
-    <div class="card timeline ui-fluid">
-      <div class="ui-g">
-        <div class="ui-g-3">
-          <span class="event-time">just now</span>
-          <i class="material-icons" style="color:#009688">&#xE1BC;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner" style="color:#009688">Katherine May</span>
-          <span class="event-text">Lorem ipsun dolor amet</span>
-          <div class="event-content">
-            <img src="assets/layout/images/dashboard/md.png">
-          </div>
-        </div>
-
-        <div class="ui-g-3">
-          <span class="event-time">12h ago</span>
-          <i class="material-icons" style="color:#E91E63">&#xE885;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner" style="color:#E91E63">Brandon Santos</span>
-          <span class="event-text">Ab nobis, magnam sunt eum. Laudantium, repudiandae, similique!.</span>
-        </div>
-
-        <div class="ui-g-3">
-          <span class="event-time">15h ago</span>
-          <i class="material-icons" style="color:#9c27b0">&#xE0C9;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner" style="color:#9c27b0">Stephan Ward</span>
-          <span class="event-text">Omnis veniam quibusdam ratione est repellat qui nam quisquam ab mollitia dolores ullam voluptates, similique, dignissimos.</span>
-        </div>
-
-        <div class="ui-g-3">
-          <span class="event-time">2d ago</span>
-          <i class="material-icons" style="color:#ff9800">&#xE0C8;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner" style="color:#ff9800">Jason Smith</span>
-          <span class="event-text">Laudantium, repudiandae, similique!</span>
-          <div class="event-content">
-            <img src="assets/layout/images/dashboard/map.png">
-          </div>
-        </div>
-
-        <div class="ui-g-3">
-          <span class="event-time">1w ago</span>
-          <i class="material-icons" style="color:#607d8b">&#xE91B;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner">Kevin Cox</span>
-          <span class="event-text">Quibusdam ratione est repellat qui nam quisquam veniam quibusdam ratione.</span>
-        </div>
-
-        <div class="ui-g-3">
-          <span class="event-time">2w ago</span>
-          <i class="material-icons" style="color:#FFC107">&#xE23A;</i>
-        </div>
-        <div class="ui-g-9">
-          <span class="event-owner" style="color:#FFC107">Walter White</span>
-          <span class="event-text">I am the one who knocks!</span>
-        </div>
-
-        <div class="ui-g-12">
-          <button type="button" label="Refresh" icon="ui-icon-refresh" pButton></button>
-        </div>
-      </div>
-    </div>
+  <div class="ui-g-12 ui-md-6 ui-lg-3 task-list">
+    <p-panel header="Tasks">
+      <ul>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Sales Reports</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Pay Invoices</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Dinner with Tony</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Client Meeting</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">New Theme</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Flight Ticket</span>
+        </li>
+      </ul>
+    </p-panel>
   </div>
+
+  <div class="ui-g-12 ui-md-6 ui-lg-3 task-list">
+    <p-panel header="Tasks">
+      <ul>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Sales Reports</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Pay Invoices</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Dinner with Tony</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Client Meeting</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">New Theme</span>
+        </li>
+        <li>
+          <p-checkbox binary="true"></p-checkbox>
+          <span class="task-name">Flight Ticket</span>
+        </li>
+      </ul>
+    </p-panel>
+  </div>
+
+
+  <!--<div class="ui-g-12 ui-md-4">-->
+    <!--<div class="card timeline ui-fluid">-->
+      <!--<div class="ui-g">-->
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">just now</span>-->
+          <!--<i class="material-icons" style="color:#009688">&#xE1BC;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner" style="color:#009688">Katherine May</span>-->
+          <!--<span class="event-text">Lorem ipsun dolor amet</span>-->
+          <!--<div class="event-content">-->
+            <!--<img src="assets/layout/images/dashboard/md.png">-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">12h ago</span>-->
+          <!--<i class="material-icons" style="color:#E91E63">&#xE885;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner" style="color:#E91E63">Brandon Santos</span>-->
+          <!--<span class="event-text">Ab nobis, magnam sunt eum. Laudantium, repudiandae, similique!.</span>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">15h ago</span>-->
+          <!--<i class="material-icons" style="color:#9c27b0">&#xE0C9;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner" style="color:#9c27b0">Stephan Ward</span>-->
+          <!--<span class="event-text">Omnis veniam quibusdam ratione est repellat qui nam quisquam ab mollitia dolores ullam voluptates, similique, dignissimos.</span>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">2d ago</span>-->
+          <!--<i class="material-icons" style="color:#ff9800">&#xE0C8;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner" style="color:#ff9800">Jason Smith</span>-->
+          <!--<span class="event-text">Laudantium, repudiandae, similique!</span>-->
+          <!--<div class="event-content">-->
+            <!--<img src="assets/layout/images/dashboard/map.png">-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">1w ago</span>-->
+          <!--<i class="material-icons" style="color:#607d8b">&#xE91B;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner">Kevin Cox</span>-->
+          <!--<span class="event-text">Quibusdam ratione est repellat qui nam quisquam veniam quibusdam ratione.</span>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-3">-->
+          <!--<span class="event-time">2w ago</span>-->
+          <!--<i class="material-icons" style="color:#FFC107">&#xE23A;</i>-->
+        <!--</div>-->
+        <!--<div class="ui-g-9">-->
+          <!--<span class="event-owner" style="color:#FFC107">Walter White</span>-->
+          <!--<span class="event-text">I am the one who knocks!</span>-->
+        <!--</div>-->
+
+        <!--<div class="ui-g-12">-->
+          <!--<button type="button" label="Refresh" icon="ui-icon-refresh" pButton></button>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
 
 </div>
