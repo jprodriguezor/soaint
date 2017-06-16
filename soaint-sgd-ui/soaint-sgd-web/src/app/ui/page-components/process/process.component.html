@@ -7,8 +7,8 @@
     <p-column field="nombreProceso" header="Nombre" [sortable]="true"></p-column>
     <p-column field="idDespliegue" header="Id de despliegue" [sortable]="true"></p-column>
     <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-      <ng-template let-car pTemplate="item">
-        <button pButton type="button" label="Iniciar" (click)="iniciarProceso()"></button>
+      <ng-template let-process="rowData" pTemplate="item">
+        <button pButton type="button" label="Iniciar" (click)="iniciarProceso(process)"></button>
       </ng-template>
     </p-column>
   </p-dataTable>
