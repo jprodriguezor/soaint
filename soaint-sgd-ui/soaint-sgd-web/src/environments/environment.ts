@@ -2,7 +2,7 @@
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const host = 'http://localhost:8080/soaint-sgd-web-api-gateway/apis';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -31,4 +31,5 @@ export const environment = {
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
+  radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
 };

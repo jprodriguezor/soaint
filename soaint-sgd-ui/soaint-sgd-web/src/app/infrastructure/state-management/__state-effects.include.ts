@@ -1,12 +1,13 @@
-import { EffectsModule } from '@ngrx/effects';
-import { LoginEffects } from 'app/ui/page-components/login/redux-state/login-effects';
-import { Effects as ConstanteDtoEffects } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-effects';
-import { Effects as ProcesoDtoEffects } from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-effects';
-import { Effects as PaisDtoEffects } from 'app/infrastructure/state-management/paisDTO-state/paisDTO-effects';
-import { Effects as DepartamentoDtoEffects } from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-effects';
-import { Effects as MunicipioDtoEffects } from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-effects';
-import { Effects as DependenciaGrupoDtoEffects } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-effects';
-import { Effects as TareasDtoEffects } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-effects';
+import {EffectsModule} from '@ngrx/effects';
+import {LoginEffects} from 'app/ui/page-components/login/redux-state/login-effects';
+import {Effects as ConstanteDtoEffects} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-effects';
+import {Effects as ProcesoDtoEffects} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-effects';
+import {Effects as PaisDtoEffects} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-effects';
+import {Effects as DepartamentoDtoEffects} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-effects';
+import {Effects as MunicipioDtoEffects} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-effects';
+import {Effects as DependenciaGrupoDtoEffects} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-effects';
+import {Effects as TareasDtoEffects} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-effects';
+import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-effects';
 
 
 /**
@@ -36,4 +37,5 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(MunicipioDtoEffects),
   EffectsModule.run(DependenciaGrupoDtoEffects),
   EffectsModule.run(TareasDtoEffects),
+  EffectsModule.run(ComunicacionOficialDtoEffects),
 ];

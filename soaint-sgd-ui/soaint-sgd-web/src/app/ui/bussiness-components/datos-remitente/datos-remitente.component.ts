@@ -56,6 +56,8 @@ export class DatosRemitenteComponent implements OnInit {
   selectedPais: any;
   selectedDepartamento: any;
 
+  addresses: Array<any> = [];
+
   display: boolean = false;
 
   constructor(private _store: Store<State>,
@@ -81,8 +83,11 @@ export class DatosRemitenteComponent implements OnInit {
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
   }
 
-  hideDialog() {
+  hideDialog($event) {
     this.display = false;
+    let addresses = [...this.addresses];
+    addresses.push($event);
+    this.addresses = addresses;
   }
 
   initForm() {
