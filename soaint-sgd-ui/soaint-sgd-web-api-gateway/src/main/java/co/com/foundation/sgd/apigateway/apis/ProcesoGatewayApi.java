@@ -75,4 +75,30 @@ public class ProcesoGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @POST
+    @Path("/tareas/iniciar")
+    @JWTTokenSecurity
+    public Response iniciarTarea(EntradaProcesoDTO entrada) {
+        //TODO: add trafic log
+        System.out.println("ProcesoGatewayApi - [trafic] - start Task");
+        Response response = procesoClient.iniciarTarea(entrada);
+        String responseContent = response.readEntity(String.class);
+        System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/proceso/listar-instancias")
+    @JWTTokenSecurity
+    public Response listarIntanciasProceso() {
+        //TODO: add trafic log
+        System.out.println("ProcesoGatewayApi - [trafic] - listing Process Instances");
+        Response response = procesoClient.listarIntanciasProceso();
+        String responseContent = response.readEntity(String.class);
+        System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }

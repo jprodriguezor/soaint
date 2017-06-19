@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -60,6 +60,9 @@ export class DatosRemitenteComponent implements OnInit {
 
   display: boolean = false;
 
+  @Input()
+  editable: boolean = true;
+
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _municipioSandbox: MunicipioSandbox,
@@ -81,6 +84,12 @@ export class DatosRemitenteComponent implements OnInit {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+  }
+
+  deleteAdress(index) {
+    let radref = [...this.addresses];
+    radref.splice(index, 1);
+    this.addresses = radref;
   }
 
   hideDialog($event) {

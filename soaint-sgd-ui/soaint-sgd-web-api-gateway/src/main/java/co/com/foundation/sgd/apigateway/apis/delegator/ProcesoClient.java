@@ -1,7 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
-import co.com.foundation.sgd.infrastructure.Authenticator;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -64,6 +63,28 @@ public class ProcesoClient {
         entradaProcesoDTO.setUsuario("krisv");
         entradaProcesoDTO.setPass("krisv");
         return wt.path("/bpm/tareas/listar/estados/")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
+    public Response iniciarTarea(EntradaProcesoDTO entrada) {
+        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        entrada.setUsuario("krisv");
+        entrada.setPass("krisv");
+        return wt.path("/bpm/tareas/iniciar")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
+    public Response listarIntanciasProceso() {
+        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
+        entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
+        entradaProcesoDTO.setUsuario("krisv");
+        entradaProcesoDTO.setPass("krisv");
+        return wt.path("/bpm/proceso/listar-instancias/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
