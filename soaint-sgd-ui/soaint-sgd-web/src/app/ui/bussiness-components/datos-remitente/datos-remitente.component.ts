@@ -83,6 +83,12 @@ export class DatosRemitenteComponent implements OnInit {
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
   }
 
+  deleteAdress(index) {
+    let radref = [...this.addresses];
+    radref.splice(index, 1);
+    this.addresses = radref;
+  }
+
   hideDialog($event) {
     this.display = false;
     let addresses = [...this.addresses];

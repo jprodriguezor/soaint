@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/operator/filter';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -59,6 +59,12 @@ export class DatosDestinatarioComponent implements OnInit {
     this.sedeAdministrativaControl.setValue(null);
     this.dependenciaGrupoControl.setValue(null);
 
+  }
+
+  deleteAgentesDestinatario(index) {
+    let agente = [...this.agentesDestinatario];
+    agente.splice(index, 1);
+    this.agentesDestinatario = agente;
   }
 
   initForm() {
