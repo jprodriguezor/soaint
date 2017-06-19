@@ -71,7 +71,6 @@ export const PRIMENG_MODULES = [
   ButtonModule,
   CalendarModule,
   CarouselModule,
-  ChartModule,
   CheckboxModule,
   ChipsModule,
   CodeHighlighterModule,
@@ -87,7 +86,6 @@ export const PRIMENG_MODULES = [
   EditorModule,
   FieldsetModule,
   FileUploadModule,
-  GalleriaModule,
   GMapModule,
   GrowlModule,
   InputMaskModule,
@@ -96,8 +94,6 @@ export const PRIMENG_MODULES = [
   InputTextModule,
   LightboxModule,
   ListboxModule,
-  MegaMenuModule,
-  MenubarModule,
   MenuModule,
   MessagesModule,
   MultiSelectModule,
@@ -125,7 +121,5 @@ export const PRIMENG_MODULES = [
   TieredMenuModule,
   ToggleButtonModule,
   ToolbarModule,
-  TooltipModule,
-  TreeModule,
-  TreeTableModule
+  TooltipModule
 ];

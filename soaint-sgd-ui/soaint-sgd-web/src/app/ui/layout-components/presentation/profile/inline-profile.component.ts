@@ -1,10 +1,8 @@
 import {
   Component,
-  Input,
   Output,
   OnInit,
-  EventEmitter,
-  ViewChild
+  EventEmitter, ChangeDetectionStrategy,
 } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
@@ -12,6 +10,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 @Component({
   selector: 'inline-profile',
   templateUrl: './inline-profile.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('menu', [
       state('hidden', style({
@@ -25,22 +24,18 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
     ])
   ]
 })
-export class InlineProfileComponent implements OnInit {
+export class InlineProfileComponent {
 
   active: boolean;
 
-  @Output()
-  onLogout: EventEmitter<any>;
+  @Output() onSignOffUser: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
 
-  ngOnInit() {
-    this.onLogout = new EventEmitter();
-  }
-
-  public logout(): void {
-    this.onLogout.emit();
+  public logout(event): void {
+     this.onSignOffUser.emit(null);
+      event.preventDefault();
   }
 
   public onClick(event): void {

@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.infrastructure.Authenticator;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -66,5 +67,6 @@ public class ProcesoClient {
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
+
 
 }

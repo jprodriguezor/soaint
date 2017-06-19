@@ -1,0 +1,50 @@
+<div class="card ticket-panel ui-fluid">
+  <div class="ui-g">
+
+    <div class="ui-g-12">
+      <div class="ui-g-6 text-right"> No radicado</div>
+      <div class="ui-g-1 text-right"></div>
+      <div class="ui-g-5 text-left">{{ noRadicado }}</div>
+
+      <div class="ui-g-6 text-right"> Fecha</div>
+      <div class="ui-g-1 text-right"></div>
+      <div class="ui-g-5 text-left">{{ fecha | date }}</div>
+    </div>
+
+    <div class="ui-g-12">
+
+
+      <div class="ui-g-5 text-left padding-hor-5"> Remitente</div>
+      <div class="ui-g-7 text-left padding-hor-5"> {{ remitente }}</div>
+
+
+      <div class="ui-g-3 text-left padding-hor-5"> Destinatario</div>
+      <div class="ui-g-2 text-left padding-hor-5"> Sede</div>
+      <div class="ui-g-7 text-left padding-hor-5"> {{ destinatarioSede}}</div>
+
+
+      <div class="ui-g-3 text-left padding-hor-5"></div>
+      <div class="ui-g-2 text-left padding-hor-5"> Depen</div>
+      <div class="ui-g-7 text-left padding-hor-5"> {{ destinatarioGrupo }}</div>
+
+
+    </div>
+
+    <div class="ui-g-12">
+
+      <div class="ui-g-4 text-left"> Anexo</div>
+      <div class="ui-g-2 text-left"> {{ anexos }}</div>
+
+      <div class="ui-g-4 text-left">Folios</div>
+      <div class="ui-g-2 text-left"> {{ folios }}</div>
+
+    </div>
+
+
+    <ngx-barcode [bc-height]="30" [bc-format]="CODE128B" [bc-value]="noRadicado" [bc-display-value]="true"
+                 style="margin: 0 auto"></ngx-barcode>
+
+  </div>
+</div>
+
+

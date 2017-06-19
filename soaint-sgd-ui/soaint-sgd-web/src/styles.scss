@@ -29,6 +29,14 @@ body .ui-panel .ui-panel-content {
   padding: 12px;
 }
 
+.padding-5 {
+  padding: 5px;
+}
+
+.padding-hor-5 {
+  padding: 8px 0 8px 0;
+}
+
 .page-title {
   text-align: center;
   padding-bottom: 15px;
@@ -38,6 +46,18 @@ body .ui-panel .ui-panel-content {
   color: #d43f3a;
   margin-right: 5px;
   font-weight: bold;
+}
+
+.margin-bottom {
+  margin-bottom: 20px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
 }
 
 

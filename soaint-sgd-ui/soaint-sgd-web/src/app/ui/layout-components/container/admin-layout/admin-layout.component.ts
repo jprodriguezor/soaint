@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit, OnDestroy} from '@angular/core';
+import {Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit, OnDestroy, HostListener} from '@angular/core';
 import {MessageBridgeService, MessageType} from 'app/infrastructure/web/message-bridge.service';
 import {Subscription} from 'rxjs/Subscription';
 import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
@@ -10,13 +10,22 @@ import {MENU_OPTIONS} from './menu-options';
 
 declare var jQuery: any;
 
+enum LayoutResponsive {
+  MOBILE,
+  TABLET,
+  DESKTOP
+}
+
 @Component({
   selector: 'app-admin-layout',
   templateUrl: './admin-layout.component.html'
 })
 export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
-  menuOptions$: Observable<any[]>;
+  processOptions: Observable<any[]>;
+
+  layoutWidth$: Observable<number>;
+
   menuOptions: any;
 
   layoutCompact: boolean = false;
@@ -57,30 +66,34 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   isAuthenticated$: Observable<boolean>;
 
+  layoutResponsive: LayoutResponsive;
+
   constructor(private _sandbox: AdminLayoutSandbox, public renderer: Renderer) {
   }
 
   ngOnInit(): void {
-    // const self = this;
-    // this.menuOptions = [
-    //   {label: 'Workspace', icon: 'dashboard', routerLink: ['/home']},
-    //   // {label: 'Productos', icon: 'build', routerLink: ['/productos']},
-    //   {
-    //     label: 'Procesos', icon: 'dashboard', expanded: true,
-    //     items: [
-    //       {
-    //         label: 'Datos generales', icon: 'assignment', command: (event) => self.triggerProccess(this, {data: 'daniel'})
-    //
-    //       }
-    //     ]
-    //   },
-    // ];
 
     this.menuOptions = MENU_OPTIONS;
 
-    // this.menuOptions$ = this._sandbox.selectorMenuOptions();
+    this.processOptions = this._sandbox.selectorDeployedProcess();
 
     this.isAuthenticated$ = this._sandbox.selectorIsAutenticated();
+
+    this.layoutWidth$ = this._sandbox.selectorWindowWidth();
+
+    this.layoutWidth$.subscribe(width => {
+      if (width <= 640) {
+        return this.layoutResponsive = LayoutResponsive.MOBILE
+      }
+
+      if (width <= 1024 && width > 640) {
+        return this.layoutResponsive = LayoutResponsive.TABLET
+      }
+
+      if (width >= 1024) {
+        return this.layoutResponsive = LayoutResponsive.DESKTOP
+      }
+    });
 
     this.hideMenu();
 
@@ -92,9 +105,7 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
       } else {
         this.hideMenu();
       }
-
     });
-
   }
 
   ngAfterViewInit() {
@@ -173,6 +184,10 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     event.preventDefault();
   }
 
+  signOff(): void {
+    this._sandbox.dispatchLogoutUser();
+  }
+
   public hideMenu(): void {
     this.staticMenuDesktopInactive = true;
     this.staticMenuMobileActive = false;
@@ -185,16 +200,15 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   isTablet() {
-    let width = window.innerWidth;
-    return width <= 1024 && width > 640;
+    return this.layoutResponsive === LayoutResponsive.TABLET;
   }
 
   isDesktop() {
-    return window.innerWidth > 1024;
+    return this.layoutResponsive === LayoutResponsive.DESKTOP;
   }
 
   isMobile() {
-    return window.innerWidth <= 640;
+    return this.layoutResponsive === LayoutResponsive.MOBILE;
   }
 
   isOverlay() {
@@ -227,6 +241,10 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     jQuery(this.layoutMenuScroller).nanoScroller({flash: true});
+  }
+
+  @HostListener('window:resize', ['$event']) onResize($event) {
+    this._sandbox.dispatchWindowResize({width: $event.target.innerWidth, height: $event.target.innerHeight});
   }
 
 }

@@ -6,6 +6,8 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
+import {observable} from 'rxjs/symbol/observable';
+import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 
 @Injectable()
 export class HttpHandler {
@@ -19,7 +21,7 @@ export class HttpHandler {
 
   requestHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
 
-    return this.token$.first().switchMap(token => {
+    return this.token$.take(1).switchMap(token => {
       console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
@@ -33,15 +35,25 @@ export class HttpHandler {
       if (options.body && typeof options.body !== 'string') {
         options.body = JSON.stringify(options.body);
       }
-
+      let request$ = null;
       if (typeof url === 'string') {
         const req: string = <string>url;
-        return this._http.request(req, options).map((res: Response) => res.json());
+        request$ = this._http.request(req, options);
       } else {
         const req: Request = new Request(<RequestArgs>url);
         req.headers = options.headers;
-        return this._http.request(req, options).map((res: Response) => res.json());
+        request$ = this._http.request(req, options);
       }
+
+      return request$.map((res: Response) => res.json()).catch(res => {
+        if (res.status === 401 && token !== null) {
+          this._store.dispatch(new LogoutAction());
+        } else if (res.status !== 500) {
+          return Observable.create( observer => observer.error(res));
+        } else {
+          return Observable.create( observer => observer.error(res.statusText));
+        }
+      });
     });
 
   }
@@ -52,8 +64,6 @@ export class HttpHandler {
 
   public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
     return this.requestHelper({url: url, body: body, method: RequestMethod.Post}, options);
-    // console.log('dsgsg');
-    // return this._http.post(url, body);
   }
 
   public put(url: string, body: any, options ?: RequestOptionsArgs): Observable<Response> {

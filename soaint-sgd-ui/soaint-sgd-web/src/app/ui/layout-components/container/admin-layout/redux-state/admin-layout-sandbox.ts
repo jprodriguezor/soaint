@@ -13,6 +13,8 @@ import * as models from '../models/admin-layout.model';
 
 import * as processActions from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-actions';
 import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
+import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
+import {layoutWidth} from 'app/ui/layout-components/container/admin-layout/redux-state/admin-layout-selectors';
 
 
 @Injectable()
@@ -37,7 +39,7 @@ export class AdminLayoutSandbox {
     return this._store.select(selectors.DarkMenu);
   }
 
-  selectorMenuOptions(): Observable<any[]> {
+  selectorDeployedProcess(): Observable<any[]> {
     return this._store.select(this._processSandbox.selectorMenuOptions());
   }
 
@@ -49,4 +51,15 @@ export class AdminLayoutSandbox {
     this._store.dispatch(new processActions.LoadAction());
   }
 
+  dispatchLogoutUser() {
+    this._store.dispatch(new LogoutAction());
+  }
+
+  dispatchWindowResize(payload?: { width: (number | ((el: any) => any)); height: number }) {
+    this._store.dispatch(new actions.ResizeWindowAction(payload));
+  }
+
+  selectorWindowWidth() {
+    return this._store.select(layoutWidth);
+  }
 }

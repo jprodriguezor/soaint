@@ -12,5 +12,7 @@ const adminLayoutStore = (state: rootStore.State) => state.adminLayout;
 export const LayoutMode = createSelector(adminLayoutStore, (state: State) => state.layoutMode);
 export const ProfileMode = createSelector(adminLayoutStore, (state: State) => state.profileMode);
 export const DarkMenu = createSelector(adminLayoutStore, (state: State) => state.darkMenu);
+export const layoutWidth = createSelector(adminLayoutStore, (state: State) => state.windowWidth);
+export const layoutHeight = createSelector(adminLayoutStore, (state: State) => state.windowHeight);
 
 

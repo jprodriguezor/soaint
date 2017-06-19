@@ -194,6 +194,18 @@
   100% {
     opacity: 0;
     transform: scale(2.5); } }
+.paddign-top {
+  padding-top: 20px; }
+
+.paddign-left {
+  padding-left: 20px; }
+
+.paddign-right {
+  padding-right: 20px; }
+
+.paddign-bottom {
+  padding-bottom: 20px; }
+
 .splash-screen {
   background-color: #3F51B5;
   height: 100%; }
@@ -287,21 +299,21 @@
   .dashboard .colorbox .colorbox-count {
     font-weight: bold; }
   .dashboard .colorbox.colorbox-1 div:first-child {
-    background-color: #2E7D32; }
+    background-color: #126325; }
   .dashboard .colorbox.colorbox-1 div:last-child {
-    background-color: #4CAF50; }
+    background-color: #21BA45; }
   .dashboard .colorbox.colorbox-2 div:first-child {
-    background-color: #0277BD; }
+    background-color: #0f8ea8; }
   .dashboard .colorbox.colorbox-2 div:last-child {
-    background-color: #03A9F4; }
+    background-color: #31CCEC; }
   .dashboard .colorbox.colorbox-3 div:first-child {
-    background-color: #4527A0; }
+    background-color: #b7890c; }
   .dashboard .colorbox.colorbox-3 div:last-child {
-    background-color: #673AB7; }
+    background-color: #F2C037; }
   .dashboard .colorbox.colorbox-4 div:first-child {
-    background-color: #00695C; }
+    background-color: #8a8a8a; }
   .dashboard .colorbox.colorbox-4 div:last-child {
-    background-color: #009688; }
+    background-color: #bdbdbd; }
 .dashboard .task-list {
   overflow: hidden; }
   .dashboard .task-list > .ui-panel {
@@ -1086,7 +1098,7 @@ body {
       color: #ffffff;
       background-color: #FF5722; }
 .layout-container.menu-layout-overlay .layout-menu {
-  margin-left: -250px; }
+  margin-left: -260px; }
 .layout-container.menu-layout-overlay .layout-main {
   margin-left: 0px; }
 .layout-container.menu-layout-overlay.layout-menu-overlay-active .layout-menu {
@@ -1280,7 +1292,7 @@ body {
     -ms-transform: rotate(180deg);
     transform: rotate(180deg); }
   .layout-container.menu-layout-static.layout-menu-static-inactive .layout-menu {
-    margin-left: -250px; }
+    margin-left: -260px; }
   .layout-container.menu-layout-static.layout-menu-static-inactive .layout-main {
     margin-left: 0px; }
   .layout-container.menu-layout-static .layout-mask {

@@ -20,7 +20,7 @@ import * as actions from './tareasDTO-actions';
 import {Sandbox} from './tareasDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {go} from '@ngrx/router-store';
-import {mapTo} from 'rxjs/operator/mapTo';
+import * as login from 'app/ui/page-components/login/redux-state/login-actions';
 
 function isLoaded() {
   return (source) =>
@@ -51,20 +51,17 @@ export class Effects {
     // .let(isLoaded())
     .map(toPayload)
     .switchMap(
-        (payload) => this._sandbox.loadData(payload)
-          .map((response) => new actions.LoadSuccessAction(response))
-          .catch((error) => Observable.of(new actions.LoadFailAction({error}))
-      )
+      (payload) => this._sandbox.loadData(payload)
+        .map((response) => new actions.LoadSuccessAction(response))
+        .catch((error) => Observable.of(new actions.LoadFailAction({error}))
+        )
     );
 
-  @Effect({ dispatch: false})
+  @Effect()
   startTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_TASK)
-    .map(toPayload)
-    .mergeMap((response) => [
-      go('/radicar-comunicaciones')
-    ])
-
+    .do(() => console.log('entro al start task'))
+    .do(() => go('/radicar-comunicaciones'))
 
 
 }

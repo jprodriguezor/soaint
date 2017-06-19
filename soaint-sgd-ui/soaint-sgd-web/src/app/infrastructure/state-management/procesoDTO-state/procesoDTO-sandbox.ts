@@ -45,8 +45,8 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction({key: target, data: query}));
   }
 
-  loadDispatch(target) {
-    this._store.dispatch(new actions.LoadAction({key: target}));
+  loadDispatch(payload?) {
+    this._store.dispatch(new actions.LoadAction(payload));
   }
 
   initProcessDispatch(entity) {

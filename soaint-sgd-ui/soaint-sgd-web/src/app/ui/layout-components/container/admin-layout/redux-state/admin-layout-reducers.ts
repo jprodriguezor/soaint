@@ -6,6 +6,8 @@ export interface State {
   layoutMode: models.MenuOrientation;
   darkMenu: boolean;
   profileMode: models.ProfileMode;
+  windowWidth: number;
+  windowHeight: number;
   // staticMenuDesktopInactive: boolean;
   // staticMenuMobileActive: boolean;
   // menuClick: boolean;
@@ -17,7 +19,10 @@ export interface State {
 const initialState: State = {
   layoutMode: models.MenuOrientation.STATIC,
   darkMenu: false,
-  profileMode: 'inline'
+  profileMode: 'inline',
+  windowWidth: window.screen.width,
+  windowHeight: window.screen.height
+
   // staticMenuDesktopInactive: true,
   // staticMenuMobileActive: true,
   // menuClick: boolean,
@@ -39,6 +44,11 @@ export function reducer(state = initialState, action: Actions) {
       return tassign(state, {
         layoutMode: action.payload.menuOrientation
       });
+
+    case ActionTypes.RESIZE_WINDOW_ACTION:
+      const height: number = action.payload['height'];
+      const width: number = action.payload['width'];
+      return tassign(state, {windowHeight: height, windowWidth: width});
 
     default:
       return state;
