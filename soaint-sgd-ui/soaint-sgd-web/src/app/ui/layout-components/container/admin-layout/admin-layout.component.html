@@ -15,7 +15,7 @@
       [isAuthenticated]="(isAuthenticated$ | async)"
     ></app-topbar>
 
-    <div class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
+    <div class="layout-menu" [ngClass]="{'layout-menu-dark': darkMenu}" (click)="onMenuClick($event)">
       <div #layoutMenuScroller class="nano">
         <div class="nano-content menu-scroll-content">
           <inline-profile (onSignOffUser)="signOff()" *ngIf="profileMode=='inline'&& !isHorizontal()"></inline-profile>

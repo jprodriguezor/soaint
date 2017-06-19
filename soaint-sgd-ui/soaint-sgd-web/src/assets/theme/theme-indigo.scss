@@ -1,5 +1,5 @@
-$primaryColor: #757575;
-$primaryDarkColor: #424242;
+$primaryColor: #3984B8;
+$primaryDarkColor: #393B3E;
 $primaryLightColor: #EEEEEE;
 //$accentColor: #E91E63;
 //$accentDarkColor: #ad1457;
@@ -7,7 +7,8 @@ $primaryLightColor: #EEEEEE;
 //$accentTextColor: #ffffff;
 $accentColor: lighten(#424242, 20%);
 $accentDarkColor: #424242;
-$accentLightColor: #757575;
+$accentLightColor: #858585;
 $accentTextColor: #ffffff;
+
 
 @import '../sass/theme/_theme';

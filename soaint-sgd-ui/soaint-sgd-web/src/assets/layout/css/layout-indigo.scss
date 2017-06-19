@@ -1,5 +1,5 @@
-$primaryColor: #757575;
-$primaryDarkColor: #424242;
+$primaryColor: #dddddd;
+$primaryDarkColor: #FBFBFB;
 $primaryLightColor: #EEEEEE;
 $accentColor: #00bcd4;
 $accentDarkColor: #00838f;
@@ -7,9 +7,10 @@ $accentLightColor: #4dd0e1;
 $accentTextColor: #ffffff;
 $darkMenuBgColor: #424242;
 $darkMenuHoverColor: #676767;
-$darkMenuRouterLinkActiveColor: #9fa8da;
-$lightMenuRouterLinkActiveColor: #3F51B5;
-$horizontalLightMenuRouterLinkActiveColor: #9fa8da;
+$darkMenuRouterLinkActiveColor: #00838f;
+$lightMenuRouterLinkActiveColor: #00bcd4;
+$horizontalLightMenuRouterLinkActiveColor: #4dd0e1;
+
 
 
 @import '../../sass/layout/_layout';
