@@ -13,6 +13,8 @@ import org.apache.http.util.EntityUtils;
 import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
+import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.audit.AuditService;
@@ -20,16 +22,16 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.server.client.KieServicesClient;
 import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Arce on 6/7/2017.
@@ -45,11 +47,15 @@ public class ProcessService implements IProcessServices {
     private String endpointProcesosListar = "";
     @Value( "${jbpm.endpoint.url}" )
     private String endpointJBPConsole = "";
+    private RuntimeDataService runtimeDataService;
+    private KieServicesClient kieServicesClient;
+    private QueryServiceImpl queryService;
+
 
     private ProcessService() throws MalformedURLException {
 
     }
-
+    @Override
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario()+":"+entrada.getPass()).getBytes());
@@ -81,6 +87,26 @@ public class ProcessService implements IProcessServices {
                             .build();
                     listaProcesos.add(respuesta);
                 }
+            }
+        }
+        return listaProcesos;
+    }
+    @Override
+    public List<RespuestaProcesoDTO> listarProcesosInstancia(EntradaProcesoDTO entrada) throws IOException, JSONException {
+
+        List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
+        taskService = obtenerEngine(entrada).getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksOwned(entrada.getUsuario(), "en-UK");
+        long taskId = -1;
+        for (TaskSummary task : tasks) {
+            if (task.getProcessId().equals(entrada.getIdProceso() )) {
+                RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                        .codigoProceso(String.valueOf(task.getProcessInstanceId()))
+                        .nombreProceso(task.getDeploymentId())
+                        .idDespliegue(task.getDeploymentId())
+                        .estado(String.valueOf(task.getStatus()))
+                        .build();
+                listaProcesos.add(respuesta);
             }
         }
         return listaProcesos;

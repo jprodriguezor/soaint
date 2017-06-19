@@ -47,6 +47,18 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/proceso/listar-instancias/")
+    public List<RespuestaProcesoDTO> listarProcesosInstancia(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
+        LOGGER.info("processing rest request - listar procesos");
+        try {
+            return proceso.listarProcesosInstancia(entradaProceso);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
     @Path("/proceso/iniciar/")
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - iniciar proceso");
