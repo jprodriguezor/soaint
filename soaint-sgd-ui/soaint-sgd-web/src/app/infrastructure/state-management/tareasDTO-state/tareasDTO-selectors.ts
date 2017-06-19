@@ -41,8 +41,8 @@ export const getTasksStadistics = createSelector(getEntities, (entities) => {
   }
 
   stadistics.push({name: 'Reservadas', value: reserved});
-  stadistics.push({name: 'Completadas', value: completed});
   stadistics.push({name: 'En Proceso', value: inProgress});
+  stadistics.push({name: 'Completadas', value: completed});
   stadistics.push({name: 'Canceladas', value: canceled});
   return stadistics;
 });

@@ -21,13 +21,12 @@ export class Sandbox {
     const clonePayload = tassign(payload, {
       estados: [
         'RESERVADO',
-        'COMPLETADO',
         'ENPROGRESO',
         'LISTO'
       ]
     });
-    // return this._listSelectionService.post(environment.tasksForStatus_endpoint, clonePayload);
-    return Observable.of(this.getMockData());
+    return this._listSelectionService.post(environment.tasksForStatus_endpoint, clonePayload);
+    // return Observable.of(this.getMockData());
   }
 
 
