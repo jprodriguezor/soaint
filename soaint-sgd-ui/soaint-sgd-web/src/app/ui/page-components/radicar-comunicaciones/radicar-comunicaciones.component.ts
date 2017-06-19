@@ -36,7 +36,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   ngOnInit() {
   }
 
-  printForm() {
+  radicarComunicacion() {
 
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;

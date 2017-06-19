@@ -14,9 +14,6 @@ export class Sandbox {
   }
 
   radicar(payload: any) {
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    console.log(payload);
-    console.log(this._comunicacionOficial);
     return this._comunicacionOficial.post(environment.radicarComunicacion_endpoint, payload);
   }
 

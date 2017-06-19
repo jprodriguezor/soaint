@@ -4,15 +4,11 @@ import {ComunicacionOficialDTO} from 'app/domain/ComunicacionOficialDTO';
 
 
 export interface State {
-  ids: number[];
-  entities: { [codigoProceso: number]: ComunicacionOficialDTO };
-  selectedId: number;
+  comunicacionOficial: ComunicacionOficialDTO
 }
 
 const initialState: State = {
-  ids: [],
-  entities: {},
-  selectedId: null
+  comunicacionOficial: null
 };
 
 /**
@@ -25,20 +21,11 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case Autocomplete.RADICAR_SUCCESS: {
-      const values = action.payload.paises;
-      const newValues = values.filter(data => !state.entities[data.id]);
+      const values = action.payload;
 
-      const newValuesIds = newValues.map(data => data.id);
-      const newValuesEntities = newValues.reduce((entities: { [id: number]: ComunicacionOficialDTO }, value: ComunicacionOficialDTO) => {
-        return Object.assign(entities, {
-          [value.correspondencia.nroRadicado]: value
-        });
-      }, {});
 
       return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities),
-        selectedId: state.selectedId
+        comunicacionOficial: values
       });
 
     }

@@ -13,17 +13,4 @@ const rootPath = (state: rootStore.State) => state.radicarComunicacion;
  * use-case.
  */
 
-export const getEntities = createSelector(rootPath, (state: State) => state.entities);
-
-export const getGrupoIds = createSelector(rootPath, (state: State) => state.ids);
-
-export const getSelectedId = createSelector(rootPath, (state: State) => state.selectedId);
-
-export const getSelectedEntity =
-  createSelector(getEntities, getSelectedId, (entities, selectedId) => {
-    return entities[selectedId];
-  });
-
-export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
-  return ids.map(id => entities[id]);
-});
+export const comunicacionOficial = createSelector(rootPath, (state: State) => state.comunicacionOficial );

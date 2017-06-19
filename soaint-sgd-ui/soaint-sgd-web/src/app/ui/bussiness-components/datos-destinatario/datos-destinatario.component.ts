@@ -62,9 +62,9 @@ export class DatosDestinatarioComponent implements OnInit {
   }
 
   initForm() {
-    this.tipoDestinatarioControl = new FormControl(null, Validators.required);
-    this.sedeAdministrativaControl = new FormControl(null, Validators.required);
-    this.dependenciaGrupoControl = new FormControl(null, Validators.required);
+    this.tipoDestinatarioControl = new FormControl(null);
+    this.sedeAdministrativaControl = new FormControl(null);
+    this.dependenciaGrupoControl = new FormControl(null);
     this.form = this.formBuilder.group({
       'tipoDestinatario': this.tipoDestinatarioControl,
       'sedeAdministrativa': this.sedeAdministrativaControl,
