@@ -18,6 +18,26 @@ export const getEntities = createSelector(rootPath, (state: State) => state.enti
 
 export const getGrupoIds = createSelector(rootPath, (state: State) => state.ids);
 
+// export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+//   return ids.map(id => entities[id]);
+// });
+//
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);
+});
+
+export const getReservedTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+  return ids.map(id => entities[id]).filter(data =>  data.estado == 'Reserved');
+});
+
+export const getCompletedTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+  return ids.map(id => entities[id]).filter(data =>  data.estado == 'Completed');
+});
+
+export const getInProgressTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+  return ids.map(id => entities[id]).filter(data => data.estado == 'InProgress');
+});
+
+export const getCanceledTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+  return ids.map(id => entities[id]).filter(data => data.estado == 'Canceled');
 });

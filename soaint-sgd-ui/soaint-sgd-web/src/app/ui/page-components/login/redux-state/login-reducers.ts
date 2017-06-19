@@ -39,7 +39,7 @@ export function reducer(state = initialState, action: Actions) {
         isLoading: false
       });
 
-    case ActionTypes.LOGOUT_SUCCESS:
+    case ActionTypes.LOGOUT:
       return tassign(state, {
         token: null,
         error: null,

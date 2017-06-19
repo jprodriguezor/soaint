@@ -6,6 +6,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 import 'rxjs/add/operator/toPromise';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import { NgxBarcodeModule } from 'ngx-barcode';
 
 // APP COMPONENTS
 import {AppComponent} from './app.component';
@@ -36,6 +38,8 @@ import { RouterStoreModule } from '@ngrx/router-store';
     AppRoutes,
     HttpModule,
     BrowserAnimationsModule,
+    NgxChartsModule,
+    NgxBarcodeModule,
     // PrimeNG Modules => view components
     ...PRIMENG_MODULES,
     // third party libs
