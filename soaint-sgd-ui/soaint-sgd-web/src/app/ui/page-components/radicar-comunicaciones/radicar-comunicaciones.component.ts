@@ -6,6 +6,7 @@ import {AnexoDTO} from '../../../domain/AnexoDTO';
 import {ReferidoDTO} from '../../../domain/ReferidoDTO';
 import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
+import {ContactoDTO} from '../../../domain/ContactoDTO';
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -23,7 +24,11 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   valueDestinatario: any;
 
+  valueGeneral: any;
+
   radicacion: ComunicacionOficialDTO;
+
+  date: Date = new Date();
 
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox) {
   }
@@ -35,13 +40,14 @@ export class RadicarComunicacionesComponent implements OnInit {
 
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
+    this.valueGeneral = this.datosGenerales.form.value;
     console.log(this.datosGenerales.form.value);
     console.log(this.datosRemitente.form.value);
     console.log(this.datosDestinatario.form.value);
 
     let agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
-    agentesList.push(...this.getAgentesExt());
+    agentesList.push(...this.getAgentesInt());
 
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
@@ -49,7 +55,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       ppdDocumento: this.getDocumento(),
       anexoList: this.getListaAnexos(),
       referidoList: this.getListaReferidos(),
-      // datosContactoList: []
+      datosContactoList: this.getDatosContactos()
     };
 
     console.log(this.radicacion);
@@ -74,7 +80,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       codSede: null,
       codDependencia: null,
       codFuncRemite: null,
-      fecAsignacion: new Date(),
+      fecAsignacion: this.date.toISOString(),
       ideContacto: null,
       codTipAgent: 'EXT',
       indOriginal: null
@@ -82,12 +88,12 @@ export class RadicarComunicacionesComponent implements OnInit {
     return tipoAgente;
   }
 
-  getAgentesExt(): Array<AgentDTO> {
+  getAgentesInt(): Array<AgentDTO> {
     let agentes = [];
     this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
       let tipoAgente: AgentDTO = {
         ideAgente: null,
-        codTipoRemite: agenteInt.tipoDestinatario.codigo,
+        codTipoRemite: null,
         codTipoPers: null,
         nombre: null,
         nroDocumentoIden: null,
@@ -100,11 +106,11 @@ export class RadicarComunicacionesComponent implements OnInit {
         nroDocuIdentidad: null,
         codSede: agenteInt.sedeAdministrativa.codigo,
         codDependencia: agenteInt.dependenciaGrupo.codigo,
-        codFuncRemite: '',
-        fecAsignacion: new Date(),
+        codFuncRemite: null,
+        fecAsignacion: this.date.toISOString(),
         ideContacto: null,
         codTipAgent: 'INT',
-        indOriginal: null,
+        indOriginal: agenteInt.tipoDestinatario.codigo,
       };
       agentes.push(tipoAgente);
     });
@@ -138,15 +144,15 @@ export class RadicarComunicacionesComponent implements OnInit {
   getDocumento(): DocumentoDTO {
     let documento: DocumentoDTO = {
       idePpdDocumento: null,
-      codTipoDoc: '',
-      fecDocumento: new Date(),
-      codAsunto: '',
-      nroFolios: 0,
-      nroAnexos: 0,
-      codEstDoc: '',
-      ideEcm: '',
-      codTipoSoporte: '',
-      codEstArchivado: ''
+      codTipoDoc: null,
+      fecDocumento: this.date.toISOString(),
+      codAsunto: null,
+      nroFolios: this.valueGeneral.numeroFolio,//'Numero Folio',
+      nroAnexos: this.valueGeneral.cantidadAnexos,//'Numero anexos',
+      codEstDoc: null,
+      ideEcm: null,
+      codTipoSoporte: null,
+      codEstArchivado: null
     };
     return documento;
   }
@@ -155,27 +161,54 @@ export class RadicarComunicacionesComponent implements OnInit {
   getCorrespondencia(): CorrespondenciaDTO {
     let correspondenciaDto: CorrespondenciaDTO = {
       ideDocumento: null,
-      descripcion: '',
-      tiempoRespuesta: '',
-      codUnidadTiempo: '',
-      codMedioRecepcion: '',
-      fecRadicado: new Date(),
-      fecDocumento: new Date(),
-      nroRadicado: '',
-      codTipoDoc: '',
-      codTipoCmc: '',
-      ideInstancia: '',
-      reqDistFisica: '',
-      codFuncRadica: '',
-      codSede: '',
-      codDependencia: '',
-      reqDigita: '',
-      codEmpMsj: '',
-      nroGuia: '',
-      fecVenGestion: '',
-      codEstado: ''
+      descripcion: null,
+      tiempoRespuesta: this.valueGeneral.tiempoRespuesta,
+      codUnidadTiempo: this.valueGeneral.unidadTiempo.codigo,
+      codMedioRecepcion: this.valueGeneral.medioRecepcion.codigo,
+      fecRadicado: this.date.toISOString(),
+      fecDocumento: this.date.toISOString(),
+      nroRadicado: null,
+      codTipoDoc: this.valueGeneral.tipologiaDocumental.codigo,
+      codTipoCmc: this.valueGeneral.tipoComunicacion.codigo,
+      ideInstancia: null,
+      reqDistFisica: this.valueGeneral.reqDistFisica,
+      codFuncRadica: null,
+      codSede: null,
+      codDependencia: null,
+      reqDigita: this.valueGeneral.reqDigit,
+      codEmpMsj: null,
+      nroGuia: null,
+      fecVenGestion: null,
+      codEstado: null
     };
     return correspondenciaDto;
+  }
+
+  getDatosContactos(): Array<ContactoDTO> {
+    let contactos = [];
+    this.datosRemitente.addresses.forEach(address => {
+      contactos.push({
+        ideContacto: null,
+        nroViaGeneradora: address.noViaPrincipal,
+        nroPlaca: null,
+        codTipoVia: address.tipoVia.codigo,
+        codPrefijoCuadrant: address.prefijoCuadrante.codigo,
+        codPostal: null,
+        direccion: null,
+        celular: null,
+        telFijo1: null,
+        telFijo2: null,
+        extension1: null,
+        extension2: null,
+        corrElectronico: null,
+        codPais: this.valueRemitente.pais.codigo,
+        codDepartamento: this.valueRemitente.departamento.codigo,
+        codMunicipio: this.valueRemitente.municipio.codigo,
+        provEstado: null,
+        ciudad: null
+      });
+    });
+    return contactos;
   }
 
 }

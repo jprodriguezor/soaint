@@ -4,8 +4,8 @@ export interface CorrespondenciaDTO {
   tiempoRespuesta: string;
   codUnidadTiempo: string;
   codMedioRecepcion: string;
-  fecRadicado: Date;
-  fecDocumento: Date;
+  fecRadicado: string;
+  fecDocumento: string;
   nroRadicado: string;
   codTipoDoc: string;
   codTipoCmc: string;

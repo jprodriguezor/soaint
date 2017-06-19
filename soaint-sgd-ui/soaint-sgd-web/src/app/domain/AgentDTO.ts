@@ -14,7 +14,7 @@ export interface AgentDTO {
   codSede: string,
   codDependencia: string,
   codFuncRemite: string,
-  fecAsignacion: Date,
+  fecAsignacion: string,
   ideContacto: number,
   codTipAgent: string,
   indOriginal: string

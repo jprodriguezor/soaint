@@ -1,7 +1,7 @@
 export interface DocumentoDTO {
   idePpdDocumento: number,
   codTipoDoc: string,
-  fecDocumento: Date,
+  fecDocumento: string,
   codAsunto: string,
   nroFolios: number,
   nroAnexos: number,
