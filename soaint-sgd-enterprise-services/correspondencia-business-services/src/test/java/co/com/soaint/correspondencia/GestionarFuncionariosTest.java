@@ -10,10 +10,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class GestionarFuncionariosTest extends  JPAHibernateTest {
     @Test
-    public void test_Funcionarios_findByLoginName_success(){
+    public void test_Funcionarios_findByLoginNameAndEstado_success(){
         String loginName = "LOGIN_NAME";
-        FuncionarioDTO funcionarioDTO = em.createNamedQuery("Funcionarios.findByLoginName", FuncionarioDTO.class)
+        String estado = "ACTIVO";
+        FuncionarioDTO funcionarioDTO = em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
                 .setParameter("LOGIN_NAME", loginName)
+                .setParameter("ESTADO", estado)
                 .getSingleResult();
         assertEquals("NOM_FUNCIONARIO1",funcionarioDTO.getNomFuncionario());
     }

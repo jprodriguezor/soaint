@@ -24,8 +24,8 @@ public class GestionarFuncionariosWS {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @WebMethod(action = "listarFuncionarioByLoginName", operationName = "listarFuncionarioByLoginName")
-    public FuncionarioDTO listarFuncionarioByLoginName(@WebParam(name = "login_name") final String loginName)throws BusinessException, SystemException{
-        return boundary.listarFuncionarioByLoginName(loginName);
+    @WebMethod(action = "listarFuncionarioByLoginNameAndEstado", operationName = "listarFuncionarioByLoginNameAndEstado")
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@WebParam(name = "login_name") final String loginName, @WebParam(name = "estado")final String estado)throws BusinessException, SystemException{
+        return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 }

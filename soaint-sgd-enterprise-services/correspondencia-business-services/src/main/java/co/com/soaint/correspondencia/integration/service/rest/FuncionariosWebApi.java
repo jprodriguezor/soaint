@@ -32,9 +32,9 @@ public class FuncionariosWebApi {
     GestionarFuncionarios boundary;
 
     @GET
-    @Path("/funcionarios/{login_name}")
-    public FuncionarioDTO listarFuncionarioByLoginName(@PathParam("login_name") final String loginName) throws BusinessException, SystemException{
+    @Path("/funcionarios/{login_name}/{estado}")
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@PathParam("login_name") final String loginName, @PathParam("estado")final String estado) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar funcionarios por login_name");
-        return boundary.listarFuncionarioByLoginName(loginName);
+        return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 }

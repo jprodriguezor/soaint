@@ -35,11 +35,12 @@ public class GestionarFuncionarios {
     public GestionarFuncionarios(){ super();}
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws BusinessException, SystemException{
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException{
         try {
 
-            return em.createNamedQuery("Funcionarios.findByLoginName", FuncionarioDTO.class)
+            return em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
                     .setParameter("LOGIN_NAME", loginName)
+                    .setParameter("ESTADO", estado)
                     .getSingleResult();
 
         } catch (Throwable ex) {

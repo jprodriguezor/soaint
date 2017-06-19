@@ -32,11 +32,11 @@ import javax.persistence.Table;
 @Table(name = "FUNCIONARIOS")
 @NamedQueries({
     @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
-        @NamedQuery(name = "Funcionarios.findByLoginName", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
+        @NamedQuery(name = "Funcionarios.findByLoginNameAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, f.codCargo, " +
                 "f.corrElectronico, f.codOrgaAdmi, f.loginName, f.estado) " +
                 "FROM Funcionarios f " +
-                "WHERE TRIM(f.loginName) = :LOGIN_NAME")})
+                "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.estado) = TRIM(:ESTADO)")})
 public class Funcionarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
