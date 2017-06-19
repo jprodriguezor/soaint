@@ -8,6 +8,7 @@ import * as municipioStore from 'app/infrastructure/state-management/municipioDT
 import * as departamentoStore from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-reducers';
 import * as dependenciaGrupoStore from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-reducers';
 import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
+import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -19,6 +20,7 @@ export interface State {
   // notification: notificationStore.State,
   constantes: constantesStore.State,
   paises: paisStore.State,
+  radicarComunicacion: comunicacionOficialStore.State,
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,

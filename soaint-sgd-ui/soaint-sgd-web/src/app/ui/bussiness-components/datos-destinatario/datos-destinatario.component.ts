@@ -9,13 +9,9 @@ import {
   getSedeAdministrativaArrayData,
   getTipoDestinatarioArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-import {
-  getArrayData as dependenciaGrupoArrayData
-} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors'
+import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {
-  Sandbox as DependenciaGrupoSandbox
-} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
 @Component({
   selector: 'app-datos-destinatario',
@@ -35,6 +31,8 @@ export class DatosDestinatarioComponent implements OnInit {
 
   selectSedeAdministrativa: any;
 
+  agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
+
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
@@ -47,6 +45,20 @@ export class DatosDestinatarioComponent implements OnInit {
     this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
     this.sedeAdministrativaSuggestions$ = this._store.select(getSedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
+  }
+
+  addAgentesDestinatario() {
+    let agenteDestinatario = [...this.agentesDestinatario];
+    agenteDestinatario.push({
+      tipoDestinatario: this.tipoDestinatarioControl.value,
+      sedeAdministrativa: this.sedeAdministrativaControl.value,
+      dependenciaGrupo: this.dependenciaGrupoControl.value
+    });
+    this.agentesDestinatario = agenteDestinatario;
+    this.tipoDestinatarioControl.setValue(null);
+    this.sedeAdministrativaControl.setValue(null);
+    this.dependenciaGrupoControl.setValue(null);
+
   }
 
   initForm() {

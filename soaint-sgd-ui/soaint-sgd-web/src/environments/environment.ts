@@ -31,4 +31,5 @@ export const environment = {
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
+  radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
 };

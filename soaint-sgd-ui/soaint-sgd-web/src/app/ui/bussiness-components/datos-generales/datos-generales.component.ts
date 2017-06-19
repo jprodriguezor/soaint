@@ -38,6 +38,8 @@ export class DatosGeneralesComponent implements OnInit {
   radicadoReferidoControl: AbstractControl;
   tipoAnexoDescripcionTipoAnexoControl: AbstractControl;
   tipoAnexoDescripcionDescripcionControl: AbstractControl;
+  reqDistFisicaControl: AbstractControl;
+  reqDigitControl: AbstractControl;
 
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
@@ -62,6 +64,8 @@ export class DatosGeneralesComponent implements OnInit {
     this.unidadTiempoControl = new FormControl(null);
     this.numeroFolioControl = new FormControl(null, Validators.required);
     this.tiempoRespuestaControl = new FormControl(null);
+    this.reqDistFisicaControl = new FormControl(null);
+    this.reqDigitControl = new FormControl(null);
     this.cantidadAnexosControl = new FormControl(null);
     this.asuntoControl = new FormControl(null, Validators.required);
     this.tipoAnexosControl = new FormControl(null);
@@ -74,6 +78,8 @@ export class DatosGeneralesComponent implements OnInit {
       'tipologiaDocumental': this.tipologiaDocumentalControl,
       'unidadTiempo': this.unidadTiempoControl,
       'numeroFolio': this.numeroFolioControl,
+      'reqDistFisica': this.reqDistFisicaControl,
+      'reqDigit': this.reqDigitControl,
       'tiempoRespuesta': this.tiempoRespuestaControl,
       'cantidadAnexos': this.cantidadAnexosControl,
       'asunto': this.asuntoControl,

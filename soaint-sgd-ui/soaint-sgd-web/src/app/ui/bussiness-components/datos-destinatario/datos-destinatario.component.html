@@ -75,15 +75,15 @@
 
       <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: right">
         <button pButton type="button" label="Agregar"
-                style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+                style="width: auto; margin-left: 12px; margin-bottom: 10px" (click)="addAgentesDestinatario()"></button>
       </div>
 
       <div class="ui-g-12">
-        <p-dataTable [value]="cars1" selectionMode="single" [(selection)]="selectedCar"
+        <p-dataTable [value]="agentesDestinatario" selectionMode="single" [(selection)]="selectedagenteDestinatario"
                      [paginator]="true" [rows]="10" [responsive]="true">
-          <p-column field="vin" header="Tipo destinatario" [sortable]="true"></p-column>
-          <p-column field="year" header="Sede administrativa" [sortable]="true"></p-column>
-          <p-column field="brand" header="Dependencia/Grupo" [sortable]="true"></p-column>
+          <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+          <p-column field="sedeAdministrativa.nombre" header="Sede administrativa" [sortable]="true"></p-column>
+          <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
           <p-column [style]="{'width': '50px'}"></p-column>
         </p-dataTable>
       </div>

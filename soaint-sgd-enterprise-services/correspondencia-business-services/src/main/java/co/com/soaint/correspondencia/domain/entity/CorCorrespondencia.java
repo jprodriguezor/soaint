@@ -30,6 +30,9 @@ import javax.persistence.*;
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
                 "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
                 "FROM CorCorrespondencia c WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
+                "FROM CorCorrespondencia c " +
+                "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.countByNroRadicado", query = "SELECT COUNT(*) " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),

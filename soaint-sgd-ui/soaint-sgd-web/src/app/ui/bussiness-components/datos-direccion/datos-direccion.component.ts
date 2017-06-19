@@ -4,10 +4,12 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {getTipoDocumentoArrayData} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
+import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
+import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
+import {getBisArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/bis-selectors';
 
 
 @Component({
@@ -33,10 +35,8 @@ export class DatosDireccionComponent implements OnInit {
   @Input()
   display: boolean = false;
 
-  address: any = {};
-
   @Output()
-  dialogHide: EventEmitter<boolean> = new EventEmitter<boolean>();
+  dialogHide: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
@@ -46,18 +46,18 @@ export class DatosDireccionComponent implements OnInit {
 
   hideDialog() {
     this.display = false;
-    this.dialogHide.emit(this.address);
   }
 
   addAddress() {
     this.hideDialog();
+    this.dialogHide.emit(this.form.value);
   }
 
   ngOnInit(): void {
-    this.prefijoCuadranteSuggestions$ = this._store.select(getTipoDocumentoArrayData);
-    this.tipoViaSuggestions$ = this._store.select(getTipoDocumentoArrayData);
-    this.orientacionSuggestions$ = this._store.select(getTipoDocumentoArrayData);
-    this.bisSuggestons$ = this._store.select(getTipoDocumentoArrayData);
+    this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
+    this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
+    this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
+    this.bisSuggestons$ = this._store.select(getBisArrayData);
   }
 
   initForm() {

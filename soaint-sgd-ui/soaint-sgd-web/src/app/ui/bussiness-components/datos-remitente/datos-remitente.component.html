@@ -191,10 +191,15 @@
         </div>
 
         <div class="ui-g-12">
-          <p-dataTable [value]="cars1" selectionMode="single" [(selection)]="selectedCar"
+          <p-dataTable [value]="addresses" selectionMode="single" [(selection)]="selectedAdress"
                        [paginator]="true" [rows]="10" [responsive]="true">
             <p-header>Direcciones</p-header>
-            <p-column field="vin" header="Dirección" [sortable]="true"></p-column>
+            <p-column field="tipoVia.nombre" header="Tipo de via" [sortable]="true"></p-column>
+            <p-column field="prefijoCuadrante.nombre" header="Prefijo" [sortable]="true"></p-column>
+            <p-column field="orientacion.nombre" header="Orientacion" [sortable]="true"></p-column>
+            <p-column field="noViaPrincipal" header="No. via principal" [sortable]="true"></p-column>
+            <p-column field="bis" header="Bis" [sortable]="true"></p-column>
+            <p-column field="noVia" header="No. de via" [sortable]="true"></p-column>
           </p-dataTable>
         </div>
       </div>
@@ -203,5 +208,5 @@
 </form>
 
 
-<app-datos-direccion [display]="display" (dialogHide)="hideDialog()"></app-datos-direccion>
+<app-datos-direccion [display]="display" (dialogHide)="hideDialog($event)"></app-datos-direccion>
 

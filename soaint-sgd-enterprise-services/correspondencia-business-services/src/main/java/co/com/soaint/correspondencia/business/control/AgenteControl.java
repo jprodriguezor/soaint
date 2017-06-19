@@ -6,6 +6,8 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 
+import java.util.ArrayList;
+
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
@@ -17,7 +19,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
  */
 @BusinessControl
 public class AgenteControl {
-    public CorAgente corAgenteTransform(AgenteDTO agenteDTO){
+    public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {
         return CorAgente.newInstance()
                 .codTipoRemite(agenteDTO.getCodTipoRemite())
                 .codTipoPers(agenteDTO.getCodTipoPers())
@@ -37,6 +39,7 @@ public class AgenteControl {
                 .ideContacto(agenteDTO.getIdeContacto())
                 .codTipAgent(agenteDTO.getCodTipAgent())
                 .indOriginal(agenteDTO.getIndOriginal())
+                .tvsDatosContactoList(new ArrayList<>())
                 .build();
     }
 }
