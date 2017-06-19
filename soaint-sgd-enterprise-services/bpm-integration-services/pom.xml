@@ -183,7 +183,7 @@
 
         <dependency>
             <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-services-api</artifactId>
+            <artifactId>jbpm-kie-services</artifactId>
             <version>6.5.0.Final</version>
         </dependency>
         <dependency>
