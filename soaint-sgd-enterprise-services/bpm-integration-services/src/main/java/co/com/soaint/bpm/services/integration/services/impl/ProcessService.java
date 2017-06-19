@@ -127,11 +127,22 @@ public class ProcessService implements IProcessServices {
     }
 
     @Override
-    public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
+    public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
-        taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
+        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                .idTarea(entrada.getIdTarea())
+                .estado(String.valueOf(EstadosEnum.LISTO))
+                .idProceso(entrada.getIdProceso())
+                .idDespliegue(entrada.getIdDespliegue())
+                .build();
+        return respuestaTarea;
+    }
 
+    @Override
+    public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
+        taskService = obtenerEngine(entrada).getTaskService();
+        taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
         RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.COMPLETADO))
@@ -141,6 +152,7 @@ public class ProcessService implements IProcessServices {
 
         return respuestaTarea;
     }
+
 
     @Override
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws MalformedURLException {

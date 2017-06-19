@@ -24,7 +24,7 @@ public interface IProcessServices {
       List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
       List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
       RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
-
+      RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
 
 
 }

@@ -83,6 +83,18 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/tareas/iniciar/")
+    public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - completar tarea");
+        try {
+            return proceso.iniciarTarea(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
     @Path("/tareas/listar/estados")
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - listar tareas con sus estados");
