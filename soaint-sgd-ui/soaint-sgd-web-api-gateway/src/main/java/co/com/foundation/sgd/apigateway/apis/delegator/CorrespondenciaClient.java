@@ -21,6 +21,7 @@ public class CorrespondenciaClient {
 
     public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
         System.out.println("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        comunicacionOficialDTO.getCorrespondencia().setCodSede("01");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()

@@ -30,7 +30,7 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/radicar")
     @JWTTokenSecurity
-    public Response list(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+    public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
         //TODO: add trafic log
         System.out.println("BisGatewayApi - [trafic] - listing Bis");
         Response response = client.radicar(comunicacionOficial);
