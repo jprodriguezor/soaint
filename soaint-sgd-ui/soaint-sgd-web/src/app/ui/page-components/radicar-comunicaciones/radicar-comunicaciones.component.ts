@@ -32,6 +32,8 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   barCodeVisible: boolean = false;
 
+  editable: boolean = true;
+
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox) {
   }
 
@@ -60,6 +62,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
+      this.editable = false;
     });
   }
 

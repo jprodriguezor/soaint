@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/operator/filter';
@@ -33,6 +33,9 @@ export class DatosDestinatarioComponent implements OnInit {
 
   agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
 
+
+  @Input()
+  editable: boolean = true;
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -40,6 +40,9 @@ export class DatosGeneralesComponent implements OnInit {
   tipoAnexoDescripcionDescripcionControl: AbstractControl;
   reqDistFisicaControl: AbstractControl;
   reqDigitControl: AbstractControl;
+
+  @Input()
+  editable: boolean = true;
 
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;

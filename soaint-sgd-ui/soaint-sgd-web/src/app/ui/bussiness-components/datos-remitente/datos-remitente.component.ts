@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -59,6 +59,9 @@ export class DatosRemitenteComponent implements OnInit {
   addresses: Array<any> = [];
 
   display: boolean = false;
+
+  @Input()
+  editable: boolean = true;
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,

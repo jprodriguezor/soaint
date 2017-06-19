@@ -11,6 +11,7 @@
           </div>
           <div class="ui-g-12 md-inputfield">
             <p-autoComplete id="tipoDestinatario"
+                            [disabled]="!editable"
                             [suggestions]="tipoDestinatarioSuggestions$| async"
                             field="nombre"
                             formControlName="tipoDestinatario"
@@ -33,6 +34,7 @@
           </div>
           <div class="ui-g-12 md-inputfield">
             <p-autoComplete id="sedeAdministrativa"
+                            [disabled]="!editable"
                             [suggestions]="sedeAdministrativaSuggestions$| async"
                             field="nombre"
                             (onSelect)="onSelectSedeAdministrativa($event)"
@@ -56,6 +58,7 @@
           </div>
           <div class="ui-g-12 md-inputfield">
             <p-autoComplete id="dependenciaGrupo"
+                            [disabled]="!editable"
                             [disabled]="!selectSedeAdministrativa"
                             [suggestions]="dependenciaGrupoSuggestions$ | async"
                             field="nombre"
