@@ -7,6 +7,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,6 +31,10 @@ public class FuncionariosWebApi {
 
     @Autowired
     GestionarFuncionarios boundary;
+
+    public FuncionariosWebApi(){
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
     @GET
     @Path("/funcionarios/{login_name}/{estado}")

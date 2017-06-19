@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,12 +38,18 @@ public class GestionarFuncionarios {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException{
         try {
-
-            return em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
+            List<FuncionarioDTO> funcionarioDTOList = em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
                     .setParameter("LOGIN_NAME", loginName)
                     .setParameter("ESTADO", estado)
-                    .getSingleResult();
-
+                    .getResultList();
+            if (funcionarioDTOList.size() == 0){
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.funcionario_not_exist_by_loginName_and_estado")
+                        .buildBusinessException();
+            }
+            return funcionarioDTOList.get(0);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
