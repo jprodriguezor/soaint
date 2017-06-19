@@ -70,25 +70,21 @@ public class ProcesoClient {
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
         System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        EntradaProcesoDTO entradaProcesoDTO = entrada;
-        //TODO remove next line
-        entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entrada.setUsuario("krisv");
+        entrada.setPass("krisv");
         return wt.path("/bpm/tareas/iniciar")
                 .request()
-                .post(Entity.json(entradaProcesoDTO));
+                .post(Entity.json(entrada));
     }
 
-    public Response listarIntanciasProceso(EntradaProcesoDTO entrada) {
+    public Response listarIntanciasProceso() {
         System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        EntradaProcesoDTO entradaProcesoDTO = entrada;
-        //TODO remove next line
+        EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
         entradaProcesoDTO.setUsuario("krisv");
         entradaProcesoDTO.setPass("krisv");
-        return wt.path("/bpm/proceso/listar-instancias")
+        return wt.path("/bpm/proceso/listar-instancias/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }

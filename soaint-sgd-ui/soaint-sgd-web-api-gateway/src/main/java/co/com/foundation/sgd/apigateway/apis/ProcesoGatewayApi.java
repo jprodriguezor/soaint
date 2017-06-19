@@ -88,13 +88,13 @@ public class ProcesoGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
-    @POST
+    @GET
     @Path("/proceso/listar-instancias")
     @JWTTokenSecurity
-    public Response listarIntanciasProceso(EntradaProcesoDTO entrada) {
+    public Response listarIntanciasProceso() {
         //TODO: add trafic log
         System.out.println("ProcesoGatewayApi - [trafic] - listing Process Instances");
-        Response response = procesoClient.listarIntanciasProceso(entrada);
+        Response response = procesoClient.listarIntanciasProceso();
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
 
