@@ -18,15 +18,14 @@ export class Sandbox {
   }
 
   loadData(payload: any) {
-    // const clonePayload = tassign(payload, {
-    //   estados: [
-    //     'RESERVADO',
-    //     'COMPLETADO',
-    //     'ENPROGRESO',
-    //     'LISTO',
-    //     'CANDELADO'
-    //   ]
-    // });
+    const clonePayload = tassign(payload, {
+      estados: [
+        'RESERVADO',
+        'COMPLETADO',
+        'ENPROGRESO',
+        'LISTO'
+      ]
+    });
     // return this._listSelectionService.post(environment.tasksForStatus_endpoint, clonePayload);
     return Observable.of(this.getMockData());
   }

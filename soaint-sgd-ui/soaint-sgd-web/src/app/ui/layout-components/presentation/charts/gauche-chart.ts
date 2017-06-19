@@ -1,4 +1,4 @@
-import {Component} from '@angular/core'
+import {Component, Input} from '@angular/core'
 
 @Component({
   selector: 'app-gauge-chart',
@@ -7,31 +7,32 @@ import {Component} from '@angular/core'
       [view]="view"
       [scheme]="colorScheme"
       [results]="data"
-      [min]="0"
-      [max]="100"
-      [angleSpan]="240"
-      [startAngle]="-120"
-      [units]="'alerts'"
-      [bigSegments]="10"
-      [smallSegments]="5"
-      (select)="onSelect($event)">
+      [min]="min"
+      [max]="max"
+      [angleSpan]="angleSpan"
+      [startAngle]="startAngle"
+      [units]="units"
+      [bigSegments]="bigSegments"
+      [smallSegments]="smallSegments"
+    >
     </ngx-charts-gauge>
   `
 })
 export class GaugeChartComponent {
-  view: any[] = [600, 300];
-  data: any[];
-
+  view: any[] = [750, 350];
+  @Input() data: any[];
+  @Input() max: number = 10;
+  @Input() min: number = 1;
+  @Input() units: string = 'Tareas';
+  @Input() bigSegments: number = 10;
+  @Input() smallSegments: number = 5;
+  @Input() angleSpan: number = 240;
+  @Input() startAngle: number = -120;
   colorScheme = {
     domain: ['#31CCEC', '#F2C037', '#21BA45', '#bdbdbd']
   };
 
   constructor() {
-    this.data = single;
-  }
-
-  onSelect(event) {
-    console.log(event);
   }
 }
 
@@ -39,18 +40,18 @@ export class GaugeChartComponent {
 const single = [
   {
     'name': 'Reservadas',
-    'value': 3
-  },
-  {
-    'name': 'En proceso',
-    'value': 3
-  },
-  {
-    'name': 'Completadas',
     'value': 1
   },
   {
-    'name': 'Canceladas',
+    'name': 'En proceso',
+    'value': 1
+  },
+  {
+    'name': 'Completadas',
+    'value': 0
+  },
+  {
+    'name': 'Candeladas',
     'value': 0
   }
 ];

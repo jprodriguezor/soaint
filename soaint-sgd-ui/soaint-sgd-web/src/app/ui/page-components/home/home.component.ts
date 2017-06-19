@@ -10,7 +10,7 @@ import {
   getCompletedTasksArrayData as CompletedTasksArrayData,
   getInProgressTasksArrayData as InProgressTasksArrayData,
   getReservedTasksArrayData as ReservedTasksArrayData,
-  getCanceledTasksArrayData as CanceledTasksArrayData
+  getCanceledTasksArrayData as CanceledTasksArrayData, getTasksStadistics
 } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from 'app/domain/tareaDTO';
 
@@ -24,6 +24,8 @@ export class HomeComponent implements OnInit {
   staticProcess$: Observable<any[]>;
 
   allTasks$: Observable<TareaDTO[]>;
+
+  tasksStadistics$: Observable<TareaDTO[]>;
 
   completedTasks$: Observable<TareaDTO[]>;
 
@@ -41,6 +43,11 @@ export class HomeComponent implements OnInit {
     this.reservedTasks$ = this._store.select(ReservedTasksArrayData);
     this.inProgressTasks$ = this._store.select(InProgressTasksArrayData);
     this.canceledTasks$ = this._store.select(CanceledTasksArrayData);
+    this.tasksStadistics$ = this._store.select(getTasksStadistics);
+
+    this.tasksStadistics$.subscribe((data) => {
+      console.log(data);
+    });
 
   }
 
