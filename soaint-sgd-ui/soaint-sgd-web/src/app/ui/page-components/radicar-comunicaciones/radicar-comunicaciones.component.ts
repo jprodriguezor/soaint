@@ -67,15 +67,15 @@ export class RadicarComunicacionesComponent implements OnInit {
     let tipoAgente: AgentDTO = {
       ideAgente: null,
       codTipoRemite: null,
-      codTipoPers: this.valueRemitente.tipoPersona.codigo,
+      codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos,
       nroDocumentoIden: null,
       razonSocial: this.valueRemitente.razonSocial,
       nit: this.valueRemitente.nit,
       codCortesia: null,
       codCargo: null,
-      codEnCalidad: this.valueRemitente.actuaCalidad.codigo,
-      codTipDocIdent: this.valueRemitente.tipoDocumento.codigo,
+      codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
+      codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
       nroDocuIdentidad: null,
       codSede: null,
       codDependencia: null,
@@ -104,13 +104,13 @@ export class RadicarComunicacionesComponent implements OnInit {
         codEnCalidad: null,
         codTipDocIdent: null,
         nroDocuIdentidad: null,
-        codSede: agenteInt.sedeAdministrativa.codigo,
-        codDependencia: agenteInt.dependenciaGrupo.codigo,
+        codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
+        codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
         codFuncRemite: null,
         fecAsignacion: this.date.toISOString(),
         ideContacto: null,
         codTipAgent: 'INT',
-        indOriginal: agenteInt.tipoDestinatario.codigo,
+        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
     });
@@ -123,7 +123,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.datosGenerales.descripcionAnexos.forEach((anexo) => {
       anexoList.push({
         ideAnexo: null,
-        codAnexo: anexo.tipoAnexo.codigo,
+        codAnexo: anexo.tipoAnexo ? anexo.tipoAnexo.codigo : null,
         descripcion: anexo.descripcion
       });
     });
@@ -163,13 +163,13 @@ export class RadicarComunicacionesComponent implements OnInit {
       ideDocumento: null,
       descripcion: this.valueGeneral.asunto,
       tiempoRespuesta: this.valueGeneral.tiempoRespuesta,
-      codUnidadTiempo: this.valueGeneral.unidadTiempo.codigo,
-      codMedioRecepcion: this.valueGeneral.medioRecepcion.codigo,
+      codUnidadTiempo: this.valueGeneral.unidadTiempo ? this.valueGeneral.unidadTiempo.codigo : null,
+      codMedioRecepcion: this.valueGeneral.medioRecepcion ? this.valueGeneral.medioRecepcion.codigo : null,
       fecRadicado: this.date.toISOString(),
       fecDocumento: this.date.toISOString(),
       nroRadicado: null,
-      codTipoDoc: this.valueGeneral.tipologiaDocumental.codigo,
-      codTipoCmc: this.valueGeneral.tipoComunicacion.codigo,
+      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
+      codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
       ideInstancia: null,
       reqDistFisica: this.valueGeneral.reqDistFisica ? "1" : "0",
       codFuncRadica: null,
@@ -191,8 +191,8 @@ export class RadicarComunicacionesComponent implements OnInit {
         ideContacto: null,
         nroViaGeneradora: address.noViaPrincipal,
         nroPlaca: null,
-        codTipoVia: address.tipoVia.codigo,
-        codPrefijoCuadrant: address.prefijoCuadrante.codigo,
+        codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
+        codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
         codPostal: null,
         direccion: null,
         celular: null,
@@ -201,9 +201,9 @@ export class RadicarComunicacionesComponent implements OnInit {
         extension1: null,
         extension2: null,
         corrElectronico: null,
-        codPais: this.valueRemitente.pais.codigo,
-        codDepartamento: this.valueRemitente.departamento.codigo,
-        codMunicipio: this.valueRemitente.municipio.codigo,
+        codPais: this.valueRemitente.pais ? this.valueRemitente.pais.codigo : null,
+        codDepartamento: this.valueRemitente.departamento ? this.valueRemitente.departamento.codigo : null,
+        codMunicipio: this.valueRemitente.municipio ? this.valueRemitente.municipio.codigo : null,
         provEstado: null,
         ciudad: null
       });
