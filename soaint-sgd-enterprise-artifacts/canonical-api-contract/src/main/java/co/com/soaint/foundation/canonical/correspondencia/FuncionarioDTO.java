@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.List;
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * Soaint Generic Artifact
- * Created:12-Jun-2017
+ * Created:15-Jun-2017
  * Author: esanchez
  * Type: JAVA class Artifact
  * Purpose: DTO - Model Artifact
@@ -23,15 +23,19 @@ import java.util.List;
 @Builder(builderMethodName = "newInstance")
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/correspondencia/1.0.0")
-public class ComunicacionOficialDTO implements Serializable {
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
+public class FuncionarioDTO  implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private CorrespondenciaDTO correspondencia;
-    private List<AgenteDTO> agenteList;
-    private PpdDocumentoDTO ppdDocumento;
-    private List<AnexoDTO> anexoList;
-    private List<ReferidoDTO> referidoList;
-    private List<DatosContactoDTO> datosContactoList;
+    private BigInteger ideFunci;
+    private String codTipDocIdent;
+    private String nroIdentificacion;
+    private String nomFuncionario;
+    private String valApellido1;
+    private String valApellido2;
+    private String codCargo;
+    private String corrElectronico;
+    private String codOrgaAdmi;
+    private String loginName;
+    private String estado;
 }

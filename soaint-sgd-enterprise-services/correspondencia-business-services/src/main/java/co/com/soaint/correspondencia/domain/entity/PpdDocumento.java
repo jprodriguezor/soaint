@@ -33,6 +33,10 @@ import javax.persistence.*;
                 "p.codTipoSoporte, p.codEstArchivado) " +
                 "FROM PpdDocumento p " +
                 "INNER JOIN p.corCorrespondencia co " +
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "PpdDocumento.findIdePpdDocumentoByIdeDocumento", query = "SELECT p.idePpdDocumento " +
+                "FROM PpdDocumento p " +
+                "INNER JOIN p.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
 @javax.persistence.TableGenerator(name = "PPD_DOCUMENTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "PPD_DOCUMENTO_SEQ", allocationSize = 1)

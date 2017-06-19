@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.*;
 import co.com.soaint.correspondencia.domain.entity.*;
+import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,6 +52,12 @@ public class GestionarCorrespondencia {
 
     @Autowired
     ReferidoControl referidoControl;
+
+    @Autowired
+    DatosContactoControl datosContactoControl;
+
+    @Autowired
+    GestionarTrazaDocumento gestionarTrazaDocumento;
     // ----------------------
 
     public GestionarCorrespondencia() {
@@ -61,11 +70,21 @@ public class GestionarCorrespondencia {
 
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
 
-            comunicacionOficialDTO.getAgenteList().stream().forEach((agenteDTO) -> {
+            for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
                 corAgente.setCorCorrespondencia(correspondencia);
+
+                if (TipoAgenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+
+                    for (DatosContactoDTO datosContactoDTO : comunicacionOficialDTO.getDatosContactoList()) {
+                        TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
+                        datosContacto.setCorAgente(corAgente);
+                        corAgente.getTvsDatosContactoList().add(datosContacto);
+                    }
+                }
+
                 correspondencia.getCorAgenteList().add(corAgente);
-            });
+            }
 
 
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumento());
@@ -87,7 +106,27 @@ public class GestionarCorrespondencia {
             em.persist(correspondencia);
             em.flush();
 
-            return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
+            ComunicacionOficialDTO comunicacionOficial = listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
+
+            new Thread(() -> {
+                Date fecha = new Date();
+                try {
+                    gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
+                            .fecTrazDocumento(fecha)
+                            .ideDocumento(comunicacionOficial.getCorrespondencia().getIdeDocumento())
+                            .observacion("")
+                            .ideFunci(null)
+                            .codEstado(comunicacionOficial.getCorrespondencia().getCodEstado())
+                            .codOrgaAdmin(null)
+                            .build());
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }).start();
+
+            return comunicacionOficial;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -113,6 +152,20 @@ public class GestionarCorrespondencia {
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList();
 
+            List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
+
+            agenteDTOList.stream().forEach((agenteDTO) -> {
+                if (TipoAgenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+                    em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
+                            .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
+                            .getResultList()
+                            .stream()
+                            .forEach((datosContactoDTO) -> {
+                                datosContactoDTOList.add(datosContactoDTO);
+                            });
+                }
+            });
+
             PpdDocumentoDTO ppdDocumentoDTO = em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getSingleResult();
@@ -132,6 +185,7 @@ public class GestionarCorrespondencia {
                     .ppdDocumento(ppdDocumentoDTO)
                     .anexoList(anexoList)
                     .referidoList(referidoList)
+                    .datosContactoList(datosContactoDTOList)
                     .build();
         } catch (BusinessException e) {
             throw e;
@@ -155,6 +209,27 @@ public class GestionarCorrespondencia {
                     .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
                     .setParameter("COD_ESTADO", correspondenciaDTO.getCodEstado())
                     .executeUpdate();
+
+            new Thread(() -> {
+                Date fecha = new Date();
+                try {
+                    BigInteger ideDocumento = em.createNamedQuery("CorCorrespondencia.findIdeDocumentoByNroRadicado", BigInteger.class)
+                            .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
+                            .getSingleResult();
+                    gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
+                            .fecTrazDocumento(fecha)
+                            .ideDocumento(ideDocumento)
+                            .observacion("Cambio de estado de documento")
+                            .ideFunci(null)
+                            .codEstado(correspondenciaDTO.getCodEstado())
+                            .codOrgaAdmin(null)
+                            .build());
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }).start();
 
         } catch (BusinessException e) {
             throw e;
