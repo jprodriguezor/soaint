@@ -22,4 +22,9 @@
   </p-tabPanel>
 </p-tabView>
 
+<p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
+          (onHide)="hideDialog()">
+  <app-ticket-radicado [noRadicado]="radicacion?.correspondencia.nroRadicado"></app-ticket-radicado>
+</p-dialog>
+
 

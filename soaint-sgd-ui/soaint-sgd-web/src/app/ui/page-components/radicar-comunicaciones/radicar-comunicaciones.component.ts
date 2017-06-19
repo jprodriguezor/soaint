@@ -30,25 +30,25 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   date: Date = new Date();
 
+  barCodeVisible: boolean = false;
+
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox) {
   }
 
   ngOnInit() {
   }
 
-  radicarComunicacion() {
+  hideDialog() {
+    this.barCodeVisible = false;
+  }
 
+  radicarComunicacion() {
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
-    console.log(this.datosGenerales.form.value);
-    console.log(this.datosRemitente.form.value);
-    console.log(this.datosDestinatario.form.value);
-
     let agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
     agentesList.push(...this.getAgentesInt());
-
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
@@ -57,10 +57,10 @@ export class RadicarComunicacionesComponent implements OnInit {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
-
-    console.log(this.radicacion);
-
-    this._radicarComunicacionesSandBox.radicarDispatch(this.radicacion);
+    this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
+      this.barCodeVisible = true;
+      this.radicacion = response;
+    });
   }
 
   getTipoAgenteExt(): AgentDTO {
