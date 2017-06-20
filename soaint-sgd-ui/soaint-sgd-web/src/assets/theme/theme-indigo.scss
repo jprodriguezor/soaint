@@ -1,14 +1,16 @@
-$primaryColor: #3984B8;
-$primaryDarkColor: #393B3E;
+$primaryColor: #0273D4;
+//$primaryDarkColor: darken(#3984B8, 15%);
+$primaryDarkColor: #0273D4;
 $primaryLightColor: #EEEEEE;
 //$accentColor: #E91E63;
 //$accentDarkColor: #ad1457;
 //$accentLightColor: #f48fb1;
 //$accentTextColor: #ffffff;
-$accentColor: lighten(#3984B8, 20%);
-$accentDarkColor: #424242;
-$accentLightColor: #858585;
+$accentColor: #26C6DA;
+$accentDarkColor: #26abbf;
+$accentLightColor: lighten(#00a7b8, 30%);
 $accentTextColor: #ffffff;
+$fontSize: 10px;
 
 
 @import '../sass/theme/_theme';
