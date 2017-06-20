@@ -12,6 +12,7 @@ import {
   getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Message} from 'primeng/primeng';
 
 @Component({
   selector: 'app-datos-generales',
@@ -55,6 +56,11 @@ export class DatosGeneralesComponent implements OnInit {
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
   radicadoReferido: { nombre: string } = {nombre: ''};
   tipoAnexoDescripcion: { tipoAnexo: ConstanteDTO, descripcion: string } = {tipoAnexo: null, descripcion: ''};
+
+
+  msgs: Message[];
+  uploadedFiles: any[] = [];
+
 
   constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
     this.initForm();
@@ -187,6 +193,15 @@ export class DatosGeneralesComponent implements OnInit {
   onDropdownClickTipologiaDocumental($event) {
     // this method triggers load of suggestions
     this._sandbox.loadDispatch('tipologiaDocumental');
+  }
+  
+  onUpload(event) {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+
+    this.msgs = [];
+    this.msgs.push({severity: 'info', summary: 'File Uploaded', detail: ''});
   }
 
 

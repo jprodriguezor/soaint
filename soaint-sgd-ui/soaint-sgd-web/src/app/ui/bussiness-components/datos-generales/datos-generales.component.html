@@ -95,7 +95,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="numeroFolio" formControlName="numeroFolio">
+              <input type="number" pInputText id="numeroFolio" formControlName="numeroFolio">
               <label><span class="text-danger">*</span>No. de folio</label>
               <div class="ui-message ui-messages-error ui-corner-all"
                    *ngIf="numeroFolioControl.touched && !numeroFolioControl.valid">
@@ -253,6 +253,22 @@
             </ng-template>
           </p-column>
         </p-dataTable>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="card">
+          <h1>Upload</h1>
+          <p-growl [value]="msgs"></p-growl>
+
+          <p-fileUpload name="demo[]" url="./upload.php" (onUpload)="onUpload($event)"
+                        multiple="multiple" accept="image/*" maxFileSize="1000000">
+            <ng-template pTemplate="content">
+              <ul *ngIf="uploadedFiles.length">
+                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+              </ul>
+            </ng-template>
+          </p-fileUpload>
+        </div>
       </div>
 
 
