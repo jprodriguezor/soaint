@@ -1,9 +1,14 @@
-$primaryColor: #3F51B5;
-$primaryDarkColor: #283593;
-$primaryLightColor: #9fa8da;
-$accentColor: #E91E63;
-$accentDarkColor: #ad1457;
-$accentLightColor: #f48fb1;
+$primaryColor: #3984B8;
+$primaryDarkColor: #393B3E;
+$primaryLightColor: #EEEEEE;
+//$accentColor: #E91E63;
+//$accentDarkColor: #ad1457;
+//$accentLightColor: #f48fb1;
+//$accentTextColor: #ffffff;
+$accentColor: lighten(#424242, 20%);
+$accentDarkColor: #424242;
+$accentLightColor: #858585;
 $accentTextColor: #ffffff;
+
 
 @import '../sass/theme/_theme';

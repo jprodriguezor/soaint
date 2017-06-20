@@ -4853,7 +4853,7 @@ body .ui-datatable .ui-datatable-data tr {
       box-sizing: content-box; }
   body .ui-datatable .ui-datatable-data tr.ui-state-highlight {
     background-color: #CDDC39;
-    border-color:   #CDDC39;
+    border-color: ┬á #CDDC39;
     color: #212121; }
   body .ui-datatable .ui-datatable-data tr .ui-cell-editor-input input {
     color: #212121; }
@@ -5851,3 +5851,5 @@ body .ui-inplace .ui-inplace-display {
     background-color: #e8e8e8; }
 body .ui-terminal .ui-terminal-input {
   font-size: 16px; }
+
+/*# sourceMappingURL=theme-teal.css.map */
