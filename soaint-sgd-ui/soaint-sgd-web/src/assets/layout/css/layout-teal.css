@@ -970,8 +970,7 @@ body {
         -moz-transition: color 0.5s;
         -o-transition: color 0.5s;
         -webkit-transition: color 0.5s;
-        transition: color 0.5s;
-        font-size: 36px; }
+        transition: color 0.5s; }
     .layout-container .topbar .topbar-right .topbar-items .search-item input {
       position: relative;
       top: -10px;
@@ -1107,7 +1106,6 @@ body {
 .layout-container.menu-layout-overlay .topbar {
   z-index: 999999998; }
   .layout-container.menu-layout-overlay .topbar .topbar-right #menu-button i {
-    font-size: 36px !important;
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -o-transform: rotate(180deg);
