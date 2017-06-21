@@ -13,6 +13,9 @@ public class TipoAnexosClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tipoanexo.value}")
+    private String tipoValue = "";
+
     public TipoAnexosClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TipoAnexosClient {
     public Response list() {
         System.out.println("TipoAnexos - [trafic] - listing TipoAnexos with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIPO-ANE/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoValue + "/A")
                 .request()
                 .get();
     }

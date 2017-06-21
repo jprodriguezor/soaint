@@ -13,6 +13,9 @@ public class TipoTelefonoClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tipotelefono.value}")
+    private String tipoTelValue = "";
+
     public TipoTelefonoClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TipoTelefonoClient {
     public Response list() {
         System.out.println("Tipo Teléfono - [trafic] - listing TipoTelefono with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIPO-TEL/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoTelValue + "/A")
                 .request()
                 .get();
     }

@@ -13,6 +13,9 @@ public class OrientacionClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.orientacion.value}")
+    private String orientValue = "";
+
     public OrientacionClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class OrientacionClient {
     public Response list() {
         System.out.println("Orientación - [trafic] - listing Orientacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/ORIENT/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + orientValue + "/A")
                 .request()
                 .get();
     }
