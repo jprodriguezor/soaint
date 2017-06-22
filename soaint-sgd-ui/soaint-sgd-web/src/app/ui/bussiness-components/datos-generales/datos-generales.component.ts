@@ -68,7 +68,11 @@ export class DatosGeneralesComponent implements OnInit {
 
   initForm() {
     this.tipoComunicacionControl = new FormControl(null, Validators.required);
-    this.medioRecepcionControl = new FormControl(null, Validators.required);
+    this.medioRecepcionControl = new FormControl({
+      ideConst: 10,
+      codigo: 'VENTANIL',
+      nombre: 'Ventanilla'
+    }, Validators.required);
     this.tipologiaDocumentalControl = new FormControl(null, Validators.required);
     this.unidadTiempoControl = new FormControl(null);
     this.numeroFolioControl = new FormControl(null, Validators.required);
@@ -194,7 +198,7 @@ export class DatosGeneralesComponent implements OnInit {
     // this method triggers load of suggestions
     this._sandbox.loadDispatch('tipologiaDocumental');
   }
-  
+
   onUpload(event) {
     for (let file of event.files) {
       this.uploadedFiles.push(file);
