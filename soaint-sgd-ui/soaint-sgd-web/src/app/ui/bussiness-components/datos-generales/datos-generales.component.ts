@@ -48,6 +48,9 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   datosRemitente: any;
 
+  @Input()
+  datosDestinatario: any;
+
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
@@ -149,7 +152,8 @@ export class DatosGeneralesComponent implements OnInit {
 
   onSelectTipoComunicacion(value) {
     console.info(value);
-    this.datosRemitente.onSelectTipoPersona()
+    this.datosRemitente.onSelectTipoPersona();
+    this.datosDestinatario.onSelectTipoComunicacion();
   }
 
   onFilterTipoComunicacion($event) {
