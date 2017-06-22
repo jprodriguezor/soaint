@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Effect, Actions, toPayload} from '@ngrx/effects';
-import {Action} from '@ngrx/store';
+import {Actions, Effect, toPayload} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -14,13 +14,10 @@ import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
-
-import {Store} from '@ngrx/store';
 import * as actions from './procesoDTO-actions';
 import {Sandbox} from './procesoDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {go} from "@ngrx/router-store";
-import {mapTo} from "rxjs/operator/mapTo";
+import {go} from '@ngrx/router-store';
 
 function isLoaded() {
   return (source) =>
@@ -51,10 +48,10 @@ export class Effects {
     // .let(isLoaded())
     .map(toPayload)
     .switchMap(
-        (payload) => this._sandbox.loadData(payload)
-          .map((response) => new actions.LoadSuccessAction({data: response}))
-          .catch((error) => Observable.of(new actions.LoadFailAction({error}))
-      )
+      (payload) => this._sandbox.loadData(payload)
+        .map((response) => new actions.LoadSuccessAction({data: response}))
+        .catch((error) => Observable.of(new actions.LoadFailAction({error}))
+        )
     );
 
   @Effect()
@@ -76,12 +73,11 @@ export class Effects {
       (payload) => this._sandbox.loadTasksInsideProcess(payload)
         .mergeMap((response) => [
           new actions.LoadTaskSuccessAction({data: response}),
-          go('/radicar-comunicaciones')
+          (response.length > 0) ? go(['/radicar-comunicaciones', (response.length > 0) ? response[0] : null]) : null
         ])
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
     )
-
 
 
 }

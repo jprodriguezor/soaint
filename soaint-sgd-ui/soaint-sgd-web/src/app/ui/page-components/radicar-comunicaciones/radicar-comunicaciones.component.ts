@@ -7,6 +7,7 @@ import {ReferidoDTO} from '../../../domain/ReferidoDTO';
 import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {ContactoDTO} from '../../../domain/ContactoDTO';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -34,10 +35,13 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   editable: boolean = true;
 
-  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox) {
+  task: any;
+
+  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.route.params.subscribe(values => this.task = values);
   }
 
   hideDialog() {
@@ -72,7 +76,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoRemite: null,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos,
-      nroDocumentoIden: null,
+      nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
       razonSocial: this.valueRemitente.razonSocial,
       nit: this.valueRemitente.nit,
       codCortesia: null,

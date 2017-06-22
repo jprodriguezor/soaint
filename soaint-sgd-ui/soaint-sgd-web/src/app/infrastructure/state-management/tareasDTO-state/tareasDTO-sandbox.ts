@@ -1,4 +1,3 @@
-import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
@@ -7,7 +6,6 @@ import {ListForSelectionApiService} from '../../api/list-for-selection.api.servi
 import * as actions from './tareasDTO-actions';
 import {go} from '@ngrx/router-store';
 import {tassign} from 'tassign';
-import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -35,7 +33,7 @@ export class Sandbox {
   }
 
   initTaskDispatch(payload?) {
-    this._store.dispatch(go('/radicar-comunicaciones'));
+    this._store.dispatch(go(['/radicar-comunicaciones', payload]));
   }
 
   loadDispatch(payload?) {
