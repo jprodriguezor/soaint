@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -57,6 +58,12 @@ public class ProcessService implements IProcessServices {
     private String usuarioAdmin = "";
     @Value( "${jbpmconsole.admin.pass}" )
     private String passAdmin = "";
+    @Value( "${tarea.acciones.url}" )
+    private String endpointTareas = "";
+    HttpClient httpClient;
+    HttpGet getRequest;
+    HttpPost postRequest;
+    HttpResponse response;
 
 
     private ProcessService() throws MalformedURLException {;
@@ -64,9 +71,9 @@ public class ProcessService implements IProcessServices {
     @Override
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
-        String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario()+":"+entrada.getPass()).getBytes());
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet(endpointProcesosListar);
+        String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
+        httpClient = HttpClientBuilder.create().build();
+        getRequest = new HttpGet(endpointProcesosListar);
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader("Accept", "application/json");
         getRequest.addHeader("Authorization",  "Basic " + encoding);
@@ -102,8 +109,8 @@ public class ProcessService implements IProcessServices {
                 .addParameter("var_initiator", entrada.getUsuario())
                 .addParameters(listaEstadosProceso(entrada))
                 .build();
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet getRequest = new HttpGet(uri);
+        httpClient = HttpClientBuilder.create().build();
+        getRequest = new HttpGet(uri);
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader("Accept", "application/json");
         getRequest.addHeader("Authorization",  "Basic " + encoding);
@@ -134,6 +141,7 @@ public class ProcessService implements IProcessServices {
         return listaProcesos;
     }
 
+
     @Override
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
         ksession = obtenerEngine(entrada).getKieSession();
@@ -149,12 +157,39 @@ public class ProcessService implements IProcessServices {
     }
 
     @Override
+    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
+        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
+        entradaManual.setUsuario(usuarioAdmin);
+        entradaManual.setPass(passAdmin);
+        ksession = obtenerEngine(entradaManual).getKieSession();
+        ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
+        long procId = processInstance.getId();
+        entrada.setInstanciaProceso(processInstance.getId());
+        tareas = listarTareasPorInstanciaProceso(entrada);
+        for (RespuestaTareaDTO tarea : tareas) {
+            entrada.setIdTarea(tarea.getIdTarea());
+            reservarTarea(entrada);
+
+        }
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .codigoProceso(String.valueOf(processInstance.getId()))
+                .nombreProceso(processInstance.getProcessId())
+                .estado(String.valueOf(processInstance.getState()))
+                .idDespliegue(entrada.getIdDespliegue())
+                .build();
+        return respuesta;
+    }
+
+
+    @Override
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
         RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
-                .estado(String.valueOf(EstadosEnum.LISTO))
+                .estado(String.valueOf(EstadosEnum.ENPROGRESO))
                 .idProceso(entrada.getIdProceso())
                 .idDespliegue(entrada.getIdDespliegue())
                 .build();
@@ -173,6 +208,40 @@ public class ProcessService implements IProcessServices {
                 .build();
 
         return respuestaTarea;
+    }
+
+    @Override
+    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws IOException, URISyntaxException, JSONException {
+        String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
+        URI uri = new URIBuilder(endpointJBPConsole)
+                .setPath("/jbpm-console/rest/task/"+String.valueOf(entrada.getIdTarea())+ "/claim")
+                .build();
+        httpClient = HttpClientBuilder.create().build();
+        postRequest = new HttpPost(uri);
+        postRequest.addHeader("Authorization", "Basic " + encoding);
+        postRequest.addHeader("X-KIE-ContentType", "XSTREAM");
+        postRequest.addHeader("Accept", "application/json");
+        response = httpClient.execute(postRequest);
+        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+        } else {
+            String estadoResp = respuestaJson.getString("status");
+            String estado;
+            if(estadoResp.equals("SUCCESS")){
+                estado =  String.valueOf(EstadosEnum.RESERVADO);
+            }else{
+                estado =  String.valueOf(EstadosEnum.ERROR);
+            }
+            RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                    .idTarea(entrada.getIdTarea())
+                    .estado(estado)
+                    .idProceso(entrada.getIdProceso())
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .build();
+            return respuestaTarea;
+        }
     }
 
 
@@ -231,7 +300,32 @@ public class ProcessService implements IProcessServices {
         }
         return tareas;
     }
+    @Override
+    public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+        Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
+        List<Status> estadosActivos = estadosActivos(estadosEnviados);
+        taskService = obtenerEngine(entrada).getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, "en-UK");
+        long taskId = -1;
+        for (TaskSummary task : tasks) {
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(task.getId())
+                        .estado(estadoRespuesta(task.getStatusId()))
+                        .idProceso(task.getProcessId())
+                        .idDespliegue(task.getDeploymentId())
+                        .nombre(task.getName())
+                        .prioridad(task.getPriority())
+                        .idInstanciaProceso(task.getProcessInstanceId())
+                        .fechaCreada(task.getCreatedOn())
+                        .tiempoActivacion(task.getActivationTime())
+                        .tiempoExpiracion(task.getExpirationTime())
+                        .build();
+                tareas.add(respuestaTarea);
 
+        }
+        return tareas;
+    }
     @Override
     public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
