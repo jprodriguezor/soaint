@@ -12,10 +12,10 @@
 
 <p-tabView>
   <p-tabPanel header="Datos generales" leftIcon="ui-icon-check">
-    <app-datos-generales #datosGenerales [editable]="editable"></app-datos-generales>
+    <app-datos-generales #datosGenerales [editable]="editable" [datosRemitente]="datosRemitente"></app-datos-generales>
   </p-tabPanel>
   <p-tabPanel header="Datos remitente" leftIcon="ui-icon-edit">
-    <app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>
+    <app-datos-remitente #datosRemitente [editable]="editable" [datosGenerales]="datosGenerales"></app-datos-remitente>
   </p-tabPanel>
   <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-refresh">
     <app-datos-destinatario #datosDestinatario [editable]="editable"></app-datos-destinatario>
