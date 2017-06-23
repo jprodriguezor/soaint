@@ -1,6 +1,4 @@
-import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
 
 import {Store} from '@ngrx/store';
@@ -9,7 +7,6 @@ import {ListForSelectionApiService} from '../../api/list-for-selection.api.servi
 import {createSelector} from 'reselect';
 import * as selectors from './procesoDTO-selectors';
 import * as actions from './procesoDTO-actions';
-import {EffectsSubscription} from '@ngrx/effects';
 
 @Injectable()
 export class Sandbox {
@@ -24,7 +21,14 @@ export class Sandbox {
 
   startProcess(payload: any) {
 
-    return this._listSelectionService.post(environment.startProcess_endpoint, { idProceso: payload.codigoProceso, idDespliegue: payload.idDespliegue });
+    return this._listSelectionService.post(environment.startProcess_endpoint,
+      {
+        idProceso: payload.codigoProceso,
+        idDespliegue: payload.idDespliegue,
+        estados: [
+          'LISTO'
+        ]
+      });
   }
 
   loadTasksInsideProcess(payload: any) {

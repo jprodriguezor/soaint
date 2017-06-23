@@ -42,7 +42,7 @@ public class ProcesoGatewayApi {
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
         //TODO: add trafic log
         System.out.println("ProcesoGatewayApi - [trafic] - starting Process");
-        Response response = procesoClient.iniciar(entrada);
+        Response response = procesoClient.iniciarManual(entrada);
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
 
@@ -82,6 +82,19 @@ public class ProcesoGatewayApi {
         //TODO: add trafic log
         System.out.println("ProcesoGatewayApi - [trafic] - start Task");
         Response response = procesoClient.iniciarTarea(entrada);
+        String responseContent = response.readEntity(String.class);
+        System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/tareas/completar")
+    @JWTTokenSecurity
+    public Response completarTarea(EntradaProcesoDTO entrada) {
+        //TODO: add trafic log
+        System.out.println("ProcesoGatewayApi - [trafic] - start Task");
+        Response response = procesoClient.completarTarea(entrada);
         String responseContent = response.readEntity(String.class);
         System.out.println("ProcesoGatewayApi - [content] : " + responseContent);
 

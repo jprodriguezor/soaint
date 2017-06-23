@@ -8,6 +8,7 @@ import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {ContactoDTO} from '../../../domain/ContactoDTO';
 import {ActivatedRoute} from '@angular/router';
+import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -37,7 +38,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   task: any;
 
-  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute) {
+  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -64,9 +65,15 @@ export class RadicarComunicacionesComponent implements OnInit {
       datosContactoList: this.getDatosContactos()
     };
     this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
-      this.barCodeVisible = true;
-      this.radicacion = response;
-      this.editable = false;
+      this._taskSandBox.completeTask({
+        idProceso: this.task.idProceso,
+        idDespliegue: this.task.idDespliegue,
+        idTarea: this.task.idTarea
+      }).subscribe(() => {
+        this.barCodeVisible = true;
+        this.radicacion = response;
+        this.editable = false;
+      });
     });
   }
 

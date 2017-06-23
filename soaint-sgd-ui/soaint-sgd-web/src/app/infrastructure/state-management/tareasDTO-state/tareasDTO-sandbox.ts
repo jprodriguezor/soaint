@@ -27,6 +27,14 @@ export class Sandbox {
     // return Observable.of(this.getMockData());
   }
 
+  startTask(payload: any) {
+    return this._listSelectionService.post(environment.tasksStartProcess, payload);
+  }
+
+  completeTask(payload: any) {
+    return this._listSelectionService.post(environment.tasksCompleteProcess, payload);
+  }
+
 
   filterDispatch(query) {
     this._store.dispatch(new actions.FilterAction(query));

@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.CorrespondenciaClient;
+import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class CorrespondenciaGatewayApi {
 
     @Autowired
     private CorrespondenciaClient client;
+
+
+    @Autowired
+    private ProcesoClient procesoClient;
 
     public CorrespondenciaGatewayApi() {
         super();
