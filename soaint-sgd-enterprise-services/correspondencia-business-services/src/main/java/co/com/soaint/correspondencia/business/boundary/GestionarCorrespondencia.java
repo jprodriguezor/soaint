@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -142,12 +143,6 @@ public class GestionarCorrespondencia {
                     .setParameter("NRO_RADICADO", nroRadicado)
                     .getSingleResult();
 
-            if (correspondenciaDTO == null) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
-                        .buildBusinessException();
-            }
-
             List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
                     .getResultList();
@@ -187,8 +182,11 @@ public class GestionarCorrespondencia {
                     .referidoList(referidoList)
                     .datosContactoList(datosContactoDTOList)
                     .build();
-        } catch (BusinessException e) {
-            throw e;
+        } catch (NoResultException n) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                    .withRootException(n)
+                    .buildBusinessException();
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
