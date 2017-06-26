@@ -10,6 +10,9 @@ import {ContactoDTO} from '../../../domain/ContactoDTO';
 import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
+declare const require: any;
+const printStyles  = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
+
 @Component({
   selector: 'app-radicar-comunicaciones',
   templateUrl: './radicar-comunicaciones.component.html'
@@ -37,6 +40,8 @@ export class RadicarComunicacionesComponent implements OnInit {
   editable: boolean = true;
 
   task: any;
+
+  printStyle: string = printStyles;
 
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }

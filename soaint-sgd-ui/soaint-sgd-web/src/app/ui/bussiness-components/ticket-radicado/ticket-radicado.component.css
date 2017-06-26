@@ -39,5 +39,10 @@
       padding: 20px 20px; }
       .ticket-panel .ui-g .ui-g-12 .ui-button {
         margin-top: 30px; } }
+.text-right {
+  text-align: right; }
+
+.text-left {
+  text-align: left; }
 
 /*# sourceMappingURL=ticket-radicado.component.css.map */
