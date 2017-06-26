@@ -56,4 +56,19 @@ public class GestionarPais {
         }
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<PaisDTO> listarPaisesByNombrePaisAndEstado(String nombrePais, String estado) throws BusinessException, SystemException{
+        try {
+            return em.createNamedQuery("TvsPais.findByNombrePaisAndEstado", PaisDTO.class)
+                    .setParameter("NOMBRE_PAIS", "%" + nombrePais + "%")
+                    .setParameter("ESTADO", estado)
+                    .getResultList();
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }
