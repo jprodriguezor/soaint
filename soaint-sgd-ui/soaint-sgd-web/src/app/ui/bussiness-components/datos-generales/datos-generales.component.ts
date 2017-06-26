@@ -194,7 +194,7 @@ export class DatosGeneralesComponent implements OnInit {
     // this method triggers load of suggestions
     this._sandbox.loadDispatch('tipologiaDocumental');
   }
-  
+
   onUpload(event) {
     for (let file of event.files) {
       this.uploadedFiles.push(file);

@@ -34,6 +34,10 @@ body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer
   -moz-border-radius: 3px 3px 0 0;
 }
 
+.ui-button.ui-button-icon.ui-button-icon-only {
+  font-size: .8em;
+}
+
 .layout-container .topbar .topbar-right {
   padding: 10px 15px 0 5px;
   position: relative;

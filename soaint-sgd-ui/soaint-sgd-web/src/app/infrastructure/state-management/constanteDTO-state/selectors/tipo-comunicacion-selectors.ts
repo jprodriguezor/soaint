@@ -19,13 +19,15 @@ export const getTipoComunicacionIds = createSelector(rootPath, (state: State) =>
 
 export const getTipoComunicacionSelectedId = createSelector(rootPath, (state: State) => state.tipoComunicacion.selectedId);
 
+export const getFilterTipoComunicacion = createSelector(rootPath, (state: State) => state.tipoComunicacion.filter);
+
 export const getTipoComunicacionSelectedEntity =
   createSelector(getTipoComunicacionEntities, getTipoComunicacionSelectedId, (entities, selectedId) => {
     return entities[selectedId];
   });
 
-export const getTipoComunicacionArrayData = createSelector(getTipoComunicacionEntities, getTipoComunicacionIds, (entities, ids) => {
-  return ids.map(id => entities[id]);
+export const getTipoComunicacionArrayData = createSelector(getTipoComunicacionEntities, getTipoComunicacionIds, getFilterTipoComunicacion, (entities, ids, query) => {
+  return ids.map(id => entities[id]).filter(data => data.nombre.indexOf(query));
 });
 
 
