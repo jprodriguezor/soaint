@@ -10,19 +10,22 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipoDestinatarioClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public TipoDestinatarioClient() {
-		super();
-	}
+    @Value("${contants.tipodestinatario.value}")
+    private String tipoDestValue = "";
 
-	public Response list() {
-		System.out.println("TipoDestinatario - [trafic] - listing TipoDestinatario with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/constantes-web-api/constantes/hijos/TIPO-DES/A")
-				.request()
-				.get();
-	}
+    public TipoDestinatarioClient() {
+        super();
+    }
+
+    public Response list() {
+        System.out.println("TipoDestinatario - [trafic] - listing TipoDestinatario with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoDestValue + "/A")
+                .request()
+                .get();
+    }
 
 }

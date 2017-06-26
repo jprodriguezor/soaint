@@ -13,6 +13,9 @@ public class TipologiaDocumentalClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tipoloogiadoc.value}")
+    private String tipologValue = "";
+
     public TipologiaDocumentalClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TipologiaDocumentalClient {
     public Response list() {
         System.out.println("TipologiaDocumental - [trafic] - listing TipologiaDocumental with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIPOL-DO/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipologValue + "/A")
                 .request()
                 .get();
     }

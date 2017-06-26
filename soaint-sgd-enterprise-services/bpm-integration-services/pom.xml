@@ -19,6 +19,16 @@
         <spring-framework.version>4.3.2.RELEASE</spring-framework.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>redhat</id>
+            <url>http://maven.repository.redhat.com/techpreview/all/</url>
+        </repository>
+    </repositories>
+
+    <!-- https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging -->
+
+
     <dependencies>
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             DEPENDENCY - Java EE 7 support
@@ -140,17 +150,9 @@
             DEPENDENCY - logger api
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.0.2</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.0.2</version>
-        </dependency>
+
+
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -178,6 +180,12 @@
         <dependency>
             <groupId>org.kie.remote</groupId>
             <artifactId>kie-remote-client</artifactId>
+            <version>6.5.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-services-api</artifactId>
             <version>6.5.0.Final</version>
         </dependency>
 

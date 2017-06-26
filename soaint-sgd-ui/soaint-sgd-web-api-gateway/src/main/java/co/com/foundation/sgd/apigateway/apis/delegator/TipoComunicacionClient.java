@@ -13,6 +13,9 @@ public class TipoComunicacionClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tipocomunicacion.value}")
+    private String tipoCoValue = "";
+
     public TipoComunicacionClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TipoComunicacionClient {
     public Response list() {
         System.out.println("TipoComunicacion - [trafic] - listing TipoComunicacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIP-COMU/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoCoValue + "/A")
                 .request()
                 .get();
     }

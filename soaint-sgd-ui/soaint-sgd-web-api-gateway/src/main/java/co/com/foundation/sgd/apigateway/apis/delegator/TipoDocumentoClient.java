@@ -10,19 +10,22 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 public class TipoDocumentoClient {
 
-	@Value("${backapi.endpoint.url}")
-	private String endpoint = "";
+    @Value("${backapi.endpoint.url}")
+    private String endpoint = "";
 
-	public TipoDocumentoClient() {
-		super();
-	}
+    @Value("${contants.tipodocumento.value}")
+    private String tipoDocValue = "";
 
-	public Response list() {
-		System.out.println("TipoDocumento - [trafic] - listing TipoDocumento with endpoint: " + endpoint);
-		WebTarget wt = ClientBuilder.newClient().target(endpoint);
-		return wt.path("/constantes-web-api/constantes/hijos/TIPO-DOC/A")
-				.request()
-				.get();
-	}
+    public TipoDocumentoClient() {
+        super();
+    }
+
+    public Response list() {
+        System.out.println("TipoDocumento - [trafic] - listing TipoDocumento with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoDocValue + "/A")
+                .request()
+                .get();
+    }
 
 }

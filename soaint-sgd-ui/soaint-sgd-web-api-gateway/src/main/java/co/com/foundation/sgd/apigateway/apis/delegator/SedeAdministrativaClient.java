@@ -13,6 +13,9 @@ public class SedeAdministrativaClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.sedeadministrativa.value}")
+    private String sedeValue = "";
+
     public SedeAdministrativaClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class SedeAdministrativaClient {
     public Response list() {
         System.out.println("SedeAdministrativa - [trafic] - listing SedeAdministrativa with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/SEDE-ADM/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + sedeValue + "/A")
                 .request()
                 .get();
     }

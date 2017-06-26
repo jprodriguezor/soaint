@@ -13,6 +13,9 @@ public class PrefijoCuadranteClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.prefijocuadrante.value}")
+    private String prefValue = "";
+
     public PrefijoCuadranteClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class PrefijoCuadranteClient {
     public Response list() {
         System.out.println("Prefijo Cuadrante - [trafic] - listing PrefijoCuadrante with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/PREFI-CU/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + prefValue + "/A")
                 .request()
                 .get();
     }

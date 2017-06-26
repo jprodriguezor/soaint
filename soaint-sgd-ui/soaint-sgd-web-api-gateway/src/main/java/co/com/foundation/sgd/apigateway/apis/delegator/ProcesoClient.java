@@ -42,6 +42,16 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
+    public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {
+        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        entradaProcesoDTO.setUsuario("krisv");
+        entradaProcesoDTO.setPass("krisv");
+        return wt.path("/bpm/proceso/iniciar/manual")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
     public Response listarPorIdProceso(EntradaProcesoDTO entrada) {
         System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -73,6 +83,16 @@ public class ProcesoClient {
         entrada.setUsuario("krisv");
         entrada.setPass("krisv");
         return wt.path("/bpm/tareas/iniciar")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
+    public Response completarTarea(EntradaProcesoDTO entrada) {
+        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        entrada.setUsuario("krisv");
+        entrada.setPass("krisv");
+        return wt.path("/bpm/tareas/completar")
                 .request()
                 .post(Entity.json(entrada));
     }

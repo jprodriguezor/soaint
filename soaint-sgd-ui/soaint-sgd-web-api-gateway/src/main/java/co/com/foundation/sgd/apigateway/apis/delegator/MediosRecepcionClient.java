@@ -13,6 +13,9 @@ public class MediosRecepcionClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.mediorecepcion.value}")
+    private String medRecValue = "";
+
     public MediosRecepcionClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class MediosRecepcionClient {
     public Response list() {
         System.out.println("MediosRecepcion - [trafic] - listing MediosRecepcion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/MED-RECE/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + medRecValue + "/A")
                 .request()
                 .get();
     }

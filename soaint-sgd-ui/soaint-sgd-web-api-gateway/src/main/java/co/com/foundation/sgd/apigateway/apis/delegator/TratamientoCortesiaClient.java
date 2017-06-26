@@ -13,6 +13,9 @@ public class TratamientoCortesiaClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tratamientocortesia.value}")
+    private String trataValue = "";
+
     public TratamientoCortesiaClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TratamientoCortesiaClient {
     public Response list() {
         System.out.println("Tipo Teléfono - [trafic] - listing Tratamiento Cortesia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TRAT-COR/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + trataValue + "/A")
                 .request()
                 .get();
     }
