@@ -9,7 +9,7 @@ import {CorrespondenciaDTO} from './correspondenciaDTO';
 export interface ComunicacionOficialDTO {
   correspondencia?: CorrespondenciaDTO,
   agenteList?: Array<AgentDTO>,
-  ppdDocumento?: DocumentoDTO,
+  ppdDocumentoList?: Array<DocumentoDTO>,
   anexoList?: Array<AnexoDTO>
   referidoList?: Array<ReferidoDTO>
   datosContactoList?: Array<ContactoDTO>

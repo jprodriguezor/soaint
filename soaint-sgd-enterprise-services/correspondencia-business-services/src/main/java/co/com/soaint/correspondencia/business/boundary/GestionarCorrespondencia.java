@@ -87,10 +87,10 @@ public class GestionarCorrespondencia {
                 correspondencia.getCorAgenteList().add(corAgente);
             }
 
-
-            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumento());
+            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
             ppdDocumento.setCorCorrespondencia(correspondencia);
             ppdDocumento.setCorAnexoList(new ArrayList<>());
+            
             comunicacionOficialDTO.getAnexoList().stream().forEach((anexoDTO) -> {
                 CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
                 corAnexo.setPpdDocumento(ppdDocumento);
@@ -161,14 +161,20 @@ public class GestionarCorrespondencia {
                 }
             });
 
-            PpdDocumentoDTO ppdDocumentoDTO = em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+            List<PpdDocumentoDTO> ppdDocumentoDTOList = em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                    .getSingleResult();
-
-
-            List<AnexoDTO> anexoList = em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
-                    .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
                     .getResultList();
+
+            List<AnexoDTO> anexoList = new ArrayList<>();
+            for(PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList){
+                 em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
+                        .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
+                        .getResultList()
+                 .stream()
+                 .forEach((anexoDTO) -> {
+                     anexoList.add(anexoDTO);
+                 });
+            }
 
             List<ReferidoDTO> referidoList = em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
                     .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
@@ -177,7 +183,7 @@ public class GestionarCorrespondencia {
             return ComunicacionOficialDTO.newInstance()
                     .correspondencia(correspondenciaDTO)
                     .agenteList(agenteDTOList)
-                    .ppdDocumento(ppdDocumentoDTO)
+                    .ppdDocumentoList(ppdDocumentoDTOList)
                     .anexoList(anexoList)
                     .referidoList(referidoList)
                     .datosContactoList(datosContactoDTOList)

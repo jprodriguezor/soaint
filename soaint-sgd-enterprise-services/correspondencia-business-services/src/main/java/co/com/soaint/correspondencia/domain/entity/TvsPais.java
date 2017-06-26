@@ -27,7 +27,14 @@ import javax.persistence.*;
 @Table(name = "TVS_PAIS")
 @NamedQueries({
         @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
-                "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE TRIM(t.estado) = TRIM(:ESTADO)")})
+                "(t.idePais, t.nombrePais, t.codPais) " +
+                "FROM TvsPais t " +
+                "WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsPais.findByNombrePaisAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
+                "(t.idePais, t.nombrePais, t.codPais) " +
+                "FROM TvsPais t " +
+                "WHERE TRIM(t.nombrePais) LIKE :NOMBRE_PAIS AND TRIM(t.estado) = TRIM(:ESTADO) " +
+                "ORDER BY t.nombrePais")})
 
 public class TvsPais implements Serializable {
 

@@ -64,7 +64,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
-      ppdDocumento: this.getDocumento(),
+      ppdDocumentoList: [this.getDocumento()],
       anexoList: this.getListaAnexos(),
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
