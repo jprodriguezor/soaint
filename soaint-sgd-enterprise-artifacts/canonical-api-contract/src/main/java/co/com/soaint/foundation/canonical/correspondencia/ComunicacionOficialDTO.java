@@ -30,7 +30,7 @@ public class ComunicacionOficialDTO implements Serializable {
 
     private CorrespondenciaDTO correspondencia;
     private List<AgenteDTO> agenteList;
-    private PpdDocumentoDTO ppdDocumento;
+    private List<PpdDocumentoDTO> ppdDocumentoList;
     private List<AnexoDTO> anexoList;
     private List<ReferidoDTO> referidoList;
     private List<DatosContactoDTO> datosContactoList;
