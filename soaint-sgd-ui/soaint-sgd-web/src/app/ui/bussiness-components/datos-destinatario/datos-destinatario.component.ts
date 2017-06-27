@@ -37,6 +37,9 @@ export class DatosDestinatarioComponent implements OnInit {
   @Input()
   editable: boolean = true;
 
+  @Input()
+  datosGenerales: any;
+
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
@@ -70,10 +73,23 @@ export class DatosDestinatarioComponent implements OnInit {
     this.agentesDestinatario = agente;
   }
 
+  onSelectTipoComunicacion() {
+    if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo != 'EI') {
+      this.sedeAdministrativaControl.disable();
+      this.dependenciaGrupoControl.disable();
+    } else {
+      this.sedeAdministrativaControl.enable();
+      this.dependenciaGrupoControl.enable();
+    }
+  }
+
   initForm() {
-    this.tipoDestinatarioControl = new FormControl(null);
-    this.sedeAdministrativaControl = new FormControl(null);
-    this.dependenciaGrupoControl = new FormControl(null);
+    this.tipoDestinatarioControl = new FormControl({
+      codigo: "PRINCIPA",
+      nombre: "Principal"
+    });
+    this.sedeAdministrativaControl = new FormControl({value: null, disabled: true});
+    this.dependenciaGrupoControl = new FormControl({value: null, disabled: true});
     this.form = this.formBuilder.group({
       'tipoDestinatario': this.tipoDestinatarioControl,
       'sedeAdministrativa': this.sedeAdministrativaControl,

@@ -13,6 +13,9 @@ public class BisClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.bis.value}")
+    private String bisValue = "";
+
     public BisClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class BisClient {
     public Response list() {
         System.out.println("Bis - [trafic] - listing Bis with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/BIS/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + bisValue + "/A")
                 .request()
                 .get();
     }

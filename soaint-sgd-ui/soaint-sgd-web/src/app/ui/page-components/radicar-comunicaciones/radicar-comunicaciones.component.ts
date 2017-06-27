@@ -7,6 +7,11 @@ import {ReferidoDTO} from '../../../domain/ReferidoDTO';
 import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {ContactoDTO} from '../../../domain/ContactoDTO';
+import {ActivatedRoute} from '@angular/router';
+import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+
+declare const require: any;
+const printStyles  = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -34,10 +39,15 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   editable: boolean = true;
 
-  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox) {
+  task: any;
+
+  printStyle: string = printStyles;
+
+  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
+    this.route.params.subscribe(values => this.task = values);
   }
 
   hideDialog() {
@@ -54,15 +64,21 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
-      ppdDocumento: this.getDocumento(),
+      ppdDocumentoList: [this.getDocumento()],
       anexoList: this.getListaAnexos(),
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
     this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
-      this.barCodeVisible = true;
-      this.radicacion = response;
-      this.editable = false;
+      this._taskSandBox.completeTask({
+        idProceso: this.task.idProceso,
+        idDespliegue: this.task.idDespliegue,
+        idTarea: this.task.idTarea
+      }).subscribe(() => {
+        this.barCodeVisible = true;
+        this.radicacion = response;
+        this.editable = false;
+      });
     });
   }
 
@@ -72,7 +88,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoRemite: null,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos,
-      nroDocumentoIden: null,
+      nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
       razonSocial: this.valueRemitente.razonSocial,
       nit: this.valueRemitente.nit,
       codCortesia: null,

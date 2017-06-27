@@ -12,6 +12,7 @@ import {
   getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Message} from 'primeng/primeng';
 
 @Component({
   selector: 'app-datos-generales',
@@ -44,6 +45,12 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   editable: boolean = true;
 
+  @Input()
+  datosRemitente: any;
+
+  @Input()
+  datosDestinatario: any;
+
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
@@ -56,13 +63,22 @@ export class DatosGeneralesComponent implements OnInit {
   radicadoReferido: { nombre: string } = {nombre: ''};
   tipoAnexoDescripcion: { tipoAnexo: ConstanteDTO, descripcion: string } = {tipoAnexo: null, descripcion: ''};
 
+
+  msgs: Message[];
+  uploadedFiles: any[] = [];
+
+
   constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
     this.initForm();
   }
 
   initForm() {
     this.tipoComunicacionControl = new FormControl(null, Validators.required);
-    this.medioRecepcionControl = new FormControl(null, Validators.required);
+    this.medioRecepcionControl = new FormControl({
+      ideConst: 10,
+      codigo: 'VENTANIL',
+      nombre: 'Ventanilla'
+    }, Validators.required);
     this.tipologiaDocumentalControl = new FormControl(null, Validators.required);
     this.unidadTiempoControl = new FormControl(null);
     this.numeroFolioControl = new FormControl(null, Validators.required);
@@ -136,6 +152,8 @@ export class DatosGeneralesComponent implements OnInit {
 
   onSelectTipoComunicacion(value) {
     console.info(value);
+    this.datosRemitente.onSelectTipoPersona();
+    this.datosDestinatario.onSelectTipoComunicacion();
   }
 
   onFilterTipoComunicacion($event) {
@@ -187,6 +205,15 @@ export class DatosGeneralesComponent implements OnInit {
   onDropdownClickTipologiaDocumental($event) {
     // this method triggers load of suggestions
     this._sandbox.loadDispatch('tipologiaDocumental');
+  }
+
+  onUpload(event) {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+
+    this.msgs = [];
+    this.msgs.push({severity: 'info', summary: 'File Uploaded', detail: ''});
   }
 
 

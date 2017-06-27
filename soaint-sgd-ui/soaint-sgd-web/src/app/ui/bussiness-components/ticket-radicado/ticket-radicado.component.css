@@ -6,8 +6,7 @@
 .ticket-panel {
   text-align: center;
   width: 500px;
-  min-height: 440px;
-  padding: 50px 20px; }
+  min-height: 440px; }
   .ticket-panel .ui-g .ui-g-12 {
     padding: 25px 40px; }
     .ticket-panel .ui-g .ui-g-12 .ui-button {
@@ -28,8 +27,7 @@
 @media (max-width: 1024px) {
   .ticket-panel {
     text-align: center;
-    min-height: 440px;
-    margin: 100px auto 0 auto; } }
+    min-height: 440px; } }
 @media (max-width: 640px) {
   .ticket-panel {
     text-align: center;
@@ -41,5 +39,10 @@
       padding: 20px 20px; }
       .ticket-panel .ui-g .ui-g-12 .ui-button {
         margin-top: 30px; } }
+.text-right {
+  text-align: right; }
+
+.text-left {
+  text-align: left; }
 
 /*# sourceMappingURL=ticket-radicado.component.css.map */

@@ -13,6 +13,9 @@ public class TipoViaClient {
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
 
+    @Value("${contants.tipovia.value}")
+    private String tipoViaValue = "";
+
     public TipoViaClient() {
         super();
     }
@@ -20,7 +23,7 @@ public class TipoViaClient {
     public Response list() {
         System.out.println("Tipo Via - [trafic] - listing TipoVia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/TIPO-VIA/A")
+        return wt.path("/constantes-web-api/constantes/hijos/" + tipoViaValue + "/A")
                 .request()
                 .get();
     }
