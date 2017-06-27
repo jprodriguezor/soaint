@@ -2,7 +2,58 @@
   <div class="ui-g ui-fluid">
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
-      <div class="ui-g ui-fluid">
+      <div class="ui-g ui-fluid"
+           *ngIf="datosGenerales.tipoComunicacionControl.value && datosGenerales.tipoComunicacionControl.value.codigo === 'EI'">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <p-autoComplete id="sedeAdministrativa"
+                              [disabled]="!editable"
+                              [suggestions]="sedeAdministrativaSuggestions$| async"
+                              field="nombre"
+                              (onSelect)="onSelectSedeAdministrativa($event)"
+                              formControlName="sedeAdministrativa"
+                              (completeMethod)="onFilterSedeAdministrativa($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickSedeAdministrativa($event)">
+              </p-autoComplete>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="sedeAdministrativaControl.touched && !sedeAdministrativaControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="dependenciaGrupo"><span class="text-danger">*</span>Dependencia / Grupo</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <p-autoComplete id="dependenciaGrupo"
+                              [disabled]="!editable"
+                              [disabled]="!selectSedeAdministrativa"
+                              [suggestions]="dependenciaGrupoSuggestions$ | async"
+                              field="nombre"
+                              formControlName="dependenciaGrupo"
+                              (completeMethod)="onFilterDependenciaGrupo($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickDependenciaGrupo($event)">
+              </p-autoComplete>
+              <div class="ui-message ui-messages-error ui-corner-all"
+                   *ngIf="dependenciaGrupoControl.touched && !dependenciaGrupoControl.valid">
+                Este campo es requerido
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g ui-fluid"
+           *ngIf="(datosGenerales.tipoComunicacionControl.value && datosGenerales.tipoComunicacionControl.value.codigo === 'EE') || (!datosGenerales.tipoComunicacionControl.value)">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
@@ -63,12 +114,12 @@
             </div>
           </div>-->
           <div class="ui-g form-group" style="padding-top: 25px">
-          <div class="ui-g-12">
+            <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="actuaCalidad" formControlName="actuaCalidad">
               <label for="actuaCalidad">Actua en calidad</label>
               </span>
-          </div>
+            </div>
           </div>
         </div>
         <div class="ui-sm-12 ui-g-6 ui-lg-6">

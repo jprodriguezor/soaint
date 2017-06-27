@@ -22,7 +22,9 @@ import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/c
 import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
 import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
 import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
-
+import {getSedeAdministrativaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/sede-administrativa-selectors';
+import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
 @Component({
   selector: 'app-datos-remitente',
@@ -45,6 +47,8 @@ export class DatosRemitenteComponent implements OnInit {
   departamentoControl: AbstractControl;
   municipioControl: AbstractControl;
   nroDocumentoIdentidadControl: AbstractControl;
+  sedeAdministrativaControl: AbstractControl;
+  dependenciaGrupoControl: AbstractControl;
 
   tipoTelefonoSuggestions$: Observable<ConstanteDTO[]>;
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
@@ -53,6 +57,9 @@ export class DatosRemitenteComponent implements OnInit {
   paisSuggestions$: Observable<PaisDTO[]>;
   departamentoSuggestions$: Observable<DepartamentoDTO[]>;
   municipioSuggestions$: Observable<MunicipioDTO[]>;
+
+  sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
+  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
   tipoPersonaSelected: any;
 
@@ -69,12 +76,15 @@ export class DatosRemitenteComponent implements OnInit {
   @Input()
   datosGenerales: any;
 
+  selectSedeAdministrativa: any;
+
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
               private _paisSandbox: PaisSandbox,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
     this.initForm();
   }
 
@@ -90,6 +100,8 @@ export class DatosRemitenteComponent implements OnInit {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+    this.sedeAdministrativaSuggestions$ = this._store.select(getSedeAdministrativaArrayData);
+    this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
   }
 
   findTipoDocumentoValue() {
@@ -99,6 +111,14 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   onSelectTipoPersona() {
+
+    if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EI') {
+      this.sedeAdministrativaControl.enable();
+    } else if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EE') {
+      this.sedeAdministrativaControl.disable();
+      this.dependenciaGrupoControl.disable();
+    }
+
     if (this.tipoPersonaControl.value) {
       if (this.tipoPersonaControl.value.codigo === 'ANONIM') {
         this.nitControl.disable();
@@ -190,6 +210,8 @@ export class DatosRemitenteComponent implements OnInit {
     this.inactivoControl = new FormControl({value: null, disabled: true});
     this.numeroTelControl = new FormControl({value: null, disabled: true});
     this.correoEleControl = new FormControl({value: null, disabled: true});
+    this.sedeAdministrativaControl = new FormControl({value: null, disabled: true}, Validators.required);
+    this.dependenciaGrupoControl = new FormControl({value: null, disabled: true}, Validators.required);
     this.paisControl = new FormControl({
       value: {
         codigo: "co",
@@ -215,6 +237,8 @@ export class DatosRemitenteComponent implements OnInit {
       'departamento': this.departamentoControl,
       'municipio': this.municipioControl,
       'nroDocumentoIdentidad': this.nroDocumentoIdentidadControl,
+      'sedeAdministrativa': this.sedeAdministrativaControl,
+      'dependenciaGrupo': this.dependenciaGrupoControl,
     });
   }
 
@@ -292,6 +316,33 @@ export class DatosRemitenteComponent implements OnInit {
   onDropdownClickTratamientoCortesia($event) {
     // this method triggers load of suggestions
     this._constanteSandbox.loadDispatch('tratamientoCortesia');
+  }
+
+
+  onSelectSedeAdministrativa(value) {
+    this.selectSedeAdministrativa = value.codigo;
+    this.dependenciaGrupoControl.enable();
+  }
+
+  onFilterSedeAdministrativa($event) {
+    const query = $event.query;
+    this._constanteSandbox.filterDispatch('sedeAdministrativa', query);
+  }
+
+  onDropdownClickSedeAdministrativa($event) {
+    // this method triggers load of suggestions
+    this._constanteSandbox.loadDispatch('sedeAdministrativa');
+  }
+
+  onFilterDependenciaGrupo($event) {
+    this._dependenciaGrupoSandbox.filterDispatch({query: $event.query, codigo: this.selectSedeAdministrativa});
+  }
+
+  onDropdownClickDependenciaGrupo($event) {
+    // this method triggers load of suggestions
+    if (this.selectSedeAdministrativa) {
+      this._dependenciaGrupoSandbox.loadDispatch({codigo: this.selectSedeAdministrativa});
+    }
   }
 
 }
