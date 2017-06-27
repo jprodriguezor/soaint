@@ -1,10 +1,12 @@
 import {Actions, ActionTypes as Autocomplete} from './constanteDTO-actions';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {tassign} from 'tassign';
 
 interface ConstanteDTOStateInterface {
   ids: number[];
   entities: { [ideConst: number]: ConstanteDTO };
   selectedId?: number | null;
+  filter?: string;
 }
 
 class ConstanteDTOStateInstance {
@@ -60,7 +62,6 @@ const initialState: State = {
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
-    case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
       console.log(action.payload);
       const target = action.payload.key;
@@ -79,6 +80,17 @@ export function reducer(state = initialState, action: Actions) {
         entities: Object.assign({}, state[target].entities, newValuesEntities),
         selectedBookId: state[target].selectedBookId
       };
+      return cloneState;
+    }
+
+    case Autocomplete.FILTER: {
+      console.log(action.payload);0
+      const target = action.payload.key;
+      const query = action.payload.data;
+      const cloneState = Object.assign({}, state);
+      cloneState[target] = tassign(cloneState[target], {
+        filter: query
+      });
       return cloneState;
     }
 

@@ -14,7 +14,6 @@ import {
 } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from 'app/domain/tareaDTO';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html'
@@ -35,6 +34,8 @@ export class HomeComponent implements OnInit {
 
   inProgressTasks$: Observable<TareaDTO[]>;
 
+  visibleRadicadoTicket: boolean = false;
+
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox, private _taskSandbox: TaskDtoSandbox) {
 
     this.allTasks$ = this._store.select(getArrayData);
@@ -54,6 +55,12 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this._taskSandbox.loadDispatch();
     this._processSandbox.loadDispatch();
+  }
+
+  showRadicadoTicket(event) {
+    event.preventDefault();
+    this.visibleRadicadoTicket = true;
+
   }
 
 }

@@ -28,7 +28,17 @@
 
 <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
           (onHide)="hideDialog()">
-  <app-ticket-radicado [noRadicado]="radicacion?.correspondencia.nroRadicado"></app-ticket-radicado>
+  <app-ticket-radicado id="ticket" [noRadicado]="radicacion?.correspondencia.nroRadicado"></app-ticket-radicado>
+  
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" [printelement]="'ticket'"  printDirective [inlineStyles]="printStyle" label="Imprimir ticket"></button>
+    </div>
+  </p-footer>
+
 </p-dialog>
+
+
+
 
 

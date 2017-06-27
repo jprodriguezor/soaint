@@ -5853,6 +5853,26 @@ body .ui-inplace .ui-inplace-display {
 body .ui-terminal .ui-terminal-input {
   font-size: 10px; }
 
+@media print {
+  @page {
+    size: auto;
+    /* auto is the initial value */
+    margin: 0mm;
+    /* this affects the margin in the printer settings */ }
+  .topbar, .layout-menu, .layout-mask, .layout-main {
+    display: none; }
+
+  * {
+    color: #000;
+    background-color: #fff; }
+
+  #ticket {
+    z-index: 999999999999999999;
+    visibility: visible;
+    position: relative;
+    color: black;
+    display: block;
+    margin: 0 auto; } }
 .ui-g-1,
 .ui-g-2,
 .ui-g-3,
@@ -5877,6 +5897,9 @@ body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer
   border-radius: 3px 3px 0 0;
   -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0; }
+
+.ui-button.ui-button-icon.ui-button-icon-only {
+  font-size: .8em; }
 
 .layout-container .topbar .topbar-right {
   padding: 10px 15px 0 5px;
@@ -5906,11 +5929,5 @@ body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer
 
 .margin-bottom {
   margin-bottom: 20px; }
-
-.text-right {
-  text-align: right; }
-
-.text-left {
-  text-align: left; }
 
 /*# sourceMappingURL=styles.css.map */

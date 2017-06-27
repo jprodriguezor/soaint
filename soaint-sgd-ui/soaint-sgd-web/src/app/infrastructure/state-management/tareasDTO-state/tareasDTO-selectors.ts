@@ -29,13 +29,13 @@ export const getTasksStadistics = createSelector(getEntities, (entities) => {
   let canceled = 0;
   let inProgress = 0;
   for (const key in entities) {
-    if (entities[key].estado === 'Reserved') {
+    if (entities[key].estado === 'RESERVADO') {
       reserved = reserved + 1;
-    } else if (entities[key].estado === 'Completed') {
+    } else if (entities[key].estado === 'LISTO') {
       completed = completed + 1;
-    } else if (entities[key].estado === 'Canceled') {
+    } else if (entities[key].estado === 'CANCELADO') {
       canceled = canceled + 1;
-    } else if (entities[key].estado === 'InProgress') {
+    } else if (entities[key].estado === 'ENPROGRESO') {
       inProgress = inProgress + 1;
     }
   }
@@ -49,17 +49,17 @@ export const getTasksStadistics = createSelector(getEntities, (entities) => {
 
 
 export const getReservedTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
-  return ids.map(id => entities[id]).filter(data => data.estado == 'Reserved');
+  return ids.map(id => entities[id]).filter(data => data.estado === 'RESERVADO');
 });
 
 export const getCompletedTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
-  return ids.map(id => entities[id]).filter(data => data.estado == 'Completed');
+  return ids.map(id => entities[id]).filter(data => data.estado === 'LISTO');
 });
 
 export const getInProgressTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
-  return ids.map(id => entities[id]).filter(data => data.estado == 'InProgress');
+  return ids.map(id => entities[id]).filter(data => data.estado === 'ENPROGRESO');
 });
 
 export const getCanceledTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
-  return ids.map(id => entities[id]).filter(data => data.estado == 'Canceled');
+  return ids.map(id => entities[id]).filter(data => data.estado === 'CANCELADO');
 });
