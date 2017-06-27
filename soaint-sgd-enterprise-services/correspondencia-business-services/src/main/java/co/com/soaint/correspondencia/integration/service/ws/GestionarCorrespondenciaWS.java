@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
+import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -39,5 +40,10 @@ public class GestionarCorrespondenciaWS {
     @WebMethod(action = "actualizarEstadoCorrespondencia", operationName = "actualizarEstadoCorrespondencia")
     public void actualizarEstadoCorrespondencia(@WebParam(name = "correspondencia") final CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+    }
+
+    @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
+    public void redireccionarCorrespondencia(@WebParam(name = "agente") final AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        boundary.redireccionarCorrespondencia(agenteDTO);
     }
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class AgenteControl {
     public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {
         return CorAgente.newInstance()
+                .ideAgente(agenteDTO.getIdeAgente())
                 .codTipoRemite(agenteDTO.getCodTipoRemite())
                 .codTipoPers(agenteDTO.getCodTipoPers())
                 .nombre(agenteDTO.getNombre())

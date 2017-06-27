@@ -32,7 +32,9 @@ import javax.persistence.*;
                 "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
                 "c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
-                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+@NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
+        "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA, c.codFuncRemite = :COD_FUNC_REMITE, c.fecAsignacion = :FEC_ASIGNCION")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)
 public class CorAgente implements Serializable {

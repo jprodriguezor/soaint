@@ -48,10 +48,17 @@ public class CorrespondenciaWebApi {
     }
 
     @PUT
-    @Path("/correspondencia")
+    @Path("/correspondencia/acualizar-estado")
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         LOGGER.info("processing rest request - actualizar estado correspondencia");
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+    }
+
+    @PUT
+    @Path("/correspondencia/redireccionar-correspondencia")
+    public void redireccionarCorrespondencia(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        LOGGER.info("processing rest request - redireccionar correspondencia");
+        boundary.redireccionarCorrespondencia(agenteDTO);
     }
 
 }

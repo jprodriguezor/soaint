@@ -90,7 +90,7 @@ public class GestionarCorrespondencia {
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
             ppdDocumento.setCorCorrespondencia(correspondencia);
             ppdDocumento.setCorAnexoList(new ArrayList<>());
-            
+
             comunicacionOficialDTO.getAnexoList().stream().forEach((anexoDTO) -> {
                 CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
                 corAnexo.setPpdDocumento(ppdDocumento);
@@ -120,8 +120,7 @@ public class GestionarCorrespondencia {
                             .codEstado(comunicacionOficial.getCorrespondencia().getCodEstado())
                             .codOrgaAdmin(null)
                             .build());
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -166,14 +165,14 @@ public class GestionarCorrespondencia {
                     .getResultList();
 
             List<AnexoDTO> anexoList = new ArrayList<>();
-            for(PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList){
-                 em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
+            for (PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList) {
+                em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
                         .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
                         .getResultList()
-                 .stream()
-                 .forEach((anexoDTO) -> {
-                     anexoList.add(anexoDTO);
-                 });
+                        .stream()
+                        .forEach((anexoDTO) -> {
+                            anexoList.add(anexoDTO);
+                        });
             }
 
             List<ReferidoDTO> referidoList = em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
@@ -228,8 +227,7 @@ public class GestionarCorrespondencia {
                             .codEstado(correspondenciaDTO.getCodEstado())
                             .codOrgaAdmin(null)
                             .build());
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -237,6 +235,23 @@ public class GestionarCorrespondencia {
 
         } catch (BusinessException e) {
             throw e;
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public void redireccionarCorrespondencia(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        try {
+            em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
+                    .setParameter("COD_SEDE", agenteDTO.getCodSede())
+                    .setParameter("COD_DEPENDENCIA", agenteDTO.getCodDependencia())
+                    .setParameter("COD_FUNC_REMITE", agenteDTO.getCodFuncRemite())
+                    .setParameter("FEC_ASIGNCION", agenteDTO.getFecAsignacion())
+                    .executeUpdate();
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
