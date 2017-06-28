@@ -24,6 +24,7 @@ import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -187,11 +188,21 @@ public class ProcessService implements IProcessServices {
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
+        Task task = taskService.getTaskById(entrada.getIdTarea());
         RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.ENPROGRESO))
+                .nombre(task.getName())
+ //               .idCreador(task.getTaskData().getCreatedBy().getId())
                 .idProceso(entrada.getIdProceso())
                 .idDespliegue(entrada.getIdDespliegue())
+                .idParent(task.getTaskData().getParentId())
+                .idResponsable(task.getTaskData().getActualOwner().getId())
+                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
+//                .tiempoExpiracion(task.getTaskData().getExpirationTime())
+//                .tiempoActivacion(task.getTaskData().getActivationTime())
+                .fechaCreada(task.getTaskData().getCreatedOn())
+                .prioridad(task.getPriority())
                 .build();
         return respuestaTarea;
     }
