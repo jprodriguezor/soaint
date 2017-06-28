@@ -16,8 +16,8 @@ import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import {Store} from '@ngrx/store';
-import * as actions from './tareasDTO-actions';
-import {Sandbox} from './tareasDTO-sandbox';
+import * as actions from './FuncionarioDTO-actions';
+import {Sandbox} from './FuncionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {go} from '@ngrx/router-store';
 import * as login from 'app/ui/page-components/login/redux-state/login-actions';
@@ -42,30 +42,15 @@ export class Effects {
   @Effect()
   load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
-    .distinctUntilChanged()
-    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
-    // .filter(([action, state]) => {
-    //   console.log(action, state);
-    //   return state === [];
-    // })
-    // .distinctUntilChanged()
-    // .let(isLoaded())
     .map(toPayload)
+    .withLatestFrom(this._store$)
+    .filter(([action, state]) => { console.log('!!!!!!!!!!!!!!!!!' + state.auth.isAuthenticated + '!!!!!!!!!!!!!'); return state.auth.isAuthenticated})
+    .distinctUntilChanged()
     .switchMap(
       (payload) => this._sandbox.loadData(payload)
         .map((response) => new actions.LoadSuccessAction(response))
         .catch((error) => Observable.of(new actions.LoadFailAction({error})))
     );
-
-  @Effect()
-  startTask: Observable<Action> = this.actions$
-    .ofType(actions.ActionTypes.START_TASK)
-    .map(toPayload)
-    .switchMap(
-      (payload) => this._sandbox.startTask(payload)
-        .map((response) => new actions.StartTaskSuccessAction(response))
-        .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
-    )
 
 
 

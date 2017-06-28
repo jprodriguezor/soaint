@@ -22,14 +22,10 @@ export class PrintDirective implements AfterViewInit {
 
     const inlineStyles = this.inlineStyles;
 
-    console.log(layoutStyles);
-
     let self = this;
     jQuery(this.button).on('click', function () {
 
         const html = jQuery('#' + self.printelement).prop('outerHTML');
-
-        console.log(html);
 
         const sheets = document.styleSheets;
         console.log(sheets);
@@ -72,9 +68,7 @@ export class PrintDirective implements AfterViewInit {
         </html>`
         );
         popupWin.document.close();
-
       }
     )
   };
-
 }
