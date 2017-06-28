@@ -194,8 +194,20 @@
   100% {
     opacity: 0;
     transform: scale(2.5); } }
+.paddign-top {
+  padding-top: 20px; }
+
+.paddign-left {
+  padding-left: 20px; }
+
+.paddign-right {
+  padding-right: 20px; }
+
+.paddign-bottom {
+  padding-bottom: 20px; }
+
 .splash-screen {
-  background-color: #3F51B5;
+  background-color: dodgerblue;
   height: 100%; }
   .splash-screen .splash-container {
     padding-top: 250px;
@@ -287,21 +299,21 @@
   .dashboard .colorbox .colorbox-count {
     font-weight: bold; }
   .dashboard .colorbox.colorbox-1 div:first-child {
-    background-color: #2E7D32; }
+    background-color: #126325; }
   .dashboard .colorbox.colorbox-1 div:last-child {
-    background-color: #4CAF50; }
+    background-color: #21BA45; }
   .dashboard .colorbox.colorbox-2 div:first-child {
-    background-color: #0277BD; }
+    background-color: #0f8ea8; }
   .dashboard .colorbox.colorbox-2 div:last-child {
-    background-color: #03A9F4; }
+    background-color: #31CCEC; }
   .dashboard .colorbox.colorbox-3 div:first-child {
-    background-color: #4527A0; }
+    background-color: #b7890c; }
   .dashboard .colorbox.colorbox-3 div:last-child {
-    background-color: #673AB7; }
+    background-color: #F2C037; }
   .dashboard .colorbox.colorbox-4 div:first-child {
-    background-color: #00695C; }
+    background-color: #8a8a8a; }
   .dashboard .colorbox.colorbox-4 div:last-child {
-    background-color: #009688; }
+    background-color: #bdbdbd; }
 .dashboard .task-list {
   overflow: hidden; }
   .dashboard .task-list > .ui-panel {
@@ -839,13 +851,13 @@ html {
 
 body {
   font-family: Roboto,"Helvetica Neue",sans-serif;
-  font-size: 16px;
+  font-size: 10px;
   line-height: 1.5em;
   color: #212121;
   -webkit-font-smoothing: antialiased;
   padding: 0;
   margin: 0;
-  background-color: #f7f7f7;
+  background-color: #fBfBfB;
   height: 100%; }
   body a {
     text-decoration: none; }
@@ -865,30 +877,25 @@ body {
   position: fixed;
   z-index: 100;
   width: 100%;
-  height: 75px;
-  background-color: #757575;
-  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }
+  height: 55px;
+  background-color: #757575; }
   .layout-container .topbar .logo {
     display: inline-block;
     vertical-align: middle;
-    width: 200px;
+    width: 100%;
     height: 30px;
-    background: url("../images/logo2x.png") top left no-repeat;
-    background-size: 200px 30px; }
+    background: url(../images/logo2x.png) top center no-repeat;
+    background-size: 120px 30px; }
   .layout-container .topbar .topbar-left {
     box-sizing: border-box;
-    padding: 20px;
-    height: 75px;
+    padding: 12px;
+    height: 55px;
     width: 250px;
     background-color: #424242;
     float: left;
-    -webkit-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
-    box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3); }
+    border-bottom: 1px solid #CCC; }
   .layout-container .topbar .topbar-right {
-    padding: 15px;
+    padding: 10px 15px 0 5px;
     position: relative; }
     .layout-container .topbar .topbar-right #menu-button {
       color: #ffffff;
@@ -898,7 +905,7 @@ body {
       margin-right: 10px;
       position: relative;
       left: -16px;
-      top: 3px;
+      top: -1px;
       background-color: #FF5722;
       -moz-border-radius: 50%;
       -webkit-border-radius: 50%;
@@ -907,9 +914,9 @@ body {
       -o-transition: all 0.3s;
       -webkit-transition: all 0.3s;
       transition: all 0.3s;
-      -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
-      -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16); }
+      -webkit-box-shadow: 3px 1px 5px rgba(0, 0, 0, 0.23);
+      -moz-box-shadow: 3px 1px 5px rgba(0, 0, 0, 0.23);
+      box-shadow: 3px 1px 5px rgba(0, 0, 0, 0.23); }
       .layout-container .topbar .topbar-right #menu-button:hover {
         -webkit-transform: scale(1.2);
         -moz-transform: scale(1.2);
@@ -963,15 +970,14 @@ body {
         -moz-transition: color 0.5s;
         -o-transition: color 0.5s;
         -webkit-transition: color 0.5s;
-        transition: color 0.5s;
-        font-size: 36px; }
+        transition: color 0.5s; }
     .layout-container .topbar .topbar-right .topbar-items .search-item input {
       position: relative;
       top: -10px;
-      font-size: 16px;
+      font-size: 10px;
       background-color: transparent;
       border-width: 0 0 1px 0;
-      padding: 2px 2px 1px 2px;
+      padding: 2px 2px 5px 2px;
       border-color: #ffffff;
       color: #ffffff; }
       .layout-container .topbar .topbar-right .topbar-items .search-item input:focus {
@@ -991,12 +997,12 @@ body {
   position: fixed;
   width: 250px;
   z-index: 99;
-  top: 75px;
+  top: 55px;
   height: 100%;
-  background-color: #ffffff;
-  -webkit-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
-  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #FBFBFB;
+  -webkit-box-shadow: 1px 0 3px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 1px 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.3);
   -moz-transition: margin-left 0.3s;
   -o-transition: margin-left 0.3s;
   -webkit-transition: margin-left 0.3s;
@@ -1023,10 +1029,7 @@ body {
     height: 145px;
     text-align: center;
     background: url("../images/profile-bg.png") top left no-repeat;
-    background-size: 250px 145px;
-    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
-    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16); }
+    background-size: 250px 145px; }
     .layout-container .layout-menu .profile .profile-image {
       width: 60px;
       height: 60px;
@@ -1086,7 +1089,7 @@ body {
       color: #ffffff;
       background-color: #FF5722; }
 .layout-container.menu-layout-overlay .layout-menu {
-  margin-left: -250px; }
+  margin-left: -260px; }
 .layout-container.menu-layout-overlay .layout-main {
   margin-left: 0px; }
 .layout-container.menu-layout-overlay.layout-menu-overlay-active .layout-menu {
@@ -1103,7 +1106,6 @@ body {
 .layout-container.menu-layout-overlay .topbar {
   z-index: 999999998; }
   .layout-container.menu-layout-overlay .topbar .topbar-right #menu-button i {
-    font-size: 36px !important;
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -o-transform: rotate(180deg);
@@ -1142,7 +1144,7 @@ body {
       font-size: 1.5em; }
     .layout-container .ultima-menu li a i:last-child {
       float: right;
-      font-size: 20px;
+      font-size: 14px;
       margin-top: .15em;
       margin-right: -.15em;
       -moz-transition: transform 0.3s;
@@ -1179,7 +1181,7 @@ body {
     .layout-container .ultima-menu li ul li a {
       padding: .5em 1em .5em 2em; }
       .layout-container .ultima-menu li ul li a > span {
-        font-size: 15px; }
+        font-size: 9px; }
       .layout-container .ultima-menu li ul li a i:first-child {
         display: inline-block;
         vertical-align: middle;
@@ -1237,7 +1239,7 @@ body {
           font-size: 12px;
           line-height: 12px; }
       .layout-container .topbar-items > li .topbar-icon {
-        font-size: 36px;
+        font-size: 30px;
         color: #ffffff;
         -moz-transition: color 0.3s;
         -o-transition: color 0.3s;
@@ -1280,7 +1282,7 @@ body {
     -ms-transform: rotate(180deg);
     transform: rotate(180deg); }
   .layout-container.menu-layout-static.layout-menu-static-inactive .layout-menu {
-    margin-left: -250px; }
+    margin-left: -260px; }
   .layout-container.menu-layout-static.layout-menu-static-inactive .layout-main {
     margin-left: 0px; }
   .layout-container.menu-layout-static .layout-mask {
@@ -1555,3 +1557,5 @@ body .layout-wrapper.layout-compact {
       font-size: 14px; }
   .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
     padding-top: 130px; } }
+
+/*# sourceMappingURL=layout-grey.css.map */

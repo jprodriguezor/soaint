@@ -43,4 +43,11 @@ public class PaisesWebApi {
         LOGGER.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
     }
+
+    @GET
+    @Path("/paises/{nombre_pais}/{estado}")
+    public PaisesDTO listarPaisesByNombrePaisAndEstado(@PathParam("nombre_pais") final String nombrePais, @PathParam("estado") final String estado)throws SystemException, BusinessException {
+        LOGGER.info("processing rest request - listar paises por nombre y estado");
+        return PaisesDTO.newInstance().paises(boundary.listarPaisesByNombrePaisAndEstado(nombrePais, estado)).build();
+    }
 }

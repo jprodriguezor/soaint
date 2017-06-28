@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 
@@ -47,6 +48,18 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/proceso/listar-instancias/")
+    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException, URISyntaxException {
+        LOGGER.info("processing rest request - listar procesos");
+        try {
+            return proceso.listarProcesosInstanciaPorUsuarios(entradaProceso);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
     @Path("/proceso/iniciar/")
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - iniciar proceso");
@@ -59,11 +72,47 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/proceso/iniciar/manual")
+    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException, URISyntaxException {
+        LOGGER.info("processing rest request - iniciar proceso");
+        try {
+            return proceso.iniciarProcesoManual(entradaProceso);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
     @Path("/tareas/completar/")
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - completar tarea");
         try {
             return proceso.completarTarea(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
+    @Path("/tareas/iniciar/")
+    public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - completar tarea");
+        try {
+            return proceso.iniciarTarea(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
+    @Path("/tareas/reservar/")
+    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, IOException, JSONException, URISyntaxException {
+        LOGGER.info("processing rest request - completar tarea");
+        try {
+            return proceso.reservarTarea(entradaTarea);
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;
@@ -84,11 +133,36 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/tareas/listar/estados-usuario/")
+    public List<RespuestaTareaDTO> listarTareaPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - listar tareas con sus estados por usuario");
+        try {
+            return proceso.listarTareasEstadosPorUsuario(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+
+        }
+    }
+
+    @POST
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - listar tareas con sus estados");
         try {
             return proceso.listarTareasEstadosInstanciaProceso(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+
+        }
+    }
+    @POST
+    @Path("/tareas/listar/estados-instancia/")
+    public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
+        LOGGER.info("processing rest request - listar tareas con sus estados");
+        try {
+            return proceso.listarTareasPorInstanciaProceso(entradaTarea);
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;

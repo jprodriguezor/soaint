@@ -26,9 +26,12 @@ import java.util.List;
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/correspondencia/1.0.0")
 public class ComunicacionOficialDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private CorrespondenciaDTO correspondencia;
     private List<AgenteDTO> agenteList;
-    private PpdDocumentoDTO ppdDocumento;
+    private List<PpdDocumentoDTO> ppdDocumentoList;
     private List<AnexoDTO> anexoList;
     private List<ReferidoDTO> referidoList;
+    private List<DatosContactoDTO> datosContactoList;
 }

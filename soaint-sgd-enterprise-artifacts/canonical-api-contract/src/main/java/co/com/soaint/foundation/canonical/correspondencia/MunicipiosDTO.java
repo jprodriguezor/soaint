@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -21,7 +22,9 @@ import java.util.List;
 @Builder(builderMethodName="newInstance")
 @AllArgsConstructor
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/municipios/1.0.0")
-public class MunicipiosDTO {
+public class MunicipiosDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private List<MunicipioDTO> municipios;
 
     public MunicipiosDTO(){}

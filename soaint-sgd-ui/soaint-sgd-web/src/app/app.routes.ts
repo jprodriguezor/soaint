@@ -1,15 +1,32 @@
-import { Routes, RouterModule } from '@angular/router';
-import { ModuleWithProviders } from '@angular/core';
-import { HomeComponent } from "app/ui/page-components/home/home.component";
-import { LoginComponent } from "app/ui/page-components/login/login.component";
-import { AuthGuard } from "app/infrastructure/security/auth-guard";
-import { ProductosComponent } from "app/ui/page-components/productos/productos.component";
+import {RouterModule, Routes} from '@angular/router';
+import {ModuleWithProviders} from '@angular/core';
+import {HomeComponent} from 'app/ui/page-components/home/home.component';
+import {AuthenticatedGuard, LoginComponent} from 'app/ui/page-components/login/__login.include';
+import {RadicarComunicacionesComponent} from './ui/page-components/radicar-comunicaciones/radicar-comunicaciones.component';
+import {WorkspaceComponent} from './ui/page-components/workspace/workspace.component';
+import {ProcessComponent} from './ui/page-components/process/process.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full'},
-    { path: 'login', component: LoginComponent },
-    { path: 'home', component: HomeComponent,canActivate: [AuthGuard] },
-    {path: 'productos', component: ProductosComponent,canActivate: [AuthGuard]}
-];
- 
+    {path: '', redirectTo: 'home', pathMatch: 'full'},
+    {path: 'login', component: LoginComponent},
+    {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
+    {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
+    {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
+    {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
+  ]
+;
+
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
+
+// import { NgModule } from '@angular/core';
+// import { RouterModule } from '@angular/router';
+//
+// @NgModule({
+//   imports: [
+//     RouterModule.forChild([
+//       { path: '', redirectTo: '/home', pathMatch: 'full' },
+//       { path: 'lazy', loadChildren: getLazyModule }
+//     ])
+//   ],
+// })
+// export class AppRoutingModule { }

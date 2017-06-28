@@ -3635,7 +3635,7 @@ body {
     vertical-align: middle; }
     body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-input-token > input {
       padding: 0;
-      font-size: 16px;
+      font-size: 10px;
       margin: 0;
       vertical-align: bottom; }
   body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-token {
@@ -4048,12 +4048,12 @@ body {
           background-color: #5b6976; }
       body .ui-datepicker .ui-datepicker-header select.ui-datepicker-month,
       body .ui-datepicker .ui-datepicker-header select.ui-datepicker-year {
-        font-size: 14px; }
+        font-size: 8px; }
     body .ui-datepicker table {
       table-layout: fixed;
       border-spacing: 0;
       border-collapse: collapse;
-      font-size: 14px; }
+      font-size: 8px; }
     body .ui-datepicker thead tr {
       color: #ffffff;
       background: #2f4050; }
@@ -4254,7 +4254,7 @@ body {
       padding-bottom: 2px; }
       body .ui-chips > ul.ui-inputtext .ui-chips-input-token > input {
         padding: 0;
-        font-size: 16px;
+        font-size: 10px;
         margin: 0;
         vertical-align: bottom; }
       body .ui-chips > ul.ui-inputtext .ui-chips-input-token input:disabled {
@@ -4853,7 +4853,7 @@ body .ui-datatable .ui-datatable-data tr {
       box-sizing: content-box; }
   body .ui-datatable .ui-datatable-data tr.ui-state-highlight {
     background-color: #1ab394;
-    border-color:   #1ab394;
+    border-color: ┬á #1ab394;
     color: #ffffff; }
   body .ui-datatable .ui-datatable-data tr .ui-cell-editor-input input {
     color: #ffffff; }
@@ -4893,10 +4893,10 @@ body .ui-datatable.ui-datatable-scrollable .ui-datatable-scrollable-header, body
     color: #212121; }
 body .ui-datatable.ui-datatable-scrollable thead tr th {
   color: #212121;
-  font-size: 16px; }
+  font-size: 10px; }
 body .ui-datatable.ui-datatable-scrollable tfoot tr td {
   color: #212121;
-  font-size: 16px; }
+  font-size: 10px; }
 body .ui-carousel {
   padding: 0; }
   body .ui-carousel .ui-carousel-header {
@@ -5213,7 +5213,7 @@ body .ui-menu {
       body .ui-menu .ui-menu-list li.ui-widget-header h3 {
         display: block;
         float: none;
-        font-size: 16px;
+        font-size: 10px;
         padding: 0;
         font-weight: 400; }
     body .ui-menu .ui-menu-list li.ui-menuitem {
@@ -5336,7 +5336,7 @@ body .ui-panelmenu .ui-panelmenu-header {
   body .ui-panelmenu .ui-panelmenu-header a {
     padding: .625em 1em;
     color: #ffffff;
-    font-size: 16px; }
+    font-size: 10px; }
   body .ui-panelmenu .ui-panelmenu-header .fa {
     color: #ffffff; }
   body .ui-panelmenu .ui-panelmenu-header.ui-state-active {
@@ -5850,4 +5850,6 @@ body .ui-inplace .ui-inplace-display {
   body .ui-inplace .ui-inplace-display:hover {
     background-color: #e8e8e8; }
 body .ui-terminal .ui-terminal-input {
-  font-size: 16px; }
+  font-size: 10px; }
+
+/*# sourceMappingURL=theme-dark-green.css.map */

@@ -1,0 +1,105 @@
+<form [formGroup]="form">
+  <div class="ui-g ui-fluid">
+
+    <div class="card card-w-title">
+      <h1>Descripción anexos</h1>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+            <p-autoComplete id="tipoDestinatario"
+                            [disabled]="!editable"
+                            [suggestions]="tipoDestinatarioSuggestions$| async"
+                            field="nombre"
+                            formControlName="tipoDestinatario"
+                            (completeMethod)="onFilterTipoDestinatario($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onDropdownClickTipoDestinatario($event)">
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+            <p-autoComplete id="sedeAdministrativa"
+                            [disabled]="!editable"
+                            [suggestions]="sedeAdministrativaSuggestions$| async"
+                            field="nombre"
+                            (onSelect)="onSelectSedeAdministrativa($event)"
+                            formControlName="sedeAdministrativa"
+                            (completeMethod)="onFilterSedeAdministrativa($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onDropdownClickSedeAdministrativa($event)">
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="dependenciaGrupo"><span class="text-danger">*</span>Dependencia / Grupo</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+            <p-autoComplete id="dependenciaGrupo"
+                            [disabled]="!editable"
+                            [disabled]="!selectSedeAdministrativa"
+                            [suggestions]="dependenciaGrupoSuggestions$ | async"
+                            field="nombre"
+                            formControlName="dependenciaGrupo"
+                            (completeMethod)="onFilterDependenciaGrupo($event)" [size]="30"
+                            [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                            (onDropdownClick)="onDropdownClickDependenciaGrupo($event)">
+            </p-autoComplete>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: right">
+        <button pButton type="button" label="Agregar"
+                style="width: auto; margin-left: 12px; margin-bottom: 10px" (click)="addAgentesDestinatario()"
+                [disabled]="!editable || !tipoDestinatarioControl.value ||
+                (!sedeAdministrativaControl.value && !sedeAdministrativaControl.disabled) ||
+                (!dependenciaGrupoControl.value && !dependenciaGrupoControl.disabled)">
+        </button>
+      </div>
+
+      <div class="ui-g-12">
+        <p-dataTable [value]="agentesDestinatario" selectionMode="single" [(selection)]="selectedagenteDestinatario"
+                     [paginator]="true" [rows]="10" [responsive]="true">
+          <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+          <p-column field="sedeAdministrativa.nombre" header="Sede administrativa" [sortable]="true"></p-column>
+          <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
+          <p-column [style]="{'width': '50px'}"></p-column>
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton (click)="deleteAgentesDestinatario(i)"
+                      class="ui-button ui-button-icon ui-button-danger"></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+        <div class="ui-g-12 md-inputfield">
+          <div class="ui-message ui-messages-error ui-corner-all"
+               *ngIf="agentesDestinatario.length === 0 &&
+                (tipoDestinatarioControl.touched && !tipoDestinatarioControl.value) &&
+                (sedeAdministrativaControl.touched && !sedeAdministrativaControl.value) &&
+                (dependenciaGrupoControl.touched && !dependenciaGrupoControl.value)">
+            Listado requerido
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+</form>

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,7 +19,9 @@ import java.util.Date;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/dct-asignacion/1.0.0")
-public class DctAsignacionDTO {
+public class DctAsignacionDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long ideAsignacion;
     private Date fecAsignacion;
     private Long ideFunci;

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,7 +20,9 @@ import java.util.Date;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-plan-agen/1.0.0")
-public class PlanAgenDTO {
+public class PlanAgenDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long idePlanAgen;
     private String varPeso;
     private String varValor;
