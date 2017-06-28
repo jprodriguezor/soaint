@@ -54,15 +54,15 @@ public class OrganigramaAdministrativoWebApi {
     }
 
     @GET
-    @Path("/organigrama/dependencias/{id_padre}")
-    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("id_padre") final String idPadre) throws BusinessException, SystemException{
+    @Path("/organigrama/dependencias/{ide_orga_admin_padre}")
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar descendientes directos de un elemento");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }
 
     @GET
-    @Path("/organigrama/sede/{id_dependencia}")
-    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("id_dependencia")final String idDependencia) throws BusinessException, SystemException{
+    @Path("/organigrama/sede/dependencia/{ide_orga_admin}")
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("ide_orga_admin")final String idDependencia) throws BusinessException, SystemException{
         LOGGER.info("processing rest request - listar padre de segundo nivel");
         return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idDependencia)));
     }
