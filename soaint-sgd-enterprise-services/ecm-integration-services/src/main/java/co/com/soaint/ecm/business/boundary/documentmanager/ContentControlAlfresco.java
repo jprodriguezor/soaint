@@ -532,18 +532,18 @@ return null;
             Folder carpeta=(Folder)conexion.getSession ().getObjectByPath (conexion.getSession ().getRootFolder ().getPath ()+aux.getFolder ().getName ());
             String description = carpeta.getDescription ();
             if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-                if (aux.getFolder ().getPropertyValue ("metadatoCodDependencia") != null &&
-                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("corr:codDependencia") != null &&
+                        aux.getFolder ().getPropertyValue ("corr:codDependencia").equals(codFolder)) {
                     folderReturn = aux;
                 }
             } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-                if (aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("corr:codSerie") != null &&
+                        aux.getFolder ().getPropertyValue ("corr:codSerie").equals(codFolder)) {
                     folderReturn = aux;
                 }
             } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-                if (aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("corr:codSubSerie") != null &&
+                        aux.getFolder ().getPropertyValue ("corr:codSubSerie").equals(codFolder)) {
                     folderReturn = aux;
                 }
             }
