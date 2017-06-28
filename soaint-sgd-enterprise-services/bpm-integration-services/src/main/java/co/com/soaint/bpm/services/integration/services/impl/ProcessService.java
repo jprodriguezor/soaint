@@ -199,8 +199,8 @@ public class ProcessService implements IProcessServices {
                 .idParent(task.getTaskData().getParentId())
                 .idResponsable(task.getTaskData().getActualOwner().getId())
                 .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-//                .tiempoExpiracion(task.getTaskData().getExpirationTime())
-//                .tiempoActivacion(task.getTaskData().getActivationTime())
+                .tiempoExpiracion(task.getTaskData().getExpirationTime())
+                .tiempoActivacion(task.getTaskData().getActivationTime())
                 .fechaCreada(task.getTaskData().getCreatedOn())
                 .prioridad(task.getPriority())
                 .build();
