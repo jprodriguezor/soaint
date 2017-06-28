@@ -107,32 +107,12 @@ public class GestionarOrganigramaAdministrativo {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
         try {
-            OrganigramaItemDTO organigramaItem = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
-                    .setParameter("IDE_ORGA_ADMIN", ideOrgaAdmin)
-                    .setHint("org.hibernate.cacheable", true)
-                    .getSingleResult();
-
-            if (organigramaItem.getIdOrgaAdminPadre() == null){
+            OrganigramaItemDTO organigramaItem = organigramaAdministrativoControl.consultarPadreDeSegundoNivel(ideOrgaAdmin);
+            if (organigramaItem == null){
                 throw ExceptionBuilder.newBuilder()
-                        .withMessage("organigrama.no_padre")
+                        .withMessage("organigrama.no_padre_segundo_nivel")
                         .buildBusinessException();
             }
-
-            Boolean esPadreSegundoNivel = false;
-
-            while (!esPadreSegundoNivel){
-                OrganigramaItemDTO padre = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
-                        .setParameter("IDE_ORGA_ADMIN", BigInteger.valueOf(Long.parseLong(organigramaItem.getIdOrgaAdminPadre())))
-                        .setHint("org.hibernate.cacheable", true)
-                        .getSingleResult();
-                if (padre.getIdOrgaAdminPadre() == null){
-                    esPadreSegundoNivel = true;
-                }
-                else{
-                    organigramaItem = padre;
-                }
-            }
-
             return organigramaItem;
         } catch (NoResultException n) {
             throw ExceptionBuilder.newBuilder()
