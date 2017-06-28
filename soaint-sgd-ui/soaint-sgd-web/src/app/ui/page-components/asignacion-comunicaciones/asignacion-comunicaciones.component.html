@@ -1,12 +1,62 @@
 <div class="page-title">
-  <h2>Asignacion de comunicaciones</h2>
+  <h2>Asignación de comunicaciones</h2>
 </div>
 
 <div class="ui-g ui-fluid">
   <div class="ui-g-12">
-    <p-dataTable selectionMode="multiple"
+    <div class="card card-w-title">
+      <h1>Filtros</h1>
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Fecha inicial</label>
+              </div>
+              <div class="ui-g-12">
+                <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Fecha final</label>
+              </div>
+              <div class="ui-g-12">
+                <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Estado tarea</label>
+              </div>
+              <div class="ui-g-12">
+                <p-dropdown [options]="estadosCorrespondencia" id="estadoCorrespondencia"
+                            [autoWidth]="false"></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Número de radicado</label>
+              </div>
+              <div class="ui-g-12">
+                <input type="text" pInputText id="numeroRadicado">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12">
+    <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
                  [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
-      <p-header>Listado de anexos</p-header>
+      <p-header>Listado de comunicaciones</p-header>
       <p-column field="tipoAnexo.nombre" header="Número de radicado" [sortable]="true"></p-column>
       <p-column field="descripcion" header="Fecha y hora de radicación" [sortable]="true"></p-column>
       <p-column field="descripcion" header="Fecha de vencimiento" [sortable]="true"></p-column>
