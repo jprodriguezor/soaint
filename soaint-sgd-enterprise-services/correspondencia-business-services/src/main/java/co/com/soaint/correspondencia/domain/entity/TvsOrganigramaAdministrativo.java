@@ -32,6 +32,10 @@ import javax.persistence.*;
             "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.indEsActivo, t.descOrg, t.codNivel) " +
             "FROM TvsOrganigramaAdministrativo t " +
             "WHERE t.ideOrgaAdminPadre IS NULL"),
+        @NamedQuery(name = "TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO" +
+                "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.ideOrgaAdminPadre, t.indEsActivo, t.descOrg, t.codNivel) " +
+                "FROM TvsOrganigramaAdministrativo t " +
+                "WHERE t.ideOrgaAdmin = :IDE_ORGA_ADMIN"),
         @NamedQuery(name = "TvsOrganigramaAdministrativo.consultarDescendientesDirectos", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO" +
                 "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.ideOrgaAdminPadre, t1.nomOrg, t.indEsActivo, t.codNivel, t.descOrg, t1.codNivel) " +
                 "FROM TvsOrganigramaAdministrativo t " +

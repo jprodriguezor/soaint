@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -25,8 +27,23 @@ public class GestionarOrganigramaAdministrativoWS {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @WebMethod(action = "listarPaisesByEstado", operationName = "listarPaisesByEstado")
+    @WebMethod(action = "consultarOrganigrama", operationName = "consultarOrganigrama")
     public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException{
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.consultarOrganigrama()).build();
+    }
+
+    @WebMethod(action = "listarDescendientesDirectosDeElementoRayz", operationName = "listarDescendientesDirectosDeElementoRayz")
+    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException{
+        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarDescendientesDirectosDeElementoRayz()).build();
+    }
+
+    @WebMethod(action = "listarElementosDeNivelInferior", operationName = "listarElementosDeNivelInferior")
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre")final String idPadre) throws BusinessException, SystemException{
+        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
+    }
+
+    @WebMethod(action = "consultarPadreDeSegundoNivel", operationName = "consultarPadreDeSegundoNivel")
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@WebParam(name = "id_hijo")final String idHijo) throws BusinessException, SystemException{
+        return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idHijo)));
     }
 }

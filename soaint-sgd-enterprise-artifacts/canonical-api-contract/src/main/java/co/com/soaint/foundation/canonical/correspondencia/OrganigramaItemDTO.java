@@ -35,6 +35,16 @@ public class OrganigramaItemDTO {
     private String descOrg;
     private String nivelPadre;
 
+    public OrganigramaItemDTO(BigInteger ideOrgaAdmin, String codOrg, String nomOrg, String idOrgaAdminPadre, String estado, String descOrg, String nivel) {
+        this.ideOrgaAdmin = ideOrgaAdmin;
+        this.codOrg = codOrg;
+        this.nomOrg = nomOrg;
+        this.idOrgaAdminPadre = idOrgaAdminPadre;
+        this.estado = estado;
+        this.descOrg = descOrg;
+        this.nivel = nivel;
+    }
+
     public OrganigramaItemDTO(BigInteger ideOrgaAdmin, String codOrg, String nomOrg, String estado, String descOrg, String nivel) {
         this.ideOrgaAdmin = ideOrgaAdmin;
         this.codOrg = codOrg;
