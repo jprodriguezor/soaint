@@ -12,7 +12,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -42,5 +44,26 @@ public class OrganigramaAdministrativoWebApi {
     public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException{
         LOGGER.info("processing rest request - consultar organigrama administrativo");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.consultarOrganigrama()).build();
+    }
+
+    @GET
+    @Path("/organigrama/sedes")
+    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar descendientes directos del elemento raiz");
+        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarDescendientesDirectosDeElementoRayz()).build();
+    }
+
+    @GET
+    @Path("/organigrama/dependencias/{id_padre}")
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("id_padre") final String idPadre) throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar descendientes directos de un elemento");
+        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
+    }
+
+    @GET
+    @Path("/organigrama/sede/{id_dependencia}")
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("id_dependencia")final String idDependencia) throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar padre de segundo nivel");
+        return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idDependencia)));
     }
 }
