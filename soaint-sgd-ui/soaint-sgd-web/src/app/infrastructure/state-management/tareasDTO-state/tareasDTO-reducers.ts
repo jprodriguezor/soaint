@@ -1,4 +1,4 @@
-import {ActionTypes as Autocomplete, Actions} from './tareasDTO-actions';
+import {ActionTypes, Actions} from './tareasDTO-actions';
 import {tassign} from 'tassign';
 import {TareaDTO} from 'app/domain/tareaDTO';
 
@@ -22,8 +22,8 @@ const initialState: State = {
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
-    case Autocomplete.FILTER_COMPLETE:
-    case Autocomplete.LOAD_SUCCESS: {
+    case ActionTypes.FILTER_COMPLETE:
+    case ActionTypes.LOAD_SUCCESS: {
       console.log(action.payload);
       const values = action.payload;
       const newValues = values.filter(data => !state.entities[data.idTarea]);
@@ -40,6 +40,22 @@ export function reducer(state = initialState, action: Actions) {
         entities: tassign(state.entities, newValuesEntities)
       });
 
+    }
+
+    case ActionTypes.START_TASK_SUCCESS: {
+
+      const task = action.payload;
+
+      if (state.ids.indexOf(task.idTarea) === -1) {
+        return state;
+      }
+
+      let cloneEntities = tassign({}, state.entities);
+      cloneEntities[task.idTarea] = task;
+
+      return tassign(state, {
+        entities: cloneEntities
+      });
     }
 
     default:

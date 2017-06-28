@@ -7,7 +7,10 @@ export const ActionTypes = {
     LOAD: type('[TareaDTO] LoadAction'),
     LOAD_SUCCESS: type('[TareaDTO] LoadSuccessAction'),
     LOAD_FAIL: type('[TareaDTO] LoadFailAction'),
-    START_TASK: type('[TareaDTO] StartTaskAction')
+    START_TASK: type('[TareaDTO] StartTaskAction'),
+    START_TASK_SUCCESS: type('[TareaDTO] StartTaskSuccessAction'),
+    START_TASK_FAIL: type('[TareaDTO] StartTaskFailAction'),
+
 };
 
 
@@ -36,13 +39,25 @@ export class StartTaskAction implements Action {
   constructor(public payload?: any) { }
 }
 
+export class StartTaskSuccessAction implements Action {
+  type = ActionTypes.START_TASK_SUCCESS;
+  constructor(public payload?: any) { }
+}
+
+export class StartTaskFailAction implements Action {
+  type = ActionTypes.START_TASK_FAIL;
+  constructor(public payload?: any) { }
+}
+
 
 export type Actions =
   FilterAction |
   LoadAction |
   LoadSuccessAction |
   LoadFailAction |
-  StartTaskAction
+  StartTaskAction |
+  StartTaskSuccessAction |
+  StartTaskFailAction
   ;
 
 

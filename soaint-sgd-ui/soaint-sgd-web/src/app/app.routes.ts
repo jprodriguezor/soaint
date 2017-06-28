@@ -5,16 +5,17 @@ import {AuthenticatedGuard, LoginComponent} from 'app/ui/page-components/login/_
 import {RadicarComunicacionesComponent} from './ui/page-components/radicar-comunicaciones/radicar-comunicaciones.component';
 import {WorkspaceComponent} from './ui/page-components/workspace/workspace.component';
 import {ProcessComponent} from './ui/page-components/process/process.component';
+import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: 'home', pathMatch: 'full'},
-    {path: 'login', component: LoginComponent},
-    {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
-    {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
-    {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
-    {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
-  ]
-;
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {path: 'login', component: LoginComponent},
+  {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
+  {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
+  {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
+  {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
+  {path: 'asignacion-comunicaciones', component: AsignarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
+];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
 

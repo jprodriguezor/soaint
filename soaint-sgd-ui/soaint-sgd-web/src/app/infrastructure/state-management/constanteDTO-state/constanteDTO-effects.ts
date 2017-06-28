@@ -52,4 +52,17 @@ export class Effects {
       )
     );
 
+  @Effect()
+  filter: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.FILTER)
+    .withLatestFrom(this._store$, (action, state) => state.constantes[action.payload.key].ids)
+    .filter((action, values) => { return true; })
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.loadData(payload)
+        .map((response) => new actions.LoadSuccessAction({key: payload.key, data: response}))
+        .catch((error) => Observable.of(new actions.LoadFailAction({error}))
+        )
+    );
+
 }

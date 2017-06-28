@@ -52,7 +52,7 @@ export class DatosGeneralesComponent implements OnInit {
   datosDestinatario: any;
 
 
-  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
+  tipoComunicacionSuggestions$: Observable<any[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
@@ -115,6 +115,8 @@ export class DatosGeneralesComponent implements OnInit {
     this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
+
+    this._sandbox.loadDispatch('tipoComunicacion');
   }
 
 
