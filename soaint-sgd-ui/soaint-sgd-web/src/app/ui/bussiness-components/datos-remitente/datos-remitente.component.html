@@ -148,7 +148,7 @@
               <span class="md-inputfield">
               <input type="text" pInputText id="razonSocial" formControlName="razonSocial">
               <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
-                <div class="ui-message ui-messages-error ui-corner-all"
+                <div class="ui-message ui-messages-error ui-corner-all" [hidden]="razonSocialControl.disabled"
                      *ngIf="razonSocialControl.touched && !razonSocialControl.valid">
                   Este campo es requerido
                 </div>

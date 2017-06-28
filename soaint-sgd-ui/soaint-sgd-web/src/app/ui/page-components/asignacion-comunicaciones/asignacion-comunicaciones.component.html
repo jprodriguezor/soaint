@@ -1,0 +1,34 @@
+<div class="page-title">
+  <h2>Asignacion de comunicaciones</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <p-dataTable selectionMode="multiple"
+                 [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
+      <p-header>Listado de anexos</p-header>
+      <p-column field="tipoAnexo.nombre" header="Número de radicado" [sortable]="true"></p-column>
+      <p-column field="descripcion" header="Fecha y hora de radicación" [sortable]="true"></p-column>
+      <p-column field="descripcion" header="Fecha de vencimiento" [sortable]="true"></p-column>
+      <p-column field="descripcion" header="Asunto" [sortable]="true"></p-column>
+      <p-column header="Ver detalles" [style]="{'width':'120px','text-align':'center'}">
+        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+          <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
+                  class="ui-button ui-button-icon ui-button-danger"></button>
+        </ng-template>
+      </p-column>
+      <p-column field="descripcion" header="Estado" [sortable]="true"></p-column>
+      <p-column header="Agregar obseravación" [style]="{'width':'120px','text-align':'center'}">
+        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+          <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
+                  class="ui-button ui-button-icon ui-button-danger"></button>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+</div>
+
+
+
+
+
