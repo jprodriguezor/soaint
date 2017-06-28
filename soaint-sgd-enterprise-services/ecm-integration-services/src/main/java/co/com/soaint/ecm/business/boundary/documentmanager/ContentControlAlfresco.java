@@ -531,41 +531,26 @@ return null;
             Carpeta aux = iterator.next();
             Folder carpeta=(Folder)conexion.getSession ().getObjectByPath (conexion.getSession ().getRootFolder ().getPath ()+aux.getFolder ().getName ());
             String description = carpeta.getDescription ();
-//            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-//                if (aux.getFolder ().ge ().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
-//            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
-//            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-//                if (aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-//                        aux.getProperties().getStringValue(Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-//                    folderReturn = aux;
-//                }
+            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
+                if (aux.getFolder ().getPropertyValue ("metadatoCodDependencia") != null &&
+                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
+                    folderReturn = aux;
+                }
+            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
+                if (aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSerie")) != null &&
+                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
+                    folderReturn = aux;
+                }
+            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
+                if (aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
+                        aux.getFolder ().getPropertyValue (Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
+                    folderReturn = aux;
+                }
+            }
+
+
         }
-
-
-
-
-
-
-//        //TODO obtener carpetas hijas a partir de la carpeta padre
-////        ItemIterable<CmisObject> subFolders=folderFather.getChildren ();
-//        ItemIterable<CmisObject> listaObjetos = folderFather.getFolder ().getChildren ();
-//
-//        while (listaObjetos.iterator ().hasNext ()) {
-//            CmisObject aux = listaObjetos.iterator ().next();
-//
-//        folderReturn.setFolder (folderFather.getFolder ());
-//
-//    }
-
-    return folderReturn;
-//        return null;
+        return folderReturn;
     }
 
 
