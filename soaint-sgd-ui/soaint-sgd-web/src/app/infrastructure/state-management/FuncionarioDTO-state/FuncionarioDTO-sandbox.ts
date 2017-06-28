@@ -14,7 +14,6 @@ export class Sandbox {
   }
 
   loadData(payload?: any) {
-    debugger;
     return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
   }
 

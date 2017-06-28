@@ -19,17 +19,6 @@ import {Store} from '@ngrx/store';
 import * as actions from './FuncionarioDTO-actions';
 import {Sandbox} from './FuncionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {go} from '@ngrx/router-store';
-import * as login from 'app/ui/page-components/login/redux-state/login-actions';
-import {TareaDTO} from 'app/domain/tareaDTO';
-
-function isLoaded() {
-  return (source) =>
-    source.filter(values => {
-      console.log(values);
-      return true
-    })
-}
 
 @Injectable()
 export class Effects {
@@ -43,9 +32,6 @@ export class Effects {
   load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     .map(toPayload)
-    .withLatestFrom(this._store$)
-    .filter(([action, state]) => { console.log('!!!!!!!!!!!!!!!!!' + state.auth.isAuthenticated + '!!!!!!!!!!!!!'); return state.auth.isAuthenticated})
-    .distinctUntilChanged()
     .switchMap(
       (payload) => this._sandbox.loadData(payload)
         .map((response) => new actions.LoadSuccessAction(response))
