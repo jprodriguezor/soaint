@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import {Observable} from 'rxjs/Observable';
+import {Store} from '@ngrx/store';
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {getArrayData} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
+import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -8,7 +12,7 @@ import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/sta
 })
 export class AsignarComunicacionesComponent implements OnInit {
 
-  comunicaciones: Array<ComunicacionOficialDTO> = [];
+  comunicaciones$: Observable<CorrespondenciaDTO[]>;
 
   estadosCorrespondencia: [{ label: string, value: string }];
 
@@ -18,7 +22,8 @@ export class AsignarComunicacionesComponent implements OnInit {
 
   estadoCorrespondencia: any;
 
-  constructor(private _comunicacionOficialApi: CominicacionOficialSandbox) {
+  constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox) {
+    this.comunicaciones$ = this._store.select(getArrayData);
     this.start_date.setHours(this.start_date.getHours() - 24);
   }
 
@@ -31,16 +36,26 @@ export class AsignarComunicacionesComponent implements OnInit {
     this.estadosCorrespondencia = [
       {
         label: 'SIN ASIGNAR',
-        value: 'SIN_ASIGNAR'
+        value: 'A'
       }
-    ]
+    ];
+    this.estadoCorrespondencia = this.estadosCorrespondencia[0];
+  }
+
+  convertDate(inputFormat) {
+    function pad(s) {
+      return (s < 10) ? '0' + s : s;
+    }
+
+    let d = new Date(inputFormat);
+    return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
   }
 
   listarComunicaciones() {
     this._comunicacionOficialApi.loadDispatch({
-      fecha_ini: this.start_date,
-      fecha_fin: this.end_date,
-      cod_estado: this.estadoCorrespondencia,
+      fecha_ini: this.convertDate(this.start_date),
+      fecha_fin: this.convertDate(this.end_date),
+      cod_estado: this.estadoCorrespondencia.value
     });
   }
 }

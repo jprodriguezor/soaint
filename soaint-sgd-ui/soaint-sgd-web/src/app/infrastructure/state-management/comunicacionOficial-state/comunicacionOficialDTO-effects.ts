@@ -17,6 +17,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './comunicacionOficialDTO-actions';
 import {Sandbox} from './comunicacionOficialDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {tassign} from 'tassign';
 
 function isLoaded() {
   return (source) =>
@@ -46,8 +47,10 @@ export class Effects {
 
     .switchMap(
       ([payload, state]) => {
-        console.log(state);
-        return this._sandbox.loadData(payload)
+        const new_payload = tassign(payload, {
+          cod_dependencia: state.funcionario.dependencia.codOrg
+        });
+        return this._sandbox.loadData(new_payload)
           .map((response) => new actions.LoadSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadFailAction({error}))
           )

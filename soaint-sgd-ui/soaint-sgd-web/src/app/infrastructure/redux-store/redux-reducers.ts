@@ -49,6 +49,7 @@ export const reducers = {
   paises: paisStore.reducer,
   municipios: municipioStore.reducer,
   departamentos: departamentoStore.reducer,
+  comunicacionesOficiales: correspondenciaStore.reducer,
   dependenciaGrupo: dependenciaGrupoStore.reducer,
   tareas: tareasStore.reducer,
   funcionario: funcionarioStore.reducer,

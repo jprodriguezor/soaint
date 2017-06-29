@@ -45,7 +45,6 @@ public class CorrespondenciaGatewayApi {
 
     @GET
     @Path("/listar-comunicaciones")
-    @JWTTokenSecurity
     public Response listarComunicaciones(@QueryParam("fecha_ini") final String fechaIni,
                                          @QueryParam("fecha_fin") final String fechaFin,
                                          @QueryParam("cod_dependencia") final String codDependencia,
