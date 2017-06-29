@@ -10,9 +10,6 @@ import {Effects as TareasDtoEffects} from 'app/infrastructure/state-management/t
 import {Effects as RadicarComunicacionesEffects} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-effects';
 import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-effects';
 import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-effects';
-import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-effects';
-import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-effects';
-
 
 /**
  * Effects offer a way to isolate and easily test side-effects within your
