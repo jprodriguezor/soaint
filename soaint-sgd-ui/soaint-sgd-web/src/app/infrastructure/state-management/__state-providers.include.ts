@@ -8,6 +8,7 @@ import {Sandbox as tareasDtoSandbox} from 'app/infrastructure/state-management/t
 import {Sandbox as RadicarComunicacionesSandbox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as ComunicacionOficialSandbox} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 import {Sandbox as FuncionarioDtoSandbox} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-sandbox';
+import {Sandbox as FuncionarioDtoSandbox} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-sandbox';
 
 export const STATE_MANAGEMENT_PROVIDERS = [
   ConstanteDtoSandbox,
@@ -19,6 +20,8 @@ export const STATE_MANAGEMENT_PROVIDERS = [
   tareasDtoSandbox,
   RadicarComunicacionesSandbox,
   ComunicacionOficialSandbox,
+  RadicarComunicacionesSandbox,
+  FuncionarioDtoSandbox,
   RadicarComunicacionesSandbox,
   FuncionarioDtoSandbox
 ];

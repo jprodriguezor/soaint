@@ -61,16 +61,17 @@ public class CorrespondenciaWebApi {
 
     @GET
     @Path("/correspondencia")
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(@QueryParam("fecha_ini") final String fechaIni,
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@QueryParam("fecha_ini") final String fechaIni,
                                                                                                   @QueryParam("fecha_fin") final String fechaFin,
                                                                                                   @QueryParam("cod_dependencia") final String codDependencia,
-                                                                                                  @QueryParam("cod_estado") final String codEstado) throws BusinessException, SystemException {
+                                                                                                  @QueryParam("cod_estado") final String codEstado,
+                                                                                                  @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         LOGGER.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_estado");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date fechaInicial = dateFormat.parse(fechaIni);
             Date fechaFinal = dateFormat.parse(fechaFin);
-            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(fechaInicial, fechaFinal, codDependencia, codEstado);
+            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codEstado, nroRadicado);
         }
         catch (ParseException ex){
             throw ExceptionBuilder.newBuilder()
