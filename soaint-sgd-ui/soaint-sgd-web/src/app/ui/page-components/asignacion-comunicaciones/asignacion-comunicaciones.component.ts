@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
-import {ComunicacionApiService} from 'app/infrastructure/__api.include';
+import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -16,12 +16,15 @@ export class AsignarComunicacionesComponent implements OnInit {
 
   end_date: Date = new Date();
 
-  constructor(private _comunicacionOficial: ComunicacionApiService) {
+  estadoCorrespondencia: any;
+
+  constructor(private _comunicacionOficialApi: CominicacionOficialSandbox) {
     this.start_date.setHours(this.start_date.getHours() - 24);
   }
 
   ngOnInit() {
     this.llenarEstadosCorrespondencias();
+    this.listarComunicaciones();
   }
 
   llenarEstadosCorrespondencias() {
@@ -34,7 +37,11 @@ export class AsignarComunicacionesComponent implements OnInit {
   }
 
   listarComunicaciones() {
-    this._comunicacionOficial.list('', {});
+    this._comunicacionOficialApi.loadDispatch({
+      fecha_ini: this.start_date,
+      fecha_fin: this.end_date,
+      cod_estado: this.estadoCorrespondencia,
+    });
   }
 }
 

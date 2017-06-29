@@ -6,6 +6,7 @@ import * as procesoStore from 'app/infrastructure/state-management/procesoDTO-st
 import * as paisStore from 'app/infrastructure/state-management/paisDTO-state/paisDTO-reducers';
 import * as municipioStore from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-reducers';
 import * as departamentoStore from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-reducers';
+import * as correspondenciaStore from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-reducers';
 import * as dependenciaGrupoStore from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-reducers';
 import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
@@ -24,6 +25,7 @@ export interface State {
   radicarComunicacion: comunicacionOficialStore.State,
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
+  comunicacionesOficiales: correspondenciaStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,
   tareas: tareasStore.State,
   proceso: procesoStore.State,
