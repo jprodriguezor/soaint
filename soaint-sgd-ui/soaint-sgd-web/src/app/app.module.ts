@@ -17,8 +17,9 @@ import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, B
 // import { PAGE_MODULES } from './ui/page-components/__page-components.include';
 
 // third party libs | components | modules
-import {PRIMENG_MODULES} from './shared/primeng/__primeng';
-import {PrintDirective} from './shared/directives/print.directive';
+import {PRIMENG_MODULES, PrintDirective, PIPES} from './shared/__shared.include';
+// import {PRIMENG_MODULES} from './shared/primeng/__primeng';
+// import {PrintDirective} from './shared/directives/print.directive';
 import {LocalStorageModule} from 'angular-2-local-storage';
 
 // APP SERVICES
@@ -91,6 +92,7 @@ import { RouterStoreModule } from '@ngrx/router-store';
     AppComponent,
     PrintDirective,
     ...UI_COMPONENTS,
+    ...PIPES
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

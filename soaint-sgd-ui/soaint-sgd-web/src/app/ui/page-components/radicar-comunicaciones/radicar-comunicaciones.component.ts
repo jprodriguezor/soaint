@@ -11,7 +11,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 declare const require: any;
-const printStyles  = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
+const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -190,11 +190,11 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
       ideInstancia: null,
-      reqDistFisica: this.valueGeneral.reqDistFisica ? "1" : "0",
+      reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
       codFuncRadica: null,
       codSede: null,
       codDependencia: null,
-      reqDigita: this.valueGeneral.reqDigit ? "1" : "0",
+      reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
       codEmpMsj: null,
       nroGuia: null,
       fecVenGestion: null,
@@ -228,6 +228,10 @@ export class RadicarComunicacionesComponent implements OnInit {
       });
     });
     return contactos;
+  }
+
+  navigateBackToWorkspace() {
+    this._taskSandBox.navigateToWorkspace();
   }
 
 }

@@ -25,16 +25,7 @@ export class WorkspaceComponent implements OnInit {
   }
 
   iniciarTarea(task) {
-    if (task.estado === 'ENPROGRESO') {
-      this._taskSandbox.initTaskDispatch(task);
-    } else if (task.estado === 'RESERVADO')
-      this._taskSandbox.startTask({
-        "idProceso": task.idProceso,
-        "idDespliegue": task.idDespliegue,
-        "idTarea": task.idTarea
-      }).subscribe(() => {
-        this._taskSandbox.initTaskDispatch(task);
-      });
+    this._taskSandbox.startTaskDispatch(task);
   }
 
 }

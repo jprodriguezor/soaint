@@ -38,4 +38,23 @@ public class FuncionarioDTO  implements Serializable {
     private String codOrgaAdmi;
     private String loginName;
     private String estado;
+    private OrganigramaItemDTO sede;
+    private OrganigramaItemDTO dependencia;
+
+    public FuncionarioDTO(BigInteger ideFunci, String codTipDocIdent, String nroIdentificacion, String nomFuncionario,
+                          String valApellido1, String valApellido2, String codCargo, String corrElectronico,
+                          String codOrgaAdmi, String loginName, String estado){
+        this.ideFunci = ideFunci;
+        this.codTipDocIdent = codTipDocIdent;
+        this.nroIdentificacion = nroIdentificacion;
+        this.nomFuncionario = nomFuncionario;
+        this.valApellido1 = valApellido1;
+        this.valApellido2 = valApellido2;
+        this.codCargo = codCargo;
+        this.corrElectronico = corrElectronico;
+        this.codOrgaAdmi = codOrgaAdmi;
+        this.loginName = loginName;
+        this.estado = estado;
+
+    }
 }

@@ -4,6 +4,11 @@ import co.com.soaint.correspondencia.domain.entity.CorReferido;
 import co.com.soaint.foundation.canonical.correspondencia.ReferidoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
+import java.util.List;
+
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
@@ -15,6 +20,16 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
  */
 @BusinessControl
 public class ReferidoControl {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    public List<ReferidoDTO> consultarReferidosByCorrespondencia(BigInteger idDocumento){
+        return em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
+                .setParameter("IDE_DOCUMENTO", idDocumento)
+                .getResultList();
+    }
+
     public CorReferido corReferidoTransform(ReferidoDTO referidoDTO){
         return CorReferido.newInstance()
                 .nroRadRef(referidoDTO.getNroRadRef())

@@ -1,0 +1,95 @@
+<div class="page-title">
+  <h2>Asignación de comunicaciones</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <h1>Filtros</h1>
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Fecha inicial</label>
+              </div>
+              <div class="ui-g-12">
+                <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Fecha final</label>
+              </div>
+              <div class="ui-g-12">
+                <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Estado tarea</label>
+              </div>
+              <div class="ui-g-12">
+                <p-dropdown [options]="estadosCorrespondencia" id="estadoCorrespondencia"
+                            [autoWidth]="false" [(ngModel)]="estadoCorrespondencia"></p-dropdown>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="estadoCorrespondencia">Número de radicado</label>
+              </div>
+              <div class="ui-g-12">
+                <input type="text" pInputText id="numeroRadicado">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button pButton type="button" label="Actalizar" style="width: auto; margin-left: 12px; margin-bottom: 10px"
+          (click)="listarComunicaciones()"></button>
+  <div class="ui-g-12">
+    <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
+                 [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+      <p-header>Listado de comunicaciones</p-header>
+      <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+      <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
+        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+        </ng-template>
+      </p-column>
+      <p-column field="fecVenGestion" header="Fecha de vencimiento" [sortable]="true">
+        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+        </ng-template>
+      </p-column>
+      <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
+      <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
+                [style]="{'width':'100px'}"></p-column>
+      <p-column header="Ver detalles" [style]="{'text-align':'center'}">
+        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+          <button pButton type="button" label="Ver detalles"
+                  style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+        </ng-template>
+      </p-column>
+      <p-column header="Agregar obseravación" [style]="{'text-align':'center'}">
+        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+          <button pButton type="button" label="Agregar observaciones"
+                  style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+</div>
+
+
+
+
+

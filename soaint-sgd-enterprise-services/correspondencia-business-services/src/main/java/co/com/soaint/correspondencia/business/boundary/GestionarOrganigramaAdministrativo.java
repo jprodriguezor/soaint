@@ -1,5 +1,6 @@
 package co.com.soaint.correspondencia.business.boundary;
 
+import co.com.soaint.correspondencia.business.control.OrganigramaAdministrativoControl;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -7,6 +8,7 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,9 @@ public class GestionarOrganigramaAdministrativo {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    OrganigramaAdministrativoControl organigramaAdministrativoControl;
+
     // ----------------------
 
     public GestionarOrganigramaAdministrativo() {
@@ -42,8 +47,32 @@ public class GestionarOrganigramaAdministrativo {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<OrganigramaItemDTO> consultarOrganigrama()throws BusinessException, SystemException{
-        try{
+    public List<OrganigramaItemDTO> listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException {
+        try {
+            OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
+                    .getSingleResult();
+            List<OrganigramaItemDTO> organigramaItemDTOList = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
+                    .setParameter("ID_PADRE", String.valueOf(raiz.getIdeOrgaAdmin()))
+                    .setHint("org.hibernate.cacheable", true)
+                    .getResultList();
+            return organigramaItemDTOList;
+        } catch (NoResultException n) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("organigrama.no_data")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<OrganigramaItemDTO> consultarOrganigrama() throws BusinessException, SystemException {
+        try {
             OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
                     .getSingleResult();
 
@@ -53,7 +82,7 @@ public class GestionarOrganigramaAdministrativo {
             return organigramaItemDTOList;
         } catch (NoResultException n) {
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("correspondencia.no_data")
+                    .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Throwable ex) {
@@ -71,20 +100,34 @@ public class GestionarOrganigramaAdministrativo {
                 .setParameter("ID_PADRE", String.valueOf(ideOrgaAdmin))
                 .setHint("org.hibernate.cacheable", true)
                 .getResultList();
-        consultarElementosRecursivamente(new ArrayList<>(data), data);
+        organigramaAdministrativoControl.consultarElementosRecursivamente(new ArrayList<>(data), data);
         return data;
     }
 
-    public void consultarElementosRecursivamente(final List<OrganigramaItemDTO> data, final List<OrganigramaItemDTO> storage) {
-
-        for (OrganigramaItemDTO item : data) {
-            List<OrganigramaItemDTO> hijos = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
-                    .setParameter("ID_PADRE", String.valueOf(item.getIdeOrgaAdmin()))
-                    .setHint("org.hibernate.cacheable", true)
-                    .getResultList();
-            storage.addAll(hijos);
-            consultarElementosRecursivamente(new ArrayList<>(hijos), storage);
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
+        try {
+            OrganigramaItemDTO organigramaItem = organigramaAdministrativoControl.consultarPadreDeSegundoNivel(ideOrgaAdmin);
+            if (organigramaItem == null){
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("organigrama.no_padre_segundo_nivel")
+                        .buildBusinessException();
+            }
+            return organigramaItem;
+        } catch (NoResultException n) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("organigrama.no_data")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
         }
-
     }
+
 }

@@ -148,7 +148,7 @@
               <span class="md-inputfield">
               <input type="text" pInputText id="razonSocial" formControlName="razonSocial">
               <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
-                <div class="ui-message ui-messages-error ui-corner-all"
+                <div class="ui-message ui-messages-error ui-corner-all" [hidden]="razonSocialControl.disabled"
                      *ngIf="razonSocialControl.touched && !razonSocialControl.valid">
                   Este campo es requerido
                 </div>
@@ -158,8 +158,7 @@
           <div class="ui-g form-group" style="padding-top: 25px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos"
-              >
+              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos">
                 <label for="nombreApellidos"><span class="text-danger">*</span>Nombre y Apellidos</label>
               <div class="ui-message ui-messages-error ui-corner-all"
                    *ngIf="nombreApellidosControl.touched && !nombreApellidosControl.valid">

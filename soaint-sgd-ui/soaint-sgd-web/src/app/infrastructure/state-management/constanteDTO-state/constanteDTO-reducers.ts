@@ -84,11 +84,10 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case Autocomplete.FILTER: {
-      console.log(action.payload);0
-      const target = action.payload.key;
+      const $target = action.payload.key;
       const query = action.payload.data;
       const cloneState = Object.assign({}, state);
-      cloneState[target] = tassign(cloneState[target], {
+      cloneState[$target] = tassign(cloneState[$target], {
         filter: query
       });
       return cloneState;

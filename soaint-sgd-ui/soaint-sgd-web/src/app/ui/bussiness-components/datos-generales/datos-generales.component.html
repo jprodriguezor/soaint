@@ -9,17 +9,25 @@
             <div class="ui-g-12">
               <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
             </div>
-            <div class="ui-g-12 md-inputfield">
-              <p-autoComplete id="tipoComunicacion"
-                              [disabled]="!editable"
-                              [suggestions]="tipoComunicacionSuggestions$ | async"
-                              field="nombre"
-                              formControlName="tipoComunicacion"
-                              (onSelect)="onSelectTipoComunicacion()"
-                              (completeMethod)="onFilterTipoComunicacion($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoComunicacion($event)">
-              </p-autoComplete>
+            <div class="ui-g-12">
+              <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItem"
+                          id="tipoComunicacion"
+                          formControlName="tipoComunicacion"
+                          [autoWidth]="false"
+                          (onChange)="onSelectTipoComunicacion()"
+              >
+
+              </p-dropdown>
+              <!--<p-autoComplete id="tipoComunicacion"-->
+                              <!--[disabled]="!editable"-->
+                              <!--[suggestions]="tipoComunicacionSuggestions$ | async"-->
+                              <!--field="nombre"-->
+                              <!--formControlName="tipoComunicacion"-->
+                              <!--(onSelect)="onSelectTipoComunicacion()"-->
+                              <!--(completeMethod)="onFilterTipoComunicacion($event)" [size]="30"-->
+                              <!--[minLength]="1" placeholder="Seleccione" [dropdown]="true"-->
+                              <!--(onDropdownClick)="onDropdownClickTipoComunicacion($event)">-->
+              <!--</p-autoComplete>-->
               <div class="ui-message ui-messages-error ui-corner-all"
                    *ngIf="tipoComunicacionControl.touched && !tipoComunicacionControl.valid">
                 Este campo es requerido
@@ -62,6 +70,7 @@
                               [disabled]="!editable"
                               [suggestions]="tipologiaDocumentalSuggestions$ | async"
                               field="nombre"
+                              dataKey="idConst"
                               formControlName="tipologiaDocumental"
                               (completeMethod)="onFilterTipologiaDocumental($event)" [size]="30"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
