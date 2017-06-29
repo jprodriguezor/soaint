@@ -28,7 +28,7 @@ public final class Configuracion {
 		String propiedad = null;
 		try {
 			inicializacion();
-		    propiedades.load(new FileInputStream("ecm-integration-services/src/main/resources/connectionAlfresco.properties"));
+		    propiedades.load(new FileInputStream("ecm-integration-services/src/main/resources/configurationServices.properties"));
 		    propiedad = propiedades.getProperty(name);
 		  } catch (Exception e) {
 			e.printStackTrace();
