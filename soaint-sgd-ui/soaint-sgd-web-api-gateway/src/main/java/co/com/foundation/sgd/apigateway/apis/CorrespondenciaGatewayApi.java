@@ -6,12 +6,10 @@ import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -43,6 +41,14 @@ public class CorrespondenciaGatewayApi {
         System.out.println("BisGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/listar-comunicaciones")
+    @JWTTokenSecurity
+    public Response listarComunicaciones(@RequestParam String id) {
+        //TODO: add trafic log
+        return null;
     }
 
 }

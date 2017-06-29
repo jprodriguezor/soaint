@@ -5,6 +5,7 @@ import {WorkspaceComponent} from './workspace/workspace.component';
 import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
 import {ProcessComponent} from './process/process.component';
 import {DatosDireccionComponent} from '../bussiness-components/datos-direccion/datos-direccion.component';
+import {AsignarComunicacionesComponent} from './asignacion-comunicaciones/asignacion-comunicaciones.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -23,7 +24,8 @@ export const PAGE_COMPONENTS = [
   RadicarComunicacionesComponent,
   WorkspaceComponent,
   ProcessComponent,
-  DatosDireccionComponent
+  DatosDireccionComponent,
+  AsignarComunicacionesComponent
 ];
 
 export * from './__page-providers.include';

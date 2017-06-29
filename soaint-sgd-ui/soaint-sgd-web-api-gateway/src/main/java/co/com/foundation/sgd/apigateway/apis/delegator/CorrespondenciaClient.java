@@ -28,4 +28,8 @@ public class CorrespondenciaClient {
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
+    public Response listarComunicaciones() {
+        return null;
+    }
+
 }

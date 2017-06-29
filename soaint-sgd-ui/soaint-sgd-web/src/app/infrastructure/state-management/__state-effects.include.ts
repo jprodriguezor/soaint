@@ -8,6 +8,7 @@ import {Effects as MunicipioDtoEffects} from 'app/infrastructure/state-managemen
 import {Effects as DependenciaGrupoDtoEffects} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-effects';
 import {Effects as TareasDtoEffects} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-effects';
 import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-effects';
+import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-effects';
 
 
 /**
@@ -38,4 +39,5 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(DependenciaGrupoDtoEffects),
   EffectsModule.run(TareasDtoEffects),
   EffectsModule.run(ComunicacionOficialDtoEffects),
+  EffectsModule.run(FuncionarioDtoEffects),
 ];

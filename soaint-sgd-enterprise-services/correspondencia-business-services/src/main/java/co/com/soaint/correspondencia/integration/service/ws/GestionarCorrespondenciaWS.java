@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -12,6 +13,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.ws.rs.PathParam;
+import java.util.Date;
 
 /**
  * Created by esanchez on 6/15/2017.
@@ -39,5 +41,14 @@ public class GestionarCorrespondenciaWS {
     @WebMethod(action = "actualizarEstadoCorrespondencia", operationName = "actualizarEstadoCorrespondencia")
     public void actualizarEstadoCorrespondencia(@WebParam(name = "correspondencia") final CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+    }
+
+    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado")
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@WebParam(name = "fecha_ini") final Date fechaIni,
+                                                                                                  @WebParam(name = "fecha_fin") final Date fechaFin,
+                                                                                                  @WebParam(name = "cod_dependencia") final String codDependencia,
+                                                                                                  @WebParam(name = "cod_estado") final String codEstado,
+                                                                                                  @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
     }
 }
