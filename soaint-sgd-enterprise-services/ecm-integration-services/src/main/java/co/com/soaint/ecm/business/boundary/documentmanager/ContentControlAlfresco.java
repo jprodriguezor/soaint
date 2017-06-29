@@ -377,50 +377,49 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     public String  formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
-//        String formatoCadena;
-//        String formatoFinal  = "";
-//        try {
-//            formatoCadena = Configuracion.getPropiedad(formatoConfig);
-//            String[] formatoCadenaArray = formatoCadena.split("");
-//            int bandera = 000;
-//            for(int i = 0; i < formatoCadenaArray.length; i++){
-//
-//                if(formatoCadenaArray[i].equals(ID_ORG_ADM)){
-//                    formatoFinal += informationArray[Integer.parseInt(ID_ORG_ADM)];
-//                    bandera = Integer.parseInt(ID_ORG_ADM);
-//                }else if(formatoCadenaArray[i].equals(ID_ORG_OFC)){
-//                    formatoFinal += informationArray[Integer.parseInt(ID_ORG_OFC)];
-//                    bandera = Integer.parseInt(ID_ORG_OFC);
-//                }else if(formatoCadenaArray[i].equals(COD_SERIE)){
-//                    formatoFinal += informationArray[Integer.parseInt(COD_SERIE)];
-//                    bandera = Integer.parseInt(COD_SERIE);
-//                }else if(formatoCadenaArray[i].equals(NOM_SERIE)){
-//                    formatoFinal += informationArray[Integer.parseInt(NOM_SERIE)];
-//                    bandera = Integer.parseInt(NOM_SERIE);
-//                }else if(formatoCadenaArray[i].equals(COD_SUBSERIE)){
-//                    formatoFinal += informationArray[Integer.parseInt(COD_SUBSERIE)];
-//                    bandera = Integer.parseInt(COD_SUBSERIE);
-//                } else if (formatoCadenaArray[i].equals(NOM_SUBSERIE)) {
-//                    formatoFinal += informationArray[Integer.parseInt(NOM_SUBSERIE)];
-//                    bandera = Integer.parseInt(NOM_SUBSERIE);
-//                }else if(isNumeric(formatoCadenaArray[i])) {
-//                    //El formato no cumple con los requerimientos minimos
-//                    LOGGER.info("El formato no cumple con los requerimientos.");
-//                    formatoFinal = null;
-//                    break;
-//                }else{
-//                    if(bandera == 000){
-//                        formatoFinal+= formatoCadenaArray[i];
-//                    }else{
-//                        formatoFinal+=formatoCadenaArray[i];
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al formatear nombre ***");
-//        }
-//        return formatoFinal;
-return null;
+        String formatoCadena;
+        String formatoFinal  = "";
+        try {
+            formatoCadena = Configuracion.getPropiedad(formatoConfig);
+            String[] formatoCadenaArray = formatoCadena.split("");
+            int bandera = 000;
+            for(int i = 0; i < formatoCadenaArray.length; i++){
+
+                if(formatoCadenaArray[i].equals(ID_ORG_ADM)){
+                    formatoFinal += informationArray[Integer.parseInt(ID_ORG_ADM)];
+                    bandera = Integer.parseInt(ID_ORG_ADM);
+                }else if(formatoCadenaArray[i].equals(ID_ORG_OFC)){
+                    formatoFinal += informationArray[Integer.parseInt(ID_ORG_OFC)];
+                    bandera = Integer.parseInt(ID_ORG_OFC);
+                }else if(formatoCadenaArray[i].equals(COD_SERIE)){
+                    formatoFinal += informationArray[Integer.parseInt(COD_SERIE)];
+                    bandera = Integer.parseInt(COD_SERIE);
+                }else if(formatoCadenaArray[i].equals(NOM_SERIE)){
+                    formatoFinal += informationArray[Integer.parseInt(NOM_SERIE)];
+                    bandera = Integer.parseInt(NOM_SERIE);
+                }else if(formatoCadenaArray[i].equals(COD_SUBSERIE)){
+                    formatoFinal += informationArray[Integer.parseInt(COD_SUBSERIE)];
+                    bandera = Integer.parseInt(COD_SUBSERIE);
+                } else if (formatoCadenaArray[i].equals(NOM_SUBSERIE)) {
+                    formatoFinal += informationArray[Integer.parseInt(NOM_SUBSERIE)];
+                    bandera = Integer.parseInt(NOM_SUBSERIE);
+                }else if(isNumeric(formatoCadenaArray[i])) {
+                    //El formato no cumple con los requerimientos minimos
+                    LOGGER.info("El formato no cumple con los requerimientos.");
+                    formatoFinal = null;
+                    break;
+                }else{
+                    if(bandera == 000){
+                        formatoFinal+= formatoCadenaArray[i];
+                    }else{
+                        formatoFinal+=formatoCadenaArray[i];
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.info("*** Error al formatear nombre ***");
+        }
+        return formatoFinal;
     }
 
     private static boolean isNumeric(String cadena){
