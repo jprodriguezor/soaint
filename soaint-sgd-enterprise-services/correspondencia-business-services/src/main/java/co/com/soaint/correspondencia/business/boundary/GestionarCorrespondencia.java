@@ -201,15 +201,16 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado) throws BusinessException, SystemException {
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         try {
-
-            List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstado", CorrespondenciaDTO.class)
+            String nRadicado = nroRadicado == null ? null : "%" + nroRadicado + "%";
+            List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
                     .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.INTERNO.getCodigo())
+                    .setParameter("NRO_RADICADO", nRadicado)
                     .getResultList();
 
             if (correspondenciaDTOList.size() == 0) {
@@ -220,7 +221,9 @@ public class GestionarCorrespondencia {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-                ComunicacionOficialDTO comunicacionOficialDTO = correspondenciaControl.consultarComunicacionOficialByCorrespondencia(correspondenciaDTO);
+                ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+                        .correspondencia(correspondenciaDTO)
+                        .build();
                 comunicacionOficialDTOList.add(comunicacionOficialDTO);
             }
 
