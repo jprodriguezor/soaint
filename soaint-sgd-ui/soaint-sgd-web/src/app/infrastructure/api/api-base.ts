@@ -7,7 +7,7 @@ export abstract class ApiBase {
   }
 
   public list(endpoint: string, payload = {}): Observable<any> {
-    return this._http.get(endpoint);
+    return this._http.get(endpoint, payload);
   }
 
   public post(endpoint: string, payload = {}): Observable<any> {
