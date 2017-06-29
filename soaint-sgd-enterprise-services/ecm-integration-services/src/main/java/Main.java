@@ -19,27 +19,40 @@ public class Main {
     public static void main(String[] args) {
         ContentControl a = FactoriaContent.getContentControl("alfresco");
         ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
-        Long ideOrgaAdmin= new Long (1);
-        String codOrg="0001";
-        String nomOrg="Raiz";
-        String tipo="Tipo1";
+        Long ideOrgaAdmin= new Long (321);
+        String codOrg="000";
+        String nomOrg="SOAINT";
+        String tipo="P";
 
         OrganigramaDTO orgDTO=new OrganigramaDTO (ideOrgaAdmin,codOrg,nomOrg,tipo);
-
         List<OrganigramaDTO>  organigramaItemList = new ArrayList <> ();
+
         organigramaItemList.add (orgDTO);
 
+        ideOrgaAdmin= new Long (322);
+        codOrg="100";
+        nomOrg="100_PRESIDENCIA";
+        tipo="H";
+        orgDTO=new OrganigramaDTO (ideOrgaAdmin,codOrg,nomOrg,tipo);
+        organigramaItemList.add (orgDTO);
 
-        String idOrgAdm="001";
-        String idOrgOfc="0001";
-        String codSerie="S001";
-        String nomSerie="NS001";
-        String codSubSerie="CD001";
-        String nomSubSerie="NSS0001";
-        Long retArchivoGestion=new Long (123);
-        Long retArchivoCentral=new Long (23);
-        String procedimiento="Insercion";
-        int diposicionFinal=4;
+        ideOrgaAdmin= new Long (325);
+        codOrg="100.120";
+        nomOrg="100.120_OFICINA NACIONAL DE CONTROL DISCIPLINARIO INTERNO";
+        tipo="H";
+        orgDTO=new OrganigramaDTO (ideOrgaAdmin,codOrg,nomOrg,tipo);
+        organigramaItemList.add (orgDTO);
+
+        String idOrgAdm="100";
+        String idOrgOfc="100.100";
+        String codSerie="20";
+        String nomSerie="ACTAS";
+        String codSubSerie="2";
+        String nomSubSerie="Actas comité de conciliación y defensa judicial";
+        Long retArchivoGestion=new Long (4);
+        Long retArchivoCentral=new Long (1);
+        String procedimiento="Conservar los expedientes";
+        int diposicionFinal=2;
         ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO=new ContenidoDependenciaTrdDTO(idOrgAdm,idOrgOfc,codSerie,nomSerie,codSubSerie,
                 nomSubSerie,retArchivoGestion,retArchivoCentral,procedimiento,diposicionFinal);
 
