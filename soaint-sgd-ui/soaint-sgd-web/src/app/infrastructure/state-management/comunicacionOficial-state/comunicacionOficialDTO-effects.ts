@@ -48,7 +48,7 @@ export class Effects {
     .switchMap(
       ([payload, state]) => {
         const new_payload = tassign(payload, {
-          cod_dependencia: state.funcionario.dependencia.codOrg
+          cod_dependencia: state.funcionario.dependencia ? state.funcionario.dependencia.codOrg : null
         });
         return this._sandbox.loadData(new_payload)
           .map((response) => new actions.LoadSuccessAction(response))
