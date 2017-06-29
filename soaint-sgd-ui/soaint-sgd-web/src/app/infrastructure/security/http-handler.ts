@@ -22,7 +22,7 @@ export class HttpHandler {
   requestHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
 
     return this.token$.take(1).switchMap(token => {
-      console.log('Calling protected URL ...', token);
+      // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
       options.headers = new Headers();
@@ -58,8 +58,8 @@ export class HttpHandler {
 
   }
 
-  public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    return this.requestHelper({url: url, method: RequestMethod.Get}, options);
+  public get(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
+    return this.requestHelper({url: url, body, method: RequestMethod.Get}, options);
   }
 
   public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {

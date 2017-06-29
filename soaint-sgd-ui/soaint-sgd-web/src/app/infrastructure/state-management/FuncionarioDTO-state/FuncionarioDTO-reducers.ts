@@ -1,9 +1,23 @@
 import {ActionTypes, Actions} from './FuncionarioDTO-actions';
 import {tassign} from 'tassign';
 import {FuncionarioDTO} from 'app/domain/FuncionarioDTO';
+import {OrganigramaDTO} from 'app/domain/OrganigramaDTO';
 
 
-export interface State extends FuncionarioDTO {
+export interface State  {
+  ideFunci: number;
+  codTipDocIdent: string;
+  nroIdentificacion: string;
+  nomFuncionario: string;
+  valApellido1: string;
+  valApellido2: string;
+  codCargo: string;
+  corrElectronico: string;
+  codOrgaAdmi: string;
+  loginName: string;
+  estado: string;
+  sede: OrganigramaDTO;
+  dependencia: OrganigramaDTO;
 }
 
 const initialState: State = {
