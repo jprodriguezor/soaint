@@ -35,20 +35,27 @@ public class CorrespondenciaGatewayApi {
     @JWTTokenSecurity
     public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
         //TODO: add trafic log
-        System.out.println("BisGatewayApi - [trafic] - listing Bis");
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicar(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
-        System.out.println("BisGatewayApi - [content] : " + responseContent);
+        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
     @GET
     @Path("/listar-comunicaciones")
-    @JWTTokenSecurity
-    public Response listarComunicaciones(@RequestParam String id) {
+    public Response listarComunicaciones(@QueryParam("fecha_ini") final String fechaIni,
+                                         @QueryParam("fecha_fin") final String fechaFin,
+                                         @QueryParam("cod_dependencia") final String codDependencia,
+                                         @QueryParam("cod_estado") final String codEstado) {
         //TODO: add trafic log
-        return null;
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
+        Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
+        String responseContent = response.readEntity(String.class);
+        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }
