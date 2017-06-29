@@ -43,11 +43,12 @@ public class GestionarCorrespondenciaWS {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
-    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado")
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(@WebParam(name = "fecha_ini") final Date fechaIni,
+    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado")
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@WebParam(name = "fecha_ini") final Date fechaIni,
                                                                                                   @WebParam(name = "fecha_fin") final Date fechaFin,
                                                                                                   @WebParam(name = "cod_dependencia") final String codDependencia,
-                                                                                                  @WebParam(name = "cod_estado") final String codEstado) throws BusinessException, SystemException {
-        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(fechaIni, fechaFin, codDependencia, codEstado);
+                                                                                                  @WebParam(name = "cod_estado") final String codEstado,
+                                                                                                  @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
     }
 }
