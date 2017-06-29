@@ -217,17 +217,20 @@ public class ContentControlAlfresco extends ContentControl {
             Map <String, String> props = new HashMap <> ( );
             //Se define como nombre de la carpeta nameOrg
             props.put (PropertyIds.NAME, nameOrg);
-            props.put (PropertyIds.DESCRIPTION,classDocumental);
+
            //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
             if (classDocumental.equals("claseDependencia")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:corr:claseDependencia");
-                props.put ("corr:codDependencia", codOrg);            }
+                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:"+ Configuracion.getPropiedad("claseDependencia"));
+                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad("claseDependencia"));
+                props.put ("cmcor:CodigoDependencia", codOrg);            }
             else if (classDocumental.equals("claseSerie")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:corr:claseSerie");
-                props.put ("corr:codSerie", codOrg);
+                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:"+ Configuracion.getPropiedad("claseSerie"));
+                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad("claseSerie"));
+                props.put ("cmcor:CodigoSerie", codOrg);
             } else if (classDocumental.equals("claseSubserie")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:corr:claseSubSerie");
-                props.put ("corr:codSubSerie", codOrg);
+                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:"+ Configuracion.getPropiedad("claseSubserie"));
+                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad("claseSubserie"));
+                props.put ("cmcor:CodigoSubserie", codOrg);
             }
             //Se crea la carpeta dentro de la carpeta folder
             newFolder = new Carpeta ( );
@@ -532,18 +535,18 @@ return null;
             Folder carpeta=(Folder)conexion.getSession ().getObjectByPath (conexion.getSession ().getRootFolder ().getPath ()+aux.getFolder ().getName ());
             String description = carpeta.getDescription ();
             if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-                if (aux.getFolder ().getPropertyValue ("corr:codDependencia") != null &&
-                        aux.getFolder ().getPropertyValue ("corr:codDependencia").equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
+                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
                     folderReturn = aux;
                 }
             } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-                if (aux.getFolder ().getPropertyValue ("corr:codSerie") != null &&
-                        aux.getFolder ().getPropertyValue ("corr:codSerie").equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("cmcor:" + Configuracion.getPropiedad("metadatoCodSerie")) != null &&
+                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
                     folderReturn = aux;
                 }
             } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-                if (aux.getFolder ().getPropertyValue ("corr:codSubSerie") != null &&
-                        aux.getFolder ().getPropertyValue ("corr:codSubSerie").equals(codFolder)) {
+                if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
+                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
                     folderReturn = aux;
                 }
             }
