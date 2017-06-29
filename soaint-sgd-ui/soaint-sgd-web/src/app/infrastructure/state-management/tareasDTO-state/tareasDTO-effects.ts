@@ -58,12 +58,13 @@ export class Effects {
     );
 
   @Effect()
-  startTask: Observable<Action> = this.actions$
+  takeReservedTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_TASK)
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.startTask(payload)
-        .map((response) => new actions.StartTaskSuccessAction(response))
+        .map((response: any) =>  new actions.StartTaskSuccessAction(response))
+        .do(this._sandbox.initTaskDispatch(payload))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     )
 

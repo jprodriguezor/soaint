@@ -41,8 +41,12 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction(query));
   }
 
-  initTaskDispatch(payload?) {
+  initTaskDispatch(payload?): any {
     this._store.dispatch(go(['/radicar-comunicaciones', payload]));
+  }
+
+  navigateToWorkspace() {
+    this._store.dispatch(go('workspace'));
   }
 
   startTaskDispatch(task?: TareaDTO) {

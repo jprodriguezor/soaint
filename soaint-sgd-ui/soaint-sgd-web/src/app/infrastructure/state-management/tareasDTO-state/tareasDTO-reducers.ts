@@ -36,8 +36,8 @@ export function reducer(state = initialState, action: Actions) {
       }, {});
 
       return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities)
+        ids: [...newValuesIds, ...state.ids ],
+        entities: tassign(newValuesEntities, state.entities)
       });
 
     }
