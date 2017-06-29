@@ -528,30 +528,34 @@ return null;
         List<Carpeta> listaCarpeta = new  ArrayList<Carpeta> ();
         Conexion conexion= obtenerConexion ();
         listaCarpeta= obtenerCarpetasHijasDadoPadre(folderFather);
-        Iterator<Carpeta> iterator = listaCarpeta.iterator();
-        while (iterator.hasNext()) {
-            Carpeta aux = iterator.next();
-            Folder carpeta=(Folder)conexion.getSession ().getObjectByPath (conexion.getSession ().getRootFolder ().getPath ()+aux.getFolder ().getName ());
-            String description = carpeta.getDescription ();
-            if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
-                if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-                    folderReturn = aux;
+        Iterator <Carpeta> iterator= null;
+        if (listaCarpeta!=null) {
+            iterator = listaCarpeta.iterator ( );
+            while (iterator.hasNext()) {
+                Carpeta aux = iterator.next();
+                Folder carpeta=(Folder)conexion.getSession ().getObjectByPath (conexion.getSession ().getRootFolder ().getPath ()+aux.getFolder ().getName ());
+                String description = carpeta.getDescription ();
+                if (description.equals(Configuracion.getPropiedad("claseDependencia"))) {
+                    if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")) != null &&
+                            aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
+                        folderReturn = aux;
+                    }
+                } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
+                    if (aux.getFolder ().getPropertyValue ("cmcor:" + Configuracion.getPropiedad("metadatoCodSerie")) != null &&
+                            aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
+                        folderReturn = aux;
+                    }
+                } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
+                    if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
+                            aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
+                        folderReturn = aux;
+                    }
                 }
-            } else if (description.equals(Configuracion.getPropiedad("claseSerie"))) {
-                if (aux.getFolder ().getPropertyValue ("cmcor:" + Configuracion.getPropiedad("metadatoCodSerie")) != null &&
-                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-                    folderReturn = aux;
-                }
-            } else if (description.equals(Configuracion.getPropiedad("claseSubserie"))) {
-                if (aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-                        aux.getFolder ().getPropertyValue ("cmcor:" +Configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-                    folderReturn = aux;
-                }
+
+
             }
-
-
         }
+
         return folderReturn;
     }
 
@@ -591,6 +595,7 @@ return null;
                                 }
                             }
                             bandera++;
+                            folderFatherContainer = folderFather;
                             break;
 
                         default:
@@ -599,7 +604,7 @@ return null;
                                 LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
                                 folderSon = crearCarpeta (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia");
                             } else {
-                                //LOGGER.info("Organigrama --  El folder ya esta creado2: " + folderSon.get_Name());
+                                LOGGER.info("Organigrama --  El folder ya esta creado2: " + folderSon.getFolder ().getName ());
                                 //Actualización de folder
                                 if (!(organigrama.getNomOrg ( ).equals (folderSon.getFolder ().getName ( )))) {
                                     LOGGER.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
