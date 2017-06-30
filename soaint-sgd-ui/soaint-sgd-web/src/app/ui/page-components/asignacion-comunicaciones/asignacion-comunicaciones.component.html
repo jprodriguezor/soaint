@@ -73,16 +73,16 @@
       <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
       <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
                 [style]="{'width':'100px'}"></p-column>
-      <p-column header="Ver detalles" [style]="{'text-align':'center'}">
+      <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
         <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
           <button pButton type="button" label="Ver detalles"
-                  style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+                  style="width: auto;"></button>
         </ng-template>
       </p-column>
-      <p-column header="Agregar obseravación" [style]="{'text-align':'center'}">
+      <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
         <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
           <button pButton type="button" label="Agregar observaciones"
-                  style="width: auto; margin-left: 12px; margin-bottom: 10px"></button>
+                  style="width: auto;"></button>
         </ng-template>
       </p-column>
     </p-dataTable>
