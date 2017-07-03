@@ -1,6 +1,6 @@
 export interface DepartamentoDTO {
-  ideDepar: number;
-  nombreDepar: number;
-  codDepar: string;
+  id: number;
+  nombre: number;
+  codigo: string;
   codPais: string;
 }

@@ -6,7 +6,6 @@ export class DropdownItemPipe implements PipeTransform {
   transform(value, args?) {
     // ES6 array destructuring
     return value.map(item => {
-      console.log(item);
       return {label: item.nombre, value: item};
     });
   }

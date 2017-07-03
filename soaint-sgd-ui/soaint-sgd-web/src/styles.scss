@@ -91,8 +91,13 @@ body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer
 }
 
 .page-title {
-  text-align: center;
-  padding-bottom: 15px;
+  margin: 5px 0 5px 10px;
+  color: darken($primaryDarkColor, 2%);
+}
+
+.page-subtitle {
+  margin: 8px 0 8px 10px;
+  color: $primaryColor;
 }
 
 .text-danger {
@@ -104,6 +109,68 @@ body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer
 .margin-bottom {
   margin-bottom: 20px;
 }
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+p-dataTable {
+  .md-inputfield label {
+    color: white;
+  }
+
+  .md-inputfield input:focus ~ label,
+  .md-inputfield input.ui-state-filled ~ label,
+  .md-inputfield .ui-inputwrapper-focus ~ label,
+  .md-inputfield .ui-inputwrapper-filled ~ label {
+    color: transparent;
+  }
+
+  .ui-inputtext {
+    border-color: white;
+  }
+
+ button .ui-widget:disabled, .ui-state-disabled {
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
+    -webkit-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
+    -moz-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
+    -o-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
+  }
+
+  @media (max-width: 500px) {
+    p-header {
+      .ui-media-mobile-row{
+        width: 100%;
+      }
+      .md-inputfield {
+        width: calc(100% - 95px) !important;
+      }
+    }
+  }
+}
+
+.ui-button-primaryDark {
+  background-color: darken($primaryColor, 8%);
+}
+
+
+body .md-dropdownfield {
+  .ui-message {
+    border: none;
+    margin: 0;
+  }
+  .ui-messages-error {
+    color: #f44336;
+    background-color: transparent;
+    font-size: 11px;
+    position: absolute;
+  }
+}
+
 
 
 

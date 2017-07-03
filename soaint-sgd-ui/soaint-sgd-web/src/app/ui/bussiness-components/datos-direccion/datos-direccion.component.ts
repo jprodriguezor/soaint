@@ -33,7 +33,7 @@ export class DatosDireccionComponent implements OnInit {
   bisSuggestons$: Observable<ConstanteDTO[]>;
 
   @Input()
-  display: boolean = false;
+  display = false;
 
   @Output()
   dialogHide: EventEmitter<any> = new EventEmitter<any>();

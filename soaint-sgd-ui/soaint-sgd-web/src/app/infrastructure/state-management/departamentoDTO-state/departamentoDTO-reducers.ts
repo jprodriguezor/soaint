@@ -5,7 +5,7 @@ import {DepartamentoDTO} from 'app/domain/departamentoDTO';
 
 export interface State {
   ids: number[];
-  entities: { [codigoProceso: number]: DepartamentoDTO };
+  entities: { [id: number]: DepartamentoDTO };
   selectedId: number;
 }
 
@@ -28,12 +28,12 @@ export function reducer(state = initialState, action: Actions) {
     case Autocomplete.LOAD_SUCCESS: {
       console.log(action.payload);
       const values = action.payload.departamentos;
-      const newValues = values.filter(data => !state.entities[data.ideDepar]);
+      const newValues = values.filter(data => !state.entities[data.id]);
 
-      const newValuesIds = newValues.map(data => data.ideDepar);
-      const newValuesEntities = newValues.reduce((entities: { [ideDepar: number]: DepartamentoDTO }, value: DepartamentoDTO) => {
+      const newValuesIds = newValues.map(data => data.id);
+      const newValuesEntities = newValues.reduce((entities: { [id: number]: DepartamentoDTO }, value: DepartamentoDTO) => {
         return Object.assign(entities, {
-          [value.ideDepar]: value
+          [value.id]: value
         });
       }, {});
 

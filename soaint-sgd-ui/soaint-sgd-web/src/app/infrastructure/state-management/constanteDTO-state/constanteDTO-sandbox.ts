@@ -5,6 +5,8 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import * as actions from './constanteDTO-actions';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/delay';
 
 @Injectable()
 export class Sandbox {
@@ -40,9 +42,6 @@ export class Sandbox {
       case 'mediosRecepcion':
         endpoint = environment.mediosRecepcion_endpoint;
         break;
-      case 'sedeAdministrativa':
-        endpoint = environment.sedeAdministrativa_endpoint;
-        break;
       case 'tratamientoCortesia':
         endpoint = environment.tratamientoCortesia_endpoint;
         break;
@@ -66,7 +65,8 @@ export class Sandbox {
     if (endpoint !== null) {
       return this._listSelectionService.list(endpoint, payload);
     }
-    // return Observable.of(any);
+    return Observable.of([]).delay(400);
+    // return Observable.of(this.getMock()).delay(400);
   }
 
   filterDispatch(target, query) {
@@ -75,6 +75,24 @@ export class Sandbox {
 
   loadDispatch(target) {
     this._store.dispatch(new actions.LoadAction({key: target}));
+  }
+
+  loadCommonConstantsDispatch() {
+    this._store.dispatch(new actions.LoadCommonConstantsAction());
+  }
+
+  getMock(): any {
+    return {
+      constantes: [
+        {ideConst: 1, nombre: 'Comunicacion Externa', codigo: 'EI'},
+        {ideConst: 2, nombre: 'Comunicacion Interna', codigo: 'CI'},
+        {ideConst: 10, nombre: 'Ventanilla', codigo: 10},
+        {ideConst: 4, nombre: 'Constante#4', codigo: 4},
+        {ideConst: 5, nombre: 'Persona Anonima', codigo: 'ANONIM'},
+        {ideConst: 6, nombre: 'Persona Juridica', codigo: 'PERS-JUR'},
+        {ideConst: 7, nombre: 'Persona Natural', codigo: 'PERS-NAT'},
+      ]
+    }
   }
 
 

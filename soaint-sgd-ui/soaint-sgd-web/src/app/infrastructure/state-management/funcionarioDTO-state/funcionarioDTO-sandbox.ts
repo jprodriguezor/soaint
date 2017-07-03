@@ -3,7 +3,7 @@ import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
-import * as actions from './FuncionarioDTO-actions';
+import * as actions from './funcionarioDTO-actions';
 
 
 @Injectable()

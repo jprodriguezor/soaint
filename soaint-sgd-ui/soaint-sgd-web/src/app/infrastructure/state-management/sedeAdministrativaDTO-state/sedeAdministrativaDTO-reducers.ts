@@ -1,6 +1,7 @@
-import {ActionTypes as Autocomplete, Actions} from './dependenciaGrupoDTO-actions';
+import {ActionTypes as Autocomplete, Actions} from './sedeAdministrativaDTO-actions';
 import {tassign} from 'tassign';
-import {OrganigramaDTO} from '../../../domain/organigramaDTO';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {OrganigramaDTO} from 'app/domain/organigramaDTO';
 
 
 export interface State {
