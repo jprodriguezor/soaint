@@ -5,14 +5,16 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
-import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 /**
  *
