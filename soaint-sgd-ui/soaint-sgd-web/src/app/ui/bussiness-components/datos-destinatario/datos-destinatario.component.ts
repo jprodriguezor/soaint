@@ -62,7 +62,7 @@ export class DatosDestinatarioComponent implements OnInit {
       this.form.get('tipoDestinatario').valueChanges,
       this.form.get('sedeAdministrativa').valueChanges,
       this.form.get('dependenciaGrupo').valueChanges
-    ) .do(() => this.canInsert = false )
+    ).do(() => this.canInsert = false)
       .filter(([tipo, sede, grupo]) => tipo && sede && grupo)
       .zip(([tipo, sede, grupo]) => {
         return {tipo: tipo, sede: sede, grupo: grupo}
@@ -83,16 +83,28 @@ export class DatosDestinatarioComponent implements OnInit {
   }
 
   addAgentesDestinatario() {
-    // const agenteDestinatario = [...this.agentesDestinatario];
-    // agenteDestinatario.push({
-    //   tipoDestinatario: this.tipoDestinatarioControl.value,
-    //   sedeAdministrativa: this.sedeAdministrativaControl.value,
-    //   dependenciaGrupo: this.dependenciaGrupoControl.value
-    // });
-    // this.agentesDestinatario = agenteDestinatario;
-    // this.tipoDestinatarioControl.setValue(null);
-    // this.sedeAdministrativaControl.setValue(null);
-    // this.dependenciaGrupoControl.setValue(null);
+    const tipo = this.form.get('tipoDestinatario');
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependenciaGrupo');
+
+    const insertVal = [
+      {
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value
+      }
+    ];
+
+    this.agentesDestinatario = [
+      ...insertVal,
+      ...this.agentesDestinatario.filter(
+        value => value.tipoDestinatario !== tipo.value || value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+      )
+    ];
+
+    tipo.reset();
+    sede.reset();
+    grupo.reset();
 
   }
 
@@ -101,16 +113,5 @@ export class DatosDestinatarioComponent implements OnInit {
     agente.splice(index, 1);
     this.agentesDestinatario = agente;
   }
-
-  // onSelectTipoComunicacion() {
-  //   if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo != 'EI') {
-  //     this.sedeAdministrativaControl.disable();
-  //     this.dependenciaGrupoControl.disable();
-  //   } else {
-  //     this.sedeAdministrativaControl.enable();
-  //     this.dependenciaGrupoControl.enable();
-  //   }
-  // }
-
 
 }
