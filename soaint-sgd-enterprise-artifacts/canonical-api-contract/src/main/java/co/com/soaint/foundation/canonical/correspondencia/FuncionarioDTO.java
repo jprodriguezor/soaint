@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,9 +28,12 @@ import java.math.BigInteger;
 public class FuncionarioDTO  implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @JsonProperty("id")
     private BigInteger ideFunci;
     private String codTipDocIdent;
     private String nroIdentificacion;
+    @JsonProperty("nombre")
     private String nomFuncionario;
     private String valApellido1;
     private String valApellido2;
