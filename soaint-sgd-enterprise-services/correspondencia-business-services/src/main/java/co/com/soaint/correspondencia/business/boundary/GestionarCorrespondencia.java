@@ -117,12 +117,10 @@ public class GestionarCorrespondencia {
             ComunicacionOficialDTO comunicacionOficial = listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
 
             new Thread(() -> {
-                Date fecha = new Date();
                 try {
                     gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
-                            .fecTrazDocumento(fecha)
                             .ideDocumento(comunicacionOficial.getCorrespondencia().getIdeDocumento())
-                            .observacion("")
+                            .observacion("Radicado")
                             .ideFunci(null)
                             .codEstado(comunicacionOficial.getCorrespondencia().getCodEstado())
                             .codOrgaAdmin(null)
@@ -177,13 +175,11 @@ public class GestionarCorrespondencia {
                     .executeUpdate();
 
             new Thread(() -> {
-                Date fecha = new Date();
                 try {
                     BigInteger ideDocumento = em.createNamedQuery("CorCorrespondencia.findIdeDocumentoByNroRadicado", BigInteger.class)
                             .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
                             .getSingleResult();
                     gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
-                            .fecTrazDocumento(fecha)
                             .ideDocumento(ideDocumento)
                             .observacion("Cambio de estado de documento")
                             .ideFunci(null)
@@ -198,6 +194,18 @@ public class GestionarCorrespondencia {
 
         } catch (BusinessException e) {
             throw e;
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
+        try{
+            gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

@@ -4,6 +4,7 @@ import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,13 @@ public class GestionarCorrespondenciaWS {
     }
 
     @WebMethod(action = "radicarCorrespondencia", operationName = "radicarCorrespondencia")
-    public ComunicacionOficialDTO radicarCorrespondencia(@WebParam(name = "comunicacionOficial") final ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO radicarCorrespondencia(@WebParam(name = "comunicacion_oficial") final ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         return boundary.radicarCorrespondencia(comunicacionOficialDTO);
+    }
+
+    @WebMethod(action = "registrarObservacionCorrespondencia", operationName = "registrarObservacionCorrespondencia")
+    public void registrarObservacionCorrespondencia(@WebParam(name = "traza_documento") final PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+        boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
 
     @WebMethod(action = "listarCorrespondenciaByNroRadicado", operationName = "listarCorrespondenciaByNroRadicado")
