@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -119,6 +120,10 @@ public class CorrespondenciaControl {
                 .concat(correspondencia.getCodTipoCmc())
                 .concat(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))
                 .concat(String.format("%06d", consecRadicado));
+    }
+
+    public Date CalcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
+        return new Date();
     }
 
 }
