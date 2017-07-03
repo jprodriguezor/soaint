@@ -12,7 +12,6 @@ import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state
 import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-effects';
 import {Effects as sedeAdministrativaDtoEffects} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-effects';
 
-
 /**
  * Effects offer a way to isolate and easily test side-effects within your
  * application.

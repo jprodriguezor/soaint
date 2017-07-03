@@ -5,13 +5,14 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 
 @Path("/correspondencia-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,7 +55,9 @@ public class CorrespondenciaGatewayApi {
         Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
         String responseContent = response.readEntity(String.class);
         System.out.println("CorrespondenciaGatewayApi - [content] : " + responseContent);
-
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 

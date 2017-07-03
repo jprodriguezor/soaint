@@ -28,6 +28,13 @@ export function reducer(state = initialState, action: Actions) {
     case Autocomplete.LOAD_SUCCESS: {
       console.log(action.payload);
       const values = action.payload.comunicacionesOficiales;
+      if (!values) {
+        return tassign(state, {
+          ids: [],
+          entities: {},
+          selectedId: null
+        });
+      }
       const newValues = values.filter(data => !state.entities[data.ideDocumento]);
 
       const newValuesIds = newValues.map(data => data.ideDocumento);

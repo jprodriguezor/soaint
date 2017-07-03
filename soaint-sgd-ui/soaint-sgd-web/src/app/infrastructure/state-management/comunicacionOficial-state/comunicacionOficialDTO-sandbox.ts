@@ -3,8 +3,6 @@ import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './comunicacionOficialDTO-actions';
-import {ComunicacionApiService} from '../../api/comunicacionOficial.api.service';
-import {Http, RequestOptions, URLSearchParams} from '@angular/http';
 import {ListForSelectionApiService} from 'app/infrastructure/api/list-for-selection.api.service';
 
 
