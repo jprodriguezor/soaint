@@ -1,4 +1,4 @@
-import {OrganigramaDTO} from './OrganigramaDTO';
+import {OrganigramaDTO} from './organigramaDTO';
 
 export interface FuncionarioDTO {
   id: number;
