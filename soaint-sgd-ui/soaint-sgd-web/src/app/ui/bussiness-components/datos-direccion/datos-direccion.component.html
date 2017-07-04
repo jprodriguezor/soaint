@@ -1,60 +1,33 @@
-<p-dialog [(visible)]="display" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
-          (onHide)="hideDialog()">
+<p-dialog [(visible)]="display" modal="true" [responsive]="true"  draggable="false" width="800" styleClass="dialog-auto-with"
+          (onHide)="hide()">
 
   <p-header>
     Datos de direccion
   </p-header>
-  <form [formGroup]="form">
-    <div class="ui-g ui-fluid">
+
+  <!--Body-->
+  <div class="ui-g">
+    <form [formGroup]="form">
       <div class="ui-g ui-fluid">
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoVia">Tipo Via</label>
             </div>
-            <div class="ui-g-12">
-              <p-autoComplete id="tipoVia"
-                              formControlName="tipoVia"
-                              [suggestions]="(tipoViaSuggestions$ | async)"
-                              field="nombre"
-                              (completeMethod)="onFilterTipoVia($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoVia($event)">
-              </p-autoComplete>
-            </div>
-          </div>
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="prefijoCuadrante">Prefijo cuadrante</label>
-            </div>
-            <div class="ui-g-12">
-              <p-autoComplete id="prefijoCuadrante"
-                              [suggestions]="prefijoCuadranteSuggestions$ | async"
-                              field="nombre"
-                              formControlName="prefijoCuadrante"
-                              (completeMethod)="onFilterPrefijoCuadrante($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickPrefijoCuadrante($event)">
-              </p-autoComplete>
-            </div>
-          </div>
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="orientacion">Orientacion</label>
-            </div>
-            <div class="ui-g-12">
-              <p-autoComplete id="orientacion"
-                              [suggestions]="orientacionSuggestions$ | async"
-                              field="nombre"
-                              formControlName="orientacion"
-                              (completeMethod)="onFilterOrientacion($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickOrientacion($event)">
-              </p-autoComplete>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="tipoViaSuggestions$ | async | dropdownItem"
+                          id="tipoVia"
+                          formControlName="tipoVia"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          [dataKey]="nombre"
+              >
+              </p-dropdown>
             </div>
           </div>
         </div>
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -63,21 +36,63 @@
               </span>
             </div>
           </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="prefijoCuadrante">Prefijo cuadrante</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | dropdownItem"
+                          id="prefijoCuadrante"
+                          formControlName="prefijoCuadrante"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="bis">Bis</label>
             </div>
             <div class="ui-g-12">
-              <p-autoComplete id="bis"
-                              [suggestions]="bisSuggestons$ | async"
-                              field="nombre"
-                              formControlName="bis"
-                              (completeMethod)="onFilterBis($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickBis($event)">
-              </p-autoComplete>
+              <p-dropdown [options]="bisSuggestons$ | async | dropdownItem"
+                          id="bis"
+                          formControlName="bis"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
             </div>
           </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="orientacion">Orientacion</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="orientacionSuggestions$ | async | dropdownItem"
+                          id="orientacion"
+                          formControlName="orientacion"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -87,23 +102,76 @@
             </div>
           </div>
         </div>
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
-          <div class="ui-g form-group" style="padding-top: 25px">
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group">
             <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="placa" formControlName="placa">
-              <label for="placa">Placa</label>
-              </span>
+              <label for="prefijoCuadrante">Prefijo cuadrante</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | dropdownItem"
+                          id="prefijoCuadrante_se"
+                          formControlName="prefijoCuadrante_se"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
             </div>
           </div>
         </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+            <span class="md-inputfield">
+            <input type="text" pInputText id="placa" formControlName="placa">
+            <label for="placa"># Placa</label>
+            </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="orientacion">Orientacion</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="orientacionSuggestions$ | async | dropdownItem"
+                          id="orientacion_se"
+                          formControlName="orientacion_se"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          [dataKey]="nombre"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-12" [hidden]="direcciones.length === 0">
+          <h4 style="margin: 8px 0 0 15px">Direcciones Agregadas</h4>
+          <div class="ui-g-12" style="max-height: 80px; overflow: scroll; margin: 5px 0 0 15px">
+            <!--<p-listbox [options]="cities" [(ngModel)]="selectedCities" multiple="multiple" checkbox="checkbox" filter="filter"></p-listbox>-->
+            <p *ngFor="let ad of direcciones" style="margin: 3px 0 3px 0">
+              {{ad.direccion}}
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
+
+  <!--End Body-->
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" (click)="addAddress()" pButton icon="fa-external-link-square" label="Aceptar"></button>
+      <button type="button" class="ui-button-primary" (click)="addDireccion()" pButton label="Agregar"
+        [disabled]="!this.form.get('tipoVia').value || !this.form.get('noViaPrincipal').value || !this.form.get('noVia').value"
+      ></button>
+      <button type="button" class="ui-button-success" (click)="completeRegistration()" pButton label="Aceptar"></button>
     </div>
   </p-footer>
 </p-dialog>

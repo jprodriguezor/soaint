@@ -309,18 +309,18 @@
 
                 <span style="float: right">
                     <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="showDialog()"></button>
+                            (click)="direccionDialog.show()"></button>
                   </span>
 
               </div>
 
             </p-header>
-            <p-column field="tipoVia.nombre" header="Tipo de via" [sortable]="true"></p-column>
-            <p-column field="prefijoCuadrante.nombre" header="Prefijo" [sortable]="true"></p-column>
-            <p-column field="orientacion.nombre" header="Orientacion" [sortable]="true"></p-column>
-            <p-column field="noViaPrincipal" header="No. via principal" [sortable]="true"></p-column>
-            <p-column field="bis.nombre" header="Bis" [sortable]="true"></p-column>
-            <p-column field="noVia" header="No. de via" [sortable]="true"></p-column>
+            <p-column field="direccion" header="Dirección" [sortable]="true"></p-column>
+            <!--<p-column field="prefijoCuadrante.nombre" header="Prefijo" [sortable]="true"></p-column>-->
+            <!--<p-column field="orientacion.nombre" header="Orientacion" [sortable]="true"></p-column>-->
+            <!--<p-column field="noViaPrincipal" header="No. via principal" [sortable]="true"></p-column>-->
+            <!--<p-column field="bis.nombre" header="Bis" [sortable]="true"></p-column>-->
+            <!--<p-column field="noVia" header="No. de via" [sortable]="true"></p-column>-->
             <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-address="rowData" let-i="rowIndex" pTemplate="item">
                 <button type="button" icon="ui-icon-close" pButton (click)="deleteAdress(i)"
@@ -334,6 +334,8 @@
     </div>
 </form>
 
+<app-datos-direccion #direccionDialog (dialogHide)="hideDialog($event)" (onComplete)="addDirecciones($event)"></app-datos-direccion>
 
-<app-datos-direccion [display]="display" (dialogHide)="hideDialog($event)"></app-datos-direccion>
+
+
 

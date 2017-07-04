@@ -62,7 +62,7 @@ export class DatosRemitenteComponent implements OnInit {
   tipoComunicacion: any;
 
   @Output()
-  onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter() ;
+  onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
@@ -71,10 +71,6 @@ export class DatosRemitenteComponent implements OnInit {
               private _paisSandbox: PaisSandbox,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
-  }
-
-  showDialog() {
-    this.display = true;
   }
 
   ngOnInit(): void {
@@ -273,6 +269,10 @@ export class DatosRemitenteComponent implements OnInit {
         delete this.validations[control];
       }
     });
+  }
+
+  addDirecciones(event) {
+    this.addresses = [...event, ...this.addresses];
   }
 
   onFilterPais(event) {
