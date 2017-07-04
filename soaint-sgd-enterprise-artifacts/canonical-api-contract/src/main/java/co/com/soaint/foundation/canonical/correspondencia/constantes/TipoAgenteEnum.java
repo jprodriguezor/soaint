@@ -1,11 +1,11 @@
-package co.com.soaint.correspondencia.domain.entity.constantes;
+package co.com.soaint.foundation.canonical.correspondencia.constantes;
 
 /**
- * Created by esanchez on 6/16/2017.
+ * Created by esanchez on 7/4/2017.
  */
 public enum TipoAgenteEnum {
-    EXTERNO("EXT", "EXTERNO"),
-    INTERNO("INT", "INTERNO");
+    REMITENTE("REM", "REMITENTE"),
+    DESTINATARIO("DES", "DESTINATARIO");
 
     private final String codigo;
     private final String nombre;
