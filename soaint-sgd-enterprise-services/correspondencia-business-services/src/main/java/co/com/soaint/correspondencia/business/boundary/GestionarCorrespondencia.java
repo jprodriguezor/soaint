@@ -2,9 +2,10 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.*;
 import co.com.soaint.correspondencia.domain.entity.*;
-import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -82,7 +83,7 @@ public class GestionarCorrespondencia {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
                 corAgente.setCorCorrespondencia(correspondencia);
 
-                if (TipoAgenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+                if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
 
                     for (DatosContactoDTO datosContactoDTO : comunicacionOficialDTO.getDatosContactoList()) {
                         TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
@@ -226,7 +227,7 @@ public class GestionarCorrespondencia {
                     .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
-                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.INTERNO.getCodigo())
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("NRO_RADICADO", nRadicado)
                     .getResultList();
 
