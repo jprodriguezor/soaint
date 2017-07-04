@@ -4,7 +4,7 @@ import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
-import * as actions from './dependenciaGrupoDTO-actions';
+import * as actions from './sedeAdministrativaDTO-actions';
 import {Observable} from 'rxjs/Observable';
 
 
@@ -15,9 +15,8 @@ export class Sandbox {
               private _listSelectionService: ListForSelectionApiService) {
   }
 
-  loadData(payload: any) {
-    const _endpoint = `${environment.dependenciaGrupo_endpoint}/${payload.codigo}`;
-    return this._listSelectionService.list(_endpoint, payload);
+  loadData(payload?: any) {
+    return this._listSelectionService.list(environment.sedeAdministrativa_endpoint, payload);
 
     // return Observable.of(this.getMock()).delay(400);
   }

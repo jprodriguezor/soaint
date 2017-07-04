@@ -5,6 +5,7 @@ export const ActionTypes = {
     FILTER: type('[constanteDTO] FilterAction'),
     FILTER_COMPLETE: type('[constanteDTO] FilterCompleteAction'),
     LOAD: type('[constanteDTO] LoadAction'),
+    LOAD_COMMON: type('[constanteDTO] LoadCommonConstantsAction'),
     LOAD_SUCCESS: type('[constanteDTO] LoadSuccessAction'),
     LOAD_FAIL: type('[constanteDTO] LoadFailAction'),
     SELECT: type('[constanteDTO] SelectAction'),
@@ -23,6 +24,11 @@ export class FilterAction implements Action {
 
 export class LoadAction implements Action {
   type = ActionTypes.LOAD;
+  constructor(public payload?: any) { }
+}
+
+export class LoadCommonConstantsAction implements Action {
+  type = ActionTypes.LOAD_COMMON;
   constructor(public payload?: any) { }
 }
 
@@ -51,7 +57,8 @@ export type Actions =
   LoadAction |
   LoadSuccessAction |
   LoadFailAction |
-  SelectAction
+  SelectAction |
+  LoadCommonConstantsAction
   ;
 
 

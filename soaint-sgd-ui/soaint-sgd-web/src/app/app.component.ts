@@ -8,7 +8,7 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {LoadAction as FuncionarioLoadAction} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-actions';
+import {LoadAction as FuncionarioLoadAction} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
 import {isAuthenticated} from './ui/page-components/login/redux-state/login-selectors';
 
 

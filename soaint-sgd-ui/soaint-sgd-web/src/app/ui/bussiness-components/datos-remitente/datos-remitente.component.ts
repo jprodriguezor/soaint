@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -11,7 +11,7 @@ import {
   getTratamientoCortesiaArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
@@ -22,9 +22,14 @@ import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/c
 import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
 import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
 import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
-import {getSedeAdministrativaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/sede-administrativa-selectors';
 import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
+import {getTipoComunicacionArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+
 
 @Component({
   selector: 'app-datos-remitente',
@@ -33,22 +38,11 @@ import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-manag
 export class DatosRemitenteComponent implements OnInit {
 
   form: FormGroup;
-  tipoPersonaControl: AbstractControl;
-  nitControl: AbstractControl;
-  actuaCalidadControl: AbstractControl;
-  tipoDocumentoControl: AbstractControl;
-  razonSocialControl: AbstractControl;
-  nombreApellidosControl: AbstractControl;
-  tipoTelefonoControl: AbstractControl;
-  inactivoControl: AbstractControl;
-  numeroTelControl: AbstractControl;
-  correoEleControl: AbstractControl;
-  paisControl: AbstractControl;
-  departamentoControl: AbstractControl;
-  municipioControl: AbstractControl;
-  nroDocumentoIdentidadControl: AbstractControl;
-  sedeAdministrativaControl: AbstractControl;
-  dependenciaGrupoControl: AbstractControl;
+  validations: any = {};
+  visibility: any = {};
+
+  addresses: Array<any> = [];
+  display = false;
 
   tipoTelefonoSuggestions$: Observable<ConstanteDTO[]>;
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
@@ -61,22 +55,14 @@ export class DatosRemitenteComponent implements OnInit {
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-  tipoPersonaSelected: any;
-
-  selectedPais: any;
-  selectedDepartamento: any;
-
-  addresses: Array<any> = [];
-
-  display: boolean = false;
+  @Input()
+  editable = true;
 
   @Input()
-  editable: boolean = true;
+  tipoComunicacion: any;
 
-  @Input()
-  datosGenerales: any;
-
-  selectSedeAdministrativa: any;
+  @Output()
+  onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter() ;
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
@@ -85,7 +71,6 @@ export class DatosRemitenteComponent implements OnInit {
               private _paisSandbox: PaisSandbox,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
-    this.initForm();
   }
 
   showDialog() {
@@ -100,90 +85,134 @@ export class DatosRemitenteComponent implements OnInit {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
-    this.sedeAdministrativaSuggestions$ = this._store.select(getSedeAdministrativaArrayData);
+    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
+
+    this._store.dispatch(new SedeAdministrativaLoadAction());
+
+    this.initForm();
+    this.listenForChanges();
+    this.listenForErrors();
   }
 
-  findTipoDocumentoValue() {
-    this.tipoDocumentoSuggestons$.forEach((value) => {
-      console.log(value);
+  initForm() {
+    this.form = this.formBuilder.group({
+      'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
+      'nit': [{value: 10, disabled: !this.editable}],
+      'actuaCalidad': [{value: null, disabled: !this.editable}],
+      'tipoDocumento': [{value: null, disabled: !this.editable}, Validators.required],
+      'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
+      'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
+      'tipoTelefono': [{value: null, disabled: !this.editable}],
+      'inactivo': [{value: null, disabled: !this.editable}],
+      'numeroTel': [{value: null, disabled: !this.editable}],
+      'correoEle': [{value: null, disabled: !this.editable}],
+      'pais': [{value: null, disabled: !this.editable}],
+      'departamento': [{value: null, disabled: true}],
+      'municipio': [{value: null, disabled: true}],
+      'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}, Validators.required],
+      'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
+      'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
   }
 
-  onSelectTipoPersona() {
+  listenForChanges() {
+    this.form.get('sedeAdministrativa').valueChanges.subscribe((value) => {
+      if (this.editable && value) {
+        this.onChangeSedeAdministrativa.emit(value);
+        this.form.get('dependenciaGrupo').reset();
+        this._dependenciaGrupoSandbox.loadDispatch({codigo: value.id});
+      }
+    });
 
-    if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EI') {
-      this.sedeAdministrativaControl.enable();
-    } else if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EE') {
-      this.sedeAdministrativaControl.disable();
-      this.dependenciaGrupoControl.disable();
-    }
+    this.form.get('tipoPersona').valueChanges.subscribe((value) => {
+      if (value) {
+        this.onSelectTipoPersona(value);
+      }
+    });
 
-    if (this.tipoPersonaControl.value) {
-      if (this.tipoPersonaControl.value.codigo === 'ANONIM') {
-        this.nitControl.disable();
-        this.actuaCalidadControl.disable();
-        this.tipoDocumentoControl.disable();
-        this.razonSocialControl.disable();
-        this.nombreApellidosControl.disable();
-        this.tipoTelefonoControl.disable();
-        this.inactivoControl.disable();
-        this.numeroTelControl.disable();
-        this.correoEleControl.disable();
-        this.paisControl.disable();
-        this.departamentoControl.disable();
-        this.nroDocumentoIdentidadControl.disable();
-        this.municipioControl.disable();
-      } else if (this.tipoPersonaControl.value.codigo === 'PERS-JUR') {
-        this.nitControl.enable();
-        this.actuaCalidadControl.enable();
-        if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EE') {
-          this.tipoDocumentoControl.enable();
-          this.tipoDocumentoControl.setValue({
-            codPadre: "TIPO-DOC",
-            codigo: "NU-ID-TR",
-            nombre: "Numero de Identificación Tributario"
-          });
-        } else {
-          this.tipoDocumentoControl.disable();
-          this.tipoDocumentoControl.setValue(null);
-        }
-        this.razonSocialControl.enable();
-        this.nombreApellidosControl.enable();
-        this.tipoTelefonoControl.enable();
-        this.inactivoControl.disable();
-        this.numeroTelControl.enable();
-        this.correoEleControl.enable();
-        this.paisControl.enable();
-        this.departamentoControl.enable();
-        this.nroDocumentoIdentidadControl.disable();
-        this.municipioControl.enable();
-      } else if (this.tipoPersonaControl.value.codigo === 'PERS-NAT') {
-        this.nitControl.disable();
-        this.actuaCalidadControl.disable();
-        if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === 'EE') {
-          this.tipoDocumentoControl.enable();
-          this.tipoDocumentoControl.setValue({
-            codPadre: "TIPO-DOC",
-            codigo: "CED-CIUD",
-            nombre: "Cedula de ciudadanía",
-          });
-        } else {
-          this.tipoDocumentoControl.disable();
-          this.tipoDocumentoControl.setValue(null);
-        }
-        this.razonSocialControl.disable();
-        this.nroDocumentoIdentidadControl.enable();
-        this.nombreApellidosControl.enable();
-        this.tipoTelefonoControl.enable();
-        this.inactivoControl.disable();
-        this.numeroTelControl.enable();
-        this.correoEleControl.disable();
-        this.paisControl.enable();
-        this.departamentoControl.enable();
-        this.municipioControl.enable();
+    const paisControl = this.form.get('pais');
+    const departamentoControl = this.form.get('departamento');
+    const municipioControl = this.form.get('municipio');
+
+    paisControl.valueChanges.subscribe(value => {
+      if (this.editable && value) {
+        departamentoControl.enable();
+      } else {
+        departamentoControl.reset();
+        departamentoControl.disable();
+      }
+    });
+
+    departamentoControl.valueChanges.subscribe(value => {
+      if (this.editable && value) {
+        municipioControl.enable();
+      } else {
+        municipioControl.reset();
+        municipioControl.disable();
+      }
+    });
+  }
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('sedeAdministrativa');
+    this.bindToValidationErrorsOf('dependenciaGrupo');
+    this.bindToValidationErrorsOf('tipoPersona');
+    this.bindToValidationErrorsOf('tipoDocumento');
+    this.bindToValidationErrorsOf('razonSocial');
+    this.bindToValidationErrorsOf('nombreApellidos');
+    this.bindToValidationErrorsOf('nroDocumentoIdentidad');
+  }
+
+  onSelectTipoPersona(value) {
+    this.visibility = {};
+    if (value.codigo === 'ANONIM') {
+
+      this.visibility['tipoPersona'] = true;
+
+    } else if (value.codigo === 'PERS-JUR') {
+      this.visibility['nit'] = true;
+      this.visibility['actuaCalidad'] = true;
+      this.visibility['razonSocial'] = true;
+      this.visibility['nombreApellidos'] = true;
+      this.visibility['tipoTelefono'] = true;
+      this.visibility['inactivo'] = true;
+      this.visibility['numeroTel'] = true;
+      this.visibility['correoEle'] = true;
+      this.visibility['pais'] = true;
+      this.visibility['departamento'] = true;
+      this.visibility['nroDocumentoIdentidad'] = true;
+      this.visibility['municipio'] = true;
+      this.visibility['direccion'] = true;
+
+      if (this.tipoComunicacion === 'EE') {
+        this.visibility['tipoDocumento'] = true;
+      }
+
+      // if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === ) {
+      //   this.tipoDocumentoControl.enable();
+      //   this.tipoDocumentoControl.setValue({
+      //     codPadre: 'TIPO-DOC',
+      //     codigo: 'NU-ID-TR',
+      //     nombre: 'Numero de Identificación Tributario'
+      //   });
+      // }
+    } else if (value.codigo === 'PERS-NAT') {
+
+      this.visibility['nombreApellidos'] = true;
+      this.visibility['tipoTelefono'] = true;
+      this.visibility['numeroTel'] = true;
+      this.visibility['pais'] = true;
+      this.visibility['departamento'] = true;
+      this.visibility['nroDocumentoIdentidad'] = true;
+      this.visibility['municipio'] = true;
+      this.visibility['direccion'] = true;
+
+      if (this.tipoComunicacion === 'EE') {
+        this.visibility['tipoDocumento'] = true;
       }
     }
+
   }
 
   deleteAdress(index) {
@@ -199,150 +228,55 @@ export class DatosRemitenteComponent implements OnInit {
     this.addresses = addresses;
   }
 
-  initForm() {
-    this.tipoPersonaControl = new FormControl(null, Validators.required);
-    this.nitControl = new FormControl({value: null, disabled: true});
-    this.actuaCalidadControl = new FormControl({value: null, disabled: true});
-    this.tipoDocumentoControl = new FormControl({value: null, disabled: true}, Validators.required);
-    this.razonSocialControl = new FormControl({value: null, disabled: true}, Validators.required);
-    this.nombreApellidosControl = new FormControl({value: null, disabled: true}, Validators.required);
-    this.tipoTelefonoControl = new FormControl({value: null, disabled: true});
-    this.inactivoControl = new FormControl({value: null, disabled: true});
-    this.numeroTelControl = new FormControl({value: null, disabled: true});
-    this.correoEleControl = new FormControl({value: null, disabled: true});
-    this.sedeAdministrativaControl = new FormControl({value: null, disabled: true}, Validators.required);
-    this.dependenciaGrupoControl = new FormControl({value: null, disabled: true}, Validators.required);
-    this.paisControl = new FormControl({
-      value: {
-        codigo: "co",
-        nombre: "Colombia"
-      }, disabled: true
-    });
-    this.departamentoControl = new FormControl({value: null, disabled: true});
-    this.municipioControl = new FormControl({value: null, disabled: true});
-    this.nroDocumentoIdentidadControl = new FormControl({value: null, disabled: true}, Validators.required);
 
-    this.form = this.formBuilder.group({
-      'tipoPersona': this.tipoPersonaControl,
-      'nit': this.nitControl,
-      'actuaCalidad': this.actuaCalidadControl,
-      'tipoDocumento': this.tipoDocumentoControl,
-      'razonSocial': this.razonSocialControl,
-      'nombreApellidos': this.nombreApellidosControl,
-      'tipoTelefono': this.tipoTelefonoControl,
-      'inactivo': this.inactivoControl,
-      'numeroTel': this.numeroTelControl,
-      'correoEle': this.correoEleControl,
-      'pais': this.paisControl,
-      'departamento': this.departamentoControl,
-      'municipio': this.municipioControl,
-      'nroDocumentoIdentidad': this.nroDocumentoIdentidadControl,
-      'sedeAdministrativa': this.sedeAdministrativaControl,
-      'dependenciaGrupo': this.dependenciaGrupoControl,
-    });
-  }
-
-
-  onFilterTipoTelefono($event) {
-    this._constanteSandbox.filterDispatch('tipoTelefono', $event.query);
-  }
-
-  onDropdownClickTipoTelefono($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoTelefono');
-  }
-
-  onFilterTipoPersona($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoPersona', query);
-  }
-
-  onDropdownClickTipoPersona($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoPersona');
-  }
-
-  onFilterTipoDocumento($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoDocumento', query);
-  }
-
-  onDropdownClickTipoDocumento($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDocumento');
-  }
-
-  onSelectPais(value) {
-    this.selectedPais = value.codigo;
-    console.log(this.selectedPais);
-  }
-
-  onFilterPais($event) {
-    this._paisSandbox.filterDispatch($event.query);
+  setTipoComunicacion(value) {
+    if (value) {
+      this.tipoComunicacion = value.codigo;
+    }
   }
 
   onDropdownClickPais() {
     this._paisSandbox.loadDispatch();
   }
 
-  onSelectDepartamento(value) {
-    this.selectedDepartamento = value.codDepar;
-  }
-
-  onFilterDepartamento($event) {
-    if (this.selectedPais) {
-      this._departamentoSandbox.filterDispatch({query: $event.query, codPais: this.selectedPais});
-    }
-  }
-
   onDropdownClickDepartamento($event) {
-    if (this.selectedPais) {
-      this._departamentoSandbox.loadDispatch({codPais: this.selectedPais});
-    }
-  }
-
-  onFilterMunicipio($event) {
-    if (this.selectedDepartamento) {
-      this._departamentoSandbox.filterDispatch({query: $event.query, codDepar: this.selectedDepartamento});
+    const pais = this.form.get('pais').value;
+    if (pais) {
+      this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
     }
   }
 
   onDropdownClickMunicipio($event) {
-    if (this.selectedDepartamento) {
-      this._municipioSandbox.loadDispatch({codDepar: this.selectedDepartamento});
+    const departamento = this.form.get('departamento').value;
+    if (departamento) {
+      this._municipioSandbox.loadDispatch({codDepar: departamento.codigo});
     }
   }
 
-  onDropdownClickTratamientoCortesia($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tratamientoCortesia');
-  }
-
-
-  onSelectSedeAdministrativa(value) {
-    this.selectSedeAdministrativa = value.codigo;
-    this.dependenciaGrupoControl.enable();
-  }
-
-  onFilterSedeAdministrativa($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('sedeAdministrativa', query);
-  }
-
-  onDropdownClickSedeAdministrativa($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('sedeAdministrativa');
-  }
-
-  onFilterDependenciaGrupo($event) {
-    this._dependenciaGrupoSandbox.filterDispatch({query: $event.query, codigo: this.selectSedeAdministrativa});
-  }
-
-  onDropdownClickDependenciaGrupo($event) {
-    // this method triggers load of suggestions
-    if (this.selectSedeAdministrativa) {
-      this._dependenciaGrupoSandbox.loadDispatch({codigo: this.selectSedeAdministrativa});
+  listenForBlurEvents(control: string) {
+    const ac = this.form.get(control);
+    if (ac.touched && ac.invalid) {
+      const error_keys = Object.keys(ac.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
   }
+
+  bindToValidationErrorsOf(control: string) {
+    const ac = this.form.get(control);
+    ac.valueChanges.subscribe(value => {
+      if ((ac.touched || ac.dirty) && ac.errors) {
+        const error_keys = Object.keys(ac.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+        delete this.validations[control];
+      }
+    });
+  }
+
+  onFilterPais(event) {
+  }
+
 
 }

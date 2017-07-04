@@ -8,7 +8,7 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {path: '', redirectTo: 'radicar-comunicaciones', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
   {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
   {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},

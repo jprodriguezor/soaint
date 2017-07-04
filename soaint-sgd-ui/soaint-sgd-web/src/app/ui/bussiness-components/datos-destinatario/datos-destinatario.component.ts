@@ -1,17 +1,21 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/operator/filter';
+import 'rxjs/add/operator/zip';
+import 'rxjs/add/observable/forkJoin';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {
-  getSedeAdministrativaArrayData,
   getTipoDestinatarioArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
+import {getDestinatarioPrincial} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {LoadAction as DependenciaGrupoLoadAction} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-actions';
 
 @Component({
   selector: 'app-datos-destinatario',
@@ -20,50 +24,87 @@ import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-manag
 export class DatosDestinatarioComponent implements OnInit {
 
   form: FormGroup;
-  tipoDestinatarioControl: AbstractControl;
-  sedeAdministrativaControl: AbstractControl;
-  dependenciaGrupoControl: AbstractControl;
-
 
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
+  tipoDestinatarioSelected$: Observable<any>;
 
-  selectSedeAdministrativa: any;
-
+  selectedagenteDestinatario: any;
+  canInsert = false;
   agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
 
-
   @Input()
-  editable: boolean = true;
-
-  @Input()
-  datosGenerales: any;
+  editable = true;
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private formBuilder: FormBuilder) {
-    this.initForm();
   }
 
   ngOnInit(): void {
     this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
-    this.sedeAdministrativaSuggestions$ = this._store.select(getSedeAdministrativaArrayData);
+    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
+    this.tipoDestinatarioSelected$ = this._store.select(getDestinatarioPrincial);
+
+    this.initForm();
+
+    this.form.get('sedeAdministrativa').valueChanges.subscribe(value => {
+      if (this.editable && value) {
+        this.form.get('dependenciaGrupo').reset();
+        this._store.dispatch(new DependenciaGrupoLoadAction({codigo: value.id}));
+      }
+    });
+
+    Observable.combineLatest(
+      this.form.get('tipoDestinatario').valueChanges,
+      this.form.get('sedeAdministrativa').valueChanges,
+      this.form.get('dependenciaGrupo').valueChanges
+    ).do(() => this.canInsert = false)
+      .filter(([tipo, sede, grupo]) => tipo && sede && grupo)
+      .zip(([tipo, sede, grupo]) => {
+        return {tipo: tipo, sede: sede, grupo: grupo}
+      })
+      .subscribe(value => {
+        this.canInsert = true
+      });
+
+
+  }
+
+  initForm() {
+    this.form = this.formBuilder.group({
+      'tipoDestinatario': [{value: null, disabled: !this.editable}],
+      'sedeAdministrativa': [{value: null, disabled: !this.editable}],
+      'dependenciaGrupo': [{value: null, disabled: !this.editable}]
+    });
   }
 
   addAgentesDestinatario() {
-    let agenteDestinatario = [...this.agentesDestinatario];
-    agenteDestinatario.push({
-      tipoDestinatario: this.tipoDestinatarioControl.value,
-      sedeAdministrativa: this.sedeAdministrativaControl.value,
-      dependenciaGrupo: this.dependenciaGrupoControl.value
-    });
-    this.agentesDestinatario = agenteDestinatario;
-    this.tipoDestinatarioControl.setValue(null);
-    this.sedeAdministrativaControl.setValue(null);
-    this.dependenciaGrupoControl.setValue(null);
+    const tipo = this.form.get('tipoDestinatario');
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependenciaGrupo');
+
+    const insertVal = [
+      {
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value
+      }
+    ];
+
+    this.agentesDestinatario = [
+      ...insertVal,
+      ...this.agentesDestinatario.filter(
+        value => value.tipoDestinatario !== tipo.value || value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+      )
+    ];
+
+    tipo.reset();
+    sede.reset();
+    grupo.reset();
 
   }
 
@@ -72,65 +113,5 @@ export class DatosDestinatarioComponent implements OnInit {
     agente.splice(index, 1);
     this.agentesDestinatario = agente;
   }
-
-  onSelectTipoComunicacion() {
-    if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo != 'EI') {
-      this.sedeAdministrativaControl.disable();
-      this.dependenciaGrupoControl.disable();
-    } else {
-      this.sedeAdministrativaControl.enable();
-      this.dependenciaGrupoControl.enable();
-    }
-  }
-
-  initForm() {
-    this.tipoDestinatarioControl = new FormControl({
-      codigo: "PRINCIPA",
-      nombre: "Principal"
-    });
-    this.sedeAdministrativaControl = new FormControl({value: null, disabled: true});
-    this.dependenciaGrupoControl = new FormControl({value: null, disabled: true});
-    this.form = this.formBuilder.group({
-      'tipoDestinatario': this.tipoDestinatarioControl,
-      'sedeAdministrativa': this.sedeAdministrativaControl,
-      'dependenciaGrupo': this.dependenciaGrupoControl,
-    });
-  }
-
-  onFilterTipoDestinatario($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('tipoDestinatario', query);
-  }
-
-  onDropdownClickTipoDestinatario($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoDestinatario');
-  }
-
-  onSelectSedeAdministrativa(value) {
-    this.selectSedeAdministrativa = value.codigo;
-  }
-
-  onFilterSedeAdministrativa($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('sedeAdministrativa', query);
-  }
-
-  onDropdownClickSedeAdministrativa($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('sedeAdministrativa');
-  }
-
-  onFilterDependenciaGrupo($event) {
-    this._dependenciaGrupoSandbox.filterDispatch({query: $event.query, codigo: this.selectSedeAdministrativa});
-  }
-
-  onDropdownClickDependenciaGrupo($event) {
-    // this method triggers load of suggestions
-    if (this.selectSedeAdministrativa) {
-      this._dependenciaGrupoSandbox.loadDispatch({codigo: this.selectSedeAdministrativa});
-    }
-  }
-
 
 }

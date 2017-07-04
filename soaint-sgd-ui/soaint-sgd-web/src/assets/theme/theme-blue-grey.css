@@ -3263,13 +3263,13 @@ body {
     body .md-inputfield input.ui-state-filled ~ label,
     body .md-inputfield .ui-inputwrapper-focus ~ label,
     body .md-inputfield .ui-inputwrapper-filled ~ label {
-      top: -20px;
-      font-size: 12px;
-      color: #607D8B; }
+      top: -40px;
+      font-size: 14px;
+      color: #212121; }
     body .md-inputfield .input:-webkit-autofill ~ label {
-      top: -20px;
-      font-size: 12px;
-      color: #607D8B; }
+      top: -40px;
+      font-size: 14px;
+      color: #212121; }
     body .md-inputfield input.ng-dirty.ng-invalid ~ label {
       color: #e62a10; }
     body .md-inputfield .ui-message.ui-messages-error {
@@ -3708,10 +3708,10 @@ body {
     body .ui-dropdown-panel .ui-dropdown-filter-container {
       display: block;
       border-bottom: 1px solid #bdbdbd;
-      background-color: #607D8B;
+      background-color: #B0BEC5;
       padding: 0.625em 1em; }
       body .ui-dropdown-panel .ui-dropdown-filter-container input {
-        color: #ffffff; }
+        color: #212121; }
         body .ui-dropdown-panel .ui-dropdown-filter-container input:focus {
           border-bottom-color: #ffffff; }
       body .ui-dropdown-panel .ui-dropdown-filter-container .fa {

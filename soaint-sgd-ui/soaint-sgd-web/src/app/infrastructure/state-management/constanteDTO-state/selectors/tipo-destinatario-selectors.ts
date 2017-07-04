@@ -19,10 +19,10 @@ export const getTipoDestinatarioIds = createSelector(rootPath, (state: State) =>
 
 export const getTipoDestinatarioSelectedId = createSelector(rootPath, (state: State) => state.tipoDestinatario.selectedId);
 
-export const getTipoDestinatarioSelectedEntity =
-  createSelector(getTipoDestinatarioEntities, getTipoDestinatarioSelectedId, (entities, selectedId) => {
-    return entities[selectedId];
-  });
+// Get Tipo destinatario principal id=> 52
+export const getDestinatarioPrincial = createSelector(getTipoDestinatarioEntities, (entities) => {
+  return entities[52];
+});
 
 export const getTipoDestinatarioArrayData = createSelector(getTipoDestinatarioEntities, getTipoDestinatarioIds, (entities, ids) => {
   return ids.map(id => entities[id]);

@@ -16,8 +16,8 @@ import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import {Store} from '@ngrx/store';
-import * as actions from './FuncionarioDTO-actions';
-import {Sandbox} from './FuncionarioDTO-sandbox';
+import * as actions from './funcionarioDTO-actions';
+import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 
 @Injectable()

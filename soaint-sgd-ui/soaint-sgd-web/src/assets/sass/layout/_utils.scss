@@ -147,6 +147,9 @@
 
 .ui-g {
     &.form-group {
+        //> div:first-child {
+        //  padding: .75em 1em 2px;
+        //}
         > div {
             padding: .75em 1em;
         }

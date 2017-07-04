@@ -1,14 +1,14 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from '../../../domain/AgentDTO';
-import {DocumentoDTO} from '../../../domain/DocumentoDTO';
-import {AnexoDTO} from '../../../domain/AnexoDTO';
-import {ReferidoDTO} from '../../../domain/ReferidoDTO';
-import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
+import {AgentDTO} from 'app/domain/agentDTO';
+import {DocumentoDTO} from 'app/domain/documentoDTO';
+import {AnexoDTO} from 'app/domain/anexoDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import {ContactoDTO} from '../../../domain/ContactoDTO';
+import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
-import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -37,7 +37,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   barCodeVisible: boolean = false;
 
-  editable: boolean = true;
+  editable = true;
 
   task: any;
 
@@ -166,8 +166,8 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
       codAsunto: 'CA',
-      nroFolios: this.valueGeneral.numeroFolio,//'Numero Folio',
-      nroAnexos: this.valueGeneral.cantidadAnexos,//'Numero anexos',
+      nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
+      nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
       ideEcm: null,
       codTipoSoporte: null,

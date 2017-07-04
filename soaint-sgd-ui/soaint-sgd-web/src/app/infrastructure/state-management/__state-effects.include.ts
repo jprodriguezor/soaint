@@ -9,7 +9,8 @@ import {Effects as DependenciaGrupoDtoEffects} from 'app/infrastructure/state-ma
 import {Effects as TareasDtoEffects} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-effects';
 import {Effects as RadicarComunicacionesEffects} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-effects';
 import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-effects';
-import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/FuncionarioDTO-state/FuncionarioDTO-effects';
+import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-effects';
+import {Effects as sedeAdministrativaDtoEffects} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-effects';
 
 /**
  * Effects offer a way to isolate and easily test side-effects within your
@@ -41,4 +42,5 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(RadicarComunicacionesEffects),
   EffectsModule.run(ComunicacionOficialDtoEffects),
   EffectsModule.run(FuncionarioDtoEffects),
+  EffectsModule.run(sedeAdministrativaDtoEffects)
 ];
