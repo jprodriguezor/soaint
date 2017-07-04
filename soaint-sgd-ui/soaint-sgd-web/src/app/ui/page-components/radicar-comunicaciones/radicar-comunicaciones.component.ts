@@ -59,7 +59,6 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
-    console.log(this.valueGeneral);
     let agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
     agentesList.push(...this.getAgentesInt());
