@@ -18,7 +18,6 @@ import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-ma
 import {PaisDTO} from 'app/domain/paisDTO';
 import {MunicipioDTO} from 'app/domain/municipioDTO';
 import {DepartamentoDTO} from 'app/domain/departamentoDTO';
-import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
 import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
 import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
@@ -26,8 +25,6 @@ import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/stat
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
-import {getTipoComunicacionArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors';
-import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 
 
@@ -65,7 +62,6 @@ export class DatosRemitenteComponent implements OnInit {
   onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
-              private _constanteSandbox: ConstanteSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
               private _paisSandbox: PaisSandbox,
@@ -94,7 +90,7 @@ export class DatosRemitenteComponent implements OnInit {
   initForm() {
     this.form = this.formBuilder.group({
       'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
-      'nit': [{value: 10, disabled: !this.editable}],
+      'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}, Validators.required],
       'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
@@ -161,16 +157,26 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   onSelectTipoPersona(value) {
-    this.visibility = {};
-    if (value.codigo === 'ANONIM') {
+    this.visibility = {
+      'tipoPersona': this.visibility.tipoPersona
+    };
 
+    this.form.get('tipoDocumento').disable();
+    this.form.get('razonSocial').disable();
+    this.form.get('nombreApellidos').disable();
+    this.form.get('nroDocumentoIdentidad').disable();
+
+    if (value.codigo === 'ANONIM') {
       this.visibility['tipoPersona'] = true;
+      // this.form.get('tipoPersona').enable();
 
     } else if (value.codigo === 'PERS-JUR') {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
+      this.form.get('razonSocial').enable();
       this.visibility['nombreApellidos'] = true;
+      this.form.get('nombreApellidos').enable();
       this.visibility['tipoTelefono'] = true;
       this.visibility['inactivo'] = true;
       this.visibility['numeroTel'] = true;
@@ -178,34 +184,29 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['pais'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
+      this.form.get('nroDocumentoIdentidad').enable();
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
-
       if (this.tipoComunicacion === 'EE') {
         this.visibility['tipoDocumento'] = true;
+        this.form.get('tipoDocumento').enable();
       }
-
-      // if (this.datosGenerales.tipoComunicacionControl.value && this.datosGenerales.tipoComunicacionControl.value.codigo === ) {
-      //   this.tipoDocumentoControl.enable();
-      //   this.tipoDocumentoControl.setValue({
-      //     codPadre: 'TIPO-DOC',
-      //     codigo: 'NU-ID-TR',
-      //     nombre: 'Numero de Identificación Tributario'
-      //   });
-      // }
     } else if (value.codigo === 'PERS-NAT') {
 
       this.visibility['nombreApellidos'] = true;
+      this.form.get('nombreApellidos').enable();
       this.visibility['tipoTelefono'] = true;
       this.visibility['numeroTel'] = true;
       this.visibility['pais'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
+      this.form.get('nroDocumentoIdentidad').enable();
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
 
       if (this.tipoComunicacion === 'EE') {
         this.visibility['tipoDocumento'] = true;
+        this.form.get('tipoDocumento').enable();
       }
     }
 
@@ -228,6 +229,28 @@ export class DatosRemitenteComponent implements OnInit {
   setTipoComunicacion(value) {
     if (value) {
       this.tipoComunicacion = value.codigo;
+      if (this.tipoComunicacion === 'EI') {
+        this.form.get('tipoPersona').disable();
+        this.form.get('sedeAdministrativa').enable();
+        this.form.get('dependenciaGrupo').enable();
+        this.form.get('tipoDocumento').disable();
+        this.visibility['sedeAdministrativa'] = true;
+        this.visibility['dependenciaGrupo'] = true;
+        this.visibility['tipoPersona'] = false;
+        this.visibility['direccion'] = false;
+      } else {
+        this.form.get('tipoPersona').enable();
+        this.form.get('tipoDocumento').enable();
+        this.form.get('sedeAdministrativa').disable();
+        this.form.get('dependenciaGrupo').disable();
+        this.visibility['sedeAdministrativa'] = false;
+        this.visibility['dependenciaGrupo'] = false;
+        this.visibility['tipoPersona'] = true;
+      }
+      this.form.get('tipoDocumento').disable();
+      this.form.get('razonSocial').disable();
+      this.form.get('nombreApellidos').disable();
+      this.form.get('nroDocumentoIdentidad').disable();
     }
   }
 

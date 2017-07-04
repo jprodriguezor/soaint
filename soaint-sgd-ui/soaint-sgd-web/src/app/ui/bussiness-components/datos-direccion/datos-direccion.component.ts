@@ -27,7 +27,7 @@ export class DatosDireccionComponent implements OnInit {
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
 
-  direcciones: Array<{direccion: string}> = [];
+  direcciones: Array<any> = [];
 
   @Output()
   onClose: EventEmitter<any> = new EventEmitter<any>();
@@ -68,28 +68,36 @@ export class DatosDireccionComponent implements OnInit {
     const placa = this.form.get('placa');
     const orientacion_se = this.form.get('orientacion_se');
 
+    const value = {};
+
     if (tipoVia.value) {
       direccion += tipoVia.value.nombre;
+      value['tipoVia'] = tipoVia.value;
       tipoVia.reset();
     }
     if (noViaPrincipal.value) {
       direccion += ' ' + noViaPrincipal.value;
+      value['noViaPrincipal'] = noViaPrincipal.value;
       noViaPrincipal.reset();
     }
     if (prefijoCuadrante.value) {
       direccion += ' ' + prefijoCuadrante.value.nombre;
+      value['prefijoCuadrante'] = prefijoCuadrante.value;
       prefijoCuadrante.reset();
     }
     if (bis.value) {
       direccion += ' ' + bis.value.nombre;
+      value['bis'] = bis;
       bis.reset();
     }
     if (orientacion.value) {
       direccion += ' ' + orientacion.value.nombre;
+      value['orientacion'] = orientacion.value;
       orientacion.reset();
     }
     if (noVia.value) {
       direccion += ' ' + noVia.value;
+      value['noVia'] = noVia.value;
       noVia.reset();
     }
     if (prefijoCuadrante_se.value) {
@@ -98,14 +106,15 @@ export class DatosDireccionComponent implements OnInit {
     }
     if (placa.value) {
       direccion += ' ' + placa.value;
+      value['placa'] = placa.value;
       placa.reset();
     }
     if (orientacion_se.value) {
       direccion += ' ' + orientacion_se.value.nombre;
       orientacion_se.reset();
     }
-
-    const insert = [{direccion: direccion}];
+    value['direccion'] = direccion;
+    const insert = [value];
     this.direcciones = [...insert, ...this.direcciones];
   }
 

@@ -1,9 +1,10 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
-import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 
 import javax.persistence.EntityManager;
@@ -29,7 +30,7 @@ public class DatosContactoControl {
     public List<DatosContactoDTO> consultarDatosContactoByAgentes(List<AgenteDTO> agenteDTOList) {
         List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
         agenteDTOList.stream().forEach((agenteDTO) -> {
-            if (TipoAgenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+            if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
                 em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .getResultList()

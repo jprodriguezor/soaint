@@ -1,6 +1,6 @@
 import {Actions, ActionTypes as Autocomplete} from './radicarComunicaciones-actions';
 import {tassign} from 'tassign';
-import {ComunicacionOficialDTO} from 'app/domain/ComunicacionOficialDTO';
+import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 
 
 export interface State {

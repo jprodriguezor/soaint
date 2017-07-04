@@ -3,7 +3,7 @@
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
 
-      <div class="ui-g ui-fluid" *ngIf="tipoComunicacion === 'EI'">
+      <div class="ui-g ui-fluid" *ngIf="visibility.sedeAdministrativa">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
@@ -16,8 +16,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
-                          (onBlur)="listenForBlurEvents('sedeAdministrativa')"
-              >
+                          (onBlur)="listenForBlurEvents('sedeAdministrativa')">
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
@@ -54,7 +53,7 @@
         </div>
       </div>
 
-      <div class="ui-g ui-fluid" *ngIf="tipoComunicacion !== 'EI'">
+      <div class="ui-g ui-fluid" *ngIf="visibility.tipoPersona">
 
         <!--Tipo Persona-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6">

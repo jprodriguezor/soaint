@@ -11,9 +11,7 @@ import {
   getTipologiaDocumentalArrayData,
   getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Message, SelectItem} from 'primeng/primeng';
-import {tassign} from 'tassign';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/single';
 import {getVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
@@ -66,6 +64,8 @@ export class DatosGeneralesComponent implements OnInit {
   initForm() {
 
     this.form = this.formBuilder.group({
+      'fechaRadicacion': [{value: null, disabled: true}],
+      'nroRadicado': [{value: null, disabled: true}],
       'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
       'medioRecepcion': [{value: 10, disabled: !this.editable}, Validators.required],
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],

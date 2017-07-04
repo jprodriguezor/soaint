@@ -5,11 +5,12 @@
       <div class="ui-g ui-fluid">
 
         <!--Tiempo Respuesta-->
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
+             *ngIf="form.get('fechaRadicacion').value">
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="fechaRadicacion" readonly [value]="sdfsdf">
+                    <input type="text" pInputText id="fechaRadicacion" readonly formControlName="fechaRadicacion">
                     <label style="color: blue">Fecha y Hora de Radicación</label>
                   </span>
             </div>
@@ -17,11 +18,12 @@
         </div>
 
         <!--Tiempo Respuesta-->
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
+             *ngIf="form.get('nroRadicado').value">
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="nroRadicado" readonly [value]="2343242342342">
+                    <input type="text" pInputText id="nroRadicado" readonly formControlName="nroRadicado">
                     <label style="color: blue">Nro Radicado</label>
                   </span>
             </div>
@@ -140,9 +142,10 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="numeroFolio" formControlName="numeroFolio"
-                     (blur)="listenForBlurEvents('numeroFolio')"
-              >
+              <!--<input type="text" pInputText id="numeroFolio" formControlName="numeroFolio"-->
+                     <!--(blur)="listenForBlurEvents('numeroFolio')"-->
+              <!--&gt;-->
+                <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio" (OnBlur)="listenForBlurEvents('numeroFolio')"></p-spinner>
               <label><span class="text-danger">*</span>No. de folio</label>
                <div class="ui-message ui-messages-error"
                     *ngIf="validations.numeroFolio">

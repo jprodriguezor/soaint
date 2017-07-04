@@ -2,8 +2,10 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.*;
 import co.com.soaint.correspondencia.domain.entity.*;
-import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -69,15 +71,19 @@ public class GestionarCorrespondencia {
 
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
-            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
+            if (comunicacionOficialDTO.getCorrespondencia().getNroRadicado() == null) {
+                comunicacionOficialDTO.getCorrespondencia().setNroRadicado(correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
+            }
 
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
+            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.RADICADO.getCodigo());
+            correspondencia.setFecVenGestion(correspondenciaControl.CalcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
 
             for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
                 corAgente.setCorCorrespondencia(correspondencia);
 
-                if (TipoAgenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+                if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
 
                     for (DatosContactoDTO datosContactoDTO : comunicacionOficialDTO.getDatosContactoList()) {
                         TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
@@ -112,12 +118,10 @@ public class GestionarCorrespondencia {
             ComunicacionOficialDTO comunicacionOficial = listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
 
             new Thread(() -> {
-                Date fecha = new Date();
                 try {
                     gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
-                            .fecTrazDocumento(fecha)
                             .ideDocumento(comunicacionOficial.getCorrespondencia().getIdeDocumento())
-                            .observacion("")
+                            .observacion("Radicado")
                             .ideFunci(null)
                             .codEstado(comunicacionOficial.getCorrespondencia().getCodEstado())
                             .codOrgaAdmin(null)
@@ -172,13 +176,11 @@ public class GestionarCorrespondencia {
                     .executeUpdate();
 
             new Thread(() -> {
-                Date fecha = new Date();
                 try {
                     BigInteger ideDocumento = em.createNamedQuery("CorCorrespondencia.findIdeDocumentoByNroRadicado", BigInteger.class)
                             .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
                             .getSingleResult();
                     gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
-                            .fecTrazDocumento(fecha)
                             .ideDocumento(ideDocumento)
                             .observacion("Cambio de estado de documento")
                             .ideFunci(null)
@@ -202,6 +204,18 @@ public class GestionarCorrespondencia {
         }
     }
 
+    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
+        try{
+            gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         try {
             String nRadicado = nroRadicado == null ? null : "%" + nroRadicado + "%";
@@ -213,7 +227,7 @@ public class GestionarCorrespondencia {
                     .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
-                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.INTERNO.getCodigo())
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("NRO_RADICADO", nRadicado)
                     .getResultList();
 

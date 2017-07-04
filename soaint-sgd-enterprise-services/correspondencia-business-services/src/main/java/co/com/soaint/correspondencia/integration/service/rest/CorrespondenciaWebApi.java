@@ -45,6 +45,13 @@ public class CorrespondenciaWebApi {
         return boundary.radicarCorrespondencia(comunicacionOficialDTO);
     }
 
+    @POST
+    @Path("/correspondencia/observacion")
+    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+        LOGGER.info("processing rest request - registrar observacion correspondencia");
+        boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
+    }
+
     @GET
     @Path("/correspondencia/{nro_radicado}")
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
