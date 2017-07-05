@@ -76,7 +76,8 @@ export class RadicarComunicacionesComponent implements OnInit {
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
-          requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0
+          requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
+          numeroRadicacion: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
         }
       }).subscribe(() => {
         this.barCodeVisible = true;
