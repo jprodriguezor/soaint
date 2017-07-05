@@ -69,10 +69,6 @@ export class DatosRemitenteComponent implements OnInit {
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
   }
 
-  showDialog() {
-    this.display = true;
-  }
-
   ngOnInit(): void {
     this.tipoTelefonoSuggestions$ = this._store.select(getTipoTelefonoArrayData);
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
@@ -296,6 +292,10 @@ export class DatosRemitenteComponent implements OnInit {
         delete this.validations[control];
       }
     });
+  }
+
+  addDirecciones(event) {
+    this.addresses = [...event, ...this.addresses];
   }
 
   onFilterPais(event) {

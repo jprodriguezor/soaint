@@ -5692,7 +5692,7 @@ body .ui-dialog.ui-shadow {
   -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23); }
 body .ui-dialog .ui-dialog-titlebar {
-  background-color: #ffffff;
+  background-color: #eee;
   color: #212121;
   padding: 0.625em 1em; }
   body .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
@@ -5727,19 +5727,8 @@ body .ui-dialog .ui-dialog-titlebar {
 body .ui-dialog .ui-dialog-content {
   padding: 0.625em 1em; }
 body .ui-dialog .ui-dialog-buttonpane, body .ui-dialog .ui-dialog-footer {
-  text-align: right; }
-  body .ui-dialog .ui-dialog-buttonpane .ui-button, body .ui-dialog .ui-dialog-footer .ui-button {
-    background-color: #ffffff;
-    color: #212121;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    width: auto; }
-    body .ui-dialog .ui-dialog-buttonpane .ui-button .fa, body .ui-dialog .ui-dialog-footer .ui-button .fa {
-      color: #757575; }
-    body .ui-dialog .ui-dialog-buttonpane .ui-button:hover, body .ui-dialog .ui-dialog-footer .ui-button:hover {
-      background-color: #e8e8e8;
-      color: #000000; }
+  text-align: right;
+  background-color: #eee; }
 body .ui-dialog .ui-confirm-dialog-severity {
   margin: 0px .75em; }
 body .ui-lightbox.ui-shadow {
@@ -5873,6 +5862,9 @@ body .ui-terminal .ui-terminal-input {
     color: black;
     display: block;
     margin: 0 auto; } }
+.dialog-auto-with {
+  max-width: 80%; }
+
 .ui-g-1,
 .ui-g-2,
 .ui-g-3,

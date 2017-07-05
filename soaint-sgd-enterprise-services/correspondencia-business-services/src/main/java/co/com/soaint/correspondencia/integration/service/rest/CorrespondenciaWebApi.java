@@ -66,6 +66,13 @@ public class CorrespondenciaWebApi {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
+    @PUT
+    @Path("/correspondencia/{nro_radicado}/{ide_ecm}")
+    public void actualizarReferenciaECM(@PathParam("nro_radicado") final String nroRadicado, @PathParam("ide_ecm") final String ideEcm) throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - actualizar referencia ECM");
+        boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
+    }
+
     @GET
     @Path("/correspondencia")
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@QueryParam("fecha_ini") final String fechaIni,
