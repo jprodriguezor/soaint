@@ -41,17 +41,18 @@
   </div>
 
 
-  <!--<p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"-->
-  <!--(onHide)="hideDialog()">-->
-  <!--<app-ticket-radicado id="ticket" [noRadicado]="radicacion?.correspondencia.nroRadicado"></app-ticket-radicado>-->
+  <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideDialog()">
+    <app-ticket-radicado id="ticket" [noRadicado]="radicacion?.correspondencia.nroRadicado"></app-ticket-radicado>
 
-  <!--<p-footer>-->
-  <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
-  <!--<button pButton type="button" [ngClass]="ui-button-primary" [printelement]="'ticket'"  printDirective [inlineStyles]="printStyle" label="Imprimir ticket"></button>-->
-  <!--</div>-->
-  <!--</p-footer>-->
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" [ngClass]="ui-button-primary" [printelement]="'ticket'" printDirective
+                [inlineStyles]="printStyle" label="Imprimir ticket"></button>
+      </div>
+    </p-footer>
 
-  <!--</p-dialog>-->
+  </p-dialog>
 
 </div>
 
