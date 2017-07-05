@@ -1,11 +1,11 @@
 import {ActionTypes as Autocomplete, Actions} from './dependenciaGrupoDTO-actions';
 import {tassign} from 'tassign';
-import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 
 export interface State {
   ids: number[];
-  entities: { [idConst: number]: ConstanteDTO };
+  entities: { [id: number]: OrganigramaDTO };
   selectedId: number;
 }
 
@@ -24,16 +24,15 @@ const initialState: State = {
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
-    case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
       console.log(action.payload);
-      const values = action.payload.constantes;
-      const newValues = values.filter(data => !state.entities[data.ideConst]);
+      const values = action.payload.organigrama;
+      const newValues = values.filter(data => !state.entities[data.id]);
 
-      const newValuesIds = newValues.map(data => data.ideConst);
-      const newValuesEntities = newValues.reduce((entities: { [ideConst: number]: ConstanteDTO }, value: ConstanteDTO) => {
+      const newValuesIds = newValues.map(data => data.id);
+      const newValuesEntities = newValues.reduce((entities: { [id: number]: OrganigramaDTO }, value: OrganigramaDTO) => {
         return Object.assign(entities, {
-          [value.ideConst]: value
+          [value.id]: value
         });
       }, {});
 

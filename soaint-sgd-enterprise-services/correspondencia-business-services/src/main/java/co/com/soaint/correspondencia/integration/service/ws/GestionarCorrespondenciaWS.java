@@ -4,6 +4,7 @@ import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,13 @@ public class GestionarCorrespondenciaWS {
     }
 
     @WebMethod(action = "radicarCorrespondencia", operationName = "radicarCorrespondencia")
-    public ComunicacionOficialDTO radicarCorrespondencia(@WebParam(name = "comunicacionOficial") final ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO radicarCorrespondencia(@WebParam(name = "comunicacion_oficial") final ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         return boundary.radicarCorrespondencia(comunicacionOficialDTO);
+    }
+
+    @WebMethod(action = "registrarObservacionCorrespondencia", operationName = "registrarObservacionCorrespondencia")
+    public void registrarObservacionCorrespondencia(@WebParam(name = "traza_documento") final PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+        boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
 
     @WebMethod(action = "listarCorrespondenciaByNroRadicado", operationName = "listarCorrespondenciaByNroRadicado")
@@ -43,11 +49,17 @@ public class GestionarCorrespondenciaWS {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
-    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado")
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(@WebParam(name = "fecha_ini") final Date fechaIni,
+    @WebMethod(action = "actualizarReferenciaECM", operationName = "actualizarReferenciaECM")
+    public  void actualizarReferenciaECM(@WebParam(name = "nro_radicado") final String nroRadicado, @WebParam(name = "ide_ecm") final String ideEcm) throws BusinessException, SystemException{
+        boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
+    }
+
+    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado")
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@WebParam(name = "fecha_ini") final Date fechaIni,
                                                                                                   @WebParam(name = "fecha_fin") final Date fechaFin,
                                                                                                   @WebParam(name = "cod_dependencia") final String codDependencia,
-                                                                                                  @WebParam(name = "cod_estado") final String codEstado) throws BusinessException, SystemException {
-        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstado(fechaIni, fechaFin, codDependencia, codEstado);
+                                                                                                  @WebParam(name = "cod_estado") final String codEstado,
+                                                                                                  @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
     }
 }

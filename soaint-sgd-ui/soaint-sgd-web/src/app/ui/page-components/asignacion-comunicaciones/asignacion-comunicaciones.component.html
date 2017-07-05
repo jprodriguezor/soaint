@@ -35,7 +35,7 @@
               </div>
               <div class="ui-g-12">
                 <p-dropdown [options]="estadosCorrespondencia" id="estadoCorrespondencia"
-                            [autoWidth]="false"></p-dropdown>
+                            [autoWidth]="false" [(ngModel)]="estadoCorrespondencia"></p-dropdown>
               </div>
             </div>
           </div>
@@ -53,25 +53,36 @@
       </div>
     </div>
   </div>
+  <button pButton type="button" label="Actalizar" style="width: auto; margin-left: 12px; margin-bottom: 10px"
+          (click)="listarComunicaciones()"></button>
   <div class="ui-g-12">
     <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
-                 [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
+                 [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
       <p-header>Listado de comunicaciones</p-header>
-      <p-column field="tipoAnexo.nombre" header="Número de radicado" [sortable]="true"></p-column>
-      <p-column field="descripcion" header="Fecha y hora de radicación" [sortable]="true"></p-column>
-      <p-column field="descripcion" header="Fecha de vencimiento" [sortable]="true"></p-column>
-      <p-column field="descripcion" header="Asunto" [sortable]="true"></p-column>
-      <p-column header="Ver detalles" [style]="{'width':'120px','text-align':'center'}">
-        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-          <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
-                  class="ui-button ui-button-icon ui-button-danger"></button>
+      <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+      <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
+        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
         </ng-template>
       </p-column>
-      <p-column field="descripcion" header="Estado" [sortable]="true"></p-column>
-      <p-column header="Agregar obseravación" [style]="{'width':'120px','text-align':'center'}">
+      <p-column field="fecVenGestion" header="Fecha de vencimiento" [sortable]="true">
+        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+        </ng-template>
+      </p-column>
+      <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
+      <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
+                [style]="{'width':'100px'}"></p-column>
+      <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
         <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-          <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
-                  class="ui-button ui-button-icon ui-button-danger"></button>
+          <button pButton type="button" label="Ver detalles"
+                  style="width: auto;"></button>
+        </ng-template>
+      </p-column>
+      <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
+        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+          <button pButton type="button" label="Agregar observaciones"
+                  style="width: auto;"></button>
         </ng-template>
       </p-column>
     </p-dataTable>

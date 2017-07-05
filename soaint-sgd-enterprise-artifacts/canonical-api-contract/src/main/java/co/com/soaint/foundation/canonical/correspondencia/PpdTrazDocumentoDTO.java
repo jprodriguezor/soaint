@@ -29,7 +29,6 @@ public class PpdTrazDocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigInteger ideTrazDocumento;
-    private Date fecTrazDocumento;
     private String observacion;
     private Long ideFunci;
     private String codEstado;

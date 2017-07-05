@@ -1,17 +1,18 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from '../../../domain/AgentDTO';
-import {DocumentoDTO} from '../../../domain/DocumentoDTO';
-import {AnexoDTO} from '../../../domain/AnexoDTO';
-import {ReferidoDTO} from '../../../domain/ReferidoDTO';
-import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
+import {AgentDTO} from 'app/domain/agentDTO';
+import {DocumentoDTO} from 'app/domain/documentoDTO';
+import {AnexoDTO} from 'app/domain/anexoDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import {ContactoDTO} from '../../../domain/ContactoDTO';
+import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
-import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import * as moment from 'moment';
 
 declare const require: any;
-const printStyles  = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
+const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
 @Component({
   selector: 'app-radicar-comunicaciones',
@@ -37,7 +38,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   barCodeVisible: boolean = false;
 
-  editable: boolean = true;
+  editable = true;
 
   task: any;
 
@@ -73,10 +74,19 @@ export class RadicarComunicacionesComponent implements OnInit {
       this._taskSandBox.completeTask({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
-        idTarea: this.task.idTarea
+        idTarea: this.task.idTarea,
+        parametros: {
+          requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
+          numeroRadicacion: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+        }
       }).subscribe(() => {
         this.barCodeVisible = true;
         this.radicacion = response;
+        this.editable = false;
+        this.radicacion = response;
+        this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
+        this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
+        this.barCodeVisible = true;
         this.editable = false;
       });
     });
@@ -85,7 +95,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   getTipoAgenteExt(): AgentDTO {
     let tipoAgente: AgentDTO = {
       ideAgente: null,
-      codTipoRemite: null,
+      codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos,
       nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
@@ -96,12 +106,12 @@ export class RadicarComunicacionesComponent implements OnInit {
       codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
       codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
       nroDocuIdentidad: null,
-      codSede: null,
-      codDependencia: null,
+      codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
+      codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
       codFuncRemite: null,
       fecAsignacion: this.date.toISOString(),
       ideContacto: null,
-      codTipAgent: 'EXT',
+      codTipAgent: 'REM',
       indOriginal: null
     };
     return tipoAgente;
@@ -128,7 +138,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codFuncRemite: null,
         fecAsignacion: this.date.toISOString(),
         ideContacto: null,
-        codTipAgent: 'INT',
+        codTipAgent: 'DES',
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
@@ -166,8 +176,8 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
       codAsunto: 'CA',
-      nroFolios: this.valueGeneral.numeroFolio,//'Numero Folio',
-      nroAnexos: this.valueGeneral.cantidadAnexos,//'Numero anexos',
+      nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
+      nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
       ideEcm: null,
       codTipoSoporte: null,
@@ -190,11 +200,11 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
       ideInstancia: null,
-      reqDistFisica: this.valueGeneral.reqDistFisica ? "1" : "0",
+      reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
       codFuncRadica: null,
       codSede: null,
       codDependencia: null,
-      reqDigita: this.valueGeneral.reqDigit ? "1" : "0",
+      reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
       codEmpMsj: null,
       nroGuia: null,
       fecVenGestion: null,
@@ -205,6 +215,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   getDatosContactos(): Array<ContactoDTO> {
     let contactos = [];
+    console.log(this.datosRemitente.addresses);
     this.datosRemitente.addresses.forEach(address => {
       contactos.push({
         ideContacto: null,
@@ -213,7 +224,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
         codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: null,
+        direccion: address.direccion,
         celular: null,
         telFijo1: null,
         telFijo2: null,
@@ -228,6 +239,13 @@ export class RadicarComunicacionesComponent implements OnInit {
       });
     });
     return contactos;
+  }
+
+  navigateBackToWorkspace() {
+    console.info(this.datosGenerales.form.valid);
+    console.info(this.datosRemitente.form.valid);
+    console.info(this.datosDestinatario.form.valid);
+    // this._taskSandBox.navigateToWorkspace();
   }
 
 }

@@ -21,7 +21,6 @@ import java.util.Date;
 public class PpdTrazDocumentoControl {
     public PpdTrazDocumento ppdTrazDocumentoTransform(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) {
         return PpdTrazDocumento.newInstance()
-                .fecTrazDocumento(ppdTrazDocumentoDTO.getFecTrazDocumento())
                 .observacion(ppdTrazDocumentoDTO.getObservacion())
                 .ideFunci(ppdTrazDocumentoDTO.getIdeFunci())
                 .codEstado(ppdTrazDocumentoDTO.getCodEstado())

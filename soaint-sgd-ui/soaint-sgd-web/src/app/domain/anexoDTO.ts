@@ -1,5 +1,5 @@
 export interface AnexoDTO {
-  ideAnexo: number,
+  id: number,
   codAnexo: string,
   descripcion: string
 }

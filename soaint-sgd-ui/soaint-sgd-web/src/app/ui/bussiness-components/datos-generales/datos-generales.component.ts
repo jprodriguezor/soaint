@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -11,8 +11,10 @@ import {
   getTipologiaDocumentalArrayData,
   getUnidadTiempoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Message} from 'primeng/primeng';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import 'rxjs/add/operator/single';
+import {getVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 
 @Component({
   selector: 'app-datos-generales',
@@ -27,30 +29,9 @@ import {Message} from 'primeng/primeng';
 export class DatosGeneralesComponent implements OnInit {
 
   form: FormGroup;
-  tipoComunicacionControl: AbstractControl;
-  medioRecepcionControl: AbstractControl;
-  tipologiaDocumentalControl: AbstractControl;
-  unidadTiempoControl: AbstractControl;
-  numeroFolioControl: AbstractControl;
-  tiempoRespuestaControl: AbstractControl;
-  cantidadAnexosControl: AbstractControl;
-  asuntoControl: AbstractControl;
-  tipoAnexosControl: AbstractControl;
-  radicadoReferidoControl: AbstractControl;
-  tipoAnexoDescripcionTipoAnexoControl: AbstractControl;
-  tipoAnexoDescripcionDescripcionControl: AbstractControl;
-  reqDistFisicaControl: AbstractControl;
-  reqDigitControl: AbstractControl;
 
-  @Input()
-  editable: boolean = true;
-
-  @Input()
-  datosRemitente: any;
-
-  @Input()
-  datosDestinatario: any;
-
+  radicadosReferidos: Array<{ nombre: string }> = [];
+  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
 
   tipoComunicacionSuggestions$: Observable<any[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
@@ -58,55 +39,54 @@ export class DatosGeneralesComponent implements OnInit {
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
 
-  radicadosReferidos: Array<{ nombre: string }> = [];
-  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
-  radicadoReferido: { nombre: string } = {nombre: ''};
-  tipoAnexoDescripcion: { tipoAnexo: ConstanteDTO, descripcion: string } = {tipoAnexo: null, descripcion: ''};
+  defaultSelectionMediosRecepcion$: Observable<any>;
 
+  @Input()
+  editable = true;
 
-  msgs: Message[];
-  uploadedFiles: any[] = [];
+  @Input()
+  datosRemitente: any;
+
+  @Input()
+  datosDestinatario: any;
+
+  selectionMediosRecepcion: any;
+
+  @Output()
+  onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
+
+  validations: any = {};
 
 
   constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
-    this.initForm();
   }
 
   initForm() {
-    this.tipoComunicacionControl = new FormControl(null, Validators.required);
-    this.medioRecepcionControl = new FormControl({
-      ideConst: 10,
-      codigo: 'VENTANIL',
-      nombre: 'Ventanilla'
-    }, Validators.required);
-    this.tipologiaDocumentalControl = new FormControl(null, Validators.required);
-    this.unidadTiempoControl = new FormControl(null);
-    this.numeroFolioControl = new FormControl(null, Validators.required);
-    this.tiempoRespuestaControl = new FormControl(null);
-    this.reqDistFisicaControl = new FormControl(null);
-    this.reqDigitControl = new FormControl(null);
-    this.cantidadAnexosControl = new FormControl(null);
-    this.asuntoControl = new FormControl(null, Validators.required);
-    this.tipoAnexosControl = new FormControl(null);
-    this.radicadoReferidoControl = new FormControl(null);
-    this.tipoAnexoDescripcionTipoAnexoControl = new FormControl(null);
-    this.tipoAnexoDescripcionDescripcionControl = new FormControl(null);
+
     this.form = this.formBuilder.group({
-      'tipoComunicacion': this.tipoComunicacionControl,
-      'medioRecepcion': this.medioRecepcionControl,
-      'tipologiaDocumental': this.tipologiaDocumentalControl,
-      'unidadTiempo': this.unidadTiempoControl,
-      'numeroFolio': this.numeroFolioControl,
-      'reqDistFisica': this.reqDistFisicaControl,
-      'reqDigit': this.reqDigitControl,
-      'tiempoRespuesta': this.tiempoRespuestaControl,
-      'cantidadAnexos': this.cantidadAnexosControl,
-      'asunto': this.asuntoControl,
-      'tipoAnexos': this.tipoAnexosControl,
-      'radicadoReferido': this.radicadoReferidoControl,
-      'tipoAnexoDescripcionTipoAnexo': this.tipoAnexoDescripcionTipoAnexoControl,
-      'tipoAnexoDescripcionDescripcion': this.tipoAnexoDescripcionDescripcionControl,
+      'fechaRadicacion': [null],
+      'nroRadicado': [null],
+      'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
+      'medioRecepcion': [{value: 10, disabled: !this.editable}, Validators.required],
+      'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
+      'unidadTiempo': [{value: null, disabled: !this.editable}],
+      'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
+      'reqDistFisica': [{value: null, disabled: !this.editable}],
+      'reqDigit': [{value: null, disabled: !this.editable}],
+      'tiempoRespuesta': [{value: null, disabled: !this.editable}],
+      'cantidadAnexos': [{value: null, disabled: !this.editable}],
+      'asunto': [{value: null, disabled: !this.editable}, Validators.required],
+      'radicadoReferido': [{value: null, disabled: !this.editable}],
+      'tipoAnexos': [{value: null, disabled: !this.editable}],
+      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}],
     });
+  }
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('tipoComunicacion');
+    this.bindToValidationErrorsOf('tipologiaDocumental');
+    this.bindToValidationErrorsOf('numeroFolio');
+    this.bindToValidationErrorsOf('asunto');
   }
 
   ngOnInit(): void {
@@ -116,106 +96,82 @@ export class DatosGeneralesComponent implements OnInit {
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
 
-    this._sandbox.loadDispatch('tipoComunicacion');
+    this._sandbox.loadCommonConstantsDispatch();
+
+    this.initForm();
+
+    this.form.get('tipoComunicacion').valueChanges.subscribe((value) => {
+      this.onSelectTipoComunicacion(value);
+    });
+
+    this.defaultSelectionMediosRecepcion$ = this._store.select(getVentanillaData);
+
+    this.listenForErrors();
   }
 
-
   addRadicadosReferidos() {
-    let radref = [...this.radicadosReferidos];
-    radref.push(this.radicadoReferido);
-    this.radicadosReferidos = radref;
-    this.radicadoReferido = {
-      nombre: ''
-    };
+    const insertVal = [{nombre: this.form.get('radicadoReferido').value}];
+    this.radicadosReferidos = [...insertVal, ...this.radicadosReferidos.filter(value => value.nombre !== this.form.get('radicadoReferido').value)];
+    this.form.get('radicadoReferido').reset();
+  }
+
+  addTipoAnexosDescripcion() {
+    const tipoAnexo = this.form.get('tipoAnexos').value;
+    const descripcion = this.form.get('tipoAnexosDescripcion').value;
+    console.log(tipoAnexo, descripcion);
+    if (!tipoAnexo || !descripcion) {
+      return;
+    }
+    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion}];
+    this.descripcionAnexos = [
+      ...insertVal,
+      ...this.descripcionAnexos.filter(
+        value => value.tipoAnexo.nombre !== tipoAnexo.nombre ||
+        value.descripcion !== descripcion
+      )
+    ];
+    this.form.get('tipoAnexos').reset();
+    this.form.get('tipoAnexosDescripcion').reset();
   }
 
   deleteRadicadoReferido(index) {
-    let radref = [...this.radicadosReferidos];
-    radref.splice(index, 1);
-    this.radicadosReferidos = radref;
-  }
-
-
-  addTipoAnexosDescripcion() {
-    let radref = [...this.descripcionAnexos];
-    console.log(this.tipoAnexoDescripcion);
-    radref.push(this.tipoAnexoDescripcion);
-    this.descripcionAnexos = radref;
-    this.tipoAnexoDescripcion = {
-      tipoAnexo: null, descripcion: ''
-    };
+    const removeVal = [...this.radicadosReferidos];
+    removeVal.splice(index, 1);
+    this.radicadosReferidos = removeVal;
   }
 
   deleteTipoAnexoDescripcion(index) {
-    let radref = [...this.descripcionAnexos];
-    radref.splice(index, 1);
-    this.descripcionAnexos = radref;
+    const removeVal = [...this.descripcionAnexos];
+    removeVal.splice(index, 1);
+    this.descripcionAnexos = removeVal;
   }
 
   onSelectTipoComunicacion(value) {
-    console.info(value);
-    this.datosRemitente.onSelectTipoPersona();
-    this.datosDestinatario.onSelectTipoComunicacion();
+    this.onChangeTipoComunicacion.emit(value);
+    // this.datosRemitente.onSelectTipoPersona();
+    // this.datosDestinatario.onSelectTipoComunicacion();
   }
 
-  onFilterTipoComunicacion($event) {
-    const query = $event.query;
-    this._sandbox.filterDispatch('tipoComunicacion', query);
-  }
-
-  onDropdownClickTipoComunicacion($event) {
-    // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipoComunicacion');
-  }
-
-  onFilterTipoAnexos($event) {
-    const query = $event.query;
-    this._sandbox.filterDispatch('tipoAnexos', query);
-  }
-
-  onDropdownClickTipoAnexos($event) {
-    // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipoAnexos');
-  }
-
-
-  onFilterUnidadTiempo($event) {
-    const query = $event.query;
-    this._sandbox.filterDispatch('unidadTiempo', query);
-  }
-
-  onDropdownClickUnidadTiempo($event) {
-    // this method triggers load of suggestions
-    this._sandbox.loadDispatch('unidadTiempo');
-  }
-
-  onFilterMediosRecepcion($event) {
-    const query = $event.query;
-    this._sandbox.filterDispatch('mediosRecepcion', query);
-  }
-
-  onDropdownClickMediosRecepcion($event) {
-    // this method triggers load of suggestions
-    this._sandbox.loadDispatch('mediosRecepcion');
-  }
-
-  onFilterTipologiaDocumental($event) {
-    const query = $event.query;
-    this._sandbox.filterDispatch('tipologiaDocumental', query);
-  }
-
-  onDropdownClickTipologiaDocumental($event) {
-    // this method triggers load of suggestions
-    this._sandbox.loadDispatch('tipologiaDocumental');
-  }
-
-  onUpload(event) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
+  listenForBlurEvents(control: string) {
+    const ac = this.form.get(control);
+    if (ac.touched && ac.invalid) {
+      const error_keys = Object.keys(ac.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
+  }
 
-    this.msgs = [];
-    this.msgs.push({severity: 'info', summary: 'File Uploaded', detail: ''});
+  bindToValidationErrorsOf(control: string) {
+    const ac = this.form.get(control);
+    ac.valueChanges.subscribe(value => {
+      if ((ac.touched || ac.dirty) && ac.errors) {
+        const error_keys = Object.keys(ac.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+        delete this.validations[control];
+      }
+    });
   }
 
 

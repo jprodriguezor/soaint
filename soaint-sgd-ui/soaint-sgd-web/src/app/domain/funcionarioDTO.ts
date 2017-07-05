@@ -1,10 +1,10 @@
-import {OrganigramaDTO} from './OrganigramaDTO';
+import {OrganigramaDTO} from './organigramaDTO';
 
 export interface FuncionarioDTO {
-  ideFunci: number;
+  id: number;
   codTipDocIdent: string;
   nroIdentificacion: string;
-  nomFuncionario: string;
+  nombre: string;
   valApellido1: string;
   valApellido2: string;
   codCargo: string;

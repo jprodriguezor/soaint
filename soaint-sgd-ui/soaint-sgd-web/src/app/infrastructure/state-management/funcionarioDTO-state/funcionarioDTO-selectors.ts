@@ -1,4 +1,4 @@
-import {State} from './FuncionarioDTO-reducers';
+import {State} from './funcionarioDTO-reducers';
 import 'rxjs/add/operator/reduce';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';

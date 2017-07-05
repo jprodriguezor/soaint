@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +41,15 @@ public class GestionarTrazaDocumento {
     @Async
     public void generarTrazaDocumento(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
         PpdTrazDocumento ppdTrazDocumento = ppdTrazDocumentoControl.ppdTrazDocumentoTransform(ppdTrazDocumentoDTO);
+
         BigInteger idePpdDocumento = em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByIdeDocumento", BigInteger.class)
                 .setParameter("IDE_DOCUMENTO", ppdTrazDocumentoDTO.getIdeDocumento())
-                .getSingleResult();
+                .getResultList()
+                .get(0);
         ppdTrazDocumento.setPpdDocumento(PpdDocumento.newInstance()
                 .idePpdDocumento(idePpdDocumento)
                 .build());
+        ppdTrazDocumento.setFecTrazDocumento(new Date());
         em.persist(ppdTrazDocumento);
         em.flush();
     }
