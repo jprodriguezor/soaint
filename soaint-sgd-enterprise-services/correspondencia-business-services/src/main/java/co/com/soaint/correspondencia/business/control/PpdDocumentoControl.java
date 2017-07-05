@@ -33,6 +33,12 @@ public class PpdDocumentoControl {
                 .getResultList();
     }
 
+    public List<BigInteger> consultarPpdDocumentosByNroRadicado(String nroRadicado){
+        return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByNroRadicado", BigInteger.class)
+                .setParameter("NRO_RADICADO", nroRadicado)
+                .getResultList();
+    }
+
     public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO)throws BusinessException, SystemException{
         Date fecha = new Date();
         return PpdDocumento.newInstance()
