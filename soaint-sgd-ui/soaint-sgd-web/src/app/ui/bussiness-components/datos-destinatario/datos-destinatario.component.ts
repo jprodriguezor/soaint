@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/operator/filter';
 import 'rxjs/add/operator/zip';
-import 'rxjs/add/observable/forkJoin';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -51,10 +50,15 @@ export class DatosDestinatarioComponent implements OnInit {
 
     this.initForm();
 
+    const grupoControl = this.form.get('dependenciaGrupo');
+    grupoControl.disable();
     this.form.get('sedeAdministrativa').valueChanges.subscribe(value => {
       if (this.editable && value) {
+        grupoControl.enable();
         this.form.get('dependenciaGrupo').reset();
         this._store.dispatch(new DependenciaGrupoLoadAction({codigo: value.id}));
+      } else {
+        grupoControl.disable();
       }
     });
 
@@ -70,8 +74,6 @@ export class DatosDestinatarioComponent implements OnInit {
       .subscribe(value => {
         this.canInsert = true
       });
-
-
   }
 
   initForm() {
@@ -105,7 +107,6 @@ export class DatosDestinatarioComponent implements OnInit {
     tipo.reset();
     sede.reset();
     grupo.reset();
-
   }
 
   deleteAgentesDestinatario(index) {

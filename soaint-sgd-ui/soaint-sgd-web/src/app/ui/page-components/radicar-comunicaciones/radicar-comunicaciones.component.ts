@@ -214,6 +214,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   getDatosContactos(): Array<ContactoDTO> {
     let contactos = [];
+    console.log(this.datosRemitente.addresses);
     this.datosRemitente.addresses.forEach(address => {
       contactos.push({
         ideContacto: null,
@@ -222,7 +223,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
         codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: null,
+        direccion: address.direccion,
         celular: null,
         telFijo1: null,
         telFijo2: null,
