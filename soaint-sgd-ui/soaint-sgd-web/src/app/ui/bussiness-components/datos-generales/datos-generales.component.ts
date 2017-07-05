@@ -64,8 +64,8 @@ export class DatosGeneralesComponent implements OnInit {
   initForm() {
 
     this.form = this.formBuilder.group({
-      'fechaRadicacion': [{value: null, disabled: true}],
-      'nroRadicado': [{value: null, disabled: true}],
+      'fechaRadicacion': [null],
+      'nroRadicado': [null],
       'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
       'medioRecepcion': [{value: 10, disabled: !this.editable}, Validators.required],
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
