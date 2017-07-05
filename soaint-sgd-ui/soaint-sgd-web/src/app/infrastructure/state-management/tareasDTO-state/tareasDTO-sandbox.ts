@@ -7,6 +7,7 @@ import * as actions from './tareasDTO-actions';
 import {go} from '@ngrx/router-store';
 import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
+import {isArray} from 'rxjs/util/isArray';
 
 
 @Injectable()
@@ -29,7 +30,16 @@ export class Sandbox {
   }
 
   startTask(payload: any) {
-    return this._listSelectionService.post(environment.tasksStartProcess, payload);
+    let overPayload = payload;
+    if (isArray(payload) && payload.length > 0) {
+      const task = payload[0];
+      overPayload = {
+        'idProceso': task.idProceso,
+        'idDespliegue': task.idDespliegue,
+        'idTarea': task.idTarea
+      }
+    }
+    return this._listSelectionService.post(environment.tasksStartProcess, overPayload);
   }
 
   completeTask(payload: any) {
