@@ -12,7 +12,7 @@
         <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="tipoVia">Tipo Via</label>
+              <label for="tipoVia"><span class="text-danger">*</span> Tipo Via</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="tipoViaSuggestions$ | async | dropdownItem"
@@ -31,7 +31,7 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal">
-              <label for="noViaPrincipal">No. Via Principal</label>
+              <label for="noViaPrincipal"><span class="text-danger">*</span> No. Via Principal</label>
               </span>
             </div>
           </div>
@@ -96,7 +96,7 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="noVia" formControlName="noVia">
-              <label for="noVia">No. Via</label>
+              <label for="noVia"><span class="text-danger">*</span> No. Via</label>
               </span>
             </div>
           </div>
@@ -125,7 +125,7 @@
             <div class="ui-g-12">
             <span class="md-inputfield">
             <input type="text" pInputText id="placa" formControlName="placa">
-            <label for="placa"># Placa</label>
+            <label for="placa"><span class="text-danger">*</span> # Placa</label>
             </span>
             </div>
           </div>
@@ -149,6 +149,35 @@
           </div>
         </div>
 
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="orientacion">Tipo complemento</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="orientacionSuggestions$ | async | dropdownItem"
+                          id="complementoTipo"
+                          placeholder="Seleccione"
+                          formControlName="complementoTipo"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+            <span class="md-inputfield">
+            <input type="text" pInputText id="complementoAdicional" formControlName="complementoAdicional">
+            <label for="placa">Complemento adicional</label>
+            </span>
+            </div>
+          </div>
+        </div>
+
         <div class="ui-g-12" [hidden]="direcciones.length === 0">
           <h4 style="margin: 8px 0 0 15px">Direcciones Agregadas</h4>
           <div class="ui-g-12" style="max-height: 80px; overflow: scroll; margin: 5px 0 0 15px">
@@ -167,7 +196,7 @@
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button type="button" class="ui-button-primary" (click)="addDireccion()" pButton label="Agregar"
-        [disabled]="!this.form.get('tipoVia').value || !this.form.get('noViaPrincipal').value || !this.form.get('noVia').value"
+        [disabled]="form.invalid"
       ></button>
       <button type="button" class="ui-button-success" (click)="completeRegistration()" pButton label="Aceptar"></button>
     </div>
