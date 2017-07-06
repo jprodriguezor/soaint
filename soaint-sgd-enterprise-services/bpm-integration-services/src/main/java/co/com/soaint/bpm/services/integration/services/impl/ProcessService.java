@@ -69,6 +69,7 @@ public class ProcessService implements IProcessServices {
 
     private ProcessService() throws MalformedURLException {;
     }
+
     @Override
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
@@ -103,6 +104,7 @@ public class ProcessService implements IProcessServices {
         }
         return listaProcesos;
     }
+
     @Override
     public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
@@ -183,6 +185,22 @@ public class ProcessService implements IProcessServices {
         return respuesta;
     }
 
+    @Override
+    public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
+        ksession = obtenerEngine(entrada).getKieSession();
+        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
+
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .codigoProceso(String.valueOf(processInstance.getId()))
+                .nombreProceso(processInstance.getProcessName())
+                .estado(String.valueOf(processInstance.getState()))
+                .idDespliegue(entrada.getIdDespliegue())
+                .build();
+
+        ksession.signalEvent("estadoDigitalizacion", respuesta, processInstance.getId());
+
+        return respuesta;
+    }
 
     @Override
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
@@ -217,14 +235,14 @@ public class ProcessService implements IProcessServices {
                 .estado(String.valueOf(EstadosEnum.COMPLETADO))
                 .nombre(task.getName())
                 .idProceso(entrada.getIdProceso())
-                .idDespliegue(entrada.getIdDespliegue())
-                .idParent(task.getTaskData().getParentId())
-                .idResponsable(task.getTaskData().getActualOwner().getId())
-                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-                .tiempoExpiracion(task.getTaskData().getExpirationTime())
-                .tiempoActivacion(task.getTaskData().getActivationTime())
-                .fechaCreada(task.getTaskData().getCreatedOn())
-                .prioridad(task.getPriority())
+//                .idDespliegue(entrada.getIdDespliegue())
+//                .idParent(task.getTaskData().getParentId())
+//                .idResponsable(task.getTaskData().getActualOwner().getId())
+//                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
+//                .tiempoExpiracion(task.getTaskData().getExpirationTime())
+//                .tiempoActivacion(task.getTaskData().getActivationTime())
+//                .fechaCreada(task.getTaskData().getCreatedOn())
+//                .prioridad(task.getPriority())
                 .build();
 
         return respuestaTarea;
@@ -263,7 +281,6 @@ public class ProcessService implements IProcessServices {
             return respuestaTarea;
         }
     }
-
 
     @Override
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws MalformedURLException {
@@ -320,6 +337,7 @@ public class ProcessService implements IProcessServices {
         }
         return tareas;
     }
+
     @Override
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -346,6 +364,7 @@ public class ProcessService implements IProcessServices {
         }
         return tareas;
     }
+
     @Override
     public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
