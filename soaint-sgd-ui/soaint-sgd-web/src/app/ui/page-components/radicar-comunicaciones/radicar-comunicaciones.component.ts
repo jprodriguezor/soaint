@@ -71,6 +71,15 @@ export class RadicarComunicacionesComponent implements OnInit {
       datosContactoList: this.getDatosContactos()
     };
     this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
+      this.barCodeVisible = true;
+      this.radicacion = response;
+      this.editable = false;
+      this.radicacion = response;
+      this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
+      this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
+      this.barCodeVisible = true;
+      this.editable = false;
+
       this._taskSandBox.completeTask({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
@@ -79,16 +88,7 @@ export class RadicarComunicacionesComponent implements OnInit {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
           numeroRadicacion: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
         }
-      }).subscribe(() => {
-        this.barCodeVisible = true;
-        this.radicacion = response;
-        this.editable = false;
-        this.radicacion = response;
-        this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
-        this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
-        this.barCodeVisible = true;
-        this.editable = false;
-      });
+      }).subscribe();
     });
   }
 
