@@ -6,6 +6,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
+import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
 
 /**
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
@@ -16,7 +17,7 @@ public class FactoriaContent {
 
         if (tipo.equals("alfresco")) {
 
-            return new ContentControlAlfresco();
+            return new ContentControlAlfresco ();
         }
         else {
             return new ContentControlAlfresco();

@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class MessageUtil {
 
     private static Logger LOGGER = LogManager.getLogger(MessageUtil.class.getName());
-    private ResourceBundle bundle;
+    private static ResourceBundle bundle;
     private static MessageUtil INSTANCE;
 
     // [constructor] ----------------------------
@@ -43,7 +43,7 @@ public class MessageUtil {
 
     // ----------------------------
 
-    public String getMessage(String key) {
+    public static String getMessage(String key) {
         return bundle.getString(key);
     }
 
