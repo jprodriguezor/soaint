@@ -34,7 +34,7 @@ public abstract class ContentControl  {
 
     public abstract Carpeta chequearCarpetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws SystemException, IOException ;
 
-    public abstract Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental) throws SystemException ;
+    public abstract Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException ;
 
     public abstract String  formatearNombre(String[] informationArray, String formatoConfig) throws SystemException;
 
