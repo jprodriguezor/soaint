@@ -47,8 +47,8 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
             Utilities utils = new Utilities();
             Conexion conexion=new Conexion ();
-        for (EstructuraTrdDTO estructuraTrdVO : structure) {
-                utils.ordenarListaOrganigrama(estructuraTrdVO.getOrganigramaItemList());
+        for (EstructuraTrdDTO EstructuraTrdDTO : structure) {
+                utils.ordenarListaOrganigrama(EstructuraTrdDTO.getOrganigramaItemList());
             }
 
             try {
