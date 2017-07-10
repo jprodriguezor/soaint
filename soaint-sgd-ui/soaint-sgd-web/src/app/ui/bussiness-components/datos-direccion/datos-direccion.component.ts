@@ -4,7 +4,7 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validator, Validators} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
@@ -21,6 +21,7 @@ export class DatosDireccionComponent implements OnInit {
   form: FormGroup;
   display = false;
   canAgregate = false;
+  editable = false;
 
   prefijoCuadranteSuggestions$: Observable<ConstanteDTO[]>;
   tipoViaSuggestions$: Observable<ConstanteDTO[]>;
@@ -67,6 +68,8 @@ export class DatosDireccionComponent implements OnInit {
     const prefijoCuadrante_se = this.form.get('prefijoCuadrante_se');
     const placa = this.form.get('placa');
     const orientacion_se = this.form.get('orientacion_se');
+    const tipoComplemento = this.form.get('complementoTipo');
+    const complementoAdicional = this.form.get('complementoAdicional');
 
     const value = {};
 
@@ -113,6 +116,14 @@ export class DatosDireccionComponent implements OnInit {
       direccion += ' ' + orientacion_se.value.nombre;
       orientacion_se.reset();
     }
+    if (tipoComplemento.value) {
+      direccion += ' ' + tipoComplemento.value.nombre;
+      tipoComplemento.reset();
+    }
+    if (complementoAdicional.value) {
+      direccion += ' ' + complementoAdicional.value;
+      complementoAdicional.reset();
+    }
     value['direccion'] = direccion;
     const insert = [value];
     this.direcciones = [...insert, ...this.direcciones];
@@ -127,15 +138,17 @@ export class DatosDireccionComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      'tipoVia': [null],
-      'noViaPrincipal': [null],
+      'tipoVia': [{value: null, editable: !this.editable}, Validators.required],
+      'noViaPrincipal': [{value: null, editable: !this.editable}, Validators.required],
       'prefijoCuadrante': [null],
       'bis': [null],
       'orientacion': [null],
-      'noVia': [null],
+      'noVia': [{value: null, editable: !this.editable}, Validators.required],
       'prefijoCuadrante_se': [null],
-      'placa': [null],
+      'placa': [{value: null, editable: !this.editable}, Validators.required],
       'orientacion_se': [null],
+      'complementoTipo': [null],
+      'complementoAdicional': [null],
     });
   }
 
