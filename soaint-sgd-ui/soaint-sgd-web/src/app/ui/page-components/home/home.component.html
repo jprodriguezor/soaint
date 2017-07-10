@@ -1,142 +1,142 @@
-<app-ticket-radicado></app-ticket-radicado>
-<!--<div class="ui-g dashboard">-->
-  <!--&lt;!&ndash;<div class="ui-g-12">&ndash;&gt;-->
-  <!--&lt;!&ndash;<app-pie-chart></app-pie-chart>&ndash;&gt;-->
-  <!--&lt;!&ndash;</div>&ndash;&gt;-->
-  <!--&lt;!&ndash;<div class="ui-g-12">&ndash;&gt;-->
 
-  <!--&lt;!&ndash;</div>&ndash;&gt;-->
+<div class="ui-g dashboard">
   <!--<div class="ui-g-12">-->
-    <!--<app-gauge-chart style="display: flex; justify-content: center; height: 300px" [data]="(tasksStadistics$ | async)"></app-gauge-chart>-->
+  <!--<app-pie-chart></app-pie-chart>-->
   <!--</div>-->
+  <!--<div class="ui-g-12">-->
 
-
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-3">-->
-    <!--<div class="ui-g card colorbox colorbox-2">-->
-      <!--<div class="ui-g-4">-->
-        <!--<i class="fa ui-icon-assignment-ind"></i>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-        <!--<span class="colorbox-name">Reservadas</span>-->
-        <!--<span class="colorbox-count">{{ (reservedTasks$ | async).length }}</span>-->
-      <!--</div>-->
-    <!--</div>-->
   <!--</div>-->
-
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-3">-->
-    <!--<div class="ui-g card colorbox colorbox-3">-->
-      <!--<div class="ui-g-4">-->
-        <!--<i class="fa ui-icon-assignment"></i>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-        <!--<span class="colorbox-name">En proceso</span>-->
-        <!--<span class="colorbox-count">{{ (inProgressTasks$ | async).length }}</span>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-3">-->
-    <!--<div class="ui-g card colorbox colorbox-1">-->
-      <!--<div class="ui-g-4">-->
-        <!--<i class="fa ui-icon-assignment-turned-in"></i>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-        <!--<span class="colorbox-name">Completadas</span>-->
-        <!--<span class="colorbox-count">{{ (completedTasks$ | async).length }}</span>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-3">-->
-    <!--<div class="ui-g card colorbox colorbox-4">-->
-      <!--<div class="ui-g-4">-->
-        <!--<i class="fa ui-icon-assignment-late"></i>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-        <!--<span class="colorbox-name">Canceladas</span>-->
-        <!--<span class="colorbox-count">{{ (canceledTasks$ | async).length }}</span>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="ui-g-12 ui-md-4">-->
-    <!--<div class="card overview">-->
-      <!--<div class="overview-content clearfix">-->
-        <!--<span class="overview-title">Sales</span>-->
-        <!--<span class="overview-badge">+%90</span>-->
-        <!--<span class="overview-detail">$22,650 / week</span>-->
-      <!--</div>-->
-      <!--<div class="overview-footer">-->
-        <!--<img src="assets/layout/images/dashboard/sales.svg" style="width: 100%"/>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<div class="ui-g-12 ui-md-4">-->
-    <!--<div class="card overview">-->
-      <!--<div class="overview-content clearfix">-->
-        <!--<span class="overview-title">Views</span>-->
-        <!--<span class="overview-badge">+%60</span>-->
-        <!--<span class="overview-detail">6,520 / day</span>-->
-      <!--</div>-->
-      <!--<div class="overview-footer">-->
-        <!--<img src="assets/layout/images/dashboard/views.svg" style="width: 100%"/>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<div class="ui-g-12 ui-md-4">-->
-    <!--<div class="card overview">-->
-      <!--<div class="overview-content clearfix">-->
-        <!--<span class="overview-title">Users</span>-->
-        <!--<span class="overview-badge">+%45</span>-->
-        <!--<span class="overview-detail">5,200 / day</span>-->
-      <!--</div>-->
-      <!--<div class="overview-footer">-->
-        <!--<img src="assets/layout/images/dashboard/progress.svg" style="width: 100%"/>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
+  <div class="ui-g-12">
+    <app-gauge-chart style="display: flex; justify-content: center; height: 300px" [data]="(tasksStadistics$ | async)"></app-gauge-chart>
+  </div>
 
 
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
-    <!--<p-panel header="Tareas reservadas">-->
-      <!--<ul>-->
+  <div class="ui-g-12 ui-md-6 ui-lg-3">
+    <div class="ui-g card colorbox colorbox-2">
+      <div class="ui-g-4">
+        <i class="fa ui-icon-assignment-ind"></i>
+      </div>
+      <div class="ui-g-8">
+        <span class="colorbox-name">Reservadas</span>
+        <span class="colorbox-count">{{ (reservedTasks$ | async).length }}</span>
+      </div>
+    </div>
+  </div>
 
-        <!--<li *ngFor="let task of (reservedTasks$ | async)">-->
-          <!--<span class="task-name">{{ task.nombre }}</span>-->
-          <!--<i class="fa ui-icon-assignment-ind"></i>-->
-        <!--</li>-->
+  <div class="ui-g-12 ui-md-6 ui-lg-3">
+    <div class="ui-g card colorbox colorbox-3">
+      <div class="ui-g-4">
+        <i class="fa ui-icon-assignment"></i>
+      </div>
+      <div class="ui-g-8">
+        <span class="colorbox-name">En proceso</span>
+        <span class="colorbox-count">{{ (inProgressTasks$ | async).length }}</span>
+      </div>
+    </div>
+  </div>
 
-      <!--</ul>-->
-    <!--</p-panel>-->
-  <!--</div>-->
+  <div class="ui-g-12 ui-md-6 ui-lg-3">
+    <div class="ui-g card colorbox colorbox-1">
+      <div class="ui-g-4">
+        <i class="fa ui-icon-assignment-turned-in"></i>
+      </div>
+      <div class="ui-g-8">
+        <span class="colorbox-name">Completadas</span>
+        <span class="colorbox-count">{{ (completedTasks$ | async).length }}</span>
+      </div>
+    </div>
+  </div>
 
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
-    <!--<p-panel header="Tareas en progreso">-->
-      <!--<ul>-->
+  <div class="ui-g-12 ui-md-6 ui-lg-3">
+    <div class="ui-g card colorbox colorbox-4">
+      <div class="ui-g-4">
+        <i class="fa ui-icon-assignment-late"></i>
+      </div>
+      <div class="ui-g-8">
+        <span class="colorbox-name">Canceladas</span>
+        <span class="colorbox-count">{{ (canceledTasks$ | async).length }}</span>
+      </div>
+    </div>
+  </div>
 
-        <!--<li *ngFor="let task of (inProgressTasks$ | async)">-->
-          <!--<span class="task-name">{{ task.nombre }}</span>-->
-          <!--<i class="fa ui-icon-assignment"></i>-->
-        <!--</li>-->
+  <div class="ui-g-12 ui-md-4">
+    <div class="card overview">
+      <div class="overview-content clearfix">
+        <span class="overview-title">Sales</span>
+        <span class="overview-badge">+%90</span>
+        <span class="overview-detail">$22,650 / week</span>
+      </div>
+      <div class="overview-footer">
+        <img src="assets/layout/images/dashboard/sales.svg" style="width: 100%"/>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-4">
+    <div class="card overview">
+      <div class="overview-content clearfix">
+        <span class="overview-title">Views</span>
+        <span class="overview-badge">+%60</span>
+        <span class="overview-detail">6,520 / day</span>
+      </div>
+      <div class="overview-footer">
+        <img src="assets/layout/images/dashboard/views.svg" style="width: 100%"/>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-4">
+    <div class="card overview">
+      <div class="overview-content clearfix">
+        <span class="overview-title">Users</span>
+        <span class="overview-badge">+%45</span>
+        <span class="overview-detail">5,200 / day</span>
+      </div>
+      <div class="overview-footer">
+        <img src="assets/layout/images/dashboard/progress.svg" style="width: 100%"/>
+      </div>
+    </div>
+  </div>
 
-      <!--</ul>-->
-    <!--</p-panel>-->
-  <!--</div>-->
 
-  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
-    <!--<p-panel header="Tareas completadas">-->
-      <!--<ul>-->
+  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
+    <p-panel header="Tareas reservadas">
+      <ul>
 
-        <!--<li *ngFor="let task of (completedTasks$ | async)">-->
-          <!--<span class="task-name">{{ task.nombre }}</span>-->
-          <!--<i class="fa ui-icon-assignment-turned-in"></i>-->
-        <!--</li>-->
+        <li *ngFor="let task of (reservedTasks$ | async)">
+          <span class="task-name">{{ task.nombre }}</span>
+          <i class="fa ui-icon-assignment-ind"></i>
+        </li>
 
-      <!--</ul>-->
-    <!--</p-panel>-->
-  <!--</div>-->
+      </ul>
+    </p-panel>
+  </div>
+
+  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
+    <p-panel header="Tareas en progreso">
+      <ul>
+
+        <li *ngFor="let task of (inProgressTasks$ | async)">
+          <span class="task-name">{{ task.nombre }}</span>
+          <i class="fa ui-icon-assignment"></i>
+        </li>
+
+      </ul>
+    </p-panel>
+  </div>
+
+  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
+    <p-panel header="Tareas completadas">
+      <ul>
+
+        <li *ngFor="let task of (completedTasks$ | async)">
+          <span class="task-name">{{ task.nombre }}</span>
+          <i class="fa ui-icon-assignment-turned-in"></i>
+        </li>
+
+      </ul>
+    </p-panel>
+  </div>
 
 
-<!--</div>-->
+</div>
 
 

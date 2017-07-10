@@ -1,4 +1,4 @@
-<div class="ui-g ui-fluid radicar-comunicaciones">
+<div class="ui-g ui-fluid">
 
   <div class="ui-g-12">
     <h2 class="text-left page-title">COMUNICACIONES OFICIALES</h2>
@@ -25,7 +25,7 @@
   </div>
   <div class="ui-g-12">
     <p-tabView>
-      <p-tabPanel header="Datos generales" leftIcon="formStatusIcon">
+      <p-tabPanel header="Datos generales" leftIcon="ui-icon-edit">
         <app-datos-generales #datosGenerales [editable]="editable" [datosRemitente]="datosRemitente"
                              (onChangeTipoComunicacion)="datosRemitente.setTipoComunicacion($event)"></app-datos-generales>
       </p-tabPanel>

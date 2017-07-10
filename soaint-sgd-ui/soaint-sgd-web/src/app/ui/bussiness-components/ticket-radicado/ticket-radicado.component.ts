@@ -16,13 +16,7 @@ export class TicketRadicadoComponent implements OnInit {
 
   @Input() fecha: Date = new Date();
 
-  @Input() remitente: string = 'No Hay Remitente';
-
-  @Input() remitenteSede: string = 'CentralDT';
-
-  @Input() remitenteGrupo: string = 'GRUPO DE ADMINISTRACION DOCUMENTAL';
-
-  @Input() destinatario: string = 'No Hay Destinatario';
+  @Input() remitente: string = 'JHOSEP MORALES';
 
   @Input() destinatarioSede: string = 'CentralDT';
 

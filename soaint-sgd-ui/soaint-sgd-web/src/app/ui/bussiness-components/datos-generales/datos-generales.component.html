@@ -201,7 +201,7 @@
                 <div class="ui-media-mobile-row">
                   <span style="float: right">
                     <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="addRadicadosReferidos()" *ngIf="editable === true" [disabled]="!form.get('radicadoReferido').value"></button>
+                            (click)="addRadicadosReferidos()" *ngIf="editable === true"></button>
                   </span>
                   <span class="md-inputfield" style="float: right; margin: 10px 0 0 0; width: 200px"
                         *ngIf="editable === true">
@@ -289,7 +289,6 @@
         <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
                 style="width: auto; margin-left: 12px; margin-bottom: 10px"
                 *ngIf="editable === true"
-                [disabled]="!form.get('tipoAnexos').value || !form.get('tipoAnexosDescripcion').value"
         ></button>
       </div>
 

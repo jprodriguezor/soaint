@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {AgentDTO} from 'app/domain/agentDTO';
 import {DocumentoDTO} from 'app/domain/documentoDTO';
@@ -16,9 +16,7 @@ const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-
 
 @Component({
   selector: 'app-radicar-comunicaciones',
-  templateUrl: './radicar-comunicaciones.component.html',
-  styleUrls: ['./radicar-comunicaciones.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  templateUrl: './radicar-comunicaciones.component.html'
 })
 export class RadicarComunicacionesComponent implements OnInit {
 
@@ -27,8 +25,6 @@ export class RadicarComunicacionesComponent implements OnInit {
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
-
-  formStatusIcon = 'assignment';
 
   valueRemitente: any;
 
@@ -40,7 +36,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   date: Date = new Date();
 
-  barCodeVisible = false;
+  barCodeVisible: boolean = false;
 
   editable = true;
 
@@ -63,7 +59,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
-    const agentesList = [];
+    let agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
     agentesList.push(...this.getAgentesInt());
     this.radicacion = {
@@ -97,7 +93,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getTipoAgenteExt(): AgentDTO {
-    const tipoAgente: AgentDTO = {
+    let tipoAgente: AgentDTO = {
       ideAgente: null,
       codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
@@ -122,9 +118,9 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getAgentesInt(): Array<AgentDTO> {
-    const agentes = [];
+    let agentes = [];
     this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
-      const tipoAgente: AgentDTO = {
+      let tipoAgente: AgentDTO = {
         ideAgente: null,
         codTipoRemite: null,
         codTipoPers: null,
@@ -152,7 +148,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getListaAnexos(): Array<AnexoDTO> {
-    const anexoList = [];
+    let anexoList = [];
     this.datosGenerales.descripcionAnexos.forEach((anexo) => {
       anexoList.push({
         ideAnexo: null,
@@ -164,7 +160,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getListaReferidos(): Array<ReferidoDTO> {
-    const referidosList = [];
+    let referidosList = [];
     this.datosGenerales.radicadosReferidos.forEach(referido => {
       referidosList.push({
         ideReferido: null,
@@ -175,7 +171,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getDocumento(): DocumentoDTO {
-    const documento: DocumentoDTO = {
+    let documento: DocumentoDTO = {
       idePpdDocumento: null,
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
@@ -192,7 +188,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
 
   getCorrespondencia(): CorrespondenciaDTO {
-    const correspondenciaDto: CorrespondenciaDTO = {
+    let correspondenciaDto: CorrespondenciaDTO = {
       ideDocumento: null,
       descripcion: this.valueGeneral.asunto,
       tiempoRespuesta: this.valueGeneral.tiempoRespuesta,
@@ -218,7 +214,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getDatosContactos(): Array<ContactoDTO> {
-    const contactos = [];
+    let contactos = [];
     console.log(this.datosRemitente.addresses);
     this.datosRemitente.addresses.forEach(address => {
       contactos.push({
@@ -250,14 +246,6 @@ export class RadicarComunicacionesComponent implements OnInit {
     console.info(this.datosRemitente.form.valid);
     console.info(this.datosDestinatario.form.valid);
     // this._taskSandBox.navigateToWorkspace();
-  }
-
-  getFormStatusIcon(form) {
-    form.statusChanges.subscribe(value => {
-      if (value !== 'VALID') {
-
-      }
-    })
   }
 
 }

@@ -6,5 +6,3 @@ target/
 *.classpath
 *.springBeans
 !pom.xml
-.scannerwork/
-sonar-project.properties
