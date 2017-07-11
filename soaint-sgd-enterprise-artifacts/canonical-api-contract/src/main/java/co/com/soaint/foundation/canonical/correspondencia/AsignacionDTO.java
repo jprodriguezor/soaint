@@ -28,6 +28,7 @@ public class AsignacionDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private DctAsignacionDTO dctAsignacion;
     private DctAsigUltimoDTO dctAsigUltimo;
-    BigInteger ideAgente;
-    BigInteger ideDocumento;
+    private BigInteger ideAgente;
+    private BigInteger ideDocumento;
+    private String nroRadicado;
 }

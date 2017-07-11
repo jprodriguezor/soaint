@@ -27,7 +27,11 @@ import java.util.List;
 @Entity
 @Table(name = "DCT_ASIGNACION")
 @NamedQueries({
-    @NamedQuery(name = "DctAsignacion.findAll", query = "SELECT d FROM DctAsignacion d")})
+    @NamedQuery(name = "DctAsignacion.findAll", query = "SELECT d FROM DctAsignacion d"),
+        @NamedQuery(name = "DctAsignacion.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DctAsignacionDTO " +
+                "(d.ideAsignacion, d.fecAsignacion, d.ideFunci, d.codDependencia, d.codTipAsignacion, d.observaciones, d.codTipCausal, d.codTipProceso)" +
+                "FROM DctAsignacion d " +
+                "WHERE d.ideAsignacion = :IDE_ASIGNACION")})
 @javax.persistence.TableGenerator(name = "DCT_ASIGNACION_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIGNACION_SEQ", allocationSize = 1)
 public class DctAsignacion implements Serializable {
