@@ -31,7 +31,16 @@ import javax.persistence.*;
                 "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.corAgente c " +
-                "WHERE c.ideAgente = :IDE_AGENTE ")})
+                "WHERE c.ideAgente = :IDE_AGENTE "),
+        @NamedQuery(name = "DctAsigUltimo.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
+                "(d.ideAsigUltimo, d.numRedirecciones, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
+                "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
+                "FROM DctAsigUltimo d " +
+                "INNER JOIN d.dctAsignacion a " +
+                "WHERE a.ideAsignacion = :IDE_ASIGNACION "),
+        @NamedQuery(name = "DctAsigUltimo.updateIdInstancia", query = "UPDATE DctAsigUltimo d " +
+                "SET d.idInstancia = :ID_INSTANCIA " +
+                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO")})
 @javax.persistence.TableGenerator(name = "DCT_ASIG_ULTIMO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIG_ULTIMO_SEQ", allocationSize = 1)
 public class DctAsigUltimo implements Serializable {

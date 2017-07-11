@@ -28,4 +28,9 @@ public class GestionarAsignacionWS {
     public void asignarCorrespondencia(@WebParam(name = "asignacion")final AsignacionDTO asignacionDTO)throws BusinessException, SystemException{
         boundary.asignarCorrespondencia(asignacionDTO);
     }
+
+    @WebMethod(action = "actualizarIdInstancia", operationName = "actualizarIdInstancia")
+    public void actualizarIdInstancia(@WebParam(name = "ide_asignacion")final Long ideAsignacion, @WebParam(name = "id_instancia")final String idInstancia)throws BusinessException, SystemException{
+        boundary.actualizarIdInstancia(ideAsignacion, idInstancia);
+    }
 }

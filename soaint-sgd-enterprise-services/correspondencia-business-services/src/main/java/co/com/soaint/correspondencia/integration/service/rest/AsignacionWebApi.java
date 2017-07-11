@@ -9,10 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,5 +38,12 @@ public class AsignacionWebApi {
     public void asignarCorrespondencia(AsignacionDTO asignacionDTO)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - asignar correspondencia");
         boundary.asignarCorrespondencia(asignacionDTO);
+    }
+
+    @PUT
+    @Path("/asignacion/{ide_asignacion}/{id_instancia}")
+    public void actualizarIdInstancia(@PathParam("ide_asignacion")final Long ideAsignacion, @PathParam("id_instancia")final String idInstancia)throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - actualizar instancia ultima asignacion");
+        boundary.actualizarIdInstancia(ideAsignacion, idInstancia);
     }
 }

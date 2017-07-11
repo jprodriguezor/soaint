@@ -17,8 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,10 +68,9 @@ public class GestionarAsignacion {
                     .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
                     .getResultList();
 
-            if (dctAsigUltimoList.size() > 0){
+            if (dctAsigUltimoList.size() > 0) {
                 dctAsigUltimo = dctAsigUltimoList.get(0);
-            }
-            else{
+            } else {
                 dctAsigUltimo = DctAsigUltimo.newInstance()
                         .ideUsuarioCreo(usuarioCreo)
                         .fecCreo(fecha)
@@ -100,4 +99,28 @@ public class GestionarAsignacion {
                     .buildSystemException();
         }
     }
+
+    public void actualizarIdInstancia(Long ideAsignacion, String idInstancia) throws BusinessException, SystemException {
+        try {
+            DctAsigUltimo dctAsigUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)
+                    .setParameter("IDE_ASIGNACION", ideAsignacion)
+                    .getSingleResult();
+            em.createNamedQuery("DctAsigUltimo.updateIdInstancia")
+                    .setParameter("IDE_ASIG_ULTIMO", dctAsigUltimo.getIdeAsigUltimo())
+                    .setParameter("ID_INSTANCIA", idInstancia)
+                    .executeUpdate();
+        } catch (NoResultException n) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("asignacion.asignacion_not_exist_by_ideAsignacion")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
 }
