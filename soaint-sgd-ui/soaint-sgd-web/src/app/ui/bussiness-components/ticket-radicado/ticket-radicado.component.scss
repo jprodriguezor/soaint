@@ -10,7 +10,7 @@ $textSecondaryColor: #757575;
 
 .ticket-panel {
   text-align: center;
-  width: 420px;
+  width: 450px;
   min-height: 200px;
   //margin: 100px auto 0 auto;
   .row-container {
@@ -61,9 +61,9 @@ $textSecondaryColor: #757575;
 
 @media print {
   body {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-    font-size: 11pt;
-    zoom: .55;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-size: 12pt;
+    zoom: .6;
     color: #333333;
     //margin-top: 1cm;
     //margin-right: 1cm;
@@ -73,13 +73,16 @@ $textSecondaryColor: #757575;
 
   #ticket-rad {
     float: right;
-    padding-left: 5px;
-    border: 1px solid black;
+    padding: 8px;
+    border: 1pt dashed black;
   }
 
   @page {
     size: carta;
-    margin: 0.2cm
+    margin-top: 0.5cm;
+    margin-bottom: 0.5cm;
+    margin-left: .5cm;
+    margin-right: .5cm;
   }
 }
 

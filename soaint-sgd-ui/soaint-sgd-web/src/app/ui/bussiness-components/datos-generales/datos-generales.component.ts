@@ -105,7 +105,6 @@ export class DatosGeneralesComponent implements OnInit {
     });
 
     this.defaultSelectionMediosRecepcion$ = this._store.select(getVentanillaData);
-
     this.listenForErrors();
   }
 
