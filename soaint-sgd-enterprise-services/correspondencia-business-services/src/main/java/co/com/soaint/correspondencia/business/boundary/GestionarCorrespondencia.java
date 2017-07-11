@@ -253,6 +253,29 @@ public class GestionarCorrespondencia {
         }
     }
 
+    public void actualizarIdeInstancia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        try {
+            if (!correspondenciaControl.verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                        .buildBusinessException();
+            }
+            em.createNamedQuery("CorCorrespondencia.updateIdeInstancia")
+                    .setParameter("NRO_RADICADO", correspondenciaDTO.getNroRadicado())
+                    .setParameter("IDE_INSTANCIA", correspondenciaDTO.getIdeInstancia())
+                    .executeUpdate();
+
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
         try{
             gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);

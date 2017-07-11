@@ -49,6 +49,11 @@ public class GestionarCorrespondenciaWS {
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
+    @WebMethod(action = "actualizarIdeInstancia", operationName = "actualizarIdeInstancia")
+    public void actualizarIdeInstancia(@WebParam(name = "correspondencia") final CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        boundary.actualizarIdeInstancia(correspondenciaDTO);
+    }
+
     @WebMethod(action = "actualizarReferenciaECM", operationName = "actualizarReferenciaECM")
     public  void actualizarReferenciaECM(@WebParam(name = "nro_radicado") final String nroRadicado, @WebParam(name = "ide_ecm") final String ideEcm) throws BusinessException, SystemException{
         boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
