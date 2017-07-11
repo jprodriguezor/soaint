@@ -4,7 +4,7 @@ import {tassign} from 'tassign';
 
 interface ConstanteDTOStateInterface {
   ids: number[];
-  entities: { [id: number]: ConstanteDTO };
+  entities: { [id: string]: ConstanteDTO };
   selectedId?: number | null;
   filter?: string;
 }
@@ -62,19 +62,18 @@ export function reducer(state = initialState, action: Actions) {
       console.log(action.payload);
       const target = action.payload.key;
       const values = action.payload.data.constantes;
-      const newValues = values.filter(data => !state[target].entities[data.id]);
+      const newValues = values.filter(data => !state[target].entities[data.codigo]);
 
-      const newValuesIds = newValues.map(data => data.id);
-      const newValuesEntities = newValues.reduce((entities: { [id: number]: ConstanteDTO }, value: ConstanteDTO) => {
+      const newValuesIds = newValues.map(data => data.codigo);
+      const newValuesEntities = newValues.reduce((entities: { [id: string]: ConstanteDTO }, value: ConstanteDTO) => {
         return Object.assign(entities, {
-          [value.id]: value
+          [value.codigo]: value
         });
       }, {});
       const cloneState = Object.assign({}, state);
       cloneState[target] = {
         ids: [...state[target].ids, ...newValuesIds],
-        entities: Object.assign({}, state[target].entities, newValuesEntities),
-        selectedBookId: state[target].selectedBookId
+        entities: Object.assign({}, state[target].entities, newValuesEntities)
       };
       return cloneState;
     }

@@ -166,11 +166,11 @@ export class DatosRemitenteComponent implements OnInit {
     this.form.get('nombreApellidos').disable();
     this.form.get('nroDocumentoIdentidad').disable();
 
-    if (value.codigo === 'ANONIM') {
+    if (value.codigo === 'TP-PERA') {
       this.visibility['tipoPersona'] = true;
       // this.form.get('tipoPersona').enable();
 
-    } else if (value.codigo === 'PERS-JUR') {
+    } else if (value.codigo === 'TP-PERPJ') {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
@@ -187,11 +187,11 @@ export class DatosRemitenteComponent implements OnInit {
       this.form.get('nroDocumentoIdentidad').enable();
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
-      if (this.tipoComunicacion === 'EE') {
+      if (this.tipoComunicacion === 'TP-CMCOE') {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
-    } else if (value.codigo === 'PERS-NAT') {
+    } else if (value.codigo === 'TP-PERPN') {
 
       this.visibility['nombreApellidos'] = true;
       this.form.get('nombreApellidos').enable();
@@ -204,7 +204,7 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
 
-      if (this.tipoComunicacion === 'EE') {
+      if (this.tipoComunicacion === 'TP-CMCOE') {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
@@ -229,7 +229,7 @@ export class DatosRemitenteComponent implements OnInit {
   setTipoComunicacion(value) {
     if (value) {
       this.tipoComunicacion = value.codigo;
-      if (this.tipoComunicacion === 'EI') {
+      if (this.tipoComunicacion === 'TP-CMCOI') {
         this.form.get('tipoPersona').disable();
         this.form.get('sedeAdministrativa').enable();
         this.form.get('dependenciaGrupo').enable();

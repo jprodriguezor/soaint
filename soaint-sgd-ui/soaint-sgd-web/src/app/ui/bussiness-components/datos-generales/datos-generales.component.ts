@@ -67,7 +67,7 @@ export class DatosGeneralesComponent implements OnInit {
       'fechaRadicacion': [null],
       'nroRadicado': [null],
       'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
-      'medioRecepcion': [{value: 10, disabled: !this.editable}, Validators.required],
+      'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
       'unidadTiempo': [{value: null, disabled: !this.editable}],
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
