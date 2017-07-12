@@ -53,8 +53,29 @@
       </div>
     </div>
   </div>
-  <button pButton type="button" label="Actalizar" style="width: auto; margin-left: 12px; margin-bottom: 10px"
-          (click)="listarComunicaciones()"></button>
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
+      <button pButton type="button" label="Actualizar" style="width: auto; margin-left: 12px; margin-bottom: 10px"
+              (click)="listarComunicaciones()"></button>
+    </div>
+    <div class="ui-sm-12 ui-g-6 ui-lg-6">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <label for="funcionario">Funcionario</label>
+        </div>
+        <div class="ui-g-12 md-dropdownfield">
+          <p-dropdown [options]="funcionariosSuggestions$ | async"
+                      [ngModel]="funcionarioSelected$ | async"
+                      id="funcionario"
+                      placeholder="Seleccione"
+                      [filter]="true"
+                      [autoWidth]="false">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="ui-g-12">
     <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
                  [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
@@ -86,6 +107,19 @@
         </ng-template>
       </p-column>
     </p-dataTable>
+  </div>
+  <div class="ui-g-12" style="padding-top: 20px">
+    <button pButton type="button" label="Tramitar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            (click)="listarComunicaciones()"></button>
+    <button pButton type="button" label="Redireccionar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            (click)="listarComunicaciones()"></button>
+    <button pButton type="button" label="Finalizar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            (click)="listarComunicaciones()"></button>
+    <button pButton type="button" label="Asignar" style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            (click)="listarComunicaciones()"></button>
   </div>
 </div>
 
