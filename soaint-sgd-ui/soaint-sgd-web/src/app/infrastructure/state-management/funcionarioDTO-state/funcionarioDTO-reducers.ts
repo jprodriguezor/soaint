@@ -1,6 +1,5 @@
-import {ActionTypes, Actions} from './funcionarioDTO-actions';
+import {Actions, ActionTypes} from './funcionarioDTO-actions';
 import {tassign} from 'tassign';
-import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {OrganigramaDTO} from 'app/domain/organigramaDTO';
 
 
