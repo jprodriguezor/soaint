@@ -13,7 +13,11 @@ export class Sandbox {
               private _listSelectionService: ListForSelectionApiService) {
   }
 
-  loadData(payload?: any) {
+  loadAuthenticatedFuncionario(payload?: any) {
+    return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
+  }
+
+  loadAllFUncionarios(payload?: any) {
     return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
   }
 

@@ -267,7 +267,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   updateTabIndex(index) {
     console.log(index);
-    this.tabIndex = index;
+    // this.tabIndex = index;
   }
 
 }

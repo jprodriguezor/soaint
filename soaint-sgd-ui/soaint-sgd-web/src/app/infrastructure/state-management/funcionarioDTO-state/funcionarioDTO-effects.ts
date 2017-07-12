@@ -29,13 +29,31 @@ export class Effects {
   }
 
   @Effect()
-  load: Observable<Action> = this.actions$
+  load_authenticated: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     .map(toPayload)
     .switchMap(
-      (payload) => this._sandbox.loadData(payload)
+      (payload) => this._sandbox.loadAuthenticatedFuncionario(payload)
         .map((response) => new actions.LoadSuccessAction(response))
         .catch((error) => Observable.of(new actions.LoadFailAction({error})))
+    );
+
+  @Effect()
+  loadAll: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.LOAD_ALL)
+    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
+    // .filter(([action, state]) => {
+    //   console.log(action, state);
+    //   return state === [];
+    // })
+    // .distinctUntilChanged()
+    // .let(isLoaded())
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.loadAllFUncionarios(payload)
+        .map((response) => new actions.LoadAllSuccessAction({data: response}))
+        .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
+        )
     );
 
 
