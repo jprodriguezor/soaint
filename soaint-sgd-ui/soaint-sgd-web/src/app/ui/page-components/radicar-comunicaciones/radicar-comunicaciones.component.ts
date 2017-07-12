@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {AgentDTO} from 'app/domain/agentDTO';
 import {DocumentoDTO} from 'app/domain/documentoDTO';
@@ -18,7 +18,8 @@ const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-
   selector: 'app-radicar-comunicaciones',
   templateUrl: './radicar-comunicaciones.component.html',
   styleUrls: ['./radicar-comunicaciones.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RadicarComunicacionesComponent implements OnInit {
 
@@ -262,6 +263,11 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   openPrev() {
     this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(index) {
+    console.log(index);
+    this.tabIndex = index;
   }
 
 }

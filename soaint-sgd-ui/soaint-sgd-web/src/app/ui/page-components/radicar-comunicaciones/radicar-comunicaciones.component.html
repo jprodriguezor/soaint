@@ -24,7 +24,7 @@
     </div>
   </div>
   <div class="ui-g-12">
-    <p-tabView [activeIndex]="tabIndex">
+    <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
       <p-tabPanel header="Datos generales" leftIcon="formStatusIcon">
         <app-datos-generales #datosGenerales [editable]="editable" [datosRemitente]="datosRemitente"
                              (onChangeTipoComunicacion)="datosRemitente.setTipoComunicacion($event)"></app-datos-generales>
@@ -45,7 +45,7 @@
             (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
             [disabled]="!formsTabOrder[tabIndex].form.valid">
     </button>
-    <button pButton type="button" label="Anterior" style="width: 150px; float: left"
+    <button pButton  label="Anterior" style="width: 150px; float: left"
             (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
     </button>
   </div>

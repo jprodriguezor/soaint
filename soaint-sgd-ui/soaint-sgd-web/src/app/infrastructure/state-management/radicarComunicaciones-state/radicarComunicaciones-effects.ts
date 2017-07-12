@@ -36,7 +36,7 @@ export class Effects {
   }
 
   @Effect()
-  load: Observable<Action> = this.actions$
+  radicar: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.RADICAR)
     .map(toPayload)
     .switchMap(

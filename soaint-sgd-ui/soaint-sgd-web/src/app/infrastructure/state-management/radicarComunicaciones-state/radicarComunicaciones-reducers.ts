@@ -3,12 +3,17 @@ import {tassign} from 'tassign';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 
 
-export interface State {
-  comunicacionOficial: ComunicacionOficialDTO
+export interface State extends ComunicacionOficialDTO {
+
 }
 
 const initialState: State = {
-  comunicacionOficial: null
+  correspondencia: null,
+  agenteList: null,
+  ppdDocumentoList: null,
+  anexoList: null,
+  referidoList: null,
+  datosContactoList: null
 };
 
 /**
@@ -19,16 +24,6 @@ const initialState: State = {
  */
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
-
-    case Autocomplete.RADICAR_SUCCESS: {
-      const values = action.payload;
-
-
-      return tassign(state, {
-        comunicacionOficial: values
-      });
-
-    }
 
     default:
       return state;
