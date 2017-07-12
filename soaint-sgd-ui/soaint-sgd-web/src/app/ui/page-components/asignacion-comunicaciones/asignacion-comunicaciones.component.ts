@@ -5,12 +5,16 @@ import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {getArrayData} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
+import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
   templateUrl: './asignacion-comunicaciones.component.html'
 })
 export class AsignarComunicacionesComponent implements OnInit {
+
+  form: FormGroup;
 
   comunicaciones$: Observable<CorrespondenciaDTO[]>;
 
@@ -22,7 +26,12 @@ export class AsignarComunicacionesComponent implements OnInit {
 
   estadoCorrespondencia: any;
 
-  constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox) {
+  funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
+
+  funcionarioSelected$: Observable<any>;
+
+  constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox,
+              private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(getArrayData);
     this.start_date.setHours(this.start_date.getHours() - 24);
   }
@@ -30,6 +39,14 @@ export class AsignarComunicacionesComponent implements OnInit {
   ngOnInit() {
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
+    this.initForm();
+    // this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
+  }
+
+  initForm() {
+    this.form = this.formBuilder.group({
+      'funcionario': [null]
+    });
   }
 
   llenarEstadosCorrespondencias() {
