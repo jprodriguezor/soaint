@@ -1,7 +1,7 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.DctAsignacionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 
 /**
@@ -15,16 +15,16 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
  */
 @BusinessControl
 public class DctAsignacionControl {
-    public DctAsignacion dctAsignacionTransform(DctAsignacionDTO dctAsignacionDTO){
+    public DctAsignacion dctAsignacionTransform(AsignacionDTO asignacionDTO){
         return DctAsignacion.newInstance()
-                .ideAsignacion(dctAsignacionDTO.getIdeAsignacion())
-                .fecAsignacion(dctAsignacionDTO.getFecAsignacion())
-                .ideFunci(dctAsignacionDTO.getIdeFunci())
-                .codDependencia(dctAsignacionDTO.getCodDependencia())
-                .codTipAsignacion(dctAsignacionDTO.getCodTipAsignacion())
-                .observaciones(dctAsignacionDTO.getObservaciones())
-                .codTipCausal(dctAsignacionDTO.getCodTipCausal())
-                .codTipProceso(dctAsignacionDTO.getCodTipProceso())
+                .ideAsignacion(asignacionDTO.getIdeAsignacion())
+                .fecAsignacion(asignacionDTO.getFecAsignacion())
+                .ideFunci(asignacionDTO.getIdeFunci())
+                .codDependencia(asignacionDTO.getCodDependencia())
+                .codTipAsignacion(asignacionDTO.getCodTipAsignacion())
+                .observaciones(asignacionDTO.getObservaciones())
+                .codTipCausal(asignacionDTO.getCodTipCausal())
+                .codTipProceso(asignacionDTO.getCodTipProceso())
                 .build();
     }
 }
