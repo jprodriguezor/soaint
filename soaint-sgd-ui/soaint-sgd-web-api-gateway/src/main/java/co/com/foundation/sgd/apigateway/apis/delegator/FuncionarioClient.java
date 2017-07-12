@@ -25,4 +25,12 @@ public class FuncionarioClient {
                 .get();
     }
 
+    public Response listarFuncionarios(String codigoDependencia) {
+        System.out.println("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/dependencia/" + codigoDependencia + "/A" + codigoDependencia + "/A")
+                .request()
+                .get();
+    }
+
 }
