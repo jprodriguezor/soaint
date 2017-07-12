@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,8 +27,20 @@ import java.math.BigInteger;
 public class AsignacionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private DctAsignacionDTO dctAsignacion;
-    private DctAsigUltimoDTO dctAsigUltimo;
+    private Long ideAsignacion;
+    private Date fecAsignacion;
+    private BigInteger ideFunci;
+    private String codDependencia;
+    private String codTipAsignacion;
+    private String observaciones;
+    private String codTipCausal;
+    private String codTipProceso;
+    private Long ideAsigUltimo;
+    private String numRedirecciones;
+    private Short nivLectura;
+    private Short nivEscritura;
+    private Date fechaVencimiento;
+    private String idInstancia;
     private BigInteger ideAgente;
     private BigInteger ideDocumento;
     private String nroRadicado;

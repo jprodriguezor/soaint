@@ -20,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,48 +49,50 @@ public class GestionarAsignacion {
     DctAsigUltimoControl dctAsigUltimoControl;
     // ----------------------
 
-    public void asignarCorrespondencia(AsignacionDTO asignacionDTO) throws BusinessException, SystemException {
+    public void asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
         try {
-            CorAgente corAgente = CorAgente.newInstance()
-                    .ideAgente(asignacionDTO.getIdeAgente())
-                    .build();
-            CorCorrespondencia corCorrespondencia = CorCorrespondencia.newInstance()
-                    .ideDocumento(asignacionDTO.getIdeDocumento())
-                    .build();
-
-            Date fecha = new Date();
-            String usuarioCreo = "0"; //TODO
-            Long usuarioCambio = Long.parseLong("0"); //TODO
-
-            DctAsignacion dctAsignacion = dctAsignacionControl.dctAsignacionTransform(asignacionDTO.getDctAsignacion());
-            DctAsigUltimo dctAsigUltimo;
-
-            List<DctAsigUltimo> dctAsigUltimoList = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
-                    .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
-                    .getResultList();
-
-            if (dctAsigUltimoList.size() > 0) {
-                dctAsigUltimo = dctAsigUltimoList.get(0);
-            } else {
-                dctAsigUltimo = DctAsigUltimo.newInstance()
-                        .ideUsuarioCreo(usuarioCreo)
-                        .fecCreo(fecha)
+            for(AsignacionDTO asignacionDTO : asignacionesDTO.getAsignaciones()) {
+                CorAgente corAgente = CorAgente.newInstance()
+                        .ideAgente(asignacionDTO.getIdeAgente())
                         .build();
+                CorCorrespondencia corCorrespondencia = CorCorrespondencia.newInstance()
+                        .ideDocumento(asignacionDTO.getIdeDocumento())
+                        .build();
+
+                Date fecha = new Date();
+                String usuarioCreo = "0"; //TODO
+                Long usuarioCambio = Long.parseLong("0"); //TODO
+
+                DctAsignacion dctAsignacion = dctAsignacionControl.dctAsignacionTransform(asignacionDTO);
+                DctAsigUltimo dctAsigUltimo;
+
+                List<DctAsigUltimo> dctAsigUltimoList = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                        .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
+                        .getResultList();
+
+                if (dctAsigUltimoList.size() > 0) {
+                    dctAsigUltimo = dctAsigUltimoList.get(0);
+                } else {
+                    dctAsigUltimo = DctAsigUltimo.newInstance()
+                            .ideUsuarioCreo(usuarioCreo)
+                            .fecCreo(fecha)
+                            .build();
+                }
+
+                dctAsigUltimo.setDctAsignacion(dctAsignacion);
+                dctAsigUltimo.setCorAgente(corAgente);
+                dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
+                dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
+                dctAsigUltimo.setFecCambio(fecha);
+
+                dctAsignacion.setCorAgente(corAgente);
+                dctAsignacion.setCorCorrespondencia(corCorrespondencia);
+                dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
+                dctAsignacion.setFecCreo(fecha);//TODO
+
+                em.persist(dctAsignacion);
+                em.merge(dctAsigUltimo);
             }
-
-            dctAsigUltimo.setDctAsignacion(dctAsignacion);
-            dctAsigUltimo.setCorAgente(corAgente);
-            dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
-            dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
-            dctAsigUltimo.setFecCambio(fecha);
-
-            dctAsignacion.setCorAgente(corAgente);
-            dctAsignacion.setCorCorrespondencia(corCorrespondencia);
-            dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
-            dctAsignacion.setFecCreo(fecha);//TODO
-
-            em.persist(dctAsignacion);
-            em.merge(dctAsigUltimo);
             em.flush();
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
@@ -126,39 +127,15 @@ public class GestionarAsignacion {
     }
 
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(BigInteger ideFunci, String nroRadicado) throws BusinessException, SystemException {
-        List<AsignacionDTO> asignacionDTOList = new ArrayList<>();
         try {
-            List<DctAsigUltimoDTO> dctAsigUltimoDTOList = em.createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", DctAsigUltimoDTO.class)
+            List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class)
                     .setParameter("IDE_FUNCI", ideFunci)
                     .setParameter("NRO_RADICADO", nroRadicado == null ? nroRadicado : "%" + nroRadicado + "%")
                     .getResultList();
-            if (dctAsigUltimoDTOList.size() == 0){
+            if (asignacionDTOList.size() == 0){
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("asignacion.not_exist_by_idefuncionario_and_nroradicado")
                         .buildBusinessException();
-            }
-            for (DctAsigUltimoDTO dctAsigUltimoDTO : dctAsigUltimoDTOList){
-
-                DctAsignacionDTO dctAsignacionDTO = em.createNamedQuery("DctAsignacion.findByIdeAsignacion", DctAsignacionDTO.class)
-                        .setParameter("IDE_ASIGNACION", dctAsigUltimoDTO.getIdeAsignacion())
-                        .getSingleResult();
-
-                CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("DctAsigUltimo.findCorrespondenciaByIdeAsigUltimo", CorrespondenciaDTO.class)
-                        .setParameter("IDE_ASIG_ULTIMO", dctAsigUltimoDTO.getIdeAsigUltimo())
-                        .getSingleResult();
-
-                AgenteDTO agenteDTO = em.createNamedQuery("DctAsigUltimo.findAgenteByIdeAsigUltimo", AgenteDTO.class)
-                        .setParameter("IDE_ASIG_ULTIMO", dctAsigUltimoDTO.getIdeAsigUltimo())
-                        .getSingleResult();
-
-                AsignacionDTO asignacionDTO = AsignacionDTO.newInstance()
-                        .dctAsignacion(dctAsignacionDTO)
-                        .dctAsigUltimo(dctAsigUltimoDTO)
-                        .ideAgente(agenteDTO.getIdeAgente())
-                        .ideDocumento(correspondenciaDTO.getIdeDocumento())
-                        .nroRadicado(correspondenciaDTO.getNroRadicado())
-                        .build();
-                asignacionDTOList.add(asignacionDTO);
             }
             return AsignacionesDTO.newInstance().asignaciones(asignacionDTOList).build();
         } catch (BusinessException e) {
