@@ -38,26 +38,14 @@ import javax.persistence.*;
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "WHERE a.ideAsignacion = :IDE_ASIGNACION "),
-        @NamedQuery(name = "DctAsigUltimo.findByIdeFunciAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DctAsigUltimoDTO " +
-                "(d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso, a.ideAsignacion) " +
+        @NamedQuery(name = "DctAsigUltimo.findByIdeFunciAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
+                "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
+                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.ideAgente, " +
+                "c.ideDocumento, c.nroRadicado) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "INNER JOIN d.corCorrespondencia c " +
                 "WHERE a.ideFunci = :IDE_FUNCI AND d.idInstancia IS NULL AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
-        @NamedQuery(name = "DctAsigUltimo.findCorrespondenciaByIdeAsigUltimo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
-                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
-                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
-                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
-                "FROM DctAsigUltimo d " +
-                "INNER JOIN d.corCorrespondencia c " +
-                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
-        @NamedQuery(name = "DctAsigUltimo.findAgenteByIdeAsigUltimo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
-                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.nroDocumentoIden, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
-                "c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
-                "FROM DctAsigUltimo d " +
-                "INNER JOIN d.corAgente c " +
-                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
         @NamedQuery(name = "DctAsigUltimo.updateIdInstancia", query = "UPDATE DctAsigUltimo d " +
                 "SET d.idInstancia = :ID_INSTANCIA " +
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO")})

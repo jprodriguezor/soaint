@@ -37,9 +37,9 @@ public class AsignacionWebApi {
 
     @POST
     @Path("/asignacion")
-    public void asignarCorrespondencia(AsignacionDTO asignacionDTO)throws BusinessException, SystemException{
+    public void asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - asignar correspondencia");
-        boundary.asignarCorrespondencia(asignacionDTO);
+        boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
     @PUT
