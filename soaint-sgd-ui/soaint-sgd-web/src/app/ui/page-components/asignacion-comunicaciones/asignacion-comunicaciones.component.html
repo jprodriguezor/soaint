@@ -64,7 +64,7 @@
           <label for="funcionario">Funcionario</label>
         </div>
         <div class="ui-g-12 md-dropdownfield">
-          <p-dropdown [options]="funcionariosSuggestions$ | async"
+          <p-dropdown [options]="funcionariosSuggestions$ | async | dropdownItem"
                       [ngModel]="funcionarioSelected$ | async"
                       id="funcionario"
                       placeholder="Seleccione"

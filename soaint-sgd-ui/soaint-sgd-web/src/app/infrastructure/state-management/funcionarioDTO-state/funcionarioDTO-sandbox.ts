@@ -17,12 +17,17 @@ export class Sandbox {
     return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
   }
 
-  loadAllFUncionarios(payload?: any) {
-    return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
+  loadAllFuncionarios(payload?: any) {
+    const endpoint = `${environment.listarFuncionarios_endpoint}/${payload}`;
+    return this._listSelectionService.list(endpoint);
   }
 
   loadDispatch(payload?) {
     this._store.dispatch(new actions.LoadAction(payload));
+  }
+
+  loadAllFuncionariosDispatch(payload?) {
+    this._store.dispatch(new actions.LoadAllAction(payload));
   }
 
 
