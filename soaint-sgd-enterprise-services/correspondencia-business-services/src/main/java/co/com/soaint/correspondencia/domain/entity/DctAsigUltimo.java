@@ -40,11 +40,13 @@ import javax.persistence.*;
                 "WHERE a.ideAsignacion = :IDE_ASIGNACION "),
         @NamedQuery(name = "DctAsigUltimo.findByIdeFunciAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
-                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.ideAgente, " +
+                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
+                "g.ideAgente, " +
                 "c.ideDocumento, c.nroRadicado) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "INNER JOIN d.corCorrespondencia c " +
+                "INNER JOIN d.corAgente g " +
                 "WHERE a.ideFunci = :IDE_FUNCI AND d.idInstancia IS NULL AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "DctAsigUltimo.updateIdInstancia", query = "UPDATE DctAsigUltimo d " +
                 "SET d.idInstancia = :ID_INSTANCIA " +
