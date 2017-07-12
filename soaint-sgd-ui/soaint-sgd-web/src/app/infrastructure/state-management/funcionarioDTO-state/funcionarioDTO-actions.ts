@@ -5,6 +5,10 @@ export const ActionTypes = {
   LOAD: type('[FuncionarioDTO] LoadAction'),
   LOAD_SUCCESS: type('[FuncionarioDTO] LoadSuccessAction'),
   LOAD_FAIL: type('[FuncionarioDTO] LoadFailAction'),
+
+  LOAD_ALL: type('[FuncionarioDTO] LoadAllAction'),
+  LOAD_ALL_SUCCESS: type('[FuncionarioDTO] LoadAllSuccessAction'),
+  LOAD_ALL_FAIL: type('[FuncionarioDTO] LoadAllFailAction'),
 };
 
 
@@ -29,11 +33,35 @@ export class LoadFailAction implements Action {
   }
 }
 
+export class LoadAllAction implements Action {
+  type = ActionTypes.LOAD_ALL;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadAllSuccessAction implements Action {
+  type = ActionTypes.LOAD_ALL_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadAllFailAction implements Action {
+  type = ActionTypes.LOAD_ALL_FAIL;
+
+  constructor(public payload?: any) {
+  }
+}
+
 
 export type Actions =
   LoadAction |
   LoadSuccessAction |
-  LoadFailAction
+  LoadFailAction |
+  LoadAllAction |
+  LoadAllFailAction |
+  LoadAllSuccessAction
   ;
 
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {AgentDTO} from 'app/domain/agentDTO';
 import {DocumentoDTO} from 'app/domain/documentoDTO';
@@ -18,7 +18,8 @@ const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-
   selector: 'app-radicar-comunicaciones',
   templateUrl: './radicar-comunicaciones.component.html',
   styleUrls: ['./radicar-comunicaciones.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RadicarComunicacionesComponent implements OnInit {
 
@@ -48,11 +49,18 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   printStyle: string = printStyles;
 
+  tabIndex = 0;
+
+  formsTabOrder: Array<any> = [];
+
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
     this.route.params.subscribe(values => this.task = values);
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
   }
 
   hideDialog() {
@@ -246,18 +254,20 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   navigateBackToWorkspace() {
-    console.info(this.datosGenerales.form.valid);
-    console.info(this.datosRemitente.form.valid);
-    console.info(this.datosDestinatario.form.valid);
-    // this._taskSandBox.navigateToWorkspace();
+    this._taskSandBox.navigateToWorkspace();
   }
 
-  getFormStatusIcon(form) {
-    form.statusChanges.subscribe(value => {
-      if (value !== 'VALID') {
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
+  }
 
-      }
-    })
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(index) {
+    console.log(index);
+    // this.tabIndex = index;
   }
 
 }

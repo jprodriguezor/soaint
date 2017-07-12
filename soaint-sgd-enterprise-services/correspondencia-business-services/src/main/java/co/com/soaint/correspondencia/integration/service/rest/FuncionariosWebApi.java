@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarFuncionarios;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
@@ -42,4 +43,12 @@ public class FuncionariosWebApi {
         LOGGER.info("processing rest request - listar funcionarios por login_name");
         return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
+
+    @GET
+    @Path("/funcionarios/dependencia/{cod_dependencia}/{cod_estado}")
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia")final String codDependencia, @PathParam("cod_estado")final String codEstado)throws BusinessException, SystemException{
+        LOGGER.info("processing rest request - listar funcionarios por dependencia");
+        return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
+    }
+
 }

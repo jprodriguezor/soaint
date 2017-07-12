@@ -1,39 +1,19 @@
-import {ActionTypes, Actions} from './funcionarioDTO-actions';
+import {Actions, ActionTypes} from './funcionarioDTO-actions';
 import {tassign} from 'tassign';
-import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {OrganigramaDTO} from 'app/domain/organigramaDTO';
+import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 
 
 export interface State  {
-  ideFunci: number;
-  codTipDocIdent: string;
-  nroIdentificacion: string;
-  nomFuncionario: string;
-  valApellido1: string;
-  valApellido2: string;
-  codCargo: string;
-  corrElectronico: string;
-  codOrgaAdmi: string;
-  loginName: string;
-  estado: string;
-  sede: OrganigramaDTO;
-  dependencia: OrganigramaDTO;
+  ids: string[];
+  entities: { [id: number]: FuncionarioDTO };
+  authenticatedFuncionario: FuncionarioDTO;
 }
 
 const initialState: State = {
-  ideFunci: null,
-  codTipDocIdent: null,
-  nroIdentificacion: null,
-  nomFuncionario: null,
-  valApellido1: null,
-  valApellido2: null,
-  codCargo: null,
-  corrElectronico: null,
-  codOrgaAdmi: null,
-  loginName: null,
-  estado: null,
-  sede: null,
-  dependencia: null
+  ids: [],
+  entities: {},
+  authenticatedFuncionario: null
 };
 
 /**
@@ -48,7 +28,25 @@ export function reducer(state = initialState, action: Actions) {
     case ActionTypes.LOAD_SUCCESS: {
       console.log(action.payload);
       const funcionario = action.payload;
-      return tassign(state, funcionario);
+      return tassign(state, { authenticatedFuncionario: funcionario});
+    }
+
+    case ActionTypes.LOAD_ALL_SUCCESS: {
+      console.log(action.payload);
+      const values = action.payload.data;
+      const newValues = values.filter(data => !state.entities[data.id]);
+
+      const newValuesIds = newValues.map(data => data.id);
+      const newValuesEntities = newValues.reduce((entities: { [id: number]: FuncionarioDTO }, value: FuncionarioDTO) => {
+        return Object.assign(entities, {
+          [value.id]: value
+        });
+      }, {});
+
+      return tassign(state, {
+        ids: [...state.ids, ...newValuesIds],
+        entities: tassign(state.entities, newValuesEntities),
+      });
     }
 
     default:

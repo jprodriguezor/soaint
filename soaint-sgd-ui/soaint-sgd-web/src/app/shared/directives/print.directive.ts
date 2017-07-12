@@ -62,8 +62,7 @@ export class PrintDirective implements AfterViewInit {
             </style>
 
             </head>
-        <!--<body onload="window.print();window.close()">${printContents}</body>-->
-        <body >${printContents}</body>
+        <body onload="window.print();window.close()">${printContents}</body>
         </html>`
         );
         popupWin.document.close();

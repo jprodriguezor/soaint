@@ -36,7 +36,12 @@ import javax.persistence.Table;
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, f.codCargo, " +
                 "f.corrElectronico, f.codOrgaAdmi, f.loginName, f.estado) " +
                 "FROM Funcionarios f " +
-                "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.estado) = TRIM(:ESTADO)")})
+                "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "Funcionarios.findAllByCodOrgaAdmiAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
+                "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, f.codCargo, " +
+                "f.corrElectronico, f.codOrgaAdmi, f.loginName, f.estado) " +
+                "FROM Funcionarios f " +
+                "WHERE TRIM(f.codOrgaAdmi) = TRIM(:COD_ORGA_ADMI) AND TRIM(f.estado) = TRIM(:ESTADO)")})
 public class Funcionarios implements Serializable {
 
     private static final long serialVersionUID = 1L;

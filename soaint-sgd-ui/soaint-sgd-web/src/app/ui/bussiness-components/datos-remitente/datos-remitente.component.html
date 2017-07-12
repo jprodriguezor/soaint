@@ -269,7 +269,6 @@
                                 [suggestions]="departamentoSuggestions$ | async"
                                 field="nombre"
                                 formControlName="departamento"
-                                (completeMethod)="onFilterDepartamento($event)" [size]="30"
                                 [minLength]="1" placeholder="Seleccione" [dropdown]="true"
                                 (onDropdownClick)="onDropdownClickDepartamento($event)">
                 </p-autoComplete>
@@ -288,7 +287,6 @@
                                 [suggestions]="municipioSuggestions$ | async"
                                 field="nombre"
                                 formControlName="municipio"
-                                (completeMethod)="onFilterMunicipio($event)" [size]="30"
                                 [minLength]="1" placeholder="Seleccione" [dropdown]="true"
                                 (onDropdownClick)="onDropdownClickMunicipio($event)">
                 </p-autoComplete>
