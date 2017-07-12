@@ -60,10 +60,17 @@ public class CorrespondenciaWebApi {
     }
 
     @PUT
-    @Path("/correspondencia")
+    @Path("/correspondencia/actualizar-estado")
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         LOGGER.info("processing rest request - actualizar estado correspondencia");
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+    }
+
+    @PUT
+    @Path("/correspondencia/actualizar-ide-instancia")
+    public void actualizarIdeInstancia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        LOGGER.info("processing rest request - actualizar ide instancia");
+        boundary.actualizarIdeInstancia(correspondenciaDTO);
     }
 
     @PUT

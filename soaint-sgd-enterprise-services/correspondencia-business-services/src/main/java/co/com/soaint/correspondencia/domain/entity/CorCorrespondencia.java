@@ -53,6 +53,9 @@ import java.util.List;
                 "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC)"),
         @NamedQuery(name = "CorCorrespondencia.updateEstado", query = "UPDATE CorCorrespondencia c " +
                 "SET c.codEstado = :COD_ESTADO " +
+                "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.updateIdeInstancia", query = "UPDATE CorCorrespondencia c " +
+                "SET c.ideInstancia = :IDE_INSTANCIA " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)")})
 @javax.persistence.TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)

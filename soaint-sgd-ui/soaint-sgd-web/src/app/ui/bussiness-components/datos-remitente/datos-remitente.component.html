@@ -79,18 +79,6 @@
           </div>
         </div>
 
-        <!--Nit-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6"  *ngIf="visibility.nit">
-          <div class="ui-g form-group" style="padding-top: 40px">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="nit" formControlName="nit">
-              <label for="nit">Nit</label>
-              </span>
-            </div>
-          </div>
-        </div>
-
         <!--Nro Documento Identidad-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nroDocumentoIdentidad">
           <div class="ui-g form-group" style="padding-top: 40px">
@@ -161,6 +149,18 @@
                      *ngIf="validations.nombreApellidos">
                 {{ validations.nombreApellidos }}
               </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Nit-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6"  *ngIf="visibility.nit">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="nit" formControlName="nit">
+              <label for="nit">Nit</label>
               </span>
             </div>
           </div>
