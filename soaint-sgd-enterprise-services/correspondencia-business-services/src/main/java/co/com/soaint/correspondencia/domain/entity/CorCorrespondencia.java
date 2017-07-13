@@ -40,7 +40,7 @@ import java.util.List;
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.corAgenteList ca " +
                 "WHERE c.fecRadicado BETWEEN :FECHA_INI AND :FECHA_FIN " +
-                "AND c.codEstado = :COD_ESTADO AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
+                "AND ca.codEstado = :COD_EST_AG AND c.codEstado = :COD_ESTADO AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +

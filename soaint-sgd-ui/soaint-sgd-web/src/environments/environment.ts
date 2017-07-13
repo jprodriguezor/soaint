@@ -38,4 +38,5 @@ export const environment = {
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
+  listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
 };

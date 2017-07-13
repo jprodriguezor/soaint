@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Effect, Actions, toPayload} from '@ngrx/effects';
-import {Action} from '@ngrx/store';
+import {Actions, Effect, toPayload} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -14,8 +14,6 @@ import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
-
-import {Store} from '@ngrx/store';
 import * as actions from './funcionarioDTO-actions';
 import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
@@ -41,21 +39,15 @@ export class Effects {
   @Effect()
   loadAll: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD_ALL)
-    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
-    // .filter(([action, state]) => {
-    //   console.log(action, state);
-    //   return state === [];
-    // })
-    // .distinctUntilChanged()
-    // .let(isLoaded())
     .map(toPayload)
+    .withLatestFrom(this._store$)
+    .distinctUntilChanged()
     .switchMap(
-      (payload) => this._sandbox.loadAllFUncionarios(payload)
-        .map((response) => new actions.LoadAllSuccessAction({data: response}))
+      ([payload, state]) => this._sandbox.loadAllFuncionarios(state.funcionario.authenticatedFuncionario.dependencia.id)
+        .map((response) => new actions.LoadAllSuccessAction(response))
         .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
         )
     );
-
 
 
 }

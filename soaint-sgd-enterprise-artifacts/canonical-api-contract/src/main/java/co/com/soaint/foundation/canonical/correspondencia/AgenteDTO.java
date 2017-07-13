@@ -1,7 +1,9 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -18,6 +20,8 @@ import java.math.BigInteger;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
 public class AgenteDTO implements Serializable {
@@ -38,35 +42,10 @@ public class AgenteDTO implements Serializable {
     private String codSede;
     private String codDependencia;
     private String codFuncRemite;
+    private String codEstado;
     private String fecAsignacion;
     private Long ideContacto;
     private String codTipAgent;
     private String indOriginal;
 
-    public AgenteDTO(){super();}
-
-    public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String nroDocumentoIden,
-                     String razonSocial, String nit, String codCortesia, String codCargo, String codEnCalidad,
-                     String codTipDocIdent, String nroDocuIdentidad, String codSede, String codDependencia,
-                     String codFuncRemite, String fecAsignacion, Long ideContacto, String codTipAgent, String indOriginal){
-        this.ideAgente = ideAgente;
-        this.codTipoRemite = codTipoRemite;
-        this.codTipoPers = codTipoPers;
-        this.nombre = nombre;
-        this.nroDocumentoIden = nroDocumentoIden;
-        this.razonSocial = razonSocial;
-        this.nit = nit;
-        this.codCortesia = codCortesia;
-        this.codCargo = codCargo;
-        this.codEnCalidad = codEnCalidad;
-        this.codTipDocIdent = codTipDocIdent;
-        this.nroDocuIdentidad = nroDocuIdentidad;
-        this.codSede = codSede;
-        this.codDependencia = codDependencia;
-        this.codFuncRemite = codFuncRemite;
-        this.fecAsignacion = fecAsignacion;
-        this.ideContacto = ideContacto;
-        this.codTipAgent = codTipAgent;
-        this.indOriginal = indOriginal;
-    }
 }

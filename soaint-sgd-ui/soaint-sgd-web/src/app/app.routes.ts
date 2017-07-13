@@ -14,7 +14,7 @@ export const routes: Routes = [
   {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
   {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
   {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
-  {path: 'asignacion-comunicaciones', component: AsignarComunicacionesComponent},
+  {path: 'asignacion-comunicaciones', component: AsignarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

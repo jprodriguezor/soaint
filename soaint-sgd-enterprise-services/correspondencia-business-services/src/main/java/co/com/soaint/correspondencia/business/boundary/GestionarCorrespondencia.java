@@ -13,6 +13,8 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -142,6 +144,7 @@ public class GestionarCorrespondencia {
         }
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         try {
             CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
@@ -288,19 +291,20 @@ public class GestionarCorrespondencia {
         }
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         try {
-            String nRadicado = nroRadicado == null ? null : "%" + nroRadicado + "%";
             Calendar cal = Calendar.getInstance();
             cal.setTime(fechaFin);
             cal.add(Calendar.DATE, 1);
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
                     .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
-                    .setParameter("COD_ESTADO", codEstado)
+                    .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
                     .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_EST_AG", codEstado)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
-                    .setParameter("NRO_RADICADO", nRadicado)
+                    .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
 
             if (correspondenciaDTOList.size() == 0) {
@@ -308,11 +312,19 @@ public class GestionarCorrespondencia {
                         .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_estado")
                         .buildBusinessException();
             }
+
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
+                        .setParameter("COD_ESTADO", codEstado)
+                        .setParameter("COD_DEPENDENCIA", codDependencia)
+                        .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                        .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
+                        .getResultList();
                 ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
                         .correspondencia(correspondenciaDTO)
+                        .agenteList(agenteDTOList)
                         .build();
                 comunicacionOficialDTOList.add(comunicacionOficialDTO);
             }

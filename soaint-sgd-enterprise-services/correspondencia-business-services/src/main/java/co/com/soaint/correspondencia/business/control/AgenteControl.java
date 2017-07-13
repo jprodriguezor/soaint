@@ -35,6 +35,7 @@ public class AgenteControl {
 
     public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {
         return CorAgente.newInstance()
+                .ideAgente(agenteDTO.getIdeAgente())
                 .codTipoRemite(agenteDTO.getCodTipoRemite())
                 .codTipoPers(agenteDTO.getCodTipoPers())
                 .nombre(agenteDTO.getNombre())
@@ -49,6 +50,7 @@ public class AgenteControl {
                 .codSede(agenteDTO.getCodSede())
                 .codDependencia(agenteDTO.getCodDependencia())
                 .codFuncRemite(agenteDTO.getCodFuncRemite())
+                .codEstado(agenteDTO.getCodEstado())
                 .fecAsignacion(agenteDTO.getFecAsignacion())
                 .ideContacto(agenteDTO.getIdeContacto())
                 .codTipAgent(agenteDTO.getCodTipAgent())
