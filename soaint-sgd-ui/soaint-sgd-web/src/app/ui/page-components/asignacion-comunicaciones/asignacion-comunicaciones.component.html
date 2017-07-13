@@ -77,9 +77,10 @@
   </div>
 
   <div class="ui-g-12">
-    <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
+    <p-dataTable emptyMessage="No se encontraron resultados"
                  [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
       <p-header>Listado de comunicaciones</p-header>
+      <p-column selectionMode="multiple"></p-column>
       <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
       <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
         <ng-template let-col let-correspondencia="rowData" pTemplate="body">
