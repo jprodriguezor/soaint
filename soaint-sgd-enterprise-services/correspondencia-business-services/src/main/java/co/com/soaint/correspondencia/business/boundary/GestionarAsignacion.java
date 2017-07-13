@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -149,6 +151,7 @@ public class GestionarAsignacion {
         }
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(BigInteger ideFunci, String nroRadicado) throws BusinessException, SystemException {
         try {
             List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class)
@@ -172,4 +175,21 @@ public class GestionarAsignacion {
         }
     }
 
+    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException {
+        try {
+            for (AgenteDTO agenteDTO : agentesDTO.getAgentes()){
+                em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
+                        .setParameter("COD_SEDE", agenteDTO.getCodSede())
+                        .setParameter("COD_DEPENDENCIA", agenteDTO.getCodDependencia())
+                        .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
+                        .executeUpdate();
+            }
+        } catch (Throwable ex) {
+            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }

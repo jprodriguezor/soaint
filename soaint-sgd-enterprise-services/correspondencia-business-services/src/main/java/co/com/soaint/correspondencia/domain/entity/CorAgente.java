@@ -10,13 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
-import javax.persistence.*;
 
 /**
- *
  * @author jrodriguez
  */
 @Builder(builderMethodName = "newInstance")
@@ -26,7 +25,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "COR_AGENTE")
 @NamedQueries({
-    @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
+        @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
         @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.nroDocumentoIden, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
@@ -45,10 +44,12 @@ import javax.persistence.*;
                 "c.codEstado, c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.codEstado = :COD_ESTADO AND c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
-                "AND co.ideDocumento = :IDE_DOCUMENTO")
-        ,
+                "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.updateAsignacion", query = "UPDATE CorAgente c " +
                 "SET c.fecAsignacion = :FECHA_ASIGNACION, c.codEstado = :COD_ESTADO " +
+                "WHERE c.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
+                "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA " +
                 "WHERE c.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)
