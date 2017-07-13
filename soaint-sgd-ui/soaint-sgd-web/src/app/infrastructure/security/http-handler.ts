@@ -6,7 +6,6 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
-import {observable} from 'rxjs/symbol/observable';
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 
 @Injectable()
@@ -22,7 +21,7 @@ export class HttpHandler {
   requestHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
 
     return this.token$.take(1).switchMap(token => {
-      console.log('Calling protected URL ...', token);
+      // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
       options.headers = new Headers();
@@ -58,8 +57,9 @@ export class HttpHandler {
 
   }
 
-  public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-    return this.requestHelper({url: url, method: RequestMethod.Get}, options);
+  public get(url: string, params: any, options?: RequestOptionsArgs): Observable<Response> {
+
+    return this.requestHelper({url: url, params: params, method: RequestMethod.Get}, options);
   }
 
   public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {

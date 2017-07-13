@@ -1,21 +1,25 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from '../../../domain/AgentDTO';
-import {DocumentoDTO} from '../../../domain/DocumentoDTO';
-import {AnexoDTO} from '../../../domain/AnexoDTO';
-import {ReferidoDTO} from '../../../domain/ReferidoDTO';
-import {ComunicacionOficialDTO} from '../../../domain/ComunicacionOficialDTO';
+import {AgentDTO} from 'app/domain/agentDTO';
+import {DocumentoDTO} from 'app/domain/documentoDTO';
+import {AnexoDTO} from 'app/domain/anexoDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import {ContactoDTO} from '../../../domain/ContactoDTO';
+import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
-import {Sandbox as TaskSandBox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import * as moment from 'moment';
 
 declare const require: any;
-const printStyles  = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
+const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
 @Component({
   selector: 'app-radicar-comunicaciones',
-  templateUrl: './radicar-comunicaciones.component.html'
+  templateUrl: './radicar-comunicaciones.component.html',
+  styleUrls: ['./radicar-comunicaciones.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RadicarComunicacionesComponent implements OnInit {
 
@@ -24,6 +28,8 @@ export class RadicarComunicacionesComponent implements OnInit {
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
+
+  formStatusIcon = 'assignment';
 
   valueRemitente: any;
 
@@ -35,19 +41,26 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   date: Date = new Date();
 
-  barCodeVisible: boolean = false;
+  barCodeVisible = false;
 
-  editable: boolean = true;
+  editable = true;
 
   task: any;
 
   printStyle: string = printStyles;
+
+  tabIndex = 0;
+
+  formsTabOrder: Array<any> = [];
 
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
     this.route.params.subscribe(values => this.task = values);
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
   }
 
   hideDialog() {
@@ -58,7 +71,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
-    let agentesList = [];
+    const agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
     agentesList.push(...this.getAgentesInt());
     this.radicacion = {
@@ -70,22 +83,31 @@ export class RadicarComunicacionesComponent implements OnInit {
       datosContactoList: this.getDatosContactos()
     };
     this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
+      this.barCodeVisible = true;
+      this.radicacion = response;
+      this.editable = false;
+      this.radicacion = response;
+      this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
+      this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
+      this.barCodeVisible = true;
+      this.editable = false;
+
       this._taskSandBox.completeTask({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
-        idTarea: this.task.idTarea
-      }).subscribe(() => {
-        this.barCodeVisible = true;
-        this.radicacion = response;
-        this.editable = false;
-      });
+        idTarea: this.task.idTarea,
+        parametros: {
+          requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
+          numeroRadicacion: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+        }
+      }).subscribe();
     });
   }
 
   getTipoAgenteExt(): AgentDTO {
-    let tipoAgente: AgentDTO = {
+    const tipoAgente: AgentDTO = {
       ideAgente: null,
-      codTipoRemite: null,
+      codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos,
       nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
@@ -96,21 +118,21 @@ export class RadicarComunicacionesComponent implements OnInit {
       codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
       codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
       nroDocuIdentidad: null,
-      codSede: null,
-      codDependencia: null,
+      codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
+      codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
       codFuncRemite: null,
       fecAsignacion: this.date.toISOString(),
       ideContacto: null,
-      codTipAgent: 'EXT',
+      codTipAgent: 'REM',
       indOriginal: null
     };
     return tipoAgente;
   }
 
   getAgentesInt(): Array<AgentDTO> {
-    let agentes = [];
+    const agentes = [];
     this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
-      let tipoAgente: AgentDTO = {
+      const tipoAgente: AgentDTO = {
         ideAgente: null,
         codTipoRemite: null,
         codTipoPers: null,
@@ -128,7 +150,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codFuncRemite: null,
         fecAsignacion: this.date.toISOString(),
         ideContacto: null,
-        codTipAgent: 'INT',
+        codTipAgent: 'DES',
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
@@ -138,7 +160,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getListaAnexos(): Array<AnexoDTO> {
-    let anexoList = [];
+    const anexoList = [];
     this.datosGenerales.descripcionAnexos.forEach((anexo) => {
       anexoList.push({
         ideAnexo: null,
@@ -150,7 +172,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getListaReferidos(): Array<ReferidoDTO> {
-    let referidosList = [];
+    const referidosList = [];
     this.datosGenerales.radicadosReferidos.forEach(referido => {
       referidosList.push({
         ideReferido: null,
@@ -161,13 +183,13 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getDocumento(): DocumentoDTO {
-    let documento: DocumentoDTO = {
+    const documento: DocumentoDTO = {
       idePpdDocumento: null,
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
       codAsunto: 'CA',
-      nroFolios: this.valueGeneral.numeroFolio,//'Numero Folio',
-      nroAnexos: this.valueGeneral.cantidadAnexos,//'Numero anexos',
+      nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
+      nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
       ideEcm: null,
       codTipoSoporte: null,
@@ -178,7 +200,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
 
   getCorrespondencia(): CorrespondenciaDTO {
-    let correspondenciaDto: CorrespondenciaDTO = {
+    const correspondenciaDto: CorrespondenciaDTO = {
       ideDocumento: null,
       descripcion: this.valueGeneral.asunto,
       tiempoRespuesta: this.valueGeneral.tiempoRespuesta,
@@ -190,11 +212,11 @@ export class RadicarComunicacionesComponent implements OnInit {
       codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
       ideInstancia: null,
-      reqDistFisica: this.valueGeneral.reqDistFisica ? "1" : "0",
+      reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
       codFuncRadica: null,
       codSede: null,
       codDependencia: null,
-      reqDigita: this.valueGeneral.reqDigit ? "1" : "0",
+      reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
       codEmpMsj: null,
       nroGuia: null,
       fecVenGestion: null,
@@ -204,7 +226,8 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   getDatosContactos(): Array<ContactoDTO> {
-    let contactos = [];
+    const contactos = [];
+    console.log(this.datosRemitente.addresses);
     this.datosRemitente.addresses.forEach(address => {
       contactos.push({
         ideContacto: null,
@@ -213,7 +236,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
         codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: null,
+        direccion: address.direccion,
         celular: null,
         telFijo1: null,
         telFijo2: null,
@@ -228,6 +251,23 @@ export class RadicarComunicacionesComponent implements OnInit {
       });
     });
     return contactos;
+  }
+
+  navigateBackToWorkspace() {
+    this._taskSandBox.navigateToWorkspace();
+  }
+
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
+  }
+
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(index) {
+    console.log(index);
+    // this.tabIndex = index;
   }
 
 }

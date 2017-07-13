@@ -4,7 +4,7 @@ import {tassign} from 'tassign';
 
 interface ConstanteDTOStateInterface {
   ids: number[];
-  entities: { [ideConst: number]: ConstanteDTO };
+  entities: { [id: string]: ConstanteDTO };
   selectedId?: number | null;
   filter?: string;
 }
@@ -24,8 +24,6 @@ export interface State {
   tipoDestinatario: ConstanteDTOStateInterface;
   unidadTiempo: ConstanteDTOStateInterface;
   mediosRecepcion: ConstanteDTOStateInterface;
-  sedeAdministrativa: ConstanteDTOStateInterface;
-  dependenciaGrupo: ConstanteDTOStateInterface;
   tipologiaDocumental: ConstanteDTOStateInterface;
   tratamientoCortesia: ConstanteDTOStateInterface;
   tipoVia: ConstanteDTOStateInterface;
@@ -43,8 +41,6 @@ const initialState: State = {
   tipoDestinatario: new ConstanteDTOStateInstance(),
   unidadTiempo: new ConstanteDTOStateInstance(),
   mediosRecepcion: new ConstanteDTOStateInstance(),
-  sedeAdministrativa: new ConstanteDTOStateInstance(),
-  dependenciaGrupo: new ConstanteDTOStateInstance(),
   tipologiaDocumental: new ConstanteDTOStateInstance(),
   tratamientoCortesia: new ConstanteDTOStateInstance(),
   tipoVia: new ConstanteDTOStateInstance(),
@@ -66,29 +62,27 @@ export function reducer(state = initialState, action: Actions) {
       console.log(action.payload);
       const target = action.payload.key;
       const values = action.payload.data.constantes;
-      const newValues = values.filter(data => !state[target].entities[data.ideConst]);
+      const newValues = values.filter(data => !state[target].entities[data.codigo]);
 
-      const newValuesIds = newValues.map(data => data.ideConst);
-      const newValuesEntities = newValues.reduce((entities: { [ideConst: number]: ConstanteDTO }, value: ConstanteDTO) => {
+      const newValuesIds = newValues.map(data => data.codigo);
+      const newValuesEntities = newValues.reduce((entities: { [id: string]: ConstanteDTO }, value: ConstanteDTO) => {
         return Object.assign(entities, {
-          [value.ideConst]: value
+          [value.codigo]: value
         });
       }, {});
       const cloneState = Object.assign({}, state);
       cloneState[target] = {
         ids: [...state[target].ids, ...newValuesIds],
-        entities: Object.assign({}, state[target].entities, newValuesEntities),
-        selectedBookId: state[target].selectedBookId
+        entities: Object.assign({}, state[target].entities, newValuesEntities)
       };
       return cloneState;
     }
 
     case Autocomplete.FILTER: {
-      console.log(action.payload);0
-      const target = action.payload.key;
+      const $target = action.payload.key;
       const query = action.payload.data;
       const cloneState = Object.assign({}, state);
-      cloneState[target] = tassign(cloneState[target], {
+      cloneState[$target] = tassign(cloneState[$target], {
         filter: query
       });
       return cloneState;

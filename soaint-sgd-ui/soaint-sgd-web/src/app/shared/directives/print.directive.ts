@@ -22,14 +22,10 @@ export class PrintDirective implements AfterViewInit {
 
     const inlineStyles = this.inlineStyles;
 
-    console.log(layoutStyles);
-
     let self = this;
     jQuery(this.button).on('click', function () {
 
         const html = jQuery('#' + self.printelement).prop('outerHTML');
-
-        console.log(html);
 
         const sheets = document.styleSheets;
         console.log(sheets);
@@ -40,14 +36,14 @@ export class PrintDirective implements AfterViewInit {
 
         }
 
-        let printStyles: any = '';
-
-        array.forEach(function (value: any, index: any) {
-          if (isString(value)) {
-            const res = value.substring(value.indexOf(':') + 1);
-            printStyles = '<link rel=\'stylesheet\' type=\'text/css\'  href=' + value + ' media=\'print\'>\n' + printStyles;
-          }
-        });
+        // let printStyles: any = '';
+        //
+        // array.forEach(function (value: any, index: any) {
+        //   if (isString(value)) {
+        //     const res = value.substring(value.indexOf(':') + 1);
+        //     printStyles = '<link rel=\'stylesheet\' type=\'text/css\'  href=' + value + ' media=\'print\'>\n' + printStyles;
+        //   }
+        // });
 
         const printContents = html;
 
@@ -60,8 +56,6 @@ export class PrintDirective implements AfterViewInit {
             <head>
             <title>Print tab</title>
             
-            ${printStyles}
-            
             <style type="text/css">
                 ${inlineStyles}
                 ${layoutStyles}
@@ -72,9 +66,7 @@ export class PrintDirective implements AfterViewInit {
         </html>`
         );
         popupWin.document.close();
-
       }
     )
   };
-
 }

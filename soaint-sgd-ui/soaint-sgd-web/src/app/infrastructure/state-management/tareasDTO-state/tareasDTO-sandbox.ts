@@ -6,6 +6,8 @@ import {ListForSelectionApiService} from '../../api/list-for-selection.api.servi
 import * as actions from './tareasDTO-actions';
 import {go} from '@ngrx/router-store';
 import {tassign} from 'tassign';
+import {TareaDTO} from '../../../domain/tareaDTO';
+import {isArray} from 'rxjs/util/isArray';
 
 
 @Injectable()
@@ -28,7 +30,16 @@ export class Sandbox {
   }
 
   startTask(payload: any) {
-    return this._listSelectionService.post(environment.tasksStartProcess, payload);
+    let overPayload = payload;
+    if (isArray(payload) && payload.length > 0) {
+      const task = payload[0];
+      overPayload = {
+        'idProceso': task.idProceso,
+        'idDespliegue': task.idDespliegue,
+        'idTarea': task.idTarea
+      }
+    }
+    return this._listSelectionService.post(environment.tasksStartProcess, overPayload);
   }
 
   completeTask(payload: any) {
@@ -40,8 +51,29 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction(query));
   }
 
-  initTaskDispatch(payload?) {
+  initTaskDispatch(payload?): any {
     this._store.dispatch(go(['/radicar-comunicaciones', payload]));
+  }
+
+  navigateToWorkspace() {
+    this._store.dispatch(go('workspace'));
+  }
+
+  startTaskDispatch(task?: TareaDTO) {
+
+    if (task.estado === 'ENPROGRESO') {
+
+      this.initTaskDispatch(task);
+
+    } else if (task.estado === 'RESERVADO') {
+
+      this._store.dispatch(new actions.StartTaskAction({
+        'idProceso': task.idProceso,
+        'idDespliegue': task.idDespliegue,
+        'idTarea': task.idTarea
+      }));
+
+    }
   }
 
   loadDispatch(payload?) {

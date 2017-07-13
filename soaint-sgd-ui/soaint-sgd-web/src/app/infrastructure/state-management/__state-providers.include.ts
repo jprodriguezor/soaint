@@ -6,6 +6,9 @@ import {Sandbox as DepartamentoDtoSandbox} from 'app/infrastructure/state-manage
 import {Sandbox as DependenciaGrupoDtoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as tareasDtoSandbox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {Sandbox as RadicarComunicacionesSandbox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
+import {Sandbox as ComunicacionOficialSandbox} from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import {Sandbox as FuncionarioDtoSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {Sandbox as SedeAdministrativaDtoSandbox} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-sandbox';
 
 export const STATE_MANAGEMENT_PROVIDERS = [
   ConstanteDtoSandbox,
@@ -15,5 +18,9 @@ export const STATE_MANAGEMENT_PROVIDERS = [
   MunicipioDtoSandbox,
   DependenciaGrupoDtoSandbox,
   tareasDtoSandbox,
-  RadicarComunicacionesSandbox
+  RadicarComunicacionesSandbox,
+  ComunicacionOficialSandbox,
+  RadicarComunicacionesSandbox,
+  FuncionarioDtoSandbox,
+  SedeAdministrativaDtoSandbox
 ];

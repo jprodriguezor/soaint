@@ -37,7 +37,14 @@ import javax.persistence.*;
         @NamedQuery(name = "PpdDocumento.findIdePpdDocumentoByIdeDocumento", query = "SELECT p.idePpdDocumento " +
                 "FROM PpdDocumento p " +
                 "INNER JOIN p.corCorrespondencia co " +
-                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "PpdDocumento.findIdePpdDocumentoByNroRadicado", query = "SELECT p.idePpdDocumento " +
+                "FROM PpdDocumento p " +
+                "INNER JOIN p.corCorrespondencia co " +
+                "WHERE co.nroRadicado = :NRO_RADICADO"),
+        @NamedQuery(name = "PpdDocumento.updateIdEcm", query = "UPDATE PpdDocumento p " +
+                "SET p.ideEcm = :IDE_ECM " +
+                "WHERE p.idePpdDocumento = :IDE_PPDDOCUMENTO")})
 @javax.persistence.TableGenerator(name = "PPD_DOCUMENTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "PPD_DOCUMENTO_SEQ", allocationSize = 1)
 public class PpdDocumento implements Serializable {

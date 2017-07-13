@@ -26,8 +26,8 @@ export const getTipoComunicacionSelectedEntity =
     return entities[selectedId];
   });
 
-export const getTipoComunicacionArrayData = createSelector(getTipoComunicacionEntities, getTipoComunicacionIds, getFilterTipoComunicacion, (entities, ids, query) => {
-  return ids.map(id => entities[id]).filter(data => data.nombre.indexOf(query));
+export const getTipoComunicacionArrayData = createSelector(getTipoComunicacionEntities, getTipoComunicacionIds, getFilterTipoComunicacion, (entities, ids) => {
+  return ids.map(id => entities[id]);
 });
 
 

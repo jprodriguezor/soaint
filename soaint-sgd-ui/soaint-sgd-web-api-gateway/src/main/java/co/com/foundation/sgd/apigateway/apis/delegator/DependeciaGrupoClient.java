@@ -20,7 +20,7 @@ public class DependeciaGrupoClient {
     public Response listBySedeAdministrativa(String codigoSedeAdministrativa) {
         System.out.println("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes/hijos/" + codigoSedeAdministrativa + "/A")
+        return wt.path("/organigrama-web-api/organigrama/dependencias/" + codigoSedeAdministrativa)
                 .request()
                 .get();
     }

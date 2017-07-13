@@ -28,4 +28,15 @@ public class CorrespondenciaClient {
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
+    public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado) {
+        System.out.println("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia")
+                .queryParam("fecha_ini", fechaIni)
+                .queryParam("fecha_fin", fechaFin)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("cod_estado", codEstado)
+                .request()
+                .get();
+    }
 }

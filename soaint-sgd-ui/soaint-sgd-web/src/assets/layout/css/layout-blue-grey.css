@@ -851,7 +851,7 @@ html {
 
 body {
   font-family: Roboto,"Helvetica Neue",sans-serif;
-  font-size: 10px;
+  font-size: 16px;
   line-height: 1.5em;
   color: #212121;
   -webkit-font-smoothing: antialiased;
@@ -974,7 +974,7 @@ body {
     .layout-container .topbar .topbar-right .topbar-items .search-item input {
       position: relative;
       top: -10px;
-      font-size: 10px;
+      font-size: 16px;
       background-color: transparent;
       border-width: 0 0 1px 0;
       padding: 2px 2px 5px 2px;
@@ -986,7 +986,7 @@ body {
     .layout-container .topbar .topbar-right .topbar-items .search-item input:focus ~ label {
       top: -5px;
       font-size: 12px;
-      color: #607D8B; }
+      color: transparent; }
     .layout-container .topbar .topbar-right .topbar-items .search-item input.ui-state-filled ~ label {
       display: none; }
     .layout-container .topbar .topbar-right .topbar-items .search-item label {
@@ -1112,7 +1112,7 @@ body {
     -ms-transform: rotate(180deg);
     transform: rotate(180deg); }
 .layout-container .layout-main {
-  padding: 96px 16px 16px 16px;
+  padding: 70px 16px 16px 16px;
   -moz-transition: margin-left 0.3s;
   -o-transition: margin-left 0.3s;
   -webkit-transition: margin-left 0.3s;
@@ -1144,7 +1144,7 @@ body {
       font-size: 1.5em; }
     .layout-container .ultima-menu li a i:last-child {
       float: right;
-      font-size: 14px;
+      font-size: 20px;
       margin-top: .15em;
       margin-right: -.15em;
       -moz-transition: transform 0.3s;
@@ -1181,7 +1181,7 @@ body {
     .layout-container .ultima-menu li ul li a {
       padding: .5em 1em .5em 2em; }
       .layout-container .ultima-menu li ul li a > span {
-        font-size: 9px; }
+        font-size: 15px; }
       .layout-container .ultima-menu li ul li a i:first-child {
         display: inline-block;
         vertical-align: middle;
@@ -1219,7 +1219,8 @@ body {
     .layout-container .topbar-items > li {
       float: right;
       position: relative;
-      margin-left: 8px; }
+      margin-left: 8px;
+      margin-right: 8px; }
       .layout-container .topbar-items > li > a {
         position: relative;
         display: block; }

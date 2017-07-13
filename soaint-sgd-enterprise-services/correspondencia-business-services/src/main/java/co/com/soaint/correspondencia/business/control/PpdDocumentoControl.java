@@ -6,7 +6,11 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +23,22 @@ import java.util.Date;
  */
 @BusinessControl
 public class PpdDocumentoControl {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    public List<PpdDocumentoDTO> consultarPpdDocumentosByCorrespondencia(BigInteger idDocumento){
+        return em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+                .setParameter("IDE_DOCUMENTO", idDocumento)
+                .getResultList();
+    }
+
+    public List<BigInteger> consultarPpdDocumentosByNroRadicado(String nroRadicado){
+        return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByNroRadicado", BigInteger.class)
+                .setParameter("NRO_RADICADO", nroRadicado)
+                .getResultList();
+    }
+
     public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO)throws BusinessException, SystemException{
         Date fecha = new Date();
         return PpdDocumento.newInstance()

@@ -5,7 +5,7 @@ import {PaisDTO} from 'app/domain/paisDTO';
 
 export interface State {
   ids: number[];
-  entities: { [codigoProceso: number]: PaisDTO };
+  entities: { [id: number]: PaisDTO };
   selectedId: number;
 }
 

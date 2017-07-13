@@ -13,4 +13,4 @@ const rootPath = (state: rootStore.State) => state.radicarComunicacion;
  * use-case.
  */
 
-export const comunicacionOficial = createSelector(rootPath, (state: State) => state.comunicacionOficial );
+export const comunicacionOficial = createSelector(rootPath, (state: State) => state );

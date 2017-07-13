@@ -4,7 +4,7 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validator, Validators} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
@@ -19,24 +19,22 @@ import {getBisArrayData} from 'app/infrastructure/state-management/constanteDTO-
 export class DatosDireccionComponent implements OnInit {
 
   form: FormGroup;
-  tipoViaControl: AbstractControl;
-  noViaPrincipalControl: AbstractControl;
-  prefijoCuadranteControl: AbstractControl;
-  orientacionControl: AbstractControl;
-  bisControl: AbstractControl;
-  noViaControl: AbstractControl;
-  placaControl: AbstractControl;
+  display = false;
+  canAgregate = false;
+  editable = false;
 
   prefijoCuadranteSuggestions$: Observable<ConstanteDTO[]>;
   tipoViaSuggestions$: Observable<ConstanteDTO[]>;
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
 
-  @Input()
-  display: boolean = false;
+  direcciones: Array<any> = [];
 
   @Output()
-  dialogHide: EventEmitter<any> = new EventEmitter<any>();
+  onClose: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  onComplete: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
@@ -44,13 +42,91 @@ export class DatosDireccionComponent implements OnInit {
     this.initForm();
   }
 
-  hideDialog() {
-    this.display = false;
+  show() {
+    this.display = true;
   }
 
-  addAddress() {
-    this.hideDialog();
-    this.dialogHide.emit(this.form.value);
+  hide() {
+    this.display = false;
+    this.direcciones = [];
+    this.form.reset();
+  }
+
+  completeRegistration() {
+    this.onComplete.emit(this.direcciones);
+    this.hide();
+  }
+
+  addDireccion() {
+    let direccion = '';
+    const tipoVia = this.form.get('tipoVia');
+    const noViaPrincipal = this.form.get('noViaPrincipal');
+    const prefijoCuadrante = this.form.get('prefijoCuadrante');
+    const bis = this.form.get('bis');
+    const orientacion = this.form.get('orientacion');
+    const noVia = this.form.get('noVia');
+    const prefijoCuadrante_se = this.form.get('prefijoCuadrante_se');
+    const placa = this.form.get('placa');
+    const orientacion_se = this.form.get('orientacion_se');
+    const tipoComplemento = this.form.get('complementoTipo');
+    const complementoAdicional = this.form.get('complementoAdicional');
+
+    const value = {};
+
+    if (tipoVia.value) {
+      direccion += tipoVia.value.nombre;
+      value['tipoVia'] = tipoVia.value;
+      tipoVia.reset();
+    }
+    if (noViaPrincipal.value) {
+      direccion += ' ' + noViaPrincipal.value;
+      value['noViaPrincipal'] = noViaPrincipal.value;
+      noViaPrincipal.reset();
+    }
+    if (prefijoCuadrante.value) {
+      direccion += ' ' + prefijoCuadrante.value.nombre;
+      value['prefijoCuadrante'] = prefijoCuadrante.value;
+      prefijoCuadrante.reset();
+    }
+    if (bis.value) {
+      direccion += ' ' + bis.value.nombre;
+      value['bis'] = bis;
+      bis.reset();
+    }
+    if (orientacion.value) {
+      direccion += ' ' + orientacion.value.nombre;
+      value['orientacion'] = orientacion.value;
+      orientacion.reset();
+    }
+    if (noVia.value) {
+      direccion += ' ' + noVia.value;
+      value['noVia'] = noVia.value;
+      noVia.reset();
+    }
+    if (prefijoCuadrante_se.value) {
+      direccion += ' ' + prefijoCuadrante_se.value.nombre;
+      prefijoCuadrante_se.reset();
+    }
+    if (placa.value) {
+      direccion += ' ' + placa.value;
+      value['placa'] = placa.value;
+      placa.reset();
+    }
+    if (orientacion_se.value) {
+      direccion += ' ' + orientacion_se.value.nombre;
+      orientacion_se.reset();
+    }
+    if (tipoComplemento.value) {
+      direccion += ' ' + tipoComplemento.value.nombre;
+      tipoComplemento.reset();
+    }
+    if (complementoAdicional.value) {
+      direccion += ' ' + complementoAdicional.value;
+      complementoAdicional.reset();
+    }
+    value['direccion'] = direccion;
+    const insert = [value];
+    this.direcciones = [...insert, ...this.direcciones];
   }
 
   ngOnInit(): void {
@@ -61,63 +137,19 @@ export class DatosDireccionComponent implements OnInit {
   }
 
   initForm() {
-    this.tipoViaControl = new FormControl(null);
-    this.noViaPrincipalControl = new FormControl(null);
-    this.prefijoCuadranteControl = new FormControl(null);
-    this.orientacionControl = new FormControl(null);
-    this.bisControl = new FormControl(null);
-    this.noViaControl = new FormControl(null);
-    this.placaControl = new FormControl(null);
-
     this.form = this.formBuilder.group({
-      'tipoVia': this.tipoViaControl,
-      'noViaPrincipal': this.noViaPrincipalControl,
-      'prefijoCuadrante': this.prefijoCuadranteControl,
-      'orientacion': this.orientacionControl,
-      'bis': this.bisControl,
-      'noVia': this.noViaControl,
-      'placa': this.placaControl
+      'tipoVia': [{value: null, editable: !this.editable}, Validators.required],
+      'noViaPrincipal': [{value: null, editable: !this.editable}, Validators.required],
+      'prefijoCuadrante': [null],
+      'bis': [null],
+      'orientacion': [null],
+      'noVia': [{value: null, editable: !this.editable}, Validators.required],
+      'prefijoCuadrante_se': [null],
+      'placa': [{value: null, editable: !this.editable}, Validators.required],
+      'orientacion_se': [null],
+      'complementoTipo': [null],
+      'complementoAdicional': [null],
     });
-  }
-
-
-  onFilterTipoVia($event) {
-    this._constanteSandbox.filterDispatch('tipoVia', $event.query);
-  }
-
-  onDropdownClickTipoVia($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('tipoVia');
-  }
-
-  onFilterPrefijoCuadrante($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('prefijoCuadrante', query);
-  }
-
-  onDropdownClickPrefijoCuadrante($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('prefijoCuadrante');
-  }
-
-  onFilterOrientacion($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('orientacion', query);
-  }
-
-  onDropdownClickOrientacion($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('orientacion');
-  }
-
-  onFilterBis($event) {
-    const query = $event.query;
-    this._constanteSandbox.filterDispatch('bis', query);
-  }
-
-  onDropdownClickBis($event) {
-    // this method triggers load of suggestions
-    this._constanteSandbox.loadDispatch('bis');
   }
 
 }

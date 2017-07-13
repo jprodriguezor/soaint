@@ -1,8 +1,8 @@
-import {ContactoDTO} from './ContactoDTO';
-import {ReferidoDTO} from './ReferidoDTO';
-import {AnexoDTO} from './AnexoDTO';
-import {DocumentoDTO} from './DocumentoDTO';
-import {AgentDTO} from './AgentDTO';
+import {ContactoDTO} from './contactoDTO';
+import {ReferidoDTO} from './referidoDTO';
+import {AnexoDTO} from './anexoDTO';
+import {DocumentoDTO} from './documentoDTO';
+import {AgentDTO} from './agentDTO';
 import {CorrespondenciaDTO} from './correspondenciaDTO';
 
 

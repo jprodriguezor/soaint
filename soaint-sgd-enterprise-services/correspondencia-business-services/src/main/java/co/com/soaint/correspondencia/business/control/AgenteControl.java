@@ -3,10 +3,12 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +21,18 @@ import java.util.ArrayList;
  */
 @BusinessControl
 public class AgenteControl {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) {
+        List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
+                .setParameter("IDE_DOCUMENTO", idDocumento)
+                .getResultList();
+
+        return agenteDTOList;
+    }
+
     public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {
         return CorAgente.newInstance()
                 .ideAgente(agenteDTO.getIdeAgente())
@@ -36,6 +50,7 @@ public class AgenteControl {
                 .codSede(agenteDTO.getCodSede())
                 .codDependencia(agenteDTO.getCodDependencia())
                 .codFuncRemite(agenteDTO.getCodFuncRemite())
+                .codEstado(agenteDTO.getCodEstado())
                 .fecAsignacion(agenteDTO.getFecAsignacion())
                 .ideContacto(agenteDTO.getIdeContacto())
                 .codTipAgent(agenteDTO.getCodTipAgent())

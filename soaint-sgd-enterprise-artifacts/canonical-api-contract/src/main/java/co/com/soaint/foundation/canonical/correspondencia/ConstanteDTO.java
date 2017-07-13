@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,6 +24,8 @@ import java.math.BigInteger;
 public class ConstanteDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @JsonProperty("id")
     private BigInteger ideConst;
     private String codigo;
     private String nombre;
