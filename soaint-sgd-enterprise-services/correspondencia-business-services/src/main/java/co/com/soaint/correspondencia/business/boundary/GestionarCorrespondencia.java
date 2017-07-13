@@ -175,7 +175,7 @@ public class GestionarCorrespondencia {
             }
 
             List<BigInteger> idePpdDocumentoList = ppdDocumentoControl.consultarPpdDocumentosByNroRadicado(nroRadicado);
-            if (idePpdDocumentoList.size() == 0){
+            if (idePpdDocumentoList.isEmpty()){
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.ppdDocumento_not_exist_by_nroRadicado")
                         .buildBusinessException();
@@ -307,7 +307,7 @@ public class GestionarCorrespondencia {
                     .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
 
-            if (correspondenciaDTOList.size() == 0) {
+            if (correspondenciaDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_estado")
                         .buildBusinessException();

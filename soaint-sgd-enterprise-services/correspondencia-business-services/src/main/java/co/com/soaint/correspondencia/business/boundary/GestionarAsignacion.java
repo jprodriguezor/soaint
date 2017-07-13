@@ -79,7 +79,7 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
                         .getResultList();
 
-                if (dctAsigUltimoList.size() > 0) {
+                if (!dctAsigUltimoList.isEmpty()) {
                     dctAsigUltimo = dctAsigUltimoList.get(0);
                 } else {
                     dctAsigUltimo = DctAsigUltimo.newInstance()
@@ -158,7 +158,7 @@ public class GestionarAsignacion {
                     .setParameter("IDE_FUNCI", ideFunci)
                     .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
-            if (asignacionDTOList.size() == 0) {
+            if (asignacionDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("asignacion.not_exist_by_idefuncionario_and_nroradicado")
                         .buildBusinessException();
