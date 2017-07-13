@@ -8,7 +8,8 @@ import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
   getTipoTelefonoArrayData,
-  getTratamientoCortesiaArrayData
+  getTratamientoCortesiaArrayData,
+  getTipoComplementoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -26,6 +27,10 @@ import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/st
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {
+  COMUNICACION_EXTERNA, COMUNICACION_INTERNA, PERSONA_ANONIMA, PERSONA_JURIDICA,
+  PERSONA_NATURAL
+} from 'app/shared/bussiness-properties/radicacion-properties';
 
 
 @Component({
@@ -166,11 +171,11 @@ export class DatosRemitenteComponent implements OnInit {
     this.form.get('nombreApellidos').disable();
     this.form.get('nroDocumentoIdentidad').disable();
 
-    if (value.codigo === 'TP-PERA') {
+    if (value.codigo === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
       // this.form.get('tipoPersona').enable();
 
-    } else if (value.codigo === 'TP-PERPJ') {
+    } else if (value.codigo === PERSONA_JURIDICA) {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
@@ -187,11 +192,11 @@ export class DatosRemitenteComponent implements OnInit {
       this.form.get('nroDocumentoIdentidad').enable();
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
-      if (this.tipoComunicacion === 'TP-CMCOE') {
+      if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
-    } else if (value.codigo === 'TP-PERPN') {
+    } else if (value.codigo === PERSONA_NATURAL) {
 
       this.visibility['nombreApellidos'] = true;
       this.form.get('nombreApellidos').enable();
@@ -204,7 +209,7 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['municipio'] = true;
       this.visibility['direccion'] = true;
 
-      if (this.tipoComunicacion === 'TP-CMCOE') {
+      if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
@@ -213,14 +218,14 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   deleteAdress(index) {
-    let radref = [...this.addresses];
+    const radref = [...this.addresses];
     radref.splice(index, 1);
     this.addresses = radref;
   }
 
   hideDialog($event) {
     this.display = false;
-    let addresses = [...this.addresses];
+    const addresses = [...this.addresses];
     addresses.push($event);
     this.addresses = addresses;
   }
@@ -229,7 +234,7 @@ export class DatosRemitenteComponent implements OnInit {
   setTipoComunicacion(value) {
     if (value) {
       this.tipoComunicacion = value.codigo;
-      if (this.tipoComunicacion === 'TP-CMCOI') {
+      if (this.tipoComunicacion === COMUNICACION_INTERNA) {
         this.form.get('tipoPersona').disable();
         this.form.get('sedeAdministrativa').enable();
         this.form.get('dependenciaGrupo').enable();

@@ -10,6 +10,7 @@ import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
 import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
 import {getBisArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/bis-selectors';
+import {getTipoComplementoArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-complemento-selectors';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class DatosDireccionComponent implements OnInit {
   tipoViaSuggestions$: Observable<ConstanteDTO[]>;
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
+  tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
 
   direcciones: Array<any> = [];
 
@@ -134,6 +136,7 @@ export class DatosDireccionComponent implements OnInit {
     this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
     this.bisSuggestons$ = this._store.select(getBisArrayData);
+    this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
   }
 
   initForm() {

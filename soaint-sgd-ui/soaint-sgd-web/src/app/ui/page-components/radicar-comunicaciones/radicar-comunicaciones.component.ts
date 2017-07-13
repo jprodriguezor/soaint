@@ -10,6 +10,7 @@ import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
+import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -53,6 +54,8 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   formsTabOrder: Array<any> = [];
 
+  ticketRadicado: any;
+
   constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
@@ -61,10 +64,31 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.formsTabOrder.push(this.datosGenerales);
     this.formsTabOrder.push(this.datosRemitente);
     this.formsTabOrder.push(this.datosDestinatario);
+
+    setTimeout(() => {
+      this.datosGenerales.form.get('tipoComunicacion').valueChanges
+        .distinctUntilChanged()
+        .subscribe(comunicacion => {
+          if (comunicacion.codigo === COMUNICACION_INTERNA) {
+            this.datosRemitente.form.get('sedeAdministrativa').valueChanges
+              .distinctUntilChanged()
+              .subscribe(sede => {
+                console.log(sede);
+           
+              })
+          } else {
+
+          }
+        });
+    }, 400);
   }
 
-  hideDialog() {
+  hideTicketRadicado() {
     this.barCodeVisible = false;
+  }
+
+  showTicketRadicado() {
+    this.barCodeVisible = true;
   }
 
   radicarComunicacion() {
@@ -89,8 +113,8 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
-      this.barCodeVisible = true;
-      this.editable = false;
+      this.hideTicketRadicado();
+      this.disableEditionOnForms();
 
       this._taskSandBox.completeTask({
         idProceso: this.task.idProceso,
@@ -253,6 +277,17 @@ export class RadicarComunicacionesComponent implements OnInit {
     return contactos;
   }
 
+  setTicketRadicado() {
+
+  }
+
+  disableEditionOnForms() {
+    this.datosDestinatario.form.disable();
+    this.datosRemitente.form.disable();
+    this.datosGenerales.form.disable();
+    this.editable = false;
+  }
+
   navigateBackToWorkspace() {
     this._taskSandBox.navigateToWorkspace();
   }
@@ -265,9 +300,8 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
   }
 
-  updateTabIndex(index) {
-    console.log(index);
-    // this.tabIndex = index;
+  updateTabIndex(event) {
+    this.tabIndex = event.index;
   }
 
 }
