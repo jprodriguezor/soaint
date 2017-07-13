@@ -30,9 +30,16 @@ import javax.persistence.*;
         @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.nroDocumentoIden, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
-                "c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
+                "c.codEstado, c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
-                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
+                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.nroDocumentoIden, c.razonSocial, c.nit, c.codCortesia, " +
+                "c.codCargo, c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, c.codFuncRemite, " +
+                "c.codEstado, c.fecAsignacion, c.ideContacto, c.codTipAgent, c.indOriginal) " +
+                "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
+                "WHERE c.codEstado = :COD_ESTADO AND c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
+                "AND co.ideDocumento = :IDE_DOCUMENTO")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)
 public class CorAgente implements Serializable {

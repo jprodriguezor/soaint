@@ -5,6 +5,7 @@ package co.com.soaint.foundation.canonical.correspondencia.constantes;
  */
 public enum EstadoCorrespondenciaEnum {
     RADICADO("RD", "RADICADO"),
+    REGISTRADO("RG", "REGISTRADO"),
     SIN_ASIGNAR("SA", "SIN ASIGNAR"),
     ASIGNADO("AS", "ASIGNADO");
 
