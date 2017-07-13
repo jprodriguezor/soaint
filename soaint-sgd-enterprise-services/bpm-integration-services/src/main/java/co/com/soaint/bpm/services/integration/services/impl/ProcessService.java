@@ -1,10 +1,7 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -17,7 +14,6 @@ import org.apache.http.util.EntityUtils;
 import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
-
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.audit.AuditService;
@@ -30,13 +26,14 @@ import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Arce on 6/7/2017.
@@ -187,17 +184,27 @@ public class ProcessService implements IProcessServices {
 
     @Override
     public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
-        ksession = obtenerEngine(entrada).getKieSession();
+        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
+        entradaManual.setUsuario(usuarioAdmin);
+        entradaManual.setPass(passAdmin);
+
+        ksession = obtenerEngine(entradaManual).getKieSession();
         ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
+
+        org.json.JSONObject json = new org.json.JSONObject();
+        json.put("estadoRadicacion","Proceso Radicado");
+        json.put("estadoFinal","Proceso Terminado");
+        json.put("numeroRadicado","RAD123456");
+
+        ksession.signalEvent("estadoDigitalizacion", json.toString(), processInstance.getId());
 
         RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
                 .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessName())
+                .nombreProceso(processInstance.getProcessId())
                 .estado(String.valueOf(processInstance.getState()))
-                .idDespliegue(entrada.getIdDespliegue())
+                .idDespliegue(entradaManual.getIdDespliegue())
                 .build();
-
-        ksession.signalEvent("estadoDigitalizacion", respuesta, processInstance.getId());
 
         return respuesta;
     }
