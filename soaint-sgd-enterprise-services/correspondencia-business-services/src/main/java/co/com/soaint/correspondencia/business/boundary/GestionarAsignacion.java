@@ -7,6 +7,7 @@ import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -20,6 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,9 +53,12 @@ public class GestionarAsignacion {
     DctAsigUltimoControl dctAsigUltimoControl;
     // ----------------------
 
-    public void asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+        AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
+                .asignaciones(new ArrayList<>())
+                .build();
         try {
-            for(AsignacionDTO asignacionDTO : asignacionesDTO.getAsignaciones()) {
+            for (AsignacionDTO asignacionDTO : asignacionesDTO.getAsignaciones()) {
                 CorAgente corAgente = CorAgente.newInstance()
                         .ideAgente(asignacionDTO.getIdeAgente())
                         .build();
@@ -85,6 +92,7 @@ public class GestionarAsignacion {
                 dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
                 dctAsigUltimo.setFecCambio(fecha);
 
+                dctAsignacion.setFecAsignacion(fecha);
                 dctAsignacion.setCorAgente(corAgente);
                 dctAsignacion.setCorCorrespondencia(corCorrespondencia);
                 dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
@@ -92,8 +100,23 @@ public class GestionarAsignacion {
 
                 em.persist(dctAsignacion);
                 em.merge(dctAsigUltimo);
+                em.flush();
+
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String fechaAsig = df.format(fecha);
+                em.createNamedQuery("CorAgente.updateAsignacion")
+                        .setParameter("FECHA_ASIGNACION", fechaAsig)
+                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                        .executeUpdate();
+
+                AsignacionDTO asignacionDTOResult = em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)
+                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .getSingleResult();
+                asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
-            em.flush();
+            return asignacionesDTOResult;
         } catch (Throwable ex) {
             LOGGER.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -130,9 +153,9 @@ public class GestionarAsignacion {
         try {
             List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.findByIdeFunciAndNroRadicado", AsignacionDTO.class)
                     .setParameter("IDE_FUNCI", ideFunci)
-                    .setParameter("NRO_RADICADO", nroRadicado == null ? nroRadicado : "%" + nroRadicado + "%")
+                    .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
-            if (asignacionDTOList.size() == 0){
+            if (asignacionDTOList.size() == 0) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("asignacion.not_exist_by_idefuncionario_and_nroradicado")
                         .buildBusinessException();
