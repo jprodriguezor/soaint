@@ -30,6 +30,7 @@ export interface State {
   prefijoCuadrante: ConstanteDTOStateInterface;
   bis: ConstanteDTOStateInterface;
   orientacion: ConstanteDTOStateInterface;
+  tipoComplemento: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -46,7 +47,8 @@ const initialState: State = {
   tipoVia: new ConstanteDTOStateInstance(),
   prefijoCuadrante: new ConstanteDTOStateInstance(),
   bis: new ConstanteDTOStateInstance(),
-  orientacion: new ConstanteDTOStateInstance()
+  orientacion: new ConstanteDTOStateInstance(),
+  tipoComplemento: new ConstanteDTOStateInstance()
 }
 
 /**
@@ -59,7 +61,6 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
       const target = action.payload.key;
       const values = action.payload.data.constantes;
       const newValues = values.filter(data => !state[target].entities[data.codigo]);

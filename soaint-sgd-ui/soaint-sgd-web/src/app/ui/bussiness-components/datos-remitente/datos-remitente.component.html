@@ -219,7 +219,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="numeroTel" formControlName="numeroTel">
+                <p-inputMask id="numeroTel" formControlName="numeroTel" mask="(999) 999-9999? x99999"></p-inputMask>
               <label>No. de teléfono</label>
               </span>
             </div>
@@ -297,7 +297,7 @@
 
         <!--Direccion-->
         <div class="ui-fluid" *ngIf="visibility.direccion" style="padding-top: 25px">
-          <p-dataTable [value]="addresses" selectionMode="single" [(selection)]="selectedAdress"
+          <p-dataTable [value]="addresses" selectionMode="single"
                        [paginator]="true" [rows]="10" [responsive]="true">
             <p-header>
 

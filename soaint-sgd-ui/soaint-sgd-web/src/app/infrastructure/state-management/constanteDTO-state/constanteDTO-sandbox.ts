@@ -57,6 +57,9 @@ export class Sandbox {
       case 'bis':
         endpoint = environment.bis_endpoint;
         break;
+      case 'tipoComplemento':
+        endpoint = environment.tipoComplemento_endpoint;
+        break;
       case 'prefijoCuadrante':
         endpoint = environment.prefijoCuadrante_endpoint;
         break;

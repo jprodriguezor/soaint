@@ -31,6 +31,7 @@ export const environment = {
   tasksStartProcess: `${host}/proceso-gateway-api/tareas/iniciar/`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
   bis_endpoint: `${host}/bis-gateway-api`,
+  tipoComplemento_endpoint: `${host}/tipo-complemento-gateway-api`,
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,

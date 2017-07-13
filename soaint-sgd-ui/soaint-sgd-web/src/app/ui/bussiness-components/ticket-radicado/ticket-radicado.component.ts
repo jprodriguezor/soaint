@@ -8,25 +8,25 @@ import {Component, Input, OnInit} from '@angular/core';
 export class TicketRadicadoComponent implements OnInit {
 
 
-  @Input() anexos: string = '1';
+  @Input() anexos: string = null;
 
-  @Input() folios: string = '2';
+  @Input() folios: string = null;
 
-  @Input() noRadicado: string = 'COR112EE31342342342';
+  @Input() noRadicado: string = null;
 
-  @Input() fecha: Date = new Date();
+  @Input() fecha: string = null;
 
-  @Input() remitente: string = 'No Hay Remitente';
+  @Input() remitente: string = null;
 
-  @Input() remitenteSede: string = 'CentralDT';
+  @Input() remitenteSede: string = null;
 
-  @Input() remitenteGrupo: string = 'GRUPO DE ADMINISTRACION DOCUMENTAL';
+  @Input() remitenteGrupo: string = null;
 
-  @Input() destinatario: string = 'No Hay Destinatario';
+  @Input() destinatario: string = null;
 
-  @Input() destinatarioSede: string = 'CentralDT';
+  @Input() destinatarioSede: string = null;
 
-  @Input() destinatarioGrupo: string = 'GRUPO DE ADMINISTRACION DOCUMENTAL';
+  @Input() destinatarioGrupo: string = null;
 
 
   constructor() {
