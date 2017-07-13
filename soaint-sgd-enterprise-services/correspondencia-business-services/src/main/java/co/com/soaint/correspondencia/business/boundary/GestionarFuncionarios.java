@@ -64,7 +64,7 @@ public class GestionarFuncionarios {
                         funcionarioDTO.setSede(sede);
                         funcionarioDTOList.add(funcionarioDTO);
                     });
-            if (funcionarioDTOList.size() == 0) {
+            if (funcionarioDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.funcionario_not_exist_by_loginName_and_estado")
                         .buildBusinessException();
@@ -88,7 +88,7 @@ public class GestionarFuncionarios {
                     .setParameter("COD_ORGA_ADMI", codDependencia)
                     .setParameter("ESTADO", codEstado)
                     .getResultList();
-            if (funcionarioDTOList.size() == 0) {
+            if (funcionarioDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.funcionario_not_exist_by_codDependencia_and_estado")
                         .buildBusinessException();

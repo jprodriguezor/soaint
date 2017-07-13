@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

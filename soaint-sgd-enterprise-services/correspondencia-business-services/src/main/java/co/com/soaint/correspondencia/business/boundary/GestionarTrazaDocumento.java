@@ -30,8 +30,6 @@ import java.util.Date;
 public class GestionarTrazaDocumento {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarTrazaDocumento.class.getName());
-
     @PersistenceContext
     private EntityManager em;
 
