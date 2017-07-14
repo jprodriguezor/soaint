@@ -128,14 +128,14 @@ public class GestionarAsignacion {
         }
     }
 
-    public void actualizarIdInstancia(Long ideAsignacion, String idInstancia) throws BusinessException, SystemException {
+    public void actualizarIdInstancia(AsignacionDTO asignacion) throws BusinessException, SystemException {
         try {
             DctAsigUltimo dctAsigUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)
-                    .setParameter("IDE_ASIGNACION", ideAsignacion)
+                    .setParameter("IDE_ASIGNACION", asignacion.getIdeAsignacion())
                     .getSingleResult();
             em.createNamedQuery("DctAsigUltimo.updateIdInstancia")
                     .setParameter("IDE_ASIG_ULTIMO", dctAsigUltimo.getIdeAsigUltimo())
-                    .setParameter("ID_INSTANCIA", idInstancia)
+                    .setParameter("ID_INSTANCIA", asignacion.getIdInstancia())
                     .executeUpdate();
         } catch (NoResultException n) {
             throw ExceptionBuilder.newBuilder()

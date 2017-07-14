@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -43,10 +44,10 @@ public class AsignacionWebApi {
     }
 
     @PUT
-    @Path("/asignacion/{ide_asignacion}/{id_instancia}")
-    public void actualizarIdInstancia(@PathParam("ide_asignacion")final Long ideAsignacion, @PathParam("id_instancia")final String idInstancia)throws BusinessException, SystemException{
+    @Path("/asignacion/actualizar-instancia")
+    public void actualizarIdInstancia(AsignacionDTO asignacion)throws BusinessException, SystemException{
         LOGGER.info("processing rest request - actualizar instancia ultima asignacion");
-        boundary.actualizarIdInstancia(ideAsignacion, idInstancia);
+        boundary.actualizarIdInstancia(asignacion);
     }
 
     @PUT

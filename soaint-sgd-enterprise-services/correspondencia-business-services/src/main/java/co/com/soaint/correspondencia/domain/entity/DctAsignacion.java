@@ -41,7 +41,7 @@ public class DctAsignacion implements Serializable {
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "DCT_ASIGNACION_GENERATOR")
     @Column(name = "IDE_ASIGNACION")
-    private Long ideAsignacion;
+    private BigInteger ideAsignacion;
     @Basic(optional = false)
     @Column(name = "FEC_ASIGNACION")
     @Temporal(TemporalType.TIMESTAMP)
