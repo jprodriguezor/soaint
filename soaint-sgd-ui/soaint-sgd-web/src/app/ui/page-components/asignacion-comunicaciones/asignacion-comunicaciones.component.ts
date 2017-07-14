@@ -24,7 +24,7 @@ export class AsignarComunicacionesComponent implements OnInit {
 
   estadosCorrespondencia: [{ label: string, value: string }];
 
-  selectedComunications: ComunicacionOficialDTO[];
+  selectedComunications: ComunicacionOficialDTO[] = [];
 
   start_date: Date = new Date();
 

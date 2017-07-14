@@ -120,6 +120,7 @@
                     (click)="listarComunicaciones()"></button>
             <button pButton type="button" label="Asignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    [disabled]="!funcionarioSelected || selectedComunications.length == 0"
                     (click)="assignComunications()"></button>
           </div>
         </div>
