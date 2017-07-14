@@ -29,15 +29,15 @@ public class DatosContactoControl {
 
     public List<DatosContactoDTO> consultarDatosContactoByAgentes(List<AgenteDTO> agenteDTOList) {
         List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
-        agenteDTOList.stream().forEach((agenteDTO) -> {
+        agenteDTOList.stream().forEach(agenteDTO -> {
             if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
                 em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .getResultList()
                         .stream()
-                        .forEach((datosContactoDTO) -> {
-                            datosContactoDTOList.add(datosContactoDTO);
-                        });
+                        .forEach(datosContactoDTO ->
+                            datosContactoDTOList.add(datosContactoDTO)
+                        );
             }
         });
         return datosContactoDTOList;

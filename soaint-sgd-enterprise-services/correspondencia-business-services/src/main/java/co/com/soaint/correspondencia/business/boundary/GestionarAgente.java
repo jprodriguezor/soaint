@@ -28,7 +28,7 @@ import javax.persistence.PersistenceContext;
 public class GestionarAgente {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarAsignacion.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarAsignacion.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -51,7 +51,7 @@ public class GestionarAgente {
         } catch (BusinessException e) {
             throw e;
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

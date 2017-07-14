@@ -5,9 +5,6 @@ import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

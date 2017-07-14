@@ -28,7 +28,7 @@ public class GestionarConstantes {
 
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarConstantes.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarConstantes.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -47,7 +47,7 @@ public class GestionarConstantes {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -63,7 +63,7 @@ public class GestionarConstantes {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -79,7 +79,7 @@ public class GestionarConstantes {
                 .setParameter("ESTADO", estado)
                 .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

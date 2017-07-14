@@ -43,7 +43,7 @@ import java.util.List;
 public class GestionarAsignacion {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarAsignacion.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarAsignacion.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -120,7 +120,7 @@ public class GestionarAsignacion {
             }
             return asignacionesDTOResult;
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -143,7 +143,7 @@ public class GestionarAsignacion {
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -167,7 +167,7 @@ public class GestionarAsignacion {
         } catch (BusinessException e) {
             throw e;
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -185,7 +185,7 @@ public class GestionarAsignacion {
                         .executeUpdate();
             }
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

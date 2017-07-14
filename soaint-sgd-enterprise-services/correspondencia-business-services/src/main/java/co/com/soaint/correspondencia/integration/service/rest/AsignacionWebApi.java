@@ -27,7 +27,7 @@ import java.math.BigInteger;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 public class AsignacionWebApi {
-    private static Logger LOGGER = LogManager.getLogger(AsignacionWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(AsignacionWebApi.class.getName());
 
     @Autowired
     GestionarAsignacion boundary;
@@ -39,21 +39,21 @@ public class AsignacionWebApi {
     @POST
     @Path("/asignacion")
     public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - asignar correspondencia");
+        logger.info("processing rest request - asignar correspondencia");
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
     @PUT
     @Path("/asignacion/actualizar-instancia")
     public void actualizarIdInstancia(AsignacionDTO asignacion)throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - actualizar instancia ultima asignacion");
+        logger.info("processing rest request - actualizar instancia ultima asignacion");
         boundary.actualizarIdInstancia(asignacion);
     }
 
     @PUT
     @Path("/asignacion/redireccionar")
     public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - redireccionar correspondencia");
+        logger.info("processing rest request - redireccionar correspondencia");
         boundary.redireccionarCorrespondencia(agentesDTO);
     }
 
@@ -61,7 +61,7 @@ public class AsignacionWebApi {
     @Path("/asignacion")
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@QueryParam("ide_funci")final BigInteger ideFunci,
                                                                          @QueryParam("nro_radicado")final String nroRadicado)throws  BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar asignaciones por funcionario y nroradicado");
+        logger.info("processing rest request - listar asignaciones por funcionario y nroradicado");
         return boundary.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
     }
 }

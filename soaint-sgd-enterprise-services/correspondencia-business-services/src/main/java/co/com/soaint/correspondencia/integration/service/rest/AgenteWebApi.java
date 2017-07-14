@@ -27,7 +27,7 @@ import javax.ws.rs.Produces;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 public class AgenteWebApi {
-    private static Logger LOGGER = LogManager.getLogger(AgenteWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(AgenteWebApi.class.getName());
 
     @Autowired
     GestionarAgente boundary;
@@ -39,7 +39,7 @@ public class AgenteWebApi {
     @PUT
     @Path("/agente/actualizar-estado")
     public void actualizarEstadoAgente(AgenteDTO agenteDTO)throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - actualizar estado agente");
+        logger.info("processing rest request - actualizar estado agente");
         boundary.actualizarEstadoAgente(agenteDTO);
     }
 }

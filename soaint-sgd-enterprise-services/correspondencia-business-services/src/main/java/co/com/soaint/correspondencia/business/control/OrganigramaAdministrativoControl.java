@@ -62,4 +62,13 @@ public class OrganigramaAdministrativoControl {
         }
         return organigramaItem;
     }
+
+    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(final BigInteger ideOrgaAdmin) {
+        List<OrganigramaItemDTO> data = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
+                .setParameter("ID_PADRE", String.valueOf(ideOrgaAdmin))
+                .setHint("org.hibernate.cacheable", true)
+                .getResultList();
+        this.consultarElementosRecursivamente(new ArrayList<>(data), data);
+        return data;
+    }
 }
