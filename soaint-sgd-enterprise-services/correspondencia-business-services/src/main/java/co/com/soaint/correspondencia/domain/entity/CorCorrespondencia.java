@@ -50,7 +50,8 @@ import java.util.List;
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", query = "SELECT MAX(c.nroRadicado) " +
                 "FROM CorCorrespondencia c " +
-                "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC)"),
+                "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC) " +
+                "AND NOT c.nroRadicado BETWEEN :RESERVADO_INI AND :RESERVADO_FIN "),
         @NamedQuery(name = "CorCorrespondencia.updateEstado", query = "UPDATE CorCorrespondencia c " +
                 "SET c.codEstado = :COD_ESTADO " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
