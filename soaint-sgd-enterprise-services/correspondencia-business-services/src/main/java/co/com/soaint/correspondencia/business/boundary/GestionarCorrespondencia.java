@@ -65,6 +65,7 @@ public class GestionarCorrespondencia {
 
     @Autowired
     GestionarTrazaDocumento gestionarTrazaDocumento;
+
     // ----------------------
 
     public GestionarCorrespondencia() {
@@ -86,7 +87,7 @@ public class GestionarCorrespondencia {
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
-                    agenteControl.asignarDatosContacto(corAgente, comunicacionOficialDTO.getDatosContactoList());
+                    AgenteControl.asignarDatosContacto(corAgente, comunicacionOficialDTO.getDatosContactoList());
                 }
 
                 correspondencia.getCorAgenteList().add(corAgente);
@@ -96,14 +97,14 @@ public class GestionarCorrespondencia {
             ppdDocumento.setCorCorrespondencia(correspondencia);
             ppdDocumento.setCorAnexoList(new ArrayList<>());
 
-            comunicacionOficialDTO.getAnexoList().stream().forEach((anexoDTO) -> {
+            comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
                 CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
                 corAnexo.setPpdDocumento(ppdDocumento);
                 ppdDocumento.getCorAnexoList().add(corAnexo);
             });
             correspondencia.getPpdDocumentoList().add(ppdDocumento);
 
-            comunicacionOficialDTO.getReferidoList().stream().forEach((referidoDTO) -> {
+            comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
                 CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
                 corReferido.setCorCorrespondencia(correspondencia);
                 correspondencia.getCorReferidoList().add(corReferido);
@@ -124,7 +125,7 @@ public class GestionarCorrespondencia {
                             .codOrgaAdmin(null)
                             .build());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Business Boundary - a system error has occurred", e);
                 }
 
             }).start();
@@ -194,7 +195,7 @@ public class GestionarCorrespondencia {
                             .codOrgaAdmin(null)
                             .build());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Business Boundary - a system error has occurred", e);
                 }
 
             }).start();
@@ -235,7 +236,7 @@ public class GestionarCorrespondencia {
                             .codOrgaAdmin(null)
                             .build());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Business Boundary - a system error has occurred", e);
                 }
 
             }).start();

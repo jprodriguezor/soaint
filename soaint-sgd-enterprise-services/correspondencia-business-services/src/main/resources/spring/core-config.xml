@@ -20,5 +20,8 @@
 
     <context:component-scan base-package="co.com.soaint.correspondencia.business"/>
     <context:component-scan base-package="co.com.soaint.correspondencia.integration"/>
+    <context:property-placeholder location="classpath:sgd_enterprise_services_radicado.properties" />
+    <context:property-placeholder location="classpath:sgd_enterprise_services_messages.properties" />
+
 
 </beans>
