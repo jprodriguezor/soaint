@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -38,5 +39,13 @@ public class CorrespondenciaClient {
                 .queryParam("cod_estado", codEstado)
                 .request()
                 .get();
+    }
+
+    public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+        System.out.println("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/asignacion-web-api/asignacion")
+                .request()
+                .post(Entity.json(asignacionesDTO));
     }
 }
