@@ -28,7 +28,7 @@ public class GestionarDepartamento {
 
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarDepartamento.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarDepartamento.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -46,7 +46,7 @@ public class GestionarDepartamento {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -62,7 +62,7 @@ public class GestionarDepartamento {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

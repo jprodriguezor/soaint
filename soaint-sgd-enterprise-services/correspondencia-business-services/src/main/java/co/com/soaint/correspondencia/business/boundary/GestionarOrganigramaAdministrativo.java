@@ -16,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +31,7 @@ import java.util.List;
 public class GestionarOrganigramaAdministrativo {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarCorrespondencia.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarCorrespondencia.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -51,18 +50,17 @@ public class GestionarOrganigramaAdministrativo {
         try {
             OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
                     .getSingleResult();
-            List<OrganigramaItemDTO> organigramaItemDTOList = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
+            return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
                     .setParameter("ID_PADRE", String.valueOf(raiz.getIdeOrgaAdmin()))
                     .setHint("org.hibernate.cacheable", true)
                     .getResultList();
-            return organigramaItemDTOList;
         } catch (NoResultException n) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -76,7 +74,7 @@ public class GestionarOrganigramaAdministrativo {
             OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
                     .getSingleResult();
 
-            List<OrganigramaItemDTO> organigramaItemDTOList = listarElementosDeNivelInferior(raiz.getIdeOrgaAdmin());
+            List<OrganigramaItemDTO> organigramaItemDTOList = organigramaAdministrativoControl.listarElementosDeNivelInferior(raiz.getIdeOrgaAdmin());
             organigramaItemDTOList.add(raiz);
 
             return organigramaItemDTOList;
@@ -86,7 +84,7 @@ public class GestionarOrganigramaAdministrativo {
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -95,20 +93,23 @@ public class GestionarOrganigramaAdministrativo {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(final BigInteger ideOrgaAdmin) {
-        List<OrganigramaItemDTO> data = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
-                .setParameter("ID_PADRE", String.valueOf(ideOrgaAdmin))
-                .setHint("org.hibernate.cacheable", true)
-                .getResultList();
-        organigramaAdministrativoControl.consultarElementosRecursivamente(new ArrayList<>(data), data);
-        return data;
+    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
+        try {
+            return organigramaAdministrativoControl.listarElementosDeNivelInferior(ideOrgaAdmin);
+        } catch (Throwable ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
         try {
             OrganigramaItemDTO organigramaItem = organigramaAdministrativoControl.consultarPadreDeSegundoNivel(ideOrgaAdmin);
-            if (organigramaItem == null){
+            if (organigramaItem == null) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("organigrama.no_padre_segundo_nivel")
                         .buildBusinessException();
@@ -122,7 +123,7 @@ public class GestionarOrganigramaAdministrativo {
         } catch (BusinessException e) {
             throw e;
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

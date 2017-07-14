@@ -28,7 +28,7 @@ public class GestionarMunicipio {
 
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarMunicipio.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarMunicipio.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -47,7 +47,7 @@ public class GestionarMunicipio {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -62,7 +62,7 @@ public class GestionarMunicipio {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -32,8 +33,8 @@ public class GestionarAsignacionWS {
     }
 
     @WebMethod(action = "actualizarIdInstancia", operationName = "actualizarIdInstancia")
-    public void actualizarIdInstancia(@WebParam(name = "ide_asignacion")final Long ideAsignacion, @WebParam(name = "id_instancia")final String idInstancia)throws BusinessException, SystemException{
-        boundary.actualizarIdInstancia(ideAsignacion, idInstancia);
+    public void actualizarIdInstancia(@WebParam(name = "asignacion")final AsignacionDTO asignacion)throws BusinessException, SystemException{
+        boundary.actualizarIdInstancia(asignacion);
     }
 
     @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")

@@ -31,7 +31,7 @@ import java.util.Date;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 public class CorrespondenciaWebApi {
-    private static Logger LOGGER = LogManager.getLogger(CorrespondenciaWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(CorrespondenciaWebApi.class.getName());
 
     @Autowired
     private GestionarCorrespondencia boundary;
@@ -43,42 +43,42 @@ public class CorrespondenciaWebApi {
     @POST
     @Path("/correspondencia")
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - radicar correspondencia");
+        logger.info("processing rest request - radicar correspondencia");
         return boundary.radicarCorrespondencia(comunicacionOficialDTO);
     }
 
     @POST
     @Path("/correspondencia/observacion")
     public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - registrar observacion correspondencia");
+        logger.info("processing rest request - registrar observacion correspondencia");
         boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
 
     @GET
     @Path("/correspondencia/{nro_radicado}")
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - listar correspondencia by nro radicado");
+        logger.info("processing rest request - listar correspondencia by nro radicado");
         return boundary.listarCorrespondenciaByNroRadicado(nroRadicado);
     }
 
     @PUT
     @Path("/correspondencia/actualizar-estado")
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - actualizar estado correspondencia");
+        logger.info("processing rest request - actualizar estado correspondencia");
         boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
     @PUT
     @Path("/correspondencia/actualizar-ide-instancia")
     public void actualizarIdeInstancia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - actualizar ide instancia");
+        logger.info("processing rest request - actualizar ide instancia");
         boundary.actualizarIdeInstancia(correspondenciaDTO);
     }
 
     @PUT
     @Path("/correspondencia/{nro_radicado}/{ide_ecm}")
     public void actualizarReferenciaECM(@PathParam("nro_radicado") final String nroRadicado, @PathParam("ide_ecm") final String ideEcm) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - actualizar referencia ECM");
+        logger.info("processing rest request - actualizar referencia ECM");
         boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
     }
 
@@ -89,7 +89,7 @@ public class CorrespondenciaWebApi {
                                                                                                   @QueryParam("cod_dependencia") final String codDependencia,
                                                                                                   @QueryParam("cod_estado") final String codEstado,
                                                                                                   @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
-        LOGGER.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_estado");
+        logger.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_estado");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date fechaInicial = dateFormat.parse(fechaIni);

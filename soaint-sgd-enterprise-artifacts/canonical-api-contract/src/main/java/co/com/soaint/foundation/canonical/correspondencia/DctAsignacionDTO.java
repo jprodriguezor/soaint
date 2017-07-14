@@ -27,7 +27,7 @@ import java.util.Date;
 public class DctAsignacionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long ideAsignacion;
+    private BigInteger ideAsignacion;
     private Date fecAsignacion;
     private BigInteger ideFunci;
     private String codDependencia;

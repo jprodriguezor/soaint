@@ -122,7 +122,7 @@ public class CorrespondenciaControl {
                 .concat(String.format("%06d", consecRadicado));
     }
 
-    public Date CalcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
+    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
         return new Date();
     }
 

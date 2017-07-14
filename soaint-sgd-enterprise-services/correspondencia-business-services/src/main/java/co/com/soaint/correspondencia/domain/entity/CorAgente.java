@@ -45,11 +45,17 @@ import java.util.List;
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.codEstado = :COD_ESTADO AND c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorAgente.countByIdeAgente", query = "SELECT COUNT(*) " +
+                "FROM CorAgente c " +
+                "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.updateAsignacion", query = "UPDATE CorAgente c " +
                 "SET c.fecAsignacion = :FECHA_ASIGNACION, c.codEstado = :COD_ESTADO " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
                 "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA " +
+                "WHERE c.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "CorAgente.updateEstado", query = "UPDATE CorAgente c " +
+                "SET c.codEstado = :COD_ESTADO " +
                 "WHERE c.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)
