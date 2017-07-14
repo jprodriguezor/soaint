@@ -59,7 +59,7 @@ public class GestionarOrganigramaAdministrativo {
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -83,7 +83,7 @@ public class GestionarOrganigramaAdministrativo {
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -93,10 +93,10 @@ public class GestionarOrganigramaAdministrativo {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
+    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(BigInteger ideOrgaAdmin) throws SystemException {
         try {
             return organigramaAdministrativoControl.listarElementosDeNivelInferior(ideOrgaAdmin);
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -122,7 +122,7 @@ public class GestionarOrganigramaAdministrativo {
                     .buildBusinessException();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

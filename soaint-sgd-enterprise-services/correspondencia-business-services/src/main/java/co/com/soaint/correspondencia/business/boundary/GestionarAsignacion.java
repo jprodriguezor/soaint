@@ -55,7 +55,7 @@ public class GestionarAsignacion {
     DctAsigUltimoControl dctAsigUltimoControl;
     // ----------------------
 
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
@@ -119,7 +119,7 @@ public class GestionarAsignacion {
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
             return asignacionesDTOResult;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -142,7 +142,7 @@ public class GestionarAsignacion {
                     .withMessage("asignacion.asignacion_not_exist_by_ideAsignacion")
                     .withRootException(n)
                     .buildBusinessException();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -166,7 +166,7 @@ public class GestionarAsignacion {
             return AsignacionesDTO.newInstance().asignaciones(asignacionDTOList).build();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -175,7 +175,7 @@ public class GestionarAsignacion {
         }
     }
 
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException {
+    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
         try {
             for (AgenteDTO agenteDTO : agentesDTO.getAgentes()){
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
@@ -184,7 +184,7 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .executeUpdate();
             }
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

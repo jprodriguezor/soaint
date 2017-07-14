@@ -55,7 +55,7 @@ public class GestionarFuncionarios {
                     .setParameter("ESTADO", estado)
                     .getResultList()
                     .stream()
-                    .forEach((funcionarioDTO) -> {
+                    .forEach(funcionarioDTO -> {
                         OrganigramaItemDTO dependencia = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
                                 .setParameter("IDE_ORGA_ADMIN", BigInteger.valueOf(Long.parseLong(funcionarioDTO.getCodOrgaAdmi())))
                                 .getSingleResult();
@@ -72,7 +72,7 @@ public class GestionarFuncionarios {
             return funcionarioDTOList.get(0);
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -96,7 +96,7 @@ public class GestionarFuncionarios {
             return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

@@ -79,7 +79,7 @@ public class GestionarCorrespondencia {
             }
 
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
-            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.RADICADO.getCodigo());
+            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(correspondenciaControl.calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
 
             for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
@@ -88,6 +88,10 @@ public class GestionarCorrespondencia {
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
                     AgenteControl.asignarDatosContacto(corAgente, comunicacionOficialDTO.getDatosContactoList());
+                }
+
+                if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())){
+                    agenteDTO.setCodEstado(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo());
                 }
 
                 correspondencia.getCorAgenteList().add(corAgente);
@@ -131,7 +135,7 @@ public class GestionarCorrespondencia {
             }).start();
 
             return comunicacionOficial;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -153,7 +157,7 @@ public class GestionarCorrespondencia {
                     .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
                     .withRootException(n)
                     .buildBusinessException();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -202,7 +206,7 @@ public class GestionarCorrespondencia {
 
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -243,7 +247,7 @@ public class GestionarCorrespondencia {
 
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -266,7 +270,7 @@ public class GestionarCorrespondencia {
 
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -278,7 +282,7 @@ public class GestionarCorrespondencia {
     public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
         try{
             gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -328,7 +332,7 @@ public class GestionarCorrespondencia {
             return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")

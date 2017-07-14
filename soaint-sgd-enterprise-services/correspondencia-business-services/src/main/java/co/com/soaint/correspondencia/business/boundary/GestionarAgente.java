@@ -50,7 +50,7 @@ public class GestionarAgente {
                     .executeUpdate();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
