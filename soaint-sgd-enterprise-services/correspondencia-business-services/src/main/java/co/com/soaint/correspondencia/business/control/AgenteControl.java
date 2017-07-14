@@ -26,11 +26,9 @@ public class AgenteControl {
     private EntityManager em;
 
     public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) {
-        List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
+        return em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
                 .setParameter("IDE_DOCUMENTO", idDocumento)
                 .getResultList();
-
-        return agenteDTOList;
     }
 
     public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {
