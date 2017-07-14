@@ -39,7 +39,7 @@ public class PpdDocumentoControl {
                 .getResultList();
     }
 
-    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO)throws BusinessException, SystemException{
+    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO){
         Date fecha = new Date();
         return PpdDocumento.newInstance()
                 .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())

@@ -86,12 +86,7 @@ public class GestionarCorrespondencia {
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
-
-                    for (DatosContactoDTO datosContactoDTO : comunicacionOficialDTO.getDatosContactoList()) {
-                        TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
-                        datosContacto.setCorAgente(corAgente);
-                        corAgente.getTvsDatosContactoList().add(datosContacto);
-                    }
+                    agenteControl.asignarDatosContacto(corAgente, comunicacionOficialDTO.getDatosContactoList());
                 }
 
                 correspondencia.getCorAgenteList().add(corAgente);

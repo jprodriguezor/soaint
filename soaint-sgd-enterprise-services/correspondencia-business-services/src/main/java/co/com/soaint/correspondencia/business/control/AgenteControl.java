@@ -1,8 +1,11 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
+import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,12 +28,19 @@ public class AgenteControl {
     @PersistenceContext
     private EntityManager em;
 
+    public static void asignarDatosContacto(CorAgente corAgente, List<DatosContactoDTO> datosContactoDTOList){
+        DatosContactoControl datosContactoControl = new DatosContactoControl();
+        for (DatosContactoDTO datosContactoDTO : datosContactoDTOList) {
+            TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
+            datosContacto.setCorAgente(corAgente);
+            corAgente.getTvsDatosContactoList().add(datosContacto);
+        }
+    }
+
     public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) {
-        List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
+        return em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
                 .setParameter("IDE_DOCUMENTO", idDocumento)
                 .getResultList();
-
-        return agenteDTOList;
     }
 
     public CorAgente corAgenteTransform(AgenteDTO agenteDTO) {

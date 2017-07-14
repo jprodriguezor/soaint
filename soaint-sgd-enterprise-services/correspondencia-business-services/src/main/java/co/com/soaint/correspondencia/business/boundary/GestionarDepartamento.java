@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
