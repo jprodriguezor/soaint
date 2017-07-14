@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.CorrespondenciaClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,19 @@ public class CorrespondenciaGatewayApi {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
         return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/asignar")
+    public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
+        Response response = client.asignarComunicaciones(asignacionesDTO);
+        AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
+        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
 }

@@ -49,77 +49,83 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="ui-g-12">
-    <div class="ui-sm-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
-      <button pButton type="button" label="Actualizar" style="width: auto; margin-left: 12px; margin-bottom: 10px"
-              (click)="listarComunicaciones()"></button>
-    </div>
-    <div class="ui-sm-12 ui-g-6 ui-lg-6">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
-          <label for="funcionario">Funcionario</label>
-        </div>
-        <div class="ui-g-12 md-dropdownfield">
-          <p-dropdown [options]="funcionariosSuggestions$ | async | dropdownItem"
-                      [ngModel]="funcionarioSelected$ | async"
-                      id="funcionario"
-                      placeholder="Seleccione"
-                      [filter]="true"
-                      [autoWidth]="false">
-          </p-dropdown>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="ui-g-12" [style.padding-top]="'40px'">
+            <button pButton type="button" label="Buscar"
+                    style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right"
+                    (click)="listarComunicaciones()"></button>
+          </div>
 
-  <div class="ui-g-12">
-    <p-dataTable selectionMode="multiple" emptyMessage="No se encontraron resultados"
-                 [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
-      <p-header>Listado de comunicaciones</p-header>
-      <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
-      <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
-        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
-        </ng-template>
-      </p-column>
-      <p-column field="fecVenGestion" header="Fecha de vencimiento" [sortable]="true">
-        <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-          {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
-        </ng-template>
-      </p-column>
-      <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
-      <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
-                [style]="{'width':'100px'}"></p-column>
-      <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
-        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-          <button pButton type="button" label="Ver detalles"
-                  style="width: auto;"></button>
-        </ng-template>
-      </p-column>
-      <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
-        <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-          <button pButton type="button" label="Agregar observaciones"
-                  style="width: auto;"></button>
-        </ng-template>
-      </p-column>
-    </p-dataTable>
-  </div>
-  <div class="ui-g-12" style="padding-top: 20px">
-    <button pButton type="button" label="Tramitar"
-            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-            (click)="listarComunicaciones()"></button>
-    <button pButton type="button" label="Redireccionar"
-            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-            (click)="listarComunicaciones()"></button>
-    <button pButton type="button" label="Finalizar"
-            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-            (click)="listarComunicaciones()"></button>
-    <button pButton type="button" label="Asignar" style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-            (click)="listarComunicaciones()"></button>
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-6 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="funcionario">Funcionario</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="funcionariosSuggestions$ | async | dropdownItem"
+                              [(ngModel)]="funcionarioSelected"
+                              id="funcionario"
+                              placeholder="Seleccione"
+                              [filter]="true"
+                              [autoWidth]="false">
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [(selection)]="selectedComunications"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+              <p-header>Listado de comunicaciones</p-header>
+              <p-column selectionMode="multiple"></p-column>
+              <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+              <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="fecVenGestion" header="Fecha de vencimiento" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
+              <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
+                        [style]="{'width':'100px'}"></p-column>
+              <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
+                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                  <button pButton type="button" label="Ver detalles"
+                          style="width: auto;"></button>
+                </ng-template>
+              </p-column>
+              <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
+                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                  <button pButton type="button" label="Agregar observaciones"
+                          style="width: auto;"></button>
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Tramitar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="listarComunicaciones()"></button>
+            <button pButton type="button" label="Redireccionar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="listarComunicaciones()"></button>
+            <button pButton type="button" label="Finalizar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="listarComunicaciones()"></button>
+            <button pButton type="button" label="Asignar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    [disabled]="!funcionarioSelected || selectedComunications.length == 0"
+                    (click)="assignComunications()"></button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
