@@ -48,11 +48,23 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
-    @Path("/proceso/sennal/")
+    @Path("/proceso/sennal/digitalizacion")
     public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
         LOGGER.info("processing rest request - enviar señal proceso");
         try {
-            return proceso.enviarSennalProceso(entradaProceso);
+            return proceso.senalEsperaDigitalizacion(entradaProceso);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
+    @Path("/proceso/sennal/inicio")
+    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
+        LOGGER.info("processing rest request - enviar señal proceso");
+        try {
+            return proceso.senalInicioAutomatico(entradaProceso);
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;

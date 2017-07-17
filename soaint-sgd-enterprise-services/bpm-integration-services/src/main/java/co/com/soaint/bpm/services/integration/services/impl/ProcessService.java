@@ -45,6 +45,8 @@ public class ProcessService implements IProcessServices {
     private KieSession ksession;
     private TaskService taskService;
 
+    private String idDespliegue = "";
+
     private AuditService auditService;
     @Value( "${procesos.listar.endpoint.url}" )
     private String endpointProcesosListar = "";
@@ -183,7 +185,38 @@ public class ProcessService implements IProcessServices {
     }
 
     @Override
-    public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
+    public RespuestaProcesoDTO senalEsperaDigitalizacion(EntradaProcesoDTO entrada) throws IOException, JSONException {
+        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
+        entradaManual.setUsuario(usuarioAdmin);
+        entradaManual.setPass(passAdmin);
+
+        ksession = obtenerEngine(entradaManual).getKieSession();
+        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
+
+        org.json.JSONObject json = new org.json.JSONObject();
+        json.put("estadoRadicacion","Proceso Radicado");
+        json.put("estadoFinal","Proceso Terminado");
+        json.put("numeroRadicado","RAD123456");
+
+        ksession.signalEvent("estadoDigitalizacion", json.toString(), processInstance.getId());
+
+        System.out.println("ID DESPLIEGUE: ".concat(entradaManual.getIdDespliegue()));
+
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .codigoProceso(String.valueOf(processInstance.getId()))
+                .nombreProceso(processInstance.getProcessId())
+                .estado(String.valueOf(processInstance.getState()))
+                .idDespliegue(entradaManual.getIdDespliegue())
+                .build();
+
+        return respuesta;
+    }
+
+    @Override
+    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
+
+
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
