@@ -73,6 +73,7 @@ public class GestionarCorrespondencia {
     }
 
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+        Date fecha = new Date();
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getNroRadicado() == null) {
                 comunicacionOficialDTO.getCorrespondencia().setNroRadicado(correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
@@ -84,6 +85,7 @@ public class GestionarCorrespondencia {
 
             for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
+                corAgente.setFecCreacion(fecha);
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
@@ -91,7 +93,7 @@ public class GestionarCorrespondencia {
                 }
 
                 if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())){
-                    agenteDTO.setCodEstado(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo());
+                    corAgente.setCodEstado(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo());
                 }
 
                 correspondencia.getCorAgenteList().add(corAgente);
@@ -279,7 +281,7 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
+    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException{
         try{
             gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
         } catch (Exception ex) {

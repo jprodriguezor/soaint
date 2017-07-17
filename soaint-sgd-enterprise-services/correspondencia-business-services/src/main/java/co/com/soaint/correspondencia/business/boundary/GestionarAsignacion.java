@@ -104,10 +104,8 @@ public class GestionarAsignacion {
                 em.merge(dctAsigUltimo);
                 em.flush();
 
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String fechaAsig = df.format(fecha);
                 em.createNamedQuery("CorAgente.updateAsignacion")
-                        .setParameter("FECHA_ASIGNACION", fechaAsig)
+                        .setParameter("FECHA_ASIGNACION", fecha)
                         .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .executeUpdate();
