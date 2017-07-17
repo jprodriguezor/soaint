@@ -111,17 +111,16 @@ public class CorrespondenciaControl {
         String reservadoFin = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoF);
 
-        List<String> nroRList = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
+        String nroR = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
                 .setParameter("COD_SEDE", correspondencia.getCodSede())
                 .setParameter("COD_TIPO_CMC", correspondencia.getCodTipoCmc())
                 .setParameter("RESERVADO_INI", reservadoIni)
                 .setParameter("RESERVADO_FIN", reservadoFin)
-                .getResultList();
+                .getSingleResult();
 
         int consecRadicado = 0;
 
-        if (!nroRList.isEmpty()) {
-            String nroR = nroRList.get(0);
+        if (nroR != null) {
             CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroR)
                     .getSingleResult();

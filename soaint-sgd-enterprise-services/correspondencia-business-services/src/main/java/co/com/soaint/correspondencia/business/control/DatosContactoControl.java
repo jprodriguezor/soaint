@@ -53,16 +53,14 @@ public class DatosContactoControl {
                 .codPostal(datosContactoDTO.getCodPostal())
                 .direccion(datosContactoDTO.getDireccion())
                 .celular(datosContactoDTO.getCelular())
-                .telFijo1(datosContactoDTO.getTelFijo1())
-                .telFijo2(datosContactoDTO.getTelFijo2())
-                .extension1(datosContactoDTO.getExtension1())
-                .extension2(datosContactoDTO.getExtension2())
+                .telFijo(datosContactoDTO.getTelFijo())
+                .extension(datosContactoDTO.getExtension())
                 .corrElectronico(datosContactoDTO.getCorrElectronico())
                 .codPais(datosContactoDTO.getCodPais())
                 .codDepartamento(datosContactoDTO.getCodDepartamento())
                 .codMunicipio(datosContactoDTO.getCodMunicipio())
                 .provEstado(datosContactoDTO.getProvEstado())
-                .ciudad(datosContactoDTO.getCiudad())
+                .principal(datosContactoDTO.getPrincipal())
                 .build();
     }
 }

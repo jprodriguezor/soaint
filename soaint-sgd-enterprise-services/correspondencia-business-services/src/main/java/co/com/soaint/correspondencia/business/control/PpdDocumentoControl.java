@@ -42,13 +42,11 @@ public class PpdDocumentoControl {
         return PpdDocumento.newInstance()
                 .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
                 .fecDocumento(ppdDocumentoDTO.getFecDocumento())
-                .codAsunto(ppdDocumentoDTO.getCodAsunto())
+                .asunto(ppdDocumentoDTO.getAsunto())
                 .nroFolios(ppdDocumentoDTO.getNroFolios())
                 .nroAnexos(ppdDocumentoDTO.getNroAnexos())
                 .codEstDoc(ppdDocumentoDTO.getCodEstDoc())
                 .ideEcm(ppdDocumentoDTO.getIdeEcm())
-                .codTipoSoporte(ppdDocumentoDTO.getCodTipoSoporte())
-                .codEstArchivado(ppdDocumentoDTO.getCodEstArchivado())
                 .fecCreacion(fecha)
                 .build();
     }
