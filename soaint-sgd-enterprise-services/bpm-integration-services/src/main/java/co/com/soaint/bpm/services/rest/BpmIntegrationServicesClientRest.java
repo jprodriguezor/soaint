@@ -48,7 +48,7 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
-    @Path("/proceso/sennal/digitalizacion")
+    @Path("/proceso/sennal/digitalizacion/")
     public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
         LOGGER.info("processing rest request - enviar señal proceso");
         try {
@@ -60,7 +60,7 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
-    @Path("/proceso/sennal/inicio")
+    @Path("/proceso/sennal/inicio/")
     public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entradaProceso) throws SystemException, BusinessException, IOException, JSONException {
         LOGGER.info("processing rest request - enviar señal proceso");
         try {

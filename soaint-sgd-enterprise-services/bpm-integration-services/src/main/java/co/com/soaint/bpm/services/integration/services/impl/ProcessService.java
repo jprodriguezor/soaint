@@ -1,7 +1,10 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
-import co.com.soaint.foundation.canonical.bpm.*;
+import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -194,14 +197,11 @@ public class ProcessService implements IProcessServices {
         ksession = obtenerEngine(entradaManual).getKieSession();
         ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
 
-        org.json.JSONObject json = new org.json.JSONObject();
-        json.put("estadoRadicacion","Proceso Radicado");
-        json.put("estadoFinal","Proceso Terminado");
-        json.put("numeroRadicado","RAD123456");
+        org.json.JSONObject datosProceso = new org.json.JSONObject();
+        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
+        datosProceso.put("estadoRadicacion",entrada.getParametros().getOrDefault("estadoRadicacion","RADICADO").toString());
 
-        ksession.signalEvent("estadoDigitalizacion", json.toString(), processInstance.getId());
-
-        System.out.println("ID DESPLIEGUE: ".concat(entradaManual.getIdDespliegue()));
+        ksession.signalEvent("estadoDigitalizacion", datosProceso.toString(), processInstance.getId());
 
         RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
                 .codigoProceso(String.valueOf(processInstance.getId()))
@@ -216,26 +216,21 @@ public class ProcessService implements IProcessServices {
     @Override
     public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
-
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
 
         ksession = obtenerEngine(entradaManual).getKieSession();
-        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
 
-        org.json.JSONObject json = new org.json.JSONObject();
-        json.put("estadoRadicacion","Proceso Radicado");
-        json.put("estadoFinal","Proceso Terminado");
-        json.put("numeroRadicado","RAD123456");
+        org.json.JSONObject datosProceso = new org.json.JSONObject();
+        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
+        datosProceso.put("requiereDigitalizacion", (int)entrada.getParametros().getOrDefault("requiereDigitalizacion",1));
+        datosProceso.put("requiereDistribucion", (int)entrada.getParametros().getOrDefault("requiereDistribucion",1));
 
-        ksession.signalEvent("estadoDigitalizacion", json.toString(), processInstance.getId());
+        ksession.signalEvent("inicioAutomatico", datosProceso.toString());
 
         RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessId())
-                .estado(String.valueOf(processInstance.getState()))
                 .idDespliegue(entradaManual.getIdDespliegue())
                 .build();
 
