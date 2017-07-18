@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,20 +32,16 @@ public class AgenteDTO implements Serializable {
     private String codTipoRemite;
     private String codTipoPers;
     private String nombre;
-    private String nroDocumentoIden;
     private String razonSocial;
     private String nit;
     private String codCortesia;
-    private String codCargo;
     private String codEnCalidad;
     private String codTipDocIdent;
     private String nroDocuIdentidad;
     private String codSede;
     private String codDependencia;
-    private String codFuncRemite;
     private String codEstado;
-    private String fecAsignacion;
-    private Long ideContacto;
+    private Date fecAsignacion;
     private String codTipAgent;
     private String indOriginal;
 

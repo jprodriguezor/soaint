@@ -1,7 +1,6 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarMunicipio;
-import co.com.soaint.correspondencia.domain.entity.TvsMunicipio;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipiosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -11,7 +10,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import java.util.List;
 
 /**
  * Created by esanchez on 5/24/2017.

@@ -7,7 +7,9 @@ export const ActionTypes = {
   LOAD_FAIL: type('[radicarComunicacionesDTO] LoadFailAction'),
   RADICAR: type('[radicarComunicacionesDTO] RadicarAction'),
   RADICAR_SUCCESS: type('[radicarComunicacionesDTO] RadicarSuccessAction'),
-  RADICAR_FAIL: type('[radicarComunicacionesDTO] RadicarFailAction')
+  RADICAR_FAIL: type('[radicarComunicacionesDTO] RadicarFailAction'),
+
+
 };
 
 export class RadicarAction implements Action {

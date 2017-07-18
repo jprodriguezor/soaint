@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -27,13 +28,13 @@ import java.util.Date;
 public class DctAsigUltimoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long ideAsigUltimo;
+    private BigInteger ideAsigUltimo;
     private String numRedirecciones;
     private Short nivLectura;
     private Short nivEscritura;
     private Date fechaVencimiento;
     private String idInstancia;
     private String codTipProceso;
-    private Long ideAsignacion;
+    private BigInteger ideAsignacion;
 
 }

@@ -16,5 +16,6 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/services")
 public class WebApiConfig extends Application {
     public WebApiConfig() {
+        //Init Rest Api
     }
 }

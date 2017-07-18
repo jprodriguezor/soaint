@@ -33,7 +33,7 @@ import java.util.List;
 public class GestionarFuncionarios {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarFuncionarios.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarFuncionarios.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -55,7 +55,7 @@ public class GestionarFuncionarios {
                     .setParameter("ESTADO", estado)
                     .getResultList()
                     .stream()
-                    .forEach((funcionarioDTO) -> {
+                    .forEach(funcionarioDTO -> {
                         OrganigramaItemDTO dependencia = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
                                 .setParameter("IDE_ORGA_ADMIN", BigInteger.valueOf(Long.parseLong(funcionarioDTO.getCodOrgaAdmi())))
                                 .getSingleResult();
@@ -64,7 +64,7 @@ public class GestionarFuncionarios {
                         funcionarioDTO.setSede(sede);
                         funcionarioDTOList.add(funcionarioDTO);
                     });
-            if (funcionarioDTOList.size() == 0) {
+            if (funcionarioDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.funcionario_not_exist_by_loginName_and_estado")
                         .buildBusinessException();
@@ -72,8 +72,8 @@ public class GestionarFuncionarios {
             return funcionarioDTOList.get(0);
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -88,7 +88,7 @@ public class GestionarFuncionarios {
                     .setParameter("COD_ORGA_ADMI", codDependencia)
                     .setParameter("ESTADO", codEstado)
                     .getResultList();
-            if (funcionarioDTOList.size() == 0) {
+            if (funcionarioDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.funcionario_not_exist_by_codDependencia_and_estado")
                         .buildBusinessException();
@@ -96,8 +96,8 @@ public class GestionarFuncionarios {
             return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

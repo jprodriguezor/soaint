@@ -28,8 +28,8 @@ import javax.persistence.*;
     @NamedQuery(name = "TvsDatosContacto.findAll", query = "SELECT t FROM TvsDatosContacto t"),
         @NamedQuery(name = "TvsDatosContacto.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO " +
                 "(t.ideContacto,  t.nroViaGeneradora, t.nroPlaca, t.codTipoVia, t.codPrefijoCuadrant, t.codPostal, t.direccion, t.celular, " +
-                "t.telFijo1, t.telFijo2, t.extension1, t.extension2, t.corrElectronico, t.codPais, t.codDepartamento, t.codMunicipio, " +
-                "t.provEstado, t.ciudad) " +
+                "t.telFijo, t.extension, t.corrElectronico, t.codPais, t.codDepartamento, t.codMunicipio, " +
+                "t.provEstado, t.principal) " +
                 "FROM TvsDatosContacto t INNER JOIN t.corAgente co " +
                 "WHERE co.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "TVS_DATOS_CONTACTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
@@ -56,14 +56,10 @@ public class TvsDatosContacto implements Serializable {
     private String direccion;
     @Column(name = "CELULAR")
     private String celular;
-    @Column(name = "TEL_FIJO1")
-    private String telFijo1;
-    @Column(name = "TEL_FIJO2")
-    private String telFijo2;
-    @Column(name = "EXTENSION1")
-    private String extension1;
-    @Column(name = "EXTENSION2")
-    private String extension2;
+    @Column(name = "TEL_FIJO")
+    private String telFijo;
+    @Column(name = "EXTENSION")
+    private String extension;
     @Column(name = "CORR_ELECTRONICO")
     private String corrElectronico;
     @Column(name = "COD_PAIS")
@@ -74,8 +70,8 @@ public class TvsDatosContacto implements Serializable {
     private String codMunicipio;
     @Column(name = "PROV_ESTADO")
     private String provEstado;
-    @Column(name = "CIUDAD")
-    private String ciudad;
+    @Column(name = "PRINCIPAL")
+    private String principal;
     @JoinColumn(name = "IDE_AGENTE", referencedColumnName = "IDE_AGENTE")
     @ManyToOne(optional = false)
     private CorAgente corAgente;

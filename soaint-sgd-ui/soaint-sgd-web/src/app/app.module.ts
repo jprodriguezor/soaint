@@ -18,6 +18,7 @@ import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, B
 
 // third party libs | components | modules
 import {PRIMENG_MODULES, PrintDirective, PIPES} from './shared/__shared.include';
+import {EmailValidator} from './shared/validators/email.validator';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
 import {LocalStorageModule} from 'angular-2-local-storage';
@@ -100,7 +101,8 @@ import { RouterStoreModule } from '@ngrx/router-store';
     ...API_SERVICES,
     ...PAGE_COMPONENTS_PROVIDERS,
     ...LAYOUT_COMPONENTS_PROVIDERS,
-    ...BUSSINESS_COMPONENTS_PROVIDERS
+    ...BUSSINESS_COMPONENTS_PROVIDERS,
+    EmailValidator
   ],
   bootstrap: [AppComponent]
 })

@@ -155,7 +155,7 @@
               <label for="orientacion">Tipo complemento</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="orientacionSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="tipoComplementoSuggestions$ | async | dropdownItem"
                           id="complementoTipo"
                           placeholder="Seleccione"
                           formControlName="complementoTipo"
@@ -198,7 +198,9 @@
       <button type="button" class="ui-button-primary" (click)="addDireccion()" pButton label="Agregar"
         [disabled]="form.invalid"
       ></button>
-      <button type="button" class="ui-button-success" (click)="completeRegistration()" pButton label="Aceptar"></button>
+      <button type="button" class="ui-button-success" (click)="completeRegistration()" pButton label="Aceptar"
+              [disabled]="direcciones.length === 0"
+      ></button>
     </div>
   </p-footer>
 </p-dialog>

@@ -15,7 +15,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +29,7 @@ import java.util.List;
 @Path("/organigrama-web-api")
 @Produces({"application/json", "application/xml"})
 public class OrganigramaAdministrativoWebApi {
-    private static Logger LOGGER = LogManager.getLogger(OrganigramaAdministrativoWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(OrganigramaAdministrativoWebApi.class.getName());
 
     @Autowired
     private GestionarOrganigramaAdministrativo boundary;
@@ -42,28 +41,28 @@ public class OrganigramaAdministrativoWebApi {
     @GET
     @Path("/organigrama")
     public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - consultar organigrama administrativo");
+        logger.info("processing rest request - consultar organigrama administrativo");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.consultarOrganigrama()).build();
     }
 
     @GET
     @Path("/organigrama/sedes")
     public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar descendientes directos del elemento raiz");
+        logger.info("processing rest request - listar descendientes directos del elemento raiz");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarDescendientesDirectosDeElementoRayz()).build();
     }
 
     @GET
     @Path("/organigrama/dependencias/{ide_orga_admin_padre}")
     public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar descendientes directos de un elemento");
+        logger.info("processing rest request - listar descendientes directos de un elemento");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }
 
     @GET
     @Path("/organigrama/sede/dependencia/{ide_orga_admin}")
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("ide_orga_admin")final String idDependencia) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar padre de segundo nivel");
+        logger.info("processing rest request - listar padre de segundo nivel");
         return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idDependencia)));
     }
 }

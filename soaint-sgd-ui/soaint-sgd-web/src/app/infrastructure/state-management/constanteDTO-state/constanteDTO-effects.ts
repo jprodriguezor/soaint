@@ -56,6 +56,7 @@ export class Effects {
   loadCommonConstants = this.actions$
     .ofType(actions.ActionTypes.LOAD_COMMON)
     .map<Action, void>(toPayload)
+    .distinctUntilChanged()
     .switchMap(() => Observable.combineLatest(
       this._sandbox.loadData({key: 'tipoComunicacion'}),
       this._sandbox.loadData({key: 'mediosRecepcion'}),
@@ -71,6 +72,7 @@ export class Effects {
       this._sandbox.loadData({key: 'tipoVia'}),
       this._sandbox.loadData({key: 'orientacion'}),
       this._sandbox.loadData({key: 'bis'}),
+      this._sandbox.loadData({key: 'tipoComplemento'}),
 
       (tipoComunicacion,
        mediosRecepcion,
@@ -85,7 +87,8 @@ export class Effects {
        tipologiaDocumental,
        tipoVia,
        orientacion,
-       bis
+       bis,
+       tipoComplemento
       ) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
@@ -101,8 +104,8 @@ export class Effects {
           tipologiaDocumental: {key: 'tipologiaDocumental', data: tipologiaDocumental},
           tipoVia: {key: 'tipoVia', data: tipoVia},
           orientacion: {key: 'orientacion', data: orientacion},
-          bis: {key: 'bis', data: bis}
-
+          bis: {key: 'bis', data: bis},
+          tipoComplemento: {key: 'tipoComplemento', data: tipoComplemento}
         }
       }).take(1)
       .mergeMap((data: any) => {
@@ -120,7 +123,8 @@ export class Effects {
           new actions.LoadSuccessAction(data.tipologiaDocumental),
           new actions.LoadSuccessAction(data.tipoVia),
           new actions.LoadSuccessAction(data.orientacion),
-          new actions.LoadSuccessAction(data.bis)
+          new actions.LoadSuccessAction(data.bis),
+          new actions.LoadSuccessAction(data.tipoComplemento)
         ];
       })
       .catch(error => Observable.of(new actions.LoadFailAction({error})))

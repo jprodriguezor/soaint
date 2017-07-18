@@ -2,9 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +27,7 @@ public class GestionarDepartamento {
 
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarDepartamento.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarDepartamento.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -41,13 +39,13 @@ public class GestionarDepartamento {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<DepartamentoDTO> listarDepartamentosByEstado(String estado) throws BusinessException, SystemException {
+    public List<DepartamentoDTO> listarDepartamentosByEstado(String estado) throws SystemException {
         try {
             return em.createNamedQuery("TvsDepartamento.findAll", DepartamentoDTO.class)
                     .setParameter("ESTADO", estado)
                     .getResultList();
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -56,14 +54,14 @@ public class GestionarDepartamento {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<DepartamentoDTO> listarDepartamentosByCodPaisAndEstado(String codPais, String estado) throws BusinessException, SystemException {
+    public List<DepartamentoDTO> listarDepartamentosByCodPaisAndEstado(String codPais, String estado) throws SystemException {
         try {
             return em.createNamedQuery("TvsDepartamento.findAllByCodPaisAndEstado", DepartamentoDTO.class)
                     .setParameter("COD_PAIS", codPais)
                     .setParameter("ESTADO", estado)
                     .getResultList();
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

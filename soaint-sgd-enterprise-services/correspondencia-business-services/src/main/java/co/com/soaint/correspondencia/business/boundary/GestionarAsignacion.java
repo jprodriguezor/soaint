@@ -43,7 +43,7 @@ import java.util.List;
 public class GestionarAsignacion {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarAsignacion.class.getName());
+    private static Logger logger = LogManager.getLogger(GestionarAsignacion.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -55,7 +55,7 @@ public class GestionarAsignacion {
     DctAsigUltimoControl dctAsigUltimoControl;
     // ----------------------
 
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
@@ -79,7 +79,7 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
                         .getResultList();
 
-                if (dctAsigUltimoList.size() > 0) {
+                if (!dctAsigUltimoList.isEmpty()) {
                     dctAsigUltimo = dctAsigUltimoList.get(0);
                 } else {
                     dctAsigUltimo = DctAsigUltimo.newInstance()
@@ -104,10 +104,8 @@ public class GestionarAsignacion {
                 em.merge(dctAsigUltimo);
                 em.flush();
 
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String fechaAsig = df.format(fecha);
                 em.createNamedQuery("CorAgente.updateAsignacion")
-                        .setParameter("FECHA_ASIGNACION", fechaAsig)
+                        .setParameter("FECHA_ASIGNACION", fecha)
                         .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .executeUpdate();
@@ -116,11 +114,12 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
+                asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
             return asignacionesDTOResult;
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -128,22 +127,22 @@ public class GestionarAsignacion {
         }
     }
 
-    public void actualizarIdInstancia(Long ideAsignacion, String idInstancia) throws BusinessException, SystemException {
+    public void actualizarIdInstancia(AsignacionDTO asignacion) throws BusinessException, SystemException {
         try {
             DctAsigUltimo dctAsigUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)
-                    .setParameter("IDE_ASIGNACION", ideAsignacion)
+                    .setParameter("IDE_ASIGNACION", asignacion.getIdeAsignacion())
                     .getSingleResult();
             em.createNamedQuery("DctAsigUltimo.updateIdInstancia")
                     .setParameter("IDE_ASIG_ULTIMO", dctAsigUltimo.getIdeAsigUltimo())
-                    .setParameter("ID_INSTANCIA", idInstancia)
+                    .setParameter("ID_INSTANCIA", asignacion.getIdInstancia())
                     .executeUpdate();
         } catch (NoResultException n) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("asignacion.asignacion_not_exist_by_ideAsignacion")
                     .withRootException(n)
                     .buildBusinessException();
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -158,7 +157,7 @@ public class GestionarAsignacion {
                     .setParameter("IDE_FUNCI", ideFunci)
                     .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();
-            if (asignacionDTOList.size() == 0) {
+            if (asignacionDTOList.isEmpty()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("asignacion.not_exist_by_idefuncionario_and_nroradicado")
                         .buildBusinessException();
@@ -166,8 +165,8 @@ public class GestionarAsignacion {
             return AsignacionesDTO.newInstance().asignaciones(asignacionDTOList).build();
         } catch (BusinessException e) {
             throw e;
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -175,7 +174,7 @@ public class GestionarAsignacion {
         }
     }
 
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException {
+    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
         try {
             for (AgenteDTO agenteDTO : agentesDTO.getAgentes()){
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
@@ -184,8 +183,8 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .executeUpdate();
             }
-        } catch (Throwable ex) {
-            LOGGER.error("Business Boundary - a system error has occurred", ex);
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

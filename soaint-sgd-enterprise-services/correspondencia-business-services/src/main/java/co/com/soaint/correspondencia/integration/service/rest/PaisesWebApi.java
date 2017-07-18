@@ -28,7 +28,7 @@ import javax.ws.rs.Produces;
 @Produces({"application/json", "application/xml"})
 public class PaisesWebApi {
 
-    private static Logger LOGGER = LogManager.getLogger(PaisesWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(PaisesWebApi.class.getName());
 
     @Autowired
     private GestionarPais boundary;
@@ -40,14 +40,14 @@ public class PaisesWebApi {
     @GET
     @Path("/paises/{estado}")
     public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado)throws SystemException, BusinessException {
-        LOGGER.info("processing rest request - listar paises por estado");
+        logger.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
     }
 
     @GET
     @Path("/paises/{nombre_pais}/{estado}")
     public PaisesDTO listarPaisesByNombrePaisAndEstado(@PathParam("nombre_pais") final String nombrePais, @PathParam("estado") final String estado)throws SystemException, BusinessException {
-        LOGGER.info("processing rest request - listar paises por nombre y estado");
+        logger.info("processing rest request - listar paises por nombre y estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByNombrePaisAndEstado(nombrePais, estado)).build();
     }
 }

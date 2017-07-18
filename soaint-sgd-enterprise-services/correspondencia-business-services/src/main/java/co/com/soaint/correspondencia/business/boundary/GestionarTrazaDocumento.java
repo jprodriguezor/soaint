@@ -5,10 +5,6 @@ import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
 import co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 
@@ -30,8 +26,6 @@ import java.util.Date;
 public class GestionarTrazaDocumento {
     // [fields] -----------------------------------
 
-    private static Logger LOGGER = LogManager.getLogger(GestionarTrazaDocumento.class.getName());
-
     @PersistenceContext
     private EntityManager em;
 
@@ -39,7 +33,7 @@ public class GestionarTrazaDocumento {
     private PpdTrazDocumentoControl ppdTrazDocumentoControl;
 
     @Async
-    public void generarTrazaDocumento(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+    public void generarTrazaDocumento(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) {
         PpdTrazDocumento ppdTrazDocumento = ppdTrazDocumentoControl.ppdTrazDocumentoTransform(ppdTrazDocumentoDTO);
 
         BigInteger idePpdDocumento = em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByIdeDocumento", BigInteger.class)
