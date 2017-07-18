@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.CorrespondenciaClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/correspondencia-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -68,6 +71,17 @@ public class CorrespondenciaGatewayApi {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
+        //TODO llenar los datos para iniciar proceso
+        /*responseObject.getAsignaciones().forEach(asignacionDTO -> {
+            EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+            entradaProceso.setIdProceso("");
+            entradaProceso.setUsuario("");
+            entradaProceso.setIdDespliegue("");
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("", "");
+            entradaProceso.setParametros(parametros);
+            this.procesoClient.iniciarManual(entradaProceso);
+        });*/
         System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
