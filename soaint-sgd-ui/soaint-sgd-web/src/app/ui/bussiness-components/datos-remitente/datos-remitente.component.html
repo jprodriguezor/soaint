@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" name="formDefault">
   <div class="ui-fluid">
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
@@ -20,8 +20,8 @@
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-              *ngIf="validations.sedeAdministrativa">
-              {{ validations.sedeAdministrativa }}
+                   *ngIf="validations.sedeAdministrativa">
+                {{ validations.sedeAdministrativa }}
               </div>
             </div>
           </div>
@@ -79,23 +79,6 @@
           </div>
         </div>
 
-        <!--Nro Documento Identidad-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nroDocumentoIdentidad">
-          <div class="ui-g form-group" style="padding-top: 40px">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad">
-              <label for="nroDocumentoIdentidad"><span class="text-danger">*</span>No. Documento identidad</label>
-
-                 <div class="ui-message ui-messages-error"
-                      *ngIf="validations.nroDocumentoIdentidad">
-                    {{ validations.nroDocumentoIdentidad }}
-                 </div>
-              </span>
-            </div>
-          </div>
-        </div>
-
         <!--Tipo Documento-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tipoDocumento">
           <div class="ui-g form-group">
@@ -137,6 +120,36 @@
           </div>
         </div>
 
+        <!--Nit-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nit">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="nit" formControlName="nit">
+              <label for="nit">Nit</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Actua en Calidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.actuaCalidad">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="actuaCalidad">Actua en calidad</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="actuaCalidadSuggestions$ | async | dropdownItem"
+                          id="actuaCalidad"
+                          formControlName="actuaCalidad"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
         <!--Nombre y Apellidos-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nombreApellidos">
           <div class="ui-g form-group" style="padding-top: 40px">
@@ -154,184 +167,54 @@
           </div>
         </div>
 
-        <!--Nit-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6"  *ngIf="visibility.nit">
+        <!--Nro Documento Identidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nroDocumentoIdentidad">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nit" formControlName="nit">
-              <label for="nit">Nit</label>
+              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad">
+              <label for="nroDocumentoIdentidad"><span class="text-danger">*</span>No. Documento identidad</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.nroDocumentoIdentidad">
+                    {{ validations.nroDocumentoIdentidad }}
+                 </div>
               </span>
             </div>
           </div>
         </div>
 
-        <!--Actua en Calidad-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.actuaCalidad">
-          <div class="ui-g form-group" style="padding-top: 40px">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="actuaCalidad" formControlName="actuaCalidad">
-              <label for="actuaCalidad">Actua en calidad</label>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!--Inactivo-->
-        <div class="ui-sm-6 ui-g-6 ui-lg-6" style="padding-top: 40px" *ngIf="visibility.inactivo">
+        <!--tratamiento de cortesia-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tratamientoCortesia">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="inactivo" formControlName="inactivo">
-              <label>Inactivo</label>
-              </span>
+              <label for="tratamientoCortesia">Tratamiento de cortesía</label>
             </div>
-          </div>
-        </div>
-
-        <!--Tipo Telefono-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tipoTelefono">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tipoTelefono">Tipo teléfono</label>
-            </div>
-            <div class="ui-g-12">
-              <p-dropdown [options]="tipoTelefonoSuggestions$ | async | dropdownItem"
-                          id="tipoTelefono"
-                          formControlName="tipoTelefono"
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="tratamientoCortesiaSuggestions$ | async | dropdownItem"
+                          id="tratamientoCortesia"
+                          formControlName="tratamientoCortesia"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          (onBlur)="listenForBlurEvents('tipoTelefono')"
               >
               </p-dropdown>
-
-              <div class="ui-message ui-messages-error"
-                   *ngIf="validations.tipoTelefono">
-                {{ validations.tipoTelefono }}
-              </div>
             </div>
           </div>
-        </div>
-
-        <!--Numero Telefono-->
-        <div class="ui-sm-6 ui-g-6 ui-lg-6" style="padding-top: 40px" *ngIf="visibility.numeroTel">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-                <p-inputMask id="numeroTel" formControlName="numeroTel" mask="(999) 999-9999? x99999"></p-inputMask>
-              <label>No. de teléfono</label>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!--Correo Electronico-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 40px" *ngIf="visibility.correoEle">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-                <input type="text" pInputText id="correoEle" formControlName="correoEle">
-                <label>Correo electronico</label>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!--Pais-->
-
-          <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.pais">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="pais">Pais</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="pais"
-                                [suggestions]="paisSuggestions$ | async"
-                                field="nombre"
-                                formControlName="pais"
-                                (completeMethod)="onFilterPais($event)" [size]="30"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickPais($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-
-          <!--Departamento-->
-          <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.departamento">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="departamento">Departamento</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="departamento"
-                                [suggestions]="departamentoSuggestions$ | async"
-                                field="nombre"
-                                formControlName="departamento"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickDepartamento($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-
-          <!--Municipio-->
-          <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.municipio">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="municipio">Municipio</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="municipio"
-                                [suggestions]="municipioSuggestions$ | async"
-                                field="nombre"
-                                formControlName="municipio"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickMunicipio($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--Direccion-->
-        <div class="ui-fluid" *ngIf="visibility.direccion" style="padding-top: 25px">
-          <p-dataTable [value]="addresses" selectionMode="single"
-                       [paginator]="true" [rows]="10" [responsive]="true">
-            <p-header>
-
-              <div class="ui-helper-clearfix">
-                <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:8px"> Direcciones </span>
-
-                <span style="float: right">
-                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="direccionDialog.show()"></button>
-                  </span>
-
-              </div>
-
-            </p-header>
-            <p-column field="direccion" header="Dirección" [sortable]="true"></p-column>
-            <!--<p-column field="prefijoCuadrante.nombre" header="Prefijo" [sortable]="true"></p-column>-->
-            <!--<p-column field="orientacion.nombre" header="Orientacion" [sortable]="true"></p-column>-->
-            <!--<p-column field="noViaPrincipal" header="No. via principal" [sortable]="true"></p-column>-->
-            <!--<p-column field="bis.nombre" header="Bis" [sortable]="true"></p-column>-->
-            <!--<p-column field="noVia" header="No. de via" [sortable]="true"></p-column>-->
-            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-              <ng-template let-address="rowData" let-i="rowIndex" pTemplate="item">
-                <button type="button" icon="ui-icon-close" pButton (click)="deleteAdress(i)"
-                        class="ui-button ui-button-icon ui-button-danger"></button>
-              </ng-template>
-            </p-column>
-          </p-dataTable>
         </div>
 
       </div>
     </div>
+  </div>
 </form>
 
-<app-datos-direccion #direccionDialog (dialogHide)="hideDialog($event)" (onComplete)="addDirecciones($event)"></app-datos-direccion>
+
+<div *ngIf="visibility.datosContacto">
+
+  <app-datos-direccion [editable]="editable"></app-datos-direccion>
+
+</div>
+
+
 
 
 

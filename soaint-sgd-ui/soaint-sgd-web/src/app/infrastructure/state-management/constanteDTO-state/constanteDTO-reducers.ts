@@ -31,6 +31,7 @@ export interface State {
   bis: ConstanteDTOStateInterface;
   orientacion: ConstanteDTOStateInterface;
   tipoComplemento: ConstanteDTOStateInterface;
+  actuaCalidad: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -48,7 +49,8 @@ const initialState: State = {
   prefijoCuadrante: new ConstanteDTOStateInstance(),
   bis: new ConstanteDTOStateInstance(),
   orientacion: new ConstanteDTOStateInstance(),
-  tipoComplemento: new ConstanteDTOStateInstance()
+  tipoComplemento: new ConstanteDTOStateInstance(),
+  actuaCalidad: new ConstanteDTOStateInstance()
 }
 
 /**

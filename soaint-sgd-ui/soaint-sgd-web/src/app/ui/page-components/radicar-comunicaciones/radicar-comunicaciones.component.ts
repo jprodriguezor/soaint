@@ -11,6 +11,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
 import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -56,7 +58,11 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   ticketRadicado: any;
 
-  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
+  tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
+
+  constructor(private _sandbox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -65,21 +71,25 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.formsTabOrder.push(this.datosRemitente);
     this.formsTabOrder.push(this.datosDestinatario);
 
-    setTimeout(() => {
-      this.datosGenerales.form.get('tipoComunicacion').valueChanges
-        .distinctUntilChanged()
-        .subscribe(comunicacion => {
-          if (comunicacion.codigo === COMUNICACION_INTERNA) {
-            this.datosRemitente.form.get('sedeAdministrativa').valueChanges
-              .distinctUntilChanged()
-              .subscribe(sede => {
-                console.log(sede);
-           
-              })
-          } else {
+    this.tipoDestinatarioSuggestions$ = this._sandbox.tipoDestinatarioEntradaSelector();
+    this.sedeDestinatarioSuggestions$ = this._sandbox.sedeDestinatarioEntradaSelector();
+    this.dependenciaGrupoSuggestions$ = this._sandbox.dependenciaGrupoEntradaSelector();
 
+    setTimeout(() => {
+      const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
+      Observable.combineLatest(
+        sedeRemitente.statusChanges,
+        sedeRemitente.valueChanges
+      )
+        .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
+        .distinctUntilChanged()
+        .subscribe(([status, value]) => {
+          if (status === 'VALID') {
+            this._sandbox.sedeDestinatariEntradaFilterDispatch(value);
+          } else if (status === 'DISABLED') {
+            this._sandbox.sedeDestinatariEntradaFilterDispatch(null);
           }
-        });
+        })
     }, 400);
   }
 
@@ -93,7 +103,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   radicarComunicacion() {
     this.valueRemitente = this.datosRemitente.form.value;
-    this.valueDestinatario = this.datosDestinatario.form.value;
+    // this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
     const agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
@@ -106,7 +116,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
-    this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
+    this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
@@ -211,7 +221,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       idePpdDocumento: null,
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
-      codAsunto: 'CA',
+      asunto: 'CA',
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
       nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,

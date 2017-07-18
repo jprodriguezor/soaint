@@ -11,7 +11,17 @@ import {getTipoViaArrayData} from 'app/infrastructure/state-management/constante
 import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
 import {getBisArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/bis-selectors';
 import {getTipoComplementoArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-complemento-selectors';
-
+import {tassign} from 'tassign';
+import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
+import {Sandbox as PaisSandbox} from '../../../infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
+import {Sandbox as DepartamentoSandbox} from '../../../infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
+import {Sandbox as MunicipioSandbox} from '../../../infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
+import {PaisDTO} from '../../../domain/paisDTO';
+import {DepartamentoDTO} from '../../../domain/departamentoDTO';
+import {MunicipioDTO} from '../../../domain/municipioDTO';
+import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
+import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
+import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 
 @Component({
   selector: 'app-datos-direccion',
@@ -21,45 +31,161 @@ export class DatosDireccionComponent implements OnInit {
 
   form: FormGroup;
   display = false;
-  canAgregate = false;
-  editable = false;
+  @Input() editable = true;
+  validations = {};
 
+
+  paisSuggestions$: Observable<PaisDTO[]>;
+  departamentoSuggestions$: Observable<DepartamentoDTO[]>;
+  municipioSuggestions$: Observable<MunicipioDTO[]>;
   prefijoCuadranteSuggestions$: Observable<ConstanteDTO[]>;
   tipoViaSuggestions$: Observable<ConstanteDTO[]>;
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
 
-  direcciones: Array<any> = [];
+  contacts: Array<any> = [];
 
-  @Output()
-  onClose: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  onComplete: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
               private _constanteSandbox: ConstanteSandbox,
+              private _paisSandbox: PaisSandbox,
+              private _departamentoSandbox: DepartamentoSandbox,
+              private _municipioSandbox: MunicipioSandbox,
               private formBuilder: FormBuilder) {
     this.initForm();
+    this.listenForChanges();
   }
 
-  show() {
-    this.display = true;
+
+  ngOnInit(): void {
+    this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
+    this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
+    this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
+    this.bisSuggestons$ = this._store.select(getBisArrayData);
+    this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
+    this.paisSuggestions$ = this._store.select(paisArrayData);
+    this.municipioSuggestions$ = this._store.select(municipioArrayData);
+    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+
   }
 
-  hide() {
-    this.display = false;
-    this.direcciones = [];
-    this.form.reset();
+  initForm() {
+    this.form = this.formBuilder.group({
+      'tipoVia': [null],
+      'noViaPrincipal': [null],
+      'prefijoCuadrante': [null],
+      'bis': [null],
+      'orientacion': [null],
+      'noVia': [null],
+      'prefijoCuadrante_se': [null],
+      'placa': [null],
+      'orientacion_se': [null],
+      'complementoTipo': [null],
+      'complementoAdicional': [null],
+      'celular': [null],
+      'numeroTel': [null],
+      'correoEle': [null],
+      'pais': [null],
+      'departamento': [null],
+      'municipio': [null],
+    });
   }
 
-  completeRegistration() {
-    this.onComplete.emit(this.direcciones);
-    this.hide();
+  listenForChanges() {
+    const paisControl = this.form.get('pais');
+    const departamentoControl = this.form.get('departamento');
+    const municipioControl = this.form.get('municipio');
+
+    paisControl.valueChanges.subscribe(value => {
+      if (this.editable && value) {
+        departamentoControl.enable();
+      } else {
+        departamentoControl.reset();
+        departamentoControl.disable();
+      }
+    });
+
+    departamentoControl.valueChanges.subscribe(value => {
+      if (this.editable && value) {
+        municipioControl.enable();
+      } else {
+        municipioControl.reset();
+        municipioControl.disable();
+      }
+    });
+
+  }
+
+  onDropdownClickPais() {
+    this._paisSandbox.loadDispatch();
+  }
+
+  onDropdownClickDepartamento($event) {
+    const pais = this.form.get('pais').value;
+    if (pais) {
+      this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+    }
+  }
+
+  onDropdownClickMunicipio($event) {
+    const departamento = this.form.get('departamento').value;
+    if (departamento) {
+      this._municipioSandbox.loadDispatch({codDepar: departamento.codigo});
+    }
+  }
+
+  listenForBlurEvents(control: string) {
+    const ac = this.form.get(control);
+    if (ac.touched && ac.invalid) {
+      const error_keys = Object.keys(ac.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+    }
+  }
+
+  bindToValidationErrorsOf(control: string) {
+    const ac = this.form.get(control);
+    ac.valueChanges.subscribe(value => {
+      if ((ac.touched || ac.dirty) && ac.errors) {
+        const error_keys = Object.keys(ac.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+        delete this.validations[control];
+      }
+    });
+  }
+
+  addContact() {
+    const pais = this.form.get('pais');
+    const departamento = this.form.get('departamento');
+    const municipio = this.form.get('municipio');
+    const numeroTel = this.form.get('numeroTel');
+    const celular = this.form.get('celular');
+    const email = this.form.get('correoEle');
+
+    const insert = [tassign({
+      pais: pais.value,
+      departamento: departamento.value,
+      municipio: municipio.value,
+      numeroTel: numeroTel.value,
+      celular: celular.value,
+      correoEle: email.value
+    }, this.addDireccion())];
+
+    this.contacts = [...insert, ...this.contacts];
+
+    pais.reset();
+    departamento.reset();
+    municipio.reset();
+    numeroTel.reset();
+    celular.reset();
+    email.reset();
   }
 
   addDireccion() {
+
     let direccion = '';
     const tipoVia = this.form.get('tipoVia');
     const noViaPrincipal = this.form.get('noViaPrincipal');
@@ -127,32 +253,17 @@ export class DatosDireccionComponent implements OnInit {
       complementoAdicional.reset();
     }
     value['direccion'] = direccion;
-    const insert = [value];
-    this.direcciones = [...insert, ...this.direcciones];
+
+    return value;
   }
 
-  ngOnInit(): void {
-    this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
-    this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
-    this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
-    this.bisSuggestons$ = this._store.select(getBisArrayData);
-    this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
+  onFilterPais(event) {
   }
 
-  initForm() {
-    this.form = this.formBuilder.group({
-      'tipoVia': [{value: null, editable: !this.editable}, Validators.required],
-      'noViaPrincipal': [{value: null, editable: !this.editable}, Validators.required],
-      'prefijoCuadrante': [null],
-      'bis': [null],
-      'orientacion': [null],
-      'noVia': [{value: null, editable: !this.editable}, Validators.required],
-      'prefijoCuadrante_se': [null],
-      'placa': [{value: null, editable: !this.editable}, Validators.required],
-      'orientacion_se': [null],
-      'complementoTipo': [null],
-      'complementoAdicional': [null],
-    });
+  deleteContact(index) {
+    const radref = [...this.contacts];
+    radref.splice(index, 1);
+    this.contacts = radref;
   }
 
 }

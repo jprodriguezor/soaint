@@ -7,21 +7,10 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
-  getTipoTelefonoArrayData,
   getTratamientoCortesiaArrayData,
-  getTipoComplementoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
-import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
-import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
-import {PaisDTO} from 'app/domain/paisDTO';
-import {MunicipioDTO} from 'app/domain/municipioDTO';
-import {DepartamentoDTO} from 'app/domain/departamentoDTO';
-import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
-import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
-import {Sandbox as PaisSandbox} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
 import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
@@ -31,6 +20,8 @@ import {
   COMUNICACION_EXTERNA, COMUNICACION_INTERNA, PERSONA_ANONIMA, PERSONA_JURIDICA,
   PERSONA_NATURAL
 } from 'app/shared/bussiness-properties/radicacion-properties';
+import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
+
 
 
 @Component({
@@ -40,25 +31,24 @@ import {
 export class DatosRemitenteComponent implements OnInit {
 
   form: FormGroup;
+  formContactos: FormGroup;
   validations: any = {};
   visibility: any = {};
 
   addresses: Array<any> = [];
+  contacts: Array<any> = [];
   display = false;
 
-  tipoTelefonoSuggestions$: Observable<ConstanteDTO[]>;
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
   tipoDocumentoSuggestons$: Observable<ConstanteDTO[]>;
-  tratamientoCortesiaSuggestons$: Observable<ConstanteDTO[]>;
-  paisSuggestions$: Observable<PaisDTO[]>;
-  departamentoSuggestions$: Observable<DepartamentoDTO[]>;
-  municipioSuggestions$: Observable<MunicipioDTO[]>;
 
+  actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
+  tratamientoCortesiaSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-  @Input()
-  editable = true;
+
+  @Input() editable = true;
 
   @Input()
   tipoComunicacion: any;
@@ -67,24 +57,17 @@ export class DatosRemitenteComponent implements OnInit {
   onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
-              private _municipioSandbox: MunicipioSandbox,
-              private _departamentoSandbox: DepartamentoSandbox,
-              private _paisSandbox: PaisSandbox,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
   }
 
   ngOnInit(): void {
-    this.tipoTelefonoSuggestions$ = this._store.select(getTipoTelefonoArrayData);
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestons$ = this._store.select(getTipoDocumentoArrayData);
-    this.tratamientoCortesiaSuggestons$ = this._store.select(getTratamientoCortesiaArrayData);
-    this.paisSuggestions$ = this._store.select(paisArrayData);
-    this.municipioSuggestions$ = this._store.select(municipioArrayData);
-    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+    this.tratamientoCortesiaSuggestions$ = this._store.select(getTratamientoCortesiaArrayData);
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
-
+    this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
     this._store.dispatch(new SedeAdministrativaLoadAction());
 
     this.initForm();
@@ -97,20 +80,16 @@ export class DatosRemitenteComponent implements OnInit {
       'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
       'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
+      'tratamientoCortesia': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}, Validators.required],
       'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
       'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
-      'tipoTelefono': [{value: null, disabled: !this.editable}],
-      'inactivo': [{value: null, disabled: !this.editable}],
-      'numeroTel': [{value: null, disabled: !this.editable}],
-      'correoEle': [{value: null, disabled: !this.editable}],
-      'pais': [{value: null, disabled: !this.editable}],
-      'departamento': [{value: null, disabled: true}],
-      'municipio': [{value: null, disabled: true}],
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}, Validators.required],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
+
+
   }
 
   listenForChanges() {
@@ -128,27 +107,6 @@ export class DatosRemitenteComponent implements OnInit {
       }
     });
 
-    const paisControl = this.form.get('pais');
-    const departamentoControl = this.form.get('departamento');
-    const municipioControl = this.form.get('municipio');
-
-    paisControl.valueChanges.subscribe(value => {
-      if (this.editable && value) {
-        departamentoControl.enable();
-      } else {
-        departamentoControl.reset();
-        departamentoControl.disable();
-      }
-    });
-
-    departamentoControl.valueChanges.subscribe(value => {
-      if (this.editable && value) {
-        municipioControl.enable();
-      } else {
-        municipioControl.reset();
-        municipioControl.disable();
-      }
-    });
   }
 
   listenForErrors() {
@@ -182,54 +140,29 @@ export class DatosRemitenteComponent implements OnInit {
       this.form.get('razonSocial').enable();
       this.visibility['nombreApellidos'] = true;
       this.form.get('nombreApellidos').enable();
-      this.visibility['tipoTelefono'] = true;
+      this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
-      this.visibility['numeroTel'] = true;
-      this.visibility['correoEle'] = true;
-      this.visibility['pais'] = true;
-      this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
+      this.visibility['tratamientoCortesia'] = true;
       this.form.get('nroDocumentoIdentidad').enable();
-      this.visibility['municipio'] = true;
-      this.visibility['direccion'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
     } else if (value.codigo === PERSONA_NATURAL) {
-
       this.visibility['nombreApellidos'] = true;
       this.form.get('nombreApellidos').enable();
-      this.visibility['tipoTelefono'] = true;
-      this.visibility['numeroTel'] = true;
-      this.visibility['pais'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
       this.form.get('nroDocumentoIdentidad').enable();
-      this.visibility['municipio'] = true;
-      this.visibility['direccion'] = true;
-
+      this.visibility['tratamientoCortesia'] = true;
+      this.visibility['datosContacto'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
       }
     }
-
   }
-
-  deleteAdress(index) {
-    const radref = [...this.addresses];
-    radref.splice(index, 1);
-    this.addresses = radref;
-  }
-
-  hideDialog($event) {
-    this.display = false;
-    const addresses = [...this.addresses];
-    addresses.push($event);
-    this.addresses = addresses;
-  }
-
 
   setTipoComunicacion(value) {
     if (value) {
@@ -259,24 +192,6 @@ export class DatosRemitenteComponent implements OnInit {
     }
   }
 
-  onDropdownClickPais() {
-    this._paisSandbox.loadDispatch();
-  }
-
-  onDropdownClickDepartamento($event) {
-    const pais = this.form.get('pais').value;
-    if (pais) {
-      this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
-    }
-  }
-
-  onDropdownClickMunicipio($event) {
-    const departamento = this.form.get('departamento').value;
-    if (departamento) {
-      this._municipioSandbox.loadDispatch({codDepar: departamento.codigo});
-    }
-  }
-
   listenForBlurEvents(control: string) {
     const ac = this.form.get(control);
     if (ac.touched && ac.invalid) {
@@ -297,13 +212,6 @@ export class DatosRemitenteComponent implements OnInit {
         delete this.validations[control];
       }
     });
-  }
-
-  addDirecciones(event) {
-    this.addresses = [...event, ...this.addresses];
-  }
-
-  onFilterPais(event) {
   }
 
 

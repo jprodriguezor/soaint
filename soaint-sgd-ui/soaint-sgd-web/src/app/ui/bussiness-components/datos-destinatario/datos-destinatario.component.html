@@ -10,8 +10,7 @@
             <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tipoDestinatarioSuggestions$ | async | dropdownItem"
-                        [ngModel]="tipoDestinatarioSelected$ | async"
+            <p-dropdown [options]="tipoDestinatarioInput | dropdownItem"
                         id="tipoDestinatario"
                         formControlName="tipoDestinatario"
                         placeholder="Seleccione"
@@ -29,7 +28,7 @@
             <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
                         id="sedeAdministrativa"
                         formControlName="sedeAdministrativa"
                         placeholder="Seleccione"
@@ -48,7 +47,7 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
 
-            <p-dropdown [options]="dependenciaGrupoSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
                         id="dependenciaGrupo"
                         formControlName="dependenciaGrupo"
                         placeholder="Seleccione"
@@ -83,17 +82,17 @@
           </p-column>
         </p-dataTable>
 
-        <!--<div class="ui-g-12 md-inputfield">-->
-          <!--<div class="ui-message ui-messages-error"-->
-               <!--*ngIf="agentesDestinatario.length === 0 &&-->
-                <!--(tipoDestinatarioControl.touched && !tipoDestinatarioControl.value) &&-->
-                <!--(sedeAdministrativaControl.touched && !sedeAdministrativaControl.value) &&-->
-                <!--(dependenciaGrupoControl.touched && !dependenciaGrupoControl.value)">-->
-            <!--Listado requerido-->
-          <!--</div>-->
-        <!--</div>-->
+        <div class="ui-g-12 md-inputfield">
+          <div class="ui-message ui-messages-error"
+               *ngIf="agentesDestinatario.length === 0">
+            Se debe registrar un destinatario principal de forma obligatoria
+          </div>
+        </div>
 
       </div>
     </div>
   </div>
 </form>
+
+<p-confirmDialog header="Confirmación" icon="" width="425" acceptLabel="Aceptar" rejectLabel="Cancelar"  responsive="true">
+</p-confirmDialog>

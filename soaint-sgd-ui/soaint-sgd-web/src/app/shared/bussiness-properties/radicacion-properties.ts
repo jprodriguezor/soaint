@@ -4,3 +4,5 @@ export const PERSONA_NATURAL = 'TP-PERPN';
 
 export const COMUNICACION_EXTERNA = 'TP-CMCOE';
 export const COMUNICACION_INTERNA = 'TP-CMCOI';
+
+export const DESTINATARIO_PRINCIPAL = 'TP-DESP';

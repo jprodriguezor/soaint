@@ -1,15 +1,111 @@
-<p-dialog [(visible)]="display" modal="true" [responsive]="true"  draggable="false" width="800" styleClass="dialog-auto-with"
-          (onHide)="hide()">
-
-  <p-header>
-    Datos de direccion
-  </p-header>
-
-  <!--Body-->
-  <div class="ui-g">
-    <form [formGroup]="form">
+<!--Body-->
+<div class="ui-g">
+  <form [formGroup]="form" novalidate name="formContacto">
+    <div class="card card-w-title">
+      <h1>Datos de contacto</h1>
+      <!--Tipo Telefono-->
       <div class="ui-g ui-fluid">
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+
+        <!--Correo Electronico-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+                <input type="text" pInputText id="correoEle" formControlName="correoEle">
+                <label>Correo electronico</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Numero Telefono-->
+        <div class="ui-sm-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+                <p-inputMask id="numeroTel" formControlName="numeroTel" mask="(999) 999-999-9999"></p-inputMask>
+              <label>No. de teléfono</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Numero Telefono-->
+        <div class="ui-sm-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+                <p-inputMask id="celular" formControlName="celular" mask="(999) 999-999-9999"></p-inputMask>
+              <label>celular</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Pais-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="pais">Pais</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="pais"
+                              [suggestions]="paisSuggestions$ | async"
+                              field="nombre"
+                              formControlName="pais"
+                              (completeMethod)="onFilterPais($event)" [size]="30"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickPais($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+        </div>
+
+        <!--Departamento-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="departamento">Departamento</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="departamento"
+                              [suggestions]="departamentoSuggestions$ | async"
+                              field="nombre"
+                              formControlName="departamento"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickDepartamento($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+        </div>
+
+        <!--Municipio-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="municipio">Municipio</label>
+            </div>
+            <div class="ui-g-12">
+              <p-autoComplete id="municipio"
+                              [suggestions]="municipioSuggestions$ | async"
+                              field="nombre"
+                              formControlName="municipio"
+                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (onDropdownClick)="onDropdownClickMunicipio($event)">
+              </p-autoComplete>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card card-w-title">
+      <h1>Datos Dirección</h1>
+
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoVia"><span class="text-danger">*</span> Tipo Via</label>
@@ -26,7 +122,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -37,7 +133,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -55,7 +151,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="bis">Bis</label>
@@ -73,7 +169,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -91,7 +187,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -102,7 +198,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -120,7 +216,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -131,7 +227,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -149,7 +245,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Tipo complemento</label>
@@ -167,7 +263,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-4 ui-lg-4">
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -177,30 +273,109 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="ui-g-12" [hidden]="direcciones.length === 0">
-          <h4 style="margin: 8px 0 0 15px">Direcciones Agregadas</h4>
-          <div class="ui-g-12" style="max-height: 80px; overflow: scroll; margin: 5px 0 0 15px">
-            <!--<p-listbox [options]="cities" [(ngModel)]="selectedCities" multiple="multiple" checkbox="checkbox" filter="filter"></p-listbox>-->
-            <p *ngFor="let ad of direcciones" style="margin: 3px 0 3px 0">
-              {{ad.direccion}}
-            </p>
+    </div>
+
+    <div class="card card-w-title">
+      <h1>Lista de Contactos</h1>
+      <div class="ui-g ui-fluid">
+
+        <!--Direccion-->
+        <div class="ui-fluid">
+          <p-dataTable [value]="contacts" selectionMode="single"
+                       [paginator]="true" [rows]="10" [responsive]="true">
+            <p-header>
+
+              <div class="ui-helper-clearfix">
+                <span class="ui-panel-title"
+                      style="font-size:16px;display:inline-block;margin-top:8px"> Datos de contacto y dirección </span>
+
+                <span style="float: right">
+                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                            (click)="addContact()"></button>
+                </span>
+              </div>
+
+            </p-header>
+
+            <p-column header="">
+              <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+                <!--<div class="ui-g ui-fluid">-->
+                <!---->
+                <!--</div>-->
+                <div class="ui-sm-12 ui-md-12 ui-g-5 ui-lg-5">
+                  <div class="ui-g-12" *ngIf="contact.correoEle">
+                    <i class="fa ui-icon-contact-mail"></i>
+                    <span class="table-text-custom">
+                      {{ contact.correoEle }}
+                    </span>
+
+                  </div>
+                  <div class="ui-g-12" *ngIf="contact.numeroTel">
+                    <i class="fa ui-icon-contact-phone"></i>
+                    <span class="table-text-custom">
+                    {{ contact.numeroTel }}
+                    </span>
+                  </div>
+
+                  <div class="ui-g-12" *ngIf="contact.celular">
+                    <i class="fa ui-icon-smartphone"></i>
+                    <span class="table-text-custom">
+                    {{ contact.celular }}
+                    </span>
+
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-md-12 ui-g-7 ui-lg-7">
+                  <div class="ui-g-12" *ngIf="contact.pais">
+                    <span class="table-text-custom">
+                      <b>País: &nbsp;</b>
+                      {{ contact.pais.nombre }}
+                    </span>
+                  </div>
+                  <div class="ui-g-12" *ngIf="contact.departamento">
+                    <span class="table-text-custom">
+                      <b>Departamento: &nbsp;</b>
+                      {{ contact.departamento.nombre }}
+                    </span>
+                  </div>
+                  <div class="ui-g-12" *ngIf="contact.municipio">
+                    <span class="table-text-custom">
+                      <b>Municipio: &nbsp;</b>
+                    {{ contact.municipio.nombre }}
+                    </span>
+                  </div>
+
+                  <div class="ui-g-12" *ngIf="contact.direccion">
+                    <i class="fa ui-icon-location-on"></i>
+                    <span class="table-text-custom">
+                    {{ contact.direccion }}
+                    </span>
+                  </div>
+
+
+                </div>
+              </ng-template>
+            </p-column>
+
+            <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}">
+              <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+                <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
+                        class="ui-button ui-button-icon ui-button-danger"></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+          <div class="ui-g-12 md-inputfield">
+            <div class="ui-message ui-messages-error"
+                 *ngIf="contacts.length === 0">
+              Se requiere al menos un contacto
+            </div>
           </div>
         </div>
       </div>
-    </form>
-  </div>
-
-  <!--End Body-->
-
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" class="ui-button-primary" (click)="addDireccion()" pButton label="Agregar"
-        [disabled]="form.invalid"
-      ></button>
-      <button type="button" class="ui-button-success" (click)="completeRegistration()" pButton label="Aceptar"
-              [disabled]="direcciones.length === 0"
-      ></button>
     </div>
-  </p-footer>
-</p-dialog>
+
+  </form>
+</div>
+

@@ -3278,13 +3278,13 @@ body {
       border: 0 none;
       margin: 0px;
       color: #e62a10;
-      font-size: .75em; }
+      font-size: .85em; }
   body .ui-material-message.ui-message.ui-messages-error {
     background-color: transparent;
     border: 0 none;
     margin: 0px;
     color: #e62a10;
-    font-size: .75em; }
+    font-size: .85em; }
   body .ui-listbox {
     min-width: 12.5em;
     background-color: #ffffff;
@@ -6307,6 +6307,11 @@ body .md-dropdownfield .ui-messages-error {
   background-color: transparent;
   font-size: 11px;
   position: absolute; }
+
+span.table-text-custom {
+  padding: 8px;
+  position: relative;
+  top: -5px; }
 
 .radicar-comunicaciones a span.ui-tabview-left-icon.ui-icon-edit {
   color: #0273D4; }

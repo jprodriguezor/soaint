@@ -16,7 +16,7 @@
       <button pButton type="button" label="Etiqueta" style="width: auto; margin-bottom: 10px"
               (click)="navigateBackToWorkspace()" *ngIf="false"></button>
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"></button>
-      <button pButton type="button" class="ui-button-danger" label="Candelar" style="width: auto;  margin-bottom: 10px"
+      <button pButton type="button" class="ui-button-danger" label="Cancelar" style="width: auto;  margin-bottom: 10px"
               (click)="navigateBackToWorkspace()"></button>
       <button pButton type="button" class="ui-button-success" label="Continuar"
               style="width: auto;  margin-bottom: 10px"></button>
@@ -35,9 +35,13 @@
         <app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>
       </p-tabPanel>
 
-      <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" >
+      <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
       <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">-->
-        <app-datos-destinatario #datosDestinatario [editable]="editable"></app-datos-destinatario>
+        <app-datos-destinatario #datosDestinatario [editable]="editable"
+                                [tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"
+                                [sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"
+                                [dependenciaGrupoInput]="dependenciaGrupoSuggestions$ | async"
+        ></app-datos-destinatario>
       </p-tabPanel>
     </p-tabView>
   </div>

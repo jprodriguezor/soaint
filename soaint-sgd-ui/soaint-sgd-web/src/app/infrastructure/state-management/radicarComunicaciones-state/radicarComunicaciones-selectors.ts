@@ -1,6 +1,8 @@
 import {State} from './radicarComunicaciones-reducers';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
+import {getGrupoIds as rootSedeIds, getEntities as rootSedeEntities} from '../sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
+import {getTipoDestinatarioEntities, getTipoDestinatarioIds} from '../constanteDTO-state/constanteDTO-selectors';
 
 const rootPath = (state: rootStore.State) => state.radicarComunicacion;
 
@@ -13,4 +15,18 @@ const rootPath = (state: rootStore.State) => state.radicarComunicacion;
  * use-case.
  */
 
-export const comunicacionOficial = createSelector(rootPath, (state: State) => state );
+export const correspondenciaEntrada = createSelector(rootPath, (state: State) => state.entrada.correspondencia);
+
+export const sedeRemitente = createSelector(rootPath, (state: State) => state.entrada.sedeRemitente);
+export const destinatarioOriginal = createSelector(rootPath, (state: State) => state.entrada.destinatarioOriginal);
+
+
+export const sedeDestinatarioEntradaSelector = createSelector(rootSedeIds, rootSedeEntities, sedeRemitente, (ids, entities, sedeRem) => {
+  sedeRem = sedeRem || {};
+  return ids.filter(id => id !== sedeRem.id).map(id => entities[id]);
+});
+
+export const tipoDestinatarioEntradaSelector = createSelector(getTipoDestinatarioIds, getTipoDestinatarioEntities, destinatarioOriginal, (ids, entities, desOrig) => {
+  desOrig = desOrig || {};
+  return ids.filter(id => id !== desOrig.id).map(id => entities[id]);
+});

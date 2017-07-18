@@ -23,7 +23,6 @@ export interface State {
   // notification: notificationStore.State,
   constantes: constantesStore.State,
   paises: paisStore.State,
-  radicarComunicacion: comunicacionOficialStore.State,
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
   comunicacionesOficiales: correspondenciaStore.State,
@@ -32,6 +31,7 @@ export interface State {
   tareas: tareasStore.State,
   proceso: procesoStore.State,
   funcionario: funcionarioStore.State,
+  radicarComunicacion: comunicacionOficialStore.State,
   router: fromRouter.RouterState
 }
 
@@ -56,6 +56,7 @@ export const reducers = {
   sedeAdministrativa: sedeAdministrativaStore.reducer,
   tareas: tareasStore.reducer,
   funcionario: funcionarioStore.reducer,
+  radicarComunicacion: comunicacionOficialStore.reducer,
   router: fromRouter.routerReducer,
 };
 
