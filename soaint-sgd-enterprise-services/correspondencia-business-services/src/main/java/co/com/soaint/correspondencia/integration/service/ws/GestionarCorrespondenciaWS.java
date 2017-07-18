@@ -13,7 +13,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.ws.rs.PathParam;
 import java.util.Date;
 
 /**

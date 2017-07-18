@@ -10,9 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Date;
 
 /**
  *
@@ -70,7 +71,7 @@ public class DctAsigUltimo implements Serializable {
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "DCT_ASIG_ULTIMO_GENERATOR")
     @Column(name = "IDE_ASIG_ULTIMO")
-    private Long ideAsigUltimo;
+    private BigInteger ideAsigUltimo;
     @Column(name = "NUM_REDIRECCIONES")
     private String numRedirecciones;
     @Basic(optional = false)
@@ -108,7 +109,7 @@ public class DctAsigUltimo implements Serializable {
     @ManyToOne(optional = false)
     private DctAsignacion dctAsignacion;
 
-    public DctAsigUltimo(Long ideAsigUltimo, String numRedirecciones, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
+    public DctAsigUltimo(BigInteger ideAsigUltimo, String numRedirecciones, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
                          Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso){
         this.ideAsigUltimo = ideAsigUltimo;
         this.numRedirecciones = numRedirecciones;

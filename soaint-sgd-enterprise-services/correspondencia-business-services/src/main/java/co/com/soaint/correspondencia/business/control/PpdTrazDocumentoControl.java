@@ -3,10 +3,6 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import org.springframework.scheduling.annotation.Async;
-
-import java.math.BigInteger;
-import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

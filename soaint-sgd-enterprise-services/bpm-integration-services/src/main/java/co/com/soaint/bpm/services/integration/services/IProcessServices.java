@@ -28,5 +28,6 @@ public interface IProcessServices {
       RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
       RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entradaTarea) throws IOException, URISyntaxException, JSONException;
 
-      RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException ;
+      RespuestaProcesoDTO senalEsperaDigitalizacion(EntradaProcesoDTO entrada) throws IOException, JSONException ;
+      RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException ;
 }

@@ -3,8 +3,6 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
 import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,18 +37,16 @@ public class PpdDocumentoControl {
                 .getResultList();
     }
 
-    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO)throws BusinessException, SystemException{
+    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO){
         Date fecha = new Date();
         return PpdDocumento.newInstance()
                 .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
                 .fecDocumento(ppdDocumentoDTO.getFecDocumento())
-                .codAsunto(ppdDocumentoDTO.getCodAsunto())
+                .asunto(ppdDocumentoDTO.getAsunto())
                 .nroFolios(ppdDocumentoDTO.getNroFolios())
                 .nroAnexos(ppdDocumentoDTO.getNroAnexos())
                 .codEstDoc(ppdDocumentoDTO.getCodEstDoc())
                 .ideEcm(ppdDocumentoDTO.getIdeEcm())
-                .codTipoSoporte(ppdDocumentoDTO.getCodTipoSoporte())
-                .codEstArchivado(ppdDocumentoDTO.getCodEstArchivado())
                 .fecCreacion(fecha)
                 .build();
     }

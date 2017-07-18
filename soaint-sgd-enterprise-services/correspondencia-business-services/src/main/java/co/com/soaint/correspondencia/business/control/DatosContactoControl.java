@@ -29,15 +29,15 @@ public class DatosContactoControl {
 
     public List<DatosContactoDTO> consultarDatosContactoByAgentes(List<AgenteDTO> agenteDTOList) {
         List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
-        agenteDTOList.stream().forEach((agenteDTO) -> {
+        agenteDTOList.stream().forEach(agenteDTO -> {
             if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
                 em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .getResultList()
                         .stream()
-                        .forEach((datosContactoDTO) -> {
-                            datosContactoDTOList.add(datosContactoDTO);
-                        });
+                        .forEach(datosContactoDTO ->
+                            datosContactoDTOList.add(datosContactoDTO)
+                        );
             }
         });
         return datosContactoDTOList;
@@ -53,16 +53,14 @@ public class DatosContactoControl {
                 .codPostal(datosContactoDTO.getCodPostal())
                 .direccion(datosContactoDTO.getDireccion())
                 .celular(datosContactoDTO.getCelular())
-                .telFijo1(datosContactoDTO.getTelFijo1())
-                .telFijo2(datosContactoDTO.getTelFijo2())
-                .extension1(datosContactoDTO.getExtension1())
-                .extension2(datosContactoDTO.getExtension2())
+                .telFijo(datosContactoDTO.getTelFijo())
+                .extension(datosContactoDTO.getExtension())
                 .corrElectronico(datosContactoDTO.getCorrElectronico())
                 .codPais(datosContactoDTO.getCodPais())
                 .codDepartamento(datosContactoDTO.getCodDepartamento())
                 .codMunicipio(datosContactoDTO.getCodMunicipio())
                 .provEstado(datosContactoDTO.getProvEstado())
-                .ciudad(datosContactoDTO.getCiudad())
+                .principal(datosContactoDTO.getPrincipal())
                 .build();
     }
 }

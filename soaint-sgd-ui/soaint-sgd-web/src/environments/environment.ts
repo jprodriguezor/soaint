@@ -40,4 +40,5 @@ export const environment = {
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
+  asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
 };

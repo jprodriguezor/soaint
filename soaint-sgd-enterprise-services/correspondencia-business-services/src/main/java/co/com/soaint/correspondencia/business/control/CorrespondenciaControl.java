@@ -3,9 +3,8 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,6 +44,10 @@ public class CorrespondenciaControl {
     ReferidoControl referidoControl;
 
 
+    @Value( "${radicado.rango.reservado}" )
+    private String rangoReservado = "";
+
+
     public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO){
         List<AgenteDTO> agenteDTOList = agenteControl.consltarAgentesByCorrespondencia(correspondenciaDTO.getIdeDocumento());
 
@@ -66,7 +69,7 @@ public class CorrespondenciaControl {
                 .build();
     }
 
-    public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+    public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) {
         return CorCorrespondencia.newInstance()
                 .descripcion(correspondenciaDTO.getDescripcion())
                 .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
@@ -91,19 +94,32 @@ public class CorrespondenciaControl {
                 .build();
     }
 
-    public Boolean verificarByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+    public Boolean verificarByNroRadicado(String nroRadicado) {
         long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
                 .setParameter("NRO_RADICADO", nroRadicado)
                 .getSingleResult();
         return cantidad > 0;
     }
 
-    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) throws BusinessException, SystemException {//TODO
+    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia){//TODO
+
+        String[] rango = this.rangoReservado.split(",");
+        int rangoI = Integer.parseInt(rango[0]);
+        int rangoF = Integer.parseInt(rango[1]);
+        String reservadoIni = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+                String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoI);
+        String reservadoFin = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+                String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoF);
+
         String nroR = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
                 .setParameter("COD_SEDE", correspondencia.getCodSede())
                 .setParameter("COD_TIPO_CMC", correspondencia.getCodTipoCmc())
+                .setParameter("RESERVADO_INI", reservadoIni)
+                .setParameter("RESERVADO_FIN", reservadoFin)
                 .getSingleResult();
+
         int consecRadicado = 0;
+
         if (nroR != null) {
             CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroR)
@@ -116,13 +132,23 @@ public class CorrespondenciaControl {
             }
         }
         consecRadicado++;
-        return correspondencia.getCodSede()
-                .concat(correspondencia.getCodTipoCmc())
-                .concat(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)))
-                .concat(String.format("%06d", consecRadicado));
+
+        if (consecRadicado >= rangoI && consecRadicado <= rangoF){
+            consecRadicado = rangoF + 1;
+        }
+
+        return this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+                String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), consecRadicado);
     }
 
-    public Date CalcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
+    public String formarNroRadicado(String codSede, String codTipoCmc, String anno, int consecutivo){
+        return codSede
+                .concat(codTipoCmc)
+                .concat(anno)
+                .concat(String.format("%06d", consecutivo));
+    }
+
+    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
         return new Date();
     }
 

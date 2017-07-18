@@ -35,14 +35,12 @@ public class DatosContactoDTO implements Serializable {
     private String codPostal;
     private String direccion;
     private String celular;
-    private String telFijo1;
-    private String telFijo2;
-    private String extension1;
-    private String extension2;
+    private String telFijo;
+    private String extension;
     private String corrElectronico;
     private String codPais;
     private String codDepartamento;
     private String codMunicipio;
     private String provEstado;
-    private String ciudad;
+    private String principal;
 }
