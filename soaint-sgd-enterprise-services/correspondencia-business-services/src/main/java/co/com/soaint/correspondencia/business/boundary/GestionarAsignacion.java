@@ -114,6 +114,7 @@ public class GestionarAsignacion {
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
+                asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
             return asignacionesDTOResult;
