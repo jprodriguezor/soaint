@@ -74,7 +74,6 @@ export class DatosGeneralesComponent implements OnInit {
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-      'cantidadAnexos': [{value: null, disabled: !this.editable}],
       'asunto': [{value: null, disabled: !this.editable}, Validators.required],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
       'tipoAnexos': [{value: null, disabled: !this.editable}],

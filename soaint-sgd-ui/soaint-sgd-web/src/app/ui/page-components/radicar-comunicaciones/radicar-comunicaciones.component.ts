@@ -126,7 +126,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
       console.log(this.valueGeneral);
       const ticketRadicado = {
-        anexos: this.valueGeneral.cantidadAnexos,
+        anexos: this.datosGenerales.descripcionAnexos.length,
         folios: this.valueGeneral.numeroFolio,
         noRadicado: this.radicacion.correspondencia.nroRadicado,
         fecha: this.radicacion.correspondencia.fecRadicado,
@@ -260,7 +260,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       fecDocumento: this.date.toISOString(),
       asunto: this.valueGeneral.asunto,
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
-      nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
+      nroAnexos: this.datosGenerales.descripcionAnexos.length, // 'Numero anexos',
       codEstDoc: null,
       ideEcm: null
     };
