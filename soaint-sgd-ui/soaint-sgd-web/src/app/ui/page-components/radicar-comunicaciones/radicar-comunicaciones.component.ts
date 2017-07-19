@@ -10,9 +10,9 @@ import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
-import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -31,6 +31,8 @@ export class RadicarComunicacionesComponent implements OnInit {
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
+
+  @ViewChild('ticketRadicado') ticketRadicado;
 
   formStatusIcon = 'assignment';
 
@@ -55,8 +57,6 @@ export class RadicarComunicacionesComponent implements OnInit {
   tabIndex = 0;
 
   formsTabOrder: Array<any> = [];
-
-  ticketRadicado: any;
 
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
@@ -85,20 +85,13 @@ export class RadicarComunicacionesComponent implements OnInit {
         .distinctUntilChanged()
         .subscribe(([status, value]) => {
           if (status === 'VALID') {
+            this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
             this._sandbox.sedeDestinatariEntradaFilterDispatch(value);
           } else if (status === 'DISABLED') {
             this._sandbox.sedeDestinatariEntradaFilterDispatch(null);
           }
-        })
+        });
     }, 400);
-  }
-
-  hideTicketRadicado() {
-    this.barCodeVisible = false;
-  }
-
-  showTicketRadicado() {
-    this.barCodeVisible = true;
   }
 
   radicarComunicacion() {
@@ -107,8 +100,15 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
     const agentesList = [];
-    agentesList.push(this.getTipoAgenteExt());
-    agentesList.push(...this.getAgentesInt());
+    const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
+
+    if (isRemitenteInterno) {
+      agentesList.push(this.getTipoAgenteRemitenteInterno());
+    } else {
+      agentesList.push(this.getTipoAgenteRemitenteExterno());
+    }
+
+    agentesList.push(...this.getAgentesDestinatario());
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
@@ -124,7 +124,25 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
-      this.hideTicketRadicado();
+      console.log(this.valueGeneral);
+      const ticketRadicado = {
+        anexos: this.valueGeneral.cantidadAnexos,
+        folios: this.valueGeneral.numeroFolio,
+        noRadicado: this.radicacion.correspondencia.nroRadicado,
+        fecha: this.radicacion.correspondencia.fecRadicado,
+        destinatarioSede: this.valueDestinatario.destinatarioPrincipal.sedeAdministrativa.nombre,
+        destinatarioGrupo: this.valueDestinatario.destinatarioPrincipal.dependenciaGrupo.nombre
+      };
+      if (isRemitenteInterno) {
+        ticketRadicado['remitenteSede'] = this.valueRemitente.sedeAdministrativa.nombre;
+        ticketRadicado['remitenteGrupo'] = this.valueRemitente.dependenciaGrupo.nombre;
+      } else {
+        ticketRadicado['remitente'] = this.valueRemitente.nombreApellidos;
+      }
+
+      this.ticketRadicado.setDataTicketRadicado(ticketRadicado);
+      this.showTicketRadicado();
+
       this.disableEditionOnForms();
 
       this._taskSandBox.completeTask({
@@ -139,7 +157,30 @@ export class RadicarComunicacionesComponent implements OnInit {
     });
   }
 
-  getTipoAgenteExt(): AgentDTO {
+  getTipoAgenteRemitenteInterno(): AgentDTO {
+
+    const tipoAgente: AgentDTO = {
+      ideAgente: null,
+      codTipoRemite: null,
+      codTipoPers: null,
+      nombre: null,
+      razonSocial: null,
+      nit: null,
+      codCortesia: null,
+      codEnCalidad: null,
+      codTipDocIdent: null,
+      nroDocuIdentidad: null,
+      codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
+      codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
+      fecAsignacion: this.date.toISOString(),
+      codTipAgent: 'DES',
+      codEstado: null,
+      indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
+    };
+    return tipoAgente;
+  }
+
+  getTipoAgenteRemitenteExterno() {
     const tipoAgente: AgentDTO = {
       ideAgente: null,
       codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
@@ -161,7 +202,8 @@ export class RadicarComunicacionesComponent implements OnInit {
     return tipoAgente;
   }
 
-  getAgentesInt(): Array<AgentDTO> {
+
+  getAgentesDestinatario(): Array<AgentDTO> {
     const agentes = [];
     this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
@@ -216,7 +258,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       idePpdDocumento: null,
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
-      asunto: 'CA',
+      asunto: this.valueGeneral.asunto,
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
       nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
@@ -254,8 +296,8 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   getDatosContactos(): Array<ContactoDTO> {
     const contactos = [];
-    console.log(this.datosRemitente.contacts);
-    this.datosRemitente.datosContactos.contacts.forEach(contact => {
+    const contactsRemitente = (this.datosRemitente.datosContactos) ? this.datosRemitente.datosContactos.contacts : [];
+    contactsRemitente.forEach(contact => {
       contactos.push({
         ideContacto: null,
         nroViaGeneradora: contact.noViaPrincipal || null,
@@ -278,8 +320,13 @@ export class RadicarComunicacionesComponent implements OnInit {
     return contactos;
   }
 
-  setTicketRadicado() {
 
+  hideTicketRadicado() {
+    this.barCodeVisible = false;
+  }
+
+  showTicketRadicado() {
+    this.barCodeVisible = true;
   }
 
   disableEditionOnForms() {

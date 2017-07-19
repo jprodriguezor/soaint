@@ -13,13 +13,15 @@
   !datosDestinatario.form.valid || datosGenerales.descripcionAnexos.length === 0 ||
   datosDestinatario.agentesDestinatario.length === 0"
               (click)="radicarComunicacion()"></button>
-      <button pButton type="button" label="Etiqueta" style="width: auto; margin-bottom: 10px"
-              (click)="navigateBackToWorkspace()" *ngIf="false"></button>
-      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"></button>
+
+      <button pButton type="button" label="Ver etiqueta" style="width: auto; margin-bottom: 10px" *ngIf="radicacion"
+              (click)="showTicketRadicado()"></button>
+
+      <!--<button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"></button>-->
       <button pButton type="button" class="ui-button-danger" label="Cancelar" style="width: auto;  margin-bottom: 10px"
-              (click)="navigateBackToWorkspace()"></button>
-      <button pButton type="button" class="ui-button-success" label="Continuar"
-              style="width: auto;  margin-bottom: 10px"></button>
+              (click)="navigateBackToWorkspace()" *ngIf="!radicacion"></button>
+      <button pButton type="button" class="ui-button-success" label="Continuar" *ngIf="radicacion"
+              style="width: auto;  margin-bottom: 10px" (click)="navigateBackToWorkspace()"></button>
 
     </div>
   </div>
@@ -58,17 +60,8 @@
 
   <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
             (onHide)="hideTicketRadicado()">
-    <app-ticket-radicado id="ticket"
-             [noRadicado]="radicacion?.correspondencia.nroRadicado"
-             [anexos]="radicacion?.anexoList.length"
-             [folios]="datosGenerales?.form.get('nroFolios')"
-             [fecha]=""
-             [remitente]=""
-             [remitenteSede]=""
-             [remitenteGrupo]=""
-             [destinatario]=""
-             [destinatarioSede]=""
-             [destinatarioGrupo]=""
+    <app-ticket-radicado id="ticket" #ticketRadicado
+
     ></app-ticket-radicado>
 
     <p-footer>

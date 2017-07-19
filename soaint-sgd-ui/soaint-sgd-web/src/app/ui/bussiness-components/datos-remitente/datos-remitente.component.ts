@@ -159,6 +159,7 @@ export class DatosRemitenteComponent implements OnInit {
 
   setTipoComunicacion(value) {
     if (value) {
+      this.visibility = {};
       this.tipoComunicacion = value.codigo;
       if (this.tipoComunicacion === COMUNICACION_INTERNA) {
         this.form.get('tipoPersona').disable();
@@ -167,15 +168,11 @@ export class DatosRemitenteComponent implements OnInit {
         this.form.get('tipoDocumento').disable();
         this.visibility['sedeAdministrativa'] = true;
         this.visibility['dependenciaGrupo'] = true;
-        this.visibility['tipoPersona'] = false;
-        this.visibility['direccion'] = false;
       } else {
         this.form.get('tipoPersona').enable();
         this.form.get('tipoDocumento').enable();
         this.form.get('sedeAdministrativa').disable();
         this.form.get('dependenciaGrupo').disable();
-        this.visibility['sedeAdministrativa'] = false;
-        this.visibility['dependenciaGrupo'] = false;
         this.visibility['tipoPersona'] = true;
       }
       this.form.get('tipoDocumento').disable();

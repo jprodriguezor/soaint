@@ -11,6 +11,7 @@ import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-manag
 import {LoadAction as DependenciaGrupoLoadAction} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-actions';
 import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
 import {ConfirmationService} from 'primeng/components/common/api';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 
 @Component({
@@ -99,13 +100,17 @@ export class DatosDestinatarioComponent implements OnInit {
     ];
 
     if (tipo.value.codigo === DESTINATARIO_PRINCIPAL) {
-      this.form.get('destinatarioPrincipal').setValue(true);
+      this.form.get('destinatarioPrincipal').setValue({
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value
+      });
     }
 
     this.agentesDestinatario = [
       ...insertVal,
       ...this.agentesDestinatario.filter(
-        value => value.tipoDestinatario !== tipo.value || value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+        value => value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
       )
     ];
 
@@ -160,8 +165,9 @@ export class DatosDestinatarioComponent implements OnInit {
     });
   }
 
-  deleteDestinatarioPrincipal() {
-    this.agentesDestinatario = [...this.agentesDestinatario.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL)];
+  deleteDestinatarioIqualRemitente(sedeRemitente: OrganigramaDTO) {
+    // this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sedeRemitente.codigo).map(value => value.);
+    this.agentesDestinatario = [...this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo !== sedeRemitente.codigo)];
     this.form.get('destinatarioPrincipal').setValue(null);
   }
 
