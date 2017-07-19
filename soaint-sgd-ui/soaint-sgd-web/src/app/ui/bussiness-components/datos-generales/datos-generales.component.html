@@ -160,7 +160,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
           <span class="md-inputfield">
-          <input type="text" pInputText id="cantidadAnexos" readonly
+          <input type="text" pInputText id="cantidadAnexos" readonly formControlName="cantidadAnexos"
                  [value]="descripcionAnexos.length">
           <label>Cantidad de Anexos</label>
           </span>
@@ -305,11 +305,11 @@
           <!--Body-->
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
           <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}"  *ngIf="editable === true">
             <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
               <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
                       class="ui-button ui-button-icon ui-button-danger"
-                      *ngIf="editable === true"
+
               ></button>
             </ng-template>
           </p-column>

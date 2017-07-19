@@ -7,14 +7,12 @@ export interface ContactoDTO {
   codPostal: string,
   direccion: string,
   celular: string,
-  telFijo1: string,
-  telFijo2: string,
-  extension1: string,
-  extension2: string,
+  telFijo: string,
+  extension: string,
   corrElectronico: string,
   codPais: string,
   codDepartamento: string,
   codMunicipio: string,
   provEstado: string,
-  ciudad: string
+  principal?: string
 }

@@ -168,15 +168,9 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public void actualizarReferenciaECM(String nroRadicado, String ideEcm)throws BusinessException, SystemException{
+    public void actualizarReferenciaECM(DocumentoDTO documentoDTO)throws BusinessException, SystemException{
         try {
-            if (!correspondenciaControl.verificarByNroRadicado(nroRadicado)) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
-                        .buildBusinessException();
-            }
-
-            List<BigInteger> idePpdDocumentoList = ppdDocumentoControl.consultarPpdDocumentosByNroRadicado(nroRadicado);
+            List<BigInteger> idePpdDocumentoList = ppdDocumentoControl.consultarPpdDocumentosByNroRadicado(documentoDTO.getNroRadicado());
             if (idePpdDocumentoList.isEmpty()){
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.ppdDocumento_not_exist_by_nroRadicado")
@@ -185,13 +179,13 @@ public class GestionarCorrespondencia {
 
             em.createNamedQuery("PpdDocumento.updateIdEcm")
                     .setParameter("IDE_PPDDOCUMENTO", idePpdDocumentoList.get(0))
-                    .setParameter("IDE_ECM", ideEcm)
+                    .setParameter("IDE_ECM", documentoDTO.getIdeEcm())
                     .executeUpdate();
 
             new Thread(() -> {
                 try {
                     BigInteger ideDocumento = em.createNamedQuery("CorCorrespondencia.findIdeDocumentoByNroRadicado", BigInteger.class)
-                            .setParameter("NRO_RADICADO", nroRadicado)
+                            .setParameter("NRO_RADICADO", documentoDTO.getNroRadicado())
                             .getSingleResult();
                     gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
                             .ideDocumento(ideDocumento)

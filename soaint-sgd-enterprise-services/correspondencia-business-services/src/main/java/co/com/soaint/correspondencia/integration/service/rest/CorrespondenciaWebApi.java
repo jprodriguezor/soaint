@@ -1,10 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -76,10 +73,10 @@ public class CorrespondenciaWebApi {
     }
 
     @PUT
-    @Path("/correspondencia/{nro_radicado}/{ide_ecm}")
-    public void actualizarReferenciaECM(@PathParam("nro_radicado") final String nroRadicado, @PathParam("ide_ecm") final String ideEcm) throws BusinessException, SystemException{
+    @Path("/correspondencia/actualizar-referencia-ecm")
+    public void actualizarReferenciaECM(DocumentoDTO documentoDTO) throws BusinessException, SystemException{
         logger.info("processing rest request - actualizar referencia ECM");
-        boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
+        boundary.actualizarReferenciaECM(documentoDTO);
     }
 
     @GET

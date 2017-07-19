@@ -8,8 +8,8 @@ export const ActionTypes = {
   RADICAR: type('[radicarComunicacionesDTO] RadicarAction'),
   RADICAR_SUCCESS: type('[radicarComunicacionesDTO] RadicarSuccessAction'),
   RADICAR_FAIL: type('[radicarComunicacionesDTO] RadicarFailAction'),
-
-
+  TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO: type('[radicarComunicacionesDTO] TriggerExcludeSedeRemitenteFromDestinatarioAction'),
+  TRIGGER_SELECTED_DESTINATARIO_ORIGINAL: type('[radicarComunicacionesDTO] TriggerSelectedDestinatarioOriginalAction')
 };
 
 export class RadicarAction implements Action {
@@ -54,13 +54,29 @@ export class RadicarFailAction implements Action {
   }
 }
 
+export class TriggerExcludeSedeRemitenteFromDestinatarioAction implements Action {
+  type = ActionTypes.TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class TriggerSelectedDestinatarioOriginalAction implements Action {
+  type = ActionTypes.TRIGGER_SELECTED_DESTINATARIO_ORIGINAL;
+
+  constructor(public payload?: any) {
+  }
+}
+
 export type Actions =
   LoadAction |
   LoadSuccessAction |
   LoadFailAction |
   RadicarAction |
   RadicarSuccessAction |
-  RadicarFailAction
+  RadicarFailAction |
+  TriggerExcludeSedeRemitenteFromDestinatarioAction |
+  TriggerSelectedDestinatarioOriginalAction
   ;
 
 

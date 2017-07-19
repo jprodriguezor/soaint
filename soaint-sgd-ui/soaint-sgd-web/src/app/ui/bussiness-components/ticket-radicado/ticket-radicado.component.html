@@ -1,4 +1,4 @@
-<div id="ticket-rad" class="ticket-panel">
+<div id="ticket-rad" class="ticket-panel" style="display: table">
   <div>
     <div style="padding-top: 0 !important; padding-bottom: 0 !important;">
       <div style="position: absolute; float: left;">
@@ -59,7 +59,7 @@
 
     </div>
 
-    <ngx-barcode [bc-height]="28" [bc-format]="CODE128B" [bc-value]="noRadicado" [bc-display-value]="true"
+    <ngx-barcode [bc-height]="28" [bc-format]="'CODE128B'" [bc-value]="noRadicado" [bc-display-value]="true"
                  [bc-margin-left]="0" [bc-margin-bottom]="0" [bc-margin-right]="0" [bc-margin-top]="0" [bc-text-margin]="0" [bc-text-align]="0"
                  style="margin: 0 auto"></ngx-barcode>
 

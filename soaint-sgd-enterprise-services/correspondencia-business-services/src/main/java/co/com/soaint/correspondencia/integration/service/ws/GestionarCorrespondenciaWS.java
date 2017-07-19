@@ -1,10 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +51,8 @@ public class GestionarCorrespondenciaWS {
     }
 
     @WebMethod(action = "actualizarReferenciaECM", operationName = "actualizarReferenciaECM")
-    public  void actualizarReferenciaECM(@WebParam(name = "nro_radicado") final String nroRadicado, @WebParam(name = "ide_ecm") final String ideEcm) throws BusinessException, SystemException{
-        boundary.actualizarReferenciaECM(nroRadicado, ideEcm);
+    public  void actualizarReferenciaECM(@WebParam(name = "documento") final DocumentoDTO documentoDTO) throws BusinessException, SystemException{
+        boundary.actualizarReferenciaECM(documentoDTO);
     }
 
     @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado")

@@ -13,5 +13,6 @@ export * from './selectors/bis-selectors';
 export * from './selectors/prefijo-cuadrante-selectors';
 export * from './selectors/orientacion-selectors';
 export * from './selectors/tipo-complemento-selectors';
+export * from './selectors/actua-calidad-selectors';
 
 

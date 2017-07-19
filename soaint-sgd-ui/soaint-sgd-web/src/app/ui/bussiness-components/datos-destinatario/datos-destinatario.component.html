@@ -10,8 +10,7 @@
             <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tipoDestinatarioSuggestions$ | async | dropdownItem"
-                        [ngModel]="tipoDestinatarioSelected$ | async"
+            <p-dropdown [options]="tipoDestinatarioInput | dropdownItem"
                         id="tipoDestinatario"
                         formControlName="tipoDestinatario"
                         placeholder="Seleccione"
@@ -29,7 +28,7 @@
             <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
                         id="sedeAdministrativa"
                         formControlName="sedeAdministrativa"
                         placeholder="Seleccione"
@@ -48,7 +47,7 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
 
-            <p-dropdown [options]="dependenciaGrupoSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
                         id="dependenciaGrupo"
                         formControlName="dependenciaGrupo"
                         placeholder="Seleccione"
@@ -74,8 +73,7 @@
           <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
           <p-column field="sedeAdministrativa.nombre" header="Sede administrativa" [sortable]="true"></p-column>
           <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
-          <p-column [style]="{'width': '50px'}"></p-column>
-          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
             <ng-template let-i="rowIndex" pTemplate="item">
               <button type="button" icon="ui-icon-close" pButton (click)="deleteAgentesDestinatario(i)"
                       class="ui-button ui-button-icon ui-button-danger"></button>
@@ -83,17 +81,17 @@
           </p-column>
         </p-dataTable>
 
-        <!--<div class="ui-g-12 md-inputfield">-->
-          <!--<div class="ui-message ui-messages-error"-->
-               <!--*ngIf="agentesDestinatario.length === 0 &&-->
-                <!--(tipoDestinatarioControl.touched && !tipoDestinatarioControl.value) &&-->
-                <!--(sedeAdministrativaControl.touched && !sedeAdministrativaControl.value) &&-->
-                <!--(dependenciaGrupoControl.touched && !dependenciaGrupoControl.value)">-->
-            <!--Listado requerido-->
-          <!--</div>-->
-        <!--</div>-->
+        <div class="ui-g-12 md-inputfield">
+          <div class="ui-message ui-messages-error"
+               *ngIf="agentesDestinatario.length === 0">
+            Se debe registrar un destinatario principal de forma obligatoria
+          </div>
+        </div>
 
       </div>
     </div>
   </div>
 </form>
+
+<p-confirmDialog header="Confirmación" icon="" width="425" acceptLabel="Aceptar" rejectLabel="Cancelar"  responsive="true">
+</p-confirmDialog>

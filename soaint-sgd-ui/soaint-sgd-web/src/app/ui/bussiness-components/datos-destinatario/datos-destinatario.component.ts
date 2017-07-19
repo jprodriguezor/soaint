@@ -1,20 +1,18 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/operator/filter';
 import 'rxjs/add/operator/zip';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {
-  getTipoDestinatarioArrayData
-} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
-import {getDestinatarioPrincial} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {LoadAction as DependenciaGrupoLoadAction} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-actions';
+import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
+import {ConfirmationService} from 'primeng/components/common/api';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
+
 
 @Component({
   selector: 'app-datos-destinatario',
@@ -24,29 +22,23 @@ export class DatosDestinatarioComponent implements OnInit {
 
   form: FormGroup;
 
-  tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
-  sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
-  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
-  tipoDestinatarioSelected$: Observable<any>;
 
   selectedagenteDestinatario: any;
   canInsert = false;
   agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
 
-  @Input()
-  editable = true;
+  @Input() sedeAdministrativaInput: ConstanteDTO[] = [];
+  @Input() tipoDestinatarioInput: ConstanteDTO[] = [];
+  @Input() dependenciaGrupoInput: ConstanteDTO[] = [];
+
+  @Input() editable = true;
 
   constructor(private _store: Store<State>,
-              private _constanteSandbox: ConstanteSandbox,
-              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private confirmationService: ConfirmationService,
               private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
-    this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
-    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-    this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
-    this.tipoDestinatarioSelected$ = this._store.select(getDestinatarioPrincial);
 
     this.initForm();
 
@@ -74,17 +66,61 @@ export class DatosDestinatarioComponent implements OnInit {
       .subscribe(value => {
         this.canInsert = true
       });
+
+    if (!this.editable) {
+      this.form.disable();
+    }
   }
 
   initForm() {
     this.form = this.formBuilder.group({
       'tipoDestinatario': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}],
-      'dependenciaGrupo': [{value: null, disabled: !this.editable}]
+      'dependenciaGrupo': [{value: null, disabled: !this.editable}],
+      'destinatarioPrincipal': [{value: null, disabled: !this.editable}, Validators.required]
     });
   }
 
   addAgentesDestinatario() {
+    const tipo = this.form.get('tipoDestinatario');
+
+    if (tipo.value.codigo === DESTINATARIO_PRINCIPAL && this.agentesDestinatario.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+      return this.confirmSubstitucionDestinatarioPrincipal();
+    }
+
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependenciaGrupo');
+
+    const insertVal = [
+      {
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value
+      }
+    ];
+
+    if (tipo.value.codigo === DESTINATARIO_PRINCIPAL) {
+      this.form.get('destinatarioPrincipal').setValue({
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value
+      });
+    }
+
+    this.agentesDestinatario = [
+      ...insertVal,
+      ...this.agentesDestinatario.filter(
+        value => value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+      )
+    ];
+
+    tipo.reset();
+    sede.reset();
+    grupo.reset();
+  }
+
+  substitudeAgenteDestinatario() {
+
     const tipo = this.form.get('tipoDestinatario');
     const sede = this.form.get('sedeAdministrativa');
     const grupo = this.form.get('dependenciaGrupo');
@@ -100,7 +136,7 @@ export class DatosDestinatarioComponent implements OnInit {
     this.agentesDestinatario = [
       ...insertVal,
       ...this.agentesDestinatario.filter(
-        value => value.tipoDestinatario !== tipo.value || value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+        value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL
       )
     ];
 
@@ -110,9 +146,40 @@ export class DatosDestinatarioComponent implements OnInit {
   }
 
   deleteAgentesDestinatario(index) {
-    let agente = [...this.agentesDestinatario];
+
+    if (this.agentesDestinatario[index].tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
+      this.form.get('destinatarioPrincipal').setValue(null);
+    }
+
+    const agente = [...this.agentesDestinatario];
     agente.splice(index, 1);
     this.agentesDestinatario = agente;
+  }
+
+  confirmSubstitucionDestinatarioPrincipal() {
+    this.confirmationService.confirm({
+      message: '<p style="text-align: center"> Está seguro desea substituir el destinatario principal?</p>',
+      accept: () => {
+        this.substitudeAgenteDestinatario();
+      }
+    });
+  }
+
+  deleteDestinatarioIqualRemitente(sedeRemitente: OrganigramaDTO) {
+    // this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sedeRemitente.codigo).map(value => value.);
+    this.agentesDestinatario = [...this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo !== sedeRemitente.codigo)];
+    this.form.get('destinatarioPrincipal').setValue(null);
+  }
+
+  getFormValues() {
+    const values = this.form.value;
+    if (values.destinatarioPrincipal === null &&
+      values.tipoDestinatario !== null &&
+      values.sedeAdministrativa !== null &&
+      values.dependenciaGrupo !== null
+    ) {
+      this.addAgentesDestinatario();
+    }
   }
 
 }

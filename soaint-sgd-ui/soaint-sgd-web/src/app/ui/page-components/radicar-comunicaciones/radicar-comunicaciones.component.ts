@@ -10,6 +10,8 @@ import {ContactoDTO} from 'app/domain/contactoDTO';
 import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
 
 declare const require: any;
@@ -29,6 +31,8 @@ export class RadicarComunicacionesComponent implements OnInit {
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
+
+  @ViewChild('ticketRadicado') ticketRadicado;
 
   formStatusIcon = 'assignment';
 
@@ -54,9 +58,11 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   formsTabOrder: Array<any> = [];
 
-  ticketRadicado: any;
+  tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-  constructor(private _radicarComunicacionesSandBox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
+  constructor(private _sandbox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -65,39 +71,44 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.formsTabOrder.push(this.datosRemitente);
     this.formsTabOrder.push(this.datosDestinatario);
 
-    setTimeout(() => {
-      this.datosGenerales.form.get('tipoComunicacion').valueChanges
-        .distinctUntilChanged()
-        .subscribe(comunicacion => {
-          if (comunicacion.codigo === COMUNICACION_INTERNA) {
-            this.datosRemitente.form.get('sedeAdministrativa').valueChanges
-              .distinctUntilChanged()
-              .subscribe(sede => {
-                console.log(sede);
-           
-              })
-          } else {
+    this.tipoDestinatarioSuggestions$ = this._sandbox.tipoDestinatarioEntradaSelector();
+    this.sedeDestinatarioSuggestions$ = this._sandbox.sedeDestinatarioEntradaSelector();
+    this.dependenciaGrupoSuggestions$ = this._sandbox.dependenciaGrupoEntradaSelector();
 
+    setTimeout(() => {
+      const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
+      Observable.combineLatest(
+        sedeRemitente.statusChanges,
+        sedeRemitente.valueChanges
+      )
+        .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
+        .distinctUntilChanged()
+        .subscribe(([status, value]) => {
+          if (status === 'VALID') {
+            this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
+            this._sandbox.sedeDestinatariEntradaFilterDispatch(value);
+          } else if (status === 'DISABLED') {
+            this._sandbox.sedeDestinatariEntradaFilterDispatch(null);
           }
         });
     }, 400);
   }
 
-  hideTicketRadicado() {
-    this.barCodeVisible = false;
-  }
-
-  showTicketRadicado() {
-    this.barCodeVisible = true;
-  }
-
   radicarComunicacion() {
+
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
     const agentesList = [];
-    agentesList.push(this.getTipoAgenteExt());
-    agentesList.push(...this.getAgentesInt());
+    const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
+
+    if (isRemitenteInterno) {
+      agentesList.push(this.getTipoAgenteRemitenteInterno());
+    } else {
+      agentesList.push(this.getTipoAgenteRemitenteExterno());
+    }
+
+    agentesList.push(...this.getAgentesDestinatario());
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
@@ -106,14 +117,32 @@ export class RadicarComunicacionesComponent implements OnInit {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
-    this._radicarComunicacionesSandBox.radicar(this.radicacion).subscribe((response) => {
+    this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
       this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
-      this.hideTicketRadicado();
+      console.log(this.valueGeneral);
+      const ticketRadicado = {
+        anexos: this.valueGeneral.cantidadAnexos,
+        folios: this.valueGeneral.numeroFolio,
+        noRadicado: this.radicacion.correspondencia.nroRadicado,
+        fecha: this.radicacion.correspondencia.fecRadicado,
+        destinatarioSede: this.valueDestinatario.destinatarioPrincipal.sedeAdministrativa.nombre,
+        destinatarioGrupo: this.valueDestinatario.destinatarioPrincipal.dependenciaGrupo.nombre
+      };
+      if (isRemitenteInterno) {
+        ticketRadicado['remitenteSede'] = this.valueRemitente.sedeAdministrativa.nombre;
+        ticketRadicado['remitenteGrupo'] = this.valueRemitente.dependenciaGrupo.nombre;
+      } else {
+        ticketRadicado['remitente'] = this.valueRemitente.nombreApellidos;
+      }
+
+      this.ticketRadicado.setDataTicketRadicado(ticketRadicado);
+      this.showTicketRadicado();
+
       this.disableEditionOnForms();
 
       this._taskSandBox.completeTask({
@@ -128,32 +157,53 @@ export class RadicarComunicacionesComponent implements OnInit {
     });
   }
 
-  getTipoAgenteExt(): AgentDTO {
+  getTipoAgenteRemitenteInterno(): AgentDTO {
+
     const tipoAgente: AgentDTO = {
       ideAgente: null,
-      codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
-      codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
-      nombre: this.valueRemitente.nombreApellidos,
-      nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
-      razonSocial: this.valueRemitente.razonSocial,
-      nit: this.valueRemitente.nit,
+      codTipoRemite: null,
+      codTipoPers: null,
+      nombre: null,
+      razonSocial: null,
+      nit: null,
       codCortesia: null,
-      codCargo: null,
-      codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
-      codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
+      codEnCalidad: null,
+      codTipDocIdent: null,
       nroDocuIdentidad: null,
       codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
       codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
-      codFuncRemite: null,
       fecAsignacion: this.date.toISOString(),
-      ideContacto: null,
-      codTipAgent: 'REM',
-      indOriginal: null
+      codTipAgent: 'DES',
+      codEstado: null,
+      indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
     };
     return tipoAgente;
   }
 
-  getAgentesInt(): Array<AgentDTO> {
+  getTipoAgenteRemitenteExterno() {
+    const tipoAgente: AgentDTO = {
+      ideAgente: null,
+      codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
+      codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
+      nombre: this.valueRemitente.nombreApellidos || null,
+      razonSocial: this.valueRemitente.razonSocial || null,
+      nit: this.valueRemitente.nit || null,
+      codCortesia: this.valueRemitente.codCortesia || null,
+      codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
+      codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
+      nroDocuIdentidad: this.valueRemitente.nroDocumentoIdentidad,
+      codSede: null,
+      codDependencia: null,
+      fecAsignacion: this.date.toISOString(),
+      codTipAgent: 'REM',
+      indOriginal: null,
+      codEstado: null
+    };
+    return tipoAgente;
+  }
+
+
+  getAgentesDestinatario(): Array<AgentDTO> {
     const agentes = [];
     this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
@@ -161,20 +211,17 @@ export class RadicarComunicacionesComponent implements OnInit {
         codTipoRemite: null,
         codTipoPers: null,
         nombre: null,
-        nroDocumentoIden: null,
         razonSocial: null,
         nit: null,
         codCortesia: null,
-        codCargo: null,
         codEnCalidad: null,
         codTipDocIdent: null,
         nroDocuIdentidad: null,
         codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
         codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
-        codFuncRemite: null,
         fecAsignacion: this.date.toISOString(),
-        ideContacto: null,
         codTipAgent: 'DES',
+        codEstado: null,
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
@@ -211,13 +258,11 @@ export class RadicarComunicacionesComponent implements OnInit {
       idePpdDocumento: null,
       codTipoDoc: null,
       fecDocumento: this.date.toISOString(),
-      codAsunto: 'CA',
+      asunto: this.valueGeneral.asunto,
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
       nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
-      ideEcm: null,
-      codTipoSoporte: null,
-      codEstArchivado: null
+      ideEcm: null
     };
     return documento;
   }
@@ -251,34 +296,37 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   getDatosContactos(): Array<ContactoDTO> {
     const contactos = [];
-    console.log(this.datosRemitente.addresses);
-    this.datosRemitente.addresses.forEach(address => {
+    const contactsRemitente = (this.datosRemitente.datosContactos) ? this.datosRemitente.datosContactos.contacts : [];
+    contactsRemitente.forEach(contact => {
       contactos.push({
         ideContacto: null,
-        nroViaGeneradora: address.noViaPrincipal,
-        nroPlaca: null,
-        codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
-        codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
+        nroViaGeneradora: contact.noViaPrincipal || null,
+        nroPlaca: contact.nroPlaca || null,
+        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
+        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: address.direccion,
-        celular: null,
-        telFijo1: null,
-        telFijo2: null,
-        extension1: null,
-        extension2: null,
-        corrElectronico: null,
-        codPais: this.valueRemitente.pais ? this.valueRemitente.pais.codigo : null,
-        codDepartamento: this.valueRemitente.departamento ? this.valueRemitente.departamento.codigo : null,
-        codMunicipio: this.valueRemitente.municipio ? this.valueRemitente.municipio.codigo : null,
+        direccion: contact.direccion || null,
+        celular: contact.celular || null,
+        telFijo: contact.numeroTel || null,
+        extension: null,
+        corrElectronico: contact.correoEle || null,
+        codPais: contact.pais ? contact.pais.codigo : null,
+        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
+        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
         provEstado: null,
-        ciudad: null
+        principal: null
       });
     });
     return contactos;
   }
 
-  setTicketRadicado() {
 
+  hideTicketRadicado() {
+    this.barCodeVisible = false;
+  }
+
+  showTicketRadicado() {
+    this.barCodeVisible = true;
   }
 
   disableEditionOnForms() {

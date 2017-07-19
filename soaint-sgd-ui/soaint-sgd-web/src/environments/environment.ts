@@ -21,6 +21,7 @@ export const environment = {
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
   tratamientoCortesia_endpoint: `${host}/tratamiento-cortesia-gateway-api`,
+  actuaCalidad_endpoint: `${host}/actua-calidad-gateway-api`,
   departamento_endpoint: `${host}/departamento-gateway-api`,
   municipio_endpoint: `${host}/municipio-gateway-api`,
   proceso_endpoint: `${host}/proceso-gateway-api`,

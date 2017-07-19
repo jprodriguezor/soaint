@@ -45,6 +45,9 @@ export class Sandbox {
       case 'tratamientoCortesia':
         endpoint = environment.tratamientoCortesia_endpoint;
         break;
+      case 'actuaCalidad':
+        endpoint = environment.actuaCalidad_endpoint;
+        break;
       case 'tipologiaDocumental':
         endpoint = environment.tipologiaDocumental_endpoint;
         break;
