@@ -72,16 +72,20 @@ public class CorrespondenciaGatewayApi {
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
         //TODO llenar los datos para iniciar proceso
-        /*responseObject.getAsignaciones().forEach(asignacionDTO -> {
+        responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-            entradaProceso.setIdProceso("");
-            entradaProceso.setUsuario("");
-            entradaProceso.setIdDespliegue("");
+            entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
+            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
             Map<String, Object> parametros = new HashMap<>();
-            parametros.put("", "");
+            parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion());
+            parametros.put("idAgente", asignacionDTO.getIdeAgente());
+            parametros.put("usuario", "krisv");
+            parametros.put("idDocumento", asignacionDTO.getIdeDocumento());
+            parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
+            parametros.put("fechaVencimiento", asignacionDTO.getFechaVencimiento().toString());
             entradaProceso.setParametros(parametros);
-            this.procesoClient.iniciarManual(entradaProceso);
-        });*/
+            this.procesoClient.iniciar(entradaProceso);
+        });
         System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
