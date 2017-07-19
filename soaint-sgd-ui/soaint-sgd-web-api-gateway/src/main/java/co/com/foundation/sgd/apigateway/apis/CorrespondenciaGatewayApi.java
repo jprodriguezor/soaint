@@ -79,10 +79,11 @@ public class CorrespondenciaGatewayApi {
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion());
             parametros.put("idAgente", asignacionDTO.getIdeAgente());
-            parametros.put("usuario", "krisv");
+            parametros.put("usuario", asignacionDTO.getLoginName());
             parametros.put("idDocumento", asignacionDTO.getIdeDocumento());
             parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
-            parametros.put("fechaVencimiento", asignacionDTO.getFechaVencimiento().toString());
+            if (asignacionDTO.getFechaVencimiento() != null)
+                parametros.put("fechaVencimiento", asignacionDTO.getFechaVencimiento().toString());
             entradaProceso.setParametros(parametros);
             this.procesoClient.iniciar(entradaProceso);
         });

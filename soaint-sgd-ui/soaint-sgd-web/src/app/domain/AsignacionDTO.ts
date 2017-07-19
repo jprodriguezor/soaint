@@ -16,4 +16,5 @@ export interface AsignacionDTO {
   ideAgente: number;
   ideDocumento: number;
   nroRadicado: string;
+  loginName: string;
 }

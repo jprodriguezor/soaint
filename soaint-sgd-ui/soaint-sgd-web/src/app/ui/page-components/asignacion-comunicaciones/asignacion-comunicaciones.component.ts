@@ -101,7 +101,8 @@ export class AsignarComunicacionesComponent implements OnInit {
         idInstancia: null,
         ideAgente: value.agenteList[0].ideAgente,
         ideDocumento: value.correspondencia.ideDocumento,
-        nroRadicado: value.correspondencia.nroRadicado
+        nroRadicado: value.correspondencia.nroRadicado,
+        loginName: this.funcionarioSelected.loginName
       })
     });
     return asignaciones;
