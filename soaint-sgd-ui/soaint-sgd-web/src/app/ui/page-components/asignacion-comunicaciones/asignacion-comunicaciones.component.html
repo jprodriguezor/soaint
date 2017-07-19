@@ -11,20 +11,20 @@
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="estadoCorrespondencia">Fecha inicial</label>
+                <label for="startDate">Fecha inicial</label>
               </div>
               <div class="ui-g-12">
-                <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy" id="startDate"></p-calendar>
               </div>
             </div>
           </div>
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="estadoCorrespondencia">Fecha final</label>
+                <label for="endDate">Fecha final</label>
               </div>
               <div class="ui-g-12">
-                <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy" id="endDate"></p-calendar>
               </div>
             </div>
           </div>
@@ -42,7 +42,7 @@
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="estadoCorrespondencia">Número de radicado</label>
+                <label for="numeroRadicado">Número de radicado</label>
               </div>
               <div class="ui-g-12">
                 <input type="text" pInputText id="numeroRadicado">
