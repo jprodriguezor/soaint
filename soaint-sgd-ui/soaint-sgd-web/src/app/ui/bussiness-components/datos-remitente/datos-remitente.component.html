@@ -143,6 +143,7 @@
                           id="actuaCalidad"
                           formControlName="actuaCalidad"
                           placeholder="Seleccione"
+                          [filter]="true"
                           [autoWidth]="false"
               >
               </p-dropdown>
@@ -210,7 +211,7 @@
 
 <div *ngIf="visibility.datosContacto">
 
-  <app-datos-direccion [editable]="editable"></app-datos-direccion>
+  <app-datos-direccion #datosContactos [editable]="editable"></app-datos-direccion>
 
 </div>
 

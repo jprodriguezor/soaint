@@ -34,7 +34,6 @@ export class DatosDireccionComponent implements OnInit {
   @Input() editable = true;
   validations = {};
 
-
   paisSuggestions$: Observable<PaisDTO[]>;
   departamentoSuggestions$: Observable<DepartamentoDTO[]>;
   municipioSuggestions$: Observable<MunicipioDTO[]>;

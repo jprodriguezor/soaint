@@ -73,6 +73,7 @@ export class Effects {
       this._sandbox.loadData({key: 'orientacion'}),
       this._sandbox.loadData({key: 'bis'}),
       this._sandbox.loadData({key: 'tipoComplemento'}),
+      this._sandbox.loadData({key: 'actuaCalidad'}),
 
       (tipoComunicacion,
        mediosRecepcion,
@@ -88,7 +89,8 @@ export class Effects {
        tipoVia,
        orientacion,
        bis,
-       tipoComplemento
+       tipoComplemento,
+       actuaCalidad
       ) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
@@ -105,7 +107,8 @@ export class Effects {
           tipoVia: {key: 'tipoVia', data: tipoVia},
           orientacion: {key: 'orientacion', data: orientacion},
           bis: {key: 'bis', data: bis},
-          tipoComplemento: {key: 'tipoComplemento', data: tipoComplemento}
+          tipoComplemento: {key: 'tipoComplemento', data: tipoComplemento},
+          actuaCalidad: {key: 'actuaCalidad', data: actuaCalidad}
         }
       }).take(1)
       .mergeMap((data: any) => {
@@ -124,7 +127,8 @@ export class Effects {
           new actions.LoadSuccessAction(data.tipoVia),
           new actions.LoadSuccessAction(data.orientacion),
           new actions.LoadSuccessAction(data.bis),
-          new actions.LoadSuccessAction(data.tipoComplemento)
+          new actions.LoadSuccessAction(data.tipoComplemento),
+          new actions.LoadSuccessAction(data.actuaCalidad)
         ];
       })
       .catch(error => Observable.of(new actions.LoadFailAction({error})))

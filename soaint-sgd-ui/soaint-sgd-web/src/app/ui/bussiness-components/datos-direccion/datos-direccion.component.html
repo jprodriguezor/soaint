@@ -328,32 +328,34 @@
                   </div>
                 </div>
                 <div class="ui-sm-12 ui-md-12 ui-g-7 ui-lg-7">
+
+                  <div class="ui-g-12" *ngIf="contact.direccion">
+                    <i class="fa ui-icon-location-on"></i>
+                    <span class="table-text-custom">
+                        {{ contact.direccion }}
+                        </span>
+                  </div>
+
                   <div class="ui-g-12" *ngIf="contact.pais">
                     <span class="table-text-custom">
                       <b>País: &nbsp;</b>
                       {{ contact.pais.nombre }}
                     </span>
                   </div>
+
                   <div class="ui-g-12" *ngIf="contact.departamento">
                     <span class="table-text-custom">
                       <b>Departamento: &nbsp;</b>
                       {{ contact.departamento.nombre }}
                     </span>
                   </div>
+
                   <div class="ui-g-12" *ngIf="contact.municipio">
                     <span class="table-text-custom">
                       <b>Municipio: &nbsp;</b>
                     {{ contact.municipio.nombre }}
                     </span>
                   </div>
-
-                  <div class="ui-g-12" *ngIf="contact.direccion">
-                    <i class="fa ui-icon-location-on"></i>
-                    <span class="table-text-custom">
-                    {{ contact.direccion }}
-                    </span>
-                  </div>
-
 
                 </div>
               </ng-template>

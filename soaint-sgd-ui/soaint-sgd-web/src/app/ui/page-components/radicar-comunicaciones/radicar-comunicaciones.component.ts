@@ -102,8 +102,9 @@ export class RadicarComunicacionesComponent implements OnInit {
   }
 
   radicarComunicacion() {
+
     this.valueRemitente = this.datosRemitente.form.value;
-    // this.valueDestinatario = this.datosDestinatario.form.value;
+    this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
     const agentesList = [];
     agentesList.push(this.getTipoAgenteExt());
@@ -143,22 +144,19 @@ export class RadicarComunicacionesComponent implements OnInit {
       ideAgente: null,
       codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
-      nombre: this.valueRemitente.nombreApellidos,
-      nroDocumentoIden: this.valueRemitente.nroDocumentoIdentidad,
-      razonSocial: this.valueRemitente.razonSocial,
-      nit: this.valueRemitente.nit,
-      codCortesia: null,
-      codCargo: null,
+      nombre: this.valueRemitente.nombreApellidos || null,
+      razonSocial: this.valueRemitente.razonSocial || null,
+      nit: this.valueRemitente.nit || null,
+      codCortesia: this.valueRemitente.codCortesia || null,
       codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
       codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
-      nroDocuIdentidad: null,
-      codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
-      codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
-      codFuncRemite: null,
+      nroDocuIdentidad: this.valueRemitente.nroDocumentoIdentidad,
+      codSede: null,
+      codDependencia: null,
       fecAsignacion: this.date.toISOString(),
-      ideContacto: null,
       codTipAgent: 'REM',
-      indOriginal: null
+      indOriginal: null,
+      codEstado: null
     };
     return tipoAgente;
   }
@@ -171,20 +169,17 @@ export class RadicarComunicacionesComponent implements OnInit {
         codTipoRemite: null,
         codTipoPers: null,
         nombre: null,
-        nroDocumentoIden: null,
         razonSocial: null,
         nit: null,
         codCortesia: null,
-        codCargo: null,
         codEnCalidad: null,
         codTipDocIdent: null,
         nroDocuIdentidad: null,
         codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
         codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
-        codFuncRemite: null,
         fecAsignacion: this.date.toISOString(),
-        ideContacto: null,
         codTipAgent: 'DES',
+        codEstado: null,
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
@@ -225,9 +220,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
       nroAnexos: this.valueGeneral.cantidadAnexos, // 'Numero anexos',
       codEstDoc: null,
-      ideEcm: null,
-      codTipoSoporte: null,
-      codEstArchivado: null
+      ideEcm: null
     };
     return documento;
   }
@@ -261,27 +254,25 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   getDatosContactos(): Array<ContactoDTO> {
     const contactos = [];
-    console.log(this.datosRemitente.addresses);
-    this.datosRemitente.addresses.forEach(address => {
+    console.log(this.datosRemitente.contacts);
+    this.datosRemitente.datosContactos.contacts.forEach(contact => {
       contactos.push({
         ideContacto: null,
-        nroViaGeneradora: address.noViaPrincipal,
-        nroPlaca: null,
-        codTipoVia: address.tipoVia ? address.tipoVia.codigo : null,
-        codPrefijoCuadrant: address.prefijoCuadrante ? address.prefijoCuadrante.codigo : null,
+        nroViaGeneradora: contact.noViaPrincipal || null,
+        nroPlaca: contact.nroPlaca || null,
+        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
+        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: address.direccion,
-        celular: null,
-        telFijo1: null,
-        telFijo2: null,
-        extension1: null,
-        extension2: null,
-        corrElectronico: null,
-        codPais: this.valueRemitente.pais ? this.valueRemitente.pais.codigo : null,
-        codDepartamento: this.valueRemitente.departamento ? this.valueRemitente.departamento.codigo : null,
-        codMunicipio: this.valueRemitente.municipio ? this.valueRemitente.municipio.codigo : null,
+        direccion: contact.direccion || null,
+        celular: contact.celular || null,
+        telFijo: contact.numeroTel || null,
+        extension: null,
+        corrElectronico: contact.correoEle || null,
+        codPais: contact.pais ? contact.pais.codigo : null,
+        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
+        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
         provEstado: null,
-        ciudad: null
+        principal: null
       });
     });
     return contactos;

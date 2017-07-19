@@ -6,7 +6,5 @@ export interface DocumentoDTO {
   nroFolios: number,
   nroAnexos: number,
   codEstDoc: string,
-  ideEcm: string,
-  codTipoSoporte: string,
-  codEstArchivado: string
+  ideEcm: string
 }

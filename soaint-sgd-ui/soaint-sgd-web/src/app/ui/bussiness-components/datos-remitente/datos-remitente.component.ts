@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -31,11 +31,9 @@ import {getActuaCalidadArrayData} from '../../../infrastructure/state-management
 export class DatosRemitenteComponent implements OnInit {
 
   form: FormGroup;
-  formContactos: FormGroup;
   validations: any = {};
   visibility: any = {};
 
-  addresses: Array<any> = [];
   contacts: Array<any> = [];
   display = false;
 
@@ -47,14 +45,10 @@ export class DatosRemitenteComponent implements OnInit {
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-
+  @ViewChild('datosContactos') datosContactos;
   @Input() editable = true;
-
-  @Input()
-  tipoComunicacion: any;
-
-  @Output()
-  onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
+  @Input() tipoComunicacion: any;
+  @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
@@ -88,7 +82,6 @@ export class DatosRemitenteComponent implements OnInit {
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
-
 
   }
 

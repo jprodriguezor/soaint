@@ -160,6 +160,11 @@ export class DatosDestinatarioComponent implements OnInit {
     });
   }
 
+  deleteDestinatarioPrincipal() {
+    this.agentesDestinatario = [...this.agentesDestinatario.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL)];
+    this.form.get('destinatarioPrincipal').setValue(null);
+  }
+
   getFormValues() {
     const values = this.form.value;
     if (values.destinatarioPrincipal === null &&
