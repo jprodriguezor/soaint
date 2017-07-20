@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
@@ -14,7 +14,9 @@ import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
-  templateUrl: './asignacion-comunicaciones.component.html'
+  templateUrl: './asignacion-comunicaciones.component.html',
+  styleUrls: ['./asignacion-comunicaciones.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AsignarComunicacionesComponent implements OnInit {
 
@@ -25,6 +27,8 @@ export class AsignarComunicacionesComponent implements OnInit {
   estadosCorrespondencia: [{ label: string, value: string }];
 
   selectedComunications: ComunicacionOficialDTO[] = [];
+
+  asignationType: string = 'manual';
 
   start_date: Date = new Date();
 
