@@ -39,14 +39,14 @@
                 </div>
               </div>
             </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
               <div class="ui-g form-group">
                 <div class="ui-g-12">
                   <label for="estadoCorrespondencia">Estado tarea</label>
                 </div>
                 <div class="ui-g-12">
                   <p-dropdown [options]="estadosCorrespondencia" id="estadoCorrespondencia"
-                              [autoWidth]="false" [(ngModel)]="estadoCorrespondencia"></p-dropdown>
+                              [autoWidth]="false" formControlName="estadoCorrespondencia"></p-dropdown>
                 </div>
               </div>
             </div>
@@ -154,11 +154,11 @@
                     (click)="listarComunicaciones()"></button>
             <button pButton type="button" label="Tramitar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    (click)="listarComunicaciones()"></button>
+                    (click)="processComunications()"></button>
             <button pButton type="button" label="Reasignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     [disabled]="!funcionarioSelected || selectedComunications.length == 0"
-                    (click)="assignComunications()"></button>
+                    (click)="listarComunicaciones()"></button>
             <button pButton type="button" label="Asignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     [disabled]="!funcionarioSelected || selectedComunications.length == 0"

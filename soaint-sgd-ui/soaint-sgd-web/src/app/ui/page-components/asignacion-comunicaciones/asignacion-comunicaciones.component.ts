@@ -1,16 +1,20 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {getArrayData as getFuncionarioArrayData} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getArrayData as getFuncionarioArrayData,
+  getAuthenticatedFuncionario
+} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
 import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {AsignacionDTO} from '../../../domain/AsignacionDTO';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -18,7 +22,7 @@ import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
   styleUrls: ['./asignacion-comunicaciones.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AsignarComunicacionesComponent implements OnInit {
+export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
@@ -40,23 +44,35 @@ export class AsignarComunicacionesComponent implements OnInit {
 
   funcionarioSelected: FuncionarioDTO;
 
+  funcionarioLog: FuncionarioDTO;
+
+  funcionarioSubcription: Subscription;
+
   constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox, private _funcionarioSandbox: Sandbox, private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.start_date.setHours(this.start_date.getHours() - 24);
+    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+      this.funcionarioLog = funcionario;
+    });
+    this.initForm();
   }
 
   ngOnInit() {
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
-    this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.funcionarioSubcription.unsubscribe();
   }
 
   initForm() {
     this.form = this.formBuilder.group({
-      'funcionario': [null]
+      'funcionario': [null],
+      'estadoCorrespondencia': [null],
     });
   }
 
@@ -65,9 +81,13 @@ export class AsignarComunicacionesComponent implements OnInit {
       {
         label: 'SIN ASIGNAR',
         value: 'SA'
+      },
+      {
+        label: 'ASIGNADA',
+        value: 'AS'
       }
     ];
-    this.estadoCorrespondencia = this.estadosCorrespondencia[0];
+    this.form.get('estadoCorrespondencia').setValue(this.estadosCorrespondencia[0].value);
   }
 
   convertDate(inputFormat) {
@@ -85,13 +105,19 @@ export class AsignarComunicacionesComponent implements OnInit {
     });
   }
 
-  createAsignacionesDto(): AsignacionDTO[] {
+  processComunications() {
+    this._asignacionSandbox.assignDispatch({
+      asignaciones: this.createAsignacionesDto(this.funcionarioLog.id, this.funcionarioLog.loginName)
+    });
+  }
+
+  createAsignacionesDto(idFuncionario?, loginNameFuncionario?): AsignacionDTO[] {
     let asignaciones: AsignacionDTO[] = [];
     this.selectedComunications.forEach((value) => {
       asignaciones.push({
         ideAsignacion: null,
         fecAsignacion: null,
-        ideFunci: this.funcionarioSelected.id,
+        ideFunci: idFuncionario || this.funcionarioSelected.id,
         codDependencia: value.agenteList[0].codDependencia,
         codTipAsignacion: 'TA',
         observaciones: null,
@@ -106,7 +132,7 @@ export class AsignarComunicacionesComponent implements OnInit {
         ideAgente: value.agenteList[0].ideAgente,
         ideDocumento: value.correspondencia.ideDocumento,
         nroRadicado: value.correspondencia.nroRadicado,
-        loginName: this.funcionarioSelected.loginName
+        loginName: loginNameFuncionario || this.funcionarioSelected.loginName
       })
     });
     return asignaciones;
@@ -116,7 +142,7 @@ export class AsignarComunicacionesComponent implements OnInit {
     this._comunicacionOficialApi.loadDispatch({
       fecha_ini: this.convertDate(this.start_date),
       fecha_fin: this.convertDate(this.end_date),
-      cod_estado: this.estadoCorrespondencia.value
+      cod_estado: this.form.get('estadoCorrespondencia').value
     });
   }
 }
