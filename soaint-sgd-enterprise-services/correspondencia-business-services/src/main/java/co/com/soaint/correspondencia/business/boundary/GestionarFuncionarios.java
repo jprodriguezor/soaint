@@ -1,23 +1,19 @@
 package co.com.soaint.correspondencia.business.boundary;
 
-import co.com.soaint.correspondencia.business.control.OrganigramaAdministrativoControl;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
-import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +33,6 @@ public class GestionarFuncionarios {
 
     @PersistenceContext
     private EntityManager em;
-
-    @Autowired
-    private OrganigramaAdministrativoControl organigramaAdministrativoControl;
     // ----------------------
 
     public GestionarFuncionarios() {
@@ -49,29 +42,15 @@ public class GestionarFuncionarios {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException {
         try {
-            List<FuncionarioDTO> funcionarioDTOList = new ArrayList<>();
-            em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
+            return em.createNamedQuery("Funcionarios.findByLoginNameAndEstado", FuncionarioDTO.class)
                     .setParameter("LOGIN_NAME", loginName)
                     .setParameter("ESTADO", estado)
-                    .getResultList()
-                    .stream()
-                    .forEach(funcionarioDTO -> {
-                        OrganigramaItemDTO dependencia = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
-                                .setParameter("IDE_ORGA_ADMIN", BigInteger.valueOf(Long.parseLong(funcionarioDTO.getCodOrgaAdmi())))
-                                .getSingleResult();
-                        funcionarioDTO.setDependencia(dependencia);
-                        OrganigramaItemDTO sede = organigramaAdministrativoControl.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(funcionarioDTO.getCodOrgaAdmi())));
-                        funcionarioDTO.setSede(sede);
-                        funcionarioDTOList.add(funcionarioDTO);
-                    });
-            if (funcionarioDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("funcionario.funcionario_not_exist_by_loginName_and_estado")
-                        .buildBusinessException();
-            }
-            return funcionarioDTOList.get(0);
-        } catch (BusinessException e) {
-            throw e;
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("funcionarios.funcionario_not_exist_by_loginName_and_estado")
+                    .withRootException(n)
+                    .buildBusinessException();
         } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -82,20 +61,14 @@ public class GestionarFuncionarios {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(String codDependencia, String codEstado) throws BusinessException, SystemException {
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(String codDependencia, String codEstado) throws SystemException {
         try {
-            List<FuncionarioDTO> funcionarioDTOList = em.createNamedQuery("Funcionarios.findAllByCodOrgaAdmiAndEstado")
+            List<FuncionarioDTO> funcionarioDTOList = em.createNamedQuery("Funcionarios.findAllByCodOrgaAdmiAndEstado", FuncionarioDTO.class)
                     .setParameter("COD_ORGA_ADMI", codDependencia)
                     .setParameter("ESTADO", codEstado)
                     .getResultList();
-            if (funcionarioDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("funcionario.funcionario_not_exist_by_codDependencia_and_estado")
-                        .buildBusinessException();
-            }
+
             return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
-        } catch (BusinessException e) {
-            throw e;
         } catch (Exception ex) {
             logger.error("Business Boundary - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
