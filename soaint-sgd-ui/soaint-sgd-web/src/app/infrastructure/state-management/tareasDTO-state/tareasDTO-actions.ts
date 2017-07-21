@@ -10,6 +10,9 @@ export const ActionTypes = {
     START_TASK: type('[TareaDTO] StartTaskAction'),
     START_TASK_SUCCESS: type('[TareaDTO] StartTaskSuccessAction'),
     START_TASK_FAIL: type('[TareaDTO] StartTaskFailAction'),
+    COMPLETE_TASK: type('[TareaDTO] CompleteTaskAction'),
+    COMPLETE_TASK_SUCCESS: type('[TareaDTO] CompleteTaskSuccessAction'),
+    COMPLETE_TASK_FAIL: type('[TareaDTO] CompleteTaskFailAction'),
 
 };
 
@@ -49,6 +52,20 @@ export class StartTaskFailAction implements Action {
   constructor(public payload?: any) { }
 }
 
+export class CompleteTaskAction implements Action {
+  type = ActionTypes.COMPLETE_TASK;
+  constructor(public payload?: any) { }
+}
+
+export class CompleteTaskSuccessAction implements Action {
+  type = ActionTypes.COMPLETE_TASK_SUCCESS;
+  constructor(public payload?: any) { }
+}
+
+export class CompleteTaskFailAction implements Action {
+  type = ActionTypes.COMPLETE_TASK_FAIL;
+  constructor(public payload?: any) { }
+}
 
 export type Actions =
   FilterAction |
@@ -57,7 +74,10 @@ export type Actions =
   LoadFailAction |
   StartTaskAction |
   StartTaskSuccessAction |
-  StartTaskFailAction
+  StartTaskFailAction |
+  CompleteTaskAction |
+  CompleteTaskSuccessAction |
+  CompleteTaskFailAction
   ;
 
 

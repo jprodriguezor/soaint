@@ -12,7 +12,10 @@ import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareas
 import * as moment from 'moment';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
-import {COMUNICACION_INTERNA} from '../../../shared/bussiness-properties/radicacion-properties';
+import {
+  COMUNICACION_INTERNA, DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, TIPO_AGENTE_DESTINATARIO,
+  TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
+} from '../../../shared/bussiness-properties/radicacion-properties';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -149,9 +152,11 @@ export class RadicarComunicacionesComponent implements OnInit {
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
+        usuario: 'krisv',
+        pass: 'krisv',
         parametros: {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
-          numeroRadicacion: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
         }
       }).subscribe();
     });
@@ -161,7 +166,7 @@ export class RadicarComunicacionesComponent implements OnInit {
 
     const tipoAgente: AgentDTO = {
       ideAgente: null,
-      codTipoRemite: null,
+      codTipoRemite: TIPO_REMITENTE_INTERNO,
       codTipoPers: null,
       nombre: null,
       razonSocial: null,
@@ -173,7 +178,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
       codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
       fecAsignacion: this.date.toISOString(),
-      codTipAgent: 'DES',
+      codTipAgent: TIPO_AGENTE_REMITENTE,
       codEstado: null,
       indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
     };
@@ -183,7 +188,7 @@ export class RadicarComunicacionesComponent implements OnInit {
   getTipoAgenteRemitenteExterno() {
     const tipoAgente: AgentDTO = {
       ideAgente: null,
-      codTipoRemite: this.valueGeneral.tipoComunicacion.codigo,
+      codTipoRemite: TIPO_REMITENTE_EXTERNO,
       codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
       nombre: this.valueRemitente.nombreApellidos || null,
       razonSocial: this.valueRemitente.razonSocial || null,
@@ -195,7 +200,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       codSede: null,
       codDependencia: null,
       fecAsignacion: this.date.toISOString(),
-      codTipAgent: 'REM',
+      codTipAgent: TIPO_AGENTE_REMITENTE,
       indOriginal: null,
       codEstado: null
     };
@@ -220,7 +225,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
         codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
         fecAsignacion: this.date.toISOString(),
-        codTipAgent: 'DES',
+        codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
@@ -314,7 +319,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         codDepartamento: contact.departamento ? contact.departamento.codigo : null,
         codMunicipio: contact.municipio ? contact.municipio.codigo : null,
         provEstado: null,
-        principal: null
+        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
       });
     });
     return contactos;

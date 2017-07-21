@@ -24,4 +24,6 @@ export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, 
   return ids.map(id => entities[id]);
 });
 
+export const getSelectedDependencyGroupFuncionario = createSelector(rootPath, (state: State) => state.selectedDependencyGroup);
+
 

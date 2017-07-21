@@ -1,10 +1,10 @@
 export interface DocumentoDTO {
-  idePpdDocumento: number,
-  codTipoDoc: string,
-  fecDocumento: string,
+  idePpdDocumento?: number,
+  codTipoDoc?: string,
+  fecDocumento?: string,
   asunto: string,
   nroFolios: number,
   nroAnexos: number,
-  codEstDoc: string,
-  ideEcm: string
+  codEstDoc?: string,
+  ideEcm?: string
 }

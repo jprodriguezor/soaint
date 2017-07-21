@@ -17,6 +17,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './funcionarioDTO-actions';
 import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors';
 
 @Injectable()
 export class Effects {
@@ -32,21 +33,25 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadAuthenticatedFuncionario(payload)
-        .map((response) => new actions.LoadSuccessAction(response))
-        .catch((error) => Observable.of(new actions.LoadFailAction({error})))
-    );
+        .mergeMap((response) => [
+            new actions.LoadSuccessAction(response),
+            new actions.SelectDependencyGroupAction()
+          ])
+          .catch((error) => Observable.of(new actions.LoadFailAction({error})))
+        );
 
   @Effect()
   loadAll: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD_ALL)
-    .map(toPayload)
-    .withLatestFrom(this._store$)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .distinctUntilChanged()
     .switchMap(
-      ([payload, state]) => this._sandbox.loadAllFuncionarios(state.funcionario.authenticatedFuncionario.dependencias[0].codigo)
-        .map((response) => new actions.LoadAllSuccessAction(response))
-        .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
-        )
+      ([payload, state]) => {
+        return this._sandbox.loadAllFuncionarios(state.codigo)
+          .map((response) => new actions.LoadAllSuccessAction(response))
+          .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
+          )
+      }
     );
 
 
