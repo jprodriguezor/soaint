@@ -8,6 +8,7 @@ import {go} from '@ngrx/router-store';
 import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -46,7 +47,6 @@ export class Sandbox {
     return this._listSelectionService.post(environment.tasksCompleteProcess, payload);
   }
 
-
   filterDispatch(query) {
     this._store.dispatch(new actions.FilterAction(query));
   }
@@ -62,7 +62,6 @@ export class Sandbox {
   startTaskDispatch(task?: TareaDTO) {
 
     if (task.estado === 'ENPROGRESO') {
-
       this.initTaskDispatch(task);
 
     } else if (task.estado === 'RESERVADO') {
@@ -70,7 +69,9 @@ export class Sandbox {
       this._store.dispatch(new actions.StartTaskAction({
         'idProceso': task.idProceso,
         'idDespliegue': task.idDespliegue,
-        'idTarea': task.idTarea
+        'idTarea': task.idTarea,
+        'usuario': 'krisv',
+        'pass': 'krisv'
       }));
 
     }

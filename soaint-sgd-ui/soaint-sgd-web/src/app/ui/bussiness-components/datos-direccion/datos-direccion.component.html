@@ -1,7 +1,7 @@
 <!--Body-->
 <div class="ui-g">
   <form [formGroup]="form" novalidate name="formContacto">
-    <div class="card card-w-title"  *ngIf="editable === true">
+    <div class="card card-w-title" *ngIf="editable === true">
       <h1>Datos de contacto</h1>
       <!--Tipo Telefono-->
       <div class="ui-g ui-fluid">
@@ -273,8 +273,15 @@
             </div>
           </div>
         </div>
-      </div>
 
+        <div class="ui-sm-6 ui-md-6 ui-g-3 ui-lg-3">
+          <div style="padding: 20px 0 0 10px">
+            <p-checkbox name="cg" label="Principal"
+                        formControlName="principal" id="reqDigit" binary="true"></p-checkbox>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <div class="card card-w-title">
@@ -361,7 +368,7 @@
               </ng-template>
             </p-column>
 
-            <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}"  *ngIf="editable === true">
+            <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
               <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
                 <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
                         class="ui-button ui-button-icon ui-button-danger"></button>

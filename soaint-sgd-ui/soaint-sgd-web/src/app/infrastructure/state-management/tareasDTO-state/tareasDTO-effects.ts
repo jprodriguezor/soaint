@@ -68,6 +68,17 @@ export class Effects {
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     )
 
+  @Effect()
+  completeTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.COMPLETE_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.completeTask(payload)
+        .map((response: any) =>  new actions.CompleteTaskSuccessAction(response))
+        .do(this._sandbox.initTaskDispatch(payload))
+        .catch((error) => Observable.of(new actions.CompleteTaskFailAction({error})))
+    )
+
 
 
 }
