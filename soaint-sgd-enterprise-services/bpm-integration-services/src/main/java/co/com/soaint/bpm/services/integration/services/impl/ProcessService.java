@@ -199,7 +199,7 @@ public class ProcessService implements IProcessServices {
 
         org.json.JSONObject datosProceso = new org.json.JSONObject();
         datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
-        datosProceso.put("estadoRadicacion",entrada.getParametros().getOrDefault("estadoRadicacion","RADICADO").toString());
+        datosProceso.put("ideEcm",entrada.getParametros().getOrDefault("ideEcm","12345").toString());
 
         ksession.signalEvent("estadoDigitalizacion", datosProceso.toString(), processInstance.getId());
 

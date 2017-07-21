@@ -26,13 +26,11 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case ActionTypes.LOAD_SUCCESS: {
-      console.log(action.payload);
       const funcionario = action.payload;
       return tassign(state, { authenticatedFuncionario: funcionario});
     }
 
     case ActionTypes.LOAD_ALL_SUCCESS: {
-      console.log(action.payload);
       const values = action.payload.funcionarios;
       const newValues = values.filter(data => !state.entities[data.id]);
 
