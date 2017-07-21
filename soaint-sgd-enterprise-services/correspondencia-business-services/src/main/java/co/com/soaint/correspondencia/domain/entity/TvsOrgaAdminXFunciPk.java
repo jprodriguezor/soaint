@@ -18,6 +18,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "TVS_ORGA_ADMIN_X_FUNCI_PK")
+@NamedQueries({
+        @NamedQuery(name = "TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci", query = "SELECT  t.tvsOrgaAdminXFunciPkPk.codOrgaAdmi " +
+                "FROM TvsOrgaAdminXFunciPk t " +
+                "WHERE t.tvsOrgaAdminXFunciPkPk.ideFunci = :IDE_FUNCI")})
 public class TvsOrgaAdminXFunciPk implements Serializable {
 
     private static final long serialVersionUID = 1L;
