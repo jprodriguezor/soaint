@@ -13,5 +13,5 @@ export interface FuncionarioDTO {
   loginName: string;
   estado: string;
   sede: OrganigramaDTO;
-  dependencia: OrganigramaDTO;
+  dependencias: OrganigramaDTO[];
 }
