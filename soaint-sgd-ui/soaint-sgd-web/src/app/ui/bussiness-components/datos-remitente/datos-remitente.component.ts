@@ -7,7 +7,6 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
-  getTratamientoCortesiaArrayData,
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -41,7 +40,6 @@ export class DatosRemitenteComponent implements OnInit {
   tipoDocumentoSuggestons$: Observable<ConstanteDTO[]>;
 
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
-  tratamientoCortesiaSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
@@ -58,7 +56,6 @@ export class DatosRemitenteComponent implements OnInit {
   ngOnInit(): void {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestons$ = this._store.select(getTipoDocumentoArrayData);
-    this.tratamientoCortesiaSuggestions$ = this._store.select(getTratamientoCortesiaArrayData);
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
@@ -74,7 +71,6 @@ export class DatosRemitenteComponent implements OnInit {
       'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
       'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
-      'tratamientoCortesia': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}, Validators.required],
       'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
       'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
@@ -136,7 +132,7 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
-      this.visibility['tratamientoCortesia'] = true;
+
       this.form.get('nroDocumentoIdentidad').enable();
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
@@ -148,7 +144,6 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
       this.form.get('nroDocumentoIdentidad').enable();
-      this.visibility['tratamientoCortesia'] = true;
       this.visibility['datosContacto'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;

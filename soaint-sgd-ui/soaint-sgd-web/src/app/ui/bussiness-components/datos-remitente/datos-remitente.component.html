@@ -185,24 +185,6 @@
           </div>
         </div>
 
-        <!--tratamiento de cortesia-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tratamientoCortesia">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tratamientoCortesia">Tratamiento de cortesía</label>
-            </div>
-            <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="tratamientoCortesiaSuggestions$ | async | dropdownItem"
-                          id="tratamientoCortesia"
-                          formControlName="tratamientoCortesia"
-                          placeholder="Seleccione"
-                          [autoWidth]="false"
-              >
-              </p-dropdown>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

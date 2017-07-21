@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit, OnDestroy, HostListener} from '@angular/core';
+import {Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy} from '@angular/core';
 import {MessageBridgeService, MessageType} from 'app/infrastructure/web/message-bridge.service';
 import {Subscription} from 'rxjs/Subscription';
 import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
@@ -7,6 +7,7 @@ import {MenuOrientation} from './models/admin-layout.model';
 import {Observable} from 'rxjs/Observable';
 import {AdminLayoutSandbox} from './redux-state/admin-layout-sandbox';
 import {MENU_OPTIONS} from './menu-options';
+import {ConstanteDTO} from '../../../../domain/constanteDTO';
 
 declare var jQuery: any;
 
@@ -18,7 +19,8 @@ enum LayoutResponsive {
 
 @Component({
   selector: 'app-admin-layout',
-  templateUrl: './admin-layout.component.html'
+  templateUrl: './admin-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
@@ -68,6 +70,9 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   layoutResponsive: LayoutResponsive;
 
+  funcionarioDependenciaSuggestions$: Observable<ConstanteDTO[]>;
+  funcionarioDependenciaSelected$: Observable<ConstanteDTO>;
+
   constructor(private _sandbox: AdminLayoutSandbox, public renderer: Renderer) {
   }
 
@@ -78,8 +83,9 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     this.processOptions = this._sandbox.selectorDeployedProcess();
 
     this.isAuthenticated$ = this._sandbox.selectorIsAutenticated();
-
     this.layoutWidth$ = this._sandbox.selectorWindowWidth();
+    this.funcionarioDependenciaSuggestions$ = this._sandbox.selectorFuncionarioAuthDependenciasSuggestions();
+    this.funcionarioDependenciaSelected$ = this._sandbox.selectorFuncionarioAuthDependenciaSelected();
 
     this.layoutWidth$.subscribe(width => {
       if (width <= 640) {
@@ -182,6 +188,10 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
       this.activeTopbarItem = item;
 
     event.preventDefault();
+  }
+
+  onFuncionarioDependenciaChange(dependenciaGrupo) {
+      this._sandbox.dispatchFuncionarioAuthDependenciaSelected(dependenciaGrupo);
   }
 
   signOff(): void {

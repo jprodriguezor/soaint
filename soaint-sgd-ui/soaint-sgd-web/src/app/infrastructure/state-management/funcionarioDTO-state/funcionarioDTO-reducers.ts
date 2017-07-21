@@ -51,7 +51,7 @@ export function reducer(state = initialState, action: Actions) {
 
     case ActionTypes.SELECT_DEPENDENCY_GROUP: {
       return tassign(state, {
-        selectedDependencyGroup: action.payload || state.authenticatedFuncionario.dependencias[0]
+        selectedDependencyGroup: action.payload || state.authenticatedFuncionario ? state.authenticatedFuncionario.dependencias[0] : null
       });
     }
 

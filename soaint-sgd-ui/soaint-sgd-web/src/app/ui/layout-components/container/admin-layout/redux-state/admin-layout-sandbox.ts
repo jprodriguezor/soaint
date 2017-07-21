@@ -15,6 +15,13 @@ import * as processActions from 'app/infrastructure/state-management/procesoDTO-
 import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 import {layoutWidth} from 'app/ui/layout-components/container/admin-layout/redux-state/admin-layout-selectors';
+import {ConstanteDTO} from '../../../../../domain/constanteDTO';
+import {SelectDependencyGroupAction} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
+import {OrganigramaDTO} from '../../../../../domain/organigramaDTO';
+import {
+  getSelectedDependencyGroupFuncionario,
+  getSuggestionsDependencyGroupFuncionarioArray
+} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 
 
 @Injectable()
@@ -43,6 +50,18 @@ export class AdminLayoutSandbox {
     return this._store.select(this._processSandbox.selectorMenuOptions());
   }
 
+  selectorWindowWidth() {
+    return this._store.select(layoutWidth);
+  }
+
+  selectorFuncionarioAuthDependenciasSuggestions() {
+    return this._store.select(getSuggestionsDependencyGroupFuncionarioArray);
+  }
+
+  selectorFuncionarioAuthDependenciaSelected() {
+    return this._store.select(getSelectedDependencyGroupFuncionario);
+  }
+
   dispatchChangeOnMenu(payload) {
     this._store.dispatch(new actions.ChangeMenuOrientationAction(payload));
   }
@@ -59,7 +78,9 @@ export class AdminLayoutSandbox {
     this._store.dispatch(new actions.ResizeWindowAction(payload));
   }
 
-  selectorWindowWidth() {
-    return this._store.select(layoutWidth);
+  dispatchFuncionarioAuthDependenciaSelected(payload: OrganigramaDTO) {
+    this._store.dispatch(new SelectDependencyGroupAction(payload));
   }
+
+
 }

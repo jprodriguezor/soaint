@@ -20,7 +20,13 @@
         <div class="nano-content menu-scroll-content">
           <inline-profile (onSignOffUser)="signOff()" *ngIf="profileMode=='inline'&& !isHorizontal()"></inline-profile>
           <!--<app-menu [reset]="resetMenu" [model]="(menuOptions$ | async)"></app-menu>-->
-          <app-menu [reset]="resetMenu" [model]="menuOptions"></app-menu>
+          <app-menu [reset]="resetMenu"
+                    [model]="menuOptions"
+                    [dependencias]="funcionarioDependenciaSuggestions$ | async"
+                    [dependenciaSelected]="funcionarioDependenciaSelected$ | async"
+                    (onSelectDependencia)="onFuncionarioDependenciaChange($event)"
+
+          ></app-menu>
         </div>
       </div>
     </div>
