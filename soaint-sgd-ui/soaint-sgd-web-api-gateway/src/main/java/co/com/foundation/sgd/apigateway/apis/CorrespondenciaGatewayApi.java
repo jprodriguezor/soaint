@@ -71,13 +71,12 @@ public class CorrespondenciaGatewayApi {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
-        //TODO llenar los datos para iniciar proceso
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
             Map<String, Object> parametros = new HashMap<>();
-            parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion());
+            parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion().toString());
             parametros.put("idAgente", asignacionDTO.getIdeAgente());
             parametros.put("usuario", asignacionDTO.getLoginName());
             parametros.put("idDocumento", asignacionDTO.getIdeDocumento());
