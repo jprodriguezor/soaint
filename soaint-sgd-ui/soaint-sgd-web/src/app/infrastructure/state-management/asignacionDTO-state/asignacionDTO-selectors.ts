@@ -2,7 +2,7 @@ import {State} from './asignacionDTO-reducers';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
 
-const rootPath = (state: rootStore.State) => state.comunicacionesOficiales;
+const rootPath = (state: rootStore.State) => state.asignaciones;
 
 /**
  * Because the data structure is defined within the reducer it is optimal to
@@ -17,12 +17,8 @@ export const getEntities = createSelector(rootPath, (state: State) => state.enti
 
 export const getGrupoIds = createSelector(rootPath, (state: State) => state.ids);
 
-export const getSelectedId = createSelector(rootPath, (state: State) => state.selectedId);
+export const getJustificationDialogVisible = createSelector(rootPath, (state: State) => state.justificationDialogVisible);
 
-export const getSelectedEntity =
-  createSelector(getEntities, getSelectedId, (entities, selectedId) => {
-    return entities[selectedId];
-  });
 
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);
