@@ -43,7 +43,7 @@ export class Effects {
     .withLatestFrom(this._store$)
     .distinctUntilChanged()
     .switchMap(
-      ([payload, state]) => this._sandbox.loadAllFuncionarios(state.funcionario.authenticatedFuncionario.dependencia.id)
+      ([payload, state]) => this._sandbox.loadAllFuncionarios(state.funcionario.authenticatedFuncionario.dependencias[0].codigo)
         .map((response) => new actions.LoadAllSuccessAction(response))
         .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
         )

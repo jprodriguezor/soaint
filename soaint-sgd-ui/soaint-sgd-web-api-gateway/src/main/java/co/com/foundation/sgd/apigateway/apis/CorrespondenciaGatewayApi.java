@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.CorrespondenciaClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,15 @@ public class CorrespondenciaGatewayApi {
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/redireccionar")
+    public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.redireccionarComunicaciones(agentesDTO);
+        String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 

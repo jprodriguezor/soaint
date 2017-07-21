@@ -17,7 +17,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './asignacionDTO-actions';
 import {Sandbox} from './asignacionDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {ReloadAction} from '../comunicacionOficial-state/comunicacionOficialDTO-actions';
+import {ReloadAction as ReloadComunicacionesAction} from '../comunicacionOficial-state/comunicacionOficialDTO-actions';
+import {SetJustificationDialogVisibleAction} from "./asignacionDTO-actions";
 
 function isLoaded() {
   return (source) =>
@@ -37,14 +38,27 @@ export class Effects {
   }
 
   @Effect()
-  load: Observable<Action> = this.actions$
+  assign: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.ASSIGN)
     .map(toPayload)
     .switchMap(
       (payload) => {
         return this._sandbox.assignComunications(payload)
-          .mergeMap((response) => [new actions.AssignSuccessAction(response), new ReloadAction()])
+          .mergeMap((response) => [new actions.AssignSuccessAction(response), new ReloadComunicacionesAction()])
           .catch((error) => Observable.of(new actions.AssignFailAction({error}))
+          )
+      }
+    );
+
+  @Effect()
+  redirect: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.REDIRECT)
+    .map(toPayload)
+    .switchMap(
+      (payload) => {
+        return this._sandbox.redirectComunications(payload)
+          .mergeMap((response) => [new actions.RedirectSuccessAction(response), new ReloadComunicacionesAction(), new SetJustificationDialogVisibleAction(false)])
+          .catch((error) => Observable.of(new actions.RedirectFailAction({error}))
           )
       }
     );

@@ -12,6 +12,7 @@ import * as sedeAdministrativaStore from 'app/infrastructure/state-management/se
 import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
 import * as funcionarioStore from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-reducers';
+import * as asignacionStore from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-reducers';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -26,6 +27,7 @@ export interface State {
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
   comunicacionesOficiales: correspondenciaStore.State,
+  asignaciones: asignacionStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,
   sedeAdministrativa: sedeAdministrativaStore.State,
   tareas: tareasStore.State,
@@ -52,6 +54,7 @@ export const reducers = {
   municipios: municipioStore.reducer,
   departamentos: departamentoStore.reducer,
   comunicacionesOficiales: correspondenciaStore.reducer,
+  asignaciones: asignacionStore.reducer,
   dependenciaGrupo: dependenciaGrupoStore.reducer,
   sedeAdministrativa: sedeAdministrativaStore.reducer,
   tareas: tareasStore.reducer,
