@@ -131,7 +131,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     });
   }
 
-  showReassignDailog() {
+  showRedirectDialog() {
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(true);
   }
 

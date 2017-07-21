@@ -149,9 +149,9 @@
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
             <button pButton type="button" label="Redireccionar"
-                    [disabled]="selectedComunications.length === 0  || form.get('estadoCorrespondencia').value === 'AS' || asignationType === 'auto' || !funcionarioSelected"
+                    [disabled]="selectedComunications.length === 0  || form.get('estadoCorrespondencia').value === 'AS' || asignationType === 'auto'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    (click)="showReassignDailog()"></button>
+                    (click)="showRedirectDialog()"></button>
             <button pButton type="button" label="Tramitar"
                     [disabled]="selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
