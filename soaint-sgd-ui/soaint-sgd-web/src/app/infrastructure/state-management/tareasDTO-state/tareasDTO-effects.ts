@@ -43,13 +43,6 @@ export class Effects {
   load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     .distinctUntilChanged()
-    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
-    // .filter(([action, state]) => {
-    //   console.log(action, state);
-    //   return state === [];
-    // })
-    // .distinctUntilChanged()
-    // .let(isLoaded())
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadData(payload)
