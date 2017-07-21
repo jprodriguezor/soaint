@@ -19,7 +19,7 @@ import javax.jws.WebService;
 public class GestionarFuncionariosWS {
 
     @Autowired
-    GestionarFuncionarios boundary;
+    private GestionarFuncionarios boundary;
 
     public GestionarFuncionariosWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
