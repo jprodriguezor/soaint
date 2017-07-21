@@ -118,7 +118,6 @@
             <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                          [(selection)]="selectedComunications"
                          [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
-              <!--<p-header [style]="{'text-align':'left'}">Resultados búsqueda</p-header>-->
               <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
               <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
               <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
@@ -150,18 +149,20 @@
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
             <button pButton type="button" label="Redireccionar"
+                    [disabled]="form.get('estadoCorrespondencia').value === 'AS'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="listarComunicaciones()"></button>
             <button pButton type="button" label="Tramitar"
+                    [disabled]="selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="processComunications()"></button>
             <button pButton type="button" label="Reasignar"
+                    [disabled]="form.get('estadoCorrespondencia').value === 'SA' || selectedComunications.length == 0"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    [disabled]="!funcionarioSelected || selectedComunications.length == 0"
                     (click)="listarComunicaciones()"></button>
             <button pButton type="button" label="Asignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    [disabled]="!funcionarioSelected || selectedComunications.length == 0"
+                    [disabled]="!funcionarioSelected || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
                     (click)="assignComunications()"></button>
           </div>
         </div>
@@ -169,8 +170,6 @@
     </div>
   </div>
 </div>
-
-
 
 
 
