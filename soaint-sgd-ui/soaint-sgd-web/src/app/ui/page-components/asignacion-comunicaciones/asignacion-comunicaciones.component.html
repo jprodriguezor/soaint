@@ -171,15 +171,15 @@
   </div>
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
             [contentStyle]="{'overflow':'visible'}"
-            (onHide)="hideJustificationPopup()" [width]="600">
+            (onHide)="hideJustificationPopup()" [width]="800">
     <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
                              #popupjustificaciones></app-popup-justificacion>
 
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button pButton type="button" class="ui-button-primary"
-                label="Cerrar"></button>
-        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideJustificationPopup()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
                 label="Redireccionar" (click)="sendRedirect()"></button>
       </div>
     </p-footer>

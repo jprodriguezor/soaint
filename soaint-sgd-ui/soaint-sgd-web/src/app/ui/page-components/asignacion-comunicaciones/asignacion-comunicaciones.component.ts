@@ -132,6 +132,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   showRedirectDialog() {
+    this.popupjustificaciones.form.reset();
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(true);
   }
 
