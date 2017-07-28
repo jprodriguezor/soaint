@@ -1,4 +1,5 @@
-import {OrganigramaDTO} from './organigramaDTO';
+import {RolDTO} from './rolesDTO';
+import {DependenciaDTO} from './dependenciaDTO';
 
 export interface FuncionarioDTO {
   id: number;
@@ -12,6 +13,6 @@ export interface FuncionarioDTO {
   codOrgaAdmi: string;
   loginName: string;
   estado: string;
-  sede: OrganigramaDTO;
-  dependencias: OrganigramaDTO[];
+  roles: RolDTO[];
+  dependencias: DependenciaDTO[];
 }

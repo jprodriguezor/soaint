@@ -11,7 +11,7 @@ export interface CorrespondenciaDTO {
   codTipoCmc: string;
   ideInstancia: string;
   reqDistFisica: string;
-  codFuncRadica: string;
+  codFuncRadica: number;
   codSede: string;
   codDependencia: string;
   reqDigita: string;

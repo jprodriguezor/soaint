@@ -30,13 +30,13 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   menuOptions: any;
 
-  layoutCompact: boolean = false;
+  layoutCompact = false;
 
   layoutMode: MenuOrientation = MenuOrientation.STATIC;
 
-  darkMenu: boolean = false;
+  darkMenu = false;
 
-  profileMode: string = 'inline';
+  profileMode = 'inline';
 
   rotateMenuButton: boolean;
 

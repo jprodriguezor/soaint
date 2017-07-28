@@ -1,14 +1,14 @@
 import {Actions, ActionTypes} from './funcionarioDTO-actions';
 import {tassign} from 'tassign';
-import {OrganigramaDTO} from 'app/domain/organigramaDTO';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 
 export interface State {
   ids: string[];
   entities: { [id: number]: FuncionarioDTO };
   authenticatedFuncionario: FuncionarioDTO;
-  selectedDependencyGroup: OrganigramaDTO
+  selectedDependencyGroup: DependenciaDTO
 }
 
 const initialState: State = {
