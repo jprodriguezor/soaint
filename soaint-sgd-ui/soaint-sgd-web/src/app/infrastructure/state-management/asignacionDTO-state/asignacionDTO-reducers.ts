@@ -23,11 +23,6 @@ const initialState: State = {
  */
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
-
-    case Autocomplete.ASSIGN_SUCCESS: {
-      console.log(action.payload);
-    }
-
     case Autocomplete.SET_JUSTIF_DIALOG_VISIBLE: {
       console.log(action.payload);
       return tassign(state, {
