@@ -44,7 +44,7 @@ export class Effects {
     .switchMap(
       (payload) => {
         return this._sandbox.assignComunications(payload)
-          .mergeMap((response) => [new actions.AssignSuccessAction(response), new ReloadComunicacionesAction()])
+          .mergeMap((response) => [new actions.AssignSuccessAction(response), new ReloadComunicacionesAction(), new SetJustificationDialogVisibleAction(false)])
           .catch((error) => Observable.of(new actions.AssignFailAction({error}))
           )
       }

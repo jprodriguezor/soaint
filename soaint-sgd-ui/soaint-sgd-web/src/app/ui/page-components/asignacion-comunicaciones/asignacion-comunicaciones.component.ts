@@ -205,6 +205,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       let agente = value.agenteList[0];
       agente.codSede = justificationValues.sedeAdministrativa.codigo;
       agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
+      delete agente['_$visited'];
       agentes.push(agente)
     });
     return agentes;
