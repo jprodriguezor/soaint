@@ -132,9 +132,6 @@ export class DatosRemitenteComponent implements OnInit {
       this.form.get('nombreApellidos').enable();
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
-      this.visibility['nroDocumentoIdentidad'] = true;
-
-      this.form.get('nroDocumentoIdentidad').enable();
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();

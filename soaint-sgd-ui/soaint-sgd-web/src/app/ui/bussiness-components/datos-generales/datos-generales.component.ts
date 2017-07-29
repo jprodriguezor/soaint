@@ -116,8 +116,8 @@ export class DatosGeneralesComponent implements OnInit {
   addTipoAnexosDescripcion() {
     const tipoAnexo = this.form.get('tipoAnexos').value;
     const descripcion = this.form.get('tipoAnexosDescripcion').value;
-    console.log(tipoAnexo, descripcion);
-    if (!tipoAnexo || !descripcion) {
+
+    if (!tipoAnexo) {
       return;
     }
     const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion}];
