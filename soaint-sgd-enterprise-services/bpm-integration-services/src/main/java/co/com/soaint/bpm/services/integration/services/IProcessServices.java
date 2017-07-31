@@ -2,6 +2,7 @@ package co.com.soaint.bpm.services.integration.services;
 
 
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EntradaSennalDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import org.hornetq.utils.json.JSONException;
@@ -28,6 +29,6 @@ public interface IProcessServices {
       RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws MalformedURLException;
       RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entradaTarea) throws IOException, URISyntaxException, JSONException;
 
-      RespuestaProcesoDTO senalEsperaDigitalizacion(EntradaProcesoDTO entrada) throws IOException, JSONException ;
+      RespuestaProcesoDTO enviarSenalProceso(EntradaSennalDTO entrada) throws IOException, JSONException ;
       RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException ;
 }

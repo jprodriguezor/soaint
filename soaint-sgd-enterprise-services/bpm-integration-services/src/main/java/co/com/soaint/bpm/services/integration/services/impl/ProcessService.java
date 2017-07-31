@@ -1,10 +1,7 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -188,8 +185,8 @@ public class ProcessService implements IProcessServices {
     }
 
     @Override
-    public RespuestaProcesoDTO senalEsperaDigitalizacion(EntradaProcesoDTO entrada) throws IOException, JSONException {
-        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+    public RespuestaProcesoDTO enviarSenalProceso(EntradaSennalDTO entrada) throws IOException, JSONException {
+        EntradaSennalDTO entradaManual = new EntradaSennalDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
@@ -436,6 +433,17 @@ public class ProcessService implements IProcessServices {
                 .addPassword(entrada.getPass())
                 .addUrl(new URL(endpointJBPConsole))
                         //.addExtraJaxbClasses(ProcessRequestContext.class)
+                .build();
+        return engine;
+    }
+
+    private RuntimeEngine obtenerEngine(EntradaSennalDTO entrada) throws MalformedURLException {
+        engine = RemoteRuntimeEngineFactory.newRestBuilder()
+                .addDeploymentId(entrada.getIdDespliegue())
+                .addUserName(entrada.getUsuario())
+                .addPassword(entrada.getPass())
+                .addUrl(new URL(endpointJBPConsole))
+                //.addExtraJaxbClasses(ProcessRequestContext.class)
                 .build();
         return engine;
     }
