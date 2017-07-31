@@ -45,7 +45,7 @@ public class CorrespondenciaControl {
 
 
     @Value( "${radicado.rango.reservado}" )
-    private String rangoReservado = "";
+    private String[] rangoReservado;
 
 
     public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO){
@@ -103,9 +103,8 @@ public class CorrespondenciaControl {
 
     public String generarNumeroRadicado(CorrespondenciaDTO correspondencia){//TODO
 
-        String[] rango = this.rangoReservado.split(",");
-        int rangoI = Integer.parseInt(rango[0]);
-        int rangoF = Integer.parseInt(rango[1]);
+        int rangoI = Integer.parseInt(this.rangoReservado[0]);
+        int rangoF = Integer.parseInt(this.rangoReservado[1]);
         String reservadoIni = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoI);
         String reservadoFin = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
