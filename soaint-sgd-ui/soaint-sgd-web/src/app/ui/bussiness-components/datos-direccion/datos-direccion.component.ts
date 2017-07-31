@@ -88,6 +88,7 @@ export class DatosDireccionComponent implements OnInit {
       'pais': [null],
       'departamento': [null],
       'municipio': [null],
+      'principal': [null]
     });
   }
 

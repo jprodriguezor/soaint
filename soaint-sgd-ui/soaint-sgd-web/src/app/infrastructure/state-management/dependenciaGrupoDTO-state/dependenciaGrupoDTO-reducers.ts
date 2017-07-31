@@ -25,20 +25,18 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
-      const values = action.payload.organigrama;
-      const newValues = values.filter(data => !state.entities[data.id]);
 
-      const newValuesIds = newValues.map(data => data.id);
-      const newValuesEntities = newValues.reduce((entities: { [id: number]: OrganigramaDTO }, value: OrganigramaDTO) => {
+      const values = action.payload.organigrama;
+      const valuesIds = values.map(data => data.id);
+      const valuesEntities = values.reduce((entities: { [id: number]: OrganigramaDTO }, value: OrganigramaDTO) => {
         return Object.assign(entities, {
           [value.id]: value
         });
       }, {});
 
       return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities),
+        ids: [...valuesIds],
+        entities: tassign({}, valuesEntities),
         selectedId: state.selectedId
       });
 

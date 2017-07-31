@@ -1,19 +1,21 @@
 import {Actions, ActionTypes} from './funcionarioDTO-actions';
 import {tassign} from 'tassign';
-import {OrganigramaDTO} from 'app/domain/organigramaDTO';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 
-export interface State  {
+export interface State {
   ids: string[];
   entities: { [id: number]: FuncionarioDTO };
   authenticatedFuncionario: FuncionarioDTO;
+  selectedDependencyGroup: DependenciaDTO
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
-  authenticatedFuncionario: null
+  authenticatedFuncionario: null,
+  selectedDependencyGroup: null
 };
 
 /**
@@ -27,7 +29,7 @@ export function reducer(state = initialState, action: Actions) {
 
     case ActionTypes.LOAD_SUCCESS: {
       const funcionario = action.payload;
-      return tassign(state, { authenticatedFuncionario: funcionario});
+      return tassign(state, {authenticatedFuncionario: funcionario});
     }
 
     case ActionTypes.LOAD_ALL_SUCCESS: {
@@ -44,6 +46,12 @@ export function reducer(state = initialState, action: Actions) {
       return tassign(state, {
         ids: [...state.ids, ...newValuesIds],
         entities: tassign(state.entities, newValuesEntities),
+      });
+    }
+
+    case ActionTypes.SELECT_DEPENDENCY_GROUP: {
+      return tassign(state, {
+        selectedDependencyGroup: action.payload || state.authenticatedFuncionario ? state.authenticatedFuncionario.dependencias[0] : null
       });
     }
 

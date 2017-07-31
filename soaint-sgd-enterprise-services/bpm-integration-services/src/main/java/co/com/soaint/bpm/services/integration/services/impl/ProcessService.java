@@ -323,7 +323,6 @@ public class ProcessService implements IProcessServices {
         List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
         long taskId = -1;
         for (TaskSummary task : tasks) {
-            if (task.getProcessId().equals(entrada.getIdProceso() )) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
                         .estado(estadoRespuesta(task.getStatusId()))
@@ -337,7 +336,6 @@ public class ProcessService implements IProcessServices {
                         .tiempoExpiracion(task.getExpirationTime())
                         .build();
                 tareas.add(respuestaTarea);
-            }
         }
         return tareas;
     }

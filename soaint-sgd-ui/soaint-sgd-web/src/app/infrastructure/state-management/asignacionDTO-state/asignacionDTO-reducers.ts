@@ -1,17 +1,22 @@
 import {Actions, ActionTypes as Autocomplete} from './asignacionDTO-actions';
-import {CorrespondenciaDTO} from 'app/domain/correspondenciaDTO';
+import {AsignacionDTO} from "../../../domain/AsignacionDTO";
+import {tassign} from "tassign";
 
 
 export interface State {
   ids: number[];
-  entities: { [ideDocumento: number]: CorrespondenciaDTO };
-  selectedId: number;
+  entities: { [ideDocumento: number]: AsignacionDTO };
+  justificationDialogVisible: boolean;
+  agregarObservacionesDialogVisible: boolean;
+  rejectDialogVisible: boolean;
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
-  selectedId: null
+  justificationDialogVisible: false,
+  agregarObservacionesDialogVisible: false,
+  rejectDialogVisible: false
 };
 
 /**
@@ -22,9 +27,23 @@ const initialState: State = {
  */
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
-
-    case Autocomplete.ASSIGN_SUCCESS: {
+    case Autocomplete.SET_JUSTIF_DIALOG_VISIBLE: {
       console.log(action.payload);
+      return tassign(state, {
+        justificationDialogVisible: action.payload
+      });
+    }
+    case Autocomplete.SET_ADD_OBSERV_DIALOG_VISIBLE: {
+      console.log(action.payload);
+      return tassign(state, {
+        agregarObservacionesDialogVisible: action.payload
+      });
+    }
+    case Autocomplete.SET_REJECT_DIALOG_VISIBLE: {
+      console.log(action.payload);
+      return tassign(state, {
+        rejectDialogVisible: action.payload
+      });
     }
 
     default:

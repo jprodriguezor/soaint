@@ -43,13 +43,6 @@ export class Effects {
   load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     .distinctUntilChanged()
-    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
-    // .filter(([action, state]) => {
-    //   console.log(action, state);
-    //   return state === [];
-    // })
-    // .distinctUntilChanged()
-    // .let(isLoaded())
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadData(payload)
@@ -66,6 +59,17 @@ export class Effects {
         .map((response: any) =>  new actions.StartTaskSuccessAction(response))
         .do(this._sandbox.initTaskDispatch(payload))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
+    )
+
+  @Effect()
+  completeTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.COMPLETE_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.completeTask(payload)
+        .map((response: any) =>  new actions.CompleteTaskSuccessAction(response))
+        .do(this._sandbox.initTaskDispatch(payload))
+        .catch((error) => Observable.of(new actions.CompleteTaskFailAction({error})))
     )
 
 

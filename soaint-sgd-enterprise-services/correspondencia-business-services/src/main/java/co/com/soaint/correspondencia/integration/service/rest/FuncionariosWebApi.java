@@ -31,7 +31,7 @@ public class FuncionariosWebApi {
     private static Logger logger = LogManager.getLogger(FuncionariosWebApi.class.getName());
 
     @Autowired
-    GestionarFuncionarios boundary;
+    private GestionarFuncionarios boundary;
 
     public FuncionariosWebApi(){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);

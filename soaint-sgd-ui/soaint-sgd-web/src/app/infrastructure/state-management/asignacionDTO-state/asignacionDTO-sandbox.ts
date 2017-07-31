@@ -17,8 +17,28 @@ export class Sandbox {
     return this._http.post(environment.asignarComunicaciones_endpoint, payload);
   }
 
+  redirectComunications(payload: any) {
+    return this._http.post(environment.redireccionarComunicaciones_endpoint, payload);
+  }
+
   assignDispatch(payload) {
     this._store.dispatch(new actions.AssignAction(payload));
+  }
+
+  redirectDispatch(payload) {
+    this._store.dispatch(new actions.RedirectAction(payload));
+  }
+
+  setVisibleJustificationDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetJustificationDialogVisibleAction(payload));
+  }
+
+  setVisibleAddObservationsDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetAddObservationsDialogVisibleAction(payload));
+  }
+
+  setVisibleRejectDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetRejectDialogVisibleAction(payload));
   }
 
 }

@@ -12,6 +12,7 @@
         <class>co.com.soaint.correspondencia.domain.entity.TvsConstantes</class>
         <class>co.com.soaint.correspondencia.domain.entity.Funcionarios</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsOrganigramaAdministrativo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk</class>
 
         <properties>
             <!-- Configuring JDBC properties -->

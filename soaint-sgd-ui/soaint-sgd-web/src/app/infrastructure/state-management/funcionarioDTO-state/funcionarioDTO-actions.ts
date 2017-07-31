@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store';
 import {type} from 'app/infrastructure/redux-store/_util';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 export const ActionTypes = {
   LOAD: type('[FuncionarioDTO] LoadAction'),
@@ -9,6 +10,8 @@ export const ActionTypes = {
   LOAD_ALL: type('[FuncionarioDTO] LoadAllAction'),
   LOAD_ALL_SUCCESS: type('[FuncionarioDTO] LoadAllSuccessAction'),
   LOAD_ALL_FAIL: type('[FuncionarioDTO] LoadAllFailAction'),
+
+  SELECT_DEPENDENCY_GROUP: type('[FuncionarioDTO] SelectDependencyGroupAction'),
 };
 
 
@@ -55,13 +58,22 @@ export class LoadAllFailAction implements Action {
 }
 
 
+export class SelectDependencyGroupAction implements Action {
+  type = ActionTypes.SELECT_DEPENDENCY_GROUP;
+
+  constructor(public payload?: OrganigramaDTO) {
+  }
+}
+
+
 export type Actions =
   LoadAction |
   LoadSuccessAction |
   LoadFailAction |
   LoadAllAction |
   LoadAllFailAction |
-  LoadAllSuccessAction
+  LoadAllSuccessAction |
+  SelectDependencyGroupAction
   ;
 
 
