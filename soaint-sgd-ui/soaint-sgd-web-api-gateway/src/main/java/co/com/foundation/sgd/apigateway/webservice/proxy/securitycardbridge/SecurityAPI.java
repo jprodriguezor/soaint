@@ -17,9 +17,6 @@ import javax.xml.ws.ResponseWrapper;
  * 
  */
 @WebService(name = "SecurityAPI", targetNamespace = "http://www.soaint.com/services/security-cartridge/1.0.0")
-@XmlSeeAlso({
-    ObjectFactory.class
-})
 public interface SecurityAPI {
 
 
