@@ -7,6 +7,8 @@ import {ProcessComponent} from './process/process.component';
 import {DatosDireccionComponent} from '../bussiness-components/datos-direccion/datos-direccion.component';
 import {AsignarComunicacionesComponent} from './asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {PopupJustificacionComponent} from "../bussiness-components/popup-justificacion/popup-justificacion.component";
+import {PopupAgregarObservacionesComponent} from "../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component";
+import {PopupRejectComponent} from "../bussiness-components/popup-reject/popup-reject.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -27,7 +29,9 @@ export const PAGE_COMPONENTS = [
   ProcessComponent,
   DatosDireccionComponent,
   AsignarComunicacionesComponent,
-  PopupJustificacionComponent
+  PopupJustificacionComponent,
+  PopupAgregarObservacionesComponent,
+  PopupRejectComponent
 ];
 
 export * from './__page-providers.include';

@@ -7,6 +7,7 @@ import * as actions from './radicarComunicaciones-actions';
 import {ComunicacionApiService} from '../../api/comunicacionOficial.api.service';
 import {sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector} from './radicarComunicaciones-selectors';
 import {getArrayData as DependenciaGrupoSelector} from '../dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 
 @Injectable()
 export class Sandbox {
@@ -19,28 +20,12 @@ export class Sandbox {
     return this._comunicacionOficial.post(environment.radicarComunicacion_endpoint, payload);
   }
 
-  radicarDispatch(payload: any) {
+  dispatchRadicarComunicacion(payload: ComunicacionOficialDTO) {
     this._store.dispatch(new actions.RadicarAction(payload));
   }
 
-  sedeDestinatariEntradaFilterDispatch(payload?: any) {
+  dispatchSedeDestinatarioEntradaFilter(payload?: any) {
     this._store.dispatch(new actions.TriggerExcludeSedeRemitenteFromDestinatarioAction(payload));
-  }
-
-  tipoDestinatarioEntradaFilterDispatch(payload?: any) {
-    this._store.dispatch(new actions.TriggerSelectedDestinatarioOriginalAction(payload));
-  }
-
-  sedeDestinatarioEntradaSelector() {
-    return this._store.select(sedeDestinatarioEntradaSelector);
-  }
-
-  tipoDestinatarioEntradaSelector() {
-    return this._store.select(tipoDestinatarioEntradaSelector);
-  }
-
-  dependenciaGrupoEntradaSelector() {
-    return this._store.select(DependenciaGrupoSelector);
   }
 
 }

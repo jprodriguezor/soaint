@@ -17,10 +17,9 @@ import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {
   COMUNICACION_EXTERNA, COMUNICACION_INTERNA, PERSONA_ANONIMA, PERSONA_JURIDICA,
-  PERSONA_NATURAL
+  PERSONA_NATURAL, TPDOC_CEDULA_CIUDADANIA, TPDOC_NRO_IDENTIFICACION_TRIBUTARIO
 } from 'app/shared/bussiness-properties/radicacion-properties';
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
-
 
 
 @Component({
@@ -37,11 +36,13 @@ export class DatosRemitenteComponent implements OnInit {
   display = false;
 
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
-  tipoDocumentoSuggestons$: Observable<ConstanteDTO[]>;
+  tipoDocumentoSuggestions$: Observable<ConstanteDTO[]>;
 
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
+
+  subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
 
   @ViewChild('datosContactos') datosContactos;
   @Input() editable = true;
@@ -55,7 +56,7 @@ export class DatosRemitenteComponent implements OnInit {
 
   ngOnInit(): void {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
-    this.tipoDocumentoSuggestons$ = this._store.select(getTipoDocumentoArrayData);
+    this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
@@ -131,12 +132,14 @@ export class DatosRemitenteComponent implements OnInit {
       this.form.get('nombreApellidos').enable();
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
-      this.visibility['nroDocumentoIdentidad'] = true;
-
-      this.form.get('nroDocumentoIdentidad').enable();
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
         this.form.get('tipoDocumento').enable();
+
+        this.tipoDocumentoSuggestions$.subscribe(docs => {
+          this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
+          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
+        }).unsubscribe();
       }
     } else if (value.codigo === PERSONA_NATURAL) {
       this.visibility['nombreApellidos'] = true;
@@ -147,6 +150,12 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility['datosContacto'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
+
+        this.tipoDocumentoSuggestions$.subscribe(docs => {
+          this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
+          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
+        }).unsubscribe();
+
         this.form.get('tipoDocumento').enable();
       }
     }

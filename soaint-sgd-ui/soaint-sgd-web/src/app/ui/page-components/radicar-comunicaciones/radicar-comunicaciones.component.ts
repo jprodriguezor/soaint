@@ -16,7 +16,17 @@ import {
   COMUNICACION_INTERNA, DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, TIPO_AGENTE_DESTINATARIO,
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
 } from '../../../shared/bussiness-properties/radicacion-properties';
-
+import {Store} from '@ngrx/store';
+import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import {
+  sedeDestinatarioEntradaSelector,
+  tipoDestinatarioEntradaSelector
+} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
+} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -65,7 +75,16 @@ export class RadicarComunicacionesComponent implements OnInit {
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-  constructor(private _sandbox: RadicarComunicacionesSandBox, private route: ActivatedRoute, private _taskSandBox: TaskSandBox) {
+  authUserFuncionario$: Observable<any>;
+  authUserFuncionarioDependenciaSelected$: Observable<any>;
+  subscribeAuthUserFuncionario: any;
+  subscribeauthUserFuncionarioDependenciaSelected: any;
+
+
+  constructor(private _sandbox: RadicarComunicacionesSandBox,
+              private _store: Store<RootState>,
+              private route: ActivatedRoute,
+              private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -74,9 +93,9 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.formsTabOrder.push(this.datosRemitente);
     this.formsTabOrder.push(this.datosDestinatario);
 
-    this.tipoDestinatarioSuggestions$ = this._sandbox.tipoDestinatarioEntradaSelector();
-    this.sedeDestinatarioSuggestions$ = this._sandbox.sedeDestinatarioEntradaSelector();
-    this.dependenciaGrupoSuggestions$ = this._sandbox.dependenciaGrupoEntradaSelector();
+    this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
+    this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
+    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
 
     setTimeout(() => {
       const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
@@ -89,9 +108,9 @@ export class RadicarComunicacionesComponent implements OnInit {
         .subscribe(([status, value]) => {
           if (status === 'VALID') {
             this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
-            this._sandbox.sedeDestinatariEntradaFilterDispatch(value);
+            this._sandbox.dispatchSedeDestinatarioEntradaFilter(value);
           } else if (status === 'DISABLED') {
-            this._sandbox.sedeDestinatariEntradaFilterDispatch(null);
+            this._sandbox.dispatchSedeDestinatarioEntradaFilter(null);
           }
         });
     }, 400);
@@ -120,6 +139,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
+
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
@@ -127,7 +147,6 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
-      console.log(this.valueGeneral);
       const ticketRadicado = {
         anexos: this.datosGenerales.descripcionAnexos.length,
         folios: this.valueGeneral.numeroFolio,
@@ -145,15 +164,12 @@ export class RadicarComunicacionesComponent implements OnInit {
 
       this.ticketRadicado.setDataTicketRadicado(ticketRadicado);
       this.showTicketRadicado();
-
       this.disableEditionOnForms();
 
       this._taskSandBox.completeTask({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
-        usuario: 'krisv',
-        pass: 'krisv',
         parametros: {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
@@ -285,7 +301,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       nroRadicado: null,
       codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
-      ideInstancia: null,
+      ideInstancia: this.task.idInstanciaProceso,
       reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
       codFuncRadica: null,
       codSede: null,
@@ -296,6 +312,18 @@ export class RadicarComunicacionesComponent implements OnInit {
       fecVenGestion: null,
       codEstado: null
     };
+
+    this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
+      console.log(funcionario);
+      correspondenciaDto.codFuncRadica = funcionario.id;
+    }).unsubscribe();
+
+    this._store.select(getSelectedDependencyGroupFuncionario).subscribe(dependencia => {
+      console.log(dependencia);
+      correspondenciaDto.codSede = dependencia.codSede;
+      correspondenciaDto.codDependencia = dependencia.codigo;
+    }).unsubscribe();
+
     return correspondenciaDto;
   }
 

@@ -1,4 +1,14 @@
-import {Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnInit, OnDestroy, HostListener, ChangeDetectionStrategy} from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ElementRef,
+  Renderer,
+  ViewChild,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import {MessageBridgeService, MessageType} from 'app/infrastructure/web/message-bridge.service';
 import {Subscription} from 'rxjs/Subscription';
 import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
@@ -30,13 +40,13 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   menuOptions: any;
 
-  layoutCompact: boolean = false;
+  layoutCompact = false;
 
   layoutMode: MenuOrientation = MenuOrientation.STATIC;
 
-  darkMenu: boolean = false;
+  darkMenu = false;
 
-  profileMode: string = 'inline';
+  profileMode = 'inline';
 
   rotateMenuButton: boolean;
 
@@ -144,12 +154,13 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (this.layoutMode === MenuOrientation.OVERLAY) {
       this.overlayMenuActive = !this.overlayMenuActive;
-    }
-    else {
-      if (this.isDesktop())
+    } else {
+      if (this.isDesktop()) {
+
         this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
-      else
+      } else {
         this.staticMenuMobileActive = !this.staticMenuMobileActive;
+      }
     }
 
     event.preventDefault();
@@ -182,16 +193,16 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
   onTopbarItemClick(event, item) {
     this.topbarItemClick = true;
 
-    if (this.activeTopbarItem === item)
+    if (this.activeTopbarItem === item) {
       this.activeTopbarItem = null;
-    else
+    } else {
       this.activeTopbarItem = item;
-
+    }
     event.preventDefault();
   }
 
   onFuncionarioDependenciaChange(dependenciaGrupo) {
-      this._sandbox.dispatchFuncionarioAuthDependenciaSelected(dependenciaGrupo);
+    this._sandbox.dispatchFuncionarioAuthDependenciaSelected(dependenciaGrupo);
   }
 
   signOff(): void {

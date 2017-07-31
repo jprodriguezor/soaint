@@ -17,7 +17,10 @@ import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {Subscription} from "rxjs/Subscription";
 import {AgentDTO} from "../../../domain/agentDTO";
 import {OrganigramaDTO} from "../../../domain/organigramaDTO";
-import {getJustificationDialogVisible} from "app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
+import {
+  getAgragarObservacionesDialogVisible,
+  getJustificationDialogVisible, getRejectDialogVisible
+} from "app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -49,6 +52,10 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   justificationDialogVisible$: Observable<boolean>;
 
+  agregarObservacionesDialogVisible$: Observable<boolean>;
+
+  rejectDialogVisible$: Observable<boolean>;
+
   funcionarioSelected: FuncionarioDTO;
 
   funcionarioLog: FuncionarioDTO;
@@ -57,11 +64,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
+  @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
+
+  @ViewChild('popupReject') popupReject;
+
   constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox, private _funcionarioSandbox: Sandbox, private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
+    this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
+    this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
     this.start_date.setHours(this.start_date.getHours() - 24);
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
@@ -140,6 +153,24 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(false);
   }
 
+  showAddObservationsDialog() {
+    this.popupAgregarObservaciones.form.reset();
+    this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(true);
+  }
+
+  hideAddObservationsPopup() {
+    this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(false);
+  }
+
+  showRejectDialog() {
+    this.popupReject.form.reset();
+    this._asignacionSandbox.setVisibleRejectDialogDispatch(true);
+  }
+
+  hideRejectDialog() {
+    this._asignacionSandbox.setVisibleRejectDialogDispatch(false);
+  }
+
   createAsignacionesAuto(): AsignacionDTO[] {
     let asignaciones: AsignacionDTO[] = [];
     let funcIndex = 0;
@@ -205,6 +236,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       let agente = value.agenteList[0];
       agente.codSede = justificationValues.sedeAdministrativa.codigo;
       agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
+      delete agente['_$visited'];
       agentes.push(agente)
     });
     return agentes;

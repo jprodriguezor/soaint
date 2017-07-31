@@ -7,12 +7,16 @@ export interface State {
   ids: number[];
   entities: { [ideDocumento: number]: AsignacionDTO };
   justificationDialogVisible: boolean;
+  agregarObservacionesDialogVisible: boolean;
+  rejectDialogVisible: boolean;
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
-  justificationDialogVisible: false
+  justificationDialogVisible: false,
+  agregarObservacionesDialogVisible: false,
+  rejectDialogVisible: false
 };
 
 /**
@@ -23,16 +27,23 @@ const initialState: State = {
  */
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
-
-    case Autocomplete.ASSIGN_SUCCESS: {
-      console.log(action.payload);
-    }
-
     case Autocomplete.SET_JUSTIF_DIALOG_VISIBLE: {
       console.log(action.payload);
       return tassign(state, {
         justificationDialogVisible: action.payload
-      })
+      });
+    }
+    case Autocomplete.SET_ADD_OBSERV_DIALOG_VISIBLE: {
+      console.log(action.payload);
+      return tassign(state, {
+        agregarObservacionesDialogVisible: action.payload
+      });
+    }
+    case Autocomplete.SET_REJECT_DIALOG_VISIBLE: {
+      console.log(action.payload);
+      return tassign(state, {
+        rejectDialogVisible: action.payload
+      });
     }
 
     default:

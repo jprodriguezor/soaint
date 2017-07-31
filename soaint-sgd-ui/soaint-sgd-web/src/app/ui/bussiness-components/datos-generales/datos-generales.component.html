@@ -270,27 +270,23 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="descripcionAnexos">Descripción</label>
           </div>
-          <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="descripcionAnexos"
-
-                     formControlName="tipoAnexosDescripcion">
-              </span>
+          <div class="ui-g-12 md-inputfield">
+              <textarea [rows]="3" [cols]="30" pInputTextarea  id="descripcionAnexos"
+                        autoResize="autoResize" formControlName="tipoAnexosDescripcion"
+                        (blur)="listenForBlurEvents('tipoAnexosDescripcion')"
+              ></textarea>
+            <div class="ui-message ui-messages-error"
+                 *ngIf="validations.tipoAnexosDescripcion">
+              {{ validations.tipoAnexosDescripcion }}
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: right">
-        <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
-                style="width: auto; margin-left: 12px; margin-bottom: 10px"
-                *ngIf="editable === true"
-                [disabled]="!form.get('tipoAnexos').value || !form.get('tipoAnexosDescripcion').value"
-        ></button>
+        </div>
       </div>
 
       <div class="ui-g-12">
@@ -300,7 +296,24 @@
                      [value]="descripcionAnexos"
                      inmutable="false"
         >
-          <p-header>Listado de anexos</p-header>
+          <p-header></p-header>
+
+          <p-header>
+
+            <div class="ui-helper-clearfix">
+                <span class="ui-panel-title"
+                      style="font-size:16px;display:inline-block;margin-top:8px"> Listado de anexos</span>
+
+              <span style="float: right">
+                <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
+                        style="width: auto; margin-left: 12px;"
+                        *ngIf="editable === true"
+                        [disabled]="!form.get('tipoAnexos').value"
+                ></button>
+                </span>
+            </div>
+
+          </p-header>
 
           <!--Body-->
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>

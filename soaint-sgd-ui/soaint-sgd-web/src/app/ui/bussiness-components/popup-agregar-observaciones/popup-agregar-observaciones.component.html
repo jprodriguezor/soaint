@@ -1,0 +1,54 @@
+<form [formGroup]="form" name="formDefault">
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-sm-12 ui-g-12 ui-lg-12">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <label for="observacion"><span class="text-danger">*</span>Observación</label>
+        </div>
+        <div class="ui-g-12 md-inputfield">
+          <textarea pInputTextarea [style.height]="'125px'" id="observacion"
+                    formControlName="observacion"></textarea>
+          <div class="ui-message ui-messages-error"
+               *ngIf="validations.observacion">
+            {{ validations.observacion }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12" style="padding-top: 20px">
+      <button pButton type="button" label="Cerrar"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="hideDialog()">
+      </button>
+      <button pButton type="button" label="Agregar"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="addObservation()">
+      </button>
+    </div>
+  </div>
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <p-dataTable emptyMessage="No se encontraron resultados" [paginator]="true" [rows]="5" [responsive]="true"
+                   [value]="observaciones">
+        <p-column header="Funcionario" [sortable]="true"></p-column>
+        <p-column header="Fecha y hora" [sortable]="true">
+          <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+            {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+          </ng-template>
+        </p-column>
+        <p-column header="Estado" [sortable]="true"
+                  [style]="{'width':'100px'}"></p-column>
+        <p-column header="Observaciones" [sortable]="true"></p-column>
+        <p-column header="Causal de devolución" [sortable]="true"></p-column>
+        <p-column header="Dependencia asignada" [sortable]="true"></p-column>
+
+      </p-dataTable>
+    </div>
+  </div>
+</form>

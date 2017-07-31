@@ -7,7 +7,7 @@
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
+              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
@@ -86,7 +86,7 @@
               <label for="tipoDocumento"><span class="text-danger">*</span>Tipo documento</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="tipoDocumentoSuggestons$ | async | dropdownItem"
+              <p-dropdown [options]="subscriptionTipoDocumentoPersona | dropdownItem"
                           id="tipoDocumento"
                           formControlName="tipoDocumento"
                           placeholder="Seleccione"
