@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import co.com.foundation.sgd.apigateway.webservice.client.SecurityCardbridgeClient;
 import org.apache.commons.lang3.StringUtils;
 
 import co.com.foundation.sgd.infrastructure.KeyManager;
@@ -22,37 +23,39 @@ import co.com.soaint.foundation.canonical.seguridad.UsuarioDTO;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SecuridadGatewayApi {
 
-	@Context
-	private UriInfo uriInfo;
+    @Context
+    private UriInfo uriInfo;
 
-	public SecuridadGatewayApi() {
-		super();
-	}
+    public SecuridadGatewayApi() {
+        super();
+    }
 
-	@POST
-	@Path("/login")
-	public Response login(final UsuarioDTO user) {
+    @POST
+    @Path("/login")
+    public Response login(final UsuarioDTO user) {
 
-		try {
+        try {
 
-			// Authenticate the user using the credentials provided
-			System.out.println("calling login service");
-			
-			if (StringUtils.equals(user.getLogin(), "soaint") && StringUtils.equals(user.getPassword(), "123")) {
+            // Authenticate the user using the credentials provided
+            System.out.println("calling login service");
 
-				// Issue a token for the user
-				KeyManager km = KeyManager.getInstance();
-				String token = km.issueToken(user.getLogin(), uriInfo.getAbsolutePath().toString());
+            SecurityCardbridgeClient.verifyCredentials(user.getLogin(), user.getPassword());
 
-				// Return the token on the response
-				return Response.ok("{ \"token\": \""+token+"\" }").header(AUTHORIZATION, "Bearer " + token).build();
-			}else{
-				return Response.status(UNAUTHORIZED).build();
-			}
-			
-		} catch (Exception e) {
-			return Response.status(UNAUTHORIZED).build();
-		}
-	}
+            if (StringUtils.equals(user.getLogin(), "soaint") && StringUtils.equals(user.getPassword(), "123")) {
+
+                // Issue a token for the user
+                KeyManager km = KeyManager.getInstance();
+                String token = km.issueToken(user.getLogin(), uriInfo.getAbsolutePath().toString());
+
+                // Return the token on the response
+                return Response.ok("{ \"token\": \"" + token + "\" }").header(AUTHORIZATION, "Bearer " + token).build();
+            } else {
+                return Response.status(UNAUTHORIZED).build();
+            }
+
+        } catch (Exception e) {
+            return Response.status(UNAUTHORIZED).build();
+        }
+    }
 
 }
