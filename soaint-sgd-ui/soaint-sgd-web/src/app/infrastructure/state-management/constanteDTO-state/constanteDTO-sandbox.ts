@@ -83,6 +83,10 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadAction({key: target}));
   }
 
+  loadCausalDevolucionDispatch() {
+    this._store.dispatch(new actions.LoadCausalDevolucionAction({key: 'causalDevolucion'}));
+  }
+
   loadCommonConstantsDispatch() {
     this._store.dispatch(new actions.LoadCommonConstantsAction());
   }

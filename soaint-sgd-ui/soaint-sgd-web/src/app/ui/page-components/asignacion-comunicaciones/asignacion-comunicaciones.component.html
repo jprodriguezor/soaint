@@ -142,7 +142,7 @@
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
                 <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Agregar observaciones"
-                          style="width: auto;"></button>
+                          style="width: auto;" (click)="showAddObservationsDialog()"></button>
                 </ng-template>
               </p-column>
             </p-dataTable>
@@ -156,6 +156,10 @@
                     [disabled]="selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="processComunications()"></button>
+            <button pButton type="button" label="Devolver"
+                    [disabled]="selectedComunications.length == 0"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="showRejectDialog()"></button>
             <button pButton type="button" label="Reasignar"
                     [disabled]="form.get('estadoCorrespondencia').value === 'SA' || selectedComunications.length == 0"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
@@ -172,6 +176,9 @@
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
             [contentStyle]="{'overflow':'visible'}"
             (onHide)="hideJustificationPopup()" [width]="800">
+    <p-header>
+      Redireccionar
+    </p-header>
     <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
                              #popupjustificaciones></app-popup-justificacion>
 
@@ -181,6 +188,33 @@
                 label="Cerrar" (click)="hideJustificationPopup()"></button>
         <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
                 label="Redireccionar" (click)="sendRedirect()"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideAddObservationsPopup()" [width]="800">
+    <p-header>
+      Agregar observaciones
+    </p-header>
+    <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+
+  </p-dialog>
+  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideRejectDialog()" [width]="800">
+    <p-header>
+      Devolver
+    </p-header>
+    <app-popup-reject #popupReject></app-popup-reject>
+
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideRejectDialog()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
+                label="Devolver" (click)="sendReject()"></button>
       </div>
     </p-footer>
   </p-dialog>

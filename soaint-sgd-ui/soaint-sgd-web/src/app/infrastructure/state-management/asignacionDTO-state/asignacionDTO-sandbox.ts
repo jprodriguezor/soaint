@@ -33,5 +33,13 @@ export class Sandbox {
     this._store.dispatch(new actions.SetJustificationDialogVisibleAction(payload));
   }
 
+  setVisibleAddObservationsDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetAddObservationsDialogVisibleAction(payload));
+  }
+
+  setVisibleRejectDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetRejectDialogVisibleAction(payload));
+  }
+
 }
 
