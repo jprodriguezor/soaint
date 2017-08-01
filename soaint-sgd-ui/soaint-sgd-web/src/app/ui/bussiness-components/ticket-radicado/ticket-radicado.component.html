@@ -1,53 +1,66 @@
-<div class="card ticket-panel ui-fluid">
-  <div class="ui-g">
+<div id="ticket-rad" class="ticket-panel" style="display: table">
+  <div>
+    <div style="padding-top: 0 !important; padding-bottom: 0 !important;">
+      <div style="position: absolute; float: left;">
+        <img width="115" src="assets/layout/images/logo.png">
+      </div>
+      <div class="row-container" style="width: 440px; float: right">
+        <div class="ui-g-5 text-right" style="clear: both"><b>No radicado</b></div>
+        <div class="ui-g-1 text-right"></div>
+        <div class="ui-g-6 text-left">{{ noRadicado }}</div>
 
-    <div class="ui-g-12" style="padding-top: 0 !important;">
-      <div style="position: relative;top: 50px; left: -20px; float: left;">
-        <img src="assets/layout/images/logo.png">
+        <div class="ui-g-5 text-right"> <b>Fecha</b></div>
+        <div class="ui-g-1 text-right"></div>
+        <div class="ui-g-6 text-left">{{ fecha }}</div>
+      </div>
+    </div>
+
+    <div class="row-container" >
+
+      <div [hidden]="remitenteSede" class="clear" >
+        <div class="ui-g-3 text-left "> <b>Remitente</b></div>
+        <div class="ui-g-9 text-left "> {{ remitente }}</div>
       </div>
 
-        <div class="ui-g-7 text-right" style="clear: both"> No radicado</div>
-        <div class="ui-g-1 text-right"></div>
-        <div class="ui-g-4 text-left">{{ noRadicado }}</div>
+      <div [hidden]="!remitenteSede" class="clear" >
+        <div class="ui-g-3 text-left "> <b>Remitente</b></div>
+        <div class="ui-g-2 text-left "> <b>Sede</b></div>
+        <div class="ui-g-7 text-left "> {{ remitenteSede}}</div>
 
+        <div class="ui-g-3 text-left "></div>
+        <div class="ui-g-2 text-left "> <b>Depen</b></div>
+        <div class="ui-g-7 text-left "> {{ remitenteGrupo }}</div>
+      </div>
 
+      <div [hidden]="destinatarioSede" class="clear"  style="padding-top: 5px; padding-bottom: 0">
+        <div class="ui-g-3 text-left "> <b>Destinatario</b></div>
+        <div class="ui-g-9 text-left "> {{ destinatario }}</div>
+      </div>
 
-      <div class="ui-g-7 text-right"> Fecha</div>
-      <div class="ui-g-1 text-right"></div>
-      <div class="ui-g-4 text-left">{{ fecha | date }}</div>
-    </div>
+      <div [hidden]="!destinatarioSede" class="clear" style="padding-top: 5px; padding-bottom: 0">
+        <div class="ui-g-3 text-left "> <b>Destinatario</b></div>
+        <div class="ui-g-2 text-left "> <b>Sede</b></div>
+        <div class="ui-g-7 text-left "> {{ destinatarioSede}}</div>
 
-    <div class="ui-g-12">
-
-
-      <div class="ui-g-5 text-left padding-hor-5"> Remitente</div>
-      <div class="ui-g-7 text-left padding-hor-5"> {{ remitente }}</div>
-
-
-      <div class="ui-g-3 text-left padding-hor-5"> Destinatario</div>
-      <div class="ui-g-2 text-left padding-hor-5"> Sede</div>
-      <div class="ui-g-7 text-left padding-hor-5"> {{ destinatarioSede}}</div>
-
-
-      <div class="ui-g-3 text-left padding-hor-5"></div>
-      <div class="ui-g-2 text-left padding-hor-5"> Depen</div>
-      <div class="ui-g-7 text-left padding-hor-5"> {{ destinatarioGrupo }}</div>
-
+        <div class="ui-g-3 text-left "></div>
+        <div class="ui-g-2 text-left "> <b>Depen</b></div>
+        <div class="ui-g-7 text-left "> {{ destinatarioGrupo }}</div>
+      </div>
 
     </div>
 
-    <div class="ui-g-12">
+    <div class="ui-g-12" style="display: flex; justify-content: center;">
 
-      <div class="ui-g-4 text-left"> Anexo</div>
-      <div class="ui-g-2 text-left"> {{ anexos }}</div>
+      <div class="ui-g-2 text-left" style="padding-left: 10px"> <b>Anexo</b></div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ anexos }}</div>
 
-      <div class="ui-g-4 text-left">Folios</div>
-      <div class="ui-g-2 text-left"> {{ folios }}</div>
+      <div class="ui-g-2 text-left" style="padding-left: 10px"><b>Folios</b></div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ folios }}</div>
 
     </div>
 
-
-    <ngx-barcode [bc-height]="30" [bc-format]="CODE128B" [bc-value]="noRadicado" [bc-display-value]="true"
+    <ngx-barcode [bc-height]="28" [bc-format]="'CODE128B'" [bc-value]="noRadicado" [bc-display-value]="true"
+                 [bc-margin-left]="0" [bc-margin-bottom]="0" [bc-margin-right]="0" [bc-margin-top]="0" [bc-text-margin]="0" [bc-text-align]="0"
                  style="margin: 0 auto"></ngx-barcode>
 
   </div>

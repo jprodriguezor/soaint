@@ -69,7 +69,7 @@ public class ProcesoClient {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = entrada;
         //TODO remove next line
-        entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
+//        entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
         entradaProcesoDTO.setUsuario("krisv");
         entradaProcesoDTO.setPass("krisv");
         return wt.path("/bpm/tareas/listar/estados/")

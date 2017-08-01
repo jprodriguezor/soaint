@@ -1,10 +1,13 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -18,29 +21,20 @@ import java.util.Date;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/dct-asig-ultimo/1.0.0")
 public class DctAsigUltimoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long ideAsigUltimo;
+    private BigInteger ideAsigUltimo;
     private String numRedirecciones;
     private Short nivLectura;
     private Short nivEscritura;
     private Date fechaVencimiento;
     private String idInstancia;
     private String codTipProceso;
+    private BigInteger ideAsignacion;
 
-    public DctAsigUltimoDTO(){super();}
-
-    public DctAsigUltimoDTO(Long ideAsigUltimo, String numRedirecciones, Short nivLectura, Short nivEscritura, Date fechaVencimiento,
-                            String idInstancia, String codTipProceso){
-        this.ideAsigUltimo = ideAsigUltimo;
-        this.numRedirecciones = numRedirecciones;
-        this.nivLectura = nivLectura;
-        this.nivEscritura = nivEscritura;
-        this.fechaVencimiento = fechaVencimiento;
-        this.idInstancia = idInstancia;
-        this.codTipProceso = codTipProceso;
-    }
 }

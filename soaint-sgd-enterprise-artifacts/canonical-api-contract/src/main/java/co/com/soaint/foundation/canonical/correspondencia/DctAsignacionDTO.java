@@ -1,10 +1,13 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -18,30 +21,19 @@ import java.util.Date;
  */
 @Data
 @Builder(builderMethodName = "newInstance")
+@AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/dct-asignacion/1.0.0")
 public class DctAsignacionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long ideAsignacion;
+    private BigInteger ideAsignacion;
     private Date fecAsignacion;
-    private Long ideFunci;
+    private BigInteger ideFunci;
     private String codDependencia;
     private String codTipAsignacion;
     private String observaciones;
     private String codTipCausal;
     private String codTipProceso;
 
-    public DctAsignacionDTO(){super();}
-
-    public DctAsignacionDTO(Long ideAsignacion, Date fecAsignacion, Long ideFunci, String codDependencia, String codTipAsignacion, String observaciones,
-                            String codTipCausal, String codTipProceso){
-        this.ideAsignacion = ideAsignacion;
-        this.fecAsignacion = fecAsignacion;
-        this.ideFunci = ideFunci;
-        this.codDependencia = codDependencia;
-        this.codTipAsignacion = codTipAsignacion;
-        this.observaciones = observaciones;
-        this.codTipCausal = codTipCausal;
-        this.codTipProceso = codTipProceso;
-    }
 }

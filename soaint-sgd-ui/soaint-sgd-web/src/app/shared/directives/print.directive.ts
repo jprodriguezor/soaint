@@ -36,14 +36,14 @@ export class PrintDirective implements AfterViewInit {
 
         }
 
-        let printStyles: any = '';
-
-        array.forEach(function (value: any, index: any) {
-          if (isString(value)) {
-            const res = value.substring(value.indexOf(':') + 1);
-            printStyles = '<link rel=\'stylesheet\' type=\'text/css\'  href=' + value + ' media=\'print\'>\n' + printStyles;
-          }
-        });
+        // let printStyles: any = '';
+        //
+        // array.forEach(function (value: any, index: any) {
+        //   if (isString(value)) {
+        //     const res = value.substring(value.indexOf(':') + 1);
+        //     printStyles = '<link rel=\'stylesheet\' type=\'text/css\'  href=' + value + ' media=\'print\'>\n' + printStyles;
+        //   }
+        // });
 
         const printContents = html;
 
@@ -55,8 +55,6 @@ export class PrintDirective implements AfterViewInit {
         <html>
             <head>
             <title>Print tab</title>
-            
-            ${printStyles}
             
             <style type="text/css">
                 ${inlineStyles}

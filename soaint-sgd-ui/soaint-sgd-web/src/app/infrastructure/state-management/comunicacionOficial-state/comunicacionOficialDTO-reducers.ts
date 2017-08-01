@@ -7,12 +7,24 @@ export interface State {
   ids: number[];
   entities: { [ideDocumento: number]: CorrespondenciaDTO };
   selectedId: number;
+  filters: {
+    fecha_ini: string;
+    fecha_fin: string;
+    cod_estado: string;
+    nro_radicado: string;
+  }
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
-  selectedId: null
+  selectedId: null,
+  filters: {
+    fecha_ini: null,
+    fecha_fin: null,
+    cod_estado: null,
+    nro_radicado: null
+  }
 };
 
 /**
@@ -50,6 +62,16 @@ export function reducer(state = initialState, action: Actions) {
         selectedId: state.selectedId
       });
 
+    }
+    case Autocomplete.LOAD: {
+      const filters = action.payload;
+      return tassign(state, {
+        filters: {
+          fecha_ini: filters.fecha_ini || null,
+          fecha_fin: filters.fecha_fin || null,
+          cod_estado: filters.cod_estado || null
+        }
+      });
     }
 
     default:

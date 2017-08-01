@@ -1,23 +1,64 @@
-import {Component, Input, OnInit, EventEmitter, ViewChild, Inject, forwardRef} from '@angular/core';
+import {Component, Input, OnInit, EventEmitter, ViewChild, Inject, forwardRef, Output, OnDestroy} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/animations';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {MenuItem} from 'primeng/primeng';
 import {AdminLayoutComponent} from '../../container/admin-layout/admin-layout.component';
+import {ConstanteDTO} from '../../../../domain/constanteDTO';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {Subscribable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-menu',
   template: `
+    <form [formGroup]="form" novalidate>
+      <div class="ui-g ui-fluid form-group">
+        <div style=" padding: 16px 16px 0 16px;
+    color: blueviolet;">Grupo Funcionario Activo
+        </div>
+        <div class="ui-g-12 md-dropdownfield" style="padding-bottom: 0;">
+          <p-dropdown [options]="dependencias | dropdownItem"
+                      [ngModel]="dependenciaSelected"
+                      formControlName="dependencia"
+                      placeholder="Seleccione"
+                      [filter]="true"
+                      [autoWidth]="false"
+          >
+          </p-dropdown>
+        </div>
+      </div>
+    </form>
+
     <ul app-submenu [item]="model" root="true" class="ultima-menu ultima-main-menu clearfix" [reset]="reset"
         visible="true"></ul>
   `
 })
-export class AppMenuComponent {
-
+export class AppMenuComponent implements OnInit, OnDestroy {
+  form: FormGroup;
+  formSubscription: Subscription;
   @Input() reset: boolean;
   @Input() model: any[];
+  @Input() dependencias: Array<any> = [];
+  @Input() dependenciaSelected: any;
+  @Output() onSelectDependencia: EventEmitter<any> = new EventEmitter();
 
-  constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent) {
+  constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent,
+              private formBuilder: FormBuilder) {
+  }
+
+  ngOnInit() {
+    this.form = this.formBuilder.group({
+      'dependencia': [null]
+    });
+
+    this.formSubscription = this.form.get('dependencia').valueChanges.distinctUntilChanged().subscribe(value => {
+      this.onSelectDependencia.emit(value);
+    });
+  }
+
+  ngOnDestroy() {
+    this.formSubscription.unsubscribe();
   }
 
   changeTheme(theme) {
@@ -27,6 +68,8 @@ export class AppMenuComponent {
     themeLink.href = 'assets/theme/theme-' + theme + '.css';
     layoutLink.href = 'assets/layout/css/layout-' + theme + '.css';
   }
+
+
 }
 
 @Component({

@@ -12,7 +12,6 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * Created by esanchez on 6/22/2017.

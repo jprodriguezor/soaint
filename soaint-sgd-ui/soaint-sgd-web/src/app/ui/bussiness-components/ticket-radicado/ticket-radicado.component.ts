@@ -1,5 +1,27 @@
 import {Component, Input, OnInit} from '@angular/core';
 
+interface TicketRadicado {
+  anexos: string;
+
+  folios: string;
+
+  noRadicado: string;
+
+  fecha: string;
+
+  remitente?: string;
+
+  remitenteSede?: string;
+
+  remitenteGrupo?: string;
+
+  destinatario?: string;
+
+  destinatarioSede?: string;
+
+  destinatarioGrupo?: string;
+}
+
 @Component({
   selector: 'app-ticket-radicado',
   templateUrl: './ticket-radicado.component.html',
@@ -8,22 +30,41 @@ import {Component, Input, OnInit} from '@angular/core';
 export class TicketRadicadoComponent implements OnInit {
 
 
-  @Input() anexos: string = '1';
+  @Input() anexos: string = null;
 
-  @Input() folios: string = '2';
+  @Input() folios: string = null;
 
-  @Input() noRadicado: string = 'COR112EE31342342342';
+  @Input() noRadicado: string = null;
 
-  @Input() fecha: Date = new Date();
+  @Input() fecha: string = null;
 
-  @Input() remitente: string = 'JHOSEP MORALES';
+  @Input() remitente: string = null;
 
-  @Input() destinatarioSede: string = 'CentralDT';
+  @Input() remitenteSede: string = null;
 
-  @Input() destinatarioGrupo: string = 'GRUPO DE ADMINISTRACION DOCUMENTAL';
+  @Input() remitenteGrupo: string = null;
+
+  @Input() destinatario: string = null;
+
+  @Input() destinatarioSede: string = null;
+
+  @Input() destinatarioGrupo: string = null;
 
 
   constructor() {
+  }
+
+  setDataTicketRadicado(ticket: TicketRadicado) {
+    this.anexos = ticket.anexos;
+    this.folios = ticket.folios;
+    this.noRadicado = ticket.noRadicado;
+    this.fecha = ticket.fecha;
+    this.remitente = ticket.remitente;
+    this.remitenteSede = ticket.remitenteSede;
+    this.remitenteGrupo = ticket.remitenteGrupo;
+    this.destinatario = ticket.destinatario;
+    this.destinatarioSede = ticket.destinatarioSede;
+    this.destinatarioGrupo = ticket.destinatarioGrupo;
   }
 
   ngOnInit() {

@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,5 +61,14 @@ public class OrganigramaAdministrativoControl {
             }
         }
         return organigramaItem;
+    }
+
+    public List<OrganigramaItemDTO> listarElementosDeNivelInferior(final BigInteger ideOrgaAdmin) {
+        List<OrganigramaItemDTO> data = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
+                .setParameter("ID_PADRE", String.valueOf(ideOrgaAdmin))
+                .setHint("org.hibernate.cacheable", true)
+                .getResultList();
+        this.consultarElementosRecursivamente(new ArrayList<>(data), data);
+        return data;
     }
 }

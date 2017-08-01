@@ -1,28 +1,27 @@
-<form [formGroup]="form">
-  <div class="ui-g ui-fluid">
+<form [formGroup]="form" name="formDefault">
+  <div class="ui-fluid">
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
-      <div class="ui-g ui-fluid"
-           *ngIf="datosGenerales.tipoComunicacionControl.value && datosGenerales.tipoComunicacionControl.value.codigo === 'EI'">
+
+      <div class="ui-g ui-fluid" *ngIf="visibility.sedeAdministrativa">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede administrativa</label>
+              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede</label>
             </div>
-            <div class="ui-g-12 md-inputfield">
-              <p-autoComplete id="sedeAdministrativa"
-                              [disabled]="!editable"
-                              [suggestions]="sedeAdministrativaSuggestions$| async"
-                              field="nombre"
-                              (onSelect)="onSelectSedeAdministrativa($event)"
-                              formControlName="sedeAdministrativa"
-                              (completeMethod)="onFilterSedeAdministrativa($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickSedeAdministrativa($event)">
-              </p-autoComplete>
-              <div class="ui-message ui-messages-error ui-corner-all"
-                   *ngIf="sedeAdministrativaControl.touched && !sedeAdministrativaControl.valid">
-                Este campo es requerido
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
+                          id="sedeAdministrativa"
+                          formControlName="sedeAdministrativa"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('sedeAdministrativa')">
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.sedeAdministrativa">
+                {{ validations.sedeAdministrativa }}
               </div>
             </div>
           </div>
@@ -33,50 +32,97 @@
             <div class="ui-g-12">
               <label for="dependenciaGrupo"><span class="text-danger">*</span>Dependencia / Grupo</label>
             </div>
-            <div class="ui-g-12 md-inputfield">
-              <p-autoComplete id="dependenciaGrupo"
-                              [disabled]="!editable"
-                              [disabled]="!selectSedeAdministrativa"
-                              [suggestions]="dependenciaGrupoSuggestions$ | async"
-                              field="nombre"
-                              formControlName="dependenciaGrupo"
-                              (completeMethod)="onFilterDependenciaGrupo($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickDependenciaGrupo($event)">
-              </p-autoComplete>
-              <div class="ui-message ui-messages-error ui-corner-all"
-                   *ngIf="dependenciaGrupoControl.touched && !dependenciaGrupoControl.valid">
-                Este campo es requerido
+            <div class="ui-g-12 md-dropdownfield">
+
+              <p-dropdown [options]="dependenciaGrupoSuggestions$ | async | dropdownItem"
+                          id="dependenciaGrupo"
+                          formControlName="dependenciaGrupo"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('dependenciaGrupo')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.dependenciaGrupo">
+                {{ validations.dependenciaGrupo }}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="ui-g ui-fluid"
-           *ngIf="(datosGenerales.tipoComunicacionControl.value && datosGenerales.tipoComunicacionControl.value.codigo === 'EE') || (!datosGenerales.tipoComunicacionControl.value)">
+
+      <div class="ui-g ui-fluid" *ngIf="visibility.tipoPersona">
+
+        <!--Tipo Persona-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoPersona"><span class="text-danger">*</span>Tipo de persona</label>
             </div>
-            <div class="ui-g-12 md-inputfield">
-              <p-autoComplete id="tipoPersona"
-                              formControlName="tipoPersona"
-                              (onSelect)="onSelectTipoPersona()"
-                              [suggestions]="tipoPersonaSuggestions$ | async"
-                              field="nombre"
-                              (completeMethod)="onFilterTipoPersona($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoPersona($event)">
-              </p-autoComplete>
-              <div class="ui-message ui-messages-error ui-corner-all"
-                   *ngIf="tipoPersonaControl.touched && !tipoPersonaControl.valid">
-                Este campo es requerido
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="tipoPersonaSuggestions$ | async | dropdownItem"
+                          id="tipoPersona"
+                          formControlName="tipoPersona"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('tipoPersona')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.tipoPersona">
+                {{ validations.tipoPersona }}
               </div>
             </div>
           </div>
-          <div class="ui-g form-group" style="padding-top: 25px"
-               *ngIf="!tipoPersonaControl.value || tipoPersonaControl.value && tipoPersonaControl.value.codigo != 'PERS-NAT'">
+        </div>
+
+        <!--Tipo Documento-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tipoDocumento">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoDocumento"><span class="text-danger">*</span>Tipo documento</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="subscriptionTipoDocumentoPersona | dropdownItem"
+                          id="tipoDocumento"
+                          formControlName="tipoDocumento"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('tipoDocumento')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.tipoDocumento">
+                {{ validations.tipoDocumento }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Razon Social-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.razonSocial">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="razonSocial" formControlName="razonSocial">
+              <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.razonSocial">
+                 {{ validations.razonSocial }}
+              </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Nit-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nit">
+          <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="nit" formControlName="nit">
@@ -84,227 +130,75 @@
               </span>
             </div>
           </div>
-          <div class="ui-g form-group" style="padding-top: 25px"
-               *ngIf="tipoPersonaControl.value && tipoPersonaControl.value.codigo === 'PERS-NAT'">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad">
-              <label for="nroDocumentoIdentidad"><span class="text-danger">*</span>No. Docuemento identidad</label>
-                <div class="ui-message ui-messages-error ui-corner-all"
-                     *ngIf="nroDocumentoIdentidadControl.touched && !nroDocumentoIdentidadControl.valid">
-                Este campo es requerido
-                </div>
-              </span>
-            </div>
-          </div>
-          <!--<div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="actuaCalidad">Actua en calidad</label>
-            </div>
-            <div class="ui-g-12">
-              <p-autoComplete id="actuaCalidad"
-                              [suggestions]="tipoPersonaSuggestions$ | async"
-                              field="nombre"
+        </div>
 
-                              formControlName="actuaCalidad"
-                              (completeMethod)="onFilterTipoPersona($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoPersona($event)">
-              </p-autoComplete>
-            </div>
-          </div>-->
-          <div class="ui-g form-group" style="padding-top: 25px">
+        <!--Actua en Calidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.actuaCalidad">
+          <div class="ui-g form-group">
             <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="actuaCalidad" formControlName="actuaCalidad">
               <label for="actuaCalidad">Actua en calidad</label>
-              </span>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="actuaCalidadSuggestions$ | async | dropdownItem"
+                          id="actuaCalidad"
+                          formControlName="actuaCalidad"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
             </div>
           </div>
         </div>
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tipoDocumento"><span class="text-danger">*</span>Tipo documento</label>
-            </div>
-            <div class="ui-g-12 md-inputfield">
-              <p-autoComplete id="tipoDocumento"
 
-                              [suggestions]="tipoDocumentoSuggestons$ | async"
-                              field="nombre"
-                              formControlName="tipoDocumento"
-                              (completeMethod)="onFilterTipoDocumento($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoDocumento($event)">
-              </p-autoComplete>
-              <div class="ui-message ui-messages-error ui-corner-all"
-                   *ngIf="tipoDocumentoControl.touched && !tipoDocumentoControl.valid">
-                Este campo es requerido
-              </div>
-            </div>
-          </div>
-          <div class="ui-g form-group" style="padding-top: 25px">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="razonSocial" formControlName="razonSocial">
-              <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
-                <div class="ui-message ui-messages-error ui-corner-all" [hidden]="razonSocialControl.disabled"
-                     *ngIf="razonSocialControl.touched && !razonSocialControl.valid">
-                  Este campo es requerido
-                </div>
-              </span>
-            </div>
-          </div>
-          <div class="ui-g form-group" style="padding-top: 25px">
+        <!--Nombre y Apellidos-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nombreApellidos">
+          <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos">
                 <label for="nombreApellidos"><span class="text-danger">*</span>Nombre y Apellidos</label>
-              <div class="ui-message ui-messages-error ui-corner-all"
-                   *ngIf="nombreApellidosControl.touched && !nombreApellidosControl.valid">
-                Este campo es requerido
+
+                <div class="ui-message ui-messages-error"
+                     *ngIf="validations.nombreApellidos">
+                {{ validations.nombreApellidos }}
               </div>
               </span>
             </div>
           </div>
         </div>
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tipoTelefono">Tipo teléfono</label>
-            </div>
-            <div class="ui-g-12">
-              <p-autoComplete id="tipoTelefono"
 
-                              [suggestions]="tipoTelefonoSuggestions$ | async"
-                              field="nombre"
-                              formControlName="tipoTelefono"
-                              (completeMethod)="onFilterTipoTelefono($event)" [size]="30"
-                              [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                              (onDropdownClick)="onDropdownClickTipoTelefono($event)">
-              </p-autoComplete>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
-          <div class="ui-g form-group">
+        <!--Nro Documento Identidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nroDocumentoIdentidad">
+          <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="inactivo" formControlName="inactivo">
-              <label>Inactivo</label>
+              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad">
+              <label for="nroDocumentoIdentidad"><span class="text-danger">*</span>No. Documento identidad</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.nroDocumentoIdentidad">
+                    {{ validations.nroDocumentoIdentidad }}
+                 </div>
               </span>
             </div>
           </div>
         </div>
-        <div class="ui-sm-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-              <input type="text" pInputText id="numeroTel" formControlName="numeroTel">
-              <label>No. de teléfono</label>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 25px">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-          <span class="md-inputfield">
-          <input type="text" pInputText id="correoEle" formControlName="correoEle">
-          <label>Correo electronico</label>
-          </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-g-12 ui-lg-12">
-          <div class="ui-sm-12 ui-g-4 ui-lg-4">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="pais">Pais</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="pais"
-                                [suggestions]="paisSuggestions$ | async"
-                                field="nombre"
 
-                                (onSelect)="onSelectPais($event)"
-                                formControlName="pais"
-                                (completeMethod)="onFilterPais($event)" [size]="30"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickPais($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-          <div class="ui-sm-12 ui-g-4 ui-lg-4">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="departamento">Departamento</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="departamento"
-                                [disabled]="!selectedPais || !editable"
-                                [suggestions]="departamentoSuggestions$ | async"
-                                field="nombreDepar"
-                                (onSelect)="onSelectDepartamento($event)"
-                                formControlName="departamento"
-                                (completeMethod)="onFilterDepartamento($event)" [size]="30"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickDepartamento($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-          <div class="ui-sm-12 ui-g-4 ui-lg-4">
-            <div class="ui-g form-group">
-              <div class="ui-g-12">
-                <label for="municipio">Municipio</label>
-              </div>
-              <div class="ui-g-12">
-                <p-autoComplete id="municipio"
-                                [suggestions]="municipioSuggestions$ | async"
-                                [disabled]="!selectedDepartamento || !editable"
-                                field="nombreMunic"
-                                formControlName="municipio"
-                                (completeMethod)="onFilterMunicipio($event)" [size]="30"
-                                [minLength]="1" placeholder="Seleccione" [dropdown]="true"
-                                (onDropdownClick)="onDropdownClickMunicipio($event)">
-                </p-autoComplete>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: left">
-          <button pButton type="button" label="Agregar"
-                  [disabled]="!tipoPersonaControl.value || tipoPersonaControl.value && tipoPersonaControl.value.codigo === 'ANONIM'"
-                  style="width: auto; margin-left: 12px; margin-bottom: 10px" (click)="showDialog()"
-          ></button>
-        </div>
-
-        <div class="ui-g-12">
-          <p-dataTable [value]="addresses" selectionMode="single" [(selection)]="selectedAdress"
-                       [paginator]="true" [rows]="10" [responsive]="true">
-            <p-header>Direcciones</p-header>
-            <p-column field="tipoVia.nombre" header="Tipo de via" [sortable]="true"></p-column>
-            <p-column field="prefijoCuadrante.nombre" header="Prefijo" [sortable]="true"></p-column>
-            <p-column field="orientacion.nombre" header="Orientacion" [sortable]="true"></p-column>
-            <p-column field="noViaPrincipal" header="No. via principal" [sortable]="true"></p-column>
-            <p-column field="bis.nombre" header="Bis" [sortable]="true"></p-column>
-            <p-column field="noVia" header="No. de via" [sortable]="true"></p-column>
-            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
-              <ng-template let-address="rowData" let-i="rowIndex" pTemplate="item">
-                <button type="button" icon="ui-icon-close" pButton (click)="deleteAdress(i)"
-                        class="ui-button ui-button-icon ui-button-danger"></button>
-              </ng-template>
-            </p-column>
-          </p-dataTable>
-        </div>
       </div>
     </div>
   </div>
 </form>
 
 
-<app-datos-direccion [display]="display" (dialogHide)="hideDialog($event)"></app-datos-direccion>
+<div *ngIf="visibility.datosContacto">
+
+  <app-datos-direccion #datosContactos [editable]="editable"></app-datos-direccion>
+
+</div>
+
+
+
+
+
 

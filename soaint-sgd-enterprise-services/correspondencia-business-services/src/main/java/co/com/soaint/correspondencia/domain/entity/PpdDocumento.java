@@ -29,15 +29,21 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name = "PpdDocumento.findAll", query = "SELECT p FROM PpdDocumento p"),
         @NamedQuery(name = "PpdDocumento.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO " +
-                "(p.idePpdDocumento, p.codTipoDoc, p.fecDocumento, p.codAsunto, p.nroFolios, p.nroAnexos, p.codEstDoc, p.ideEcm, " +
-                "p.codTipoSoporte, p.codEstArchivado) " +
+                "(p.idePpdDocumento, p.codTipoDoc, p.fecDocumento, p.asunto, p.nroFolios, p.nroAnexos, p.codEstDoc, p.ideEcm) " +
                 "FROM PpdDocumento p " +
                 "INNER JOIN p.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "PpdDocumento.findIdePpdDocumentoByIdeDocumento", query = "SELECT p.idePpdDocumento " +
                 "FROM PpdDocumento p " +
                 "INNER JOIN p.corCorrespondencia co " +
-                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "PpdDocumento.findIdePpdDocumentoByNroRadicado", query = "SELECT p.idePpdDocumento " +
+                "FROM PpdDocumento p " +
+                "INNER JOIN p.corCorrespondencia co " +
+                "WHERE co.nroRadicado = :NRO_RADICADO"),
+        @NamedQuery(name = "PpdDocumento.updateIdEcm", query = "UPDATE PpdDocumento p " +
+                "SET p.ideEcm = :IDE_ECM " +
+                "WHERE p.idePpdDocumento = :IDE_PPDDOCUMENTO")})
 @javax.persistence.TableGenerator(name = "PPD_DOCUMENTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "PPD_DOCUMENTO_SEQ", allocationSize = 1)
 public class PpdDocumento implements Serializable {
@@ -55,8 +61,8 @@ public class PpdDocumento implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecDocumento;
     @Basic(optional = false)
-    @Column(name = "COD_ASUNTO")
-    private String codAsunto;
+    @Column(name = "ASUNTO")
+    private String asunto;
     @Column(name = "NRO_FOLIOS")
     private Long nroFolios;
     @Column(name = "NRO_ANEXOS")
@@ -69,10 +75,6 @@ public class PpdDocumento implements Serializable {
     private Date fecCreacion;
     @Column(name = "IDE_ECM")
     private String ideEcm;
-    @Column(name = "COD_TIPO_SOPORTE")
-    private String codTipoSoporte;
-    @Column(name = "COD_EST_ARCHIVADO")
-    private String codEstArchivado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ppdDocumento")
     private List<PpdTrazDocumento> ppdTrazDocumentoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ppdDocumento")

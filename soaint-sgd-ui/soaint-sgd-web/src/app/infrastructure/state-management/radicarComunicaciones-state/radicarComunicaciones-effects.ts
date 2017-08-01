@@ -35,16 +35,5 @@ export class Effects {
               private _sandbox: Sandbox) {
   }
 
-  @Effect()
-  load: Observable<Action> = this.actions$
-    .ofType(actions.ActionTypes.RADICAR)
-    .map(toPayload)
-    .switchMap(
-      (payload) => this._sandbox.radicar(payload)
-        .map((response) => new actions.RadicarSuccessAction(response))
-        .catch((error) => Observable.of(new actions.RadicarFailAction({error}))
-        )
-    );
-
 
 }

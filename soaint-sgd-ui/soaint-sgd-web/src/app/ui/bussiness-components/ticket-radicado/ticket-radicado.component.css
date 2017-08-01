@@ -5,8 +5,15 @@
 
 .ticket-panel {
   text-align: center;
-  width: 500px;
-  min-height: 440px; }
+  width: 450px;
+  min-height: 200px; }
+  .ticket-panel .row-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: table;
+    width: 100%;
+    position: relative;
+    clear: both; }
   .ticket-panel .ui-g .ui-g-12 {
     padding: 25px 40px; }
     .ticket-panel .ui-g .ui-g-12 .ui-button {
@@ -20,29 +27,35 @@
   text-align: center;
   color: #757575; }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .login-body {
-    background: top left no-repeat #f7f7f7;
-    background-size: 100% auto; } }
-@media (max-width: 1024px) {
-  .ticket-panel {
-    text-align: center;
-    min-height: 440px; } }
-@media (max-width: 640px) {
-  .ticket-panel {
-    text-align: center;
-    width: 500px;
-    min-height: 440px;
-    padding: 40px 20px;
-    margin: 75px auto 0 auto; }
-    .ticket-panel .ui-g .ui-g-12 {
-      padding: 20px 20px; }
-      .ticket-panel .ui-g .ui-g-12 .ui-button {
-        margin-top: 30px; } }
 .text-right {
   text-align: right; }
 
 .text-left {
   text-align: left; }
+
+.text-justify {
+  text-align: justify; }
+
+.clear {
+  clear: both; }
+
+@media print {
+  body {
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-size: 12pt;
+    zoom: .6;
+    color: #333333; }
+
+  #ticket-rad {
+    float: right;
+    padding: 8px;
+    border: 1pt dashed black; }
+
+  @page {
+    size: carta;
+    margin-top: 0.5cm;
+    margin-bottom: 0.5cm;
+    margin-left: .5cm;
+    margin-right: .5cm; } }
 
 /*# sourceMappingURL=ticket-radicado.component.css.map */

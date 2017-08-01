@@ -21,7 +21,7 @@ import javax.ws.rs.Produces;
 @Produces({"application/json", "application/xml"})
 public class MunicipiosWebApi {
 
-    private static Logger LOGGER = LogManager.getLogger(MunicipiosWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(MunicipiosWebApi.class.getName());
 
     @Autowired
     private GestionarMunicipio boundary;
@@ -33,14 +33,14 @@ public class MunicipiosWebApi {
     @GET
     @Path("/municipios/{codDepar}/{estado}")
     public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar municipios por codigo del departamento y estado");
+        logger.info("processing rest request - listar municipios por codigo del departamento y estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
     @GET
     @Path("/municipios/{estado}")
     public MunicipiosDTO listarMunicipiosByEstado(@PathParam("estado") final String estado)throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar municipios por estado");
+        logger.info("processing rest request - listar municipios por estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
     }
 }

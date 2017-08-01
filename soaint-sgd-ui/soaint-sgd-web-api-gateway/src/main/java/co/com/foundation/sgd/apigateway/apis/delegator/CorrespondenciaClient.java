@@ -1,6 +1,8 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -21,7 +23,7 @@ public class CorrespondenciaClient {
 
     public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
         System.out.println("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-        comunicacionOficialDTO.getCorrespondencia().setCodSede("01");
+//        comunicacionOficialDTO.getCorrespondencia().setCodSede("01");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()
@@ -38,5 +40,21 @@ public class CorrespondenciaClient {
                 .queryParam("cod_estado", codEstado)
                 .request()
                 .get();
+    }
+
+    public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+        System.out.println("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/asignacion-web-api/asignacion")
+                .request()
+                .post(Entity.json(asignacionesDTO));
+    }
+
+    public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
+        System.out.println("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/asignacion-web-api/asignacion/redireccionar")
+                .request()
+                .put(Entity.json(agentesDTO));
     }
 }

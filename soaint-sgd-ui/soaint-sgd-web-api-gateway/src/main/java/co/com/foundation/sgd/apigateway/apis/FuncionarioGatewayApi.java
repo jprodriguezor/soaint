@@ -5,10 +5,7 @@ import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -31,7 +28,20 @@ public class FuncionarioGatewayApi {
     public Response get() {
         //TODO: add trafic log
         System.out.println("FuncionarioGatewayApi - [trafic] - listing Funcionario");
-        Response response = client.obtenerFuncionario("admin");
+        Response response = client.obtenerFuncionario("krisv");
+        String responseContent = response.readEntity(String.class);
+        System.out.println("FuncionarioGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/funcionarios/{cod_dependencia}")
+    @JWTTokenSecurity
+    public Response listarFuncionarios(@PathParam("cod_dependencia") String codigoDependencia) {
+        //TODO: add trafic log
+        System.out.println("FuncionarioGatewayApi - [trafic] - listing Funcionario");
+        Response response = client.listarFuncionarios(codigoDependencia);
         String responseContent = response.readEntity(String.class);
         System.out.println("FuncionarioGatewayApi - [content] : " + responseContent);
 

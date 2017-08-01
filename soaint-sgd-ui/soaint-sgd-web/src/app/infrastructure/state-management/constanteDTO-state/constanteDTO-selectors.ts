@@ -1,5 +1,4 @@
 export * from './selectors/tipo-comunicacion-selectors';
-export * from './selectors/sede-administrativa-selectors';
 export * from './selectors/medios-recepcion-selectors';
 export * from './selectors/tipo-anexos-selectors';
 export * from './selectors/tipo-destinatario-selectors';
@@ -13,5 +12,7 @@ export * from './selectors/tipo-via-selectors';
 export * from './selectors/bis-selectors';
 export * from './selectors/prefijo-cuadrante-selectors';
 export * from './selectors/orientacion-selectors';
+export * from './selectors/tipo-complemento-selectors';
+export * from './selectors/actua-calidad-selectors';
 
 

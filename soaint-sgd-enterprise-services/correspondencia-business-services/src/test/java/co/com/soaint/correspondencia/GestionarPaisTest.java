@@ -1,6 +1,5 @@
 package co.com.soaint.correspondencia;
 
-import co.com.soaint.correspondencia.domain.entity.TvsPais;
 import co.com.soaint.foundation.canonical.correspondencia.PaisDTO;
 import org.junit.Test;
 

@@ -3,7 +3,6 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DependeciaGrupoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;

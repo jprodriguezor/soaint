@@ -5,6 +5,9 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './radicarComunicaciones-actions';
 import {ComunicacionApiService} from '../../api/comunicacionOficial.api.service';
+import {sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector} from './radicarComunicaciones-selectors';
+import {getArrayData as DependenciaGrupoSelector} from '../dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 
 @Injectable()
 export class Sandbox {
@@ -17,8 +20,12 @@ export class Sandbox {
     return this._comunicacionOficial.post(environment.radicarComunicacion_endpoint, payload);
   }
 
-  radicarDispatch(payload: any) {
+  dispatchRadicarComunicacion(payload: ComunicacionOficialDTO) {
     this._store.dispatch(new actions.RadicarAction(payload));
+  }
+
+  dispatchSedeDestinatarioEntradaFilter(payload?: any) {
+    this._store.dispatch(new actions.TriggerExcludeSedeRemitenteFromDestinatarioAction(payload));
   }
 
 }

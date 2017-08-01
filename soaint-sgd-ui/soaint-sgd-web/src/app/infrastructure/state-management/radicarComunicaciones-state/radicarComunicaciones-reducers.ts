@@ -1,14 +1,24 @@
-import {Actions, ActionTypes as Autocomplete} from './radicarComunicaciones-actions';
+import {Actions, ActionTypes} from './radicarComunicaciones-actions';
 import {tassign} from 'tassign';
-import {ComunicacionOficialDTO} from 'app/domain/ComunicacionOficialDTO';
+import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 
 
 export interface State {
-  comunicacionOficial: ComunicacionOficialDTO
+  entrada: {
+    correspondencia: ComunicacionOficialDTO,
+    tipoComunicacion: string,
+    sedeRemitente: any,
+    destinatarioOriginal: any
+  }
 }
 
 const initialState: State = {
-  comunicacionOficial: null
+  entrada: {
+    correspondencia: null,
+    tipoComunicacion: null,
+    sedeRemitente: null,
+    destinatarioOriginal: null
+  }
 };
 
 /**
@@ -20,14 +30,29 @@ const initialState: State = {
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
-    case Autocomplete.RADICAR_SUCCESS: {
-      const values = action.payload;
-
+    case ActionTypes.TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO: {
+      const sedeAdministrativaRemitente = action.payload;
 
       return tassign(state, {
-        comunicacionOficial: values
+        entrada: {
+          correspondencia: state.entrada.correspondencia,
+          tipoComunicacion: state.entrada.tipoComunicacion,
+          destinatarioOriginal: state.entrada.destinatarioOriginal,
+          sedeRemitente: sedeAdministrativaRemitente
+        }
       });
+    }
 
+    case ActionTypes.TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO: {
+      const destinatarioOriginal = action.payload;
+      return tassign(state, {
+        entrada: {
+          correspondencia: state.entrada.correspondencia,
+          tipoComunicacion: state.entrada.tipoComunicacion,
+          destinatarioOriginal: destinatarioOriginal,
+          sedeRemitente: state.entrada.sedeRemitente
+        }
+      });
     }
 
     default:

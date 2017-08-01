@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -40,7 +41,12 @@ import javax.persistence.*;
                 "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.ideOrgaAdminPadre, t1.nomOrg, t.indEsActivo, t.codNivel, t.descOrg, t1.codNivel) " +
                 "FROM TvsOrganigramaAdministrativo t " +
                 "INNER JOIN TvsOrganigramaAdministrativo t1 ON t.ideOrgaAdminPadre = t1.ideOrgaAdmin " +
-                "WHERE t.ideOrgaAdminPadre = :ID_PADRE")
+                "WHERE t.ideOrgaAdminPadre = :ID_PADRE"),
+        @NamedQuery(name = "TvsOrganigramaAdministrativo.consultarElementosByCodOrgList", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO" +
+                "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.ideOrgaAdminPadre, t1.nomOrg, t.indEsActivo, t.codNivel, t.descOrg, t1.codNivel) " +
+                "FROM TvsOrganigramaAdministrativo t " +
+                "INNER JOIN TvsOrganigramaAdministrativo t1 ON t.ideOrgaAdminPadre = t1.ideOrgaAdmin " +
+                "WHERE t.codOrg IN :COD_ORG_LIST")
         })
 @Cacheable(true)
 public class TvsOrganigramaAdministrativo implements Serializable {
@@ -86,5 +92,4 @@ public class TvsOrganigramaAdministrativo implements Serializable {
     private String valSistema;
     @Column(name = "VAL_VERSION")
     private String valVersion;
-    
 }

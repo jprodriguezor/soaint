@@ -2,9 +2,14 @@ import {Action} from '@ngrx/store';
 import {type} from 'app/infrastructure/redux-store/_util';
 
 export const ActionTypes = {
-  RADICAR: type('[comunicacionOficialDTO] RadicarAction'),
-  RADICAR_SUCCESS: type('[comunicacionOficialDTO] RadicarSuccessAction'),
-  RADICAR_FAIL: type('[comunicacionOficialDTO] RadicarFailAction')
+  LOAD: type('[radicarComunicacionesDTO] LoadAction'),
+  LOAD_SUCCESS: type('[radicarComunicacionesDTO] LoadSuccessAction'),
+  LOAD_FAIL: type('[radicarComunicacionesDTO] LoadFailAction'),
+  RADICAR: type('[radicarComunicacionesDTO] RadicarAction'),
+  RADICAR_SUCCESS: type('[radicarComunicacionesDTO] RadicarSuccessAction'),
+  RADICAR_FAIL: type('[radicarComunicacionesDTO] RadicarFailAction'),
+  TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO: type('[radicarComunicacionesDTO] TriggerExcludeSedeRemitenteFromDestinatarioAction'),
+  TRIGGER_SELECTED_DESTINATARIO_ORIGINAL: type('[radicarComunicacionesDTO] TriggerSelectedDestinatarioOriginalAction')
 };
 
 export class RadicarAction implements Action {
@@ -14,6 +19,26 @@ export class RadicarAction implements Action {
   }
 }
 
+export class LoadAction implements Action {
+  type = ActionTypes.LOAD;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadSuccessAction implements Action {
+  type = ActionTypes.LOAD_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadFailAction implements Action {
+  type = ActionTypes.LOAD_FAIL;
+
+  constructor(public payload?: any) {
+  }
+}
 
 export class RadicarSuccessAction implements Action {
   type = ActionTypes.RADICAR_SUCCESS;
@@ -29,7 +54,29 @@ export class RadicarFailAction implements Action {
   }
 }
 
+export class TriggerExcludeSedeRemitenteFromDestinatarioAction implements Action {
+  type = ActionTypes.TRIGGER_EXCLUDE_SEDE_REMITENTE_FROM_DESTINATARIO;
 
-export type Actions = RadicarAction;
+  constructor(public payload?: any) {
+  }
+}
+
+export class TriggerSelectedDestinatarioOriginalAction implements Action {
+  type = ActionTypes.TRIGGER_SELECTED_DESTINATARIO_ORIGINAL;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export type Actions =
+  LoadAction |
+  LoadSuccessAction |
+  LoadFailAction |
+  RadicarAction |
+  RadicarSuccessAction |
+  RadicarFailAction |
+  TriggerExcludeSedeRemitenteFromDestinatarioAction |
+  TriggerSelectedDestinatarioOriginalAction
+  ;
 
 

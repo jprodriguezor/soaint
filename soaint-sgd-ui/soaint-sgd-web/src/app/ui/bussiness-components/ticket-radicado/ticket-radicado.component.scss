@@ -10,10 +10,17 @@ $textSecondaryColor: #757575;
 
 .ticket-panel {
   text-align: center;
-  width: 500px;
-  min-height: 440px;
+  width: 450px;
+  min-height: 200px;
   //margin: 100px auto 0 auto;
-
+  .row-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: table;
+    width: 100%;
+    position: relative;
+    clear: both;
+  }
   .ui-g {
     .ui-g-12 {
       padding: 25px 40px;
@@ -35,41 +42,6 @@ $textSecondaryColor: #757575;
   color: $textSecondaryColor;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .login-body {
-    background: top left no-repeat #f7f7f7;
-    background-size: 100% auto;
-  }
-}
-
-@media (max-width: 1024px) {
-  .ticket-panel {
-    text-align: center;
-    min-height: 440px;
-    //margin: 100px auto 0 auto;
-
-  }
-}
-
-@media (max-width: 640px) {
-  .ticket-panel {
-    text-align: center;
-    width: 500px;
-    min-height: 440px;
-    padding: 40px 20px;
-    margin: 75px auto 0 auto;
-
-    .ui-g {
-      .ui-g-12 {
-        padding: 20px 20px;
-
-        .ui-button {
-          margin-top: 30px
-        }
-      }
-    }
-  }
-}
 
 .text-right {
   text-align: right;
@@ -77,6 +49,41 @@ $textSecondaryColor: #757575;
 
 .text-left {
   text-align: left;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.clear {
+  clear: both;
+}
+
+@media print {
+  body {
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-size: 12pt;
+    zoom: .6;
+    color: #333333;
+    //margin-top: 1cm;
+    //margin-right: 1cm;
+    //margin-bottom: 1cm;
+    //margin-left: 1cm;
+  }
+
+  #ticket-rad {
+    float: right;
+    padding: 8px;
+    border: 1pt dashed black;
+  }
+
+  @page {
+    size: carta;
+    margin-top: 0.5cm;
+    margin-bottom: 0.5cm;
+    margin-left: .5cm;
+    margin-right: .5cm;
+  }
 }
 
 

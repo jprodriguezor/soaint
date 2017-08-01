@@ -5,14 +5,16 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
-import co.com.soaint.correspondencia.domain.entity.constantes.TipoAgenteEnum;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 /**
  *
@@ -38,7 +40,7 @@ import javax.persistence.*;
                 "FROM CorCorrespondencia c " +
                 "INNER JOIN c.corAgenteList ca " +
                 "WHERE c.fecRadicado BETWEEN :FECHA_INI AND :FECHA_FIN " +
-                "AND c.codEstado = :COD_ESTADO AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
+                "AND ca.codEstado = :COD_EST_AG AND c.codEstado = :COD_ESTADO AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
@@ -48,9 +50,13 @@ import javax.persistence.*;
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", query = "SELECT MAX(c.nroRadicado) " +
                 "FROM CorCorrespondencia c " +
-                "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC)"),
+                "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC) " +
+                "AND NOT c.nroRadicado BETWEEN :RESERVADO_INI AND :RESERVADO_FIN "),
         @NamedQuery(name = "CorCorrespondencia.updateEstado", query = "UPDATE CorCorrespondencia c " +
                 "SET c.codEstado = :COD_ESTADO " +
+                "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.updateIdeInstancia", query = "UPDATE CorCorrespondencia c " +
+                "SET c.ideInstancia = :IDE_INSTANCIA " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)")})
 @javax.persistence.TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)

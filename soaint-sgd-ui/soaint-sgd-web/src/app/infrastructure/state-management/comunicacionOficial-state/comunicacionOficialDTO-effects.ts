@@ -18,6 +18,7 @@ import * as actions from './comunicacionOficialDTO-actions';
 import {Sandbox} from './comunicacionOficialDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {tassign} from 'tassign';
+import {getSelectedDependencyGroupFuncionario} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 
 function isLoaded() {
   return (source) =>
@@ -41,14 +42,12 @@ export class Effects {
     .ofType(actions.ActionTypes.LOAD)
     .map(toPayload)
     .distinctUntilChanged()
-    .withLatestFrom(this._store$)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .distinctUntilChanged()
-    // .let(isLoaded())
-
     .switchMap(
       ([payload, state]) => {
         const new_payload = tassign(payload, {
-          cod_dependencia: state.funcionario.dependencia ? state.funcionario.dependencia.codOrg : null
+          cod_dependencia: state.codigo
         });
         return this._sandbox.loadData(new_payload)
           .map((response) => new actions.LoadSuccessAction(response))
@@ -57,5 +56,18 @@ export class Effects {
       }
     );
 
-
+  @Effect()
+  reload: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.RELOAD)
+    .distinctUntilChanged()
+    .withLatestFrom(this._store$.select((state) => state.comunicacionesOficiales))
+    .distinctUntilChanged()
+    .switchMap(
+      ([payload, state]) => {
+        return this._sandbox.loadData(state.filters)
+          .map((response) => new actions.LoadSuccessAction(response))
+          .catch((error) => Observable.of(new actions.LoadFailAction({error}))
+          )
+      }
+    );
 }

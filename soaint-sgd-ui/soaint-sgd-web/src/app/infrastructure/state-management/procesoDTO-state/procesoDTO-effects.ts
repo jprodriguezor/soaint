@@ -15,6 +15,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './procesoDTO-actions';
+import {StartTaskAction} from '../tareasDTO-state/tareasDTO-actions';
 import {Sandbox} from './procesoDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {go} from '@ngrx/router-store';
@@ -39,13 +40,6 @@ export class Effects {
   @Effect()
   load: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
-    // .withLatestFrom(this._store$, (action: Action, state: RootState) => state.proceso.ids)
-    // .filter(([action, state]) => {
-    //   console.log(action, state);
-    //   return state === [];
-    // })
-    // .distinctUntilChanged()
-    // .let(isLoaded())
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadData(payload)
@@ -71,10 +65,12 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.loadTasksInsideProcess(payload)
-        .mergeMap((response) => [
-          new actions.LoadTaskSuccessAction({data: response}),
-          (response.length > 0) ? go(['/radicar-comunicaciones', (response.length > 0) ? response[0] : null]) : null
-        ])
+        .mergeMap((response) => {
+            return [
+              new actions.LoadTaskSuccessAction({data: response}),
+              new StartTaskAction(response)
+            ];
+        })
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
     )

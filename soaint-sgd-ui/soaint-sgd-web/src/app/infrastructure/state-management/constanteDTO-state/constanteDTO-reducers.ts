@@ -4,7 +4,7 @@ import {tassign} from 'tassign';
 
 interface ConstanteDTOStateInterface {
   ids: number[];
-  entities: { [ideConst: number]: ConstanteDTO };
+  entities: { [id: string]: ConstanteDTO };
   selectedId?: number | null;
   filter?: string;
 }
@@ -24,14 +24,15 @@ export interface State {
   tipoDestinatario: ConstanteDTOStateInterface;
   unidadTiempo: ConstanteDTOStateInterface;
   mediosRecepcion: ConstanteDTOStateInterface;
-  sedeAdministrativa: ConstanteDTOStateInterface;
-  dependenciaGrupo: ConstanteDTOStateInterface;
   tipologiaDocumental: ConstanteDTOStateInterface;
   tratamientoCortesia: ConstanteDTOStateInterface;
   tipoVia: ConstanteDTOStateInterface;
   prefijoCuadrante: ConstanteDTOStateInterface;
   bis: ConstanteDTOStateInterface;
   orientacion: ConstanteDTOStateInterface;
+  tipoComplemento: ConstanteDTOStateInterface;
+  actuaCalidad: ConstanteDTOStateInterface;
+  causalDevolucion: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -43,14 +44,15 @@ const initialState: State = {
   tipoDestinatario: new ConstanteDTOStateInstance(),
   unidadTiempo: new ConstanteDTOStateInstance(),
   mediosRecepcion: new ConstanteDTOStateInstance(),
-  sedeAdministrativa: new ConstanteDTOStateInstance(),
-  dependenciaGrupo: new ConstanteDTOStateInstance(),
   tipologiaDocumental: new ConstanteDTOStateInstance(),
   tratamientoCortesia: new ConstanteDTOStateInstance(),
   tipoVia: new ConstanteDTOStateInstance(),
   prefijoCuadrante: new ConstanteDTOStateInstance(),
   bis: new ConstanteDTOStateInstance(),
-  orientacion: new ConstanteDTOStateInstance()
+  orientacion: new ConstanteDTOStateInstance(),
+  tipoComplemento: new ConstanteDTOStateInstance(),
+  actuaCalidad: new ConstanteDTOStateInstance(),
+  causalDevolucion: new ConstanteDTOStateInstance()
 }
 
 /**
@@ -63,23 +65,53 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
       const target = action.payload.key;
       const values = action.payload.data.constantes;
-      const newValues = values.filter(data => !state[target].entities[data.ideConst]);
+      const newValues = values.filter(data => !state[target].entities[data.codigo]);
 
-      const newValuesIds = newValues.map(data => data.ideConst);
-      const newValuesEntities = newValues.reduce((entities: { [ideConst: number]: ConstanteDTO }, value: ConstanteDTO) => {
+      const newValuesIds = newValues.map(data => data.codigo);
+      const newValuesEntities = newValues.reduce((entities: { [id: string]: ConstanteDTO }, value: ConstanteDTO) => {
         return Object.assign(entities, {
-          [value.ideConst]: value
+          [value.codigo]: value
         });
       }, {});
       const cloneState = Object.assign({}, state);
       cloneState[target] = {
         ids: [...state[target].ids, ...newValuesIds],
-        entities: Object.assign({}, state[target].entities, newValuesEntities),
-        selectedBookId: state[target].selectedBookId
+        entities: Object.assign({}, state[target].entities, newValuesEntities)
       };
+      return cloneState;
+    }
+
+    case Autocomplete.LOAD_CAUSAL_DEVOLUCION: {
+      console.log(action);
+      const target = action.payload.key;
+      console.log(target);
+      const causalDevolucion: ConstanteDTO[] = [];
+      causalDevolucion.push({
+        id: 1,
+        codigo: 'CI',
+        nombre: 'Calidad Imagen'
+      }, {
+        id: 2,
+        codigo: 'DI',
+        nombre: 'Datos incorrectos'
+      });
+
+      const newValues = causalDevolucion.filter(data => !state[target].entities[data.codigo]);
+
+      const newValuesIds = newValues.map(data => data.codigo);
+      const newValuesEntities = newValues.reduce((entities: { [id: string]: ConstanteDTO }, value: ConstanteDTO) => {
+        return Object.assign(entities, {
+          [value.codigo]: value
+        });
+      }, {});
+      const cloneState = Object.assign({}, state);
+      cloneState[target] = {
+        ids: [...state[target].ids, ...newValuesIds],
+        entities: Object.assign({}, state[target].entities, newValuesEntities)
+      };
+      console.log(cloneState);
       return cloneState;
     }
 

@@ -1,0 +1,18 @@
+app-asignacion-comunicaciones .ui-datatable-header {
+  text-align: left !important; }
+app-asignacion-comunicaciones thead th {
+  background-color: #eee !important; }
+app-asignacion-comunicaciones thead tr th {
+  overflow: inherit !important; }
+app-asignacion-comunicaciones .ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff; }
+app-asignacion-comunicaciones .ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff; }
+app-asignacion-comunicaciones tbody tr {
+  background-color: #ffffff !important; }
+app-asignacion-comunicaciones .short-table {
+  width: 25%; }
+
+/*# sourceMappingURL=asignacion-comunicaciones.component.css.map */

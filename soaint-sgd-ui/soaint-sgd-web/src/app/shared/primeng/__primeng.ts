@@ -123,3 +123,5 @@ export const PRIMENG_MODULES = [
   ToolbarModule,
   TooltipModule
 ];
+
+export {ConfirmationService} from 'primeng/primeng';
