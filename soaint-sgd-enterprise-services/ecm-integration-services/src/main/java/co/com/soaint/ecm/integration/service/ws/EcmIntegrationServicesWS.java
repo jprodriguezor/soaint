@@ -13,7 +13,7 @@ import javax.jws.WebService;
 import java.util.List;
 
 /**
- * Created by jrodriguez on 19/05/2017.
+ * Created by Dasiel on 19/06/2017.
  */
 
 
@@ -37,11 +37,11 @@ public class EcmIntegrationServicesWS {
         return null;
     }
 
-    @WebMethod(operationName = "generarEstructuraECM", action = "createStructureECM")
+    @WebMethod(operationName = "generarEstructuraECM", action = "generarEstructuraECM")
     public MensajeRespuesta generarEstructuraECM(@WebParam(name = "estructura") List <EstructuraTrdDTO> estructura,
                                                  @WebParam(name = "user") String user,
                                                  @WebParam(name = "password") String password) throws InfrastructureException {
-         MensajeRespuesta mnsRespuesta = null;
+        MensajeRespuesta mnsRespuesta = null;
         try {
             mnsRespuesta = fEcmManager.getManagerMediator ("alfresco").crearEstructuraECM (estructura);
         } catch (SystemException e) {
@@ -49,5 +49,37 @@ public class EcmIntegrationServicesWS {
         }
         return mnsRespuesta;
     }
+
+    @WebMethod(operationName = "subirDocumento", action = "subirDocumento")
+    public String subirDocumento(
+                                                 @WebParam(name = "carpetaContenedora") String carpetaContenedora,
+                                                 @WebParam(name = "nombreDocumento") String nombreDocumento,
+                                                 @WebParam(name = "caminoLocal") String caminoLocal,
+                                                 @WebParam(name = "user") String user,
+                                                 @WebParam(name = "titulo") String titulo,
+                                                 @WebParam(name = "descripcion") String descripcion) throws InfrastructureException {
+        String idDocumento = null;
+        try {
+            idDocumento = fEcmManager.getManagerMediator ("alfresco").subirDocumento ( carpetaContenedora,caminoLocal,nombreDocumento, user,titulo, descripcion);
+        } catch (SystemException e) {
+            e.printStackTrace ( );
+        }
+        return idDocumento;
+    }
+
+//    @WebMethod(operationName = "moverDocumento", action = "moverDocumento")
+//    public MensajeRespuesta moverDocumentos(@WebParam(name = "documento") String moverDocumento,
+//                                            @WebParam(name = "carpetaFuente") String carpetaFuente,
+//                                            @WebParam(name = "carpetaDestino") String carpetaDestino,
+//                                            @WebParam(name = "user") String user,
+//                                            @WebParam(name = "password") String password) throws InfrastructureException {
+//        MensajeRespuesta mnsRespuesta = null;
+//        try {
+//            mnsRespuesta = fEcmManager.getManagerMediator ("alfresco").moverDocumento (moverDocumento,carpetaFuente,carpetaDestino);
+//        } catch (SystemException e) {
+//            e.printStackTrace ( );
+//        }
+//        return mnsRespuesta;
+//    }
 }
 

@@ -98,6 +98,9 @@ public class Main {
 
         structure.add (estructuraTrdDTO);
 
+        String idDoc=content.subirDocumentoContent ("000_SOAINT","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
+
         MensajeRespuesta b= content.crearEstructuraContent (structure);
+
     }
 }

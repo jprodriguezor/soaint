@@ -34,4 +34,24 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 //        }
         return response;
     }
+
+    public String subirDocumento(String carpetaContenedora,String caminoLocal,String nombreDocumento,String user,String titulo,String descripcion) throws InfrastructureException {
+        String idDocumento;
+        ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
+        idDocumento = content.subirDocumentoContent (carpetaContenedora,caminoLocal,nombreDocumento, user, titulo, descripcion);
+//        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
+//            response = records.createStructureRecords(structure);
+//        }
+        return idDocumento;
+    }
+
+//    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+//        MensajeRespuesta response;
+//        ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
+//        response = content.moverDocumento(documento, CarpetaFuente, CarpetaDestino);
+////        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
+////            response = records.createStructureRecords(structure);
+////        }
+//        return response;
+//    }
 }

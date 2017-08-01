@@ -43,11 +43,13 @@ public abstract class ContentControl  {
 
     public abstract Carpeta verificarCarpetaPadre(String nombre) throws SystemException ;
 
-    public abstract  List<Carpeta> obtenerCarpetas(String path, ObjetoECM os) throws SystemException;
-
     public abstract boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre)throws SystemException;
 
+    public abstract  MensajeRespuesta movDocumento(Carpeta CarpetaFuente, Carpeta carpetaDestino, Documento documento) throws SystemException;
+
     public abstract MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException ;
+
+    public abstract String subirDocumento(Session session, String caminoLocal, String nombreCarpeta, String mimeType, String name, String user, String titulo, String descripcion) throws SystemException,IOException ;
 
 
 }
