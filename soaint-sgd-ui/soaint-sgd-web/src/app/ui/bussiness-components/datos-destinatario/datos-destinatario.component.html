@@ -1,0 +1,97 @@
+<form [formGroup]="form">
+  <div class="ui-g ui-fluid">
+
+    <div class="card card-w-title">
+      <h1>Descripción anexos</h1>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoDestinatarioInput | dropdownItem"
+                        id="tipoDestinatario"
+                        formControlName="tipoDestinatario"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
+                        id="sedeAdministrativa"
+                        formControlName="sedeAdministrativa"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="dependenciaGrupo"><span class="text-danger">*</span>Dependencia / Grupo</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+
+            <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
+                        id="dependenciaGrupo"
+                        formControlName="dependenciaGrupo"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: right">
+        <button pButton type="button" label="Agregar"
+                style="width: auto; margin-left: 12px; margin-bottom: 10px" (click)="addAgentesDestinatario()"
+                [disabled]="!canInsert"
+                >
+        </button>
+      </div>
+
+      <div class="ui-g-12">
+        <p-dataTable [value]="agentesDestinatario" selectionMode="single" [(selection)]="selectedagenteDestinatario"
+                     [paginator]="true" [rows]="10" [responsive]="true">
+          <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+          <p-column field="sedeAdministrativa.nombre" header="Sede administrativa" [sortable]="true"></p-column>
+          <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
+            <ng-template let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton (click)="deleteAgentesDestinatario(i)"
+                      class="ui-button ui-button-icon ui-button-danger"></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+
+        <div class="ui-g-12 md-inputfield">
+          <div class="ui-message ui-messages-error"
+               *ngIf="agentesDestinatario.length === 0">
+            Se debe registrar un destinatario principal de forma obligatoria
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>
+
+<p-confirmDialog header="Confirmación" icon="" width="425" acceptLabel="Aceptar" rejectLabel="Cancelar"  responsive="true">
+</p-confirmDialog>

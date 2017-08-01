@@ -1,7 +1,13 @@
 package co.com.soaint.correspondencia.config;
 
 /**
- * Created by jrodriguez on 24/05/2017.
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ * SGD Enterprise Services
+ * Created: 24-May-2017
+ * Author: esanchez
+ * Type: JAVA class Artifact
+ * Purpose: Config
+ * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
 import javax.ws.rs.ApplicationPath;
@@ -10,5 +16,6 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/services")
 public class WebApiConfig extends Application {
     public WebApiConfig() {
+        //Init Rest Api
     }
 }

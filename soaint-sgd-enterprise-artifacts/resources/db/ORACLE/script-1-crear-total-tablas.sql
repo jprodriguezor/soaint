@@ -17,3 +17,4 @@
 @@script-18-tvs-municipio.sql
 @@script-19-tvs-organigrama-administrativo.sql
 @@script-20-tvs-pais.sql
+@@script-21-table-generator-data.sql

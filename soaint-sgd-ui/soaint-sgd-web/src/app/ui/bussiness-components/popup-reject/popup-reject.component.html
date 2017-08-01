@@ -1,0 +1,45 @@
+<form [formGroup]="form" name="formDefault">
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-sm-12 ui-g-6 ui-lg-6">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <label for="causalDevolucion"><span class="text-danger">*</span>Causal devolución</label>
+        </div>
+        <div class="ui-g-12 md-dropdownfield">
+          <p-dropdown [options]="causalesDevolicion$ | async | dropdownItem"
+                      id="causalDevolucion"
+                      formControlName="causalDevolucion"
+                      placeholder="Seleccione"
+                      [filter]="true"
+                      [autoWidth]="false"
+                      (onBlur)="listenForBlurEvents('causalDevolucion')">
+          </p-dropdown>
+
+          <div class="ui-message ui-messages-error"
+               *ngIf="validations.sedeAdministrativa">
+            {{ validations.sedeAdministrativa }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-sm-12 ui-g-12 ui-lg-12">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <label for="observacion"><span class="text-danger">*</span>Observación</label>
+        </div>
+        <div class="ui-g-12 md-inputfield">
+          <textarea pInputTextarea [style.height]="'125px'" id="observacion"
+                    formControlName="observacion"></textarea>
+          <div class="ui-message ui-messages-error"
+               *ngIf="validations.observacion">
+            {{ validations.observacion }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

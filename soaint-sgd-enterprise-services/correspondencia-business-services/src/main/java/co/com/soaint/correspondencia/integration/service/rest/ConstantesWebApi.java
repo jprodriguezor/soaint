@@ -21,7 +21,7 @@ import javax.ws.rs.Produces;
 @Produces({"application/json", "application/xml"})
 public class ConstantesWebApi {
 
-    private static Logger LOGGER = LogManager.getLogger(ConstantesWebApi.class.getName());
+    private static Logger logger = LogManager.getLogger(ConstantesWebApi.class.getName());
 
     @Autowired
     private GestionarConstantes boundary;
@@ -33,21 +33,21 @@ public class ConstantesWebApi {
     @GET
     @Path("constantes/{estado}")
     public ConstantesDTO listarConstantesByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar constantes por estado");
+        logger.info("processing rest request - listar constantes por estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByEstado(estado)).build();
     }
 
     @GET
     @Path("constantes/{codigo}/{estado}")
     public ConstantesDTO listarConstantesByCodigoAndEstado(@PathParam("codigo") final String codigo, @PathParam("estado") final String estado) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar constantes por codigo y estado");
+        logger.info("processing rest request - listar constantes por codigo y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodigoAndEstado(codigo, estado)).build();
     }
 
     @GET
     @Path("constantes/hijos/{cod-padre}/{estado}")
     public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre, @PathParam("estado") final String estado) throws BusinessException, SystemException{
-        LOGGER.info("processing rest request - listar constantes por codigo del padre y estado");
+        logger.info("processing rest request - listar constantes por codigo del padre y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
     }
 }

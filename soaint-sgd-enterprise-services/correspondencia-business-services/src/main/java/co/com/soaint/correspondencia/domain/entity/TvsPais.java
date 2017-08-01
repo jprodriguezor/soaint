@@ -27,16 +27,21 @@ import javax.persistence.*;
 @Table(name = "TVS_PAIS")
 @NamedQueries({
         @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
-                "(t.idePais, t.nombrePais, t.codPais) FROM TvsPais t WHERE TRIM(t.estado) = TRIM(:ESTADO)")})
-@TableGenerator(name = "TVS_PAIS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_PAIS_SEQ", allocationSize = 1)
+                "(t.idePais, t.nombrePais, t.codPais) " +
+                "FROM TvsPais t " +
+                "WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsPais.findByNombrePaisAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
+                "(t.idePais, t.nombrePais, t.codPais) " +
+                "FROM TvsPais t " +
+                "WHERE TRIM(t.nombrePais) LIKE :NOMBRE_PAIS AND TRIM(t.estado) = TRIM(:ESTADO) " +
+                "ORDER BY t.nombrePais")})
+
 public class TvsPais implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "IDE_PAIS")
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "TVS_PAIS_GENERATOR")
     private BigInteger idePais;
     @Column(name = "NOMBRE_PAIS")
     private String nombrePais;
