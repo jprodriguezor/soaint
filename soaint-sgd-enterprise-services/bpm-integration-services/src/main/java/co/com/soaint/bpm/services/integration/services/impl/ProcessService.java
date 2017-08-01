@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Arce on 6/7/2017.
@@ -181,56 +182,6 @@ public class ProcessService implements IProcessServices {
                 .estado(String.valueOf(processInstance.getState()))
                 .idDespliegue(entrada.getIdDespliegue())
                 .build();
-        return respuesta;
-    }
-
-    @Override
-    public RespuestaProcesoDTO enviarSenalProceso(EntradaSennalDTO entrada) throws IOException, JSONException {
-        EntradaSennalDTO entradaManual = new EntradaSennalDTO();
-        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
-        entradaManual.setUsuario(usuarioAdmin);
-        entradaManual.setPass(passAdmin);
-
-        ksession = obtenerEngine(entradaManual).getKieSession();
-        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
-
-        org.json.JSONObject datosProceso = new org.json.JSONObject();
-        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
-        datosProceso.put("ideEcm",entrada.getParametros().getOrDefault("ideEcm","12345").toString());
-
-        ksession.signalEvent("estadoDigitalizacion", datosProceso.toString(), processInstance.getId());
-
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessId())
-                .estado(String.valueOf(processInstance.getState()))
-                .idDespliegue(entradaManual.getIdDespliegue())
-                .build();
-
-        return respuesta;
-    }
-
-    @Override
-    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
-
-        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
-        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
-        entradaManual.setUsuario(usuarioAdmin);
-        entradaManual.setPass(passAdmin);
-
-        ksession = obtenerEngine(entradaManual).getKieSession();
-
-        org.json.JSONObject datosProceso = new org.json.JSONObject();
-        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
-        datosProceso.put("requiereDigitalizacion", (int)entrada.getParametros().getOrDefault("requiereDigitalizacion",1));
-        datosProceso.put("requiereDistribucion", (int)entrada.getParametros().getOrDefault("requiereDistribucion",1));
-
-        ksession.signalEvent("inicioAutomatico", datosProceso.toString());
-
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                .idDespliegue(entradaManual.getIdDespliegue())
-                .build();
-
         return respuesta;
     }
 
@@ -424,6 +375,68 @@ public class ProcessService implements IProcessServices {
     }
 
 
+
+    @Override
+    public RespuestaProcesoDTO enviarSenalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
+
+        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
+        entradaManual.setUsuario(usuarioAdmin);
+        entradaManual.setPass(passAdmin);
+
+        ksession = obtenerEngine(entradaManual).getKieSession();
+        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
+        String nombreSennal = entrada.getParametros().getOrDefault("nombreSennal","estadoDigitalizacion").toString();
+
+        org.json.JSONObject jsonProceso = new org.json.JSONObject();
+        for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
+            if (!entry.getKey().equalsIgnoreCase("nombreSennal")) {
+                jsonProceso.put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+        String datosProceso = jsonProceso.toString();
+
+        System.out.println("JSON: ".concat(datosProceso));
+
+//        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
+//        datosProceso.put("ideEcm",entrada.getParametros().getOrDefault("ideEcm","12345").toString());
+
+        ksession.signalEvent(nombreSennal, datosProceso, processInstance.getId());
+
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .codigoProceso(String.valueOf(processInstance.getId()))
+                .nombreProceso(processInstance.getProcessId())
+                .estado(String.valueOf(processInstance.getState()))
+                .idDespliegue(entradaManual.getIdDespliegue())
+                .build();
+
+        return respuesta;
+    }
+
+    @Override
+    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
+
+        EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
+        entradaManual.setIdDespliegue(entrada.getIdDespliegue());
+        entradaManual.setUsuario(usuarioAdmin);
+        entradaManual.setPass(passAdmin);
+
+        ksession = obtenerEngine(entradaManual).getKieSession();
+
+        org.json.JSONObject datosProceso = new org.json.JSONObject();
+        datosProceso.put("numeroRadicado", entrada.getParametros().getOrDefault("nroRadicado","RAD87091806789").toString());
+        datosProceso.put("requiereDigitalizacion", (int)entrada.getParametros().getOrDefault("requiereDigitalizacion",1));
+        datosProceso.put("requiereDistribucion", (int)entrada.getParametros().getOrDefault("requiereDistribucion",1));
+
+        ksession.signalEvent("inicioAutomatico", datosProceso.toString());
+
+        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                .idDespliegue(entradaManual.getIdDespliegue())
+                .build();
+
+        return respuesta;
+    }
+
     private RuntimeEngine obtenerEngine(EntradaProcesoDTO entrada) throws MalformedURLException {
         engine = RemoteRuntimeEngineFactory.newRestBuilder()
                 .addDeploymentId(entrada.getIdDespliegue())
@@ -431,17 +444,6 @@ public class ProcessService implements IProcessServices {
                 .addPassword(entrada.getPass())
                 .addUrl(new URL(endpointJBPConsole))
                         //.addExtraJaxbClasses(ProcessRequestContext.class)
-                .build();
-        return engine;
-    }
-
-    private RuntimeEngine obtenerEngine(EntradaSennalDTO entrada) throws MalformedURLException {
-        engine = RemoteRuntimeEngineFactory.newRestBuilder()
-                .addDeploymentId(entrada.getIdDespliegue())
-                .addUserName(entrada.getUsuario())
-                .addPassword(entrada.getPass())
-                .addUrl(new URL(endpointJBPConsole))
-                //.addExtraJaxbClasses(ProcessRequestContext.class)
                 .build();
         return engine;
     }
