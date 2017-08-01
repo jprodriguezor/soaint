@@ -74,10 +74,10 @@ export class DatosGeneralesComponent implements OnInit {
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-      'asunto': [{value: null, disabled: !this.editable}, Validators.required],
+      'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
       'tipoAnexos': [{value: null, disabled: !this.editable}],
-      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}],
+      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
     });
   }
 

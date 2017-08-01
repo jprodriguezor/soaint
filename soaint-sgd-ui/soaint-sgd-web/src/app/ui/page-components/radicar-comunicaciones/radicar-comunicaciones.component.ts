@@ -314,12 +314,10 @@ export class RadicarComunicacionesComponent implements OnInit {
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
-      console.log(funcionario);
       correspondenciaDto.codFuncRadica = funcionario.id;
     }).unsubscribe();
 
     this._store.select(getSelectedDependencyGroupFuncionario).subscribe(dependencia => {
-      console.log(dependencia);
       correspondenciaDto.codSede = dependencia.codSede;
       correspondenciaDto.codDependencia = dependencia.codigo;
     }).unsubscribe();

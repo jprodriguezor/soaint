@@ -25,8 +25,8 @@ public class ProcesoClient {
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
         entradaProcesoDTO.setIdProceso("pagos.pago-impuesto-vehiculo");
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/proceso/listar")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -35,8 +35,8 @@ public class ProcesoClient {
     public Response iniciar(EntradaProcesoDTO entradaProcesoDTO) {
         System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/proceso/iniciar")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -45,8 +45,8 @@ public class ProcesoClient {
     public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {
         System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/proceso/iniciar/manual")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -57,8 +57,8 @@ public class ProcesoClient {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = entrada;
         entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/tareas/listar/estados-instancia/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -70,8 +70,8 @@ public class ProcesoClient {
         EntradaProcesoDTO entradaProcesoDTO = entrada;
         //TODO remove next line
 //        entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/tareas/listar/estados/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
@@ -80,8 +80,8 @@ public class ProcesoClient {
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
         System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        entrada.setUsuario("krisv");
-        entrada.setPass("krisv");
+        entrada.setUsuario("daniel.barrios");
+        entrada.setPass("descarga");
         return wt.path("/bpm/tareas/iniciar")
                 .request()
                 .post(Entity.json(entrada));
@@ -90,8 +90,8 @@ public class ProcesoClient {
     public Response completarTarea(EntradaProcesoDTO entrada) {
         System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        entrada.setUsuario("krisv");
-        entrada.setPass("krisv");
+        entrada.setUsuario("daniel.barrios");
+        entrada.setPass("descarga");
         return wt.path("/bpm/tareas/completar")
                 .request()
                 .post(Entity.json(entrada));
@@ -102,8 +102,8 @@ public class ProcesoClient {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
-        entradaProcesoDTO.setUsuario("krisv");
-        entradaProcesoDTO.setPass("krisv");
+        entradaProcesoDTO.setUsuario("daniel.barrios");
+        entradaProcesoDTO.setPass("descarga");
         return wt.path("/bpm/proceso/listar-instancias/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));

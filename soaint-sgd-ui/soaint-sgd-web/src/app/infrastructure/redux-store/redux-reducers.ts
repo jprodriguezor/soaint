@@ -13,6 +13,7 @@ import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-stat
 import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
 import * as funcionarioStore from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-reducers';
 import * as asignacionStore from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-reducers';
+import * as notificationStore from 'app/infrastructure/state-management/notifications-state/notifications-reducers';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -21,7 +22,6 @@ import * as asignacionStore from 'app/infrastructure/state-management/asignacion
 export interface State {
   auth: loginStore.State
   adminLayout: adminLayoutStore.State,
-  // notification: notificationStore.State,
   constantes: constantesStore.State,
   paises: paisStore.State,
   municipios: municipioStore.State,
@@ -34,6 +34,7 @@ export interface State {
   proceso: procesoStore.State,
   funcionario: funcionarioStore.State,
   radicarComunicacion: comunicacionOficialStore.State,
+  notifications: notificationStore.State,
   router: fromRouter.RouterState
 }
 
@@ -60,6 +61,7 @@ export const reducers = {
   tareas: tareasStore.reducer,
   funcionario: funcionarioStore.reducer,
   radicarComunicacion: comunicacionOficialStore.reducer,
+  notifications: notificationStore.reducer,
   router: fromRouter.routerReducer,
 };
 

@@ -7,6 +7,8 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
+import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
+
 
 @Injectable()
 export class HttpHandler {
@@ -44,13 +46,23 @@ export class HttpHandler {
         request$ = this._http.request(req, options);
       }
 
-      return request$.map((res: Response) => res.json()).catch(res => {
+      return request$.map((res: Response) => {
+        return res.json()
+      }).catch(res => {
+
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'error',
+          summary: 'Error Inesperado del sistema',
+          detail: 'Ha ocurrido un error al intentar conectarse',
+          action: ''
+        }));
+
         if (res.status === 401 && token !== null) {
           this._store.dispatch(new LogoutAction());
         } else if (res.status !== 500) {
-          return Observable.create( observer => observer.error(res));
+          return Observable.create(observer => observer.error(res));
         } else {
-          return Observable.create( observer => observer.error(res.statusText));
+          return Observable.create(observer => observer.error(res.statusText));
         }
       });
     });
