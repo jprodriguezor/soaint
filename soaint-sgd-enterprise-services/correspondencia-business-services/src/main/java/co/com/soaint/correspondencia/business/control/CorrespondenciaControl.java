@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,11 +47,23 @@ public class CorrespondenciaControl {
     ReferidoControl referidoControl;
 
 
-    @Value( "${radicado.rango.reservado}" )
+    @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
 
+    @Value("${radicado.horario.laboral}")
+    private String[] horarioLaboral;
 
-    public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO){
+    @Value("${radicado.inicio.conteo}")
+    private String inicioConteo;
+
+    @Value("${radicado.unidad.tiempo.horas}")
+    private String unidadTiempoHoras;
+
+    @Value("${radicado.unidad.tiempo.dias}")
+    private String unidadTiempoDias;
+
+
+    public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO) {
         List<AgenteDTO> agenteDTOList = agenteControl.consltarAgentesByCorrespondencia(correspondenciaDTO.getIdeDocumento());
 
         List<DatosContactoDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoByAgentes(agenteDTOList);
@@ -101,7 +116,7 @@ public class CorrespondenciaControl {
         return cantidad > 0;
     }
 
-    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia){//TODO
+    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) {//TODO
 
         int rangoI = Integer.parseInt(this.rangoReservado[0]);
         int rangoF = Integer.parseInt(this.rangoReservado[1]);
@@ -132,7 +147,7 @@ public class CorrespondenciaControl {
         }
         consecRadicado++;
 
-        if (consecRadicado >= rangoI && consecRadicado <= rangoF){
+        if (consecRadicado >= rangoI && consecRadicado <= rangoF) {
             consecRadicado = rangoF + 1;
         }
 
@@ -140,15 +155,64 @@ public class CorrespondenciaControl {
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), consecRadicado);
     }
 
-    public String formarNroRadicado(String codSede, String codTipoCmc, String anno, int consecutivo){
+    public String formarNroRadicado(String codSede, String codTipoCmc, String anno, int consecutivo) {
         return codSede
                 .concat(codTipoCmc)
                 .concat(anno)
                 .concat(String.format("%06d", consecutivo));
     }
 
-    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO){//TODO
-        return new Date();
+    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {//TODO
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(correspondenciaDTO.getFecRadicado());
+        if (inicioConteo.equals("DSH"))
+            calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
+
+        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
+        long cantHorasLaborales = horasHabilesDia(horarioLaboral[0], horarioLaboral[1]);
+        if (correspondenciaDTO.getCodUnidadTiempo().equals(unidadTiempoDias))
+            tiempoDuracionTramite *= cantHorasLaborales;
+
+        SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
+        while (tiempoDuracionTramite > 0) {
+            long horasHabilesDia = horasHabilesDia(formatoHora.format(calendario.getTime()), horarioLaboral[1]);
+
+            if (horasHabilesDia >= 0) {
+                if (horasHabilesDia >= tiempoDuracionTramite)
+                    calendario.add(Calendar.HOUR, tiempoDuracionTramite.intValue());
+                tiempoDuracionTramite -= horasHabilesDia;
+            }
+
+            if (tiempoDuracionTramite > 0)
+                calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
+        }
+
+        return calendario.getTime();
+    }
+
+    public long horasHabilesDia(String horaInicio, String horaFin) {
+        return ChronoUnit.HOURS.between(LocalTime.parse(horaInicio), LocalTime.parse(horaFin));
+    }
+
+    public Date calcularDiaHabilSiguiente(Date fecha) {
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fecha);
+        calendario.add(Calendar.DATE, 1);
+        if (esFinSemana(calendario.getTime())) {
+            if (calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+                calendario.add(Calendar.DATE, 2);
+            } else calendario.add(Calendar.DATE, 1);
+        }
+        String[] tiempo = horarioLaboral[0].split(":");
+        calendario.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tiempo[0]));
+        calendario.set(Calendar.MINUTE, Integer.parseInt(tiempo[1]));
+        return calendario.getTime();
+    }
+
+    public Boolean esFinSemana(Date fecha) {
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fecha);
+        return calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
 
 }
