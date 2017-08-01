@@ -12,6 +12,7 @@ import {Effects as ComunicacionOficialDtoEffects} from 'app/infrastructure/state
 import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-effects';
 import {Effects as sedeAdministrativaDtoEffects} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-effects';
 import {Effects as asignacionDtoEffects} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-effects';
+import {Effects as notificationEffects} from 'app/infrastructure/state-management/notifications-state/notifications-effects';
 
 /**
  * Effects offer a way to isolate and easily test side-effects within your
@@ -45,4 +46,5 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(FuncionarioDtoEffects),
   EffectsModule.run(sedeAdministrativaDtoEffects),
   EffectsModule.run(asignacionDtoEffects),
+  EffectsModule.run(notificationEffects),
 ];

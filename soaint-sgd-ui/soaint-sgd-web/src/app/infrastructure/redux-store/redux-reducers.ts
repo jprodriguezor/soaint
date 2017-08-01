@@ -13,7 +13,7 @@ import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-stat
 import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
 import * as funcionarioStore from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-reducers';
 import * as asignacionStore from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-reducers';
-import * as notificationStore from 'app/ui/layout-components/container/growl-message/redux-state/reducers';
+import * as notificationStore from 'app/infrastructure/state-management/notifications-state/notifications-reducers';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -22,7 +22,6 @@ import * as notificationStore from 'app/ui/layout-components/container/growl-mes
 export interface State {
   auth: loginStore.State
   adminLayout: adminLayoutStore.State,
-  // notification: notificationStore.State,
   constantes: constantesStore.State,
   paises: paisStore.State,
   municipios: municipioStore.State,

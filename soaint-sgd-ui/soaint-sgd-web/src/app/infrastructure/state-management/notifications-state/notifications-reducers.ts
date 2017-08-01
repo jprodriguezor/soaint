@@ -1,9 +1,9 @@
-import {ActionTypes, Actions} from './actions';
+import {ActionTypes, Actions} from './notifications-actions';
 import {tassign} from 'tassign';
 
-type messageType = 'info' | 'error' | 'success' | 'warning';
+type messageType = 'info' | 'error' | 'success' | 'warn';
 
-interface Notification {
+export interface CustomNotification {
   severity: messageType;
   summary: string;
   detail: string;
@@ -13,7 +13,7 @@ interface Notification {
 
 export interface State {
   ids: number[];
-  entities: { [id: string]: Notification },
+  entities: { [id: string]: CustomNotification },
   filter: string
 }
 
@@ -34,8 +34,6 @@ export function reducer(state = initialState, action: Actions) {
 
     case ActionTypes.PUSH_NOTIFICATION: {
       const newValue = action.payload;
-      console.log(newValue);
-
       const newValueId = state.ids.length + 1;
       return tassign(state, {
         ids: [...state.ids, newValueId],

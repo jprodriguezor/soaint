@@ -45,7 +45,19 @@ import { RouterStoreModule } from '@ngrx/router-store';
     BrowserAnimationsModule,
     NgxChartsModule,
     NgxBarcodeModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      closeButton: true, // show close button
+      timeOut: 3000, // time to live
+      enableHtml: true, // allow html in message. (UNSAFE)
+      extendedTimeOut: 1000, // time to close after a user hovers over toast
+      progressBar: true, // show progress bar
+      newestOnTop: true, // new toast placement
+      preventDuplicates: true,
+      // toastClass: string = 'toast'; // class on toast
+      // positionClass: string = 'toast-top-right'; // class on toast
+      // titleClass: string = 'toast-title'; // class inside toast on title
+      // messageClass: string = 'toast-message';
+    }),
     // PrimeNG Modules => view components
     ...PRIMENG_MODULES,
     // third party libs

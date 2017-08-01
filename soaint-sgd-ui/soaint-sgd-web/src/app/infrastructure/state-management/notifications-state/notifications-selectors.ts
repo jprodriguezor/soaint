@@ -1,4 +1,4 @@
-import {State} from './reducers';
+import {State} from './notifications-reducers';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
 
