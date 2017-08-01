@@ -62,6 +62,9 @@ public class CorrespondenciaControl {
     @Value("${radicado.unidad.tiempo.dias}")
     private String unidadTiempoDias;
 
+    @Value("${radicado.dia.siguiente.habil}")
+    private String diaSiguienteHabil;
+
 
     public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO) {
         List<AgenteDTO> agenteDTOList = agenteControl.consltarAgentesByCorrespondencia(correspondenciaDTO.getIdeDocumento());
@@ -165,7 +168,7 @@ public class CorrespondenciaControl {
     public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {//TODO
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(correspondenciaDTO.getFecRadicado());
-        if (inicioConteo.equals("DSH"))
+        if (inicioConteo.equals(diaSiguienteHabil))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
         Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
