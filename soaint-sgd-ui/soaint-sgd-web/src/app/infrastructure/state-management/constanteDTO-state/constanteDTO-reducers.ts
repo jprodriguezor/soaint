@@ -32,6 +32,7 @@ export interface State {
   orientacion: ConstanteDTOStateInterface;
   tipoComplemento: ConstanteDTOStateInterface;
   actuaCalidad: ConstanteDTOStateInterface;
+  causalDevolucion: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -50,7 +51,8 @@ const initialState: State = {
   bis: new ConstanteDTOStateInstance(),
   orientacion: new ConstanteDTOStateInstance(),
   tipoComplemento: new ConstanteDTOStateInstance(),
-  actuaCalidad: new ConstanteDTOStateInstance()
+  actuaCalidad: new ConstanteDTOStateInstance(),
+  causalDevolucion: new ConstanteDTOStateInstance()
 }
 
 /**
@@ -79,6 +81,38 @@ export function reducer(state = initialState, action: Actions) {
         ids: [...state[target].ids, ...newValuesIds],
         entities: Object.assign({}, state[target].entities, newValuesEntities)
       };
+      return cloneState;
+    }
+
+    case Autocomplete.LOAD_CAUSAL_DEVOLUCION: {
+      console.log(action);
+      const target = action.payload.key;
+      console.log(target);
+      const causalDevolucion: ConstanteDTO[] = [];
+      causalDevolucion.push({
+        id: 1,
+        codigo: 'CI',
+        nombre: 'Calidad Imagen'
+      }, {
+        id: 2,
+        codigo: 'DI',
+        nombre: 'Datos incorrectos'
+      });
+
+      const newValues = causalDevolucion.filter(data => !state[target].entities[data.codigo]);
+
+      const newValuesIds = newValues.map(data => data.codigo);
+      const newValuesEntities = newValues.reduce((entities: { [id: string]: ConstanteDTO }, value: ConstanteDTO) => {
+        return Object.assign(entities, {
+          [value.codigo]: value
+        });
+      }, {});
+      const cloneState = Object.assign({}, state);
+      cloneState[target] = {
+        ids: [...state[target].ids, ...newValuesIds],
+        entities: Object.assign({}, state[target].entities, newValuesEntities)
+      };
+      console.log(cloneState);
       return cloneState;
     }
 

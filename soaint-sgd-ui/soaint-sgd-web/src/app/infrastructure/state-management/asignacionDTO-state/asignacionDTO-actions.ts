@@ -8,7 +8,9 @@ export const ActionTypes = {
   REDIRECT: type('[asignacionDTO] RedirectAction'),
   REDIRECT_SUCCESS: type('[asignacionDTO] RedirectSuccessAction'),
   REDIRECT_FAIL: type('[asignacionDTO] RedirectFailAction'),
-  SET_JUSTIF_DIALOG_VISIBLE: type('[asignacionDTO] SetJustificationDialogVisibleAction')
+  SET_JUSTIF_DIALOG_VISIBLE: type('[asignacionDTO] SetJustificationDialogVisibleAction'),
+  SET_ADD_OBSERV_DIALOG_VISIBLE: type('[asignacionDTO] SetAddObservationsDialogVisibleAction'),
+  SET_REJECT_DIALOG_VISIBLE: type('[asignacionDTO] SetRejectDialogVisibleAction')
 };
 
 
@@ -61,6 +63,20 @@ export class SetJustificationDialogVisibleAction implements Action {
   }
 }
 
+export class SetAddObservationsDialogVisibleAction implements Action {
+  type = ActionTypes.SET_ADD_OBSERV_DIALOG_VISIBLE;
+
+  constructor(public payload?: boolean) {
+  }
+}
+
+export class SetRejectDialogVisibleAction implements Action {
+  type = ActionTypes.SET_REJECT_DIALOG_VISIBLE;
+
+  constructor(public payload?: boolean) {
+  }
+}
+
 
 export type Actions =
   AssignAction
@@ -69,6 +85,8 @@ export type Actions =
   | RedirectAction
   | RedirectSuccessAction
   | RedirectFailAction
-  | SetJustificationDialogVisibleAction;
+  | SetJustificationDialogVisibleAction
+  | SetAddObservationsDialogVisibleAction
+  | SetRejectDialogVisibleAction;
 
 
