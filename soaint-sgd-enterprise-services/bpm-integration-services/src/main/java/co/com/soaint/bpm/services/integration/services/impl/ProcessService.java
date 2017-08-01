@@ -212,20 +212,11 @@ public class ProcessService implements IProcessServices {
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
-        Task task = taskService.getTaskById(entrada.getIdTarea());
+
         RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.COMPLETADO))
-                .nombre(task.getName())
                 .idProceso(entrada.getIdProceso())
-//                .idDespliegue(entrada.getIdDespliegue())
-//                .idParent(task.getTaskData().getParentId())
-//                .idResponsable(task.getTaskData().getActualOwner().getId())
-//                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-//                .tiempoExpiracion(task.getTaskData().getExpirationTime())
-//                .tiempoActivacion(task.getTaskData().getActivationTime())
-//                .fechaCreada(task.getTaskData().getCreatedOn())
-//                .prioridad(task.getPriority())
                 .build();
 
         return respuestaTarea;

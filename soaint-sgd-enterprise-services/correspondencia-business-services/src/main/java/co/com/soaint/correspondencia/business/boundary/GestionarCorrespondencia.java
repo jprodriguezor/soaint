@@ -168,49 +168,6 @@ public class GestionarCorrespondencia {
         }
     }
 
-    public void actualizarReferenciaECM(DocumentoDTO documentoDTO)throws BusinessException, SystemException{
-        try {
-            List<BigInteger> idePpdDocumentoList = ppdDocumentoControl.consultarPpdDocumentosByNroRadicado(documentoDTO.getNroRadicado());
-            if (idePpdDocumentoList.isEmpty()){
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.ppdDocumento_not_exist_by_nroRadicado")
-                        .buildBusinessException();
-            }
-
-            em.createNamedQuery("PpdDocumento.updateIdEcm")
-                    .setParameter("IDE_PPDDOCUMENTO", idePpdDocumentoList.get(0))
-                    .setParameter("IDE_ECM", documentoDTO.getIdeEcm())
-                    .executeUpdate();
-
-            new Thread(() -> {
-                try {
-                    BigInteger ideDocumento = em.createNamedQuery("CorCorrespondencia.findIdeDocumentoByNroRadicado", BigInteger.class)
-                            .setParameter("NRO_RADICADO", documentoDTO.getNroRadicado())
-                            .getSingleResult();
-                    gestionarTrazaDocumento.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
-                            .ideDocumento(ideDocumento)
-                            .observacion("Actualizando referencia ECM")
-                            .ideFunci(null)
-                            .codEstado(null)
-                            .codOrgaAdmin(null)
-                            .build());
-                } catch (Exception e) {
-                    logger.error("Business Boundary - a system error has occurred", e);
-                }
-
-            }).start();
-
-        } catch (BusinessException e) {
-            throw e;
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         try {
             if (!correspondenciaControl.verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {

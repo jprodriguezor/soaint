@@ -50,11 +50,6 @@ public class GestionarCorrespondenciaWS {
         boundary.actualizarIdeInstancia(correspondenciaDTO);
     }
 
-    @WebMethod(action = "actualizarReferenciaECM", operationName = "actualizarReferenciaECM")
-    public  void actualizarReferenciaECM(@WebParam(name = "documento") final DocumentoDTO documentoDTO) throws BusinessException, SystemException{
-        boundary.actualizarReferenciaECM(documentoDTO);
-    }
-
     @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado")
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@WebParam(name = "fecha_ini") final Date fechaIni,
                                                                                                   @WebParam(name = "fecha_fin") final Date fechaFin,

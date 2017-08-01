@@ -72,13 +72,6 @@ public class CorrespondenciaWebApi {
         boundary.actualizarIdeInstancia(correspondenciaDTO);
     }
 
-    @PUT
-    @Path("/correspondencia/actualizar-referencia-ecm")
-    public void actualizarReferenciaECM(DocumentoDTO documentoDTO) throws BusinessException, SystemException{
-        logger.info("processing rest request - actualizar referencia ECM");
-        boundary.actualizarReferenciaECM(documentoDTO);
-    }
-
     @GET
     @Path("/correspondencia")
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(@QueryParam("fecha_ini") final String fechaIni,
