@@ -4,6 +4,7 @@ import {InlineProfileComponent} from './presentation/profile/inline-profile.comp
 import {TopBarComponent} from './presentation/topbar/topbar.component';
 
 import {AdminLayoutComponent} from './container/admin-layout/admin-layout.component';
+import {GrowlMessagesComponent} from './container/growl-message/growl-messages.component';
 import {PieChartComponent} from './presentation/charts/pie-chart';
 import {PieGridChartComponent} from './presentation/charts/pie-grid';
 import {GaugeChartComponent} from './presentation/charts/gauche-chart';
@@ -25,6 +26,7 @@ export const LAYOUT_COMPONENTS = [
   InlineProfileComponent,
   TopBarComponent,
   AdminLayoutComponent,
+  GrowlMessagesComponent,
   PieChartComponent,
   PieGridChartComponent,
   GaugeChartComponent

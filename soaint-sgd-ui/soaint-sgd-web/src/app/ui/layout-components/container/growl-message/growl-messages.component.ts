@@ -1,4 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
+import {getNotificationArrayData} from './redux-state/selectors';
 
 @Component({
   moduleId: module.id,
@@ -8,9 +12,13 @@ import {Component, OnInit} from '@angular/core';
 
 export class GrowlMessagesComponent implements OnInit {
 
-  constructor() {
+  messages$: Observable<any[]>;
+
+  constructor(private _store: Store<RootState>) {
   }
 
   ngOnInit() {
+    console.log('GrowlMessagesComponent');
+    this.messages$ = this._store.withLatestFrom(getNotificationArrayData);
   }
 }

@@ -23,6 +23,6 @@ export class MessageBridgeService {
 
 }
 
-export enum MessageType{
+export enum MessageType {
   LOGIN_DONE, LOGOUT_DONE
 }

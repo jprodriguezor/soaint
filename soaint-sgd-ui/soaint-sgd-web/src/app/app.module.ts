@@ -8,6 +8,8 @@ import {AppRoutes} from './app.routes';
 import 'rxjs/add/operator/toPromise';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { ToastrModule } from 'ngx-toastr';
+
 
 // APP COMPONENTS
 import {AppComponent} from './app.component';
@@ -43,6 +45,7 @@ import { RouterStoreModule } from '@ngrx/router-store';
     BrowserAnimationsModule,
     NgxChartsModule,
     NgxBarcodeModule,
+    ToastrModule.forRoot(),
     // PrimeNG Modules => view components
     ...PRIMENG_MODULES,
     // third party libs
