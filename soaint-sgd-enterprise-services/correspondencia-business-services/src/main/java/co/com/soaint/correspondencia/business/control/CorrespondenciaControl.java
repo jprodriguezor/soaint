@@ -115,7 +115,7 @@ public class CorrespondenciaControl {
         return cantidad > 0;
     }
 
-    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) {//TODO
+    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) {
 
         int rangoI = Integer.parseInt(this.rangoReservado[0]);
         int rangoF = Integer.parseInt(this.rangoReservado[1]);
@@ -161,7 +161,7 @@ public class CorrespondenciaControl {
                 .concat(String.format("%06d", consecutivo));
     }
 
-    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {//TODO
+    public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(correspondenciaDTO.getFecRadicado());
         if (correspondenciaDTO.getInicioConteo().equals(diaSiguienteHabil))
