@@ -144,6 +144,18 @@ public class BpmIntegrationServicesClientRest {
     }
 
     @POST
+    @Path("/tareas/reasignar/")
+    public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, IOException, JSONException, URISyntaxException {
+        LOGGER.info("processing rest request - reasignar tarea");
+        try {
+            return proceso.reasignarTarea(entradaTarea);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
     @Path("/tareas/listar/estados")
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws SystemException, BusinessException, MalformedURLException {
         LOGGER.info("processing rest request - listar tareas con sus estados");

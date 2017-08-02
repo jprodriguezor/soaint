@@ -256,6 +256,30 @@ public class ProcessService implements IProcessServices {
         }
     }
 
+
+    @Override
+    public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
+        taskService = obtenerEngine(entrada).getTaskService();
+        taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
+        //taskService.claim(entrada.getIdTarea(), entrada.getUsuario());
+        Task task = taskService.getTaskById(entrada.getIdTarea());
+        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                .idTarea(entrada.getIdTarea())
+                .estado(String.valueOf(EstadosEnum.RESERVADO))
+                .nombre(task.getName())
+                .idProceso(entrada.getIdProceso())
+                .idDespliegue(entrada.getIdDespliegue())
+                .idParent(task.getTaskData().getParentId())
+                .idResponsable(task.getTaskData().getActualOwner().getId())
+                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
+                .tiempoExpiracion(task.getTaskData().getExpirationTime())
+                .tiempoActivacion(task.getTaskData().getActivationTime())
+                .fechaCreada(task.getTaskData().getCreatedOn())
+                .prioridad(task.getPriority())
+                .build();
+        return respuestaTarea;
+    }
+
     @Override
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
