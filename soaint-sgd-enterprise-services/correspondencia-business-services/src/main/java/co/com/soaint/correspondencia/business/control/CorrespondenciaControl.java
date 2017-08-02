@@ -11,10 +11,7 @@ import javax.persistence.PersistenceContext;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +59,8 @@ public class CorrespondenciaControl {
     @Value("${radicado.dia.siguiente.habil}")
     private String diaSiguienteHabil;
 
+    @Value("${radicado.dias.festivos}")
+    private String[] diasFestivos;
 
     public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO) {
         List<AgenteDTO> agenteDTOList = agenteControl.consltarAgentesByCorrespondencia(correspondenciaDTO.getIdeDocumento());
@@ -197,16 +196,26 @@ public class CorrespondenciaControl {
     public Date calcularDiaHabilSiguiente(Date fecha) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(fecha);
-        calendario.add(Calendar.DATE, 1);
-        if (esFinSemana(calendario.getTime())) {
-            if (calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+        do {
+            calendario.add(Calendar.DATE, 1);
+            if (calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
                 calendario.add(Calendar.DATE, 2);
-            } else calendario.add(Calendar.DATE, 1);
         }
+        while (!esDiaHabil(calendario.getTime()));
+
         String[] tiempo = horarioLaboral[0].split(":");
         calendario.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tiempo[0]));
         calendario.set(Calendar.MINUTE, Integer.parseInt(tiempo[1]));
         return calendario.getTime();
+    }
+
+    public Boolean esDiaHabil(Date fecha) {
+        return !(esDiaFestivo(fecha) || esFinSemana(fecha));
+    }
+
+    public Boolean esDiaFestivo(Date fecha) {
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        return Arrays.stream(diasFestivos).anyMatch(x-> x.equals(formatoFecha.format(fecha)));
     }
 
     public Boolean esFinSemana(Date fecha) {
