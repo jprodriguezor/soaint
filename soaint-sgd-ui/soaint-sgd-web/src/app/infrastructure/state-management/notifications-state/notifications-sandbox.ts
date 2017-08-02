@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
-
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './notifications-actions';

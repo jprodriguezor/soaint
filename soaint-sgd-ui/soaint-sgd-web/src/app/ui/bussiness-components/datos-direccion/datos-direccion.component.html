@@ -1,7 +1,7 @@
 <!--Body-->
 <div class="ui-g">
 
-  <div class="card card-w-title">
+  <div class="card card-w-title" *ngIf="showContactForm !== true">
     <h1>Lista de Contactos</h1>
     <div class="ui-g ui-fluid">
 
@@ -102,7 +102,7 @@
     </div>
   </div>
 
-  <form [formGroup]="form" novalidate name="formContacto" *ngIf="showContactForm === true">
+  <form [formGroup]="form" novalidate name="formContacto" *ngIf="showContactForm === true" class="fadein-down">
 
     <div class="card card-w-title" >
       <h1>Datos de contacto</h1>
@@ -199,17 +199,10 @@
             </div>
           </div>
         </div>
-
-        <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
-          <div style="padding: 20px 0 0 10px">
-            <p-checkbox name="cg" label="Incluir Dirección"
-                        [(ngModel)]="showDireccionForm" ></p-checkbox>
-          </div>
-        </div>
       </div>
     </div>
 
-    <div class="card card-w-title" *ngIf="showDireccionForm === true">
+    <div class="card card-w-title" *ngIf="showDireccionForm === true" ngClass="fadein-down">
       <h1>Datos Dirección</h1>
 
       <div class="ui-g ui-fluid">
@@ -391,15 +384,29 @@
         </div>
       </div>
     </div>
+  </form>
 
-    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12" style="text-align: right">
-      <button  pbutton style="width: auto; margin-left: 12px; margin-bottom: 10px" type="button" label="Aceptar" (click)="addContact(); showContactForm = false; showDireccionForm = false;">
-
-      </button>
-      <button label="Cancelar" pbutton style="width: auto; margin-left: 12px; margin-bottom: 10px" type="button" (click)="showContactForm = false; showDireccionForm = false;">
-      </button>
+  <div class="ui-g-12" *ngIf="showContactForm === true">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6"  >
+      <div style="padding: 20px 0 0 10px">
+        <p-checkbox name="cg" label="Agregar Dirección"
+                    [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
+      </div>
     </div>
 
-  </form>
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
+      <button pButton type="button" class="ui-button-info"
+              label="Aceptar" (click)="addContact(); showContactForm = false; showDireccionForm = false;"
+              style="width: auto; margin-left: 12px; margin-bottom: 10px"
+      ></button>
+
+      <button pButton type="button" class="ui-button-danger"
+              label="Cancelar" (click)="showContactForm = false; showDireccionForm = false;"
+              style="width: auto; margin-left: 12px; margin-bottom: 10px"
+      ></button>
+
+    </div>
+  </div>
+
 </div>
 
