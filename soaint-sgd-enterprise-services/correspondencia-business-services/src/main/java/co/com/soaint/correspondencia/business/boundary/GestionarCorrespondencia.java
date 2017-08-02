@@ -79,6 +79,9 @@ public class GestionarCorrespondencia {
                 comunicacionOficialDTO.getCorrespondencia().setNroRadicado(correspondenciaControl.generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
             }
 
+            if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
+                comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
+
             CorCorrespondencia correspondencia = correspondenciaControl.corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(correspondenciaControl.calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));

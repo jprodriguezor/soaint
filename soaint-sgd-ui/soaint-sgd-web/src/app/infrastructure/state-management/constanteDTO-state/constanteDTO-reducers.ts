@@ -75,6 +75,7 @@ export function reducer(state = initialState, action: Actions) {
           [value.codigo]: value
         });
       }, {});
+
       const cloneState = Object.assign({}, state);
       cloneState[target] = {
         ids: [...state[target].ids, ...newValuesIds],
