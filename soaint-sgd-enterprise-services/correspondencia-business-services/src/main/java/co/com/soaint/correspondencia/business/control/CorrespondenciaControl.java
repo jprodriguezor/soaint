@@ -53,9 +53,6 @@ public class CorrespondenciaControl {
     @Value("${radicado.horario.laboral}")
     private String[] horarioLaboral;
 
-    @Value("${radicado.inicio.conteo}")
-    private String inicioConteo;
-
     @Value("${radicado.unidad.tiempo.horas}")
     private String unidadTiempoHoras;
 
@@ -168,7 +165,7 @@ public class CorrespondenciaControl {
     public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {//TODO
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(correspondenciaDTO.getFecRadicado());
-        if (inicioConteo.equals(diaSiguienteHabil))
+        if (correspondenciaDTO.getInicioConteo().equals(diaSiguienteHabil))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
         Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
