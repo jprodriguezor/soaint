@@ -95,6 +95,28 @@ public class CorrespondenciaGatewayApi {
     }
 
     @POST
+    @Path("/reasignar")
+    public Response reasignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
+        Response response = client.asignarComunicaciones(asignacionesDTO);
+        AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
+        responseObject.getAsignaciones().forEach(asignacionDTO -> {
+            EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+            entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
+            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
+            entradaProceso.setParametros(parametros);
+            this.procesoClient.reasignarTarea(entradaProceso);
+        });
+        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
     @Path("/redireccionar")
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");

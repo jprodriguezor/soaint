@@ -161,9 +161,9 @@
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="showRejectDialog()"></button>
             <button pButton type="button" label="Reasignar"
-                    [disabled]="form.get('estadoCorrespondencia').value === 'SA' || selectedComunications.length == 0"
+                    [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'SA'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    (click)="listarComunicaciones()"></button>
+                    (click)="reassignComunications()"></button>
             <button pButton type="button" label="Asignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
