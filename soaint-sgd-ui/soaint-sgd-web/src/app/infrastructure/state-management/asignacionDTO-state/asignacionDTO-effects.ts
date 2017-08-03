@@ -51,6 +51,18 @@ export class Effects {
     );
 
   @Effect()
+  reassign: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.REASSIGN)
+    .map(toPayload)
+    .switchMap(
+      (payload) => {
+        return this._sandbox.reassignComunications(payload)
+          .mergeMap((response) => [new actions.ReassignSuccessAction(response), new ReloadComunicacionesAction()])
+          .catch((error) => Observable.of(new actions.ReassignFailAction({error})))
+      }
+    );
+
+  @Effect()
   redirect: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.REDIRECT)
     .map(toPayload)

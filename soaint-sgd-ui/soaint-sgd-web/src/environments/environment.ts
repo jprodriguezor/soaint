@@ -41,5 +41,6 @@ export const environment = {
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
-  redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
+  reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
+  redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`
 };

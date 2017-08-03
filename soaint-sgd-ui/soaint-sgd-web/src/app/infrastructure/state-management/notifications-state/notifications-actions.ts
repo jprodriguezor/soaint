@@ -31,16 +31,6 @@ export class DeleteAllNotificationsAction implements Action {
   constructor(public payload?: any) { }
 }
 
-export class NotificationSuccessAction implements Action {
-  type = ActionTypes.NOTIFICATION_SUCCESS;
-  constructor(public payload?: any, public severity: messageType = 'success') { }
-}
-
-export class NotificationFailAction implements Action {
-  type = ActionTypes.NOTIFICATION_FAIL;
-  constructor(public payload?: any) { }
-}
-
 
 export type Actions =
   PushNotificationAction |

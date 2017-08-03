@@ -17,12 +17,20 @@ export class Sandbox {
     return this._http.post(environment.asignarComunicaciones_endpoint, payload);
   }
 
+  reassignComunications(payload: any) {
+    return this._http.post(environment.reasignarComunicaciones_endpoint, payload);
+  }
+
   redirectComunications(payload: any) {
     return this._http.post(environment.redireccionarComunicaciones_endpoint, payload);
   }
 
   assignDispatch(payload) {
     this._store.dispatch(new actions.AssignAction(payload));
+  }
+
+  reassignDispatch(payload) {
+    this._store.dispatch(new actions.ReassignAction(payload));
   }
 
   redirectDispatch(payload) {
