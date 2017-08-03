@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarConstantes;
 import co.com.soaint.foundation.canonical.correspondencia.ConstantesDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -24,17 +23,17 @@ public class GestionarConstantesWS {
     }
 
     @WebMethod(action = "listarConstantesByEstado", operationName = "listarConstantesByEstado")
-    public ConstantesDTO listarConstantes(@WebParam(name = "estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantes(@WebParam(name = "estado") final String estado) throws SystemException{
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByEstado(estado)).build();
     }
 
     @WebMethod(action = "listarConstantesByCodigoAndEstado", operationName = "listarConstantesByCodigoAndEstado")
-    public ConstantesDTO listarConstantesByCodigoAndEstado(@WebParam(name = "codigo") String codigo, @WebParam(name = "estado") String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodigoAndEstado(@WebParam(name = "codigo") String codigo, @WebParam(name = "estado") String estado) throws SystemException{
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodigoAndEstado(codigo, estado)).build();
     }
 
     @WebMethod(action = "listarConstantesByCodPadreAndEstado", operationName = "listarConstantesByCodPadreAndEstado")
-    public ConstantesDTO listarConstantesByCodPadreAndEstado(@WebParam(name = "codPadre") String codPadre, @WebParam(name = "estado") String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodPadreAndEstado(@WebParam(name = "codPadre") String codPadre, @WebParam(name = "estado") String estado) throws SystemException{
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
     }
 }

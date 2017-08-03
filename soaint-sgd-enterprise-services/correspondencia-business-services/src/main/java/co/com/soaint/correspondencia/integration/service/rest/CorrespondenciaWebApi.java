@@ -46,7 +46,7 @@ public class CorrespondenciaWebApi {
 
     @POST
     @Path("/correspondencia/observacion")
-    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException {
         logger.info("processing rest request - registrar observacion correspondencia");
         boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
