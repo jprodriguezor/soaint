@@ -1,10 +1,16 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,8 +30,32 @@ import java.util.List;
 @BusinessControl
 public class AgenteControl {
 
+    private static Logger logger = LogManager.getLogger(GestionarAsignacion.class.getName());
+
     @PersistenceContext
     private EntityManager em;
+
+    public void actualizarEstadoAgente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        try {
+            if (!verificarByIdeAgente(agenteDTO.getIdeAgente())){
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("agente.agente_not_exist_by_ideAgente")
+                        .buildBusinessException();
+            }
+            em.createNamedQuery("CorAgente.updateEstado")
+                    .setParameter("COD_ESTADO", agenteDTO.getCodEstado())
+                    .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
+                    .executeUpdate();
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception ex) {
+            logger.error("Business Boundary - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 
     public Boolean verificarByIdeAgente(BigInteger ideAgente) {
         long cantidad = em.createNamedQuery("CorAgente.countByIdeAgente", Long.class)
