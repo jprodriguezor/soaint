@@ -23,10 +23,10 @@ public class GestionarAgente {
     // [fields] -----------------------------------
 
     @Autowired
-    AgenteControl agenteControl;
+    AgenteControl control;
     // ----------------------
 
     public void actualizarEstadoAgente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
-        agenteControl.actualizarEstadoAgente(agenteDTO);
+        control.actualizarEstadoAgente(agenteDTO);
     }
 }

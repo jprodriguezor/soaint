@@ -1,6 +1,5 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
@@ -30,7 +29,7 @@ import java.util.List;
 @BusinessControl
 public class AgenteControl {
 
-    private static Logger logger = LogManager.getLogger(GestionarAsignacion.class.getName());
+    private static Logger logger = LogManager.getLogger(AgenteControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
