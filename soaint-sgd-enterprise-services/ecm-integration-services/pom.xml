@@ -35,6 +35,16 @@
             <groupId>org.alfresco.cmis.client</groupId>
             <artifactId>alfresco-opencmis-extension</artifactId>
             <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                    <groupId>org.apache.cxf</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                    <groupId>org.apache.cxf</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.chemistry.opencmis</groupId>
@@ -50,6 +60,20 @@
             <groupId>org.apache.chemistry.opencmis</groupId>
             <artifactId>chemistry-opencmis-client-impl</artifactId>
             <version>1.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                    <groupId>org.apache.cxf</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>cxf-rt-transports-http</artifactId>
+                    <groupId>org.apache.cxf</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>cxf-rt-ws-policy</artifactId>
+                    <groupId>org.apache.cxf</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             DEPENDENCY - Java EE 7 support
@@ -61,6 +85,7 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             DEPENDENCY - SGD framework

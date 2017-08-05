@@ -23,14 +23,14 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     Logger LOGGER = Logger.getLogger(ContentManagerAlfresco.class.getName());
 
-    @Autowired
-    Utilities utils;
-
-    @Autowired
-    Carpeta carpeta;
-
-    @Autowired
-    FactoriaContent factoriaContent;
+//    @Autowired
+//    Utilities utils;
+//
+//    @Autowired
+//    Carpeta carpeta;
+//
+//    @Autowired
+//    FactoriaContent factoriaContent;
 
 
     ContentControl control = FactoriaContent.getContentControl("alfresco");
@@ -38,7 +38,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta();
-
+        Carpeta carpeta;
         try {
 
             /**
@@ -82,6 +82,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         LOGGER.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         String idDocumento="";
+        Carpeta carpeta;
         try {
 
             Utilities utils = new Utilities();
