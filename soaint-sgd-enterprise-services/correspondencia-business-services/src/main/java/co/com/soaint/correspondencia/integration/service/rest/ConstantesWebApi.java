@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarConstantes;
 import co.com.soaint.foundation.canonical.correspondencia.ConstantesDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,21 +31,21 @@ public class ConstantesWebApi {
 
     @GET
     @Path("constantes/{estado}")
-    public ConstantesDTO listarConstantesByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByEstado(@PathParam("estado") final String estado) throws SystemException{
         logger.info("processing rest request - listar constantes por estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByEstado(estado)).build();
     }
 
     @GET
     @Path("constantes/{codigo}/{estado}")
-    public ConstantesDTO listarConstantesByCodigoAndEstado(@PathParam("codigo") final String codigo, @PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodigoAndEstado(@PathParam("codigo") final String codigo, @PathParam("estado") final String estado) throws SystemException{
         logger.info("processing rest request - listar constantes por codigo y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodigoAndEstado(codigo, estado)).build();
     }
 
     @GET
     @Path("constantes/hijos/{cod-padre}/{estado}")
-    public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre, @PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre, @PathParam("estado") final String estado) throws SystemException{
         logger.info("processing rest request - listar constantes por codigo del padre y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
     }

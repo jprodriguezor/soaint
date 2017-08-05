@@ -38,7 +38,7 @@ public class AsignacionWebApi {
 
     @POST
     @Path("/asignacion")
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws SystemException{
         logger.info("processing rest request - asignar correspondencia");
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
@@ -52,7 +52,7 @@ public class AsignacionWebApi {
 
     @PUT
     @Path("/asignacion/redireccionar")
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException{
+    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException{
         logger.info("processing rest request - redireccionar correspondencia");
         boundary.redireccionarCorrespondencia(agentesDTO);
     }

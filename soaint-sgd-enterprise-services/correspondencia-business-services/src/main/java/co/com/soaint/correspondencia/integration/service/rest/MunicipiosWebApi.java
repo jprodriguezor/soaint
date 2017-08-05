@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarMunicipio;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipiosDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,14 +31,14 @@ public class MunicipiosWebApi {
 
     @GET
     @Path("/municipios/{codDepar}/{estado}")
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@PathParam("codDepar") final String codDepar, @PathParam("estado") final String estado)throws SystemException{
         logger.info("processing rest request - listar municipios por codigo del departamento y estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
     @GET
     @Path("/municipios/{estado}")
-    public MunicipiosDTO listarMunicipiosByEstado(@PathParam("estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByEstado(@PathParam("estado") final String estado)throws SystemException{
         logger.info("processing rest request - listar municipios por estado");
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
     }

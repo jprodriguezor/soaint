@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarDepartamento;
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentosDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,14 +31,14 @@ public class DepartamentosWebApi {
 
     @GET
     @Path("/departamentos/{codPais}/{estado}")
-    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@PathParam("codPais") final String codPais, @PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@PathParam("codPais") final String codPais, @PathParam("estado") final String estado) throws SystemException{
         logger.info("processing rest request - listar departamentos por codigo del pais y estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByCodPaisAndEstado(codPais, estado)).build();
     }
 
     @GET
     @Path("/departamentos/{estado}")
-    public DepartamentosDTO listarDepartamentosByEstado(@PathParam("estado") final String estado) throws BusinessException, SystemException{
+    public DepartamentosDTO listarDepartamentosByEstado(@PathParam("estado") final String estado) throws SystemException{
         logger.info("processing rest request - listar departamentos por estado");
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByEstado(estado)).build();
     }
