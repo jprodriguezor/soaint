@@ -73,7 +73,12 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         }
         return response;
     }
-    public String subirDocumentoContent(String carpetaContenedora, String caminoLocal, String nombreDocumento,String user,String titulo,String descripcion) throws InfrastructureException{
+    //Tipos de comunicacion
+    //export const COMUNICACION_EXTERNA = 'TP-CMCOE';
+   // export const COMUNICACION_INTERNA = 'TP-CMCOI';
+    //Daniel • Now
+
+    public String subirDocumentoContent(String tipoComunicacion, String caminoLocal, String nombreDocumento,String user,String titulo,String descripcion) throws InfrastructureException{
         LOGGER.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         String idDocumento="";
@@ -96,7 +101,9 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             carpeta.setFolder (conexion.getSession ().getRootFolder () );
             String mimeType="pdf";
             //TODO la carpeta target hay que llenarla, el mimetype
-             idDocumento = control.subirDocumento (conexion.getSession (),caminoLocal,carpetaContenedora,mimeType,nombreDocumento,user,titulo,descripcion);
+
+
+             idDocumento = control.subirDocumento (conexion.getSession (),caminoLocal,tipoComunicacion,mimeType,nombreDocumento,user,titulo,descripcion);
 
             /**TODO Revisar el tema de los metodos de getMessage*/
 //            response.setCodMensaje(MessageUtil.getMessage("cod00"));

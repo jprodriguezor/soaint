@@ -44,7 +44,6 @@ public class Main {
         orgDTO=new OrganigramaDTO (ideOrgaAdmin,codOrg,nomOrg,tipo);
         organigramaItemList.add (orgDTO);
 
-
         List<ContenidoDependenciaTrdDTO> contenidoDependenciaList=new ArrayList <> ();
 
         String idOrgAdm="100";
@@ -60,7 +59,6 @@ public class Main {
         ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO=new ContenidoDependenciaTrdDTO(idOrgAdm,idOrgOfc,codSerie,nomSerie,codSubSerie,
                 nomSubSerie,retArchivoGestion,retArchivoCentral,procedimiento,diposicionFinal);
         contenidoDependenciaList.add (contenidoDependenciaTrdDTO);
-
 
         idOrgAdm="100";
         idOrgOfc="100110";
@@ -98,9 +96,9 @@ public class Main {
 
         structure.add (estructuraTrdDTO);
 
-//        String idDoc=content.subirDocumentoContent ("000_SOAINT","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
+        String idDoc=content.subirDocumentoContent ("TP-CMCOE","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
 
-        MensajeRespuesta b= content.crearEstructuraContent (structure);
+ //       MensajeRespuesta b= content.crearEstructuraContent (structure);
 
     }
 }

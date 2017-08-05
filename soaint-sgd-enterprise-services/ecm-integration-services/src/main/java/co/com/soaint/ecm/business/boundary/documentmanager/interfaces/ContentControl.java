@@ -49,7 +49,7 @@ public abstract class ContentControl  {
 
     public abstract MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException ;
 
-    public abstract String subirDocumento(Session session, String caminoLocal, String nombreCarpeta, String mimeType, String name, String user, String titulo, String descripcion) throws SystemException,IOException ;
+    public abstract String subirDocumento(Session session, String caminoLocal, String tipoComunicacion, String mimeType, String name, String user, String titulo, String descripcion) throws SystemException,IOException ;
 
 
 }
