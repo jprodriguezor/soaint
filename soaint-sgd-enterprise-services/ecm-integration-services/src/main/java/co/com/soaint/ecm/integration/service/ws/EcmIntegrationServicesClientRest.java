@@ -46,11 +46,37 @@ public class EcmIntegrationServicesClientRest {
     EcmManagerMediator fEcmManager;
 
     @POST
-    @Path("/crearEstructura/")
-    public MensajeRespuesta crearEstructura(List<EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
+    @Path("/crearEstructuraContent/")
+    public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
         LOGGER.info("processing rest request - Crear Estructura ECM");
         try {
             return fEcmManager.crearEstructuraECM (structure);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
+    @Path("/subirDocumentoECM/")
+    public String subirDocumentoECM( String carpetaContenedora,String nombreDocumento, String caminoLocal, String user,String titulo, String descripcion) throws InfrastructureException, SystemException {
+
+        LOGGER.info("processing rest request - Subir Documento ECM");
+        try {
+            return fEcmManager.subirDocumento (carpetaContenedora,nombreDocumento,caminoLocal,user,titulo,descripcion );
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @POST
+    @Path("/moverDocumentoECM/")
+    public MensajeRespuesta subirDocumentoECM( String moverDocumento,String carpetaFuente, String carpetaDestino) throws InfrastructureException, SystemException {
+
+        LOGGER.info("processing rest request - Subir Documento ECM");
+        try {
+            return fEcmManager.moverDocumento (moverDocumento,carpetaFuente,carpetaDestino );
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;

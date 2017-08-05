@@ -569,7 +569,27 @@ public class ContentControlAlfresco extends ContentControl {
         return folderReturn;
     }
 
-    public MensajeRespuesta movDocumento(Carpeta CarpetaFuente, Carpeta carpetaDestino, Documento documento) throws SystemException{
+    public MensajeRespuesta movDocumento(Session session,String documento, String carpetaFuente, String carpetaDestino ) throws SystemException{
+        LOGGER.info ("### Mover documento: "+documento);
+
+        LOGGER.info ("### Obtener carpeta fuente: "+carpetaFuente);
+
+        try {
+
+            Carpeta carpetaF = new Carpeta ( );
+            Carpeta carpetaD = new Carpeta ( );
+
+            carpetaF = (obtenerCarpetaPorNombre (carpetaFuente, session));
+            carpetaD = (obtenerCarpetaPorNombre (carpetaDestino, session));
+
+            CmisObject object = session.getObjectByPath(carpetaF.getFolder ().getPath()+"/"+documento);
+            Document mvndocument = (Document) object;
+            mvndocument.move(carpetaF.getFolder (),carpetaD.getFolder ());
+        } catch (CmisObjectNotFoundException e) {
+            System.err.println("Document is not found: " + documento);
+            LOGGER.info ("*** Error al mover el documento ***");
+        }
+
         return null;
     }
 
@@ -774,10 +794,10 @@ public class ContentControlAlfresco extends ContentControl {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             Carpeta folderAlfresco =new Carpeta ();
             if (tipoComunicacion == "TP-CMCOE"){
-                folderAlfresco = (Carpeta) obtenerCarpetaPorNombre ("COMUNICACION_EXTERNA",session);
+                folderAlfresco =  obtenerCarpetaPorNombre ("COMUNICACION_EXTERNA",session);
             }
             else if(tipoComunicacion == "TP-CMCOI"){
-                folderAlfresco = (Carpeta) obtenerCarpetaPorNombre ("COMUNICACION_INTERNA",session);
+                folderAlfresco = obtenerCarpetaPorNombre ("COMUNICACION_INTERNA",session);
             }
 
 

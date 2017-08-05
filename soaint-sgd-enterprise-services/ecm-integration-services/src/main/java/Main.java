@@ -96,9 +96,10 @@ public class Main {
 
         structure.add (estructuraTrdDTO);
 
-        String idDoc=content.subirDocumentoContent ("TP-CMCOE","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
 
- //       MensajeRespuesta b= content.crearEstructuraContent (structure);
 
+//        MensajeRespuesta aa= content.crearEstructuraContent (structure);
+//        String idDoc=content.subirDocumentoContent ("TP-CMCOE","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
+        MensajeRespuesta b= content.moverDocumento ("alice.pdf","COMUNICACION_EXTERNA","COMUNICACION_INTERNA");
     }
 }

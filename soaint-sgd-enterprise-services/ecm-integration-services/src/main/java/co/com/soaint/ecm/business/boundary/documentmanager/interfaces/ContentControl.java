@@ -45,7 +45,7 @@ public abstract class ContentControl  {
 
     public abstract boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre)throws SystemException;
 
-    public abstract  MensajeRespuesta movDocumento(Carpeta CarpetaFuente, Carpeta carpetaDestino, Documento documento) throws SystemException;
+    public abstract  MensajeRespuesta movDocumento(Session session,String documento, String CarpetaFuente, String carpetaDestino ) throws SystemException;
 
     public abstract MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException ;
 

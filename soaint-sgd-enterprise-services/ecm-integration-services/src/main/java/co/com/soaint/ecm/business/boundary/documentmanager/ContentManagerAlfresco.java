@@ -121,41 +121,40 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     }
 
 //TODO Mover docuemnto
-//    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException{
-//        LOGGER.info("### Moviendo Documento "+ documento+" desde la carpeta: "+CarpetaFuente + " a la carpeta: "+ CarpetaDestino);
-//        MensajeRespuesta response = new MensajeRespuesta();
-//
-//        try {
-//
-//            /**
-//             * Se establece la conexion*/
-//            response = control.establecerConexiones();
-//
-//            Utilities utils = new Utilities();
-//            Conexion conexion=new Conexion ();
-//
-//            try {
-//                conexion= FactoriaContent.getContentControl("alfresco").obtenerConexion ();
-//            } catch (SystemException e) {
-//                e.printStackTrace ( );
-//            }
-//            carpeta=new Carpeta ();
-//            carpeta.setFolder (conexion.getSession ().getRootFolder () );
-//            response = control.movDocumento(documento, CarpetaFuente, CarpetaDestino);
-//            /**TODO Revisar el tema de los metodos de getMessage*/
-////            response.setCodMensaje(MessageUtil.getMessage("cod00"));
-////            response.setMensaje(MessageUtil.getMessage("msj00"));
-//            control.cerrarConexionContent();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            /**TODO Revisar el tema de los metodos de getMessage*/
-////            response.setCodMensaje(MessageUtil.getMessage("cod08"));
-////            response.setMensaje(MessageUtil.getMessage("msj08"));
-//            control.cerrarConexionContent();
-//        }
-//        return response;
-//    }
+    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException{
+        LOGGER.info("### Moviendo Documento "+ documento+" desde la carpeta: "+CarpetaFuente + " a la carpeta: "+ CarpetaDestino);
+        MensajeRespuesta response = new MensajeRespuesta();
+
+        try {
+
+            /**
+             * Se establece la conexion*/
+            response = control.establecerConexiones();
+
+            Utilities utils = new Utilities();
+            Conexion conexion=new Conexion ();
+
+            try {
+                conexion= FactoriaContent.getContentControl("alfresco").obtenerConexion ();
+            } catch (SystemException e) {
+                e.printStackTrace ( );
+            }
+
+            response = control.movDocumento(conexion.getSession (),documento, CarpetaFuente, CarpetaDestino);
+            /**TODO Revisar el tema de los metodos de getMessage*/
+//            response.setCodMensaje(MessageUtil.getMessage("cod00"));
+//            response.setMensaje(MessageUtil.getMessage("msj00"));
+            control.cerrarConexionContent();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            /**TODO Revisar el tema de los metodos de getMessage*/
+//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
+//            response.setMensaje(MessageUtil.getMessage("msj08"));
+            control.cerrarConexionContent();
+        }
+        return response;
+    }
 
 
 
