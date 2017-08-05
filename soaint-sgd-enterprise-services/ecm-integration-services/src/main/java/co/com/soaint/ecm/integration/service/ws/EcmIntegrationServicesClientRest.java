@@ -72,7 +72,7 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/moverDocumentoECM/")
-    public MensajeRespuesta subirDocumentoECM( String moverDocumento,String carpetaFuente, String carpetaDestino) throws InfrastructureException, SystemException {
+    public MensajeRespuesta moverDocumentoECM( String moverDocumento,String carpetaFuente, String carpetaDestino) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");
         try {
