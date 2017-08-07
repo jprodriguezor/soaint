@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarMunicipio;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipiosDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -25,12 +24,12 @@ public class GestionarMunicipioWS {
     }
 
     @WebMethod(action = "listarMunicipiosByCodDeparAndEstado", operationName = "listarMunicipiosByCodDeparAndEstado")
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@WebParam(name = "codDepar") final String codDepar, @WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@WebParam(name = "codDepar") final String codDepar, @WebParam(name = "estado") final String estado)throws SystemException{
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
     @WebMethod(action = "listarMunicipiosByEstado", operationName = "listarMunicipiosByEstado")
-    public MunicipiosDTO listarMunicipiosByEstado(@WebParam(name = "estado") final String estado)throws BusinessException, SystemException{
+    public MunicipiosDTO listarMunicipiosByEstado(@WebParam(name = "estado") final String estado)throws SystemException{
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
     }
 }

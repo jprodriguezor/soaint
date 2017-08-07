@@ -37,7 +37,7 @@ public class GestionarOrganigramaAdministrativoWS {
     }
 
     @WebMethod(action = "listarElementosDeNivelInferior", operationName = "listarElementosDeNivelInferior")
-    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre")final String idPadre) throws BusinessException, SystemException{
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre")final String idPadre) throws SystemException{
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }
 

@@ -31,7 +31,7 @@ public class GestionarFuncionariosWS {
     }
 
     @WebMethod(action = "listarFuncionariosByCodDependenciaAndCodEstado", operationName = "listarFuncionariosByCodDependenciaAndCodEstado")
-    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@WebParam(name = "cod_dependencia") final String codDependencia, @WebParam(name = "cod_estado")final String codEstado)throws BusinessException, SystemException{
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@WebParam(name = "cod_dependencia") final String codDependencia, @WebParam(name = "cod_estado")final String codEstado)throws SystemException{
         return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
     }
 }
