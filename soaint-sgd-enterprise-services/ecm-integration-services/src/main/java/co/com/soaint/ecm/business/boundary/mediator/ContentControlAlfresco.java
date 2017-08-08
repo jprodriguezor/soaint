@@ -149,38 +149,6 @@ public class ContentControlAlfresco extends ContentControl {
         return conexion;
     }
 
-    /* -- Obtener dominio -- */
-    public Dominio obtenerDominio(Conexion con) throws SystemException {
-
-//        LOGGER.info("*** obtenerDominio ***");
-//        try {
-//            if (dominio == null) {
-//                dominio = Factory.Domain.fetchInstance(con,Configuracion.getPropiedad("repositorioContent"), null);
-//            }
-//        } catch (Exception e) {
-//            LOGGER.info("*** Error al obtener dominio ***");
-//        }
-//        System.out.println("*** " + dominio);
-//        return dominio;
-        return null;
-
-    }
-
-    public void cerrarConexionContent() {
-        try {
-            LOGGER.info ("*** Cerrando conexiones... ***");
-            conexion.clear ( );
-            conexion = null;
-            dominio = null;
-        } catch (Exception e) {
-            LOGGER.info ("*** Error al cerrar conexiones ***");
-        }
-    }
-
-    public Carpeta chequearCarpetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws SystemException, IOException {
-        return null;
-    }
-
     /**
      * Metodo que, dado el nombre de la carpeta padre y la nueva Carpeta, crea el documento
      *
@@ -292,27 +260,6 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Metodo que, dado una Carpeta y la profundidad necesaria, devuelve una lista de las carpetas (carpeta)
-     *
-     * @param depth
-     * @param target
-     * @return
-     */
-    private static void obtenerlistaCarpetas(int depth, Folder target) {
-        String indent = StringUtils.repeat ("\t", depth);
-        for (Iterator <CmisObject> it = target.getChildren ( ).iterator ( ); it.hasNext ( ); ) {
-            CmisObject o = it.next ( );
-            if (BaseTypeId.CMIS_DOCUMENT.equals (o.getBaseTypeId ( ))) {
-                System.out.println (indent + "[Docment] " + o.getName ( ));
-            } else if (BaseTypeId.CMIS_FOLDER.equals (o.getBaseTypeId ( ))) {
-                System.out.println (indent + "[Folder] " + o.getName ( ));
-                obtenerlistaCarpetas (++depth, (Folder) o);
-            }
-        }
-
-    }
-
-    /**
      * Metodo que, dado el nombre de una Carpeta y un documento, elimina el docuemtno(carpeta)
      *
      * @param target
@@ -332,25 +279,6 @@ public class ContentControlAlfresco extends ContentControl {
             System.err.println ("Document is not found: " + delDocName);
 
         }
-    }
-
-
-    /**
-     * Metodo para mover un documento de una carpeta a otra
-     *
-     * @param targetFolder
-     * @param sourceFolder
-     * @param document
-     */
-    public void moverDocumento(String document, Folder sourceFolder, Folder targetFolder, Session session) {
-        try {
-            CmisObject object = session.getObjectByPath (sourceFolder.getPath ( ) + "/" + document);
-            Document mvndocument = (Document) object;
-            mvndocument.move (sourceFolder, targetFolder);
-        } catch (CmisObjectNotFoundException e) {
-            System.err.println ("Document is not found: " + document);
-        }
-
     }
 
     public String formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
@@ -406,44 +334,6 @@ public class ContentControlAlfresco extends ContentControl {
         } catch (NumberFormatException nfe) {
             return false;
         }
-    }
-
-    public Carpeta crearCarpeta(String nombreCarpeta) {
-        LOGGER.info ("### Creando carpeta" + nombreCarpeta);
-        Carpeta carpeta = new Carpeta ( );
-        try {
-
-            Map <String, String> props = new HashMap <String, String> ( );
-            props.put (PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
-            props.put (PropertyIds.NAME, nombreCarpeta);
-            Conexion conexion = obtenerConexion ( );
-            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ).createFolder (props));
-        } catch (Exception e) {
-            LOGGER.info ("Error al crear la carpeta " + nombreCarpeta);
-        }
-        LOGGER.info ("### Carpeta" + nombreCarpeta + " creada");
-        return carpeta;
-    }
-
-    public Carpeta verificarCarpetaPadre(String nombre) throws SystemException {
-        LOGGER.info ("### Verificando carpeta padre");
-        Carpeta carpetaPadre = null;
-        List <Folder> listaCarpetas = new ArrayList <> ( );
-
-        ItemIterable <CmisObject> it = obtenerConexion ( ).getSession ( ).getRootFolder ( ).getChildren ( );
-        for (CmisObject obj : it) {
-//            writer.addChild(obj.getId(), obj.getName());
-            Folder folder = (Folder) obj;
-
-
-            for (Folder lista : listaCarpetas) {
-                if (lista.getName ( ).equals (nombre)) {
-                    carpetaPadre.setFolder (lista);
-                }
-            }
-
-        }
-        return carpetaPadre;
     }
 
     public static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
@@ -660,7 +550,6 @@ public class ContentControlAlfresco extends ContentControl {
                             break;
                         }
                     } else {
-                        //LOGGER.info("TRD --  El folder ya esta creado2: " + folderSon.get_Name());
                         //Actualización de folder
                         if (!(nombreSerie.equals (folderSon.getFolder ( ).getName ( )))) {
                             LOGGER.info ("Se debe cambiar el nombre: " + nombreSerie);
@@ -683,7 +572,7 @@ public class ContentControlAlfresco extends ContentControl {
                                 break;
                             }
                         } else {
-                            //LOGGER.info("TRD --  El folder ya esta creado2: " + folderSon.get_Name());
+
                             //Actualización de folder
                             if (!(nombreSubserie.equals (folderSon.getFolder ( ).getName ( )))) {
                                 LOGGER.info ("Se debe cambiar el nombre: " + nombreSubserie);

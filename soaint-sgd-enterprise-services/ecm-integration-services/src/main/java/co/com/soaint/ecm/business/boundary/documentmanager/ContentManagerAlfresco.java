@@ -29,8 +29,6 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
 
-//    ContentControl control = FactoriaContent.getContentControl ("alfresco");
-
     @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info ("### Creando estructura content..");
@@ -59,14 +57,12 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             response = control.generarArbol (structure, carpeta);
-            control.cerrarConexionContent ( );
 
         } catch (Exception e) {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            control.cerrarConexionContent ( );
-        }
+            }
         return response;
     }
 
@@ -95,20 +91,18 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             String mimeType = "pdf";
             //TODO la carpeta target hay que llenarla, el mimetype
 
-
             idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
-            /**TODO Revisar el tema de los metodos de getMessage*/
-//            response.setCodMensaje(MessageUtil.getMessage("cod00"));
-//            response.setMensaje(MessageUtil.getMessage("msj00"));
-            control.cerrarConexionContent ( );
+
+            response.setCodMensaje("0000");
+            response.setMensaje("OK");
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            /**TODO Revisar el tema de los metodos de getMessage*/
-//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
-//            response.setMensaje(MessageUtil.getMessage("msj08"));
-            control.cerrarConexionContent ( );
+
+            response.setCodMensaje("00005");
+            response.setMensaje("Error al crear el documento");
+
         }
         return idDocumento;
     }
@@ -123,7 +117,6 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             /**
              * Se establece la conexion*/
             LOGGER.info ("###Se va a establecer la conexion");
-            LOGGER.info ("###Se va a establecer la conexion"+ control);
             response = control.establecerConexiones ( );
             LOGGER.info ("###Conexion establecida");
 
@@ -136,14 +129,11 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             }
 
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
-            /**TODO Revisar el tema de los metodos de getMessage*/
-            control.cerrarConexionContent ( );
 
         } catch (Exception e) {
             e.printStackTrace ( );
             response.setCodMensaje("0003");
             response.setMensaje("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
-            control.cerrarConexionContent ( );
         }
         return response;
     }

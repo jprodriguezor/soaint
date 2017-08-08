@@ -28,22 +28,10 @@ public abstract class ContentControl  {
     public abstract Conexion obtenerConexion() throws SystemException ;
 
     /* -- Obtener dominio -- */
-    public abstract Dominio obtenerDominio(Conexion con) throws SystemException ;
-
-//    public abstract ObjectStore obtenerObjectStore(Dominio dominio) throws ECMIntegrationException ;
-
-    public abstract void cerrarConexionContent();
-
-    public abstract Carpeta chequearCarpetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws SystemException, IOException ;
 
     public abstract Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException ;
 
     public abstract String  formatearNombre(String[] informationArray, String formatoConfig) throws SystemException;
-
-
-    public abstract Carpeta crearCarpeta(String nombreCarpeta);
-
-    public abstract Carpeta verificarCarpetaPadre(String nombre) throws SystemException ;
 
     public abstract boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre)throws SystemException;
 
