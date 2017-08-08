@@ -4,8 +4,9 @@ import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -13,7 +14,6 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,13 +105,13 @@ public class AsignacionControl {
 
                 em.createNamedQuery("CorAgente.updateAsignacion")
                         .setParameter("FECHA_ASIGNACION", fecha)
-                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .executeUpdate();
 
                 AsignacionDTO asignacionDTOResult = em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
-                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);

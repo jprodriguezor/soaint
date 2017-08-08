@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -233,7 +234,7 @@ public class CorrespondenciaControl {
             List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
                     .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
-                    .setParameter(constCodEstado, EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                    .setParameter(constCodEstado, EstadoCorrespondenciaEnum.ASIGNACION.getCodigo())
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_EST_AG", codEstado)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
@@ -437,6 +438,12 @@ public class CorrespondenciaControl {
     public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado){
         return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                 .setParameter(constNroRadicado, nroRadicado)
+                .getSingleResult();
+    }
+
+    public CorrespondenciaDTO consultarCorrespondenciaByIdeAgente(BigInteger ideAgente){
+        return em.createNamedQuery("CorCorrespondencia.findByIdeAgente", CorrespondenciaDTO.class)
+                .setParameter("IDE_AGENTE", ideAgente)
                 .getSingleResult();
     }
 

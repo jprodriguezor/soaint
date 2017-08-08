@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -58,10 +59,17 @@ public class AgenteControl {
                         .withMessage("agente.agente_not_exist_by_ideAgente")
                         .buildBusinessException();
             }
+
             em.createNamedQuery("CorAgente.updateEstado")
                     .setParameter("COD_ESTADO", agenteDTO.getCodEstado())
                     .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                     .executeUpdate();
+
+            if (agenteDTO.getCodEstado().equals(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())){
+                CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agenteDTO.getIdeAgente());
+                correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
+                correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
+            }
         } catch (BusinessException e) {
             throw e;
         } catch (Exception ex) {
