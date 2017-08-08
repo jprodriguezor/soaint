@@ -14,10 +14,10 @@
     </div>
 
     <div taskBody>
-
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales #datosGenerales [editable]="editable" [datosRemitente]="datosRemitente"
+          <app-datos-generales #datosGenerales [editable]="editable"
+                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
                                (onChangeTipoComunicacion)="datosRemitente.setTipoComunicacion($event)"></app-datos-generales>
         </p-tabPanel>
 
