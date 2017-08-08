@@ -5,6 +5,7 @@ import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediato
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         return response;
     }
 
-    public String subirDocumento(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException {
+    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
 
         String idDocumento;
         idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);

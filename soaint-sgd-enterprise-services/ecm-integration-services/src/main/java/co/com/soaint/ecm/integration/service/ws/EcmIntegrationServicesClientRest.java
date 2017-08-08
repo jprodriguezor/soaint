@@ -61,49 +61,16 @@ public class EcmIntegrationServicesClientRest {
     @Path("/subirDocumentoECM/")
     @Consumes("multipart/form-data")
     public String subirDocumentoECM(@QueryParam("nombreDocumento") final String nombreDocumento,
-                                    @RequestPart("documento") final MultipartFormDataInput documento1,
+                                    @RequestPart("documento") final MultipartFormDataInput documento,
                                     @QueryParam("tipoComunicacion") final String tipoComunicacion) throws InfrastructureException, SystemException {
-
         LOGGER.info("processing rest request - Subir Documento ECM");
-
-        //Codigo new
-        String fileName = "";
-
         try {
-
-            Map<String, List<InputPart>> uploadForm = documento1.getFormDataMap();
-            List<InputPart> inputParts = uploadForm.get("uploadedFile");
-
-            for (InputPart inputPart : inputParts) {
-                    MultivaluedMap<String, String> header = inputPart.getHeaders();
-                    fileName = getFileName(header);
-
-                //convert the uploaded file to inputstream
-                InputStream inputStream = inputPart.getBody(InputStream.class,null);
-
-                byte [] bytes = IOUtils.toByteArray(inputStream);
-
-                //constructs upload file path
-                fileName = "/home/wildfly/" + fileName;
-                LOGGER.info("Ruta del fichero: " + fileName);
-
-                writeFile(bytes,fileName);
-
-                LOGGER.info("Fichero escrito");
-
-            }
-            LOGGER.info("Nombre del fichero: " + fileName);
-
-            return "subida exitosa";
-            //Fin codigo new
-
-
-
-            //return fEcmManager.subirDocumento (nombreDocumento,documento,tipoComunicacion );
+            return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
         } catch (Throwable e) {
             e.printStackTrace();
+            throw e;
         }
-        return fileName;
+
     }
 
     @POST

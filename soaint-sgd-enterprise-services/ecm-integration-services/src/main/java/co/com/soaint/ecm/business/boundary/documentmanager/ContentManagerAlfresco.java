@@ -9,11 +9,17 @@ import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -66,7 +72,44 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         return response;
     }
 
-    public String subirDocumentoContent(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException {
+    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
+
+        //Codigo new
+        String fileName = "";
+
+        Map<String, List<InputPart>> uploadForm = documento1.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("uploadedFile");
+
+        for (InputPart inputPart : inputParts) {
+            MultivaluedMap<String, String> header = inputPart.getHeaders();
+            fileName = getFileName(header);
+
+            //convert the uploaded file to inputstream
+            InputStream inputStream = inputPart.getBody(InputStream.class,null);
+
+            byte [] bytes = IOUtils.toByteArray(inputStream);
+
+            //constructs upload file path
+            fileName = "/home/wildfly/" + fileName;
+            LOGGER.info("Ruta del fichero: " + fileName);
+
+            writeFile(bytes,fileName);
+
+            LOGGER.info("Fichero escrito");
+
+            LOGGER.info("Nombre del fichero: " + fileName);
+
+            return "subida exitosa";
+            //Fin codigo new
+
+
+
+
+
+
+
+
+
         LOGGER.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         String idDocumento = "";
@@ -101,8 +144,9 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         return idDocumento;
     }
 
-    //TODO Mover docuemnto
+
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+
         LOGGER.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
