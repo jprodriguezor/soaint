@@ -50,13 +50,6 @@ public class AsignacionWebApi {
         boundary.actualizarIdInstancia(asignacion);
     }
 
-    @PUT
-    @Path("/asignacion/redireccionar")
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException{
-        logger.info("processing rest request - redireccionar correspondencia");
-        boundary.redireccionarCorrespondencia(agentesDTO);
-    }
-
     @GET
     @Path("/asignacion")
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@QueryParam("ide_funci")final BigInteger ideFunci,

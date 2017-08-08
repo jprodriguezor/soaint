@@ -59,8 +59,21 @@ import java.util.Date;
                 "INNER JOIN d.corCorrespondencia c " +
                 "INNER JOIN d.corAgente g " +
                 "WHERE g.ideAgente = :IDE_AGENTE AND g.codEstado = :COD_ESTADO "),
+        @NamedQuery(name = "DctAsigUltimo.consultarByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
+                "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
+                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
+                "g.ideAgente, " +
+                "c.ideDocumento, c.nroRadicado) " +
+                "FROM DctAsigUltimo d " +
+                "INNER JOIN d.dctAsignacion a " +
+                "INNER JOIN d.corCorrespondencia c " +
+                "INNER JOIN d.corAgente g " +
+                "WHERE g.ideAgente = :IDE_AGENTE "),
         @NamedQuery(name = "DctAsigUltimo.updateIdInstancia", query = "UPDATE DctAsigUltimo d " +
                 "SET d.idInstancia = :ID_INSTANCIA " +
+                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
+        @NamedQuery(name = "DctAsigUltimo.updateNumRedirecciones", query = "UPDATE DctAsigUltimo d " +
+                "SET d.numRedirecciones = :NUM_REDIRECCIONES " +
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO")})
 @javax.persistence.TableGenerator(name = "DCT_ASIG_ULTIMO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIG_ULTIMO_SEQ", allocationSize = 1)

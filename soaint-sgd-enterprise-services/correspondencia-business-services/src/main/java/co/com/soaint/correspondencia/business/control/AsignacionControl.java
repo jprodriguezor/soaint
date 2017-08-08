@@ -4,10 +4,7 @@ import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -16,6 +13,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +49,9 @@ public class AsignacionControl {
 
     @Autowired
     DctAsigUltimoControl dctAsigUltimoControl;
+
+    @Autowired
+    CorrespondenciaControl correspondenciaControl;
     // ----------------------
 
     public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
@@ -172,21 +173,18 @@ public class AsignacionControl {
         }
     }
 
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
-        try {
-            for (AgenteDTO agenteDTO : agentesDTO.getAgentes()){
-                em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
-                        .setParameter("COD_SEDE", agenteDTO.getCodSede())
-                        .setParameter("COD_DEPENDENCIA", agenteDTO.getCodDependencia())
-                        .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
-                        .executeUpdate();
-            }
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+
+    public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) {
+        em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
+                .setParameter("NUM_REDIRECCIONES", numRedirecciones)
+                .setParameter("IDE_ASIG_ULTIMO", ideAsigUltimo)
+                .executeUpdate();
+    }
+
+    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente){
+        List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
+                .setParameter("IDE_AGENTE", ideAgente)
+                .getResultList();
+        return asignacionDTOList.isEmpty() ? null : asignacionDTOList.get(0);
     }
 }

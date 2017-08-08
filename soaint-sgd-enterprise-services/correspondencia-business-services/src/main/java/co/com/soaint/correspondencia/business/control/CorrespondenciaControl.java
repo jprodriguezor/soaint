@@ -149,9 +149,7 @@ public class CorrespondenciaControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         try {
-            CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
-                    .setParameter(constNroRadicado, nroRadicado)
-                    .getSingleResult();
+            CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroRadicado);
 
             return consultarComunicacionOficialByCorrespondencia(correspondenciaDTO);
         } catch (NoResultException n) {
@@ -348,9 +346,7 @@ public class CorrespondenciaControl {
         int consecRadicado = 0;
 
         if (nroR != null) {
-            CorrespondenciaDTO correspondenciaDTO = em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
-                    .setParameter(constNroRadicado, nroR)
-                    .getSingleResult();
+            CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroR);
             Calendar calendar = Calendar.getInstance();
             int anno = calendar.get(Calendar.YEAR);
             calendar.setTime(correspondenciaDTO.getFecRadicado());
@@ -436,6 +432,12 @@ public class CorrespondenciaControl {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(fecha);
         return calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+    }
+
+    public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado){
+        return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
+                .setParameter(constNroRadicado, nroRadicado)
+                .getSingleResult();
     }
 
 }
