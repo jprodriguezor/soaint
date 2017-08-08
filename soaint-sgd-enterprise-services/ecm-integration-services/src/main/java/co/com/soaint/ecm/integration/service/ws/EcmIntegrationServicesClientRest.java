@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
@@ -53,7 +50,9 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/subirDocumentoECM/")
-    public String subirDocumentoECM(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException, SystemException {
+    public String subirDocumentoECM(@QueryParam("nombreDocumento") final String nombreDocumento,
+                                    @QueryParam("documento") final MultipartFile documento,
+                                    @QueryParam("tipoComunicacion") final String tipoComunicacion) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");
         try {
@@ -66,7 +65,9 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/moverDocumentoECM/")
-    public MensajeRespuesta moverDocumentoECM( String moverDocumento,String carpetaFuente, String carpetaDestino) throws InfrastructureException, SystemException {
+    public MensajeRespuesta moverDocumentoECM(@QueryParam ("moverDocumento") final String moverDocumento,
+                                              @QueryParam ("carpetaFuente") final String carpetaFuente,
+                                              @QueryParam ("carpetaDestino") final String carpetaDestino) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");
         try {

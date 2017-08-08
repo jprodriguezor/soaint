@@ -122,9 +122,11 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
             /**
              * Se establece la conexion*/
+            LOGGER.info ("###Se va a establecer la conexion");
+            LOGGER.info ("###Se va a establecer la conexion"+ control);
             response = control.establecerConexiones ( );
+            LOGGER.info ("###Conexion establecida");
 
-            Utilities utils = new Utilities ( );
             Conexion conexion = new Conexion ( );
 
             try {
@@ -135,15 +137,12 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
             /**TODO Revisar el tema de los metodos de getMessage*/
-//            response.setCodMensaje(MessageUtil.getMessage("cod00"));
-//            response.setMensaje(MessageUtil.getMessage("msj00"));
             control.cerrarConexionContent ( );
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            /**TODO Revisar el tema de los metodos de getMessage*/
-//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
-//            response.setMensaje(MessageUtil.getMessage("msj08"));
+            response.setCodMensaje("0003");
+            response.setMensaje("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
             control.cerrarConexionContent ( );
         }
         return response;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 //import co.com.soaint.ecm.business.boundary.records.RecordsManager;
 
@@ -33,7 +34,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
     public String subirDocumento(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException {
         String idDocumento;
-        ContentManagerMediator content = FactoriaContent.getContentManager ("alfresco");
+//        ContentManagerMediator content = FactoriaContent.getContentManager ("alfresco");
         idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
 //        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
 //            response = records.createStructureRecords(structure);
@@ -42,12 +43,20 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     }
 
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
-        MensajeRespuesta response;
-        ContentManagerMediator content = FactoriaContent.getContentManager ("alfresco");
-        response = content.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
-//        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
-//            response = records.createStructureRecords(structure);
-//        }
+        MensajeRespuesta response=new MensajeRespuesta ();
+//        ContentManagerMediator content = FactoriaContent.getContentManager ("alfresco");
+        try{
+
+            response = content.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
+
+        }catch(Exception e)
+        {
+            response.setCodMensaje ("000002");
+            response.setMensaje ("Error al mover documento");
+        }
+
         return response;
-    }
+        }
+
+
 }

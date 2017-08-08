@@ -552,7 +552,7 @@ public class ContentControlAlfresco extends ContentControl {
         LOGGER.info ("### Mover documento: " + documento);
 
         LOGGER.info ("### Obtener carpeta fuente: " + carpetaFuente);
-
+        MensajeRespuesta response=new MensajeRespuesta ( );
         try {
 
             Carpeta carpetaF = new Carpeta ( );
@@ -564,12 +564,17 @@ public class ContentControlAlfresco extends ContentControl {
             CmisObject object = session.getObjectByPath (carpetaF.getFolder ( ).getPath ( ) + "/" + documento);
             Document mvndocument = (Document) object;
             mvndocument.move (carpetaF.getFolder ( ), carpetaD.getFolder ( ));
+            response.setMensaje ("OK");
+            response.setCodMensaje ("0000");
+
         } catch (CmisObjectNotFoundException e) {
             System.err.println ("Document is not found: " + documento);
             LOGGER.info ("*** Error al mover el documento ***");
+            response.setMensaje ("Documento no encontrado");
+            response.setCodMensaje ("00006");
         }
 
-        return null;
+        return response;
     }
 
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
