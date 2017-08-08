@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: Actions) {
       });
     }
 
-    case ActionTypes.CONTINUE_WITH_NEXT_TASK: {
+    case ActionTypes.SCHEDULE_NEXT_TASK: {
       const nextTask = action.payload;
       return tassign( state, {
         nextTask: nextTask

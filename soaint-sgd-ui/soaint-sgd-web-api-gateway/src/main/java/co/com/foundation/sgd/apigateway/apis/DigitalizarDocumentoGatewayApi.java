@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 @Path("/digitalizar-documento-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.MULTIPART_FORM_DATA)
 public class DigitalizarDocumentoGatewayApi {
 
 
@@ -23,7 +23,7 @@ public class DigitalizarDocumentoGatewayApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @GET
+    @POST
     @Path("/")
     @JWTTokenSecurity
     public Response list() {

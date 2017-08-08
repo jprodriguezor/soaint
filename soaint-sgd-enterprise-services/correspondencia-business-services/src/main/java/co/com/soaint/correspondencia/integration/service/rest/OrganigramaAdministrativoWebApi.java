@@ -54,7 +54,7 @@ public class OrganigramaAdministrativoWebApi {
 
     @GET
     @Path("/organigrama/dependencias/{ide_orga_admin_padre}")
-    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws BusinessException, SystemException{
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws SystemException{
         logger.info("processing rest request - listar descendientes directos de un elemento");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }

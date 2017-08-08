@@ -31,7 +31,7 @@ public class GestionarCorrespondenciaWS {
     }
 
     @WebMethod(action = "registrarObservacionCorrespondencia", operationName = "registrarObservacionCorrespondencia")
-    public void registrarObservacionCorrespondencia(@WebParam(name = "traza_documento") final PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+    public void registrarObservacionCorrespondencia(@WebParam(name = "traza_documento") final PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException {
         boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
 

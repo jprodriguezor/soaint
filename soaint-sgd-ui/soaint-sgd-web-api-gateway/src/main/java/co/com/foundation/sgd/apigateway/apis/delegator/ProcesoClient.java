@@ -97,6 +97,16 @@ public class ProcesoClient {
                 .post(Entity.json(entrada));
     }
 
+    public Response reasignarTarea(EntradaProcesoDTO entrada) {
+        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        entrada.setUsuario("daniel.barrios");
+        entrada.setPass("descarga");
+        return wt.path("/bpm/tareas/reasignar")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
     public Response listarIntanciasProceso() {
         System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

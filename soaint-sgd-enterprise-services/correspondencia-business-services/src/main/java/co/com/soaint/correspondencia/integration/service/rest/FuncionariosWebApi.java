@@ -46,7 +46,7 @@ public class FuncionariosWebApi {
 
     @GET
     @Path("/funcionarios/dependencia/{cod_dependencia}/{cod_estado}")
-    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia")final String codDependencia, @PathParam("cod_estado")final String codEstado)throws BusinessException, SystemException{
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia")final String codDependencia, @PathParam("cod_estado")final String codEstado)throws SystemException{
         logger.info("processing rest request - listar funcionarios por dependencia");
         return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
     }

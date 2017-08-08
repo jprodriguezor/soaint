@@ -1,16 +1,14 @@
 package co.com.soaint.correspondencia.business.boundary;
 
+import co.com.soaint.correspondencia.business.control.DepartamentoControl;
 import co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
@@ -22,50 +20,24 @@ import java.util.List;
  * Purpose: BOUNDARY - business component services
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+@NoArgsConstructor
 @BusinessBoundary
 public class GestionarDepartamento {
 
     // [fields] -----------------------------------
 
-    private static Logger logger = LogManager.getLogger(GestionarDepartamento.class.getName());
-
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private DepartamentoControl control;
 
     // ----------------------
 
-    public GestionarDepartamento() {
-        super();
-    }
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByEstado(String estado) throws SystemException {
-        try {
-            return em.createNamedQuery("TvsDepartamento.findAll", DepartamentoDTO.class)
-                    .setParameter("ESTADO", estado)
-                    .getResultList();
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+       return control.listarDepartamentosByEstado(estado);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByCodPaisAndEstado(String codPais, String estado) throws SystemException {
-        try {
-            return em.createNamedQuery("TvsDepartamento.findAllByCodPaisAndEstado", DepartamentoDTO.class)
-                    .setParameter("COD_PAIS", codPais)
-                    .setParameter("ESTADO", estado)
-                    .getResultList();
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+        return control.listarDepartamentosByCodPaisAndEstado(codPais, estado);
     }
 }

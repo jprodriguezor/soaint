@@ -9,7 +9,6 @@ import {ContinueWithNextTaskAction, UnlockActiveTaskAction} from './tareasDTO-ac
 import {ConfirmationService} from 'primeng/primeng';
 import {Sandbox as NotificationsService} from '../notifications-state/notifications-sandbox';
 import {go} from '@ngrx/router-store';
-import {TaskForm} from '../../../shared/interfaces/task-form.interface';
 import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
 
 
@@ -40,10 +39,9 @@ export class TareaDtoGuard implements CanDeactivate<any>, OnDestroy {
       this._store.select((s: RootStore) => s.tareas.nextTask)
     ).switchMap(([activeTask, nextTask]) => {
         if (activeTask === null) {
-          if (nextTask !== nextState.url || nextTask === null) {
+          if (nextTask === null) {
             return Observable.of(true);
           } else {
-
             this._confirm.confirm({
               message: 'Esta tarea se asoció con otra para ser ejecutadas de forma secuencial e inmediata. ' +
               'Si confirma esta acción la tarea siguiente se adicionará a su lista de tareas para posterior ejecusión. ' +
@@ -67,7 +65,7 @@ export class TareaDtoGuard implements CanDeactivate<any>, OnDestroy {
                   severity: 'success',
                   summary: `La tarea ${taskId} se ha agendado.`
                 }).onShown.subscribe(() => {
-                  this._notify.hideNotification(previousNot.toastId)
+                  this._notify.hideNotification(previousNot.toastId);
                   this.goForward(nextState);
                 });
               });
@@ -78,7 +76,6 @@ export class TareaDtoGuard implements CanDeactivate<any>, OnDestroy {
         }
       }
     );
-
     return observable;
   }
 

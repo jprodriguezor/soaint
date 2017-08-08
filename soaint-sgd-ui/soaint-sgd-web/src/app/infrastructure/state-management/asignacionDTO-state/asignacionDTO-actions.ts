@@ -3,8 +3,11 @@ import {type} from 'app/infrastructure/redux-store/redux-util';
 
 export const ActionTypes = {
   ASSIGN: type('[asignacionDTO] AssignAction'),
+  REASSIGN: type('[asignacionDTO] ReassignAction'),
   ASSIGN_SUCCESS: type('[asignacionDTO] AssignSuccessAction'),
+  REASSIGN_SUCCESS: type('[asignacionDTO] ReassignSuccessAction'),
   ASSIGN_FAIL: type('[asignacionDTO] AssignFailAction'),
+  REASSIGN_FAIL: type('[asignacionDTO] ReassignFailAction'),
   REDIRECT: type('[asignacionDTO] RedirectAction'),
   REDIRECT_SUCCESS: type('[asignacionDTO] RedirectSuccessAction'),
   REDIRECT_FAIL: type('[asignacionDTO] RedirectFailAction'),
@@ -77,6 +80,27 @@ export class SetRejectDialogVisibleAction implements Action {
   }
 }
 
+export class ReassignAction implements Action {
+  type = ActionTypes.REASSIGN;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class ReassignSuccessAction implements Action {
+  type = ActionTypes.REASSIGN_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class ReassignFailAction implements Action {
+  type = ActionTypes.REASSIGN_FAIL;
+
+  constructor(public payload?: any) {
+  }
+}
+
 
 export type Actions =
   AssignAction
@@ -85,6 +109,9 @@ export type Actions =
   | RedirectAction
   | RedirectSuccessAction
   | RedirectFailAction
+  | ReassignAction
+  | ReassignSuccessAction
+  | ReassignFailAction
   | SetJustificationDialogVisibleAction
   | SetAddObservationsDialogVisibleAction
   | SetRejectDialogVisibleAction;

@@ -68,8 +68,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   @ViewChild('popupReject') popupReject;
 
-  constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox,
-              private _asignacionSandbox: AsignacionSandbox, private _funcionarioSandbox: Sandbox, private formBuilder: FormBuilder) {
+  constructor(private _store: Store<RootState>,
+              private _comunicacionOficialApi: CominicacionOficialSandbox,
+              private _asignacionSandbox: AsignacionSandbox,
+              private _funcionarioSandbox: Sandbox,
+              private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -124,6 +127,12 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   assignComunications() {
     this._asignacionSandbox.assignDispatch({
+      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
+    });
+  }
+
+  reassignComunications() {
+    this._asignacionSandbox.reassignDispatch({
       asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
     });
   }

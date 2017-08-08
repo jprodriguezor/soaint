@@ -28,7 +28,7 @@ public class GestionarAsignacionWS {
     }
 
     @WebMethod(action = "asignarCorrespondencia", operationName = "asignarCorrespondencia")
-    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList")final AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
+    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList")final AsignacionesDTO asignacionesDTO)throws SystemException{
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
@@ -38,7 +38,7 @@ public class GestionarAsignacionWS {
     }
 
     @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList")final AgentesDTO agentesDTO) throws BusinessException, SystemException{
+    public void redireccionarCorrespondencia(@WebParam(name = "agenteList")final AgentesDTO agentesDTO) throws SystemException{
         boundary.redireccionarCorrespondencia(agentesDTO);
     }
 
