@@ -1,0 +1,9 @@
+export const NOT_FOUND = 'El recurso no fue encontrado';
+export const CUSTOMER_NOT_SUPPORTED = 'Ocurrió un error inesperado. Consulte con su administrador.';
+export const BAD_GATEWAY = 'El servidor no está disponible. Intentelo más tarde.';
+export const GATEWAY_TIMEOUT = 'No se pude establecer conexión con el servidor. Intentelo más tarde.';
+export const CONFLICT = 'Ocurrió un error inesperado. Consulte con su administrador.';
+export const FORBIDDEN = 'El acceso al recurso fue prohibido';
+export const NOT_AUTHORIZED = 'No está autorizado.';
+export const SERVER_ERROR = 'Ocurrió un error inesperado. Consulte con su administrador.';
+export const BAD_REQUEST = 'Ocurrió un error inesperado. Consulte con su administrador.';
