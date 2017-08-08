@@ -8,6 +8,7 @@ import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
+import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
 
 @Injectable()
 export class Sandbox {
@@ -49,8 +50,17 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction(query));
   }
 
-  initTaskDispatch(payload?): any {
-    this._store.dispatch(go(['/task/radicar-comunicaciones', payload]));
+  initTaskDispatch(task: TareaDTO): any {
+    switch (task.nombre) {
+      case TASK_RADICACION_ENTRADA:
+         this._store.dispatch(go(['/task/radicar-comunicaciones', task]));
+         break;
+      case TASK_DIGITALIZAR_DOCUMENTO:
+        this._store.dispatch(go(['/task/digitalizar-documento', task]));
+        break;
+      default:
+        this._store.dispatch(go(['/task/radicar-comunicaciones', task]));
+    }
   }
 
   completeTaskDispatch(payload: any) {
@@ -204,6 +214,7 @@ export class Sandbox {
       }
     ]
   }
+
 
 }
 

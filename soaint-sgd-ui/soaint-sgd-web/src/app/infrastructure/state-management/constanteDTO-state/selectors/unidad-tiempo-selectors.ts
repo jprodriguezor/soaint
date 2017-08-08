@@ -17,13 +17,6 @@ export const getUnidadTiempoEntities = createSelector(rootPath, (state: State) =
 
 export const getUnidadTiempoIds = createSelector(rootPath, (state: State) => state.unidadTiempo.ids);
 
-export const getUnidadTiempoSelectedId = createSelector(rootPath, (state: State) => state.unidadTiempo.selectedId);
-
-export const getUnidadTiempoSelectedEntity =
-  createSelector(getUnidadTiempoEntities, getUnidadTiempoSelectedId, (entities, selectedId) => {
-    return entities[selectedId];
-  });
-
 export const getUnidadTiempoArrayData = createSelector(getUnidadTiempoEntities, getUnidadTiempoIds, (entities, ids) => {
   return ids.map(id => entities[id]);
 });

@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {Sandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
+import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {
   getMediosRecepcionArrayData,
   getTipoAnexosArrayData,
@@ -13,9 +13,14 @@ import {
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/single';
-import {getVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {
+  getMediosRecepcionEntities,
+  getMediosRecepcionIds,
+} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
-import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-generales.api';
+import {createSelector} from 'reselect';
+import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
 
 @Component({
   selector: 'app-datos-generales',
@@ -39,16 +44,19 @@ export class DatosGeneralesComponent implements OnInit {
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
+  metricasTiempoTipologia$: Observable<any>;
   defaultSelectionMediosRecepcion$: Observable<any>;
+
+  // default values Metricas por Tipologia
+  medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
+  tiempoRespuestaMetricaTipologia$: Observable<number> = Observable.of(null);
+  codUnidaTiempoMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
 
   @Input()
   editable = true;
 
   @Input()
-  datosRemitente: any;
-
-  @Input()
-  datosDestinatario: any;
+  mediosRecepcionInput: ConstanteDTO = null;
 
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
@@ -56,7 +64,7 @@ export class DatosGeneralesComponent implements OnInit {
   validations: any = {};
 
 
-  constructor(private _store: Store<State>, private _sandbox: Sandbox, private formBuilder: FormBuilder) {
+  constructor(private _store: Store<State>, private _apiDatosGenerales: DatosGeneralesApiService, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder) {
   }
 
   initForm() {
@@ -69,6 +77,7 @@ export class DatosGeneralesComponent implements OnInit {
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
       'unidadTiempo': [{value: null, disabled: !this.editable}],
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
+      'inicioConteo': [null],
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
       'reqDigitInmediata': [{value: null, disabled: !this.editable}],
@@ -77,6 +86,7 @@ export class DatosGeneralesComponent implements OnInit {
       'radicadoReferido': [{value: null, disabled: !this.editable}],
       'tipoAnexos': [{value: null, disabled: !this.editable}],
       'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
+      'hasAnexos': [{value: null, disabled: !this.editable}, Validators.required]
     });
   }
 
@@ -94,7 +104,7 @@ export class DatosGeneralesComponent implements OnInit {
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
 
-    this._sandbox.loadDatosGeneralesDispatch();
+    this._constSandbox.loadDatosGeneralesDispatch();
 
     this.initForm();
 
@@ -102,11 +112,10 @@ export class DatosGeneralesComponent implements OnInit {
       this.onSelectTipoComunicacion(value);
     });
 
-    this.form.get('reqDigitInmediata').valueChanges.subscribe((value) => {
-        this._store.dispatch(new ScheduleNextTaskAction());
+    this.form.get('tipologiaDocumental').valueChanges.subscribe((value) => {
+      this.onSelectTipologiaDocumental(value);
     });
 
-    this.defaultSelectionMediosRecepcion$ = this._store.select(getVentanillaData);
     this.listenForErrors();
   }
 
@@ -131,6 +140,7 @@ export class DatosGeneralesComponent implements OnInit {
         value.descripcion !== descripcion
       )
     ];
+    this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);
     this.form.get('tipoAnexos').reset();
     this.form.get('tipoAnexosDescripcion').reset();
   }
@@ -144,13 +154,25 @@ export class DatosGeneralesComponent implements OnInit {
   deleteTipoAnexoDescripcion(index) {
     const removeVal = [...this.descripcionAnexos];
     removeVal.splice(index, 1);
+    if (removeVal.length === 0) {
+      this.form.get('hasAnexos').reset();
+    }
     this.descripcionAnexos = removeVal;
+  }
+
+  onSelectTipologiaDocumental(codigoTipologia) {
+    this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
+    this.metricasTiempoTipologia$.subscribe(metricas => {
+      this.tiempoRespuestaMetricaTipologia$ = Observable.of(metricas.tiempoRespuesta);
+      this.codUnidaTiempoMetricaTipologia$ = this._store.select(createSelector(getUnidadTiempoEntities, (entities) => {
+        return entities[metricas.codUnidaTiempo];
+      }));
+      this.form.get('inicioConteo').setValue(metricas.inicioConteo);
+    });
   }
 
   onSelectTipoComunicacion(value) {
     this.onChangeTipoComunicacion.emit(value);
-    // this.datosRemitente.onSelectTipoPersona();
-    // this.datosDestinatario.onSelectTipoComunicacion();
   }
 
   listenForBlurEvents(control: string) {

@@ -7,7 +7,10 @@ export interface State {
   ids: number[];
   entities: { [idTarea: number]: TareaDTO };
   activeTask: TareaDTO;
-  nextTask: string;
+  nextTask: {
+    codigoProceso: string,
+    idDespliegue: string
+  };
 }
 
 const initialState: State = {

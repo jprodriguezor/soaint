@@ -20,7 +20,7 @@ export const getMediosRecepcionIds = createSelector(rootPath, (state: State) => 
 export const getMediosRecepcionSelectedId = createSelector(rootPath, (state: State) => state.mediosRecepcion.selectedId);
 
 // Get Ventanilla Ventanilla ideConst = 10
-export const getVentanillaData = createSelector(getMediosRecepcionEntities, (entities) => {
+export const getMediosRecepcionVentanillaData = createSelector(getMediosRecepcionEntities, (entities) => {
     return entities['ME-RECVN'];
   });
 
