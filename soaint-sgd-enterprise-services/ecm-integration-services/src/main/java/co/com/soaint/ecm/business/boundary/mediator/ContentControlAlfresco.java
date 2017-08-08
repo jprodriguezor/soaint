@@ -3,7 +3,9 @@ package co.com.soaint.ecm.business.boundary.mediator;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configuracion;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
-import co.com.soaint.ecm.domain.entity.*;
+import co.com.soaint.ecm.domain.entity.Carpeta;
+import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.Dominio;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
@@ -25,17 +27,12 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExists
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.file.*;
 import java.util.*;
 import java.util.logging.Logger;
-
-import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * Created by sarias on 11/11/2016.
@@ -63,10 +60,10 @@ public class ContentControlAlfresco extends ContentControl {
 //    @Value( "${ALFRESCO_PASS}" )
 //    private String propiedadALFRESCO_PASS ;
 
-    private String propiedadALFRSCO_ATOMPUB_URL= "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
-    private String propiedadREPOSITORY_ID="-default-" ;
-    private String propiedadALFRESCO_USER="admin" ;
-    private String propiedadALFRESCO_PASS="admin";
+    private String propiedadALFRSCO_ATOMPUB_URL = "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+    private String propiedadREPOSITORY_ID = "-default-";
+    private String propiedadALFRESCO_USER = "admin";
+    private String propiedadALFRESCO_PASS = "admin";
 
     public MensajeRespuesta establecerConexiones() throws SystemException {
 
@@ -75,7 +72,7 @@ public class ContentControlAlfresco extends ContentControl {
 
         try {
             LOGGER.info ("### Llenando datos de conexion..");
-            LOGGER.info ("### Usuario.."+ propiedadALFRESCO_USER);
+            LOGGER.info ("### Usuario.." + propiedadALFRESCO_USER);
             Properties props = new Properties ( );
 
             Map <String, String> parameter = new HashMap <String, String> ( );
@@ -100,8 +97,8 @@ public class ContentControlAlfresco extends ContentControl {
         } catch (Exception e) {
             e.printStackTrace ( );
             LOGGER.info ("Error obteniendo conexion");
-            response.setCodMensaje("Error al establecer Conexiones");
-            response.setMensaje("000002");
+            response.setCodMensaje ("Error al establecer Conexiones");
+            response.setMensaje ("000002");
         }
 
         return response;
@@ -197,7 +194,7 @@ public class ContentControlAlfresco extends ContentControl {
         Carpeta newFolder = null;
         try {
 
-            LOGGER.info ("### Creando Carpeta.. con clase docuemntal:"+classDocumental);
+            LOGGER.info ("### Creando Carpeta.. con clase docuemntal:" + classDocumental);
             Map <String, String> props = new HashMap <> ( );
             //Se define como nombre de la carpeta nameOrg
             props.put (PropertyIds.NAME, nameOrg);
@@ -239,7 +236,7 @@ public class ContentControlAlfresco extends ContentControl {
             //Se crea la carpeta dentro de la carpeta folder
             LOGGER.info ("*** Se procede a crear la carpeta ***");
             newFolder = new Carpeta ( );
-            LOGGER.info ("*** despues de aqui se va a crear la nueva c arpeta dentro d ela carpeta: ***"+ Configuracion.getPropiedad ("claseSubserie") +Configuracion.getPropiedad ("claseBase"));
+            LOGGER.info ("*** despues de aqui se va a crear la nueva c arpeta dentro d ela carpeta: ***" + Configuracion.getPropiedad ("claseSubserie") + Configuracion.getPropiedad ("claseBase"));
             newFolder.setFolder (folder.getFolder ( ).createFolder (props));
         } catch (Exception e) {
             LOGGER.info ("*** Error al crear folder ***");
@@ -451,16 +448,16 @@ public class ContentControlAlfresco extends ContentControl {
 
     public static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
 
-        Carpeta folder = new Carpeta ();
+        Carpeta folder = new Carpeta ( );
         try {
 
-            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta+"'";
+            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
 
-            ItemIterable<QueryResult> results = session.query(queryString, false);
+            ItemIterable <QueryResult> results = session.query (queryString, false);
 
             for (QueryResult qResult : results) {
-                String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
-                folder.setFolder ( (Folder) session.getObject(session.createObjectId(objectId)));
+                String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
+                folder.setFolder ((Folder) session.getObject (session.createObjectId (objectId)));
 
             }
         } catch (Exception e) {
@@ -525,8 +522,8 @@ public class ContentControlAlfresco extends ContentControl {
 //                Folder carpeta = (Folder) conexion.getSession ( ).getObjectByPath (conexion.getSession ( ).getRootFolder ( ).getPath ( ) + aux.getFolder ( ).getName ( ));
 
                 //Mi solucion al problema de mas arriba
-                Carpeta carpeta = obtenerCarpetaPorNombre (aux.getFolder ( ).getName ( ),conexion.getSession ( ));
-                String description = carpeta.getFolder ().getDescription ( );
+                Carpeta carpeta = obtenerCarpetaPorNombre (aux.getFolder ( ).getName ( ), conexion.getSession ( ));
+                String description = carpeta.getFolder ( ).getDescription ( );
                 if (description.equals (Configuracion.getPropiedad ("claseDependencia"))) {
                     if (aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad ("metadatoCodDependencia")) != null &&
                             aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad ("metadatoCodDependencia")).equals (codFolder)) {
@@ -551,10 +548,10 @@ public class ContentControlAlfresco extends ContentControl {
         return folderReturn;
     }
 
-    public MensajeRespuesta movDocumento(Session session,String documento, String carpetaFuente, String carpetaDestino ) throws SystemException{
-        LOGGER.info ("### Mover documento: "+documento);
+    public MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino) throws SystemException {
+        LOGGER.info ("### Mover documento: " + documento);
 
-        LOGGER.info ("### Obtener carpeta fuente: "+carpetaFuente);
+        LOGGER.info ("### Obtener carpeta fuente: " + carpetaFuente);
 
         try {
 
@@ -564,11 +561,11 @@ public class ContentControlAlfresco extends ContentControl {
             carpetaF = (obtenerCarpetaPorNombre (carpetaFuente, session));
             carpetaD = (obtenerCarpetaPorNombre (carpetaDestino, session));
 
-            CmisObject object = session.getObjectByPath(carpetaF.getFolder ().getPath()+"/"+documento);
+            CmisObject object = session.getObjectByPath (carpetaF.getFolder ( ).getPath ( ) + "/" + documento);
             Document mvndocument = (Document) object;
-            mvndocument.move(carpetaF.getFolder (),carpetaD.getFolder ());
+            mvndocument.move (carpetaF.getFolder ( ), carpetaD.getFolder ( ));
         } catch (CmisObjectNotFoundException e) {
-            System.err.println("Document is not found: " + documento);
+            System.err.println ("Document is not found: " + documento);
             LOGGER.info ("*** Error al mover el documento ***");
         }
 
@@ -699,15 +696,15 @@ public class ContentControlAlfresco extends ContentControl {
             LOGGER.info ("Error al crear arbol content");
             e.printStackTrace ( );
             //TODO revisar el tema del response
-            response.setCodMensaje("Error al crear el arbol");
-            response.setMensaje("111112");
+            response.setCodMensaje ("Error al crear el arbol");
+            response.setMensaje ("111112");
         }
 
         return response;
     }
 
     public String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) {
-        String idDocumento="";
+        String idDocumento = "";
         //Se definen las propiedades del documento a subir
         Map <String, Object> properties = new HashMap <String, Object> ( );
 
@@ -716,19 +713,18 @@ public class ContentControlAlfresco extends ContentControl {
 
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-            Carpeta folderAlfresco =new Carpeta ();
-            if (tipoComunicacion == "TP-CMCOE"){
-                folderAlfresco =  obtenerCarpetaPorNombre ("COMUNICACION_EXTERNA",session);
-            }
-            else if(tipoComunicacion == "TP-CMCOI"){
-                folderAlfresco = obtenerCarpetaPorNombre ("COMUNICACION_INTERNA",session);
+            Carpeta folderAlfresco = new Carpeta ( );
+            if (tipoComunicacion == "TP-CMCOE") {
+                folderAlfresco = obtenerCarpetaPorNombre ("100100.00302_COMUNICACION_EXTERNA", session);
+            } else if (tipoComunicacion == "TP-CMCOI") {
+                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
             }
 
             VersioningState vs = VersioningState.MAJOR;
 
             //Convierto el MultipartFile a File
-            File convFile = new File(documento.getOriginalFilename());
-            convFile.createNewFile();
+            File convFile = new File (documento.getOriginalFilename ( ));
+            convFile.createNewFile ( );
 
 
             InputStream fis = new FileInputStream (convFile);
@@ -738,8 +734,8 @@ public class ContentControlAlfresco extends ContentControl {
             ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
 
             //Se crea el documento
-            Document newDocument = folderAlfresco.getFolder ().createDocument (properties, contentStream, vs);
-            idDocumento=newDocument.getId ( );
+            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+            idDocumento = newDocument.getId ( );
         } catch (CmisContentAlreadyExistsException ccaee) {
             System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
         } catch (CmisConstraintException cce) {

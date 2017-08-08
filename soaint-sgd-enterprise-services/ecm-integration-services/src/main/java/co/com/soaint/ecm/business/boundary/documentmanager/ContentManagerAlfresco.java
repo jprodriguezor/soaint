@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
 import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
 import co.com.soaint.ecm.domain.entity.Carpeta;
@@ -22,7 +21,6 @@ import java.util.logging.Logger;
  */
 
 
-
 @Service
 public class ContentManagerAlfresco extends ContentManagerMediator {
 
@@ -35,7 +33,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
-            LOGGER.info ("### Creando estructura content..");
+        LOGGER.info ("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         Carpeta carpeta;
         try {
@@ -65,8 +63,8 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            response.setCodMensaje("Error creando estructura");
-            response.setMensaje("11113");
+            response.setCodMensaje ("Error creando estructura");
+            response.setMensaje ("11113");
             control.cerrarConexionContent ( );
         }
         return response;
@@ -98,7 +96,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             //TODO la carpeta target hay que llenarla, el mimetype
 
 
-                    idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
+            idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
             /**TODO Revisar el tema de los metodos de getMessage*/
 //            response.setCodMensaje(MessageUtil.getMessage("cod00"));
