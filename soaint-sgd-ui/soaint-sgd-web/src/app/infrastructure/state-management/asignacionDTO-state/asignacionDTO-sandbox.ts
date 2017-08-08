@@ -3,22 +3,22 @@ import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './asignacionDTO-actions';
-import {ListForSelectionApiService} from 'app/infrastructure/api/list-for-selection.api.service';
+import {ApiBase} from '../../api/api-base';
 
 
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _http: ListForSelectionApiService) {
+              private _api: ApiBase) {
   }
 
   assignComunications(payload: any) {
-    return this._http.post(environment.asignarComunicaciones_endpoint, payload);
+    return this._api.post(environment.asignarComunicaciones_endpoint, payload);
   }
 
   redirectComunications(payload: any) {
-    return this._http.post(environment.redireccionarComunicaciones_endpoint, payload);
+    return this._api.post(environment.redireccionarComunicaciones_endpoint, payload);
   }
 
   assignDispatch(payload) {

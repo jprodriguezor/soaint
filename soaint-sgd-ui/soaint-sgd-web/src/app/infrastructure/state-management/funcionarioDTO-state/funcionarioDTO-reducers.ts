@@ -1,11 +1,12 @@
 import {Actions, ActionTypes} from './funcionarioDTO-actions';
+import {mockState} from './funcionarioDTO-mockState';
 import {tassign} from 'tassign';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 
 export interface State {
-  ids: string[];
+  ids: number[];
   entities: { [id: number]: FuncionarioDTO };
   authenticatedFuncionario: FuncionarioDTO;
   selectedDependencyGroup: DependenciaDTO

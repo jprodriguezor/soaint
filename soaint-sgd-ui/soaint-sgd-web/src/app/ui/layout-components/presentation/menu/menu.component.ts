@@ -135,18 +135,18 @@ export class AppSubMenuComponent {
     // activate current item and deactivate active sibling if any
     this.activeIndex = (this.activeIndex === index) ? null : index;
 
-    // execute command
-    if (item.command) {
-      if (!item.eventEmitter) {
-        item.eventEmitter = new EventEmitter();
-        item.eventEmitter.subscribe(item.command);
-      }
-
-      item.eventEmitter.emit({
-        originalEvent: event,
-        item: item
-      });
-    }
+    // // execute command
+    // if (item.command) {
+    //   if (!item.eventEmitter) {
+    //     item.eventEmitter = new EventEmitter();
+    //     item.eventEmitter.subscribe(item.command);
+    //   }
+    //
+    //   item.eventEmitter.emit({
+    //     originalEvent: event,
+    //     item: item
+    //   });
+    // }
 
     // prevent hash change
     if (item.items || (!item.url && !item.routerLink)) {

@@ -1,11 +1,12 @@
 import {Action} from '@ngrx/store';
-import {type} from 'app/infrastructure/redux-store/_util';
+import {type} from 'app/infrastructure/redux-store/redux-util';
 
 export const ActionTypes = {
   FILTER: type('[constanteDTO] FilterAction'),
   FILTER_COMPLETE: type('[constanteDTO] FilterCompleteAction'),
   LOAD: type('[constanteDTO] LoadAction'),
-  LOAD_COMMON: type('[constanteDTO] LoadCommonConstantsAction'),
+  LOAD_DATOS_GENERALES: type('[constanteDTO] LoadDatosGeneralesAction'),
+  LOAD_DATOS_REMITENTE: type('[constanteDTO] LoadDatosRemitenteAction'),
   LOAD_SUCCESS: type('[constanteDTO] LoadSuccessAction'),
   LOAD_FAIL: type('[constanteDTO] LoadFailAction'),
   SELECT: type('[constanteDTO] SelectAction'),
@@ -32,8 +33,15 @@ export class LoadAction implements Action {
   }
 }
 
-export class LoadCommonConstantsAction implements Action {
-  type = ActionTypes.LOAD_COMMON;
+export class LoadDatosGeneralesAction implements Action {
+  type = ActionTypes.LOAD_DATOS_GENERALES;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadDatosRemitenteAction implements Action {
+  type = ActionTypes.LOAD_DATOS_REMITENTE;
 
   constructor(public payload?: any) {
   }
@@ -80,7 +88,8 @@ export type Actions =
   LoadSuccessAction |
   LoadFailAction |
   SelectAction |
-  LoadCommonConstantsAction |
+  LoadDatosGeneralesAction |
+  LoadDatosRemitenteAction |
   LoadCausalDevolucionAction;
 
 

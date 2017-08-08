@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { type } from 'app/infrastructure/redux-store/_util';
+import { type } from 'app/infrastructure/redux-store/redux-util';
 import {UserCredentials} from '../models/user-credentials.model';
 
 export const ActionTypes = {
