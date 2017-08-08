@@ -51,7 +51,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/subirDocumentoECM/")
     public String subirDocumentoECM(@QueryParam("nombreDocumento") final String nombreDocumento,
-                                    @QueryParam("documento") final MultipartFile documento,
+                                    MultipartFile documento,
                                     @QueryParam("tipoComunicacion") final String tipoComunicacion) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");
