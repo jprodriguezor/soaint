@@ -43,5 +43,6 @@ export const environment = {
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
   reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
-  digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`
+  digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
+  metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
 };

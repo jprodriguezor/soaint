@@ -5,9 +5,11 @@ import {Pipe, PipeTransform} from '@angular/core';
 export class DropdownItemPipe implements PipeTransform {
   transform(value, args?) {
     // ES6 array destructuring
-    return value.map(item => {
-      return {label: item.nombre, value: item};
-    });
+    if (value) {
+      return value.map(item => {
+        return {label: item.nombre, value: item};
+      });
+    }
   }
 }
 
