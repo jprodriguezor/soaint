@@ -53,8 +53,8 @@ export class Effects {
     );
 
   @Effect()
-  loadCommonConstants = this.actions$
-    .ofType(actions.ActionTypes.LOAD_COMMON)
+  loadDatosGeneralesContansts = this.actions$
+    .ofType(actions.ActionTypes.LOAD_DATOS_GENERALES)
     .map<Action, void>(toPayload)
     .distinctUntilChanged()
     .switchMap(() => Observable.combineLatest(
@@ -63,52 +63,21 @@ export class Effects {
       this._sandbox.loadData({key: 'tipoAnexos'}),
       this._sandbox.loadData({key: 'unidadTiempo'}),
       this._sandbox.loadData({key: 'tipoDocumento'}),
-      this._sandbox.loadData({key: 'prefijoCuadrante'}),
-      this._sandbox.loadData({key: 'tipoTelefono'}),
-      this._sandbox.loadData({key: 'tipoPersona'}),
-      this._sandbox.loadData({key: 'tipoDestinatario'}),
-      this._sandbox.loadData({key: 'tratamientoCortesia'}),
       this._sandbox.loadData({key: 'tipologiaDocumental'}),
-      this._sandbox.loadData({key: 'tipoVia'}),
-      this._sandbox.loadData({key: 'orientacion'}),
-      this._sandbox.loadData({key: 'bis'}),
-      this._sandbox.loadData({key: 'tipoComplemento'}),
-      this._sandbox.loadData({key: 'actuaCalidad'}),
 
       (tipoComunicacion,
        mediosRecepcion,
        tipoAnexos,
        unidadTiempo,
        tipoDocumento,
-       prefijoCuadrante,
-       tipoTelefono,
-       tipoPersona,
-       tipoDestinatario,
-       tratamientoCortesia,
-       tipologiaDocumental,
-       tipoVia,
-       orientacion,
-       bis,
-       tipoComplemento,
-       actuaCalidad
-      ) => {
+       tipologiaDocumental) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
           mediosRecepcion: {key: 'mediosRecepcion', data: mediosRecepcion},
           tipoAnexos: {key: 'tipoAnexos', data: tipoAnexos},
           unidadTiempo: {key: 'unidadTiempo', data: unidadTiempo},
           tipoDocumento: {key: 'tipoDocumento', data: tipoDocumento},
-          prefijoCuadrante: { key: 'prefijoCuadrante', data: prefijoCuadrante},
-          tipoTelefono: { key: 'tipoTelefono', data: tipoTelefono },
-          tipoPersona: {key: 'tipoPersona', data: tipoPersona},
-          tipoDestinatario: {key: 'tipoDestinatario', data: tipoDestinatario},
-          tratamientoCortesia: {key: 'tratamientoCortesia', data: tratamientoCortesia},
           tipologiaDocumental: {key: 'tipologiaDocumental', data: tipologiaDocumental},
-          tipoVia: {key: 'tipoVia', data: tipoVia},
-          orientacion: {key: 'orientacion', data: orientacion},
-          bis: {key: 'bis', data: bis},
-          tipoComplemento: {key: 'tipoComplemento', data: tipoComplemento},
-          actuaCalidad: {key: 'actuaCalidad', data: actuaCalidad}
         }
       }).take(1)
       .mergeMap((data: any) => {
@@ -118,12 +87,59 @@ export class Effects {
           new actions.LoadSuccessAction(data.tipoAnexos),
           new actions.LoadSuccessAction(data.unidadTiempo),
           new actions.LoadSuccessAction(data.tipoDocumento),
+          new actions.LoadSuccessAction(data.tipologiaDocumental),
+        ];
+      })
+      .catch(error => Observable.of(new actions.LoadFailAction({error})))
+    );
+
+  @Effect()
+  loadRemitenteConstants = this.actions$
+    .ofType(actions.ActionTypes.LOAD_DATOS_REMITENTE)
+    .map<Action, void>(toPayload)
+    .distinctUntilChanged()
+    .switchMap(() => Observable.combineLatest(
+      this._sandbox.loadData({key: 'prefijoCuadrante'}),
+      this._sandbox.loadData({key: 'tipoTelefono'}),
+      this._sandbox.loadData({key: 'tipoPersona'}),
+      this._sandbox.loadData({key: 'tipoDestinatario'}),
+      this._sandbox.loadData({key: 'tratamientoCortesia'}),
+      this._sandbox.loadData({key: 'tipoVia'}),
+      this._sandbox.loadData({key: 'orientacion'}),
+      this._sandbox.loadData({key: 'bis'}),
+      this._sandbox.loadData({key: 'tipoComplemento'}),
+      this._sandbox.loadData({key: 'actuaCalidad'}),
+
+      (prefijoCuadrante,
+       tipoTelefono,
+       tipoPersona,
+       tipoDestinatario,
+       tratamientoCortesia,
+       tipoVia,
+       orientacion,
+       bis,
+       tipoComplemento,
+       actuaCalidad) => {
+        return {
+          prefijoCuadrante: {key: 'prefijoCuadrante', data: prefijoCuadrante},
+          tipoTelefono: {key: 'tipoTelefono', data: tipoTelefono},
+          tipoPersona: {key: 'tipoPersona', data: tipoPersona},
+          tipoDestinatario: {key: 'tipoDestinatario', data: tipoDestinatario},
+          tratamientoCortesia: {key: 'tratamientoCortesia', data: tratamientoCortesia},
+          tipoVia: {key: 'tipoVia', data: tipoVia},
+          orientacion: {key: 'orientacion', data: orientacion},
+          bis: {key: 'bis', data: bis},
+          tipoComplemento: {key: 'tipoComplemento', data: tipoComplemento},
+          actuaCalidad: {key: 'actuaCalidad', data: actuaCalidad}
+        }
+      }).take(1)
+      .mergeMap((data: any) => {
+        return [
           new actions.LoadSuccessAction(data.prefijoCuadrante),
           new actions.LoadSuccessAction(data.tipoTelefono),
           new actions.LoadSuccessAction(data.tipoPersona),
           new actions.LoadSuccessAction(data.tipoDestinatario),
           new actions.LoadSuccessAction(data.tratamientoCortesia),
-          new actions.LoadSuccessAction(data.tipologiaDocumental),
           new actions.LoadSuccessAction(data.tipoVia),
           new actions.LoadSuccessAction(data.orientacion),
           new actions.LoadSuccessAction(data.bis),

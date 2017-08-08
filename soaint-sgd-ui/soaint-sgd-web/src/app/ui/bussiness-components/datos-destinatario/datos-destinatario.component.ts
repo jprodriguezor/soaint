@@ -12,6 +12,7 @@ import {LoadAction as DependenciaGrupoLoadAction} from 'app/infrastructure/state
 import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
 import {ConfirmationService} from 'primeng/components/common/api';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
+import {Subscription} from 'rxjs/Subscription';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class DatosDestinatarioComponent implements OnInit {
 
   constructor(private _store: Store<State>,
               private confirmationService: ConfirmationService,
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private formBuilder: FormBuilder) {
   }
 
@@ -44,11 +46,15 @@ export class DatosDestinatarioComponent implements OnInit {
 
     const grupoControl = this.form.get('dependenciaGrupo');
     grupoControl.disable();
-    this.form.get('sedeAdministrativa').valueChanges.subscribe(value => {
-      if (this.editable && value) {
+    this.form.get('sedeAdministrativa').valueChanges.subscribe(sede => {
+      if (this.editable && sede) {
         grupoControl.enable();
         this.form.get('dependenciaGrupo').reset();
-        this._store.dispatch(new DependenciaGrupoLoadAction({codigo: value.id}));
+        const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
+          this.dependenciaGrupoInput = dependencias.organigrama;
+          depedenciaSubscription.unsubscribe();
+        });
+        // this._store.dispatch(new DependenciaGrupoLoadAction({codigo: value.id}));
       } else {
         grupoControl.disable();
       }

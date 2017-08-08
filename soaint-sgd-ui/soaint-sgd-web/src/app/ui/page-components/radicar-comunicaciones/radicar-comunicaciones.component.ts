@@ -1,4 +1,7 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
+  AfterContentInit
+} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {AgentDTO} from 'app/domain/agentDTO';
 import {DocumentoDTO} from 'app/domain/documentoDTO';
@@ -7,7 +10,6 @@ import {ReferidoDTO} from 'app/domain/referidoDTO';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {ContactoDTO} from 'app/domain/contactoDTO';
-import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
 import {Observable} from 'rxjs/Observable';
@@ -27,6 +29,16 @@ import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
+import {
+  ContinueWithNextTaskAction, LockActiveTaskAction,
+  ScheduleNextTaskAction
+} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {TareaDTO} from '../../../domain/tareaDTO';
+import {TaskForm} from '../../../shared/interfaces/task-form.interface';
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -37,7 +49,9 @@ const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RadicarComunicacionesComponent implements OnInit {
+export class RadicarComunicacionesComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy, TaskForm {
+
+  type = TaskTypes.TASK_FORM;
 
   @ViewChild('datosGenerales') datosGenerales;
 
@@ -80,40 +94,52 @@ export class RadicarComunicacionesComponent implements OnInit {
   subscribeAuthUserFuncionario: any;
   subscribeauthUserFuncionarioDependenciaSelected: any;
 
+  // Unsubscribers
+  activeTaskUnsubscriber: Subscription;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
-              private route: ActivatedRoute,
               private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(values => this.task = values);
-    this.formsTabOrder.push(this.datosGenerales);
-    this.formsTabOrder.push(this.datosRemitente);
-    this.formsTabOrder.push(this.datosDestinatario);
-
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
     this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
+    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
+      this.task = activeTask;
+    });
+  }
 
-    setTimeout(() => {
-      const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
-      Observable.combineLatest(
-        sedeRemitente.statusChanges,
-        sedeRemitente.valueChanges
-      )
-        .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
-        .distinctUntilChanged()
-        .subscribe(([status, value]) => {
-          if (status === 'VALID') {
-            this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
-            this._sandbox.dispatchSedeDestinatarioEntradaFilter(value);
-          } else if (status === 'DISABLED') {
-            this._sandbox.dispatchSedeDestinatarioEntradaFilter(null);
-          }
-        });
-    }, 400);
+  ngAfterContentInit() {
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
+  }
+
+  ngAfterViewInit() {
+
+    const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
+    Observable.combineLatest(
+      sedeRemitente.statusChanges,
+      sedeRemitente.valueChanges
+    )
+      .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
+      .distinctUntilChanged()
+      .subscribe(([status, value]) => {
+        if (status === 'VALID') {
+          this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
+          this._sandbox.dispatchSedeDestinatarioEntradaFilter(value);
+        } else if (status === 'DISABLED') {
+          this._sandbox.dispatchSedeDestinatarioEntradaFilter(null);
+        }
+      });
+
+    this.datosGenerales.form.statusChanges.filter(value => value === 'VALID').first()
+      .subscribe(() => {
+        this._store.dispatch(new LoadDatosRemitenteAction())
+      });
+
   }
 
   radicarComunicacion() {
@@ -131,6 +157,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     }
 
     agentesList.push(...this.getAgentesDestinatario());
+
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
@@ -140,11 +167,12 @@ export class RadicarComunicacionesComponent implements OnInit {
       datosContactoList: this.getDatosContactos()
     };
 
+    this._store.dispatch(new ScheduleNextTaskAction('/task/digitalizar-documentos'));
+
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
-      this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
       const ticketRadicado = {
@@ -166,15 +194,16 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.showTicketRadicado();
       this.disableEditionOnForms();
 
-      this._taskSandBox.completeTask({
+      this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
-          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
+          digitalizacionInmediata: 1
         }
-      }).subscribe();
+      });
     });
   }
 
@@ -310,7 +339,8 @@ export class RadicarComunicacionesComponent implements OnInit {
       codEmpMsj: null,
       nroGuia: null,
       fecVenGestion: null,
-      codEstado: null
+      codEstado: null,
+      inicioConteo: 'DSH'
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
@@ -367,10 +397,6 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.editable = false;
   }
 
-  navigateBackToWorkspace() {
-    this._taskSandBox.navigateToWorkspace();
-  }
-
   openNext() {
     this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
   }
@@ -381,6 +407,18 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   updateTabIndex(event) {
     this.tabIndex = event.index;
+  }
+
+  ngOnDestroy() {
+    this.activeTaskUnsubscriber.unsubscribe();
+  }
+
+  getTask(): TareaDTO {
+    return this.task;
+  }
+
+  save(): Observable<any> {
+    return Observable.of(true).delay(5000);
   }
 
 }

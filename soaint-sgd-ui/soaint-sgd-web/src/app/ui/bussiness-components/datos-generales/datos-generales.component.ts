@@ -38,7 +38,6 @@ export class DatosGeneralesComponent implements OnInit {
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
-
   defaultSelectionMediosRecepcion$: Observable<any>;
 
   @Input()
@@ -49,8 +48,6 @@ export class DatosGeneralesComponent implements OnInit {
 
   @Input()
   datosDestinatario: any;
-
-  selectionMediosRecepcion: any;
 
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
@@ -95,7 +92,7 @@ export class DatosGeneralesComponent implements OnInit {
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
 
-    this._sandbox.loadCommonConstantsDispatch();
+    this._sandbox.loadDatosGeneralesDispatch();
 
     this.initForm();
 

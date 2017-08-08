@@ -1,5 +1,6 @@
 @import '../../../../styles';
 .radicar-comunicaciones {
+
   a span.ui-tabview-left-icon.ui-icon-edit {
       color: $primaryColor;
   }
@@ -9,11 +10,5 @@
       font-weight: bold;
       -webkit-animation: tada 2s linear infinite;
       animation: tada 2s linear infinite;
-
-    //-webkit-animation: ring 2s ease 10;
-    //animation: ring 2s ease 1;
-    //transform-origin-x: 50%;
-    //transform-origin-y: 0px;
-    //transform-origin-z: initial;
   }
 }

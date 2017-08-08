@@ -3,16 +3,16 @@ import {environment} from 'environments/environment';
 
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import * as actions from './constanteDTO-actions';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/delay';
+import {ApiBase} from '../../api/api-base';
 
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService) {
+              private _api: ApiBase) {
   }
 
   loadData(payload: actions.GenericFilterAutocomplete) {
@@ -69,7 +69,7 @@ export class Sandbox {
     }
 
     if (endpoint !== null) {
-      return this._listSelectionService.list(endpoint, payload);
+      return this._api.list(endpoint, payload);
     }
     return Observable.of([]).delay(400);
     // return Observable.of(this.getMock()).delay(400);
@@ -87,8 +87,12 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadCausalDevolucionAction({key: 'causalDevolucion'}));
   }
 
-  loadCommonConstantsDispatch() {
-    this._store.dispatch(new actions.LoadCommonConstantsAction());
+  loadDatosGeneralesDispatch() {
+    this._store.dispatch(new actions.LoadDatosGeneralesAction());
+  }
+  
+  loadDatosRemitenteDispatch() {
+    this._store.dispatch(new actions.LoadDatosRemitenteAction());
   }
 
   getMock(): any {
