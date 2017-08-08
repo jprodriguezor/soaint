@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {VALIDATION_MESSAGES} from "../../../shared/validation-messages";
-import {PpdTrazDocumentoDTO} from "../../../domain/PpdTrazDocumentoDTO";
+import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
+import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 
 

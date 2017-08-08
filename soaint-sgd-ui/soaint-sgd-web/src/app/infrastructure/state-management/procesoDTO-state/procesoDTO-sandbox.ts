@@ -1,27 +1,26 @@
 import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
-
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import {createSelector} from 'reselect';
 import * as selectors from './procesoDTO-selectors';
 import * as actions from './procesoDTO-actions';
+import {ApiBase} from '../../api/api-base';
 
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService) {
+              private _api: ApiBase) {
   }
 
   loadData(payload: any) {
-    return this._listSelectionService.list(environment.proceso_endpoint, payload);
+    return this._api.list(environment.proceso_endpoint, payload);
   }
 
   startProcess(payload: any) {
 
-    return this._listSelectionService.post(environment.startProcess_endpoint,
+    return this._api.post(environment.startProcess_endpoint,
       {
         idProceso: payload.codigoProceso,
         idDespliegue: payload.idDespliegue,
@@ -33,7 +32,7 @@ export class Sandbox {
 
   loadTasksInsideProcess(payload: any) {
     const params = payload.data || payload;
-    return this._listSelectionService.post(environment.tasksInsideProcess_endpoint, {
+    return this._api.post(environment.tasksInsideProcess_endpoint, {
       idProceso: params.nombreProceso,
       instanciaProceso: params.codigoProceso,
       estados: [

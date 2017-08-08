@@ -7,11 +7,9 @@ export class SessionService {
   constructor(private _lss: LocalStorageService) {
   }
 
-  //--------------------
-
   public restoreStatus<T>(key: WebModel, payload: T): T {
 
-    let restoredPayload: T = this._lss.get<T>(key.toString());
+    const restoredPayload: T = this._lss.get<T>(key.toString());
 
     if (restoredPayload === null) {
       this._lss.set(key.toString(), payload);
@@ -20,19 +18,13 @@ export class SessionService {
     return this._lss.get<T>(key.toString());
   }
 
-  //--------------------
-
   public save<T>(key: WebModel, payload: T): void {
     this._lss.set(key.toString(), payload);
   }
 
-  //--------------------
-
   public retrieve<T>(key: WebModel): T {
     return this._lss.get<T>(key.toString())
   }
-
-  //--------------------
 
   public logout(): void {
     this._lss.clearAll();

@@ -4834,7 +4834,8 @@ body .ui-datatable .ui-datatable-data tr.ui-datatable-even {
 body .ui-datatable .ui-datatable-data tr {
   border: 1px solid #cacaca; }
   body .ui-datatable .ui-datatable-data tr td {
-    padding: .625em .875em; }
+    padding: .625em .875em;
+    overflow-wrap: break-word; }
     body .ui-datatable .ui-datatable-data tr td .ui-row-toggler {
       display: inherit; }
     body .ui-datatable .ui-datatable-data tr td.ui-state-highlight .ui-inputtext {

@@ -36,6 +36,7 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
             <version>1.8</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-multipart -->
@@ -43,11 +44,13 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
             <version>2.25.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <version>3.0.10.Final</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->

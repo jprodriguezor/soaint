@@ -19,4 +19,5 @@ export interface CorrespondenciaDTO {
   nroGuia: string;
   fecVenGestion: string;
   codEstado: string;
+  inicioConteo: string;
 }

@@ -86,7 +86,7 @@ export class DatosDireccionComponent implements OnInit {
       'complementoAdicional': [null],
       'celular': [null],
       'numeroTel': [null],
-      'correoEle': [null],
+      'correoEle': [null, Validators.email],
       'pais': [null],
       'departamento': [null],
       'municipio': [null],

@@ -46,9 +46,9 @@ export class HomeComponent implements OnInit {
     this.canceledTasks$ = this._store.select(CanceledTasksArrayData);
     this.tasksStadistics$ = this._store.select(getTasksStadistics);
 
-    this.tasksStadistics$.subscribe((data) => {
-      console.log(data);
-    });
+    // this.tasksStadistics$.subscribe((data) => {
+    //   console.log(data);
+    // });
 
   }
 

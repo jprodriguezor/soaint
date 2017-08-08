@@ -4,7 +4,7 @@
       <h1>Datos Generales</h1>
       <div class="ui-g ui-fluid">
 
-        <!--Tiempo Respuesta-->
+        <!--fechaRadicacion-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
              *ngIf="form.get('fechaRadicacion').value">
           <div class="ui-g form-group">
@@ -17,7 +17,7 @@
           </div>
         </div>
 
-        <!--Tiempo Respuesta-->
+        <!--nroRadicado-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
              *ngIf="form.get('nroRadicado').value">
           <div class="ui-g form-group">
@@ -111,7 +111,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="tiempoRespuesta">
+                    <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta"></p-spinner>
                     <label>Tiempo de respuesta</label>
                   </span>
             </div>
@@ -181,9 +181,14 @@
                           formControlName="reqDistFisica" binary="true"></p-checkbox>
             </div>
           </div>
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
+              <p-checkbox name="cg" label="Requiere digitalización inmediata" id="reqDigInmediata"
+                          formControlName="reqDigitInmediata" binary="true"></p-checkbox>
+            </div>
+          </div>
         </div>
       </div>
-
 
       <div class="ui-g ui-fluid" style="margin-top: 30px">
         <div class="ui-g-12 ui-lg-12 padding-12">

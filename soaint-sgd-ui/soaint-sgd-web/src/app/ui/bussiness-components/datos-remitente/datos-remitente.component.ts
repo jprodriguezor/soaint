@@ -10,7 +10,6 @@ import {
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
@@ -20,6 +19,7 @@ import {
   PERSONA_NATURAL, TPDOC_CEDULA_CIUDADANIA, TPDOC_NRO_IDENTIFICACION_TRIBUTARIO
 } from 'app/shared/bussiness-properties/radicacion-properties';
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
+import {Subscription} from 'rxjs/Subscription';
 
 
 @Component({
@@ -31,16 +31,17 @@ export class DatosRemitenteComponent implements OnInit {
   form: FormGroup;
   validations: any = {};
   visibility: any = {};
-
-  contacts: Array<any> = [];
   display = false;
 
+  // Observables
   tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
   tipoDocumentoSuggestions$: Observable<ConstanteDTO[]>;
-
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
-  dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
+
+  // Listas de subscripcion
+  contacts: Array<any> = [];
+  dependenciasGrupoList: Array<any> = [];
 
   subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
 
@@ -55,16 +56,21 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
-    this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
-    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-    this.dependenciaGrupoSuggestions$ = this._store.select(dependenciaGrupoArrayData);
-    this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
-    this._store.dispatch(new SedeAdministrativaLoadAction());
-
     this.initForm();
     this.listenForChanges();
     this.listenForErrors();
+  }
+
+  initLoadTipoComunicacionExterna() {
+    this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
+    this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
+    this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
+  }
+
+  initLoadTipoComunicacionInterna() {
+    this._store.dispatch(new SedeAdministrativaLoadAction());
+    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
+
   }
 
   initForm() {
@@ -83,11 +89,13 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   listenForChanges() {
-    this.form.get('sedeAdministrativa').valueChanges.subscribe((value) => {
-      if (this.editable && value) {
-        this.onChangeSedeAdministrativa.emit(value);
+    this.form.get('sedeAdministrativa').valueChanges.subscribe((sede) => {
+      if (this.editable && sede) {
         this.form.get('dependenciaGrupo').reset();
-        this._dependenciaGrupoSandbox.loadDispatch({codigo: value.id});
+        const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
+          this.dependenciasGrupoList = dependencias.organigrama;
+          depedenciaSubscription.unsubscribe();
+        });
       }
     });
 
@@ -172,12 +180,17 @@ export class DatosRemitenteComponent implements OnInit {
         this.form.get('tipoDocumento').disable();
         this.visibility['sedeAdministrativa'] = true;
         this.visibility['dependenciaGrupo'] = true;
+
+        this.initLoadTipoComunicacionInterna();
+
       } else {
         this.form.get('tipoPersona').enable();
         this.form.get('tipoDocumento').enable();
         this.form.get('sedeAdministrativa').disable();
         this.form.get('dependenciaGrupo').disable();
         this.visibility['tipoPersona'] = true;
+
+        this.initLoadTipoComunicacionExterna();
       }
       this.form.get('tipoDocumento').disable();
       this.form.get('razonSocial').disable();

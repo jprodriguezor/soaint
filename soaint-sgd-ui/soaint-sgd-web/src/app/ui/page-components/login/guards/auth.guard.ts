@@ -26,7 +26,6 @@ export class AuthenticatedGuard implements CanActivate, CanLoad {
     const observable = this._sandbox.selectorAuthenticated();
     // redirect to sign in page if user is not authenticated
     observable.subscribe( authenticated => {
-      console.info('canActivate');
       if (!authenticated) {
         this._sandbox.routeToLogin();
       }
@@ -45,7 +44,6 @@ export class AuthenticatedGuard implements CanActivate, CanLoad {
     const observable = this._sandbox.selectorAuthenticated();
     // redirect to sign in page if user is not authenticated
     observable.subscribe(authenticated => {
-      console.info('canLoad');
       if (!authenticated) {
         this._sandbox.routeToLogin();
       }

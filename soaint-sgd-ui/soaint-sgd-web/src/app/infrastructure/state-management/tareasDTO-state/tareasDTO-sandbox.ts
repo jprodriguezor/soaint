@@ -2,20 +2,18 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import * as actions from './tareasDTO-actions';
-import {go} from '@ngrx/router-store';
+import {back, go} from '@ngrx/router-store';
 import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
-import {Observable} from 'rxjs/Observable';
-
+import {ApiBase} from '../../api/api-base';
 
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService) {
+              private _api: ApiBase) {
   }
 
   loadData(payload: any) {
@@ -26,7 +24,7 @@ export class Sandbox {
         'LISTO'
       ]
     });
-    return this._listSelectionService.post(environment.tasksForStatus_endpoint, clonePayload);
+    return this._api.post(environment.tasksForStatus_endpoint, clonePayload);
     // return Observable.of(this.getMockData());
   }
 
@@ -40,11 +38,11 @@ export class Sandbox {
         'idTarea': task.idTarea
       }
     }
-    return this._listSelectionService.post(environment.tasksStartProcess, overPayload);
+    return this._api.post(environment.tasksStartProcess, overPayload);
   }
 
   completeTask(payload: any) {
-    return this._listSelectionService.post(environment.tasksCompleteProcess, payload);
+    return this._api.post(environment.tasksCompleteProcess, payload);
   }
 
   filterDispatch(query) {
@@ -52,16 +50,21 @@ export class Sandbox {
   }
 
   initTaskDispatch(payload?): any {
-    this._store.dispatch(go(['/radicar-comunicaciones', payload]));
+    this._store.dispatch(go(['/task/radicar-comunicaciones', payload]));
+  }
+
+  completeTaskDispatch(payload: any) {
+    this._store.dispatch(new actions.CompleteTaskAction(payload));
   }
 
   navigateToWorkspace() {
-    this._store.dispatch(go('workspace'));
+    this._store.dispatch(back());
   }
 
   startTaskDispatch(task?: TareaDTO) {
 
     if (task.estado === 'ENPROGRESO') {
+      this._store.dispatch(new actions.LockActiveTaskAction(task));
       this.initTaskDispatch(task);
 
     } else if (task.estado === 'RESERVADO') {
@@ -69,9 +72,7 @@ export class Sandbox {
       this._store.dispatch(new actions.StartTaskAction({
         'idProceso': task.idProceso,
         'idDespliegue': task.idDespliegue,
-        'idTarea': task.idTarea,
-        'usuario': 'krisv',
-        'pass': 'krisv'
+        'idTarea': task.idTarea
       }));
 
     }

@@ -31,8 +31,9 @@ import {INFRASTRUCTURE_SERVICES, API_SERVICES, EFFECTS_MODULES} from './infrastr
 // Redux Store and Colaterals
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {ReduxStore} from './infrastructure/redux-store/__redux-states';
+import {ReduxStore} from './infrastructure/redux-store/__redux-config';
 import { RouterStoreModule } from '@ngrx/router-store';
+import {PdfViewerComponent} from 'ng2-pdf-viewer';
 
 
 @NgModule({
@@ -52,7 +53,7 @@ import { RouterStoreModule } from '@ngrx/router-store';
       extendedTimeOut: 1000, // time to close after a user hovers over toast
       progressBar: true, // show progress bar
       newestOnTop: true, // new toast placement
-      preventDuplicates: true,
+      // preventDuplicates: true,
       // toastClass: string = 'toast'; // class on toast
       // positionClass: string = 'toast-top-right'; // class on toast
       // titleClass: string = 'toast-title'; // class inside toast on title
@@ -107,6 +108,7 @@ import { RouterStoreModule } from '@ngrx/router-store';
   declarations: [
     AppComponent,
     PrintDirective,
+    PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES
   ],

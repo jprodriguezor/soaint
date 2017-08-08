@@ -1,6 +1,7 @@
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {WorkspaceComponent} from './workspace/workspace.component';
+import {DigitalizarDocumentoComponent} from './digitalizar-documento/digitalizar-documento.component';
 // import {ProductosComponent} from './productos/productos.component';
 import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
 import {ProcessComponent} from './process/process.component';
@@ -25,6 +26,7 @@ export const PAGE_COMPONENTS = [
   LoginComponent,
   // ProductosComponent,
   RadicarComunicacionesComponent,
+  DigitalizarDocumentoComponent,
   WorkspaceComponent,
   ProcessComponent,
   DatosDireccionComponent,

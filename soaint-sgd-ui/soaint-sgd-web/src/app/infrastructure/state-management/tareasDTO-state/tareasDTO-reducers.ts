@@ -6,11 +6,15 @@ import {TareaDTO} from 'app/domain/tareaDTO';
 export interface State {
   ids: number[];
   entities: { [idTarea: number]: TareaDTO };
+  activeTask: TareaDTO;
+  nextTask: string;
 }
 
 const initialState: State = {
   ids: [],
-  entities: {}
+  entities: {},
+  activeTask: null,
+  nextTask: null
 };
 
 /**
@@ -24,7 +28,7 @@ export function reducer(state = initialState, action: Actions) {
 
     case ActionTypes.FILTER_COMPLETE:
     case ActionTypes.LOAD_SUCCESS: {
-      console.log(action.payload);
+
       const values = action.payload;
       const newValues = values.filter(data => !state.entities[data.idTarea]);
 
@@ -36,25 +40,56 @@ export function reducer(state = initialState, action: Actions) {
       }, {});
 
       return tassign(state, {
-        ids: [...newValuesIds, ...state.ids ],
+        ids: [...newValuesIds, ...state.ids],
         entities: tassign(newValuesEntities, state.entities)
       });
 
     }
 
+    case ActionTypes.LOCK_ACTIVE_TASK: {
+      return tassign(state, {
+        activeTask: action.payload, // task
+        nextTask: null
+      });
+    }
+
+    case ActionTypes.UNLOCK_ACTIVE_TASK: {
+      return tassign(state, {
+        activeTask: null,
+        nextTask: null
+      });
+    }
+
+    case ActionTypes.SCHEDULE_NEXT_TASK: {
+      const nextTask = action.payload;
+      return tassign( state, {
+        nextTask: nextTask
+      });
+    }
+
     case ActionTypes.START_TASK_SUCCESS: {
 
       const task = action.payload;
-
-      if (state.ids.indexOf(task.idTarea) === -1) {
-        return state;
-      }
-
-      let cloneEntities = tassign({}, state.entities);
+      const cloneEntities = tassign({}, state.entities);
       cloneEntities[task.idTarea] = task;
 
       return tassign(state, {
-        entities: cloneEntities
+        ids: [task.idTarea, ...state.ids],
+        entities: cloneEntities,
+        activeTask: task
+      });
+    }
+
+    case ActionTypes.COMPLETE_TASK_SUCCESS: {
+
+      const task = action.payload;
+      const cloneEntities = tassign({}, state.entities);
+      delete cloneEntities[state.activeTask.idTarea];
+
+      return tassign(state, {
+        ids: state.ids.filter(value => value !== state.activeTask.idTarea),
+        entities: cloneEntities,
+        activeTask: null
       });
     }
 

@@ -1,14 +1,16 @@
 import {ActionTypes, Actions} from './notifications-actions';
 import {tassign} from 'tassign';
+import {ToastConfig} from 'ngx-toastr';
 
 type messageType = 'info' | 'error' | 'success' | 'warn';
 
 export interface CustomNotification {
-  severity: messageType;
+  severity?: messageType;
   summary: string;
-  detail: string;
+  detail?: string;
   action?: any,
-  id: number
+  id?: number,
+  options?: ToastConfig
 }
 
 export interface State {

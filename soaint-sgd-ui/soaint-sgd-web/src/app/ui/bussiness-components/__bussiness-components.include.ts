@@ -2,6 +2,7 @@ import {DatosGeneralesComponent} from './datos-generales/datos-generales.compone
 import {DatosDestinatarioComponent} from './datos-destinatario/datos-destinatario.component';
 import {DatosRemitenteComponent} from './datos-remitente/datos-remitente.component';
 import {TicketRadicadoComponent} from './ticket-radicado/ticket-radicado.component';
+import {TaskContainerComponent} from './task-container/task-container.component';
 
 /**
  * Presentational components receieve data through @Input() and communicate events
@@ -16,7 +17,8 @@ export const BUSSINESS_COMPONENTS = [
   DatosGeneralesComponent,
   DatosRemitenteComponent,
   DatosDestinatarioComponent,
-  TicketRadicadoComponent
+  TicketRadicadoComponent,
+  TaskContainerComponent
 ];
 
 export * from './__bussiness-providers.include';

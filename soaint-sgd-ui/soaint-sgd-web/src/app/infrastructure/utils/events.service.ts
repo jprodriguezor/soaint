@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class MessageBridgeService {
+export class EventsService {
 
   private subject = new Subject<any>();
 
@@ -13,11 +13,11 @@ export class MessageBridgeService {
     this.subject.next(message);
   }
 
-  public clearMessage(): void {
+  public clear(): void {
     this.subject.next();
   }
 
-  public getMessage(): Observable<any> {
+  public onMessage(): Observable<any> {
     return this.subject.asObservable();
   }
 
