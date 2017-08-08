@@ -53,7 +53,7 @@ import java.util.List;
                 "SET c.fecAsignacion = :FECHA_ASIGNACION, c.codEstado = :COD_ESTADO " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
-                "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA, c.codEstado = :COD_ESTADO " +
+                "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.updateEstado", query = "UPDATE CorAgente c " +
                 "SET c.codEstado = :COD_ESTADO " +

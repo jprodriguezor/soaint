@@ -103,7 +103,6 @@ public class AgenteControl {
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
                         .setParameter("COD_SEDE", codSede)
                         .setParameter("COD_DEPENDENCIA", codDependencia)
-                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo())
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .executeUpdate();
             }
