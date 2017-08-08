@@ -9,14 +9,11 @@ import {
   HostListener,
   ChangeDetectionStrategy
 } from '@angular/core';
-import {MessageBridgeService, MessageType} from 'app/infrastructure/web/message-bridge.service';
-import {Subscription} from 'rxjs/Subscription';
-import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
 
 import {MenuOrientation} from './models/admin-layout.model';
 import {Observable} from 'rxjs/Observable';
 import {AdminLayoutSandbox} from './redux-state/admin-layout-sandbox';
-import {MENU_OPTIONS} from './menu-options';
+import {MENU_OPTIONS} from '../../../../shared/menu-options/menu-options';
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
 
 declare var jQuery: any;
