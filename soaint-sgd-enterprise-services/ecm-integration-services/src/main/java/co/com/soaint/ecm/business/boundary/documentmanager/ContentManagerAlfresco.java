@@ -72,27 +72,21 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         String idDocumento = "";
         Carpeta carpeta;
         try {
-
-            Utilities utils = new Utilities ( );
             Conexion conexion = new Conexion ( );
-
             /**
              * Se establece la conexion*/
 
             try {
+                LOGGER.info ("### Estableciendo la conexion..");
                 conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
             } catch (SystemException e) {
                 e.printStackTrace ( );
             }
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
-
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            String mimeType = "pdf";
-            //TODO la carpeta target hay que llenarla, el mimetype
-
+            LOGGER.info ("### Se invoca el metodo de subir el documento..");
             idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
-
 
             response.setCodMensaje("0000");
             response.setMensaje("OK");

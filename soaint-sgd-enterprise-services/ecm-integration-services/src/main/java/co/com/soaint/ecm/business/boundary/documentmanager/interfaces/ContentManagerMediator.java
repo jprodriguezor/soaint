@@ -23,6 +23,5 @@ public abstract class ContentManagerMediator {
     }
     public abstract MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException;
     public abstract String subirDocumentoContent(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException;
-
     public abstract MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException;
 }

@@ -9,6 +9,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,8 +51,9 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/subirDocumentoECM/")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public String subirDocumentoECM(@QueryParam("nombreDocumento") final String nombreDocumento,
-                                    MultipartFile documento,
+                                    @QueryParam("documento") final MultipaportInput documento,
                                     @QueryParam("tipoComunicacion") final String tipoComunicacion) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");

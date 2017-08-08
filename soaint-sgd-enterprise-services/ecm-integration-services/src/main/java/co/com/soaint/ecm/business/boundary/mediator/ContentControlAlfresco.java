@@ -601,6 +601,7 @@ public class ContentControlAlfresco extends ContentControl {
 
     public String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) {
         String idDocumento = "";
+
         //Se definen las propiedades del documento a subir
         Map <String, Object> properties = new HashMap <String, Object> ( );
 
@@ -610,6 +611,7 @@ public class ContentControlAlfresco extends ContentControl {
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             Carpeta folderAlfresco = new Carpeta ( );
+            LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
             if (tipoComunicacion == "TP-CMCOE") {
                 folderAlfresco = obtenerCarpetaPorNombre ("100100.00302_COMUNICACION_EXTERNA", session);
             } else if (tipoComunicacion == "TP-CMCOI") {
@@ -630,14 +632,15 @@ public class ContentControlAlfresco extends ContentControl {
             ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
 
             //Se crea el documento
+            LOGGER.info ("### Se va a crear el documento..");
             Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
             idDocumento = newDocument.getId ( );
+            LOGGER.info ("### Documento creado con id "+ idDocumento);
         } catch (CmisContentAlreadyExistsException ccaee) {
             System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
         } catch (CmisConstraintException cce) {
             System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace ( );
         } catch (SystemException e) {
             e.printStackTrace ( );
