@@ -696,6 +696,8 @@ public class ContentControlAlfresco extends ContentControl {
                     }
                 }
                 bandera = 0;
+                response.setCodMensaje ("OK");
+                response.setMensaje ("00000");
             }
         } catch (Exception e) {
             LOGGER.info ("Error al crear arbol content");

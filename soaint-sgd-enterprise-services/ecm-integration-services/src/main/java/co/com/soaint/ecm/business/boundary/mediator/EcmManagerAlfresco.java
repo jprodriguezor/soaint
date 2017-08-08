@@ -26,9 +26,17 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
 
     public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
-        MensajeRespuesta response;
+        MensajeRespuesta response =new MensajeRespuesta ();
+        try{
 //        ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
-        response = content.crearEstructuraContent (structure);
+            response = content.crearEstructuraContent (structure);
+
+        }catch(Exception e)
+        {
+            response.setCodMensaje ("000005");
+            response.setMensaje ("Error al crear estructura");
+        }
+
         return response;
     }
 
