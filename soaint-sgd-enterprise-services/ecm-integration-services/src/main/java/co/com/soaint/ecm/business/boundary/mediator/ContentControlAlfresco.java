@@ -26,9 +26,13 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -599,7 +603,45 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
-    public String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) {
+    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) {
+
+//        //Codigo new
+//        String fileName = "";
+//
+//        Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
+//        List<InputPart> inputParts = uploadForm.get("uploadedFile");
+//
+//        for (InputPart inputPart : inputParts) {
+//            MultivaluedMap<String, String> header = inputPart.getHeaders();
+//            fileName = getFileName(header);
+//
+//            //convert the uploaded file to inputstream
+//            InputStream inputStream = inputPart.getBody(InputStream.class,null);
+//
+//            byte [] bytes = IOUtils.toByteArray(inputStream);
+//
+//            //constructs upload file path
+//            fileName = "/home/wildfly/" + fileName;
+//            LOGGER.info("Ruta del fichero: " + fileName);
+//
+//            writeFile(bytes,fileName);
+//
+//            LOGGER.info("Fichero escrito");
+//
+//            LOGGER.info("Nombre del fichero: " + fileName);
+//
+//            return "subida exitosa";
+//            //Fin codigo new
+
+
+
+
+
+
+
+
+
+
         String idDocumento = "";
 
         //Se definen las propiedades del documento a subir
@@ -608,43 +650,44 @@ public class ContentControlAlfresco extends ContentControl {
         properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
         properties.put (PropertyIds.NAME, nombreDocumento);
 
-        try {
+//        try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             Carpeta folderAlfresco = new Carpeta ( );
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
             if (tipoComunicacion == "TP-CMCOE") {
-                folderAlfresco = obtenerCarpetaPorNombre ("100100.00302_COMUNICACION_EXTERNA", session);
+//                folderAlfresco = obtenerCarpetaPorNombre ("100100.00302_COMUNICACION_EXTERNA", session);
             } else if (tipoComunicacion == "TP-CMCOI") {
-                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+//                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
             }
 
             VersioningState vs = VersioningState.MAJOR;
 
             //Convierto el MultipartFile a File
-            File convFile = new File (documento.getOriginalFilename ( ));
-            convFile.createNewFile ( );
+//            File convFile = new File (documento.getOriginalFilename ( ));
+//            convFile.createNewFile ( );
 
 
-            InputStream fis = new FileInputStream (convFile);
-            DataInputStream dis = new DataInputStream (fis);
-            byte[] bytes = new byte[(int) convFile.length ( )];
-            dis.readFully (bytes);
-            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
+//            InputStream fis = new FileInputStream (convFile);
+//            DataInputStream dis = new DataInputStream (fis);
+//            byte[] bytes = new byte[(int) convFile.length ( )];
+//            dis.readFully (bytes);
+//            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
 
             //Se crea el documento
             LOGGER.info ("### Se va a crear el documento..");
-            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
-            idDocumento = newDocument.getId ( );
+//            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+//            idDocumento = newDocument.getId ( );
             LOGGER.info ("### Documento creado con id "+ idDocumento);
-        } catch (CmisContentAlreadyExistsException ccaee) {
-            System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
-        } catch (CmisConstraintException cce) {
-            System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
-        } catch (IOException e) {
-            e.printStackTrace ( );
-        } catch (SystemException e) {
-            e.printStackTrace ( );
-        }
+//        } catch (CmisContentAlreadyExistsException ccaee) {
+//            System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
+//        } catch (CmisConstraintException cce) {
+//            System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
+//        } catch (IOException e) {
+//            e.printStackTrace ( );
+//        }
+//        catch (SystemException e) {
+//            e.printStackTrace ( );
+//        }
         return idDocumento;
     }
 }

@@ -8,7 +8,6 @@ import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,7 +36,6 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     }
 
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
-
         String idDocumento;
         idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         return idDocumento;

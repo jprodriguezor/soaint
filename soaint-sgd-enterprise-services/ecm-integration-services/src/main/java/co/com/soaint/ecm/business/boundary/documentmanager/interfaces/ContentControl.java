@@ -5,6 +5,7 @@ import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.*;
 import co.com.soaint.ecm.domain.entity.*;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +40,7 @@ public abstract class ContentControl  {
 
     public abstract MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException ;
 
-    public abstract String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws SystemException,IOException ;
+    public abstract String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws SystemException,IOException ;
 
 
 }

@@ -74,41 +74,6 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
 
-        //Codigo new
-        String fileName = "";
-
-        Map<String, List<InputPart>> uploadForm = documento1.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("uploadedFile");
-
-        for (InputPart inputPart : inputParts) {
-            MultivaluedMap<String, String> header = inputPart.getHeaders();
-            fileName = getFileName(header);
-
-            //convert the uploaded file to inputstream
-            InputStream inputStream = inputPart.getBody(InputStream.class,null);
-
-            byte [] bytes = IOUtils.toByteArray(inputStream);
-
-            //constructs upload file path
-            fileName = "/home/wildfly/" + fileName;
-            LOGGER.info("Ruta del fichero: " + fileName);
-
-            writeFile(bytes,fileName);
-
-            LOGGER.info("Fichero escrito");
-
-            LOGGER.info("Nombre del fichero: " + fileName);
-
-            return "subida exitosa";
-            //Fin codigo new
-
-
-
-
-
-
-
-
 
         LOGGER.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -142,6 +107,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         }
         return idDocumento;
+
     }
 
 

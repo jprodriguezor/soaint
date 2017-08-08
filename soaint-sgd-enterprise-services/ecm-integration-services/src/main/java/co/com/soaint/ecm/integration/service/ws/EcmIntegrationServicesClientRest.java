@@ -68,7 +68,9 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
         } catch (Throwable e) {
             e.printStackTrace();
+            LOGGER.info("Error en operacion - Subir Documento ECM");
             throw e;
+
         }
 
     }
