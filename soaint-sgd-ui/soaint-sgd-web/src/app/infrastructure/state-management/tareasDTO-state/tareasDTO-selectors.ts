@@ -14,9 +14,13 @@ const rootPath = (state: rootStore.State) => state.tareas;
  * use-case.
  */
 
-export const getEntities = createSelector(rootPath, (state: State) => state.entities);
+export const getEntities = (state: rootStore.State) => state.tareas.entities;
 
-export const getGrupoIds = createSelector(rootPath, (state: State) => state.ids);
+export const getGrupoIds = (state: rootStore.State) => state.tareas.ids;
+
+export const getActiveTask = (state: rootStore.State) => state.tareas.activeTask;
+
+export const getNextTask = (state: rootStore.State) => state.tareas.nextTask;
 
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);

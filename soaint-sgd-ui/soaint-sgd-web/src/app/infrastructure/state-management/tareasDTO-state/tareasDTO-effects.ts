@@ -22,6 +22,7 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 import {go} from '@ngrx/router-store';
 import * as login from 'app/ui/page-components/login/redux-state/login-actions';
 import {TareaDTO} from 'app/domain/tareaDTO';
+import {getNextTask} from './tareasDTO-selectors';
 
 function isLoaded() {
   return (source) =>
@@ -56,10 +57,27 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.startTask(payload)
-        .map((response: any) =>  new actions.StartTaskSuccessAction(response))
-        .do(this._sandbox.initTaskDispatch(payload))
+        .delay(5000)
+        .map((response: any) => new actions.StartTaskSuccessAction(response))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
+    );
+
+  @Effect({dispatch: false})
+  upViewRelatedToTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.START_TASK_SUCCESS)
+    .map(toPayload)
+    .do((payload) => this._sandbox.initTaskDispatch(payload));
+
+  @Effect({dispatch: false})
+  goToNextTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.CONTINUE_WITH_NEXT_TASK)
+    .withLatestFrom(getNextTask)
+    .switchMap(
+      (nextTask) => Observable.of(nextTask)
+        .map((task) => task)
+        .catch((error) => Observable.of(new actions.CompleteTaskFailAction({error})))
     )
+    .do(task => console.log(task));
 
   @Effect()
   completeTask: Observable<Action> = this.actions$
@@ -67,11 +85,9 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.completeTask(payload)
-        .map((response: any) =>  new actions.CompleteTaskSuccessAction(response))
-        .do(this._sandbox.initTaskDispatch(payload))
+        .map((response: any) => new actions.CompleteTaskSuccessAction(response))
         .catch((error) => Observable.of(new actions.CompleteTaskFailAction({error})))
     )
-
 
 
 }
