@@ -6,6 +6,8 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.*;
 import co.com.soaint.ecm.domain.entity.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public abstract class ContentControl  {
 
     public abstract MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException ;
 
-    public abstract String subirDocumento(Session session, String caminoLocal, String tipoComunicacion, String mimeType, String name, String user, String titulo, String descripcion) throws SystemException,IOException ;
+    public abstract String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws SystemException,IOException ;
 
 
 }

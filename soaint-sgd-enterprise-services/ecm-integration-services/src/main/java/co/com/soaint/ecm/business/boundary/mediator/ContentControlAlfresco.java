@@ -8,8 +8,10 @@ import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
+import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -23,7 +25,9 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExists
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -36,12 +40,12 @@ import static java.nio.file.StandardWatchEventKinds.*;
 /**
  * Created by sarias on 11/11/2016.
  */
-@Service
+@BusinessBoundary
+@NoArgsConstructor
 public class ContentControlAlfresco extends ContentControl {
 
     private static Logger LOGGER = Logger.getLogger (ContentControlAlfresco.class.getName ( ));
     private static Session conexion = null;
-    //    private static ObjectStore os = null;
     private static Dominio dominio = null;
     private final String ID_ORG_ADM = "0";
     private final String ID_ORG_OFC = "1";
@@ -50,8 +54,19 @@ public class ContentControlAlfresco extends ContentControl {
     private final String COD_SUBSERIE = "4";
     private final String NOM_SUBSERIE = "5";
 
-    public ContentControlAlfresco() {
-    }
+//    @Value( "${ALFRSCO_ATOMPUB_URL}" )
+//    private String propiedadALFRSCO_ATOMPUB_URL ;
+//    @Value( "${REPOSITORY_ID}" )
+//    private String propiedadREPOSITORY_ID ;
+//    @Value( "${ALFRESCO_USER}" )
+//    private String propiedadALFRESCO_USER ;
+//    @Value( "${ALFRESCO_PASS}" )
+//    private String propiedadALFRESCO_PASS ;
+
+    private String propiedadALFRSCO_ATOMPUB_URL= "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+    private String propiedadREPOSITORY_ID="-default-" ;
+    private String propiedadALFRESCO_USER="admin" ;
+    private String propiedadALFRESCO_PASS="admin";
 
     public MensajeRespuesta establecerConexiones() throws SystemException {
 
@@ -59,28 +74,9 @@ public class ContentControlAlfresco extends ContentControl {
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
+            LOGGER.info ("### Llenando datos de conexion..");
+            LOGGER.info ("### Usuario.."+ propiedadALFRESCO_USER);
             Properties props = new Properties ( );
-            FileInputStream file = null;
-            String propiedadALFRSCO_ATOMPUB_URL = null;
-            String propiedadREPOSITORY_ID = null;
-            String propiedadALFRESCO_USER = null;
-            String propiedadALFRESCO_PASS = null;
-            try {
-                String path = new File ("ecm-integration-services/src/main/resources/connectionAlfresco.properties").getAbsolutePath ( );
-
-                file = new FileInputStream (path);
-
-                props.load (file);
-                propiedadALFRSCO_ATOMPUB_URL = props.getProperty ("ALFRSCO_ATOMPUB_URL");
-                propiedadREPOSITORY_ID = props.getProperty ("REPOSITORY_ID");
-                propiedadALFRESCO_USER = props.getProperty ("ALFRESCO_USER");
-                propiedadALFRESCO_PASS = props.getProperty ("ALFRESCO_PASS");
-                file.close ( );
-            } catch (FileNotFoundException e) {
-                e.printStackTrace ( );
-            } catch (IOException e) {
-                e.printStackTrace ( );
-            }
 
             Map <String, String> parameter = new HashMap <String, String> ( );
 
@@ -104,8 +100,8 @@ public class ContentControlAlfresco extends ContentControl {
         } catch (Exception e) {
             e.printStackTrace ( );
             LOGGER.info ("Error obteniendo conexion");
-//            response.setCodMensaje(MessageUtil.getMessage("cod01"));
-//            response.setMensaje(MessageUtil.getMessage("msj01"));
+            response.setCodMensaje("Error al establecer Conexiones");
+            response.setMensaje("000002");
         }
 
         return response;
@@ -123,26 +119,6 @@ public class ContentControlAlfresco extends ContentControl {
                 try {
                     Properties props = new Properties ( );
                     FileInputStream file = null;
-                    String propiedadALFRSCO_ATOMPUB_URL = null;
-                    String propiedadREPOSITORY_ID = null;
-                    String propiedadALFRESCO_USER = null;
-                    String propiedadALFRESCO_PASS = null;
-                    try {
-                        String path = new File ("ecm-integration-services/src/main/resources/connectionAlfresco.properties").getAbsolutePath ( );
-
-                        file = new FileInputStream (path);
-
-                        props.load (file);
-                        propiedadALFRSCO_ATOMPUB_URL = props.getProperty ("ALFRSCO_ATOMPUB_URL");
-                        propiedadREPOSITORY_ID = props.getProperty ("REPOSITORY_ID");
-                        propiedadALFRESCO_USER = props.getProperty ("ALFRESCO_USER");
-                        propiedadALFRESCO_PASS = props.getProperty ("ALFRESCO_PASS");
-                        file.close ( );
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace ( );
-                    } catch (IOException e) {
-                        e.printStackTrace ( );
-                    }
 
                     Map <String, String> parameter = new HashMap <String, String> ( );
 
@@ -220,6 +196,8 @@ public class ContentControlAlfresco extends ContentControl {
     public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException {
         Carpeta newFolder = null;
         try {
+
+            LOGGER.info ("### Creando Carpeta.. con clase docuemntal:"+classDocumental);
             Map <String, String> props = new HashMap <> ( );
             //Se define como nombre de la carpeta nameOrg
             props.put (PropertyIds.NAME, nameOrg);
@@ -259,7 +237,9 @@ public class ContentControlAlfresco extends ContentControl {
                 }
             }
             //Se crea la carpeta dentro de la carpeta folder
+            LOGGER.info ("*** Se procede a crear la carpeta ***");
             newFolder = new Carpeta ( );
+            LOGGER.info ("*** despues de aqui se va a crear la nueva c arpeta dentro d ela carpeta: ***"+ Configuracion.getPropiedad ("claseSubserie") +Configuracion.getPropiedad ("claseBase"));
             newFolder.setFolder (folder.getFolder ( ).createFolder (props));
         } catch (Exception e) {
             LOGGER.info ("*** Error al crear folder ***");
@@ -492,14 +472,16 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     public static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) throws SystemException {
-            LOGGER.info ("### Obtener Carpetas Hijas Dado Padre");
+        LOGGER.info ("### Obtener Carpetas Hijas Dado Padre");
         List <Carpeta> listaCarpetas = null;
 
         try {
+            LOGGER.info ("### Antes de los primero con ALFRESCO");
             ItemIterable <CmisObject> listaObjetos = carpetaPadre.getFolder ( ).getChildren ( );
 
             listaCarpetas = new ArrayList <Carpeta> ( );
             //Lista de carpetas hijas
+            LOGGER.info ("### Antes del ciclo sobre CMISOBJECT con ALFRESCO");
             for (CmisObject contentItem : listaObjetos) {
 
                 if (contentItem instanceof Folder) {
@@ -595,8 +577,6 @@ public class ContentControlAlfresco extends ContentControl {
 
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
         LOGGER.info ("### Generando arbol");
-//        cargaMasiva ("D:/Test");
-
 
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
@@ -719,76 +699,20 @@ public class ContentControlAlfresco extends ContentControl {
             LOGGER.info ("Error al crear arbol content");
             e.printStackTrace ( );
             //TODO revisar el tema del response
-//            response.setCodMensaje(MessageUtil.getMessage("cod08"));
-//            response.setMensaje(MessageUtil.getMessage("msj08"));
+            response.setCodMensaje("Error al crear el arbol");
+            response.setMensaje("111112");
         }
 
         return response;
     }
 
-    public static MensajeRespuesta cargaMasiva(Session session, String directory) throws SystemException {
-        System.out.println ("WatchService in " + directory);
-
-        // Obtenemos el directorio
-        try {
-            Path directoryToWatch = Paths.get (directory);
-
-            if (directoryToWatch == null) {
-                throw new UnsupportedOperationException ("Directory not found");
-            }
-
-            // Solicitamos el servicio WatchService
-            WatchService watchService = directoryToWatch.getFileSystem ( ).newWatchService ( );
-
-            // Registramos los eventos que queremos monitorear
-            directoryToWatch.register (watchService, new WatchEvent.Kind[]{ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY});
-
-            System.out.println ("Started WatchService in " + directory);
-
-            try {
-
-                // Esperamos que algo suceda con el directorio
-                WatchKey key = watchService.take ( );
-
-                // Algo ocurrio en el directorio para los eventos registrados
-                while (key != null) {
-                    for (WatchEvent event : key.pollEvents ( )) {
-                        String eventKind = event.kind ( ).toString ( );
-                        String file = event.context ( ).toString ( );
-                        //TODO Agregado por Dasiel para pasar los ducumentos de la carpeta local al alfresco
-
-//                    subirDocumento (session,"D:/Test",);
-
-                        //TODO Hasta aqui
-                        System.out.println ("Event : " + eventKind + " in File " + file);
-                    }
-
-                    // Volvemos a escuchar. Lo mantenemos en un loop para escuchar indefinidamente.
-                    key.reset ( );
-                    key = watchService.take ( );
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException (e);
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace ( );
-        }
-        return null;
-    }
-
-    public String subirDocumento(Session session, String caminoLocal,String tipoComunicacion,  String mimeType, String name, String user, String titulo, String descripcion) {
+    public String subirDocumento(Session session, String nombreDocumento, MultipartFile documento, String tipoComunicacion) {
         String idDocumento="";
         //Se definen las propiedades del documento a subir
         Map <String, Object> properties = new HashMap <String, Object> ( );
 
         properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
-        properties.put (PropertyIds.NAME, name);
-        properties.put (PropertyIds.CREATED_BY, user);
-        properties.put ("cm:title", titulo);
-        properties.put (PropertyIds.DESCRIPTION, descripcion);
-
+        properties.put (PropertyIds.NAME, nombreDocumento);
 
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
@@ -800,17 +724,18 @@ public class ContentControlAlfresco extends ContentControl {
                 folderAlfresco = obtenerCarpetaPorNombre ("COMUNICACION_INTERNA",session);
             }
 
-
-
             VersioningState vs = VersioningState.MAJOR;
 
-            //Se crea un File a partir del path local del documento
-            File file = new File (caminoLocal);
-            InputStream fis = new FileInputStream (file);
+            //Convierto el MultipartFile a File
+            File convFile = new File(documento.getOriginalFilename());
+            convFile.createNewFile();
+
+
+            InputStream fis = new FileInputStream (convFile);
             DataInputStream dis = new DataInputStream (fis);
-            byte[] bytes = new byte[(int) file.length ( )];
+            byte[] bytes = new byte[(int) convFile.length ( )];
             dis.readFully (bytes);
-            ContentStream contentStream = new ContentStreamImpl (file.getAbsolutePath ( ), BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
+            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
 
             //Se crea el documento
             Document newDocument = folderAlfresco.getFolder ().createDocument (properties, contentStream, vs);

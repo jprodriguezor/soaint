@@ -10,6 +10,7 @@ import co.com.soaint.foundation.framework.common.MessageUtil;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
     public MensajeRespuesta crearEstructuraECM(List<EstructuraTrdDTO> structure) throws InfrastructureException {
         MensajeRespuesta response;
-        ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
+//        ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
         response = content.crearEstructuraContent(structure);
 //        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
 //            response = records.createStructureRecords(structure);
@@ -35,10 +36,10 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         return response;
     }
 
-    public String subirDocumento(String carpetaContenedora,String caminoLocal,String nombreDocumento,String user,String titulo,String descripcion) throws InfrastructureException {
+    public String subirDocumento(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException {
         String idDocumento;
         ContentManagerMediator content = FactoriaContent.getContentManager("alfresco");
-        idDocumento = content.subirDocumentoContent (carpetaContenedora,caminoLocal,nombreDocumento, user, titulo, descripcion);
+        idDocumento = content.subirDocumentoContent (nombreDocumento,documento,tipoComunicacion);
 //        if(response.getCodMensaje().equals(MessageUtil.getMessage("cod00"))){
 //            response = records.createStructureRecords(structure);
 //        }

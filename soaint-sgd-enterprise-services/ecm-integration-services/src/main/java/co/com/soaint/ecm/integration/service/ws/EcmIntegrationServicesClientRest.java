@@ -1,10 +1,6 @@
 package co.com.soaint.ecm.integration.service.ws;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
-import co.com.soaint.ecm.business.boundary.mediator.FactoriaEcmManagerMediator;
 import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediator;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -14,10 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -59,11 +53,11 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/subirDocumentoECM/")
-    public String subirDocumentoECM( String carpetaContenedora,String nombreDocumento, String caminoLocal, String user,String titulo, String descripcion) throws InfrastructureException, SystemException {
+    public String subirDocumentoECM(String nombreDocumento, MultipartFile documento, String tipoComunicacion) throws InfrastructureException, SystemException {
 
         LOGGER.info("processing rest request - Subir Documento ECM");
         try {
-            return fEcmManager.subirDocumento (carpetaContenedora,nombreDocumento,caminoLocal,user,titulo,descripcion );
+            return fEcmManager.subirDocumento (nombreDocumento,documento,tipoComunicacion );
         } catch (Throwable e) {
             e.printStackTrace();
             throw e;

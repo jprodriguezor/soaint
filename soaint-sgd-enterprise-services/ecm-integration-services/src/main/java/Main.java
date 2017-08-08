@@ -1,12 +1,10 @@
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.FactoriaContent;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
-import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,8 +96,10 @@ public class Main {
 
 
 
-//        MensajeRespuesta aa= content.crearEstructuraContent (structure);
+        MensajeRespuesta aa= content.crearEstructuraContent (structure);
 //        String idDoc=content.subirDocumentoContent ("TP-CMCOE","C:\\Users\\Dasiel\\Desktop\\alice.pdf","alice.pdf","daiel","Alicia en el Pais de las Maravillas","Descripcion doc");
         MensajeRespuesta b= content.moverDocumento ("alice.pdf","COMUNICACION_EXTERNA","COMUNICACION_INTERNA");
+
+
     }
 }
