@@ -5,7 +5,6 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './asignacionDTO-actions';
 import {ApiBase} from '../../api/api-base';
 
-
 @Injectable()
 export class Sandbox {
 
@@ -18,7 +17,7 @@ export class Sandbox {
   }
 
   reassignComunications(payload: any) {
-    return this._http.post(environment.reasignarComunicaciones_endpoint, payload);
+    return this._api.post(environment.reasignarComunicaciones_endpoint, payload);
   }
 
   redirectComunications(payload: any) {

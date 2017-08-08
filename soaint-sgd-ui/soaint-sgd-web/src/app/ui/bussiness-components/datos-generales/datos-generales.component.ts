@@ -15,6 +15,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/single';
 import {getVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
+import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 
 @Component({
   selector: 'app-datos-generales',
@@ -70,6 +71,7 @@ export class DatosGeneralesComponent implements OnInit {
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
+      'reqDigitInmediata': [{value: null, disabled: !this.editable}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
       'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
@@ -98,6 +100,10 @@ export class DatosGeneralesComponent implements OnInit {
 
     this.form.get('tipoComunicacion').valueChanges.subscribe((value) => {
       this.onSelectTipoComunicacion(value);
+    });
+
+    this.form.get('reqDigitInmediata').valueChanges.subscribe((value) => {
+        this._store.dispatch(new ScheduleNextTaskAction());
     });
 
     this.defaultSelectionMediosRecepcion$ = this._store.select(getVentanillaData);
