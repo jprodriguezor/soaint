@@ -48,7 +48,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/crearEstructuraContent/")
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
-        LOGGER.info("processing rest request - Crear Estructura ECM");
+       // LOGGER.info("processing rest request - Crear Estructura ECM");
         try {
             return fEcmManager.crearEstructuraECM (structure);
         } catch (Throwable e) {
@@ -60,13 +60,17 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/subirDocumentoECM/")
     @Consumes("multipart/form-data")
-    public String subirDocumentoECM(@QueryParam("nombreDocumento") final String nombreDocumento,
+    public String subirDocumentoECM(@QueryParam("nombreDocumento")  String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
-                                    @QueryParam("tipoComunicacion") final String tipoComunicacion) throws InfrastructureException, SystemException {
-        LOGGER.info("processing rest request - Subir Documento ECM");
+                                    @QueryParam("tipoComunicacion")  String tipoComunicacion) throws InfrastructureException, SystemException {
+       // LOGGER.info("processing rest request - Subir Documento ECM");
         try {
+            nombreDocumento="Alice.pdf";
+            tipoComunicacion="TP-CMCOEsdsdsdsd";
+
+         //   LOGGER.info("processing rest request - Subir Documento ECM------");
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("Error en operacion - Subir Documento ECM");
             throw e;

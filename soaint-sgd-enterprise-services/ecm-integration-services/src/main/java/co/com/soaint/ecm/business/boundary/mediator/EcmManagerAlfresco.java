@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -18,11 +19,14 @@ import java.util.List;
 @Service
 public class EcmManagerAlfresco implements EcmManagerMediator {
 
+    Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
+
     @Autowired
     ContentManagerMediator content;
 
 
     public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
+        LOGGER.info ("### Creando estructura content..------");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
             response = content.crearEstructuraContent (structure);
@@ -36,6 +40,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     }
 
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
+       // LOGGER.info ("### Subiendo documento al content..");
         String idDocumento;
         idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         return idDocumento;

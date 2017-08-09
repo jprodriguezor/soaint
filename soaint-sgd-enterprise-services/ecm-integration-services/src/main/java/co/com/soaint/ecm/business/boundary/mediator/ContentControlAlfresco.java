@@ -341,18 +341,20 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     public static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
-
+        LOGGER.info ("Se entra al metodo obtener carpeta por nombre");
         Carpeta folder = new Carpeta ( );
         try {
 
             String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
-
+            LOGGER.info ("Se obtiene la query:" + queryString);
             ItemIterable <QueryResult> results = session.query (queryString, false);
-
+            LOGGER.info ("Se obtiene el resultado:" + results);
             for (QueryResult qResult : results) {
+                LOGGER.info ("Se obtiene la qResult:" + qResult);
                 String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
+                LOGGER.info ("Se obtiene la objectId:" + objectId);
                 folder.setFolder ((Folder) session.getObject (session.createObjectId (objectId)));
-
+                LOGGER.info ("Se obtiene la folder:" + folder);
             }
         } catch (Exception e) {
             LOGGER.info ("*** Error al obtenerCarpetas ***");
@@ -603,92 +605,94 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
-    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) {
+    /**
+     *
+     * @param session
+     * @param nombreDocumento
+     * @param documento
+     * @param tipoComunicacion
+     * @return
+     * @throws IOException
+     * @throws SystemException
+     */
+    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException, SystemException {
+        LOGGER.info ("Se entra al metodo subirDocumento");
 
+        String idDocumento = "";
+        Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
+        List <InputPart> inputParts = uploadForm.get ("documento");
+
+        LOGGER.info ("Debug------------------------------"+inputParts);
 //        //Codigo new
-//        String fileName = "";
+        String fileName = "";
 //
 //        Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
 //        List<InputPart> inputParts = uploadForm.get("uploadedFile");
 //
-//        for (InputPart inputPart : inputParts) {
-//            MultivaluedMap<String, String> header = inputPart.getHeaders();
+        for (InputPart inputPart : inputParts) {
+            MultivaluedMap <String, String> header = inputPart.getHeaders ( );
 //            fileName = getFileName(header);
-//
-//            //convert the uploaded file to inputstream
-//            InputStream inputStream = inputPart.getBody(InputStream.class,null);
-//
-//            byte [] bytes = IOUtils.toByteArray(inputStream);
-//
-//            //constructs upload file path
-//            fileName = "/home/wildfly/" + fileName;
-//            LOGGER.info("Ruta del fichero: " + fileName);
-//
-//            writeFile(bytes,fileName);
-//
+
+            //convert the uploaded file to inputstream
+            InputStream inputStream = null;
+            try {
+                inputStream = inputPart.getBody (InputStream.class, null);
+            } catch (IOException e) {
+                e.printStackTrace ( );
+            }
+            LOGGER.info ("Se llena el array de Bytes");
+            byte[] bytes = IOUtils.toByteArray (inputStream);
+
 //            LOGGER.info("Fichero escrito");
 //
 //            LOGGER.info("Nombre del fichero: " + fileName);
 //
 //            return "subida exitosa";
-//            //Fin codigo new
+            //Fin codigo new
 
+            //Se definen las propiedades del documento a subir
+            Map <String, Object> properties = new HashMap <String, Object> ( );
 
+            properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
+            properties.put (PropertyIds.NAME, nombreDocumento);
 
-
-
-
-
-
-
-
-        String idDocumento = "";
-
-        //Se definen las propiedades del documento a subir
-        Map <String, Object> properties = new HashMap <String, Object> ( );
-
-        properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
-        properties.put (PropertyIds.NAME, nombreDocumento);
-
-//        try {
+        try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             Carpeta folderAlfresco = new Carpeta ( );
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
+            LOGGER.info ("### Se va a crear el documento..----------------------------session:"+session);
             if (tipoComunicacion == "TP-CMCOE") {
-//                folderAlfresco = obtenerCarpetaPorNombre ("100100.00302_COMUNICACION_EXTERNA", session);
-            } else if (tipoComunicacion == "TP-CMCOI") {
-//                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+                LOGGER.info ("### Se va a crear la carpeta..----------------------------session: 100101.00302_COMUNICACION_EXTERNA");
+                folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
+            } else {
+                LOGGER.info ("### Se va a crear la carpeta..----------------------------session: 100100.00301_COMUNICACION_INTERNA");
+                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
             }
-
+            LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.."+folderAlfresco.getFolder ().getName ());
             VersioningState vs = VersioningState.MAJOR;
-
-            //Convierto el MultipartFile a File
-//            File convFile = new File (documento.getOriginalFilename ( ));
-//            convFile.createNewFile ( );
-
-
-//            InputStream fis = new FileInputStream (convFile);
-//            DataInputStream dis = new DataInputStream (fis);
-//            byte[] bytes = new byte[(int) convFile.length ( )];
-//            dis.readFully (bytes);
-//            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
-
+            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
             //Se crea el documento
             LOGGER.info ("### Se va a crear el documento..");
-//            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
-//            idDocumento = newDocument.getId ( );
-            LOGGER.info ("### Documento creado con id "+ idDocumento);
-//        } catch (CmisContentAlreadyExistsException ccaee) {
-//            System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
-//        } catch (CmisConstraintException cce) {
-//            System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
-//        } catch (IOException e) {
-//            e.printStackTrace ( );
-//        }
-//        catch (SystemException e) {
-//            e.printStackTrace ( );
-//        }
-        return idDocumento;
+            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+            idDocumento = newDocument.getId ( );
+            LOGGER.info ("### Documento creado con id " + idDocumento);
+        } catch (CmisContentAlreadyExistsException ccaee) {
+            System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
+            LOGGER.info ("### Error tipo CmisContentAlreadyExistsException----------------------------- :"+ccaee);
+        } catch (CmisConstraintException cce) {
+            System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
+            LOGGER.info ("### Error tipo CmisConstraintException----------------------------- :"+cce);
+        }
+        catch (SystemException se) {
+            se.printStackTrace ( );
+            LOGGER.info ("### Error tipo SystemException----------------------------- :"+se);
+        }
+        catch (Exception e){
+            e.printStackTrace ();
+            LOGGER.info ("### Error tipo Exception----------------------------- :"+e);
+        }
+
+        }return idDocumento;
     }
 }
 
