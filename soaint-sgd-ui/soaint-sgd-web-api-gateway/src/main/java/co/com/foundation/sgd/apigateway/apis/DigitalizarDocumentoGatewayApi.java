@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
+import co.com.soaint.foundation.canonical.ui.DigitalizarDocumentoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -53,7 +54,9 @@ public class DigitalizarDocumentoGatewayApi {
         });
         System.out.println("DigitalizarDocumentoGatewayApi - [content] : " + ecmIds);
 
-        return Response.status(Response.Status.OK).entity("{\"ecmIds\":" + ecmIds + "}").build();
+        DigitalizarDocumentoDTO docs = new DigitalizarDocumentoDTO(ecmIds);
+
+        return Response.status(Response.Status.OK).entity(docs).build();
     }
 
 }
