@@ -19,7 +19,6 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
@@ -27,13 +26,14 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExists
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.core.MultivaluedMap;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.logging.Logger;
@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 public class ContentControlAlfresco extends ContentControl {
 
     private static Logger LOGGER = Logger.getLogger (ContentControlAlfresco.class.getName ( ));
-    private static Session conexion = null;
     private static Dominio dominio = null;
     private final String ID_ORG_ADM = "0";
     private final String ID_ORG_OFC = "1";
@@ -94,9 +93,6 @@ public class ContentControlAlfresco extends ContentControl {
             parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
 
             // Crear Sesion
-            SessionFactory factory = SessionFactoryImpl.newInstance ( );
-            Session session = factory.getRepositories (parameter).get (0).createSession ( );
-
             response.setMensaje ("OK");
         } catch (Exception e) {
             e.printStackTrace ( );
@@ -121,7 +117,7 @@ public class ContentControlAlfresco extends ContentControl {
                     Properties props = new Properties ( );
                     FileInputStream file = null;
 
-                    Map <String, String> parameter = new HashMap <String, String> ( );
+                    Map <String, String> parameter = new HashMap <> ( );
 
                     // Credenciales del usuario
                     parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
@@ -153,15 +149,7 @@ public class ContentControlAlfresco extends ContentControl {
         return conexion;
     }
 
-    /**
-     * Metodo que, dado el nombre de la carpeta padre y la nueva Carpeta, crea el documento
-     *
-     * @param folder
-     * @param nameOrg
-     * @param codOrg
-     * @param classDocumental
-     * @return newly created folder(newFolder)
-     */
+
     public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException {
         Carpeta newFolder = null;
         try {
@@ -173,37 +161,42 @@ public class ContentControlAlfresco extends ContentControl {
 
             //Se estable como codigo unidad administrativa Padre el codigo de la carpeta padre
 
-            if (classDocumental.equals ("claseBase")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseBase"));
-                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseBase"));
-                props.put ("cmcor:CodigoBase", codOrg);
+            switch (classDocumental) {
+                case "claseBase":
+                    props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseBase"));
+                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseBase"));
+                    props.put ("cmcor:CodigoBase", codOrg);
 
-            } else if (classDocumental.equals ("claseDependencia")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseDependencia"));
-                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseDependencia"));
-                props.put ("cmcor:CodigoDependencia", codOrg);
-                //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
-                if (folderFather != null) {
-                    props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
-                } else {
-                    props.put ("cmcor:CodigoUnidadAdminPadre", codOrg);
-                }
-            } else if (classDocumental.equals ("claseSerie")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseSerie"));
-                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseSerie"));
-                props.put ("cmcor:CodigoSerie", codOrg);
-                if (folderFather != null) {
-                    props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
-                } else {
-                    props.put ("cmcor:CodigoUnidadAdminPadre", codOrg);
-                }
-            } else if (classDocumental.equals ("claseSubserie")) {
-                props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseSubserie"));
-                props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseSubserie"));
-                props.put ("cmcor:CodigoSubserie", codOrg);
-                if (folderFather != null) {
-                    props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
-                }
+                    break;
+                case "claseDependencia":
+                    props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseDependencia"));
+                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseDependencia"));
+                    props.put ("cmcor:CodigoDependencia", codOrg);
+                    //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
+                    if (folderFather != null) {
+                        props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
+                    } else {
+                        props.put ("cmcor:CodigoUnidadAdminPadre", codOrg);
+                    }
+                    break;
+                case "claseSerie":
+                    props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseSerie"));
+                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseSerie"));
+                    props.put ("cmcor:CodigoSerie", codOrg);
+                    if (folderFather != null) {
+                        props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
+                    } else {
+                        props.put ("cmcor:CodigoUnidadAdminPadre", codOrg);
+                    }
+                    break;
+                case "claseSubserie":
+                    props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad ("claseSubserie"));
+                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad ("claseSubserie"));
+                    props.put ("cmcor:CodigoSubserie", codOrg);
+                    if (folderFather != null) {
+                        props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
+                    }
+                    break;
             }
             //Se crea la carpeta dentro de la carpeta folder
             LOGGER.info ("*** Se procede a crear la carpeta ***");
@@ -364,7 +357,7 @@ public class ContentControlAlfresco extends ContentControl {
 
     }
 
-    public static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) throws SystemException {
+    private static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) throws SystemException {
         LOGGER.info ("### Obtener Carpetas Hijas Dado Padre");
         List <Carpeta> listaCarpetas = null;
 
@@ -451,8 +444,10 @@ public class ContentControlAlfresco extends ContentControl {
         MensajeRespuesta response=new MensajeRespuesta ( );
         try {
 
-            Carpeta carpetaF = new Carpeta ( );
-            Carpeta carpetaD = new Carpeta ( );
+            new Carpeta ( );
+            Carpeta carpetaF;
+            new Carpeta ( );
+            Carpeta carpetaD;
 
             carpetaF = (obtenerCarpetaPorNombre (carpetaFuente, session));
             carpetaD = (obtenerCarpetaPorNombre (carpetaDestino, session));
@@ -489,11 +484,10 @@ public class ContentControlAlfresco extends ContentControl {
                 //Grantizar que el orden de la estructura sea de menor a mayor, ideOrgaAdmin
                 utils.ordenarListaOrganigrama (organigramaList);
                 Carpeta folderFather = null;
-                Carpeta folderSon = null;
-                Carpeta folderContainer = null;
+                Carpeta folderSon ;
                 Carpeta folderFatherContainer = null;
                 //Recorremos la lista organigrama
-                for (OrganigramaDTO organigrama : organigramaList) {
+                for (OrganigramaDTO organigrama : organigramaList)
                     switch (bandera) {
                         case 0:
                             folderFather = chequearCapetaPadre (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
@@ -531,11 +525,9 @@ public class ContentControlAlfresco extends ContentControl {
                             }
                             folderFather = folderSon;
                             folderFatherContainer = folderSon;
-                            folderContainer = folderFather;
                             bandera++;
                             break;
                     }
-                }
                 //Recorremos la lista de Dependencias TRD
                 for (ContenidoDependenciaTrdDTO dependencias : trdList) {
                     String[] dependenciasArray = {dependencias.getIdOrgAdm ( ),
@@ -566,7 +558,6 @@ public class ContentControlAlfresco extends ContentControl {
                     }
                     folderFather = folderSon;
                     if (dependencias.getCodSubSerie ( ) != null && !dependencias.getCodSubSerie ( ).equals ("")) {
-                        folderContainer = folderFather;
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
                         folderSon = chequearCapetaPadre (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
@@ -629,14 +620,15 @@ public class ContentControlAlfresco extends ContentControl {
             byte[] bytes = IOUtils.toByteArray (inputStream);
 
             //Se definen las propiedades del documento a subir
-            Map <String, Object> properties = new HashMap <String, Object> ( );
+            Map <String, Object> properties = new HashMap <> ( );
 
             properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
             properties.put (PropertyIds.NAME, nombreDocumento);
 
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-            Carpeta folderAlfresco = new Carpeta ( );
+            new Carpeta ( );
+            Carpeta folderAlfresco;
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
 
             if ("TP-CMCOE".equals (tipoComunicacion)) {
