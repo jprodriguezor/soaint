@@ -28,6 +28,9 @@ public class CorrespondenciaClient {
     @Value("${backapi.ecm.service.endpoint.url}")
     private String ecmEndpoint = "";
 
+    @Value("${backapi.drools.service.endpoint.url}")
+    private String droolsEndpoint = "";
+
     public CorrespondenciaClient() {
         super();
     }
@@ -95,5 +98,32 @@ public class CorrespondenciaClient {
         return wt.path("/asignacion-web-api/asignacion/redireccionar")
                 .request()
                 .put(Entity.json(agentesDTO));
+    }
+
+    public Response metricasTiempoDrools(String codigoTipologia) {
+        System.out.println("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
+        WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
+        String payload = "{\"lookup\":\"ksession-rules\",\n" +
+                "\t\"commands\": [\n" +
+                "\t{\n" +
+                "\t\"insert\": {\"out-identifier\":\"Medio\",\n" +
+                "\t           \"return-object\": true,\n" +
+                "\t           \"object\":{\"co.com.soaint.sgd.model.MedioRecepcion\":{\n" +
+                "\t\t\t\t\t\t\"codMedioRecepcion\": \""+ codigoTipologia +"\"\n" +
+                "\t           \t\n" +
+                "\t            }\n" +
+                "\t\t\t\n" +
+                "\t           }\n" +
+                "\t\t   \n" +
+                "\t\t}\n" +
+                "\t},\n" +
+                "{\"fire-all-rules\":\"\"\n" +
+                "\t\n" +
+                "}\n" +
+                "]\n" +
+                "\t\n" +
+                "}";
+        return wt.request()
+                .post(Entity.json(payload));
     }
 }
