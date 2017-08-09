@@ -40,7 +40,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     }
 
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
-       // LOGGER.info ("### Subiendo documento al content..");
+        LOGGER.info ("### Subiendo documento al content..");
         String idDocumento;
         idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         return idDocumento;

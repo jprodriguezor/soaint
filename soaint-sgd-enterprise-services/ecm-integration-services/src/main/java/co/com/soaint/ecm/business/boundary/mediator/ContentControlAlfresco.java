@@ -612,6 +612,7 @@ public class ContentControlAlfresco extends ContentControl {
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
 
+
         LOGGER.info ("Debug------------------------------"+inputParts);
 
         String fileName = "";
@@ -638,7 +639,7 @@ public class ContentControlAlfresco extends ContentControl {
             Carpeta folderAlfresco = new Carpeta ( );
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
 
-            if (tipoComunicacion == "TP-CMCOE") {
+            if ("TP-CMCOE".equals (tipoComunicacion)) {
 
                 folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
             } else {

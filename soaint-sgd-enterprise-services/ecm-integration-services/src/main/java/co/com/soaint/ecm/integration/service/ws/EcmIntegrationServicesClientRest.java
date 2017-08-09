@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,17 +59,14 @@ public class EcmIntegrationServicesClientRest {
     }
 
     @POST
-    @Path("/subirDocumentoECM/")
+    @Path("/subirDocumentoECM/{nombreDocumento}/{tipoComunicacion}")
     @Consumes("multipart/form-data")
-    public String subirDocumentoECM(@QueryParam("nombreDocumento")  String nombreDocumento,
+    public String subirDocumentoECM(@PathParam ("nombreDocumento")  String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
-                                    @QueryParam("tipoComunicacion")  String tipoComunicacion) throws InfrastructureException, SystemException {
-       // LOGGER.info("processing rest request - Subir Documento ECM");
+                                    @PathParam ("tipoComunicacion")  String tipoComunicacion) throws InfrastructureException, SystemException {
+        LOGGER.info("processing rest request - Subir Documento ECM "+ nombreDocumento+ " "+tipoComunicacion );
         try {
-            nombreDocumento="Alice.pdf";
-            tipoComunicacion="TP-CMCOEsdsdsdsd";
 
-         //   LOGGER.info("processing rest request - Subir Documento ECM------");
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,51 +90,6 @@ public class EcmIntegrationServicesClientRest {
             e.printStackTrace();
             throw e;
         }
-    }
-
-
-    /**
-     * header sample
-     * {
-     * 	Content-Type=[image/png],
-     * 	Content-Disposition=[form-data; name="file"; filename="filename.extension"]
-     * }
-     **/
-    //get uploaded filename, is there a easy way in RESTEasy?
-    private String getFileName(MultivaluedMap<String, String> header) {
-
-        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-
-        for (String filename : contentDisposition) {
-            LOGGER.info("contenido del file: " + filename);
-            if ((filename.trim().startsWith("filename"))) {
-
-                String[] name = filename.split("=");
-
-                String finalFileName = name[1].trim().replaceAll("\"", "");
-                return finalFileName;
-            }
-        }
-        return "unknown";
-    }
-
-
-    //save to somewhere
-    private void writeFile(byte[] content, String filename) throws IOException {
-
-        File file = new File(filename);
-
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-        try (FileOutputStream fop = new FileOutputStream(file)) {
-
-            fop.write(content);
-            fop.flush();
-            fop.close();
-        }
-
     }
 
 }
