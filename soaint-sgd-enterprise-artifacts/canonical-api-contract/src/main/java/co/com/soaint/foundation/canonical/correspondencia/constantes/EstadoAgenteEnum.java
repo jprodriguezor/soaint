@@ -1,19 +1,16 @@
 package co.com.soaint.foundation.canonical.correspondencia.constantes;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 /**
- * Created by esanchez on 7/3/2017.
+ * Created by esanchez on 8/8/2017.
  */
 @Getter
 @AllArgsConstructor
-public enum EstadoCorrespondenciaEnum {
-    RADICADO("RD", "RADICADO"),
-    REGISTRADO("RG", "REGISTRADO"),
+public enum EstadoAgenteEnum {
     SIN_ASIGNAR("SA", "SIN ASIGNAR"),
-    ASIGNACION("AS", "ASIGNACION");
+    ASIGNADO("AS", "ASIGNADO");
 
     private final String codigo;
     private final String nombre;

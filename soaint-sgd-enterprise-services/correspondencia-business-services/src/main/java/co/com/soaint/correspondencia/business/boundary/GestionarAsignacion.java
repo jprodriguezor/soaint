@@ -61,8 +61,4 @@ public class GestionarAsignacion {
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(BigInteger ideFunci, String nroRadicado) throws BusinessException, SystemException {
        return control.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
     }
-
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
-        control.redireccionarCorrespondencia(agentesDTO);
-    }
 }

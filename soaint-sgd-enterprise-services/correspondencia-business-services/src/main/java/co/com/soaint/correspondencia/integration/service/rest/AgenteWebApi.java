@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
@@ -41,5 +42,12 @@ public class AgenteWebApi {
     public void actualizarEstadoAgente(AgenteDTO agenteDTO)throws BusinessException, SystemException{
         logger.info("processing rest request - actualizar estado agente");
         boundary.actualizarEstadoAgente(agenteDTO);
+    }
+
+    @PUT
+    @Path("/agente/redireccionar")
+    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException{
+        logger.info("processing rest request - redireccionar correspondencia");
+        boundary.redireccionarCorrespondencia(agentesDTO);
     }
 }

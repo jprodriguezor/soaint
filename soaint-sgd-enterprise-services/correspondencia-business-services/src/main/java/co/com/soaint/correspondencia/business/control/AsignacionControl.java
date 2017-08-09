@@ -4,11 +4,9 @@ import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -51,6 +49,9 @@ public class AsignacionControl {
 
     @Autowired
     DctAsigUltimoControl dctAsigUltimoControl;
+
+    @Autowired
+    CorrespondenciaControl correspondenciaControl;
     // ----------------------
 
     public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
@@ -104,13 +105,13 @@ public class AsignacionControl {
 
                 em.createNamedQuery("CorAgente.updateAsignacion")
                         .setParameter("FECHA_ASIGNACION", fecha)
-                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
                         .executeUpdate();
 
                 AsignacionDTO asignacionDTOResult = em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)
                         .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
-                        .setParameter("COD_ESTADO", EstadoCorrespondenciaEnum.ASIGNADO.getCodigo())
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
@@ -172,21 +173,18 @@ public class AsignacionControl {
         }
     }
 
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
-        try {
-            for (AgenteDTO agenteDTO : agentesDTO.getAgentes()){
-                em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
-                        .setParameter("COD_SEDE", agenteDTO.getCodSede())
-                        .setParameter("COD_DEPENDENCIA", agenteDTO.getCodDependencia())
-                        .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
-                        .executeUpdate();
-            }
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+
+    public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) {
+        em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
+                .setParameter("NUM_REDIRECCIONES", numRedirecciones)
+                .setParameter("IDE_ASIG_ULTIMO", ideAsigUltimo)
+                .executeUpdate();
+    }
+
+    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente){
+        List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
+                .setParameter("IDE_AGENTE", ideAgente)
+                .getResultList();
+        return asignacionDTOList.isEmpty() ? null : asignacionDTOList.get(0);
     }
 }

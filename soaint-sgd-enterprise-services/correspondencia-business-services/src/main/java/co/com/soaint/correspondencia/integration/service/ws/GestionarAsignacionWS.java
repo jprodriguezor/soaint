@@ -37,11 +37,6 @@ public class GestionarAsignacionWS {
         boundary.actualizarIdInstancia(asignacion);
     }
 
-    @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList")final AgentesDTO agentesDTO) throws SystemException{
-        boundary.redireccionarCorrespondencia(agentesDTO);
-    }
-
     @WebMethod(action = "listarAsignacionesByFuncionarioAndNroRadicado", operationName = "listarAsignacionesByFuncionarioAndNroRadicado")
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@WebParam(name = "ide_funcionario")final BigInteger ideFunci, @WebParam(name = "nro_radicado")final String nroRadicado)throws BusinessException, SystemException{
         return boundary.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
