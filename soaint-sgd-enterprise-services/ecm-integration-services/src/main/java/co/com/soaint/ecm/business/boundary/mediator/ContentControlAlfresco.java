@@ -46,11 +46,9 @@ import java.util.logging.Logger;
 public class ContentControlAlfresco extends ContentControl {
 
     private static Logger LOGGER = Logger.getLogger (ContentControlAlfresco.class.getName ( ));
-    private static Dominio dominio = null;
     private final String ID_ORG_ADM = "0";
     private final String ID_ORG_OFC = "1";
     private final String COD_SERIE = "2";
-    private final String NOM_SERIE = "3";
     private final String COD_SUBSERIE = "4";
     private final String NOM_SUBSERIE = "5";
 
@@ -114,9 +112,6 @@ public class ContentControlAlfresco extends ContentControl {
             if (conexion != null) {
 
                 try {
-                    Properties props = new Properties ( );
-                    FileInputStream file = null;
-
                     Map <String, String> parameter = new HashMap <> ( );
 
                     // Credenciales del usuario
@@ -211,51 +206,12 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     /**
-     * Metodo que, dado el nombre de un espacio, devuelve su Id (nodeRef)
      *
-     * @param session
-     * @param nombre
-     * @return nodeRef (id)
+     * @param informationArray Arreglo que trae el nombre de la carpeta para formatearlo para ser usado por el ECM
+     * @param formatoConfig Contiene el formato que se le dara al nombre
+     * @return
+     * @throws SystemException
      */
-    public String obtenerIdDocumento(Session session, String nombre) {
-
-        String queryString = "SELECT cmis:objectId FROM cmis:document WHERE cmis:name = '" + nombre + "'";
-
-        ItemIterable <QueryResult> results = session.query (queryString, false);
-
-        String id = "";
-
-        for (QueryResult qResult : results) {
-            String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
-            Document document = (Document) session.getObject (session.createObjectId (objectId));
-            id = document.getId ( );
-
-        }
-        return id;
-
-    }
-
-    /**
-     * Metodo que, dado la sesion y el nombre del documento, devuelve su contenido (InputStream)
-     *
-     * @param session
-     * @param nombre
-     * @return InputStream(stream)
-     */
-    public InputStream obtenerContenidoDocumento(Session session, String nombre) {
-        CmisObject object = session.getObject (session.createObjectId (obtenerIdDocumento (session, nombre)));
-        Document document;
-        InputStream stream = null;
-        if (object instanceof Document) {
-            document = (Document) object;
-            String filename = document.getName ( );
-            stream = document.getContentStream ( ).getStream ( );
-        } else {
-            LOGGER.info ("No es de tipo document");
-        }
-        return stream;
-    }
-
     public String formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
         String formatoCadena;
         StringBuilder formatoFinal = new StringBuilder ( );
@@ -263,36 +219,37 @@ public class ContentControlAlfresco extends ContentControl {
             formatoCadena = Configuracion.getPropiedad (formatoConfig);
             String[] formatoCadenaArray = formatoCadena.split ("");
             int bandera = 000;
-            for (int i = 0; i < formatoCadenaArray.length; i++) {
+            for (String aFormatoCadenaArray : formatoCadenaArray) {
 
-                if (formatoCadenaArray[i].equals (ID_ORG_ADM)) {
+                String NOM_SERIE = "3";
+                if (aFormatoCadenaArray.equals (ID_ORG_ADM)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
                     bandera = Integer.parseInt (ID_ORG_ADM);
-                } else if (formatoCadenaArray[i].equals (ID_ORG_OFC)) {
+                } else if (aFormatoCadenaArray.equals (ID_ORG_OFC)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_OFC)]);
                     bandera = Integer.parseInt (ID_ORG_OFC);
-                } else if (formatoCadenaArray[i].equals (COD_SERIE)) {
+                } else if (aFormatoCadenaArray.equals (COD_SERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (COD_SERIE)]);
                     bandera = Integer.parseInt (COD_SERIE);
-                } else if (formatoCadenaArray[i].equals (NOM_SERIE)) {
+                } else if (aFormatoCadenaArray.equals (NOM_SERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (NOM_SERIE)]);
                     bandera = Integer.parseInt (NOM_SERIE);
-                } else if (formatoCadenaArray[i].equals (COD_SUBSERIE)) {
+                } else if (aFormatoCadenaArray.equals (COD_SUBSERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (COD_SUBSERIE)]);
                     bandera = Integer.parseInt (COD_SUBSERIE);
-                } else if (formatoCadenaArray[i].equals (NOM_SUBSERIE)) {
+                } else if (aFormatoCadenaArray.equals (NOM_SUBSERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (NOM_SUBSERIE)]);
                     bandera = Integer.parseInt (NOM_SUBSERIE);
-                } else if (isNumeric (formatoCadenaArray[i])) {
+                } else if (isNumeric (aFormatoCadenaArray)) {
                     //El formato no cumple con los requerimientos minimos
                     LOGGER.info ("El formato no cumple con los requerimientos.");
                     formatoFinal = null;
                     break;
                 } else {
                     if (bandera == 000) {
-                        formatoFinal.append (formatoCadenaArray[i]);
+                        formatoFinal.append (aFormatoCadenaArray);
                     } else {
-                        formatoFinal.append (formatoCadenaArray[i]);
+                        formatoFinal.append (aFormatoCadenaArray);
                     }
                 }
             }
