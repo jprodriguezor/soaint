@@ -40,9 +40,7 @@ public class DatosContactoControl {
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .getResultList()
                         .stream()
-                        .forEach(datosContactoDTO ->
-                            datosContactoDTOList.add(datosContactoDTO)
-                        );
+                        .forEach(datosContactoDTOList::add);
             }
         });
         return datosContactoDTOList;
