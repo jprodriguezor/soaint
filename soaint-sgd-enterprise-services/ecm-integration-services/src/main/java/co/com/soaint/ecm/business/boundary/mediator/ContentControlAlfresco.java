@@ -229,7 +229,7 @@ public class ContentControlAlfresco extends ContentControl {
             String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
             Document document = (Document) session.getObject (session.createObjectId (objectId));
             id = document.getId ( );
-            System.out.println ("Listado de carpetas: " + document.getId ( ));
+
         }
         return id;
 
@@ -251,7 +251,7 @@ public class ContentControlAlfresco extends ContentControl {
             String filename = document.getName ( );
             stream = document.getContentStream ( ).getStream ( );
         } else {
-            System.out.println ("No es de tipo document");
+            LOGGER.info ("No es de tipo document");
         }
         return stream;
     }
@@ -402,7 +402,7 @@ public class ContentControlAlfresco extends ContentControl {
         List <Carpeta> listaCarpeta = new ArrayList <Carpeta> ( );
         Conexion conexion = obtenerConexion ( );
         listaCarpeta = obtenerCarpetasHijasDadoPadre (folderFather);
-        Iterator <Carpeta> iterator = null;
+        Iterator <Carpeta> iterator;
         if (listaCarpeta != null) {
             iterator = listaCarpeta.iterator ( );
             while (iterator.hasNext ( )) {
@@ -647,10 +647,8 @@ public class ContentControlAlfresco extends ContentControl {
             idDocumento = newDocument.getId ( );
             LOGGER.info ("### Documento creado con id " + idDocumento);
         } catch (CmisContentAlreadyExistsException ccaee) {
-            System.out.println ("ERROR: Unable to Load - CmisContentAlreadyExistsException: ");
             LOGGER.info ("### Error tipo CmisContentAlreadyExistsException----------------------------- :"+ccaee);
         } catch (CmisConstraintException cce) {
-            System.out.println ("ERROR: Unable to Load - CmisConstraintException: ");
             LOGGER.info ("### Error tipo CmisConstraintException----------------------------- :"+cce);
         }
         catch (SystemException se) {
