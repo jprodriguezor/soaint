@@ -34,6 +34,12 @@ public class DepartamentoControl {
 
     // ----------------------
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByEstado(String estado) throws SystemException {
         try {
@@ -41,7 +47,7 @@ public class DepartamentoControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -49,6 +55,13 @@ public class DepartamentoControl {
         }
     }
 
+    /**
+     *
+     * @param codPais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByCodPaisAndEstado(String codPais, String estado) throws SystemException {
         try {
@@ -57,7 +70,7 @@ public class DepartamentoControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

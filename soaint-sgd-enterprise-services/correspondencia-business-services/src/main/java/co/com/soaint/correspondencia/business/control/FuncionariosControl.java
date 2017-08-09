@@ -41,6 +41,14 @@ public class FuncionariosControl {
     DependenciaControl dependenciaControl;
     // ----------------------
 
+    /**
+     *
+     * @param loginName
+     * @param estado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException {
         try {
@@ -52,12 +60,13 @@ public class FuncionariosControl {
             funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
             return funcionario;
         } catch (NoResultException n) {
+            logger.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("funcionarios.funcionario_not_exist_by_loginName_and_estado")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -65,6 +74,13 @@ public class FuncionariosControl {
         }
     }
 
+    /**
+     *
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(String codDependencia, String codEstado) throws SystemException {
         List<FuncionarioDTO> funcionarioDTOList = new ArrayList<>();
@@ -81,7 +97,7 @@ public class FuncionariosControl {
 
             return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

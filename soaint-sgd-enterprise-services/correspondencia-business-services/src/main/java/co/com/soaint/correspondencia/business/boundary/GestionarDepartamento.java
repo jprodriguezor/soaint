@@ -31,11 +31,24 @@ public class GestionarDepartamento {
 
     // ----------------------
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByEstado(String estado) throws SystemException {
        return control.listarDepartamentosByEstado(estado);
     }
 
+    /**
+     *
+     * @param codPais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DepartamentoDTO> listarDepartamentosByCodPaisAndEstado(String codPais, String estado) throws SystemException {
         return control.listarDepartamentosByCodPaisAndEstado(codPais, estado);

@@ -24,12 +24,22 @@ public class ReferidoControl {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     *
+     * @param idDocumento
+     * @return
+     */
     public List<ReferidoDTO> consultarReferidosByCorrespondencia(BigInteger idDocumento){
         return em.createNamedQuery("CorReferido.findByIdeDocumento", ReferidoDTO.class)
                 .setParameter("IDE_DOCUMENTO", idDocumento)
                 .getResultList();
     }
 
+    /**
+     *
+     * @param referidoDTO
+     * @return
+     */
     public CorReferido corReferidoTransform(ReferidoDTO referidoDTO){
         return CorReferido.newInstance()
                 .nroRadRef(referidoDTO.getNroRadRef())

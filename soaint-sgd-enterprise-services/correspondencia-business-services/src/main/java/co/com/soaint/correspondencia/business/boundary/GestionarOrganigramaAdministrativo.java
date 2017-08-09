@@ -32,21 +32,46 @@ public class GestionarOrganigramaAdministrativo {
 
     // ----------------------
 
+    /**
+     *
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException {
         return control.listarDescendientesDirectosDeElementoRayz();
     }
 
+    /**
+     *
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> consultarOrganigrama() throws BusinessException, SystemException {
         return control.consultarOrganigrama();
     }
 
+    /**
+     *
+     * @param ideOrgaAdmin
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> listarElementosDeNivelInferior(BigInteger ideOrgaAdmin) throws SystemException {
         return control.listarElementosDeNivelInferior(ideOrgaAdmin);
     }
 
+    /**
+     *
+     * @param ideOrgaAdmin
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
         return control.listarPadreDeSegundoNivel(ideOrgaAdmin);

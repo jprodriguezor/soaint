@@ -25,6 +25,11 @@ public class AnexoControl {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     *
+     * @param ppdDocumentoDTOList
+     * @return
+     */
     public List<AnexoDTO> consultarAnexosByPpdDocumentos(List<PpdDocumentoDTO> ppdDocumentoDTOList){
         List<AnexoDTO> anexoList = new ArrayList<>();
         for (PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList) {
@@ -39,6 +44,11 @@ public class AnexoControl {
         return anexoList;
     }
 
+    /**
+     *
+     * @param anexoDTO
+     * @return
+     */
     public CorAnexo corAnexoTransform(AnexoDTO anexoDTO){
         return CorAnexo.newInstance()
                 .codAnexo(anexoDTO.getCodAnexo())
