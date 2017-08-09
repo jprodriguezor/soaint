@@ -53,7 +53,7 @@ const initialState: State = {
   tipoComplemento: new ConstanteDTOStateInstance(),
   actuaCalidad: new ConstanteDTOStateInstance(),
   causalDevolucion: new ConstanteDTOStateInstance()
-}
+};
 
 /**
  * The reducer function.
@@ -85,9 +85,7 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case Autocomplete.LOAD_CAUSAL_DEVOLUCION: {
-      console.log(action);
       const target = action.payload.key;
-      console.log(target);
       const causalDevolucion: ConstanteDTO[] = [];
       causalDevolucion.push({
         id: 1,

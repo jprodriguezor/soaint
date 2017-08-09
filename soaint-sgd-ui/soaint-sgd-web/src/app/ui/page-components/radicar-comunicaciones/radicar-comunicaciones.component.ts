@@ -31,14 +31,15 @@ import {
 } from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {
-  ContinueWithNextTaskAction, LockActiveTaskAction,
-  ScheduleNextTaskAction
-} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {TaskForm} from '../../../shared/interfaces/task-form.interface';
 import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
+import {
+  getMediosRecepcionVentanillaData
+} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -89,6 +90,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
+  mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
+
   authUserFuncionario$: Observable<any>;
   authUserFuncionarioDependenciaSelected$: Observable<any>;
   subscribeAuthUserFuncionario: any;
@@ -103,6 +106,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   ngOnInit() {
+    // Default Selection for Children Components
+    this.mediosRecepcionDefaultSelection$ = this._store.select(getMediosRecepcionVentanillaData);
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
     this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
@@ -138,6 +143,15 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.datosGenerales.form.statusChanges.filter(value => value === 'VALID').first()
       .subscribe(() => {
         this._store.dispatch(new LoadDatosRemitenteAction())
+      });
+
+    this.datosGenerales.form.get('reqDigitInmediata').valueChanges
+      .subscribe(value => {
+        const payload: StartProcessPayload = {
+          codigoProceso: this.task.idProceso,
+          idDespliegue: this.task.idDespliegue
+        };
+        this._store.dispatch(new ScheduleNextTaskAction(payload));
       });
 
   }
