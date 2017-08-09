@@ -94,7 +94,7 @@ public class ContentControlAlfresco extends ContentControl {
             response.setMensaje ("OK");
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.info ("Error obteniendo conexion");
+            LOGGER.info ("Error obteniendo conexion " +e);
             response.setCodMensaje ("Error al establecer Conexiones");
             response.setMensaje ("000002");
         }
@@ -108,39 +108,31 @@ public class ContentControlAlfresco extends ContentControl {
         Conexion conexion = new Conexion ( );
 
         LOGGER.info ("*** obtenerConexion ***");
-        try {
-            if (conexion != null) {
 
-                try {
-                    Map <String, String> parameter = new HashMap <> ( );
+            try {
+                Map <String, String> parameter = new HashMap <> ( );
 
-                    // Credenciales del usuario
-                    parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
-                    parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
+                // Credenciales del usuario
+                parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
+                parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
-                    // Configuracion de conexion
-                    parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
-                    parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
-                    parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
+                // Configuracion de conexion
+                parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
+                parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
+                parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
 
-                    // Object factory de Alfresco
-                    parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
+                // Object factory de Alfresco
+                parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
 
-                    // Crear Sesion
-                    SessionFactory factory = SessionFactoryImpl.newInstance ( );
-                    conexion.setSession (factory.getRepositories (parameter).get (0).createSession ( ));
+                // Crear Sesion
+                SessionFactory factory = SessionFactoryImpl.newInstance ( );
+                conexion.setSession (factory.getRepositories (parameter).get (0).createSession ( ));
 
 
-                } catch (Exception e) {
-                    LOGGER.info ("*** Error al obtener conexion ***");
-                }
-
-
+            } catch (Exception e) {
+                LOGGER.info ("*** Error al obtener conexion *** "+e);
             }
 
-        } catch (Exception e) {
-            LOGGER.info ("*** Error al obtener conexion ***");
-        }
         return conexion;
     }
 
@@ -199,7 +191,7 @@ public class ContentControlAlfresco extends ContentControl {
             LOGGER.info ("*** despues de aqui se va a crear la nueva c arpeta dentro d ela carpeta: ***" + Configuracion.getPropiedad ("claseSubserie") + Configuracion.getPropiedad ("claseBase"));
             newFolder.setFolder (folder.getFolder ( ).createFolder (props));
         } catch (Exception e) {
-            LOGGER.info ("*** Error al crear folder ***");
+            LOGGER.info ("*** Error al crear folder *** "+e);
         }
         return newFolder;
 
@@ -254,9 +246,9 @@ public class ContentControlAlfresco extends ContentControl {
                 }
             }
         } catch (Exception e) {
-            LOGGER.info ("*** Error al formatear nombre ***");
+            LOGGER.info ("*** Error al formatear nombre *** "+e);
         }
-        return formatoFinal.toString ( );
+        return formatoFinal != null ? formatoFinal.toString ( ):"";
     }
 
     private static boolean isNumeric(String cadena) {
@@ -285,7 +277,7 @@ public class ContentControlAlfresco extends ContentControl {
                 LOGGER.info ("Se obtiene la folder:" + folder);
             }
         } catch (Exception e) {
-            LOGGER.info ("*** Error al obtenerCarpetas ***");
+            LOGGER.info ("*** Error al obtenerCarpetas *** "+e);
         }
 
         return folder;
@@ -314,7 +306,7 @@ public class ContentControlAlfresco extends ContentControl {
             }
 
         } catch (Exception e) {
-            LOGGER.info ("*** Error al obtener Carpetas Hijas dado padre***");
+            LOGGER.info ("*** Error al obtener Carpetas Hijas dado padre*** "+e);
         }
         return listaCarpetas;
     }
@@ -327,7 +319,7 @@ public class ContentControlAlfresco extends ContentControl {
             estado = true;
         } catch (Exception e) {
             estado = false;
-            LOGGER.info ("*** Error al actualizar nombre folder ***");
+            LOGGER.info ("*** Error al actualizar nombre folder *** "+e);
         }
         return estado;
     }
@@ -392,7 +384,7 @@ public class ContentControlAlfresco extends ContentControl {
 
         } catch (CmisObjectNotFoundException e) {
             System.err.println ("Document is not found: " + documento);
-            LOGGER.info ("*** Error al mover el documento ***");
+            LOGGER.info ("*** Error al mover el documento *** "+e);
             response.setMensaje ("Documento no encontrado");
             response.setCodMensaje ("00006");
         }
@@ -518,9 +510,8 @@ public class ContentControlAlfresco extends ContentControl {
                 response.setMensaje ("00000");
             }
         } catch (Exception e) {
-            LOGGER.info ("Error al crear arbol content");
+            LOGGER.info ("Error al crear arbol content "+e);
             e.printStackTrace ( );
-            //TODO revisar el tema del response
             response.setCodMensaje ("Error al crear el arbol");
             response.setMensaje ("111112");
         }
@@ -559,6 +550,7 @@ public class ContentControlAlfresco extends ContentControl {
                 inputStream = inputPart.getBody (InputStream.class, null);
             } catch (IOException e) {
                 e.printStackTrace ( );
+                LOGGER.info ("### Error..------"+e);
             }
 
             assert inputStream != null;
