@@ -4,10 +4,16 @@ import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClien
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -23,19 +29,31 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @POST
-    @Path("/")
+    @Path("/{tipoComunicacion}/{fileName}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(MultipartFormDataInput file) {
-
+    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName, MultipartFormDataInput file) {
         //TODO: add trafic log
+        List<String> ecmIds = new ArrayList<>();
         System.out.println("DigitalizarDocumentoGatewayApi - [content] : ");
-        Response response = digitalizarDocumentoClient.digitalizar(file);
-        String responseContent = response.readEntity(String.class);
+        file.getFormDataMap().forEach((key, parts) -> {
+            parts.forEach((part) -> {
+                /*String fileName = "";
+                String[] contentDispositionHeader = part.getHeaders().getFirst("Content-Disposition").split(";");
+                for (String name : contentDispositionHeader) {
+                    if ((name.trim().startsWith("filename"))) {
+                        String[] tmp = name.split("=");
+                        fileName = tmp[1].trim().replaceAll("\"", "");
+                    }
+                }*/
 
-//        System.out.println("DigitalizarDocumentoGatewayApi - [content] : " + responseContent);
+                Response response = digitalizarDocumentoClient.digitalizar(part, fileName, tipoComunicacion);
+                ecmIds.add(response.readEntity(String.class));
+            });
+        });
+        System.out.println("DigitalizarDocumentoGatewayApi - [content] : " + ecmIds);
 
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        return Response.status(Response.Status.OK).entity("{\"ecmIds\":" + ecmIds + "}").build();
     }
 
 }
