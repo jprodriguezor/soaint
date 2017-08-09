@@ -41,7 +41,7 @@ public class JPAHibernateTest {
                     File script = new File(getClass().getResource("/data.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException("could not initialize with script");
+                    throw new RuntimeException(e);
                 }
             }
         });
