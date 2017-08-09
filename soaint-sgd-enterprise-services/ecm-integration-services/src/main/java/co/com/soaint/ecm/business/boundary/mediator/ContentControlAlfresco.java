@@ -399,7 +399,7 @@ public class ContentControlAlfresco extends ContentControl {
 
     public Carpeta chequearCapetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws BusinessException, IOException, SystemException {
         Carpeta folderReturn = null;
-        List <Carpeta> listaCarpeta = new ArrayList <Carpeta> ( );
+        List <Carpeta> listaCarpeta;
         Conexion conexion = obtenerConexion ( );
         listaCarpeta = obtenerCarpetasHijasDadoPadre (folderFather);
         Iterator <Carpeta> iterator;
