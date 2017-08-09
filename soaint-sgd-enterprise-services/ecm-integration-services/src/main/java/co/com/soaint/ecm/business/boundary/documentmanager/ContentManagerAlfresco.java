@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -57,7 +59,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
                 e.printStackTrace ( );
                 response.setMensaje ("Error de conexion");
                 response.setCodMensaje ("11111");
-                LOGGER.info ("*** Error de conexion *** "+e);
+                LOGGER.log (Level.INFO, (Supplier<String>) e);
             }
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
@@ -67,7 +69,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            LOGGER.info ("*** Error creando estrucurtura *** "+e);
+            LOGGER.log (Level.INFO, (Supplier<String>) e);
         }
         return response;
     }
@@ -101,7 +103,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.info ("*** Error de subiendo documento *** "+e);
+            LOGGER.log (Level.INFO, (Supplier<String>) e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
 
@@ -128,14 +130,14 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
                 conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
             } catch (SystemException e) {
                 e.printStackTrace ( );
-                LOGGER.info ("*** Error de conexion *** "+e);
+                LOGGER.log (Level.INFO, (Supplier<String>) e);
             }
 
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.info ("*** Error moviendo documento *** "+e);
+            LOGGER.log (Level.INFO, (Supplier<String>) e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }
