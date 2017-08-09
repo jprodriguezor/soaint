@@ -605,16 +605,6 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
-    /**
-     *
-     * @param session
-     * @param nombreDocumento
-     * @param documento
-     * @param tipoComunicacion
-     * @return
-     * @throws IOException
-     * @throws SystemException
-     */
     public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException, SystemException {
         LOGGER.info ("Se entra al metodo subirDocumento");
 
@@ -623,32 +613,19 @@ public class ContentControlAlfresco extends ContentControl {
         List <InputPart> inputParts = uploadForm.get ("documento");
 
         LOGGER.info ("Debug------------------------------"+inputParts);
-//        //Codigo new
+
         String fileName = "";
-//
-//        Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
-//        List<InputPart> inputParts = uploadForm.get("uploadedFile");
-//
+        String mimeType="application/pdf";
         for (InputPart inputPart : inputParts) {
             MultivaluedMap <String, String> header = inputPart.getHeaders ( );
-//            fileName = getFileName(header);
-
-            //convert the uploaded file to inputstream
             InputStream inputStream = null;
             try {
                 inputStream = inputPart.getBody (InputStream.class, null);
             } catch (IOException e) {
                 e.printStackTrace ( );
             }
-            LOGGER.info ("Se llena el array de Bytes");
-            byte[] bytes = IOUtils.toByteArray (inputStream);
 
-//            LOGGER.info("Fichero escrito");
-//
-//            LOGGER.info("Nombre del fichero: " + fileName);
-//
-//            return "subida exitosa";
-            //Fin codigo new
+            byte[] bytes = IOUtils.toByteArray (inputStream);
 
             //Se definen las propiedades del documento a subir
             Map <String, Object> properties = new HashMap <String, Object> ( );
@@ -660,17 +637,17 @@ public class ContentControlAlfresco extends ContentControl {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             Carpeta folderAlfresco = new Carpeta ( );
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
-            LOGGER.info ("### Se va a crear el documento..----------------------------session:"+session);
+
             if (tipoComunicacion == "TP-CMCOE") {
-                LOGGER.info ("### Se va a crear la carpeta..----------------------------session: 100101.00302_COMUNICACION_EXTERNA");
+
                 folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
             } else {
-                LOGGER.info ("### Se va a crear la carpeta..----------------------------session: 100100.00301_COMUNICACION_INTERNA");
+
                 folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
             }
             LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.."+folderAlfresco.getFolder ().getName ());
             VersioningState vs = VersioningState.MAJOR;
-            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), "plain/text", new ByteArrayInputStream (bytes));
+            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
             //Se crea el documento
             LOGGER.info ("### Se va a crear el documento..");
             Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
