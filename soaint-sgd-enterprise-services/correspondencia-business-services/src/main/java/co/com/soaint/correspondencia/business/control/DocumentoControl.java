@@ -38,6 +38,12 @@ public class DocumentoControl {
 
     // ----------------------
 
+    /**
+     *
+     * @param documentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarReferenciaECM(DocumentoDTO documentoDTO) throws BusinessException, SystemException {
         try {
             List<BigInteger> idePpdDocumentoList = ppdDocumentoControl.consultarPpdDocumentosByNroRadicado(documentoDTO.getNroRadicado());
@@ -55,9 +61,10 @@ public class DocumentoControl {
 
 
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

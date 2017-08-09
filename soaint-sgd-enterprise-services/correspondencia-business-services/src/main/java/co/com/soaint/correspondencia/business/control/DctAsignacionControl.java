@@ -15,6 +15,11 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
  */
 @BusinessControl
 public class DctAsignacionControl {
+    /**
+     *
+     * @param asignacionDTO
+     * @return
+     */
     public DctAsignacion dctAsignacionTransform(AsignacionDTO asignacionDTO){
         return DctAsignacion.newInstance()
                 .ideAsignacion(asignacionDTO.getIdeAsignacion())

@@ -15,6 +15,11 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
  */
 @BusinessControl
 public class DctAsigUltimoControl {
+    /**
+     *
+     * @param dctAsigUltimoDTO
+     * @return
+     */
     public DctAsigUltimo dctAsigUltimoTransform(DctAsigUltimoDTO dctAsigUltimoDTO){
         return DctAsigUltimo.newInstance()
                 .ideAsigUltimo(dctAsigUltimoDTO.getIdeAsigUltimo())

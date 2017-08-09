@@ -71,9 +71,10 @@ public class AgenteControl {
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
             }
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -115,7 +116,7 @@ public class AgenteControl {
                         .executeUpdate();
             }
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

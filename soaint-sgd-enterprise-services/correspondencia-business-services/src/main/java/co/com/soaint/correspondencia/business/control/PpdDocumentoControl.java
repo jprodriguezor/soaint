@@ -25,18 +25,33 @@ public class PpdDocumentoControl {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     *
+     * @param idDocumento
+     * @return
+     */
     public List<PpdDocumentoDTO> consultarPpdDocumentosByCorrespondencia(BigInteger idDocumento){
         return em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
                 .setParameter("IDE_DOCUMENTO", idDocumento)
                 .getResultList();
     }
 
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     */
     public List<BigInteger> consultarPpdDocumentosByNroRadicado(String nroRadicado){
         return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByNroRadicado", BigInteger.class)
                 .setParameter("NRO_RADICADO", nroRadicado)
                 .getResultList();
     }
 
+    /**
+     *
+     * @param ppdDocumentoDTO
+     * @return
+     */
     public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO){
         Date fecha = new Date();
         return PpdDocumento.newInstance()

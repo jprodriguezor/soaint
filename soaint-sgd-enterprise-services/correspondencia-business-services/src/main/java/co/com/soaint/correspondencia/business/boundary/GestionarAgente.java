@@ -27,10 +27,21 @@ public class GestionarAgente {
     AgenteControl control;
     // ----------------------
 
+    /**
+     *
+     * @param agenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarEstadoAgente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
         control.actualizarEstadoAgente(agenteDTO);
     }
 
+    /**
+     *
+     * @param agentesDTO
+     * @throws SystemException
+     */
     public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
         control.redireccionarCorrespondencia(agentesDTO);
     }
