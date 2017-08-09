@@ -407,10 +407,7 @@ public class ContentControlAlfresco extends ContentControl {
             iterator = listaCarpeta.iterator ( );
             while (iterator.hasNext ( )) {
                 Carpeta aux = iterator.next ( );
-                //Aqui da Error porque esta tratando de obtener una carpeta que esta mas profunda en el arbol
-//                Folder carpeta = (Folder) conexion.getSession ( ).getObjectByPath (conexion.getSession ( ).getRootFolder ( ).getPath ( ) + aux.getFolder ( ).getName ( ));
 
-                //Mi solucion al problema de mas arriba
                 Carpeta carpeta = obtenerCarpetaPorNombre (aux.getFolder ( ).getName ( ), conexion.getSession ( ));
                 String description = carpeta.getFolder ( ).getDescription ( );
                 if (description.equals (Configuracion.getPropiedad ("claseDependencia"))) {
@@ -441,7 +438,7 @@ public class ContentControlAlfresco extends ContentControl {
         LOGGER.info ("### Mover documento: " + documento);
 
         LOGGER.info ("### Obtener carpeta fuente: " + carpetaFuente);
-        MensajeRespuesta response=new MensajeRespuesta ( );
+        MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
             new Carpeta ( );
@@ -484,7 +481,7 @@ public class ContentControlAlfresco extends ContentControl {
                 //Grantizar que el orden de la estructura sea de menor a mayor, ideOrgaAdmin
                 utils.ordenarListaOrganigrama (organigramaList);
                 Carpeta folderFather = null;
-                Carpeta folderSon ;
+                Carpeta folderSon;
                 Carpeta folderFatherContainer = null;
                 //Recorremos la lista organigrama
                 for (OrganigramaDTO organigrama : organigramaList)
@@ -597,6 +594,7 @@ public class ContentControlAlfresco extends ContentControl {
     }
 
     public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException, SystemException {
+
         LOGGER.info ("Se entra al metodo subirDocumento");
 
         String idDocumento = "";
@@ -604,13 +602,24 @@ public class ContentControlAlfresco extends ContentControl {
         List <InputPart> inputParts = uploadForm.get ("documento");
 
 
-        LOGGER.info ("Debug------------------------------"+inputParts);
+        LOGGER.info ("Debug------------------------------" + inputParts);
 
         String fileName = "";
-        String mimeType="application/pdf";
+        String mimeType = "application/pdf";
         for (InputPart inputPart : inputParts) {
-            MultivaluedMap <String, String> header = inputPart.getHeaders ( );
+
+            // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
+            MultivaluedMap <String, String> headers = inputPart.getHeaders ( );
+            String[] contentDispositionHeader = headers.getFirst ("Content-Disposition").split (";");
+            for (String name : contentDispositionHeader) {
+                if ((name.trim ( ).startsWith ("filename"))) {
+                    String[] tmp = name.split ("=");
+                    fileName = tmp[1].trim ( ).replaceAll ("\"", "");
+                    LOGGER.info ("El nombre del fichera es: " + fileName);
+                }
+            }
             InputStream inputStream = null;
+
             try {
                 inputStream = inputPart.getBody (InputStream.class, null);
             } catch (IOException e) {
@@ -625,44 +634,43 @@ public class ContentControlAlfresco extends ContentControl {
             properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
             properties.put (PropertyIds.NAME, nombreDocumento);
 
-        try {
-            //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-            new Carpeta ( );
-            Carpeta folderAlfresco;
-            LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
+            try {
+                //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
+                new Carpeta ( );
+                Carpeta folderAlfresco;
+                LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
 
-            if ("TP-CMCOE".equals (tipoComunicacion)) {
+                if ("TP-CMCOE".equals (tipoComunicacion)) {
 
-                folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
-            } else {
+                    folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
+                } else {
 
-                folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+                    folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+                }
+                LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.." + folderAlfresco.getFolder ( ).getName ( ));
+                VersioningState vs = VersioningState.MAJOR;
+                ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
+                //Se crea el documento
+                LOGGER.info ("### Se va a crear el documento..");
+                Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+                idDocumento = newDocument.getId ( );
+                LOGGER.info ("### Documento creado con id " + idDocumento);
+            } catch (CmisContentAlreadyExistsException ccaee) {
+                LOGGER.info ("### Error tipo CmisContentAlreadyExistsException----------------------------- :" + ccaee);
+            } catch (CmisConstraintException cce) {
+                LOGGER.info ("### Error tipo CmisConstraintException----------------------------- :" + cce);
+            } catch (SystemException se) {
+                se.printStackTrace ( );
+                LOGGER.info ("### Error tipo SystemException----------------------------- :" + se);
+            } catch (Exception e) {
+                e.printStackTrace ( );
+                LOGGER.info ("### Error tipo Exception----------------------------- :" + e);
             }
-            LOGGER.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.."+folderAlfresco.getFolder ().getName ());
-            VersioningState vs = VersioningState.MAJOR;
-            ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
-            //Se crea el documento
-            LOGGER.info ("### Se va a crear el documento..");
-            Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
-            idDocumento = newDocument.getId ( );
-            LOGGER.info ("### Documento creado con id " + idDocumento);
-        } catch (CmisContentAlreadyExistsException ccaee) {
-            LOGGER.info ("### Error tipo CmisContentAlreadyExistsException----------------------------- :"+ccaee);
-        } catch (CmisConstraintException cce) {
-            LOGGER.info ("### Error tipo CmisConstraintException----------------------------- :"+cce);
         }
-        catch (SystemException se) {
-            se.printStackTrace ( );
-            LOGGER.info ("### Error tipo SystemException----------------------------- :"+se);
-        }
-        catch (Exception e){
-            e.printStackTrace ();
-            LOGGER.info ("### Error tipo Exception----------------------------- :"+e);
-        }
-
-        }return idDocumento;
+        return idDocumento;
     }
 }
+
 
 
 
