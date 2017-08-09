@@ -256,31 +256,9 @@ public class ContentControlAlfresco extends ContentControl {
         return stream;
     }
 
-    /**
-     * Metodo que, dado el nombre de una Carpeta y un documento, elimina el docuemtno(carpeta)
-     *
-     * @param target
-     * @param delDocName
-     * @param session
-     */
-    private void eliminarDocumento(Folder target, String delDocName, Session session) {
-
-
-        try {
-
-            CmisObject object = session.getObjectByPath (target.getPath ( ) + delDocName);
-            Document delDoc = (Document) object;
-            delDoc.delete (true);
-
-        } catch (CmisObjectNotFoundException e) {
-            System.err.println ("Document is not found: " + delDocName);
-
-        }
-    }
-
     public String formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
         String formatoCadena;
-        String formatoFinal = "";
+        StringBuilder formatoFinal = new StringBuilder ( );
         try {
             formatoCadena = Configuracion.getPropiedad (formatoConfig);
             String[] formatoCadenaArray = formatoCadena.split ("");
@@ -288,22 +266,22 @@ public class ContentControlAlfresco extends ContentControl {
             for (int i = 0; i < formatoCadenaArray.length; i++) {
 
                 if (formatoCadenaArray[i].equals (ID_ORG_ADM)) {
-                    formatoFinal += informationArray[Integer.parseInt (ID_ORG_ADM)];
+                    formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
                     bandera = Integer.parseInt (ID_ORG_ADM);
                 } else if (formatoCadenaArray[i].equals (ID_ORG_OFC)) {
-                    formatoFinal += informationArray[Integer.parseInt (ID_ORG_OFC)];
+                    formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_OFC)]);
                     bandera = Integer.parseInt (ID_ORG_OFC);
                 } else if (formatoCadenaArray[i].equals (COD_SERIE)) {
-                    formatoFinal += informationArray[Integer.parseInt (COD_SERIE)];
+                    formatoFinal.append (informationArray[Integer.parseInt (COD_SERIE)]);
                     bandera = Integer.parseInt (COD_SERIE);
                 } else if (formatoCadenaArray[i].equals (NOM_SERIE)) {
-                    formatoFinal += informationArray[Integer.parseInt (NOM_SERIE)];
+                    formatoFinal.append (informationArray[Integer.parseInt (NOM_SERIE)]);
                     bandera = Integer.parseInt (NOM_SERIE);
                 } else if (formatoCadenaArray[i].equals (COD_SUBSERIE)) {
-                    formatoFinal += informationArray[Integer.parseInt (COD_SUBSERIE)];
+                    formatoFinal.append (informationArray[Integer.parseInt (COD_SUBSERIE)]);
                     bandera = Integer.parseInt (COD_SUBSERIE);
                 } else if (formatoCadenaArray[i].equals (NOM_SUBSERIE)) {
-                    formatoFinal += informationArray[Integer.parseInt (NOM_SUBSERIE)];
+                    formatoFinal.append (informationArray[Integer.parseInt (NOM_SUBSERIE)]);
                     bandera = Integer.parseInt (NOM_SUBSERIE);
                 } else if (isNumeric (formatoCadenaArray[i])) {
                     //El formato no cumple con los requerimientos minimos
@@ -312,16 +290,16 @@ public class ContentControlAlfresco extends ContentControl {
                     break;
                 } else {
                     if (bandera == 000) {
-                        formatoFinal += formatoCadenaArray[i];
+                        formatoFinal.append (formatoCadenaArray[i]);
                     } else {
-                        formatoFinal += formatoCadenaArray[i];
+                        formatoFinal.append (formatoCadenaArray[i]);
                     }
                 }
             }
         } catch (Exception e) {
             LOGGER.info ("*** Error al formatear nombre ***");
         }
-        return formatoFinal;
+        return formatoFinal.toString ( );
     }
 
     private static boolean isNumeric(String cadena) {
@@ -333,7 +311,7 @@ public class ContentControlAlfresco extends ContentControl {
         }
     }
 
-    public static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
+    private static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
         LOGGER.info ("Se entra al metodo obtener carpeta por nombre");
         Carpeta folder = new Carpeta ( );
         try {
@@ -397,7 +375,7 @@ public class ContentControlAlfresco extends ContentControl {
         return estado;
     }
 
-    public Carpeta chequearCapetaPadre(Carpeta folderFather, String nameFolder, String codFolder) throws BusinessException, IOException, SystemException {
+    private Carpeta chequearCapetaPadre(Carpeta folderFather, String codFolder) throws BusinessException, IOException, SystemException {
         Carpeta folderReturn = null;
         List <Carpeta> listaCarpeta;
         Conexion conexion = obtenerConexion ( );
@@ -487,10 +465,10 @@ public class ContentControlAlfresco extends ContentControl {
                 for (OrganigramaDTO organigrama : organigramaList)
                     switch (bandera) {
                         case 0:
-                            folderFather = chequearCapetaPadre (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
+                            folderFather = chequearCapetaPadre (folder, organigrama.getCodOrg ( ));
                             if (folderFather == null) {
                                 LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseBase", folderFather);
+                                folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseBase", null);
                             } else {
                                 LOGGER.info ("Organigrama --  El folder ya esta creado: " + folderFather.getFolder ( ).getName ( ));
                                 //Actualización de folder
@@ -506,7 +484,7 @@ public class ContentControlAlfresco extends ContentControl {
                             break;
 
                         default:
-                            folderSon = chequearCapetaPadre (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ));
+                            folderSon = chequearCapetaPadre (folderFather, organigrama.getCodOrg ( ));
                             if (folderSon == null) {
                                 LOGGER.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
                                 folderSon = crearCarpeta (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), "claseDependencia", folderFather);
@@ -535,7 +513,7 @@ public class ContentControlAlfresco extends ContentControl {
                             dependencias.getNomSubSerie ( ),
                     };
                     String nombreSerie = formatearNombre (dependenciasArray, "formatoNombreSerie");
-                    folderSon = chequearCapetaPadre (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ));
+                    folderSon = chequearCapetaPadre (folderFatherContainer, dependencias.getCodSerie ( ));
                     if (folderSon == null) {
                         if (nombreSerie != null) {
                             LOGGER.info ("TRD --  Creando folder: " + nombreSerie);
@@ -556,7 +534,7 @@ public class ContentControlAlfresco extends ContentControl {
                     folderFather = folderSon;
                     if (dependencias.getCodSubSerie ( ) != null && !dependencias.getCodSubSerie ( ).equals ("")) {
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
-                        folderSon = chequearCapetaPadre (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ));
+                        folderSon = chequearCapetaPadre (folderFather, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
                             if (nombreSubserie != null) {
                                 LOGGER.info ("TRD --  Creando folder: " + nombreSubserie);
@@ -604,7 +582,7 @@ public class ContentControlAlfresco extends ContentControl {
 
         LOGGER.info ("Debug------------------------------" + inputParts);
 
-        String fileName = "";
+        String fileName;
         String mimeType = "application/pdf";
         for (InputPart inputPart : inputParts) {
 
@@ -626,6 +604,7 @@ public class ContentControlAlfresco extends ContentControl {
                 e.printStackTrace ( );
             }
 
+            assert inputStream != null;
             byte[] bytes = IOUtils.toByteArray (inputStream);
 
             //Se definen las propiedades del documento a subir
