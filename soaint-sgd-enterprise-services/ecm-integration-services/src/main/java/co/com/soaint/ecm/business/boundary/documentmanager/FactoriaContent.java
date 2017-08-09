@@ -12,7 +12,7 @@ import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
  */
 public class FactoriaContent {
-
+static ContentControlAlfresco controlA;
     public static ContentControl getContentControl(String tipo) {
 
         if (tipo.equals ("alfresco")) {
@@ -28,9 +28,9 @@ public class FactoriaContent {
 
         if (tipo.equals ("alfresco")) {
 
-            return new ContentManagerAlfresco ( );
+            return new ContentManagerAlfresco ( controlA);
         } else {
-            return new ContentManagerAlfresco ( );
+            return new ContentManagerAlfresco (controlA );
         }
 
     }

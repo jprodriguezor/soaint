@@ -39,7 +39,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Created by sarias on 11/11/2016.
+ * Created by Dasiel on 11/11/2016.
  */
 @BusinessBoundary
 @NoArgsConstructor
@@ -372,7 +372,7 @@ public class ContentControlAlfresco extends ContentControl {
             LOGGER.info ("### Antes de los primero con ALFRESCO");
             ItemIterable <CmisObject> listaObjetos = carpetaPadre.getFolder ( ).getChildren ( );
 
-            listaCarpetas = new ArrayList <Carpeta> ( );
+            listaCarpetas = new ArrayList <> ( );
             //Lista de carpetas hijas
             LOGGER.info ("### Antes del ciclo sobre CMISOBJECT con ALFRESCO");
             for (CmisObject contentItem : listaObjetos) {

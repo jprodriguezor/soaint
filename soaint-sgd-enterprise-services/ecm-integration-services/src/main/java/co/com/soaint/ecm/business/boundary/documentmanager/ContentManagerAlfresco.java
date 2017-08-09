@@ -9,17 +9,11 @@ import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.core.MultivaluedMap;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -30,10 +24,15 @@ import java.util.logging.Logger;
 @Service
 public class ContentManagerAlfresco extends ContentManagerMediator {
 
-    @Autowired
+    private final
     ContentControlAlfresco control;
 
-    Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
+    private Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
+
+    @Autowired
+    public ContentManagerAlfresco(ContentControlAlfresco control) {
+        this.control = control;
+    }
 
     @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
@@ -42,8 +41,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         Carpeta carpeta;
         try {
 
-            /**
-             * Se establece la conexion*/
+            // Se establece la conexion
             LOGGER.info ("### Estableciendo Conexion con el ECM..");
             response = control.establecerConexiones ( );
 
@@ -68,36 +66,9 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            }
+        }
         return response;
     }
-
-    /**
-     * header sample
-     * {
-     * 	Content-Type=[image/png],
-     * 	Content-Disposition=[form-data; name="file"; filename="filename.extension"]
-     * }
-     **/
-    //get uploaded filename, is there a easy way in RESTEasy?
-    private String getFileName(MultivaluedMap<String, String> header) {
-
-        String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-
-        for (String filename : contentDisposition) {
-            LOGGER.info("contenido del file: " + filename);
-            if ((filename.trim().startsWith("filename"))) {
-
-                String[] name = filename.split("=");
-
-                String finalFileName = name[1].trim().replaceAll("\"", "");
-                return finalFileName;
-            }
-        }
-        return "unknown";
-    }
-
-
 
     public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
 
@@ -108,8 +79,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         Carpeta carpeta;
         try {
             Conexion conexion = new Conexion ( );
-            /**
-             * Se establece la conexion*/
+            // Se establece la conexion
 
             try {
                 LOGGER.info ("### Estableciendo la conexion..");
@@ -123,20 +93,19 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             LOGGER.info ("### Se invoca el metodo de subir el documento..");
             idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
-            response.setCodMensaje("0000");
-            response.setMensaje("OK");
+            response.setCodMensaje ("0000");
+            response.setMensaje ("OK");
 
         } catch (Exception e) {
             e.printStackTrace ( );
 
-            response.setCodMensaje("00005");
-            response.setMensaje("Error al crear el documento");
+            response.setCodMensaje ("00005");
+            response.setMensaje ("Error al crear el documento");
 
         }
         return idDocumento;
 
     }
-
 
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
 
@@ -145,8 +114,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         try {
 
-            /**
-             * Se establece la conexion*/
+            //Se establece la conexion
             LOGGER.info ("###Se va a establecer la conexion");
             response = control.establecerConexiones ( );
             LOGGER.info ("###Conexion establecida");
@@ -163,8 +131,8 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            response.setCodMensaje("0003");
-            response.setMensaje("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
+            response.setCodMensaje ("0003");
+            response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }
         return response;
     }

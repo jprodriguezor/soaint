@@ -19,10 +19,15 @@ import java.util.logging.Logger;
 @Service
 public class EcmManagerAlfresco implements EcmManagerMediator {
 
-    Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
+    private Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
+
+    private final
+    ContentManagerMediator content;
 
     @Autowired
-    ContentManagerMediator content;
+    public EcmManagerAlfresco(ContentManagerMediator content) {
+        this.content = content;
+    }
 
 
     public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
