@@ -5,6 +5,9 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -14,12 +17,13 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
@@ -48,10 +52,6 @@ public class ProcessService implements IProcessServices {
     private RuntimeEngine engine;
     private KieSession ksession;
     private TaskService taskService;
-
-    private String idDespliegue = "";
-
-    private AuditService auditService;
     @Value( "${procesos.listar.endpoint.url}" )
     private String endpointProcesosListar = "";
     @Value( "${jbpm.endpoint.url}" )
@@ -64,102 +64,110 @@ public class ProcessService implements IProcessServices {
     private String passAdmin = "";
     @Value( "${tarea.acciones.url}" )
     private String endpointTareas = "";
+    @Value( "${header.accept}" )
+    private String headerAccept = "";
+    @Value( "${header.authorization}" )
+    private String headerAuthorization = "";
+    @Value( "${header.value.application.type}" )
+    private String valueApplicationType = "";
+    @Value( "${header.value.authorization}" )
+    private String valueAuthorization = "";
+    @Value( "${mensaje.error.negocio.fallo}" )
+    private String errorNegocioFallo = "";
+    @Value( "${mensaje.error.sistema}" )
+    private String errorSistema = "";
+    @Value( "${mensaje.error.sistema.generico}" )
+    private String errorSistemaGenerico = "";
     HttpClient httpClient;
     HttpGet getRequest;
     HttpPost postRequest;
     HttpResponse response;
+    private static Logger logger = LogManager.getLogger(ProcessService.class);
 
-
-    private ProcessService() throws MalformedURLException {;
+    private ProcessService() {
     }
 
     /**
      * Permite listar todos los procesos desplegados
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Lista de procesos que contiene codigoProceso,nombreProceso y idDespliegue.
-     * @throws IOException
-     * @throws JSONException
+     * @throws BusinessException
+     * @throws SystemException
      */
     @Override
-    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws IOException, JSONException {
+    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws BusinessException, SystemException {
 
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         httpClient = HttpClientBuilder.create().build();
         getRequest = new HttpGet(endpointProcesosListar);
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
-        getRequest.addHeader("Accept", "application/json");
-        getRequest.addHeader("Authorization",  "Basic " + encoding);
-        HttpResponse response = httpClient.execute(getRequest);
-        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
-
-        //        // Check for HTTP response code: 200 = success
-        if (response.getStatusLine().getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-        } else {
-            JSONArray listaProcesosJson = respuestaJson.getJSONArray("processDefinitionList");
-            for (int i = 0; i < listaProcesosJson.length(); i++) {
-                JSONObject proceso = (JSONObject) listaProcesosJson.get(i);
-                Iterator keys = proceso.keys();
-                while (keys.hasNext()) {
-                    Object key = keys.next();
-                    JSONObject valor = proceso.getJSONObject((String) key);
-                    RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                            .codigoProceso(valor.getString("id"))
-                            .nombreProceso(valor.getString("name"))
-                            .idDespliegue(valor.getString("deployment-id"))
-                            .build();
-                    listaProcesos.add(respuesta);
-                }
+        getRequest.addHeader(headerAccept, valueApplicationType);
+        getRequest.addHeader(headerAuthorization,  valueAuthorization +" "+ encoding);
+        try {
+            response = httpClient.execute(getRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            } else {
+                listaProcesos = procesarListaProcesos(respuestaJson);
             }
+
+            return listaProcesos;
+        }catch (BusinessException e) {
+            logger.error(e.getMessage());
+            throw e;
+        }catch (Exception ex) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
         }
-        return listaProcesos;
     }
 
     /**
      * Permite listar las instancias de procesos por usuario
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Lista de procesos que contiene codigoProceso,nombreProceso y estado.
-     * @throws IOException
-     * @throws JSONException
-     * @throws URISyntaxException
+     * @throws BusinessException
+     * @throws SystemException
      */
     @Override
-    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
+    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws BusinessException, SystemException{
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
-        URI uri = new URIBuilder(endpointProcesoListarInstancia)
-                .addParameter("var_initiator", entrada.getUsuario())
-                .addParameters(listaEstadosProceso(entrada))
-                .build();
-        httpClient = HttpClientBuilder.create().build();
-        getRequest = new HttpGet(uri);
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
-        getRequest.addHeader("Accept", "application/json");
-        getRequest.addHeader("Authorization",  "Basic " + encoding);
-        HttpResponse response = httpClient.execute(getRequest);
-        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
-
-        if (response.getStatusLine().getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-        } else {
-            JSONArray listaProcesosJson = respuestaJson.getJSONArray("processInstanceInfoList");
-            for (int i = 0; i < listaProcesosJson.length(); i++) {
-                JSONObject proceso = (JSONObject) listaProcesosJson.get(i);
-                Iterator keys = proceso.keys();
-                while (keys.hasNext()) {
-                    Object key = keys.next();
-                    if (key.toString().equalsIgnoreCase("process-instance")) {
-                        JSONObject valor = proceso.getJSONObject((String) key);
-                        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                                .codigoProceso(valor.getString("id"))
-                                .nombreProceso(valor.getString("process-id"))
-                                .estado(valor.getString("state"))
-                                .build();
-                        listaProcesos.add(respuesta);
-                    }
-                }
+        httpClient = HttpClientBuilder.create().build();
+        try {
+            URI uri = new URIBuilder(endpointProcesoListarInstancia)
+                    .addParameter("var_initiator", entrada.getUsuario())
+                    .addParameters(listaEstadosProceso(entrada))
+                    .build();
+            getRequest = new HttpGet(uri);
+            getRequest.addHeader(headerAccept, valueApplicationType);
+            getRequest.addHeader(headerAuthorization,  valueAuthorization +" "+ encoding);
+            response = httpClient.execute(getRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            } else {
+                listaProcesos = procesarListaProcesosUsuario(respuestaJson);
             }
+            return listaProcesos;
+        } catch (BusinessException e) {
+            logger.error(e.getMessage());
+            throw e;
+        } catch (Exception ex) {
+            logger.error("System error has occurred");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
         }
-        return listaProcesos;
+
     }
 
     /**
@@ -169,17 +177,28 @@ public class ProcessService implements IProcessServices {
      * @throws MalformedURLException
      */
     @Override
-    public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
-        ksession = obtenerEngine(entrada).getKieSession();
-        ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
-        long procId = processInstance.getId();
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
-                .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessId())
-                .estado(String.valueOf(processInstance.getState()))
-                .idDespliegue(entrada.getIdDespliegue())
-                .build();
-        return respuesta;
+    public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws SystemException  {
+        try {
+            logger.info("iniciar - proceso : {}", entrada);
+            ksession = obtenerEngine(entrada).getKieSession();
+            ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
+            return RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(processInstance.getId()))
+                    .nombreProceso(processInstance.getProcessId())
+                    .estado(String.valueOf(processInstance.getState()))
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .build();
+
+        } catch (Exception e) {
+            logger.error("System error has occurred");
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }finally {
+            logger.info("fin - iniciar - proceso ");
+        }
+
     }
 
     /**
@@ -191,29 +210,26 @@ public class ProcessService implements IProcessServices {
      * @throws URISyntaxException
      */
     @Override
-    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
+    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException, SystemException, BusinessException {
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
-        List<RespuestaTareaDTO> tareas = new ArrayList<>();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
         ksession = obtenerEngine(entradaManual).getKieSession();
         ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
-        long procId = processInstance.getId();
         entrada.setInstanciaProceso(processInstance.getId());
-        tareas = listarTareasPorInstanciaProceso(entrada);
+        List<RespuestaTareaDTO>  tareas = listarTareasPorInstanciaProceso(entrada);
         for (RespuestaTareaDTO tarea : tareas) {
             entrada.setIdTarea(tarea.getIdTarea());
             reservarTarea(entrada);
 
         }
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+        return RespuestaProcesoDTO.newInstance()
                 .codigoProceso(String.valueOf(processInstance.getId()))
                 .nombreProceso(processInstance.getProcessId())
                 .estado(String.valueOf(processInstance.getState()))
                 .idDespliegue(entrada.getIdDespliegue())
                 .build();
-        return respuesta;
     }
 
     /**
@@ -227,11 +243,10 @@ public class ProcessService implements IProcessServices {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
         Task task = taskService.getTaskById(entrada.getIdTarea());
-        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+        return RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.ENPROGRESO))
                 .nombre(task.getName())
- //               .idCreador(task.getTaskData().getCreatedBy().getId())
                 .idProceso(entrada.getIdProceso())
                 .idDespliegue(entrada.getIdDespliegue())
                 .idParent(task.getTaskData().getParentId())
@@ -242,7 +257,7 @@ public class ProcessService implements IProcessServices {
                 .fechaCreada(task.getTaskData().getCreatedOn())
                 .prioridad(task.getPriority())
                 .build();
-        return respuestaTarea;
+
     }
 
     /**
@@ -255,14 +270,12 @@ public class ProcessService implements IProcessServices {
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
-
-        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+        return RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.COMPLETADO))
                 .idProceso(entrada.getIdProceso())
                 .build();
 
-        return respuestaTarea;
     }
 
     /**
@@ -274,37 +287,51 @@ public class ProcessService implements IProcessServices {
      * @throws JSONException
      */
     @Override
-    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws IOException, URISyntaxException, JSONException {
+    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws BusinessException, SystemException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
-        URI uri = new URIBuilder(endpointJBPConsole)
-                .setPath("/jbpm-console/rest/task/"+String.valueOf(entrada.getIdTarea())+ "/claim")
-                .build();
-        httpClient = HttpClientBuilder.create().build();
-        postRequest = new HttpPost(uri);
-        postRequest.addHeader("Authorization", "Basic " + encoding);
-        postRequest.addHeader("X-KIE-ContentType", "XSTREAM");
-        postRequest.addHeader("Accept", "application/json");
-        response = httpClient.execute(postRequest);
-        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+        String estado = "";
+        try {
+            URI uri = new URIBuilder(endpointJBPConsole)
+                    .setPath("/jbpm-console/rest/task/"+entrada.getIdTarea()+ "/claim")
+                    .build();
+            httpClient = HttpClientBuilder.create().build();
+            postRequest = new HttpPost(uri);
+            postRequest.addHeader(headerAuthorization, valueAuthorization +" "+ encoding);
+            postRequest.addHeader("X-KIE-ContentType", "XSTREAM");
+            postRequest.addHeader(headerAccept, valueApplicationType);
+            response = httpClient.execute(postRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            } else {
+                String estadoResp = respuestaJson.getString("status");
 
-        if (response.getStatusLine().getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-        } else {
-            String estadoResp = respuestaJson.getString("status");
-            String estado;
-            if(estadoResp.equals("SUCCESS")){
-                estado =  String.valueOf(EstadosEnum.RESERVADO);
-            }else{
-                estado =  String.valueOf(EstadosEnum.ERROR);
+                if("SUCCESS".equals(estadoResp)){
+                    estado =  String.valueOf(EstadosEnum.RESERVADO);
+                }else{
+                    estado =  String.valueOf(EstadosEnum.ERROR);
+                }
             }
-            RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+            return RespuestaTareaDTO.newInstance()
                     .idTarea(entrada.getIdTarea())
                     .estado(estado)
                     .idProceso(entrada.getIdProceso())
                     .idDespliegue(entrada.getIdDespliegue())
                     .build();
-            return respuestaTarea;
+        } catch (BusinessException e) {
+            logger.error(e.getMessage());
+            throw e;
+        } catch (Exception ex) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
         }
+
+
     }
 
     /**
@@ -317,9 +344,8 @@ public class ProcessService implements IProcessServices {
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
-        //taskService.claim(entrada.getIdTarea(), entrada.getUsuario());
         Task task = taskService.getTaskById(entrada.getIdTarea());
-        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+        return RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.RESERVADO))
                 .nombre(task.getName())
@@ -333,7 +359,7 @@ public class ProcessService implements IProcessServices {
                 .fechaCreada(task.getTaskData().getCreatedOn())
                 .prioridad(task.getPriority())
                 .build();
-        return respuestaTarea;
+
     }
 
     /**
@@ -349,7 +375,6 @@ public class ProcessService implements IProcessServices {
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         taskService = obtenerEngine(entrada).getTaskService();
         List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        long taskId = -1;
         for (TaskSummary task : tasks) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
@@ -381,7 +406,6 @@ public class ProcessService implements IProcessServices {
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         taskService = obtenerEngine(entrada).getTaskService();
         List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        long taskId = -1;
         for (TaskSummary task : tasks) {
             if (task.getProcessInstanceId().longValue() == entrada.getInstanciaProceso().longValue() ) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
@@ -415,7 +439,6 @@ public class ProcessService implements IProcessServices {
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         taskService = obtenerEngine(entrada).getTaskService();
         List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, "en-UK");
-        long taskId = -1;
         for (TaskSummary task : tasks) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
@@ -448,7 +471,6 @@ public class ProcessService implements IProcessServices {
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         taskService = obtenerEngine(entrada).getTaskService();
         List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        long taskId = -1;
         for (TaskSummary task : tasks) {
 
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
@@ -491,24 +513,19 @@ public class ProcessService implements IProcessServices {
 
         org.json.JSONObject jsonProceso = new org.json.JSONObject();
         for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
-            if (!entry.getKey().equalsIgnoreCase("nombreSennal")) {
+            if (!"nombreSennal".equalsIgnoreCase(entry.getKey())) {
                 jsonProceso.put(entry.getKey(), entry.getValue().toString());
             }
         }
         String datosProceso = jsonProceso.toString();
-
-        System.out.println("JSON: ".concat(datosProceso));
-
+        logger.info("JSON: ".concat(datosProceso));
         ksession.signalEvent(nombreSennal, datosProceso, processInstance.getId());
-
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+        return RespuestaProcesoDTO.newInstance()
                 .codigoProceso(String.valueOf(processInstance.getId()))
                 .nombreProceso(processInstance.getProcessId())
                 .estado(String.valueOf(processInstance.getState()))
                 .idDespliegue(entradaManual.getIdDespliegue())
                 .build();
-
-        return respuesta;
     }
 
     /**
@@ -531,21 +548,16 @@ public class ProcessService implements IProcessServices {
 
         org.json.JSONObject jsonProceso = new org.json.JSONObject();
         for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
-            if (!entry.getKey().equalsIgnoreCase("nombreSennal")) {
+            if (!"nombreSennal".equalsIgnoreCase(entry.getKey())) {
                 jsonProceso.put(entry.getKey(), entry.getValue().toString());
             }
         }
         String datosProceso = jsonProceso.toString();
-
-        System.out.println("JSON Inicio: ".concat(datosProceso));
-
+        logger.info("JSON inicio: ".concat(datosProceso));
         ksession.signalEvent(nombreSennal, datosProceso);
-
-        RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+        return  RespuestaProcesoDTO.newInstance()
                 .idDespliegue(entradaManual.getIdDespliegue())
                 .build();
-
-        return respuesta;
     }
 
 
@@ -561,7 +573,6 @@ public class ProcessService implements IProcessServices {
                 .addUserName(entrada.getUsuario())
                 .addPassword(entrada.getPass())
                 .addUrl(new URL(endpointJBPConsole))
-                        //.addExtraJaxbClasses(ProcessRequestContext.class)
                 .build();
         return engine;
     }
@@ -607,7 +618,7 @@ public class ProcessService implements IProcessServices {
                     estadosActivos.add(Status.Obsolete);
                     break;
                 default:
-                    System.out.println("Invalid selection");
+                    logger.info("Invalid selection");
                     break;
             }
         }
@@ -654,11 +665,14 @@ public class ProcessService implements IProcessServices {
                     estadoRespuesta = EstadosEnum.OBSOLETO;
                     break;
                 default:
-                    System.out.println("Invalid selection");
+                    logger.info("Invalid selection");
                     break;
             }
 
-        return estadoRespuesta.toString();
+        if (estadoRespuesta != null) {
+            return estadoRespuesta.toString();
+        }
+        return estado;
     }
 
     /**
@@ -678,5 +692,58 @@ public class ProcessService implements IProcessServices {
     }
 
 
+    /**
+     * Permite procesar el json que devuelve la lista de los procesos
+     * @param respuestaJson objeto json que se optiene de la respuesta al servicio
+     * @return lista de procesos
+     * @throws JSONException
+     */
+    private List<RespuestaProcesoDTO> procesarListaProcesos(JSONObject respuestaJson) throws JSONException {
+        List<RespuestaProcesoDTO> listaProcesada = new ArrayList<>();
+        JSONArray listaProcesosJson = respuestaJson.getJSONArray("processDefinitionList");
+        for (int i = 0; i < listaProcesosJson.length(); i++) {
+            JSONObject proceso = (JSONObject) listaProcesosJson.get(i);
+            Iterator keys = proceso.keys();
+            while (keys.hasNext()) {
+                Object key = keys.next();
+                JSONObject valor = proceso.getJSONObject((String) key);
+                RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                        .codigoProceso(valor.getString("id"))
+                        .nombreProceso(valor.getString("name"))
+                        .idDespliegue(valor.getString("deployment-id"))
+                        .build();
+                listaProcesada.add(respuesta);
+            }
+        }
+        return listaProcesada;
+    }
+
+    /**
+     * Permite procesa la lista de procesos por usuario
+     * @param respuestaJson
+     * @return objeto json que se optiene de la respuesta al servicio
+     * @throws JSONException
+     */
+    private List<RespuestaProcesoDTO> procesarListaProcesosUsuario(JSONObject respuestaJson) throws JSONException {
+        List<RespuestaProcesoDTO> listaProcesada = new ArrayList<>();
+        JSONArray listaProcesosJson = respuestaJson.getJSONArray("processInstanceInfoList");
+        for (int i = 0; i < listaProcesosJson.length(); i++) {
+            JSONObject proceso = (JSONObject) listaProcesosJson.get(i);
+            Iterator keys = proceso.keys();
+            while (keys.hasNext()) {
+                Object key = keys.next();
+                if ("process-instance".equalsIgnoreCase(key.toString())) {
+                    JSONObject valor = proceso.getJSONObject((String) key);
+                    RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
+                            .codigoProceso(valor.getString("id"))
+                            .nombreProceso(valor.getString("process-id"))
+                            .estado(valor.getString("state"))
+                            .build();
+                    listaProcesada.add(respuesta);
+                }
+            }
+        }
+        return listaProcesada;
+    }
 }
 
