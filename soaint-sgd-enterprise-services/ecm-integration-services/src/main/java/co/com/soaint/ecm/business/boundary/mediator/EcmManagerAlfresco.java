@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 
 /**
- * Created by sarias on 11/11/2016.
+ * Created by Dasiel
  */
 @Service
 public class EcmManagerAlfresco implements EcmManagerMediator {
