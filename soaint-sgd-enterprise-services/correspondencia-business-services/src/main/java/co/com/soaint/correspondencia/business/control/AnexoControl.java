@@ -37,9 +37,7 @@ public class AnexoControl {
                     .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
                     .getResultList()
                     .stream()
-                    .forEach(anexoDTO ->
-                        anexoList.add(anexoDTO)
-                    );
+                    .forEach(anexoList::add);
         }
         return anexoList;
     }
