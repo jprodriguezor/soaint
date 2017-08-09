@@ -19,7 +19,28 @@
         <hibernate-entitymanager.version>5.2.2.Final</hibernate-entitymanager.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>alfresco</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            DEPENDENCY - Alfresco OpenCMIS
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>org.alfresco.cmis.client</groupId>
+            <artifactId>alfresco-opencmis-extension</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.soa</groupId>
+            <artifactId>chemistry-opencmis-client-api-0.7.0</artifactId>
+            <version>12.2.1-0-0</version>
+        </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             DEPENDENCY - Java EE 7 support

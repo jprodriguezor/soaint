@@ -26,17 +26,6 @@ public class GestionarMunicipioTest extends  JPAHibernateTest{
 
     @Test
     public void listarMunicipiosByCodDeparAndEstado_success() {
-        String estado = "ACTIVO";
-        String codDepar = "CODIGODEPTO1";
-        List<MunicipioDTO> listado = em.createNamedQuery("TvsMunicipio.findAllByCodDeparAndEstado", MunicipioDTO.class)
-                .setParameter("COD_DEPAR", codDepar)
-                .setParameter("ESTADO", estado)
-                .getResultList();
-        Assert.assertNotNull("La lista no debe ser nula", listado);
-
-        assertThat(listado, not(IsEmptyCollection.empty()));
-        assertThat(new ArrayList<>(), IsEmptyCollection.empty());
-        assertThat(listado, hasSize(1));
 
     }
 
