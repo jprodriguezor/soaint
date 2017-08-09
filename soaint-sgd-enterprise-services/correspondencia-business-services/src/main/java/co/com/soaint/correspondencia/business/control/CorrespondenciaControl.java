@@ -87,6 +87,13 @@ public class CorrespondenciaControl {
 
     // ----------------------
 
+    /**
+     *
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
@@ -139,7 +146,7 @@ public class CorrespondenciaControl {
 
            return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -147,6 +154,13 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         try {
@@ -154,12 +168,13 @@ public class CorrespondenciaControl {
 
             return consultarComunicacionOficialByCorrespondencia(correspondenciaDTO);
         } catch (NoResultException n) {
+            logger.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -167,6 +182,12 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         try {
             if (!verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {
@@ -180,9 +201,10 @@ public class CorrespondenciaControl {
                     .executeUpdate();
 
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -190,6 +212,12 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarIdeInstancia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         try {
             if (!verificarByNroRadicado(correspondenciaDTO.getNroRadicado())) {
@@ -203,9 +231,10 @@ public class CorrespondenciaControl {
                     .executeUpdate();
 
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -213,11 +242,16 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param ppdTrazDocumentoDTO
+     * @throws SystemException
+     */
     public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException{
         try{
             gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -225,6 +259,17 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codEstado
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         try {
@@ -265,9 +310,10 @@ public class CorrespondenciaControl {
 
             return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -275,6 +321,11 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @return
+     */
     public ComunicacionOficialDTO consultarComunicacionOficialByCorrespondencia(CorrespondenciaDTO correspondenciaDTO) {
         List<AgenteDTO> agenteDTOList = agenteControl.consltarAgentesByCorrespondencia(correspondenciaDTO.getIdeDocumento());
 
@@ -296,6 +347,11 @@ public class CorrespondenciaControl {
                 .build();
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @return
+     */
     public CorCorrespondencia corCorrespondenciaTransform(CorrespondenciaDTO correspondenciaDTO) {
         return CorCorrespondencia.newInstance()
                 .descripcion(correspondenciaDTO.getDescripcion())
@@ -321,6 +377,11 @@ public class CorrespondenciaControl {
                 .build();
     }
 
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     */
     public Boolean verificarByNroRadicado(String nroRadicado) {
         long cantidad = em.createNamedQuery("CorCorrespondencia.countByNroRadicado", Long.class)
                 .setParameter(constNroRadicado, nroRadicado)
@@ -328,6 +389,11 @@ public class CorrespondenciaControl {
         return cantidad > 0;
     }
 
+    /**
+     *
+     * @param correspondencia
+     * @return
+     */
     public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) {
 
         int rangoI = Integer.parseInt(this.rangoReservado[0]);
@@ -365,6 +431,14 @@ public class CorrespondenciaControl {
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), consecRadicado);
     }
 
+    /**
+     *
+     * @param codSede
+     * @param codTipoCmc
+     * @param anno
+     * @param consecutivo
+     * @return
+     */
     public String formarNroRadicado(String codSede, String codTipoCmc, String anno, int consecutivo) {
         return codSede
                 .concat(codTipoCmc)
@@ -372,6 +446,11 @@ public class CorrespondenciaControl {
                 .concat(String.format("%06d", consecutivo));
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @return
+     */
     public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(correspondenciaDTO.getFecRadicado());
@@ -400,10 +479,21 @@ public class CorrespondenciaControl {
         return calendario.getTime();
     }
 
+    /**
+     *
+     * @param horaInicio
+     * @param horaFin
+     * @return
+     */
     public long horasHabilesDia(String horaInicio, String horaFin) {
         return ChronoUnit.HOURS.between(LocalTime.parse(horaInicio), LocalTime.parse(horaFin));
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public Date calcularDiaHabilSiguiente(Date fecha) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(fecha);
@@ -420,27 +510,52 @@ public class CorrespondenciaControl {
         return calendario.getTime();
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public Boolean esDiaHabil(Date fecha) {
         return !(esDiaFestivo(fecha) || esFinSemana(fecha));
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public Boolean esDiaFestivo(Date fecha) {
         SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
         return Arrays.stream(diasFestivos).anyMatch(x-> x.equals(formatoFecha.format(fecha)));
     }
 
+    /**
+     *
+     * @param fecha
+     * @return
+     */
     public Boolean esFinSemana(Date fecha) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(fecha);
         return calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendario.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
 
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     */
     public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado){
         return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                 .setParameter(constNroRadicado, nroRadicado)
                 .getSingleResult();
     }
 
+    /**
+     *
+     * @param ideAgente
+     * @return
+     */
     public CorrespondenciaDTO consultarCorrespondenciaByIdeAgente(BigInteger ideAgente){
         return em.createNamedQuery("CorCorrespondencia.findByIdeAgente", CorrespondenciaDTO.class)
                 .setParameter("IDE_AGENTE", ideAgente)

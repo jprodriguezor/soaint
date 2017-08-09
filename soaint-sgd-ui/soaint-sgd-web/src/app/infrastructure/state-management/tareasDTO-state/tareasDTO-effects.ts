@@ -24,6 +24,7 @@ import * as login from 'app/ui/page-components/login/redux-state/login-actions';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {getNextTask} from './tareasDTO-selectors';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
+import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
 
 function isLoaded() {
   return (source) =>
@@ -58,7 +59,6 @@ export class Effects {
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.startTask(payload)
-        .delay(5000)
         .map((response: any) => new actions.StartTaskSuccessAction(response))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );
@@ -69,11 +69,13 @@ export class Effects {
     .map(toPayload)
     .do((payload) => this._sandbox.initTaskDispatch(payload));
 
-  @Effect({dispatch: false})
-  goToNextTask: Observable<any> = this.actions$
+  @Effect()
+  goToNextTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.CONTINUE_WITH_NEXT_TASK)
-    .withLatestFrom(getNextTask)
-    .do(nextTask => this._store$.dispatch(new StartProcessAction(nextTask)));
+    .withLatestFrom(this._store$.select(s => s.tareas.nextTask))
+    .map(([payload, nextTask]) => { console.log(payload, nextTask); return new StartProcessAction(nextTask)});
+    // .do(([jobs, nextTask]: [any, any]) => {        this.store.dispatch( new StartProcessAction(nextTask) );     })
+
 
   @Effect()
   completeTask: Observable<Action> = this.actions$

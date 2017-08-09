@@ -9,6 +9,7 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
+import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 
 @Injectable()
 export class Sandbox {
@@ -65,6 +66,10 @@ export class Sandbox {
 
   completeTaskDispatch(payload: any) {
     this._store.dispatch(new actions.CompleteTaskAction(payload));
+  }
+
+  dispatchNextTask(payload) {
+    this._store.dispatch(new StartProcessAction(payload))
   }
 
   navigateToWorkspace() {

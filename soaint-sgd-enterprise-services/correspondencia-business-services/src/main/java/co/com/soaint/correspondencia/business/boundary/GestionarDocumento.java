@@ -27,6 +27,12 @@ public class GestionarDocumento {
 
     // ----------------------
 
+    /**
+     *
+     * @param documentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarReferenciaECM(DocumentoDTO documentoDTO) throws BusinessException, SystemException {
         control.actualizarReferenciaECM(documentoDTO);
     }

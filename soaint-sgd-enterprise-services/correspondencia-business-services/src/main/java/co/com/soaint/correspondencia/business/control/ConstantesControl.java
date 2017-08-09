@@ -37,6 +37,12 @@ public class ConstantesControl {
 
     // ----------------------
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<ConstanteDTO> listarConstantesByEstado(String estado) throws SystemException {
         try {
@@ -44,7 +50,7 @@ public class ConstantesControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -52,6 +58,13 @@ public class ConstantesControl {
         }
     }
 
+    /**
+     *
+     * @param codigo
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<ConstanteDTO> listarConstantesByCodigoAndEstado(String codigo, String estado) throws SystemException {
         try {
@@ -60,7 +73,7 @@ public class ConstantesControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -68,6 +81,13 @@ public class ConstantesControl {
         }
     }
 
+    /**
+     *
+     * @param codPadre
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<ConstanteDTO> listarConstantesByCodPadreAndEstado(String codPadre, String estado)throws SystemException{
         try {
@@ -76,7 +96,7 @@ public class ConstantesControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

@@ -28,6 +28,12 @@ public class DependenciaControl {
     @Autowired
     OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
+    /**
+     *
+     * @param dependencia
+     * @param sede
+     * @return
+     */
     public DependenciaDTO dependenciaDTOTransform(OrganigramaItemDTO dependencia, OrganigramaItemDTO sede){
         return DependenciaDTO.newInstance()
                 .ideDependencia(dependencia.getIdeOrgaAdmin())
@@ -40,6 +46,11 @@ public class DependenciaControl {
                 .build();
     }
 
+    /**
+     *
+     * @param ideFunci
+     * @return
+     */
     public List<DependenciaDTO> obtenerDependenciasByFuncionario(BigInteger ideFunci){
         List<DependenciaDTO> dependenciaDTOList = new ArrayList<>();
         List<String> codOrgaAdmiList = em.createNamedQuery("TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci")

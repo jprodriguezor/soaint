@@ -57,7 +57,7 @@ export class Effects {
         .map((response) => new actions.LoadTasksInsideProcessAction({data: response}))
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
-    )
+    );
 
   @Effect()
   LoadTasksInside: Observable<Action> = this.actions$
@@ -73,7 +73,7 @@ export class Effects {
         })
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
-    )
+    );
 
 
 }

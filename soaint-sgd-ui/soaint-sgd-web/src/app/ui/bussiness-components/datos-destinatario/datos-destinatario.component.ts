@@ -32,6 +32,9 @@ export class DatosDestinatarioComponent implements OnInit {
   @Input() tipoDestinatarioInput: ConstanteDTO[] = [];
   @Input() dependenciaGrupoInput: ConstanteDTO[] = [];
 
+  // Selections
+  @Input() tipoDestinatarioDefaultInput: ConstanteDTO = null;
+
   @Input() editable = true;
 
   constructor(private _store: Store<State>,

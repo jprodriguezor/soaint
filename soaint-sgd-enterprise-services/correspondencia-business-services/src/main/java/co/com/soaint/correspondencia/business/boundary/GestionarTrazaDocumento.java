@@ -32,6 +32,10 @@ public class GestionarTrazaDocumento {
     @Autowired
     private PpdTrazDocumentoControl ppdTrazDocumentoControl;
 
+    /**
+     *
+     * @param ppdTrazDocumentoDTO
+     */
     @Async
     public void generarTrazaDocumento(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) {
         PpdTrazDocumento ppdTrazDocumento = ppdTrazDocumentoControl.ppdTrazDocumentoTransform(ppdTrazDocumentoDTO);

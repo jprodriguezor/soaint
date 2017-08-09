@@ -35,27 +35,69 @@ public class GestionarCorrespondencia {
 
     // ----------------------
 
+    /**
+     *
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         return control.radicarCorrespondencia(comunicacionOficialDTO);
     }
 
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         return control.listarCorrespondenciaByNroRadicado(nroRadicado);
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarEstadoCorrespondencia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         control.actualizarEstadoCorrespondencia(correspondenciaDTO);
     }
 
+    /**
+     *
+     * @param correspondenciaDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarIdeInstancia(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
         control.actualizarIdeInstancia(correspondenciaDTO);
     }
 
+    /**
+     *
+     * @param ppdTrazDocumentoDTO
+     * @throws SystemException
+     */
     public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException{
         control.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
     }
 
+    /**
+     *
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codEstado
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         return control.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);

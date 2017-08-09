@@ -54,6 +54,12 @@ public class AsignacionControl {
     CorrespondenciaControl correspondenciaControl;
     // ----------------------
 
+    /**
+     * 
+     * @param asignacionesDTO
+     * @return
+     * @throws SystemException
+     */
     public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
@@ -118,7 +124,7 @@ public class AsignacionControl {
             }
             return asignacionesDTOResult;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -126,6 +132,12 @@ public class AsignacionControl {
         }
     }
 
+    /**
+     * 
+     * @param asignacion
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public void actualizarIdInstancia(AsignacionDTO asignacion) throws BusinessException, SystemException {
         try {
             DctAsigUltimo dctAsigUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAsignacion", DctAsigUltimo.class)
@@ -136,12 +148,13 @@ public class AsignacionControl {
                     .setParameter("ID_INSTANCIA", asignacion.getIdInstancia())
                     .executeUpdate();
         } catch (NoResultException n) {
+            logger.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("asignacion.asignacion_not_exist_by_ideAsignacion")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -149,6 +162,14 @@ public class AsignacionControl {
         }
     }
 
+    /**
+     *
+     * @param ideFunci
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(BigInteger ideFunci, String nroRadicado) throws BusinessException, SystemException {
         try {
@@ -163,9 +184,10 @@ public class AsignacionControl {
             }
             return AsignacionesDTO.newInstance().asignaciones(asignacionDTOList).build();
         } catch (BusinessException e) {
+            logger.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -173,7 +195,11 @@ public class AsignacionControl {
         }
     }
 
-
+    /**
+     *
+     * @param numRedirecciones
+     * @param ideAsigUltimo
+     */
     public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) {
         em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
                 .setParameter("NUM_REDIRECCIONES", numRedirecciones)
@@ -181,6 +207,11 @@ public class AsignacionControl {
                 .executeUpdate();
     }
 
+    /**
+     *
+     * @param ideAgente
+     * @return
+     */
     public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente){
         List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
                 .setParameter("IDE_AGENTE", ideAgente)

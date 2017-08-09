@@ -40,6 +40,7 @@ import {
   getMediosRecepcionVentanillaData
 } from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
 import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -91,11 +92,12 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
   mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
+  tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
 
-  authUserFuncionario$: Observable<any>;
-  authUserFuncionarioDependenciaSelected$: Observable<any>;
-  subscribeAuthUserFuncionario: any;
-  subscribeauthUserFuncionarioDependenciaSelected: any;
+  // authUserFuncionario$: Observable<any>;
+  // authUserFuncionarioDependenciaSelected$: Observable<any>;
+  // subscribeAuthUserFuncionario: any;
+  // subscribeauthUserFuncionarioDependenciaSelected: any;
 
   // Unsubscribers
   activeTaskUnsubscriber: Subscription;
@@ -106,8 +108,11 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   ngOnInit() {
-    // Default Selection for Children Components
+    // Default Selection for Children Components bindings
     this.mediosRecepcionDefaultSelection$ = this._store.select(getMediosRecepcionVentanillaData);
+    this.tipoDestinatarioDefaultSelection$ = this._store.select(getDestinatarioPrincial);
+
+    // Datalist Load bindings
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
     this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
@@ -153,7 +158,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         };
         this._store.dispatch(new ScheduleNextTaskAction(payload));
       });
-
   }
 
   radicarComunicacion() {
@@ -354,7 +358,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       nroGuia: null,
       fecVenGestion: null,
       codEstado: null,
-      inicioConteo: 'DSH'
+      inicioConteo: this.valueGeneral.inicioConteo || ''
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
