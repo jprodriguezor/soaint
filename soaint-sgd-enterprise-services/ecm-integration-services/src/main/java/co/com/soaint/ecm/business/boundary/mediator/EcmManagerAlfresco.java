@@ -39,6 +39,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         } catch (Exception e) {
             response.setCodMensaje ("000005");
             response.setMensaje ("Error al crear estructura");
+            LOGGER.info ("### Error..------"+e);
         }
 
         return response;
@@ -46,8 +47,13 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
         LOGGER.info ("### Subiendo documento al content..");
-        String idDocumento;
-        idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
+        String idDocumento="";
+        try {
+            idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
+        }catch (Exception e){
+            LOGGER.info ("### Error..------"+e);
+        }
+
         return idDocumento;
     }
 
@@ -60,6 +66,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         } catch (Exception e) {
             response.setCodMensaje ("000002");
             response.setMensaje ("Error al mover documento");
+            LOGGER.info ("### Error..------"+e);
         }
 
         return response;
