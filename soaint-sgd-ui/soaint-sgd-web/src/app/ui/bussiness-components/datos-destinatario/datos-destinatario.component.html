@@ -11,6 +11,7 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
             <p-dropdown [options]="tipoDestinatarioInput | dropdownItem"
+                        [ngModel]="tipoDestinatarioDefaultInput"
                         id="tipoDestinatario"
                         formControlName="tipoDestinatario"
                         placeholder="Seleccione"

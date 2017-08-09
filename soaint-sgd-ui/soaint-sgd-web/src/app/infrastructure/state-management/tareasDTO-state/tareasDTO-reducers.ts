@@ -1,16 +1,14 @@
 import {ActionTypes, Actions} from './tareasDTO-actions';
 import {tassign} from 'tassign';
 import {TareaDTO} from 'app/domain/tareaDTO';
+import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
 
 
 export interface State {
   ids: number[];
   entities: { [idTarea: number]: TareaDTO };
   activeTask: TareaDTO;
-  nextTask: {
-    codigoProceso: string,
-    idDespliegue: string
-  };
+  nextTask: StartProcessPayload
 }
 
 const initialState: State = {

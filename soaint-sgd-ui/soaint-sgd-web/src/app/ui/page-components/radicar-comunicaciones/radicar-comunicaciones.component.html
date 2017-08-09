@@ -29,6 +29,7 @@
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
           <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">-->
           <app-datos-destinatario #datosDestinatario [editable]="editable"
+                                  [tipoDestinatarioDefaultInput]="tipoDestinatarioDefaultSelection$ | async"
                                   [tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"
                                   [sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"
           ></app-datos-destinatario>

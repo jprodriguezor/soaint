@@ -1,23 +1,17 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
-import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.File;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/digitalizar-documento-gateway-api")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes("multipart/form-data")
 public class DigitalizarDocumentoGatewayApi {
 
     @Autowired
@@ -30,16 +24,18 @@ public class DigitalizarDocumentoGatewayApi {
 
     @POST
     @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@FormDataParam("file") InputStream documento) {
+    public Response digitalizar(MultipartFormDataInput file) {
+
         //TODO: add trafic log
         System.out.println("DigitalizarDocumentoGatewayApi - [content] : ");
-        Response response = digitalizarDocumentoClient.digitalizar(documento);
-//        String responseContent = response.readEntity(String.class);
+        Response response = digitalizarDocumentoClient.digitalizar(file);
+        String responseContent = response.readEntity(String.class);
 
 //        System.out.println("DigitalizarDocumentoGatewayApi - [content] : " + responseContent);
 
-        return Response.ok("ok").build();
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }
