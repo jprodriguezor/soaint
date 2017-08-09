@@ -4,7 +4,7 @@ import lombok.Data;
 import org.apache.chemistry.opencmis.client.api.Session;
 
 /**
- * Created by Dasiel on 29/05/2017.
+ * Created by Dasiel
  */
 @Data
 public class  Conexion {

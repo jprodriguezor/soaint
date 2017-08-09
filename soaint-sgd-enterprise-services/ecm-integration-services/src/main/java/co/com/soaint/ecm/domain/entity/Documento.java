@@ -1,7 +1,7 @@
 package co.com.soaint.ecm.domain.entity;
 
 /**
- * Created by Dasiel on 31/07/2017.
+ * Created by Dasiel
  */
 import lombok.Data;
 import org.apache.chemistry.opencmis.client.api.Document;
