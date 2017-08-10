@@ -62,6 +62,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   funcionarioSubcription: Subscription;
 
+  comunicacionesSubcription: Subscription;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -82,7 +84,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
+    this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe(() => {
+      this.selectedComunications = [];
+    });
     this.initForm();
+  }
+
+  getCodEstadoLabel(codEstado: string): string {
+    let estado = this.estadosCorrespondencia.find((item) => {
+      return item.value === codEstado;
+    });
+    return estado.label;
   }
 
   ngOnInit() {
@@ -93,6 +105,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
+    this.comunicacionesSubcription.unsubscribe();
   }
 
   initForm() {

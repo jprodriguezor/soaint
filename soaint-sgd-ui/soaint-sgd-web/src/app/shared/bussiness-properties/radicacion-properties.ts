@@ -6,8 +6,8 @@ export const COMUNICACION_INTERNA = 'TP-CMCOI';
 
 export const DESTINATARIO_PRINCIPAL = 'TP-DESP';
 
-export const TIPO_AGENTE_REMITENTE = 'REM';
-export const TIPO_AGENTE_DESTINATARIO = 'DES';
+export const TIPO_AGENTE_REMITENTE = 'TP-AGEE';
+export const TIPO_AGENTE_DESTINATARIO = 'TP-AGEI';
 
 export const TIPO_REMITENTE_INTERNO = 'INT';
 export const TIPO_REMITENTE_EXTERNO = 'EXT';

@@ -11,14 +11,17 @@ export class DatosGeneralesApiService {
   }
 
   loadMetricasTiempo(tipologiaDocumental) {
-    // const end_point = environment.metricasTiempoRadicacion_rule_endpoint;
-    // const payload = RulesServer.requestPayload(tipologiaDocumental);
-    // return this._api.list(end_point, { payload: JSON.stringify(payload)});
+    const end_point = environment.metricasTiempoRadicacion_rule_endpoint;
+    const payload = RulesServer.requestPayload(tipologiaDocumental.codigo);
+    return this._api.list(end_point, { payload: JSON.stringify(payload)})
+      .map(response => {
+        return RulesServer.extractFromResponse(response);
+      });
 
-    return Observable.of({
-      tiempoRespuesta: '10',
-      codUnidaTiempo: 'UNID-TID',
-      inicioConteo: 'DSH'
-    });
+    // return Observable.of({
+    //   tiempoRespuesta: '10',
+    //   codUnidaTiempo: 'UNID-TID',
+    //   inicioConteo: 'DSH'
+    // });
   }
 }

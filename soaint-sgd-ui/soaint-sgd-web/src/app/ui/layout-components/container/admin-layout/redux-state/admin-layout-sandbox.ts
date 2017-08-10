@@ -78,7 +78,7 @@ export class AdminLayoutSandbox {
     this._store.dispatch(new actions.ResizeWindowAction(payload));
   }
 
-  dispatchFuncionarioAuthDependenciaSelected(payload: OrganigramaDTO) {
+  dispatchFuncionarioAuthDependenciaSelected(payload: any) {
     this._store.dispatch(new SelectDependencyGroupAction(payload));
   }
 

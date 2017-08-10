@@ -171,6 +171,7 @@ export class DatosGeneralesComponent implements OnInit {
   onSelectTipologiaDocumental(codigoTipologia) {
     this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
     this.metricasTiempoTipologia$.subscribe(metricas => {
+      console.log(metricas);
       this.tiempoRespuestaMetricaTipologia$ = Observable.of(metricas.tiempoRespuesta);
       this.codUnidaTiempoMetricaTipologia$ = this._store.select(createSelector(getUnidadTiempoEntities, (entities) => {
         return entities[metricas.codUnidaTiempo];

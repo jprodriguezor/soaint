@@ -57,11 +57,12 @@ export class HttpHandler {
       options = options || new RequestOptions();
       options.headers = new Headers();
       if (token !== null) {
-        options.headers.append('Content-Type', 'multipart/form-data');
+        // options.headers.append('Content-Type', 'multipart/form-data');
         options.headers.append('Accept', 'application/json');
         options.headers.append('Authorization', 'Bearer ' + token);
       } else {
-        options.headers.append('Content-Type', 'multipart/form-data');
+        options.headers.append('Accept', 'application/json');
+        // options.headers.append('Content-Type', 'multipart/form-data');
       }
       const req: Request = new Request(<RequestArgs>url);
       req.headers = options.headers;

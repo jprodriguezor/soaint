@@ -61,7 +61,7 @@ export class LoadAllFailAction implements Action {
 export class SelectDependencyGroupAction implements Action {
   type = ActionTypes.SELECT_DEPENDENCY_GROUP;
 
-  constructor(public payload?: OrganigramaDTO) {
+  constructor(public payload?: any) {
   }
 }
 

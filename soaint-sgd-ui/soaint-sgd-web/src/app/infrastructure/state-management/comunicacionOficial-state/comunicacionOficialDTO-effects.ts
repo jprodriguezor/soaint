@@ -60,11 +60,13 @@ export class Effects {
   reload: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.RELOAD)
     .distinctUntilChanged()
-    .withLatestFrom(this._store$.select((state) => state.comunicacionesOficiales))
-    .distinctUntilChanged()
+    .withLatestFrom(this._store$.select((state) => state.comunicacionesOficiales.filters), this._store$.select(getSelectedDependencyGroupFuncionario))
     .switchMap(
-      ([payload, state]) => {
-        return this._sandbox.loadData(state.filters)
+      ([payload, filters, authFuncionarioDependencySelected ]) => {
+        const request = Object.assign({}, filters, {
+          cod_dependencia: authFuncionarioDependencySelected.codigo
+        });
+        return this._sandbox.loadData(request)
           .map((response) => new actions.LoadSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadFailAction({error}))
           )
