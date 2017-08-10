@@ -4,7 +4,6 @@ import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediato
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,14 +14,15 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Dasiel
  */
 
-
+/**
+ * Clase que expone las operaciones como servicio Rest
+ */
 @Path("/ecm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -34,6 +34,9 @@ public class EcmIntegrationServicesClientRest {
     private
     EcmManagerMediator fEcmManager;
 
+    /**
+     * Constructor de la clase
+     */
     public EcmIntegrationServicesClientRest() {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
@@ -41,10 +44,11 @@ public class EcmIntegrationServicesClientRest {
 
     /**
      * Operacion para crear la estructura dentro del ECM
+     *
      * @param structure Listado que contiene la estructura a crear
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws BusinessException Error de negocio
-     * @throws SystemException Excepcion en error
+     * @throws SystemException   Excepcion en error
      */
     @POST
     @Path("/crearEstructuraContent/")
@@ -61,12 +65,13 @@ public class EcmIntegrationServicesClientRest {
 
     /**
      * Operacion que sube documentos al ECM
-     * @param nombreDocumento Nombre del documento
-     * @param documento Documento
+     *
+     * @param nombreDocumento  Nombre del documento
+     * @param documento        Documento
      * @param tipoComunicacion Tipo de comunicacion puede ser externa o interna
      * @return Identificador del documento creado
      * @throws BusinessException Error de negocio
-     * @throws SystemException Excepcion en error
+     * @throws SystemException   Excepcion en error
      */
     @POST
     @Path("/subirDocumentoECM/{nombreDocumento}/{tipoComunicacion}")
@@ -88,13 +93,14 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
-     *  Operacion que que mueve documentos dentro del ECM
+     * Operacion que que mueve documentos dentro del ECM
+     *
      * @param moverDocumento Nombre del documentoa mover
-     * @param carpetaFuente Carpeta donde se encuentra el documento
+     * @param carpetaFuente  Carpeta donde se encuentra el documento
      * @param carpetaDestino Carpeta a donde se va a mover el documento
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws BusinessException Error de negocio
-     * @throws SystemException Excepcion en error
+     * @throws SystemException   Excepcion en error
      */
     @POST
     @Path("/moverDocumentoECM/")
