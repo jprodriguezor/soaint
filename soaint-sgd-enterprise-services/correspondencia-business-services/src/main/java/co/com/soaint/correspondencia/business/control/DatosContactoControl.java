@@ -27,6 +27,11 @@ public class DatosContactoControl {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     *
+     * @param agenteDTOList
+     * @return
+     */
     public List<DatosContactoDTO> consultarDatosContactoByAgentes(List<AgenteDTO> agenteDTOList) {
         List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
         agenteDTOList.stream().forEach(agenteDTO -> {
@@ -35,14 +40,17 @@ public class DatosContactoControl {
                         .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                         .getResultList()
                         .stream()
-                        .forEach(datosContactoDTO ->
-                            datosContactoDTOList.add(datosContactoDTO)
-                        );
+                        .forEach(datosContactoDTOList::add);
             }
         });
         return datosContactoDTOList;
     }
 
+    /**
+     *
+     * @param datosContactoDTO
+     * @return
+     */
     public TvsDatosContacto datosContactoTransform(DatosContactoDTO datosContactoDTO) {
         return TvsDatosContacto.newInstance()
                 .ideContacto(datosContactoDTO.getIdeContacto())

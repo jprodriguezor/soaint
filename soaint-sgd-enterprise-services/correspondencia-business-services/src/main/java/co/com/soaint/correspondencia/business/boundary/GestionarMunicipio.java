@@ -4,6 +4,7 @@ import co.com.soaint.correspondencia.business.control.MunicipioControl;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.List;
  * Purpose: BOUNDARY - business component services
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+@NoArgsConstructor
 @BusinessBoundary
 public class GestionarMunicipio {
 
@@ -29,15 +31,24 @@ public class GestionarMunicipio {
 
     // ----------------------
 
-    public GestionarMunicipio() {
-        super();
-    }
-
+    /**
+     *
+     * @param codDepar
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByCodDeparAndEstado(String codDepar, String estado) throws SystemException {
         return control.listarMunicipiosByCodDeparAndEstado(codDepar, estado);
     }
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByEstado(String estado) throws SystemException {
         return control.listarMunicipiosByEstado(estado);

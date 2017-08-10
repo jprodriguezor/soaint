@@ -15,6 +15,11 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
  */
 @BusinessControl
 public class PpdTrazDocumentoControl {
+    /**
+     *
+     * @param ppdTrazDocumentoDTO
+     * @return
+     */
     public PpdTrazDocumento ppdTrazDocumentoTransform(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) {
         return PpdTrazDocumento.newInstance()
                 .observacion(ppdTrazDocumentoDTO.getObservacion())

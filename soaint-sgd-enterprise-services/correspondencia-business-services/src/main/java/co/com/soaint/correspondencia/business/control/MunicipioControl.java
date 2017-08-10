@@ -34,6 +34,13 @@ public class MunicipioControl {
 
     // ----------------------
 
+    /**
+     *
+     * @param codDepar
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByCodDeparAndEstado(String codDepar, String estado) throws SystemException {
         try {
@@ -42,7 +49,7 @@ public class MunicipioControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -50,6 +57,12 @@ public class MunicipioControl {
         }
     }
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByEstado(String estado) throws SystemException {
         try {
@@ -57,7 +70,7 @@ public class MunicipioControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
+            logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

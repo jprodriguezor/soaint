@@ -30,11 +30,24 @@ public class GestionarPais {
     private PaisControl control;
     // ----------------------
 
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<PaisDTO> listarPaisesByEstado(String estado) throws SystemException{
         return control.listarPaisesByEstado(estado);
     }
 
+    /**
+     *
+     * @param nombrePais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<PaisDTO> listarPaisesByNombrePaisAndEstado(String nombrePais, String estado) throws SystemException{
         return control.listarPaisesByNombrePaisAndEstado(nombrePais, estado);

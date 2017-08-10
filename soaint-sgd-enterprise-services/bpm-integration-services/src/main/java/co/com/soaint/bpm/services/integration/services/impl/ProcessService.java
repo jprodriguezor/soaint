@@ -1,7 +1,10 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
-import co.com.soaint.foundation.canonical.bpm.*;
+import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -16,7 +19,6 @@ import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
@@ -46,9 +48,7 @@ public class ProcessService implements IProcessServices {
     private KieSession ksession;
     private TaskService taskService;
 
-    private String idDespliegue = "";
 
-    private AuditService auditService;
     @Value( "${procesos.listar.endpoint.url}" )
     private String endpointProcesosListar = "";
     @Value( "${jbpm.endpoint.url}" )
@@ -70,6 +70,13 @@ public class ProcessService implements IProcessServices {
     private ProcessService() throws MalformedURLException {;
     }
 
+    /**
+     * Permite listar todos los procesos desplegados
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Lista de procesos que contiene codigoProceso,nombreProceso y idDespliegue.
+     * @throws IOException
+     * @throws JSONException
+     */
     @Override
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
@@ -79,12 +86,12 @@ public class ProcessService implements IProcessServices {
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader("Accept", "application/json");
         getRequest.addHeader("Authorization",  "Basic " + encoding);
-        HttpResponse response = httpClient.execute(getRequest);
-        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+        HttpResponse httpResponse = httpClient.execute(getRequest);
+        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
 
         //        // Check for HTTP response code: 200 = success
-        if (response.getStatusLine().getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+        if (httpResponse.getStatusLine().getStatusCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + httpResponse.getStatusLine().getStatusCode());
         } else {
             JSONArray listaProcesosJson = respuestaJson.getJSONArray("processDefinitionList");
             for (int i = 0; i < listaProcesosJson.length(); i++) {
@@ -105,6 +112,14 @@ public class ProcessService implements IProcessServices {
         return listaProcesos;
     }
 
+    /**
+     * Permite listar las instancias de procesos por usuario
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Lista de procesos que contiene codigoProceso,nombreProceso y estado.
+     * @throws IOException
+     * @throws JSONException
+     * @throws URISyntaxException
+     */
     @Override
     public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
@@ -117,11 +132,11 @@ public class ProcessService implements IProcessServices {
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader("Accept", "application/json");
         getRequest.addHeader("Authorization",  "Basic " + encoding);
-        HttpResponse response = httpClient.execute(getRequest);
-        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+        HttpResponse httpResponse = httpClient.execute(getRequest);
+        JSONObject respuestaJson = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
 
-        if (response.getStatusLine().getStatusCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+        if (httpResponse.getStatusLine().getStatusCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + httpResponse.getStatusLine().getStatusCode());
         } else {
             JSONArray listaProcesosJson = respuestaJson.getJSONArray("processInstanceInfoList");
             for (int i = 0; i < listaProcesosJson.length(); i++) {
@@ -144,12 +159,17 @@ public class ProcessService implements IProcessServices {
         return listaProcesos;
     }
 
-
+    /**
+     * Permite iniciar un proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
+     * @throws MalformedURLException
+     */
     @Override
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
         ksession = obtenerEngine(entrada).getKieSession();
         ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
-        long procId = processInstance.getId();
+
         RespuestaProcesoDTO respuesta = RespuestaProcesoDTO.newInstance()
                 .codigoProceso(String.valueOf(processInstance.getId()))
                 .nombreProceso(processInstance.getProcessId())
@@ -159,18 +179,26 @@ public class ProcessService implements IProcessServices {
         return respuesta;
     }
 
+    /**
+     * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un usuario
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
+     * @throws IOException
+     * @throws JSONException
+     * @throws URISyntaxException
+     */
     @Override
     public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException {
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
-        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
         ksession = obtenerEngine(entradaManual).getKieSession();
         ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
-        long procId = processInstance.getId();
+
         entrada.setInstanciaProceso(processInstance.getId());
-        tareas = listarTareasPorInstanciaProceso(entrada);
+        List<RespuestaTareaDTO> tareas = listarTareasPorInstanciaProceso(entrada);
         for (RespuestaTareaDTO tarea : tareas) {
             entrada.setIdTarea(tarea.getIdTarea());
             reservarTarea(entrada);
@@ -185,12 +213,18 @@ public class ProcessService implements IProcessServices {
         return respuesta;
     }
 
+    /**
+     * Permite iniciar una tarea asociada a un proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos de la tarea iniciada
+     * @throws MalformedURLException
+     */
     @Override
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.start(entrada.getIdTarea(), entrada.getUsuario());
         Task task = taskService.getTaskById(entrada.getIdTarea());
-        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+        return RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.ENPROGRESO))
                 .nombre(task.getName())
@@ -205,23 +239,34 @@ public class ProcessService implements IProcessServices {
                 .fechaCreada(task.getTaskData().getCreatedOn())
                 .prioridad(task.getPriority())
                 .build();
-        return respuestaTarea;
     }
 
+    /**
+     * Permite completar una tarea asociada a un proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos de la tarea completada
+     * @throws MalformedURLException
+     */
     @Override
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
 
-        RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+        return RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
                 .estado(String.valueOf(EstadosEnum.COMPLETADO))
                 .idProceso(entrada.getIdProceso())
                 .build();
-
-        return respuestaTarea;
     }
 
+    /**
+     * Permite reservar una tarea asociada a un proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos de la tarea reservada
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws JSONException
+     */
     @Override
     public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws IOException, URISyntaxException, JSONException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
@@ -241,7 +286,7 @@ public class ProcessService implements IProcessServices {
         } else {
             String estadoResp = respuestaJson.getString("status");
             String estado;
-            if(estadoResp.equals("SUCCESS")){
+            if("SUCCESS".equals(estadoResp)){
                 estado =  String.valueOf(EstadosEnum.RESERVADO);
             }else{
                 estado =  String.valueOf(EstadosEnum.ERROR);
@@ -256,12 +301,17 @@ public class ProcessService implements IProcessServices {
         }
     }
 
-
+    /**
+     * Permite reasignar una tarea a otro usuario
+      * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos de la tarea reasignada
+     * @throws MalformedURLException
+     */
     @Override
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
         taskService = obtenerEngine(entrada).getTaskService();
         taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
-        //taskService.claim(entrada.getIdTarea(), entrada.getUsuario());
+        
         Task task = taskService.getTaskById(entrada.getIdTarea());
         RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                 .idTarea(entrada.getIdTarea())
@@ -280,6 +330,12 @@ public class ProcessService implements IProcessServices {
         return respuestaTarea;
     }
 
+    /**
+     *  Permite listar las tareas por estados
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas que cumplen con los filtros de estado solicitdos
+     * @throws MalformedURLException
+     */
     @Override
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -306,6 +362,12 @@ public class ProcessService implements IProcessServices {
         return tareas;
     }
 
+    /**
+     * Permite listar las tareas asociadas a una instancia de procesos por sus estados
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
     @Override
     public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -334,6 +396,12 @@ public class ProcessService implements IProcessServices {
         return tareas;
     }
 
+    /**
+     * Listar tareas por instancia de proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
     @Override
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -361,6 +429,12 @@ public class ProcessService implements IProcessServices {
         return tareas;
     }
 
+    /**
+     * Permite listar tareas asociados a usuarios por estados
+     * @param entrada  Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
     @Override
     public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws MalformedURLException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -390,7 +464,13 @@ public class ProcessService implements IProcessServices {
     }
 
 
-
+    /**
+     * Permite enviar una sennal a un proceso
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos del proceso que fue invocado
+     * @throws IOException
+     * @throws JSONException
+     */
     @Override
     public RespuestaProcesoDTO enviarSenalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
@@ -425,6 +505,13 @@ public class ProcessService implements IProcessServices {
         return respuesta;
     }
 
+    /**
+     * Permite invocar automaticamente una sennal
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos del proceso que fue invocado
+     * @throws IOException
+     * @throws JSONException
+     */
     @Override
     public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
 
@@ -456,8 +543,12 @@ public class ProcessService implements IProcessServices {
     }
 
 
-
-
+    /**
+     * Permite crear la conexion con el servidor JPBM
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Objeto conexion JBPM
+     * @throws MalformedURLException
+     */
     private RuntimeEngine obtenerEngine(EntradaProcesoDTO entrada) throws MalformedURLException {
         engine = RemoteRuntimeEngineFactory.newRestBuilder()
                 .addDeploymentId(entrada.getIdDespliegue())
@@ -469,6 +560,12 @@ public class ProcessService implements IProcessServices {
         return engine;
     }
 
+    /**
+     * Permite permite parsear los estados que son enviados en las llamadas
+     * @param estadosEnviados Enum de estados
+     * @return Lista de estados activos en la llamada
+     * @throws MalformedURLException
+     */
     private List<Status> estadosActivos(Iterator<EstadosEnum> estadosEnviados) throws MalformedURLException {
         List<Status> estadosActivos = new ArrayList<>();
         while (estadosEnviados.hasNext()) {
@@ -511,6 +608,12 @@ public class ProcessService implements IProcessServices {
         return estadosActivos;
     }
 
+    /**
+     * Permite cambiar el idioma del estado
+     * @param estado cadena de texto con el estado en Ingles
+     * @return estado en espannol
+     * @throws MalformedURLException
+     */
     private String estadoRespuesta(String estado) throws MalformedURLException {
         EstadosEnum estadoRespuesta = null;
             switch (estado) {
@@ -552,6 +655,11 @@ public class ProcessService implements IProcessServices {
         return estadoRespuesta.toString();
     }
 
+    /**
+     * Permite crear lista de parametros para realizar llamada
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de valores
+     */
     private List<NameValuePair> listaEstadosProceso(EntradaProcesoDTO entrada) {
         List<NameValuePair> estadoProceso= new ArrayList<>();
 

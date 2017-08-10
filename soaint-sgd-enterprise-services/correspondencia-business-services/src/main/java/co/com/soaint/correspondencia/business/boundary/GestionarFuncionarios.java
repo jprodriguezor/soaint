@@ -29,11 +29,26 @@ public class GestionarFuncionarios {
     FuncionariosControl control;
     // ----------------------
 
+    /**
+     *
+     * @param loginName
+     * @param estado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException {
         return control.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 
+    /**
+     *
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(String codDependencia, String codEstado) throws SystemException {
         return control.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
