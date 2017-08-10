@@ -70,17 +70,17 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      * @param documento Nombre del documento a mover
-     * @param CarpetaFuente Carpeta donde se encuentra el documento
-     * @param CarpetaDestino Carpeta a donde se va a mover el documento.
+     * @param carpetaFuente Carpeta donde se encuentra el documento
+     * @param carpetaDestino Carpeta a donde se va a mover el documento.
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) throws InfrastructureException {
         logger.info ("### Moviendo documento dentro del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
-            response = content.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
+            response = content.moverDocumento (documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
             response.setCodMensaje ("000002");

@@ -389,8 +389,8 @@ public class ContentControlAlfresco extends ContentControl {
             new Carpeta ( );
             Carpeta carpetaD;
 
-            carpetaF = (obtenerCarpetaPorNombre (carpetaFuente, session));
-            carpetaD = (obtenerCarpetaPorNombre (carpetaDestino, session));
+            carpetaF = obtenerCarpetaPorNombre (carpetaFuente, session);
+            carpetaD = obtenerCarpetaPorNombre (carpetaDestino, session);
 
             CmisObject object = session.getObjectByPath (carpetaF.getFolder ( ).getPath ( ) + "/" + documento);
             Document mvndocument = (Document) object;
