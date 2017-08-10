@@ -29,13 +29,9 @@ public class JPAHibernateTest {
     protected static EntityManager em;
 
     @BeforeClass
-    public static void init() throws RuntimeException {
-        try {
+    public static void init() throws SQLException {
         emf = Persistence.createEntityManagerFactory("servicios-correspondencia-h2-unit-test");
         em = emf.createEntityManager();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Before
@@ -43,13 +39,14 @@ public class JPAHibernateTest {
         Session session = em.unwrap(Session.class);
         session.doWork(new Work() {
             @Override
-            public void execute(Connection connection) throws RuntimeException {
+            public void execute(Connection connection) throws SQLException {
                 try {
                     File script = new File(getClass().getResource("/data.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
                 }
+
             }
         });
     }
