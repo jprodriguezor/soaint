@@ -1,6 +1,8 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -10,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.List;
@@ -35,6 +38,9 @@ public class DocumentoControl {
 
     @Autowired
     PpdDocumentoControl ppdDocumentoControl;
+
+    @Autowired
+    PpdTrazDocumentoControl ppdTrazDocumentoControl;
 
     // ----------------------
 
@@ -70,5 +76,23 @@ public class DocumentoControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     * @param ppdTrazDocumentoDTO
+     */
+
+    public void generarTrazaDocumento(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException, BusinessException {
+        ppdTrazDocumentoControl.generarTrazaDocumento(ppdTrazDocumentoDTO);
+    }
+
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws SystemException{
+        return ppdTrazDocumentoControl.listarTrazasDocumento(ideDocumento);
     }
 }
