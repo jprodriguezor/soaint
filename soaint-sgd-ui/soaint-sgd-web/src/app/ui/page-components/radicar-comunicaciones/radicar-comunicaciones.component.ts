@@ -95,13 +95,12 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
   tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
 
-  // authUserFuncionario$: Observable<any>;
-  // authUserFuncionarioDependenciaSelected$: Observable<any>;
-  // subscribeAuthUserFuncionario: any;
-  // subscribeauthUserFuncionarioDependenciaSelected: any;
-
   // Unsubscribers
   activeTaskUnsubscriber: Subscription;
+  radicacionUnsubscriber: Subscription;
+  sedeUnsubscriber: Subscription;
+  validDatosGeneralesUnsubscriber: Subscription;
+  reqDigitInmediataUnsubscriber: Subscription;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
@@ -131,7 +130,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   ngAfterViewInit() {
 
     const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
-    Observable.combineLatest(
+    this.sedeUnsubscriber = Observable.combineLatest(
       sedeRemitente.statusChanges,
       sedeRemitente.valueChanges
     )
@@ -146,12 +145,12 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         }
       });
 
-    this.datosGenerales.form.statusChanges.filter(value => value === 'VALID').first()
+    this.validDatosGeneralesUnsubscriber = this.datosGenerales.form.statusChanges.filter(value => value === 'VALID').first()
       .subscribe(() => {
         this._store.dispatch(new LoadDatosRemitenteAction())
       });
 
-    this.datosGenerales.form.get('reqDigitInmediata').valueChanges
+    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigitInmediata').valueChanges
       .subscribe(value => {
         const payload: LoadNextTaskPayload = {
           idProceso: this.task.idProceso,
@@ -187,7 +186,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       datosContactoList: this.getDatosContactos()
     };
 
-    this._sandbox.radicar(this.radicacion).subscribe((response) => {
+    this.radicacionUnsubscriber = this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
@@ -433,16 +432,20 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.tabIndex = event.index;
   }
 
-  ngOnDestroy() {
-    this.activeTaskUnsubscriber.unsubscribe();
-  }
-
   getTask(): TareaDTO {
     return this.task;
   }
 
   save(): Observable<any> {
     return Observable.of(true).delay(5000);
+  }
+
+  ngOnDestroy() {
+    this.activeTaskUnsubscriber.unsubscribe();
+    this.validDatosGeneralesUnsubscriber.unsubscribe();
+    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    this.sedeUnsubscriber.unsubscribe();
+    this.radicacionUnsubscriber.unsubscribe();
   }
 
 }

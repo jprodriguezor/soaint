@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
 import {Subscription} from 'rxjs/Subscription';
@@ -28,7 +28,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   activeTaskUnsubscriber: Subscription;
   infoUnsubscriber: Subscription;
 
-  constructor(private _store: Store<RootState>) {
+  constructor(private _store: Store<RootState>, private _changeDetector: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -39,6 +39,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
       if (activeTask) {
         this.task = activeTask;
         this.processName = procesos[activeTask.idProceso].nombreProceso || '';
+        this._changeDetector.detectChanges();
       }
     });
 
@@ -50,6 +51,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
         if (activeTask === null) {
           this.isActive = false;
           this.hasToContinue = hasNextTask !== null;
+          this._changeDetector.detectChanges();
         }
       });
   }

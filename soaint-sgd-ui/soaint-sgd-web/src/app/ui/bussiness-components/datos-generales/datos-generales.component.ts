@@ -13,14 +13,11 @@ import {
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/single';
-import {
-  getMediosRecepcionEntities,
-  getMediosRecepcionIds,
-} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-generales.api';
 import {createSelector} from 'reselect';
 import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 
 @Component({
   selector: 'app-datos-generales',
@@ -105,6 +102,7 @@ export class DatosGeneralesComponent implements OnInit {
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
 
     this._constSandbox.loadDatosGeneralesDispatch();
+    this._store.dispatch(new SedeAdministrativaLoadAction());
 
     this.initForm();
 

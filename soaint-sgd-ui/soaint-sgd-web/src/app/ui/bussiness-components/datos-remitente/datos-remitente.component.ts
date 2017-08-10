@@ -13,7 +13,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
-import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {
   COMUNICACION_EXTERNA, COMUNICACION_INTERNA, PERSONA_ANONIMA, PERSONA_JURIDICA,
   PERSONA_NATURAL, TPDOC_CEDULA_CIUDADANIA, TPDOC_NRO_IDENTIFICACION_TRIBUTARIO
@@ -68,9 +67,7 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   initLoadTipoComunicacionInterna() {
-    this._store.dispatch(new SedeAdministrativaLoadAction());
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-
   }
 
   initForm() {
