@@ -26,6 +26,7 @@ import java.util.List;
 public class ContentManagerAlfresco extends ContentManagerMediator {
 
     @Autowired
+    private
     ContentControlAlfresco control;
 
     private static final Logger logger = LogManager.getLogger (ContentManagerAlfresco.class.getName ( ));

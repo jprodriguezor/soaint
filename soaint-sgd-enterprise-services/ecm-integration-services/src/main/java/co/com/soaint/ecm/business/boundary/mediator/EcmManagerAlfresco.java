@@ -24,6 +24,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     private static final Logger logger = LogManager.getLogger (EcmManagerAlfresco.class.getName ( ));
 
     @Autowired
+    private
     ContentManagerMediator content;
 
     /**
