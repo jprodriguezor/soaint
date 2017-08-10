@@ -11,10 +11,15 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * Clase para el control del ECM
+ */
 @Service
 public interface ContentControl {
-
+    /**
+     * Metodo que retorna un objeto de conexion al ECM
+     * @return Objeto de conexion
+     */
     Conexion obtenerConexion();
 
     /**
@@ -40,9 +45,8 @@ public interface ContentControl {
      *
      * @param carpeta Carpeta a la cual se le va a actualizar el nombre
      * @param nombre  Nuevo nombre de la carpeta
-     * @return Retorna verdadero o falso en caso de que se actualice el nombre o no
      */
-    boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre);
+    void actualizarNombreCarpeta(Carpeta carpeta, String nombre);
     /**
      * Metodo para mover carpetas dentro de Alfresco
      *

@@ -310,19 +310,15 @@ public class ContentControlAlfresco implements ContentControl {
      *
      * @param carpeta Carpeta a la cual se le va a actualizar el nombre
      * @param nombre  Nuevo nombre de la carpeta
-     * @return Retorna verdadero o falso en caso de que se actualice el nombre o no
      */
-    public boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre) {
+    public void actualizarNombreCarpeta(Carpeta carpeta, String nombre) {
         logger.info ("### Actualizando nombre folder: " + nombre);
-        boolean estado;
         try {
             carpeta.getFolder ( ).rename (nombre);
-            estado = true;
+
         } catch (Exception e) {
-            estado = false;
             logger.error ("*** Error al actualizar nombre folder *** " + e);
         }
-        return estado;
     }
 
     /**
