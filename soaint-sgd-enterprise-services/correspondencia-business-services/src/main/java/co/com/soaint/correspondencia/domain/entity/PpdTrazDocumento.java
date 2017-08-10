@@ -16,7 +16,6 @@ import java.util.Date;
 import javax.persistence.*;
 
 /**
- *
  * @author jrodriguez
  */
 @Builder(builderMethodName = "newInstance")
@@ -26,7 +25,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PPD_TRAZ_DOCUMENTO")
 @NamedQueries({
-    @NamedQuery(name = "PpdTrazDocumento.findAll", query = "SELECT p FROM PpdTrazDocumento p")})
+        @NamedQuery(name = "PpdTrazDocumento.findAll", query = "SELECT p FROM PpdTrazDocumento p"),
+        @NamedQuery(name = "PpdTrazDocumento.findAllByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO " +
+                "(p.ideTrazDocumento, p.fecTrazDocumento, p.observacion, p.ideFunci, p.codEstado, p.ideDocumento, p.codOrgaAdmin, " +
+                "f.nomFuncionario, f.valApellido1, f.valApellido2, f.corrElectronico, f.loginName) " +
+                "FROM PpdTrazDocumento p " +
+                "INNER JOIN p.funcionario f " +
+                "WHERE p.ideDocumento = :IDE_DOCUMENTO")})
 @javax.persistence.TableGenerator(name = "PPD_TRAZ_DOCUMENTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "PPD_TRAZ_DOCUMENTO_SEQ", allocationSize = 1)
 public class PpdTrazDocumento implements Serializable {
@@ -44,7 +49,7 @@ public class PpdTrazDocumento implements Serializable {
     @Column(name = "OBSERVACION")
     private String observacion;
     @Column(name = "IDE_FUNCI")
-    private Long ideFunci;
+    private BigInteger ideFunci;
     @Column(name = "COD_ESTADO")
     private String codEstado;
     @Column(name = "IDE_DOCUMENTO")
@@ -54,5 +59,8 @@ public class PpdTrazDocumento implements Serializable {
     @JoinColumn(name = "IDE_PPD_DOCUMENTO", referencedColumnName = "IDE_PPD_DOCUMENTO")
     @ManyToOne(optional = false)
     private PpdDocumento ppdDocumento;
+    @JoinColumn(name = "IDE_FUNCI", referencedColumnName = "IDE_FUNCI", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Funcionarios funcionario;
 
 }

@@ -1,7 +1,9 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,6 +19,8 @@ import java.math.BigInteger;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-anexo/1.0.0")
@@ -26,12 +30,4 @@ public class AnexoDTO implements Serializable {
     private BigInteger ideAnexo;
     private String codAnexo;
     private String descripcion;
-
-    public AnexoDTO(){super();}
-
-    public AnexoDTO(BigInteger ideAnexo, String codAnexo, String descripcion){
-        this.ideAnexo = ideAnexo;
-        this.codAnexo = codAnexo;
-        this.descripcion = descripcion;
-    }
 }

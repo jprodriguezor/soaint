@@ -1,8 +1,10 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,6 +19,9 @@ import java.math.BigInteger;
  * Purpose: DTO - Model Artifact
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/departamento/1.0.0")
@@ -31,13 +36,4 @@ public class DepartamentoDTO implements Serializable {
     @JsonProperty("codigo")
     private String codDepar;
     private String codPais;
-
-    public DepartamentoDTO(){super();}
-
-    public DepartamentoDTO(BigInteger ideDepar, String nombreDepar, String codDepar, String codPais){
-        this.ideDepar = ideDepar;
-        this.nombreDepar = nombreDepar;
-        this.codDepar = codDepar;
-        this.codPais = codPais;
-    }
 }

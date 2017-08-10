@@ -1,7 +1,9 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,6 +19,8 @@ import java.math.BigInteger;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-referido/1.0.0")
@@ -25,11 +29,4 @@ public class ReferidoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private BigInteger ideReferido;
     private String nroRadRef;
-
-    public ReferidoDTO(){super();}
-
-    public ReferidoDTO(BigInteger ideReferido, String nroRadRef){
-        this.ideReferido = ideReferido;
-        this.nroRadRef = nroRadRef;
-    }
 }

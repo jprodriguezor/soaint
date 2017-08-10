@@ -30,11 +30,6 @@ public class GestionarCorrespondenciaWS {
         return boundary.radicarCorrespondencia(comunicacionOficialDTO);
     }
 
-    @WebMethod(action = "registrarObservacionCorrespondencia", operationName = "registrarObservacionCorrespondencia")
-    public void registrarObservacionCorrespondencia(@WebParam(name = "traza_documento") final PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException {
-        boundary.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
-    }
-
     @WebMethod(action = "listarCorrespondenciaByNroRadicado", operationName = "listarCorrespondenciaByNroRadicado")
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(@WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         return boundary.listarCorrespondenciaByNroRadicado(nroRadicado);
