@@ -45,26 +45,26 @@ public class ContentControlAlfresco extends ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
-    @Value("${ALFRSCO_ATOMPUB_URL}")
-    private String propiedadALFRSCO_ATOMPUB_URL;
-    @Value("${REPOSITORY_ID}")
-    private String propiedadREPOSITORY_ID;
-    @Value("${ALFRESCO_USER}")
-    private String propiedadALFRESCO_USER;
-    @Value("${ALFRESCO_PASS}")
-    private String propiedadALFRESCO_PASS;
-    @Value("${NOM_SERIE}")
-    private String NOM_SERIE;
-    @Value("${ID_ORG_ADM}")
-    private String ID_ORG_ADM;
-    @Value("${ID_ORG_OFC}")
-    private String ID_ORG_OFC;
-    @Value("${COD_SERIE}")
-    private String COD_SERIE;
-    @Value("${COD_SUBSERIE}")
-    private String COD_SUBSERIE;
-    @Value("${NOM_SUBSERIE}")
-    private String NOM_SUBSERIE;
+    @Value("${alfrescoAtomPubUrl}")
+    private String alfrescoAtomPubUrl;
+    @Value("${repositoryIde}")
+    private String repositoryIde;
+    @Value("${alfrescoUser}")
+    private String alfrescoUser;
+    @Value("${alfrescoPass}")
+    private String alfrescoPass;
+    @Value("${nomSerie}")
+    private String nomSerie;
+    @Value("${idOrgAdm}")
+    private String idOrgAdm;
+    @Value("${idOrgOfc}")
+    private String idOrgOfc;
+    @Value("${codSerie}")
+    private String codSerie;
+    @Value("${codSubSerie}")
+    private String codSubSerie;
+    @Value("${nomSubSerie}")
+    private String nomSubSerie;
     @Value("${comunicacionesInternas}")
     private String comunicacionesInternas;
     @Value("${comunicacionesExternas}")
@@ -90,13 +90,13 @@ public class ContentControlAlfresco extends ContentControl {
 
             // Credenciales del usuario
 
-            parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
-            parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
+            parameter.put (SessionParameter.USER, alfrescoUser);
+            parameter.put (SessionParameter.PASSWORD, alfrescoPass);
 
             // Configuracion de conexion
-            parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
+            parameter.put (SessionParameter.ATOMPUB_URL, alfrescoAtomPubUrl);
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
-            parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
+            parameter.put (SessionParameter.REPOSITORY_ID, repositoryIde);
 
             // Object factory de Alfresco
             parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
@@ -197,24 +197,24 @@ public class ContentControlAlfresco extends ContentControl {
             for (String aFormatoCadenaArray : formatoCadenaArray) {
 
 
-                if (aFormatoCadenaArray.equals (ID_ORG_ADM)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
-                    bandera = Integer.parseInt (ID_ORG_ADM);
-                } else if (aFormatoCadenaArray.equals (ID_ORG_OFC)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_OFC)]);
-                    bandera = Integer.parseInt (ID_ORG_OFC);
-                } else if (aFormatoCadenaArray.equals (COD_SERIE)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (COD_SERIE)]);
-                    bandera = Integer.parseInt (COD_SERIE);
-                } else if (aFormatoCadenaArray.equals (NOM_SERIE)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (NOM_SERIE)]);
-                    bandera = Integer.parseInt (NOM_SERIE);
-                } else if (aFormatoCadenaArray.equals (COD_SUBSERIE)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (COD_SUBSERIE)]);
-                    bandera = Integer.parseInt (COD_SUBSERIE);
-                } else if (aFormatoCadenaArray.equals (NOM_SUBSERIE)) {
-                    formatoFinal.append (informationArray[Integer.parseInt (NOM_SUBSERIE)]);
-                    bandera = Integer.parseInt (NOM_SUBSERIE);
+                if (aFormatoCadenaArray.equals (idOrgAdm)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (idOrgAdm)]);
+                    bandera = Integer.parseInt (idOrgAdm);
+                } else if (aFormatoCadenaArray.equals (idOrgOfc)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (idOrgOfc)]);
+                    bandera = Integer.parseInt (idOrgOfc);
+                } else if (aFormatoCadenaArray.equals (codSerie)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (codSerie)]);
+                    bandera = Integer.parseInt (codSerie);
+                } else if (aFormatoCadenaArray.equals (nomSerie)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (nomSerie)]);
+                    bandera = Integer.parseInt (nomSerie);
+                } else if (aFormatoCadenaArray.equals (codSubSerie)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (codSubSerie)]);
+                    bandera = Integer.parseInt (codSubSerie);
+                } else if (aFormatoCadenaArray.equals (nomSubSerie)) {
+                    formatoFinal.append (informationArray[Integer.parseInt (nomSubSerie)]);
+                    bandera = Integer.parseInt (nomSubSerie);
                 } else if (isNumeric (aFormatoCadenaArray)) {
                     //El formato no cumple con los requerimientos minimos
                     logger.info ("El formato no cumple con los requerimientos.");
