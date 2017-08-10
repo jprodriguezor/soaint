@@ -5,7 +5,7 @@ import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 
 export interface State {
   entrada: {
-    correspondencia: ComunicacionOficialDTO,
+    correspondencia: any,
     tipoComunicacion: string,
     sedeRemitente: any,
     destinatarioOriginal: any
@@ -51,6 +51,15 @@ export function reducer(state = initialState, action: Actions) {
           tipoComunicacion: state.entrada.tipoComunicacion,
           destinatarioOriginal: destinatarioOriginal,
           sedeRemitente: state.entrada.sedeRemitente
+        }
+      });
+    }
+
+    case ActionTypes.RADICAR_SUCCESS: {
+      const payload = action.payload;
+      return tassign(state, {
+        entrada: {
+          correspondencia: payload
         }
       });
     }

@@ -2,6 +2,7 @@ import {Observable} from 'rxjs/Observable';
 import {HttpHandler} from '../utils/http-handler';
 import {Injectable} from '@angular/core';
 import {Headers, RequestOptions} from '@angular/http';
+import {_ParseAST} from '@angular/compiler';
 
 
 @Injectable()
@@ -18,8 +19,13 @@ export class ApiBase {
     return this._http.post(endpoint, payload);
   }
 
-  public sendFile(endpoint: string, formData): Observable<any> {
-    return this._http.putFile(endpoint, formData);
+  public sendFile(endpoint: string, formData, pathParams: Array<string>): Observable<any> {
+
+    let fullEndpoint = `${endpoint}`;
+    pathParams.forEach((value) => {
+      fullEndpoint += `/${value}`;
+    });
+    return this._http.putFile(fullEndpoint, formData);
   }
 
 }

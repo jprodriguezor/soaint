@@ -1,4 +1,5 @@
-export interface StartProcessPayload {
-  codigoProceso: string;
+export interface LoadNextTaskPayload {
+  idProceso: string;
+  idInstanciaProceso: string;
   idDespliegue: string;
 }

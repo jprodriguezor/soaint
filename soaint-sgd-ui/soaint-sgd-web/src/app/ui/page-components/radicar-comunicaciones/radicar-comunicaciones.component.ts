@@ -39,8 +39,9 @@ import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
 import {
   getMediosRecepcionVentanillaData
 } from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
-import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
 import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -152,8 +153,9 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
     this.datosGenerales.form.get('reqDigitInmediata').valueChanges
       .subscribe(value => {
-        const payload: StartProcessPayload = {
-          codigoProceso: this.task.idProceso,
+        const payload: LoadNextTaskPayload = {
+          idProceso: this.task.idProceso,
+          idInstanciaProceso: this.task.idInstanciaProceso,
           idDespliegue: this.task.idDespliegue
         };
         this._store.dispatch(new ScheduleNextTaskAction(payload));
@@ -185,8 +187,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       datosContactoList: this.getDatosContactos()
     };
 
-    this._store.dispatch(new ScheduleNextTaskAction('/task/digitalizar-documentos'));
-
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
@@ -212,14 +212,20 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       this.showTicketRadicado();
       this.disableEditionOnForms();
 
+      this._store.dispatch(new RadicarSuccessAction({
+        tipoComunicacion: this.valueGeneral.tipoComunicacion,
+        numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+      }));
+
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
+          digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
-          digitalizacionInmediata: 1
+
         }
       });
     });
@@ -240,7 +246,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       nroDocuIdentidad: null,
       codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
       codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
-      fecAsignacion: this.date.toISOString(),
+      fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
       codEstado: null,
       indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
@@ -262,7 +268,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       nroDocuIdentidad: this.valueRemitente.nroDocumentoIdentidad,
       codSede: null,
       codDependencia: null,
-      fecAsignacion: this.date.toISOString(),
+      fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
       indOriginal: null,
       codEstado: null
@@ -287,7 +293,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         nroDocuIdentidad: null,
         codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
         codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
-        fecAsignacion: this.date.toISOString(),
+        fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,

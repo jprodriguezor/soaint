@@ -1,21 +1,21 @@
 import {ActionTypes, Actions} from './tareasDTO-actions';
 import {tassign} from 'tassign';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {StartProcessPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
 
 
 export interface State {
   ids: number[];
   entities: { [idTarea: number]: TareaDTO };
   activeTask: TareaDTO;
-  nextTask: StartProcessPayload
+  nextTask: LoadNextTaskPayload,
 }
 
 const initialState: State = {
   ids: [],
   entities: {},
   activeTask: null,
-  nextTask: null
+  nextTask: null,
 };
 
 /**
@@ -44,7 +44,6 @@ export function reducer(state = initialState, action: Actions) {
         ids: [...newValuesIds, ...state.ids],
         entities: tassign(newValuesEntities, state.entities)
       });
-
     }
 
     case ActionTypes.LOCK_ACTIVE_TASK: {

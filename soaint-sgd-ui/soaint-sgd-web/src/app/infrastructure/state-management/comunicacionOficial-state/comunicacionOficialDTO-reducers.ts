@@ -38,7 +38,6 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
       const values = action.payload.comunicacionesOficiales;
       if (!values) {
         return tassign(state, {
@@ -47,21 +46,18 @@ export function reducer(state = initialState, action: Actions) {
           selectedId: null
         });
       }
-      const newValues = values.filter(data => !state.entities[data.ideDocumento]);
-
-      const newValuesIds = newValues.map(data => data.ideDocumento);
-      const newValuesEntities = newValues.reduce((entities: { [ideDocumento: number]: CorrespondenciaDTO }, value: CorrespondenciaDTO) => {
+      // const newValues = values.filter(data => !state.entities[data.ideDocumento]);
+      const ids = values.map(data => data.ideDocumento);
+      const entities = values.reduce((entities: { [ideDocumento: number]: CorrespondenciaDTO }, value: CorrespondenciaDTO) => {
         return Object.assign(entities, {
           [value.ideDocumento]: value
         });
       }, {});
-
       return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities),
+        ids: [...ids],
+        entities: entities,
         selectedId: state.selectedId
       });
-
     }
     case Autocomplete.LOAD: {
       const filters = action.payload;

@@ -134,9 +134,9 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
-    @POST
+    @GET
     @Path("/metricasTiempo")
-    public Response metricasTiempo(String payload) {
+    public Response metricasTiempo(@QueryParam("payload") String payload) {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.metricasTiempoDrools(payload);
         String responseObject = response.readEntity(String.class);

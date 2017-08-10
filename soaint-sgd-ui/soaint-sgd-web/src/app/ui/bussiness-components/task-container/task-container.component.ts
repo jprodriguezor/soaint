@@ -9,6 +9,7 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {back, go} from '@ngrx/router-store';
 import {subscribeOn} from 'rxjs/operator/subscribeOn';
 import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {ROUTES_PATH} from '../../../app.routes';
 
 @Component({
   selector: 'app-task-container',
@@ -31,7 +32,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.infoUnsubscriber = Observable.combineLatest(
+    this.infoUnsubscriber = Observable.combineLatest (
       this._store.select(getActiveTask),
       this._store.select(getProcessEntities)
     ).take(1).subscribe(([activeTask, procesos]) => {
@@ -50,12 +51,11 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
           this.isActive = false;
           this.hasToContinue = hasNextTask !== null;
         }
-        console.log(this.isActive, this.hasToContinue);
       });
   }
 
   navigateBack() {
-    this._store.dispatch(back());
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
 

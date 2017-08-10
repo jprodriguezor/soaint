@@ -80,7 +80,7 @@ export class DatosGeneralesComponent implements OnInit {
       'inicioConteo': [null],
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
-      'reqDigitInmediata': [{value: null, disabled: !this.editable}],
+      'reqDigitInmediata': [{value: null, disabled: true}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
       'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
@@ -114,6 +114,14 @@ export class DatosGeneralesComponent implements OnInit {
 
     this.form.get('tipologiaDocumental').valueChanges.subscribe((value) => {
       this.onSelectTipologiaDocumental(value);
+    });
+
+    this.form.get('reqDigit').valueChanges.distinctUntilChanged().subscribe((value) => {
+      if (value) {
+        this.form.get('reqDigitInmediata').enable();
+      } else {
+        this.form.get('reqDigitInmediata').disable();
+      }
     });
 
     this.listenForErrors();
@@ -163,6 +171,7 @@ export class DatosGeneralesComponent implements OnInit {
   onSelectTipologiaDocumental(codigoTipologia) {
     this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
     this.metricasTiempoTipologia$.subscribe(metricas => {
+      console.log(metricas);
       this.tiempoRespuestaMetricaTipologia$ = Observable.of(metricas.tiempoRespuesta);
       this.codUnidaTiempoMetricaTipologia$ = this._store.select(createSelector(getUnidadTiempoEntities, (entities) => {
         return entities[metricas.codUnidaTiempo];
