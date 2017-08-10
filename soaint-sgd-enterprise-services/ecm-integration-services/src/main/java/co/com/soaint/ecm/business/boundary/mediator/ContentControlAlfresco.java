@@ -44,12 +44,12 @@ import java.util.*;
 public class ContentControlAlfresco implements ContentControl {
     static final String CLASEBASE = "claseBase";
     static final String FCMCOR = "F:cmcor:";
-    static final String CLASEDEPENDENCIA ="claseDependencia";
-    static final String CMCORCODIGODEPENDENCIA ="cmcor:CodigoDependencia";
-    static final String CMCORCODIGOUNIDADADMINPADRE ="cmcor:CodigoUnidadAdminPadre";
+    static final String CLASEDEPENDENCIA = "claseDependencia";
+    static final String CMCORCODIGODEPENDENCIA = "cmcor:CodigoDependencia";
+    static final String CMCORCODIGOUNIDADADMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     static final String CLASESERIE = "claseSerie";
     static final String CLASESUBSERIE = "claseSubserie";
-    static final String CMCOR ="cmcor:";
+    static final String CMCOR = "cmcor:";
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
@@ -177,8 +177,8 @@ public class ContentControlAlfresco implements ContentControl {
                         props.put (CMCORCODIGOUNIDADADMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
                     }
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
             //Se crea la carpeta dentro de la carpeta folder
             logger.info ("*** Se procede a crear la carpeta ***");
@@ -244,6 +244,7 @@ public class ContentControlAlfresco implements ContentControl {
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
+     *
      * @param cadena Cadena de texto que se le pasa al metodo
      * @return Retorna true o false
      */
@@ -350,27 +351,35 @@ public class ContentControlAlfresco implements ContentControl {
                 Carpeta carpeta = obtenerCarpetaPorNombre (aux.getFolder ( ).getName ( ), conexion.getSession ( ));
                 String description = carpeta.getFolder ( ).getDescription ( );
                 if (description.equals (Configuracion.getPropiedad (CLASEDEPENDENCIA))) {
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodDependencia")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodDependencia")).equals (codFolder)) {
+                    if (codigoFolderCoincide (aux, "metadatoCodDependencia", codFolder)) {
                         folderReturn = aux;
                     }
                 } else if (description.equals (Configuracion.getPropiedad (CLASESERIE))) {
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSerie")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSerie")).equals (codFolder)) {
+                    if (codigoFolderCoincide (aux, "metadatoCodSerie", codFolder)) {
                         folderReturn = aux;
                     }
                 } else if (description.equals (Configuracion.getPropiedad (CLASESUBSERIE))) {
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")).equals (codFolder)) {
+                    if (codigoFolderCoincide (aux, "metadatoCodSubserie", codFolder)) {
                         folderReturn = aux;
                     }
                 }
-
-
             }
         }
 
         return folderReturn;
+    }
+
+    /**
+     * Metodo para chequear si el codigo de la carpeta coincide con el que se le pase
+     *
+     * @param aux           Objeto carpeta
+     * @param metadato      metadato por el que se va a chequear
+     * @param codigoCarpeta codigo de carpeta que se evalua
+     * @return devuelve si coincide o no
+     */
+    private static boolean codigoFolderCoincide(Carpeta aux, String metadato, String codigoCarpeta) {
+        return aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad (metadato)) != null &&
+                aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad (metadato)).equals (codigoCarpeta);
     }
 
     /**
