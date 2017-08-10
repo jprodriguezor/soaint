@@ -62,6 +62,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   funcionarioSubcription: Subscription;
 
+  comunicacionesSubcription: Subscription;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -74,6 +76,12 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private _funcionarioSandbox: Sandbox,
               private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
+
+    this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe((result) => {
+      this.selectedComunications = [];
+    });
+
+
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
@@ -93,6 +101,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
+    this.comunicacionesSubcription.unsubscribe();
   }
 
   initForm() {
