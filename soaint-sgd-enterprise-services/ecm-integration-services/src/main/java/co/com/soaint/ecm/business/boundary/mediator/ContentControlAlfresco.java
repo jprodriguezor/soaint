@@ -41,7 +41,7 @@ import java.util.*;
  */
 @BusinessBoundary
 @NoArgsConstructor
-public class ContentControlAlfresco extends ContentControl {
+public class ContentControlAlfresco implements ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
@@ -236,7 +236,6 @@ public class ContentControlAlfresco extends ContentControl {
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
-     *
      * @param cadena Cadena de texto que se le pasa al metodo
      * @return Retorna true o false
      */

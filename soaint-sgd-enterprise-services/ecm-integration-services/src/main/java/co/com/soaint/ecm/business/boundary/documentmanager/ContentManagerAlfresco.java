@@ -72,7 +72,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     /**
      * Metodo generico para subir los dccumentos al content
      *
-     * @param nombreDocumento  NOmbre del documento que se va a subir
+     * @param nombreDocumento  Nombre del documento que se va a subir
      * @param documento        Documento que se va a subir
      * @param tipoComunicacion tipo de comunicacion puede ser externa o interna.
      * @return Identificador del documento que se inserto
