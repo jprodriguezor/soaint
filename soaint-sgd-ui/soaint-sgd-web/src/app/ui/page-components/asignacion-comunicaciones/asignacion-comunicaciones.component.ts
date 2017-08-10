@@ -76,12 +76,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private _funcionarioSandbox: Sandbox,
               private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
-
-    this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe((result) => {
-      this.selectedComunications = [];
-    });
-
-
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
@@ -90,7 +84,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
+    this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe(() => {
+      this.selectedComunications = [];
+    });
     this.initForm();
+  }
+
+  getCodEstadoLabel(codEstado: string): string {
+    let estado = this.estadosCorrespondencia.find((item) => {
+      return item.value === codEstado;
+    });
+    return estado.label;
   }
 
   ngOnInit() {
