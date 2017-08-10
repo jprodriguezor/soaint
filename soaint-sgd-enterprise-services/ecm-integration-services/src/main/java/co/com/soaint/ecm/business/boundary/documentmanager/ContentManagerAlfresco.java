@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
 import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
 import co.com.soaint.ecm.domain.entity.Carpeta;
@@ -115,14 +114,14 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
      * Metodo generico para mover documentos dentro del ECM
      *
      * @param documento      Nombre del documento que se va a mover
-     * @param CarpetaFuente  Carpeta donde esta actualmente el documento.
-     * @param CarpetaDestino Carpeta a donde se movera el documento.
+     * @param carpetaFuente  Carpeta donde esta actualmente el documento.
+     * @param carpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
      * @throws InfrastructureException Excepcion que devuelve el metodo en error
      */
-    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) throws InfrastructureException {
 
-        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
+        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
@@ -132,7 +131,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             new Conexion ( );
             conexion = control.obtenerConexion ( );
             logger.info ("###Conexion establecida");
-            response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
+            response = control.movDocumento (conexion.getSession ( ), documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
             e.printStackTrace ( );
