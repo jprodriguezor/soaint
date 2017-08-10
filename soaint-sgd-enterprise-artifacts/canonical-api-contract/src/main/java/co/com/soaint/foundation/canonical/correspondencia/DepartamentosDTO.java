@@ -7,6 +7,7 @@ package co.com.soaint.foundation.canonical.correspondencia;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -24,11 +25,10 @@ import java.util.List;
 @Data
 @Builder(builderMethodName="newInstance")
 @AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/departamentos/1.0.0")
 public class DepartamentosDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private List<DepartamentoDTO> departamentos;
-
-    public DepartamentosDTO(){}
 }
