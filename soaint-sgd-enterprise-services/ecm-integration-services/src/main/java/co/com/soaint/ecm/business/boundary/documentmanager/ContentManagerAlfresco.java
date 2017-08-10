@@ -8,12 +8,14 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
+
 
 /**
  * Created by dasiel
@@ -26,7 +28,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     private final
     ContentControlAlfresco control;
 
-    private final Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
+    private static final Logger logger = LogManager.getLogger (ContentManagerAlfresco.class.getName ( ));
 
     /**
      * Constructor de la clase
@@ -47,7 +49,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
      */
     @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
-        LOGGER.info ("### Creando estructura content..");
+        logger.info ("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         Carpeta carpeta;
         try {
@@ -59,7 +61,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
                 utils.ordenarListaOrganigrama (EstructuraTrdDTO.getOrganigramaItemList ( ));
             }
 
-            LOGGER.info ("### Estableciendo Conexion con el ECM..");
+            logger.info ("### Estableciendo Conexion con el ECM..");
             conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
 
             carpeta = new Carpeta ( );
@@ -70,7 +72,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            LOGGER.info ("Error crando estructura"+ e);
+            logger.error ("Error creando estructura" + e);
         }
         return response;
     }
@@ -87,20 +89,20 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
 
 
-        LOGGER.info ("### Subiendo documento al content..");
+        logger.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         String idDocumento = "";
         Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
-            LOGGER.info ("### Estableciendo la conexion..");
+            logger.info ("### Estableciendo la conexion..");
             conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
 
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            LOGGER.info ("### Se invoca el metodo de subir el documento..");
+            logger.info ("### Se invoca el metodo de subir el documento..");
             idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
             response.setCodMensaje ("0000");
@@ -108,7 +110,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.info ("Error subiendo documento"+ e);
+            logger.error ("Error subiendo documento" + e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
 
@@ -128,25 +130,21 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
      */
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
 
-        LOGGER.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
+        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
 
-            //Se establece la conexion
-            LOGGER.info ("###Se va a establecer la conexion");
-            LOGGER.info ("###Conexion establecida");
-
+            logger.info ("###Se va a establecer la conexion");
             Conexion conexion;
             new Conexion ( );
-
-                conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
-
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            logger.info ("###Conexion establecida");
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.info ("Error moviendo documento"+ e);
+            logger.error ("Error moviendo documento" + e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }

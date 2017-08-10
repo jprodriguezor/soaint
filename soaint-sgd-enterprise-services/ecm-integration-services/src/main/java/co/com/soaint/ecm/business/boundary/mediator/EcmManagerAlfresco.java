@@ -5,12 +5,14 @@ import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediato
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -19,7 +21,7 @@ import java.util.logging.Logger;
 @Service
 public class EcmManagerAlfresco implements EcmManagerMediator {
 
-    private final Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
+    private static final Logger logger = LogManager.getLogger (EcmManagerAlfresco.class.getName ( ));
 
     private final
     ContentManagerMediator content;
@@ -36,7 +38,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
     public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
-        LOGGER.info ("### Creando estructura content..------");
+        logger.info ("### Creando estructura content..------");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
             response = content.crearEstructuraContent (structure);
@@ -44,7 +46,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         } catch (Exception e) {
             response.setCodMensaje ("000005");
             response.setMensaje ("Error al crear estructura");
-            LOGGER.info ("### Error..------" + e);
+            logger.error ("### Error..------" + e);
         }
 
         return response;
@@ -59,12 +61,12 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
-        LOGGER.info ("### Subiendo documento al content..");
+        logger.info ("### Subiendo documento al content..");
         String idDocumento = "";
         try {
             idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
-            LOGGER.info ("### Error..------" + e);
+            logger.error ("### Error..------" + e);
         }
 
         return idDocumento;
@@ -79,6 +81,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+        logger.info ("### Moviendo documento dentro del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
@@ -87,7 +90,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         } catch (Exception e) {
             response.setCodMensaje ("000002");
             response.setMensaje ("Error al mover documento");
-            LOGGER.info ("### Error..------" + e);
+            logger.error ("### Error..------" + e);
         }
 
         return response;

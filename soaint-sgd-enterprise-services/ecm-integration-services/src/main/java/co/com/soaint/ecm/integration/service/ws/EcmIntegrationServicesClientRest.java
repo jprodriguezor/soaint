@@ -28,7 +28,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class EcmIntegrationServicesClientRest {
 
-    private static final Logger LOGGER = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
+    private static final Logger logger = LogManager.getLogger (EcmIntegrationServicesClientRest.class.getName ( ));
 
     public EcmIntegrationServicesClientRest(){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -41,11 +41,12 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/crearEstructuraContent/")
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
-       // LOGGER.info("processing rest request - Crear Estructura ECM");
+        logger.info("processing rest request - Crear Estructura ECM");
         try {
             return fEcmManager.crearEstructuraECM (structure);
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            logger.error ("Error servicio creando estructura "+e);
             throw e;
         }
     }
@@ -56,13 +57,13 @@ public class EcmIntegrationServicesClientRest {
     public String subirDocumentoECM(@PathParam ("nombreDocumento")  String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
                                     @PathParam ("tipoComunicacion")  String tipoComunicacion) throws InfrastructureException, SystemException {
-        LOGGER.info("processing rest request - Subir Documento ECM "+ nombreDocumento+ " "+tipoComunicacion );
+        logger.info("processing rest request - Subir Documento ECM "+ nombreDocumento+ " "+tipoComunicacion );
         try {
 
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
-            LOGGER.info("Error en operacion - Subir Documento ECM");
+            logger.info("Error en operacion - Subir Documento ECM "+e);
             throw e;
 
         }
@@ -75,11 +76,12 @@ public class EcmIntegrationServicesClientRest {
                                               @QueryParam ("carpetaFuente") final String carpetaFuente,
                                               @QueryParam ("carpetaDestino") final String carpetaDestino) throws InfrastructureException, SystemException {
 
-        LOGGER.info("processing rest request - Mover Documento ECM");
+        logger.info("processing rest request - Mover Documento ECM");
         try {
             return fEcmManager.moverDocumento (moverDocumento,carpetaFuente,carpetaDestino );
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
+            logger.error ("Error servicio moviendo documento "+e);
             throw e;
         }
     }
