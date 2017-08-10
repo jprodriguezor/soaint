@@ -60,7 +60,7 @@ public class ContentControlAlfresco extends ContentControl {
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
      */
     public Conexion obtenerConexion() {
-    logger.info("--------------------------------Valores de las constantes ALFRSCO_ATOMPUB_URL: "+propiedadALFRSCO_ATOMPUB_URL );
+
         Conexion conexion = new Conexion ( );
 
         logger.info ("*** obtenerConexion ***");
@@ -69,16 +69,13 @@ public class ContentControlAlfresco extends ContentControl {
             Map <String, String> parameter = new HashMap <> ( );
 
             // Credenciales del usuario
-            String propiedadALFRESCO_USER = "admin";
+
             parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
-            String propiedadALFRESCO_PASS = "admin";
             parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
             // Configuracion de conexion
-            String propiedadALFRSCO_ATOMPUB_URL = "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
             parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
-            String propiedadREPOSITORY_ID = "-default-";
             parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
 
             // Object factory de Alfresco
@@ -87,7 +84,6 @@ public class ContentControlAlfresco extends ContentControl {
             // Crear Sesion
             SessionFactory factory = SessionFactoryImpl.newInstance ( );
             conexion.setSession (factory.getRepositories (parameter).get (0).createSession ( ));
-
 
         } catch (Exception e) {
             logger.error ("*** Error al obtener conexion *** " + e);
@@ -548,9 +544,6 @@ public class ContentControlAlfresco extends ContentControl {
         String idDocumento = "";
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
-
-
-        logger.info ("Debug------------------------------" + inputParts);
 
         String fileName;
         String mimeType = "application/pdf";

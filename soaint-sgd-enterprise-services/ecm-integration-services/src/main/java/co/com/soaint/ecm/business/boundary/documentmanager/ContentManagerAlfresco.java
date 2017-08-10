@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
 import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
 import co.com.soaint.ecm.domain.entity.Carpeta;
@@ -25,20 +26,11 @@ import java.util.List;
 @Service
 public class ContentManagerAlfresco extends ContentManagerMediator {
 
-    private final
+    @Autowired
     ContentControlAlfresco control;
 
     private static final Logger logger = LogManager.getLogger (ContentManagerAlfresco.class.getName ( ));
 
-    /**
-     * Constructor de la clase
-     *
-     * @param control parametro que recibe la clase
-     */
-    @Autowired
-    public ContentManagerAlfresco(ContentControlAlfresco control) {
-        this.control = control;
-    }
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -62,7 +54,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             }
 
             logger.info ("### Estableciendo Conexion con el ECM..");
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = control.obtenerConexion ( );
 
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
@@ -97,7 +89,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             Conexion conexion;
             new Conexion ( );
             logger.info ("### Estableciendo la conexion..");
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = control.obtenerConexion ( );
 
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
@@ -138,7 +130,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             logger.info ("###Se va a establecer la conexion");
             Conexion conexion;
             new Conexion ( );
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = control.obtenerConexion ( );
             logger.info ("###Conexion establecida");
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 

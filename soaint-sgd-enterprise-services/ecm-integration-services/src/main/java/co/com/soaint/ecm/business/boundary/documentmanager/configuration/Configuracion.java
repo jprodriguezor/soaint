@@ -50,57 +50,39 @@ public final class Configuracion {
 
         switch (name) {
             case "formatoNombreSerie":
-                return "1.2_3";
+                return formatoNombreSerie;
             case "formatoNombreSubserie":
-                return "1.2.4_5";
+                return formatoNombreSubserie;
 
             case "claseSubserie":
-                return "CM_Subserie";
+                return claseSubserie;
 
             case "claseSerie":
-                return "CM_Serie";
+                return claseSerie;
 
             case "claseDependencia":
-                return "CM_Unidad_Administrativa";
+                return claseDependencia;
             case "claseBase":
-                return "CM_Unidad_Base";
+                return claseBase;
 
             case "metadatoCodDependencia":
-                return "CodigoDependencia";
+                return metadatoCodDependencia;
 
             case "metadatoCodBase":
-                return "CodigoBase";
+                return metadatoCodBase;
 
             case "metadatoCodSubserie":
-                return "CodigoSubserie";
+                return metadatoCodSubserie;
 
             case "metadatoCodSerie":
-                return "CodigoSerie";
+                return metadatoCodSerie;
 
             case "metadatoCodUnidadAdminParent":
-                return "CodUnidadPadre";
+                return metadatoCodUnidadAdminParent;
 
             default:
                 return "";
         }
-//        private static Properties propiedades = null;
-//        public static void inicializacion() {
-//
-//            if (propiedades == null) {
-//                propiedades = new Properties ( );
-//            }
-//
-//        }
-//        static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
-//        String propiedad = null;
-//        try {
-//            inicializacion ( );
-//            propiedades.load (new FileInputStream ("ecm-integration-services/src/main/resources/configurationServices.properties"));
-//            propiedad = propiedades.getProperty (name);
-//        } catch (Exception e) {
-//            e.printStackTrace ( );
-//            LOGGER.info ("Error al leer properties de configuracion");
-//        }
-//        return propiedad;
+
     }
 }

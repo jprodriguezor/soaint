@@ -23,13 +23,8 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
     private static final Logger logger = LogManager.getLogger (EcmManagerAlfresco.class.getName ( ));
 
-    private final
-    ContentManagerMediator content;
-
     @Autowired
-    public EcmManagerAlfresco(ContentManagerMediator content) {
-        this.content = content;
-    }
+    ContentManagerMediator content;
 
     /**
      * Metodo que llama el servicio para crear la estructura del ECM
