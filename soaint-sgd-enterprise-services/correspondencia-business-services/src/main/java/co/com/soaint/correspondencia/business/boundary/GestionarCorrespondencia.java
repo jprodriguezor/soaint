@@ -80,15 +80,6 @@ public class GestionarCorrespondencia {
 
     /**
      *
-     * @param ppdTrazDocumentoDTO
-     * @throws SystemException
-     */
-    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException{
-        control.registrarObservacionCorrespondencia(ppdTrazDocumentoDTO);
-    }
-
-    /**
-     *
      * @param fechaIni
      * @param fechaFin
      * @param codDependencia

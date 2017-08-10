@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,10 +29,30 @@ import java.util.Date;
 public class PpdTrazDocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @JsonProperty("id")
     private BigInteger ideTrazDocumento;
+    @JsonProperty("fecha")
+    private Date fecTrazDocumento;
     private String observacion;
-    private Long ideFunci;
+    private BigInteger ideFunci;
+    @JsonProperty("estado")
     private String codEstado;
     private BigInteger ideDocumento;
     private String codOrgaAdmin;
+    private String nomFuncionario;
+    private String valApellido1;
+    private String valApellido2;
+    private String corrElectronico;
+    private String loginName;
+
+    public PpdTrazDocumentoDTO(BigInteger ideTrazDocumento, Date fecTrazDocumento, String observacion, BigInteger ideFunci,
+                               String codEstado, BigInteger ideDocumento, String codOrgaAdmin){
+        this.ideTrazDocumento = ideTrazDocumento;
+        this.fecTrazDocumento = fecTrazDocumento;
+        this.observacion = observacion;
+        this.ideFunci = ideFunci;
+        this.codEstado = codEstado;
+        this.ideDocumento = ideDocumento;
+        this.codOrgaAdmin = codOrgaAdmin;
+    }
 }
