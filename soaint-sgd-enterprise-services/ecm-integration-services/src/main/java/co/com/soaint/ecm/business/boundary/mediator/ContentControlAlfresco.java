@@ -529,7 +529,7 @@ public class ContentControlAlfresco extends ContentControl {
                     String nombreSerie = formatearNombre (dependenciasArray, "formatoNombreSerie");
                     folderSon = chequearCapetaPadre (folderFatherContainer, dependencias.getCodSerie ( ));
                     if (folderSon == null) {
-                        if (nombreSerie != null) {
+                        if (nombreSerie != "") {
                             LOGGER.info ("TRD --  Creando folder: " + nombreSerie);
                             folderSon = crearCarpeta (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ), "claseSerie", folderFather);
                         } else {
@@ -550,7 +550,7 @@ public class ContentControlAlfresco extends ContentControl {
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
                         folderSon = chequearCapetaPadre (folderFather, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
-                            if (nombreSubserie != null) {
+                            if (nombreSubserie != "") {
                                 LOGGER.info ("TRD --  Creando folder: " + nombreSubserie);
                                 folderSon = crearCarpeta (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ), "claseSubserie", folderFather);
                             } else {
