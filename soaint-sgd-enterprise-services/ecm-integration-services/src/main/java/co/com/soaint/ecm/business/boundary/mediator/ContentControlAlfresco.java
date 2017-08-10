@@ -359,7 +359,7 @@ public class ContentControlAlfresco implements ContentControl {
                             aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSerie")).equals (codFolder)) {
                         folderReturn = aux;
                     }
-                } else if (description.equals (Configuracion.getPropiedad (CLASESERIE))) {
+                } else if (description.equals (Configuracion.getPropiedad (CLASESUBSERIE))) {
                     if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")) != null &&
                             aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")).equals (codFolder)) {
                         folderReturn = aux;
