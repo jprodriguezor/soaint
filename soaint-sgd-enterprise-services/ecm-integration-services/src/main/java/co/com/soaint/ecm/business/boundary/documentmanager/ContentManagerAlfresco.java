@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -72,7 +70,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            LOGGER.log (Level.INFO, (Supplier <String>) e);
+            LOGGER.info ("Error crando estructura"+ e);
         }
         return response;
     }
@@ -110,7 +108,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.log (Level.INFO, (Supplier <String>) e);
+            LOGGER.info ("Error subiendo documento"+ e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
 
@@ -148,7 +146,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            LOGGER.log (Level.INFO, (Supplier <String>) e);
+            LOGGER.info ("Error moviendo documento"+ e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }
