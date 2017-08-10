@@ -38,39 +38,10 @@ public class CorrespondenciaClient {
 
     public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
         System.out.println("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-//        comunicacionOficialDTO.getCorrespondencia().setCodSede("01");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()
                 .post(Entity.json(comunicacionOficialDTO));
-    }
-
-    public File convertFile(InputStream inputStream) {
-        final File tempFile;
-        try {
-            tempFile = File.createTempFile("tempfile", ".tmp");
-            tempFile.deleteOnExit();
-            try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                IOUtils.copy(inputStream, out);
-            }
-            return tempFile;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Response upload(InputStream fileInputStream) {
-        System.out.println("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(ecmEndpoint);
-        MultiPart multiPart = new MultiPart();
-        multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
-        FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file",
-                convertFile(fileInputStream),
-                MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        multiPart.bodyPart(fileDataBodyPart);
-        return wt.request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(multiPart, multiPart.getMediaType()));
     }
 
     public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado) {

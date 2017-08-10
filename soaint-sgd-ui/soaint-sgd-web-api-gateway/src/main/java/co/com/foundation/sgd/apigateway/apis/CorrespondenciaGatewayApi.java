@@ -119,13 +119,6 @@ public class CorrespondenciaGatewayApi {
     }
 
     @POST
-    @Path("/uploadfile")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadFile(@FormDataParam("file") InputStream uploadedInputStream) {
-        return null;
-    }
-
-    @POST
     @Path("/redireccionar")
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
