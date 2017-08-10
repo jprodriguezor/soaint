@@ -192,6 +192,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       this.editable = false;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
+
       const ticketRadicado = {
         anexos: this.datosGenerales.descripcionAnexos.length,
         folios: this.valueGeneral.numeroFolio,
