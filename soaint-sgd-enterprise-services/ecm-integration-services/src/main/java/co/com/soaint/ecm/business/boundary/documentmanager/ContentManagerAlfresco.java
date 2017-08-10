@@ -31,11 +31,23 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     private Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
 
+    /**
+     * Constructor de la clase
+     *
+     * @param control parametro que recibe la clase
+     */
     @Autowired
     public ContentManagerAlfresco(ContentControlAlfresco control) {
         this.control = control;
     }
 
+    /**
+     * Metodo que crea la estructura en el ECM
+     *
+     * @param structure Listado que contiene la estructura a crear
+     * @return Mensaje de respuesta
+     * @throws InfrastructureException Excepcion que se recoje ante cualquier error
+     */
     @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info ("### Creando estructura content..");
@@ -74,6 +86,15 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         return response;
     }
 
+    /**
+     * Metodo generico para subir los dccumentos al content
+     *
+     * @param nombreDocumento  NOmbre del documento que se va a subir
+     * @param documento        Documento que se va a subir
+     * @param tipoComunicacion tipo de comunicacion puede ser externa o interna.
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
     public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
 
 
@@ -112,6 +133,15 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
     }
 
+    /**
+     * Metodo generico para mover documentos dentro del ECM
+     *
+     * @param documento      Nombre del documento que se va a mover
+     * @param CarpetaFuente  Carpeta donde esta actualmente el documento.
+     * @param CarpetaDestino Carpeta a donde se movera el documento.
+     * @return Mensaje de respuesta del metodo (coigo y mensaje)
+     * @throws InfrastructureException Excepcion que devuelve el metodo en error
+     */
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
 
         LOGGER.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);

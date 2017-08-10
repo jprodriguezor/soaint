@@ -64,6 +64,11 @@ public class ContentControlAlfresco extends ContentControl {
     private String propiedadALFRESCO_USER = "admin";
     private String propiedadALFRESCO_PASS = "admin";
 
+    /**
+     * Metodo para establecer conexion con el ECM Alfresco
+     * @return Mensaje de respuesta del metodo(codigo y mensaje)
+     * @throws SystemException Excepcion que devuelve el metodo en error de conexion
+     */
     public MensajeRespuesta establecerConexiones() throws SystemException {
 
 
@@ -100,7 +105,11 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
-    /* -- Obtener conexion -- */
+    /**
+     * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
+     * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
+     * @throws SystemException Excepcion que lanza el metodo en error
+     */
     public Conexion obtenerConexion() throws SystemException {
 
         Conexion conexion = new Conexion ( );
@@ -134,7 +143,16 @@ public class ContentControlAlfresco extends ContentControl {
         return conexion;
     }
 
-
+    /**
+     * Metodo que crea carpetas dentro de Alfresco
+     * @param folder  Objeto carpeta que contiene un Folder de Alfresco
+     * @param nameOrg Nombre de la carpeta
+     * @param codOrg Codigo de la carpeta que se va a crear
+     * @param classDocumental Clase documental que tiene la carpeta que se va a crar.
+     * @param folderFather Carpeta dentro de la cual se va a crear la carpeta
+     * @return Devuelve la carpeta creada dentro del objeto Carpeta
+     * @throws SystemException Excepcion que retorna el metodo en error.
+     */
     public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException {
         Carpeta newFolder = null;
         try {
@@ -248,6 +266,11 @@ public class ContentControlAlfresco extends ContentControl {
         return formatoFinal != null ? formatoFinal.toString ( ) : "";
     }
 
+    /**
+     * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
+     * @param cadena Cadena de texto que se le pasa al metodo
+     * @return Retorna true o false
+     */
     private static boolean isNumeric(String cadena) {
         try {
             Integer.parseInt (cadena);
@@ -257,6 +280,13 @@ public class ContentControlAlfresco extends ContentControl {
         }
     }
 
+    /**
+     * Metodo que obtiene la carpeta dado el nombre
+     * @param nombreCarpeta NOmbre de la carpeta que se va a buscar
+     * @param session objeto de conexion al Alfresco
+     * @return Retorna la Carpeta que se busca
+     * @throws SystemException Excepcion que devuelve el metodo en error.
+     */
     private static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
         LOGGER.info ("Se entra al metodo obtener carpeta por nombre");
         Carpeta folder = new Carpeta ( );
@@ -281,6 +311,12 @@ public class ContentControlAlfresco extends ContentControl {
 
     }
 
+    /**
+     * Metodo que devuelve las carpetas hijas de una carpeta
+     * @param carpetaPadre Carpeta a la cual se le van a buscar las carpetas hijas
+     * @return Lista de carpetas resultantes de la busqueda
+     * @throws SystemException Excepcion que lanza el metodo en error
+     */
     private static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) throws SystemException {
         LOGGER.info ("### Obtener Carpetas Hijas Dado Padre");
         List <Carpeta> listaCarpetas = null;
@@ -308,6 +344,13 @@ public class ContentControlAlfresco extends ContentControl {
         return listaCarpetas;
     }
 
+    /**
+     * Metodo para actualizar el nombre de la carpeta
+     * @param carpeta Carpeta a la cual se le va a actualizar el nombre
+     * @param nombre Nuevo nombre de la carpeta
+     * @return Retorna verdadero o falso en caso de que se actualice el nombre o no
+     * @throws SystemException Excepcion que lanza el metodo en error
+     */
     public boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre) throws SystemException {
         LOGGER.info ("### Actualizando nombre folder: " + nombre);
         boolean estado;
@@ -321,6 +364,15 @@ public class ContentControlAlfresco extends ContentControl {
         return estado;
     }
 
+    /**
+     * Metodo que devuelve la carpeta padre de la carpeta que se le pase.
+     * @param folderFather Carpeta padre
+     * @param codFolder Codigo de la carpeta que se le va a chequear la carpeta padre
+     * @return Carpeta padre
+     * @throws BusinessException Excepcion ante error de negocio
+     * @throws IOException Excepcion ante error de entrada/salida
+     * @throws SystemException Excepcion ante cualquier otro error.
+     */
     private Carpeta chequearCapetaPadre(Carpeta folderFather, String codFolder) throws BusinessException, IOException, SystemException {
         Carpeta folderReturn = null;
         List <Carpeta> listaCarpeta;
@@ -358,6 +410,15 @@ public class ContentControlAlfresco extends ContentControl {
         return folderReturn;
     }
 
+    /**
+     * Metodo para mover carpetas dentro de Alfresco
+     * @param session Objeto de conexion al Alfresco
+     * @param documento Nombre del documento que se va a mover
+     * @param carpetaFuente Carpeta desde donde se va a mover el documento
+     * @param carpetaDestino Carpeta a donde se va a mover el documento
+     * @return Mensaje de respuesta del metodo(codigo y mensaje)
+     * @throws SystemException Error ante error del metodo
+     */
     public MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino) throws SystemException {
         LOGGER.info ("### Mover documento: " + documento);
 
@@ -389,6 +450,13 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
+    /**
+     * Metodo para generar el arbol de carpetas dentro del Alfresco
+     * @param estructuraList Estrcutura que sera creada dentro del Alfresco
+     * @param folder Carpeta padre de la estructura
+     * @return Mensaje de respuesta (codigo y mensaje)
+     * @throws SystemException Excepcion en error del metodo
+     */
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
         LOGGER.info ("### Generando arbol");
 
@@ -516,6 +584,16 @@ public class ContentControlAlfresco extends ContentControl {
         return response;
     }
 
+    /**
+     * Metodo para subir documentos al Alfresco
+     * @param session Objeto de conexion a Alfresco
+     * @param nombreDocumento Nombre del documento que se va a crear
+     * @param documento Documento que se va a subir
+     * @param tipoComunicacion Tipo de comunicacion que puede ser Externa o Interna
+     * @return Devuelve el id de la carpeta creada
+     * @throws IOException Excepcion ante errores de entrada/salida
+     * @throws SystemException Excepcion ante otros errores del metodo
+     */
     public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException, SystemException {
 
         LOGGER.info ("Se entra al metodo subirDocumento");

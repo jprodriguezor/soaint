@@ -13,6 +13,11 @@ import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediato
 public class FactoriaEcmManagerMediator {
     static ContentManagerMediator mmediator;
 
+    /**
+     * Constructor de la clase que crea objeto del tipo de ECM utilizado
+     * @param tipo Tipo de ECM
+     * @return Instancia del tipo de ECM a utilizar
+     */
     public static EcmManagerMediator getManagerMediator(String tipo) {
 
         if (tipo.equals ("alfresco")) {

@@ -19,6 +19,11 @@ public class Utilities {
     public Utilities() {
     }
 
+    /**
+     * Metodo que dada una lista de entrada la organiza por ideOrgaAdmin
+     *
+     * @param organigramaItem Lista a ordenar
+     */
     public void ordenarListaOrganigrama(List <OrganigramaDTO> organigramaItem) {
 
         Collections.sort (organigramaItem, new Comparator <OrganigramaDTO> ( ) {

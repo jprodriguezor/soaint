@@ -29,7 +29,12 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         this.content = content;
     }
 
-
+    /**
+     * Metodo que llama el servicio para crear la estructura del ECM
+     * @param structure Objeto que contiene la estrucutra a crear en el ECM
+     * @return Mensaje de respuesta(codigo y mensaje)
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
     public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
         LOGGER.info ("### Creando estructura content..------");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -45,6 +50,14 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         return response;
     }
 
+    /**
+     * Metodo que llama el servicio para subir documentos al ECM
+     * @param nombreDocumento Nombre del documento a subir
+     * @param documento Documento que se va a subir
+     * @param tipoComunicacion TIpo de comunicacion que puede ser Externa o Interna
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
     public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
         LOGGER.info ("### Subiendo documento al content..");
         String idDocumento = "";
@@ -57,6 +70,14 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         return idDocumento;
     }
 
+    /**
+     * Metodo que llama el servicio para mover documentos dentro del ECM
+     * @param documento Nombre del documento a mover
+     * @param CarpetaFuente Carpeta donde se encuentra el documento
+     * @param CarpetaDestino Carpeta a donde se va a mover el documento.
+     * @return Mensaje de respuesta (codigo y mensaje)
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
     public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
