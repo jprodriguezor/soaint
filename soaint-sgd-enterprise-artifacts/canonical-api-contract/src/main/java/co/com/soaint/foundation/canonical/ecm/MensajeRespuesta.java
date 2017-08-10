@@ -31,7 +31,7 @@ public class MensajeRespuesta {
 
     }
     public MensajeRespuesta(String mensaje, String codMensaje) {
-        this.mensaje = mensaje;
-        this.codMensaje = codMensaje;
+        this.setMensaje (mensaje);
+        this.setCodMensaje (codMensaje);
     }
 }
