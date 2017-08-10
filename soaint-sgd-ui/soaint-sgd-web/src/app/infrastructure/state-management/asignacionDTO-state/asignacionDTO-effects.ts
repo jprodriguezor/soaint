@@ -18,7 +18,7 @@ import * as actions from './asignacionDTO-actions';
 import {Sandbox} from './asignacionDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {ReloadAction as ReloadComunicacionesAction} from '../comunicacionOficial-state/comunicacionOficialDTO-actions';
-import {SetJustificationDialogVisibleAction} from "./asignacionDTO-actions";
+import {SetJustificationDialogVisibleAction} from './asignacionDTO-actions';
 
 function isLoaded() {
   return (source) =>
