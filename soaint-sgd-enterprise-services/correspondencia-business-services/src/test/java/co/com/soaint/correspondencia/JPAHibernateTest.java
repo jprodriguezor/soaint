@@ -29,9 +29,13 @@ public class JPAHibernateTest {
     protected static EntityManager em;
 
     @BeforeClass
-    public static void init() throws FileNotFoundException, SQLException {
+    public static void init() throws RuntimeException {
+        try {
         emf = Persistence.createEntityManagerFactory("servicios-correspondencia-h2-unit-test");
         em = emf.createEntityManager();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Before
