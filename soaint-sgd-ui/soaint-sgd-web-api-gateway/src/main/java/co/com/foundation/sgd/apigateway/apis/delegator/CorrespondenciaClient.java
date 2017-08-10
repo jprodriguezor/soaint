@@ -13,6 +13,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,8 +103,9 @@ public class CorrespondenciaClient {
 
     public Response metricasTiempoDrools(String payload) {
         System.out.println("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
+
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
-        return wt.request()
+        return wt.request().header("Authorization","Basic a3Jpc3Y6a3Jpc3Y=")
                 .post(Entity.json(payload));
     }
 }

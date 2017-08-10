@@ -10,9 +10,12 @@ import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
+import {ROUTES_PATH} from '../../../app.routes';
 
 @Injectable()
 export class Sandbox {
+
+  routingStartState = false;
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
@@ -28,6 +31,18 @@ export class Sandbox {
     });
     return this._api.post(environment.tasksForStatus_endpoint, clonePayload);
     // return Observable.of(this.getMockData());
+  }
+
+  isTaskRoutingStarted() {
+    return this.routingStartState;
+  }
+
+  taskRoutingStart() {
+    this.routingStartState = true;
+  }
+
+  taskRoutingEnd() {
+    this.routingStartState = false;
   }
 
   startTask(payload: any) {
@@ -54,15 +69,16 @@ export class Sandbox {
   initTaskDispatch(task: TareaDTO): any {
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
-         this._store.dispatch(go(['/task/radicar-comunicaciones', task]));
-         break;
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
+        break;
       case TASK_DIGITALIZAR_DOCUMENTO:
-        this._store.dispatch(go(['/task/digitalizar-documento', task]));
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
         break;
       default:
-        this._store.dispatch(go(['/task/radicar-comunicaciones', task]));
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }
   }
+
 
   completeTaskDispatch(payload: any) {
     this._store.dispatch(new actions.CompleteTaskAction(payload));

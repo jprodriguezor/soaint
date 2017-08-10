@@ -13,7 +13,7 @@ export class RulesServer {
 
   static requestPayload(payload) {
     return tassign(droolsPayload, {
-      commands: [...droolsPayload.commands, {
+      commands: [{
         insert: {
           'out-identifier': 'Medio',
           'return-object': true,
@@ -23,7 +23,7 @@ export class RulesServer {
             }
           }
         }
-      }]
+      }, ...droolsPayload.commands]
     })
   }
 }

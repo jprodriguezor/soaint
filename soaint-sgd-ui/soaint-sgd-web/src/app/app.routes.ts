@@ -9,26 +9,38 @@ import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-co
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
 
+
+export const ROUTES_PATH = {
+  task: 'task',
+  radicarCofEntrada: 'radicar-comunicaciones',
+  digitalizarDocumento: 'digitalizar-documentos',
+  dashboard: 'home',
+  login: 'login',
+  workspace: 'workspace',
+  processList: 'process',
+  asignacionComunicaciones: 'asignacion-comunicaciones'
+};
+
 export const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'login', component: LoginComponent},
-  {path: 'home', component: HomeComponent, canActivate: [AuthenticatedGuard]},
+  {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
+  {path: ROUTES_PATH.login, component: LoginComponent},
+  {path: ROUTES_PATH.dashboard, component: HomeComponent, canActivate: [AuthenticatedGuard]},
   {
-    path: 'task',
+    path: ROUTES_PATH.task,
     canActivate: [AuthenticatedGuard],
     children: [
-      {path: 'radicar-comunicaciones', component: RadicarComunicacionesComponent, canDeactivate: [TareaDtoGuard]},
+      {path: ROUTES_PATH.radicarCofEntrada, component: RadicarComunicacionesComponent, canDeactivate: [TareaDtoGuard]},
       {
-        path: 'digitalizar-documentos',
+        path: ROUTES_PATH.digitalizarDocumento,
         component: DigitalizarDocumentoComponent,
         canActivate: [AuthenticatedGuard],
         canDeactivate: [TareaDtoGuard]
       }
     ]
   },
-  {path: 'workspace', component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
-  {path: 'process', component: ProcessComponent, canActivate: [AuthenticatedGuard]},
-  {path: 'asignacion-comunicaciones', component: AsignarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
+  {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
+  {path: ROUTES_PATH.processList, component: ProcessComponent, canActivate: [AuthenticatedGuard]},
+  {path: ROUTES_PATH.asignacionComunicaciones, component: AsignarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

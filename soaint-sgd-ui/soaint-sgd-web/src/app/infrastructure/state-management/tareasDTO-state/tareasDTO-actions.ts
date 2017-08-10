@@ -19,9 +19,8 @@ export const ActionTypes = {
   LOCK_ACTIVE_TASK: type('[TareaDTO] LockActiveTaskAction'),
   UNLOCK_ACTIVE_TASK: type('[TareaDTO] UnlockActiveTaskAction'),
   SCHEDULE_NEXT_TASK: type('[TareaDTO] ScheduleNextTaskAction'),
-  CONTINUE_WITH_NEXT_TASK: type('[TareaDTO] ContinueWithNextTaskAction'),
+  CONTINUE_WITH_NEXT_TASK: type('[TareaDTO] ContinueWithNextTaskAction')
 };
-
 
 export class FilterAction implements Action {
   type = ActionTypes.FILTER;

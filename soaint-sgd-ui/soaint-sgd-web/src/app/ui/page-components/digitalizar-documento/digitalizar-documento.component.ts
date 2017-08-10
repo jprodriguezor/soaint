@@ -4,6 +4,9 @@ import {
 } from '@angular/core';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
+import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import {Store} from '@ngrx/store';
+import {correspondenciaEntrada} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 
 
 enum UploadStatus {
@@ -31,7 +34,7 @@ export class DigitalizarDocumentoComponent implements OnInit {
   @ViewChild('viewer') viewer;
 
 
-  constructor(private changeDetection: ChangeDetectorRef, private _api: ApiBase) {
+  constructor(private changeDetection: ChangeDetectorRef, private _api: ApiBase, private _store: Store<RootState>) {
   }
 
   ngOnInit() {
@@ -45,7 +48,10 @@ export class DigitalizarDocumentoComponent implements OnInit {
   customUploader(event) {
     const formData = new FormData();
     formData.append('file', event.files[0], event.files[0].name);
-    this._api.sendFile( this.uploadUrl, formData).subscribe();
+    this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
+      this._api.sendFile( this.uploadUrl, formData, [value.tipoComunicacion.codigo , value.numeroRadicado ]).subscribe();
+    });
+
   }
 
   preview(file) {

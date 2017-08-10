@@ -1,2 +1,2 @@
-export const TASK_RADICACION_ENTRADA = '';
-export const TASK_DIGITALIZAR_DOCUMENTO = '';
+export const TASK_RADICACION_ENTRADA = 'Radicar COF Entrada';
+export const TASK_DIGITALIZAR_DOCUMENTO = 'Digitalización inmediata';

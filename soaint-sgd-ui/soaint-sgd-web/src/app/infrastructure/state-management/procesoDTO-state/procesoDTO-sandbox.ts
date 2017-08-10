@@ -33,8 +33,8 @@ export class Sandbox {
   loadTasksInsideProcess(payload: any) {
     const params = payload.data || payload;
     return this._api.post(environment.tasksInsideProcess_endpoint, {
-      idProceso: params.nombreProceso,
-      instanciaProceso: params.codigoProceso,
+      idProceso: params.nombreProceso || params.idProceso,
+      instanciaProceso: params.codigoProceso || params.idInstanciaProceso,
       estados: [
         'RESERVADO',
         'COMPLETADO',
