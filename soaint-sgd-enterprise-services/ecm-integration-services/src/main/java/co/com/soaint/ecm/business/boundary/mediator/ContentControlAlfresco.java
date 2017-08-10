@@ -446,13 +446,13 @@ public class ContentControlAlfresco implements ContentControl {
                                 logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
                                 folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), ClaseBase, null);
                             } else {
-                                logger.info ("Organigrama --  El folder ya esta creado: " + folderFather.getFolder ( ).getName ( ));
+                                logger.info ("Organigrama --  La Carpeta ya esta creado: " + folderFather.getFolder ( ).getName ( ));
                                 //Actualización de folder
                                 if (!(organigrama.getNomOrg ( ).equals (folderFather.getFolder ( ).getName ( )))) {
                                     logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
                                     actualizarNombreCarpeta (folderFather, organigrama.getNomOrg ( ));
                                 } else {
-                                    logger.info ("Organigrama --  El folder ya esta creado: " + organigrama.getNomOrg ( ));
+                                    logger.info ("Organigrama --  Carpeta creada: " + organigrama.getNomOrg ( ));
                                 }
                             }
                             bandera++;
@@ -471,7 +471,7 @@ public class ContentControlAlfresco implements ContentControl {
                                     logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
                                     actualizarNombreCarpeta (folderSon, organigrama.getNomOrg ( ));
                                 } else {
-                                    logger.info ("Organigrama --  El folder ya esta creado: " + organigrama.getNomOrg ( ));
+                                    logger.info ("Organigrama --  Carpeta ya creada: " + organigrama.getNomOrg ( ));
                                 }
                             }
                             folderFather = folderSon;
@@ -491,7 +491,7 @@ public class ContentControlAlfresco implements ContentControl {
                     String nombreSerie = formatearNombre (dependenciasArray, "formatoNombreSerie");
                     folderSon = chequearCapetaPadre (folderFatherContainer, dependencias.getCodSerie ( ));
                     if (folderSon == null) {
-                        if (!nombreSerie.equals ("")) {
+                        if (!"".equals (nombreSerie)) {
                             logger.info ("TRD --  Creando folder: " + nombreSerie);
                             folderSon = crearCarpeta (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ), ClaseSerie, folderFather);
                         } else {
@@ -512,7 +512,7 @@ public class ContentControlAlfresco implements ContentControl {
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
                         folderSon = chequearCapetaPadre (folderFather, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
-                            if (!nombreSubserie.equals ("")) {
+                            if (!"".equals (nombreSubserie)) {
                                 logger.info ("TRD --  Creando folder: " + nombreSubserie);
                                 folderSon = crearCarpeta (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ), ClaseSubSerie, folderFather);
                             } else {
@@ -572,7 +572,7 @@ public class ContentControlAlfresco implements ContentControl {
             MultivaluedMap <String, String> headers = inputPart.getHeaders ( );
             String[] contentDispositionHeader = headers.getFirst ("Content-Disposition").split (";");
             for (String name : contentDispositionHeader) {
-                if ((name.trim ( ).startsWith ("filename"))) {
+                if (name.trim ( ).startsWith ("filename")) {
                     String[] tmp = name.split ("=");
                     fileName = tmp[1].trim ( ).replaceAll ("\"", "");
                     logger.info ("El nombre del fichera es: " + fileName);
