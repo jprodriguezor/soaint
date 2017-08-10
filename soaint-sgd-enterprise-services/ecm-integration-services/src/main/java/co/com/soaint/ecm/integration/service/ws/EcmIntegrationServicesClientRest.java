@@ -30,8 +30,8 @@ public class EcmIntegrationServicesClientRest {
 
     private static final Logger logger = LogManager.getLogger (EcmIntegrationServicesClientRest.class.getName ( ));
 
-    public EcmIntegrationServicesClientRest(){
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    public EcmIntegrationServicesClientRest() {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
     }
 
     @Autowired
@@ -40,13 +40,13 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/crearEstructuraContent/")
-    public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
-        logger.info("processing rest request - Crear Estructura ECM");
+    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws SystemException, BusinessException, IOException {
+        logger.info ("processing rest request - Crear Estructura ECM");
         try {
             return fEcmManager.crearEstructuraECM (structure);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            logger.error ("Error servicio creando estructura "+e);
+            e.printStackTrace ( );
+            logger.error ("Error servicio creando estructura " + e);
             throw e;
         }
     }
@@ -54,16 +54,16 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/subirDocumentoECM/{nombreDocumento}/{tipoComunicacion}")
     @Consumes("multipart/form-data")
-    public String subirDocumentoECM(@PathParam ("nombreDocumento")  String nombreDocumento,
+    public String subirDocumentoECM(@PathParam("nombreDocumento") String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
-                                    @PathParam ("tipoComunicacion")  String tipoComunicacion) throws InfrastructureException, SystemException {
-        logger.info("processing rest request - Subir Documento ECM "+ nombreDocumento+ " "+tipoComunicacion );
+                                    @PathParam("tipoComunicacion") String tipoComunicacion) throws InfrastructureException, SystemException {
+        logger.info ("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
         try {
 
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            logger.info("Error en operacion - Subir Documento ECM "+e);
+            e.printStackTrace ( );
+            logger.info ("Error en operacion - Subir Documento ECM " + e);
             throw e;
 
         }
@@ -72,16 +72,16 @@ public class EcmIntegrationServicesClientRest {
 
     @POST
     @Path("/moverDocumentoECM/")
-    public MensajeRespuesta moverDocumentoECM(@QueryParam ("moverDocumento") final String moverDocumento,
-                                              @QueryParam ("carpetaFuente") final String carpetaFuente,
-                                              @QueryParam ("carpetaDestino") final String carpetaDestino) throws InfrastructureException, SystemException {
+    public MensajeRespuesta moverDocumentoECM(@QueryParam("moverDocumento") final String moverDocumento,
+                                              @QueryParam("carpetaFuente") final String carpetaFuente,
+                                              @QueryParam("carpetaDestino") final String carpetaDestino) throws InfrastructureException, SystemException {
 
-        logger.info("processing rest request - Mover Documento ECM");
+        logger.info ("processing rest request - Mover Documento ECM");
         try {
-            return fEcmManager.moverDocumento (moverDocumento,carpetaFuente,carpetaDestino );
+            return fEcmManager.moverDocumento (moverDocumento, carpetaFuente, carpetaDestino);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            logger.error ("Error servicio moviendo documento "+e);
+            e.printStackTrace ( );
+            logger.error ("Error servicio moviendo documento " + e);
             throw e;
         }
     }

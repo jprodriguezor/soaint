@@ -45,14 +45,34 @@ public class ContentControlAlfresco extends ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
-    @Value( "${ALFRSCO_ATOMPUB_URL}" )
-    private String propiedadALFRSCO_ATOMPUB_URL ;
-    @Value( "${REPOSITORY_ID}" )
-    private String propiedadREPOSITORY_ID ;
-    @Value( "${ALFRESCO_USER}" )
-    private String propiedadALFRESCO_USER ;
-    @Value( "${ALFRESCO_PASS}" )
-    private String propiedadALFRESCO_PASS ;
+    @Value("${ALFRSCO_ATOMPUB_URL}")
+    private String propiedadALFRSCO_ATOMPUB_URL;
+    @Value("${REPOSITORY_ID}")
+    private String propiedadREPOSITORY_ID;
+    @Value("${ALFRESCO_USER}")
+    private String propiedadALFRESCO_USER;
+    @Value("${ALFRESCO_PASS}")
+    private String propiedadALFRESCO_PASS;
+    @Value("${NOM_SERIE}")
+    private String NOM_SERIE;
+    @Value("${ID_ORG_ADM}")
+    private String ID_ORG_ADM;
+    @Value("${ID_ORG_OFC}")
+    private String ID_ORG_OFC;
+    @Value("${COD_SERIE}")
+    private String COD_SERIE;
+    @Value("${COD_SUBSERIE}")
+    private String COD_SUBSERIE;
+    @Value("${NOM_SUBSERIE}")
+    private String NOM_SUBSERIE;
+    @Value("${comunicacionesInternas}")
+    private String comunicacionesInternas;
+    @Value("${comunicacionesExternas}")
+    private String comunicacionesExternas;
+    @Value("${tipoComunicacionInterna}")
+    private String tipoComunicacionInterna;
+    @Value("${tipoComunicacionExterna}")
+    private String tipoComunicacionExterna;
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -176,12 +196,7 @@ public class ContentControlAlfresco extends ContentControl {
             int bandera = 000;
             for (String aFormatoCadenaArray : formatoCadenaArray) {
 
-                String NOM_SERIE = "3";
-                String ID_ORG_ADM = "0";
-                String ID_ORG_OFC = "1";
-                String COD_SERIE = "2";
-                String COD_SUBSERIE = "4";
-                String NOM_SUBSERIE = "5";
+
                 if (aFormatoCadenaArray.equals (ID_ORG_ADM)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
                     bandera = Integer.parseInt (ID_ORG_ADM);
@@ -583,12 +598,12 @@ public class ContentControlAlfresco extends ContentControl {
                 Carpeta folderAlfresco;
                 logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
 
-                if ("TP-CMCOE".equals (tipoComunicacion)) {
+                if (tipoComunicacionExterna.equals (tipoComunicacion)) {
 
-                    folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
+                    folderAlfresco = obtenerCarpetaPorNombre (comunicacionesExternas, session);
                 } else {
 
-                    folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+                    folderAlfresco = obtenerCarpetaPorNombre (comunicacionesInternas, session);
                 }
                 logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.." + folderAlfresco.getFolder ( ).getName ( ));
                 VersioningState vs = VersioningState.MAJOR;
