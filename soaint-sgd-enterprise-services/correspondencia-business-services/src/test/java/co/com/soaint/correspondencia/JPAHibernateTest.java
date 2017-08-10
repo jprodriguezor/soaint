@@ -6,6 +6,7 @@ import org.hibernate.jdbc.Work;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Jorge on 15/05/2017.
@@ -36,11 +39,11 @@ public class JPAHibernateTest {
         Session session = em.unwrap(Session.class);
         session.doWork(new Work() {
             @Override
-            public void execute(Connection connection) throws SQLException {
+            public void execute(Connection connection) throws RuntimeException {
                 try {
                     File script = new File(getClass().getResource("/data.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
-                } catch (FileNotFoundException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -52,6 +55,11 @@ public class JPAHibernateTest {
         em.clear();
         em.close();
         emf.close();
+    }
+
+    @Test
+    public void testDummy_success() {
+        assertEquals(1, 1);
     }
 
 
