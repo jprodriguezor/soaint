@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayInputStream;
@@ -44,14 +45,14 @@ public class ContentControlAlfresco extends ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
-//    @Value( "${ALFRSCO_ATOMPUB_URL}" )
-//    private String propiedadALFRSCO_ATOMPUB_URL ;
-//    @Value( "${REPOSITORY_ID}" )
-//    private String propiedadREPOSITORY_ID ;
-//    @Value( "${ALFRESCO_USER}" )
-//    private String propiedadALFRESCO_USER ;
-//    @Value( "${ALFRESCO_PASS}" )
-//    private String propiedadALFRESCO_PASS ;
+    @Value( "${ALFRSCO_ATOMPUB_URL}" )
+    private String propiedadALFRSCO_ATOMPUB_URL ;
+    @Value( "${REPOSITORY_ID}" )
+    private String propiedadREPOSITORY_ID ;
+    @Value( "${ALFRESCO_USER}" )
+    private String propiedadALFRESCO_USER ;
+    @Value( "${ALFRESCO_PASS}" )
+    private String propiedadALFRESCO_PASS ;
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -59,7 +60,7 @@ public class ContentControlAlfresco extends ContentControl {
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
      */
     public Conexion obtenerConexion() {
-
+    logger.info("--------------------------------Valores de las constantes ALFRSCO_ATOMPUB_URL: "+propiedadALFRSCO_ATOMPUB_URL );
         Conexion conexion = new Conexion ( );
 
         logger.info ("*** obtenerConexion ***");
