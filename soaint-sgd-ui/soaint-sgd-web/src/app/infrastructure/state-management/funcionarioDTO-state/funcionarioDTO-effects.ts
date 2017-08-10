@@ -18,6 +18,8 @@ import * as actions from './funcionarioDTO-actions';
 import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors';
+import {createSelector} from 'reselect';
+import {tassign} from 'tassign';
 
 @Injectable()
 export class Effects {
@@ -31,8 +33,9 @@ export class Effects {
   load_authenticated: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD)
     .map(toPayload)
+    .withLatestFrom(this._store$.select((s) => s.auth.profile))
     .switchMap(
-      (payload) => this._sandbox.loadAuthenticatedFuncionario(payload)
+      ([payload, profile]) => this._sandbox.loadAuthenticatedFuncionario({payload: payload, username: profile.username})
         .mergeMap((response) => [
             new actions.LoadSuccessAction(response),
             new actions.SelectDependencyGroupAction()

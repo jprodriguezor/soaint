@@ -14,7 +14,7 @@ export class Sandbox {
   }
 
   loadAuthenticatedFuncionario(payload?: any) {
-    return this._api.list(environment.obtenerFuncionario_endpoint, payload);
+    return this._api.list(`${environment.obtenerFuncionario_endpoint}/${payload.username}`, payload.payload);
   }
 
   loadAllFuncionarios(payload?: any) {

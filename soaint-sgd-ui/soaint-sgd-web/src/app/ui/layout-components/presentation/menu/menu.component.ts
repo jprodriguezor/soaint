@@ -69,7 +69,6 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     layoutLink.href = 'assets/layout/css/layout-' + theme + '.css';
   }
 
-
 }
 
 @Component({
@@ -155,10 +154,11 @@ export class AppSubMenuComponent {
 
     // hide menu
     if (!item.items) {
-      if (this.app.isHorizontal())
+      if (this.app.isHorizontal()) {
         this.app.resetMenu = true;
-      else
+      } else {
         this.app.resetMenu = false;
+      }
 
       this.app.overlayMenuActive = false;
       this.app.staticMenuMobileActive = false;
