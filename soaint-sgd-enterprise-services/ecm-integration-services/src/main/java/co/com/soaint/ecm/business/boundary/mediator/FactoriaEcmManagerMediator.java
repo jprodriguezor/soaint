@@ -1,17 +1,13 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
-/**
- * Created by Dasiel on 01/06/2017.
- */
-
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
 import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediator;
 
 /**
  * Factoria para los diferentes ECM, hasta ahora solo Alfresco
  */
-public class FactoriaEcmManagerMediator {
-    static ContentManagerMediator mmediator;
+class FactoriaEcmManagerMediator {
+    private static ContentManagerMediator mmediator;
 
     /**
      * Constructor de la clase que crea objeto del tipo de ECM utilizado

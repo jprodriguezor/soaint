@@ -10,8 +10,6 @@ import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -43,12 +41,7 @@ import java.util.logging.Logger;
 @NoArgsConstructor
 public class ContentControlAlfresco extends ContentControl {
 
-    private static Logger LOGGER = Logger.getLogger (ContentControlAlfresco.class.getName ( ));
-    private final String ID_ORG_ADM = "0";
-    private final String ID_ORG_OFC = "1";
-    private final String COD_SERIE = "2";
-    private final String COD_SUBSERIE = "4";
-    private final String NOM_SUBSERIE = "5";
+    private static final Logger LOGGER = Logger.getLogger (ContentControlAlfresco.class.getName ( ));
 
 //    @Value( "${ALFRSCO_ATOMPUB_URL}" )
 //    private String propiedadALFRSCO_ATOMPUB_URL ;
@@ -59,58 +52,11 @@ public class ContentControlAlfresco extends ContentControl {
 //    @Value( "${ALFRESCO_PASS}" )
 //    private String propiedadALFRESCO_PASS ;
 
-    private String propiedadALFRSCO_ATOMPUB_URL = "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
-    private String propiedadREPOSITORY_ID = "-default-";
-    private String propiedadALFRESCO_USER = "admin";
-    private String propiedadALFRESCO_PASS = "admin";
-
-    /**
-     * Metodo para establecer conexion con el ECM Alfresco
-     * @return Mensaje de respuesta del metodo(codigo y mensaje)
-     * @throws SystemException Excepcion que devuelve el metodo en error de conexion
-     */
-    public MensajeRespuesta establecerConexiones() throws SystemException {
-
-
-        MensajeRespuesta response = new MensajeRespuesta ( );
-
-        try {
-            LOGGER.info ("### Llenando datos de conexion..");
-            LOGGER.info ("### Usuario.." + propiedadALFRESCO_USER);
-            Properties props = new Properties ( );
-
-            Map <String, String> parameter = new HashMap <String, String> ( );
-
-            // Credenciales del usuario
-            parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
-            parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
-
-            // Configuracion de conexion
-            parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
-            parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
-            parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
-
-            // Object factory de Alfresco
-            parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
-
-            // Crear Sesion
-            response.setMensaje ("OK");
-        } catch (Exception e) {
-            e.printStackTrace ( );
-            LOGGER.info ("Error obteniendo conexion " + e);
-            response.setCodMensaje ("Error al establecer Conexiones");
-            response.setMensaje ("000002");
-        }
-
-        return response;
-    }
-
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
-     * @throws SystemException Excepcion que lanza el metodo en error
      */
-    public Conexion obtenerConexion() throws SystemException {
+    public Conexion obtenerConexion() {
 
         Conexion conexion = new Conexion ( );
 
@@ -120,12 +66,16 @@ public class ContentControlAlfresco extends ContentControl {
             Map <String, String> parameter = new HashMap <> ( );
 
             // Credenciales del usuario
+            String propiedadALFRESCO_USER = "admin";
             parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
+            String propiedadALFRESCO_PASS = "admin";
             parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
             // Configuracion de conexion
+            String propiedadALFRSCO_ATOMPUB_URL = "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
             parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
+            String propiedadREPOSITORY_ID = "-default-";
             parameter.put (SessionParameter.REPOSITORY_ID, propiedadREPOSITORY_ID);
 
             // Object factory de Alfresco
@@ -151,9 +101,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param classDocumental Clase documental que tiene la carpeta que se va a crar.
      * @param folderFather Carpeta dentro de la cual se va a crear la carpeta
      * @return Devuelve la carpeta creada dentro del objeto Carpeta
-     * @throws SystemException Excepcion que retorna el metodo en error.
      */
-    public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) throws SystemException {
+    public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) {
         Carpeta newFolder = null;
         try {
 
@@ -217,9 +166,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param informationArray Arreglo que trae el nombre de la carpeta para formatearlo para ser usado por el ECM
      * @param formatoConfig    Contiene el formato que se le dara al nombre
      * @return Nombre formateado
-     * @throws SystemException Excepcion que se lanza ante cualquier error en el metodo
      */
-    public String formatearNombre(String[] informationArray, String formatoConfig) throws SystemException {
+    public String formatearNombre(String[] informationArray, String formatoConfig) {
         String formatoCadena;
         StringBuilder formatoFinal = new StringBuilder ( );
         try {
@@ -229,6 +177,11 @@ public class ContentControlAlfresco extends ContentControl {
             for (String aFormatoCadenaArray : formatoCadenaArray) {
 
                 String NOM_SERIE = "3";
+                String ID_ORG_ADM = "0";
+                String ID_ORG_OFC = "1";
+                String COD_SERIE = "2";
+                String COD_SUBSERIE = "4";
+                String NOM_SUBSERIE = "5";
                 if (aFormatoCadenaArray.equals (ID_ORG_ADM)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
                     bandera = Integer.parseInt (ID_ORG_ADM);
@@ -285,9 +238,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param nombreCarpeta NOmbre de la carpeta que se va a buscar
      * @param session objeto de conexion al Alfresco
      * @return Retorna la Carpeta que se busca
-     * @throws SystemException Excepcion que devuelve el metodo en error.
      */
-    private static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) throws SystemException {
+    private static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) {
         LOGGER.info ("Se entra al metodo obtener carpeta por nombre");
         Carpeta folder = new Carpeta ( );
         try {
@@ -315,9 +267,8 @@ public class ContentControlAlfresco extends ContentControl {
      * Metodo que devuelve las carpetas hijas de una carpeta
      * @param carpetaPadre Carpeta a la cual se le van a buscar las carpetas hijas
      * @return Lista de carpetas resultantes de la busqueda
-     * @throws SystemException Excepcion que lanza el metodo en error
      */
-    private static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) throws SystemException {
+    private static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) {
         LOGGER.info ("### Obtener Carpetas Hijas Dado Padre");
         List <Carpeta> listaCarpetas = null;
 
@@ -349,9 +300,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param carpeta Carpeta a la cual se le va a actualizar el nombre
      * @param nombre Nuevo nombre de la carpeta
      * @return Retorna verdadero o falso en caso de que se actualice el nombre o no
-     * @throws SystemException Excepcion que lanza el metodo en error
      */
-    public boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre) throws SystemException {
+    public boolean actualizarNombreCarpeta(Carpeta carpeta, String nombre) {
         LOGGER.info ("### Actualizando nombre folder: " + nombre);
         boolean estado;
         try {
@@ -369,11 +319,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param folderFather Carpeta padre
      * @param codFolder Codigo de la carpeta que se le va a chequear la carpeta padre
      * @return Carpeta padre
-     * @throws BusinessException Excepcion ante error de negocio
-     * @throws IOException Excepcion ante error de entrada/salida
-     * @throws SystemException Excepcion ante cualquier otro error.
      */
-    private Carpeta chequearCapetaPadre(Carpeta folderFather, String codFolder) throws BusinessException, IOException, SystemException {
+    private Carpeta chequearCapetaPadre(Carpeta folderFather, String codFolder) {
         Carpeta folderReturn = null;
         List <Carpeta> listaCarpeta;
         Conexion conexion = obtenerConexion ( );
@@ -417,9 +364,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param carpetaFuente Carpeta desde donde se va a mover el documento
      * @param carpetaDestino Carpeta a donde se va a mover el documento
      * @return Mensaje de respuesta del metodo(codigo y mensaje)
-     * @throws SystemException Error ante error del metodo
      */
-    public MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino) throws SystemException {
+    public MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino) {
         LOGGER.info ("### Mover documento: " + documento);
 
         LOGGER.info ("### Obtener carpeta fuente: " + carpetaFuente);
@@ -455,9 +401,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param estructuraList Estrcutura que sera creada dentro del Alfresco
      * @param folder Carpeta padre de la estructura
      * @return Mensaje de respuesta (codigo y mensaje)
-     * @throws SystemException Excepcion en error del metodo
      */
-    public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) throws SystemException {
+    public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) {
         LOGGER.info ("### Generando arbol");
 
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -529,7 +474,7 @@ public class ContentControlAlfresco extends ContentControl {
                     String nombreSerie = formatearNombre (dependenciasArray, "formatoNombreSerie");
                     folderSon = chequearCapetaPadre (folderFatherContainer, dependencias.getCodSerie ( ));
                     if (folderSon == null) {
-                        if (nombreSerie != "") {
+                        if (!nombreSerie.equals ("")) {
                             LOGGER.info ("TRD --  Creando folder: " + nombreSerie);
                             folderSon = crearCarpeta (folderFatherContainer, nombreSerie, dependencias.getCodSerie ( ), "claseSerie", folderFather);
                         } else {
@@ -550,7 +495,7 @@ public class ContentControlAlfresco extends ContentControl {
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
                         folderSon = chequearCapetaPadre (folderFather, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
-                            if (nombreSubserie != "") {
+                            if (!nombreSubserie.equals ("")) {
                                 LOGGER.info ("TRD --  Creando folder: " + nombreSubserie);
                                 folderSon = crearCarpeta (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ), "claseSubserie", folderFather);
                             } else {
@@ -592,9 +537,8 @@ public class ContentControlAlfresco extends ContentControl {
      * @param tipoComunicacion Tipo de comunicacion que puede ser Externa o Interna
      * @return Devuelve el id de la carpeta creada
      * @throws IOException Excepcion ante errores de entrada/salida
-     * @throws SystemException Excepcion ante otros errores del metodo
      */
-    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException, SystemException {
+    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
         LOGGER.info ("Se entra al metodo subirDocumento");
 
@@ -662,9 +606,6 @@ public class ContentControlAlfresco extends ContentControl {
                 LOGGER.info ("### Error tipo CmisContentAlreadyExistsException----------------------------- :" + ccaee);
             } catch (CmisConstraintException cce) {
                 LOGGER.info ("### Error tipo CmisConstraintException----------------------------- :" + cce);
-            } catch (SystemException se) {
-                se.printStackTrace ( );
-                LOGGER.info ("### Error tipo SystemException----------------------------- :" + se);
             } catch (Exception e) {
                 e.printStackTrace ( );
                 LOGGER.info ("### Error tipo Exception----------------------------- :" + e);

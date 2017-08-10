@@ -28,7 +28,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class EcmIntegrationServicesClientRest {
 
-    private static Logger LOGGER = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
 
     public EcmIntegrationServicesClientRest(){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);

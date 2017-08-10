@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 @Service
 public class EcmManagerAlfresco implements EcmManagerMediator {
 
-    private Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
+    private final Logger LOGGER = Logger.getLogger (EcmManagerAlfresco.class.getName ( ));
 
     private final
     ContentManagerMediator content;

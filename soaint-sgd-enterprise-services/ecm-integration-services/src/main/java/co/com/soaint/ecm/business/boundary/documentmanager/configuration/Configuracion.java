@@ -2,9 +2,6 @@ package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Properties;
-import java.util.logging.Logger;
-
 /**
  * @author sarias
  */
@@ -38,16 +35,10 @@ public final class Configuracion {
     private static String ecm;
 
 
-    private static Properties propiedades = null;
-    static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
 
-    public static void inicializacion() {
 
-        if (propiedades == null) {
-            propiedades = new Properties ( );
-        }
 
-    }
+
 
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
@@ -92,8 +83,15 @@ public final class Configuracion {
             default:
                 return "";
         }
-
-
+//        private static Properties propiedades = null;
+//        public static void inicializacion() {
+//
+//            if (propiedades == null) {
+//                propiedades = new Properties ( );
+//            }
+//
+//        }
+//        static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
 //        String propiedad = null;
 //        try {
 //            inicializacion ( );

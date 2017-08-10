@@ -8,7 +8,6 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     private final
     ContentControlAlfresco control;
 
-    private Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
+    private final Logger LOGGER = Logger.getLogger (ContentManagerAlfresco.class.getName ( ));
 
     /**
      * Constructor de la clase
@@ -55,24 +54,16 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         Carpeta carpeta;
         try {
 
-            // Se establece la conexion
-            LOGGER.info ("### Estableciendo Conexion con el ECM..");
-            response = control.establecerConexiones ( );
-
             Utilities utils = new Utilities ( );
-            Conexion conexion = new Conexion ( );
+            new Conexion ( );
+            Conexion conexion;
             for (EstructuraTrdDTO EstructuraTrdDTO : structure) {
                 utils.ordenarListaOrganigrama (EstructuraTrdDTO.getOrganigramaItemList ( ));
             }
 
-            try {
-                conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
-            } catch (SystemException e) {
-                e.printStackTrace ( );
-                response.setMensaje ("Error de conexion");
-                response.setCodMensaje ("11111");
-                LOGGER.log (Level.INFO, (Supplier <String>) e);
-            }
+            LOGGER.info ("### Estableciendo Conexion con el ECM..");
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             response = control.generarArbol (structure, carpeta);
@@ -103,16 +94,11 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
         String idDocumento = "";
         Carpeta carpeta;
         try {
-            Conexion conexion = new Conexion ( );
-            // Se establece la conexion
+            Conexion conexion;
+            new Conexion ( );
+            LOGGER.info ("### Estableciendo la conexion..");
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
 
-            try {
-                LOGGER.info ("### Estableciendo la conexion..");
-                conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
-            } catch (SystemException e) {
-                e.printStackTrace ( );
-                LOGGER.info ("*** Error de conexion *** " + e);
-            }
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
@@ -151,17 +137,12 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
 
             //Se establece la conexion
             LOGGER.info ("###Se va a establecer la conexion");
-            response = control.establecerConexiones ( );
             LOGGER.info ("###Conexion establecida");
 
-            Conexion conexion = new Conexion ( );
+            Conexion conexion;
+            new Conexion ( );
 
-            try {
                 conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
-            } catch (SystemException e) {
-                e.printStackTrace ( );
-                LOGGER.log (Level.INFO, (Supplier <String>) e);
-            }
 
             response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 

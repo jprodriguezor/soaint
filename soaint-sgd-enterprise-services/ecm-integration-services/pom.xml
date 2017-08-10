@@ -280,21 +280,10 @@
             <version>3.0.5.Final</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>jaxrs-api</artifactId>
-            <version>3.0.5.Final</version>
-        </dependency>
-        <dependency>
             <groupId>com.oracle.fmwshare</groupId>
             <artifactId>jersey-core-1.18</artifactId>
             <version>12.1.3-0-0</version>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>jaxrs-api</artifactId>
-            <version>3.0.5.Final</version>
-        </dependency>
-
     </dependencies>
 
     <build>
