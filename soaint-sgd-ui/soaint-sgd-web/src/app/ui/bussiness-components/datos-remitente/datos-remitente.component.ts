@@ -68,7 +68,6 @@ export class DatosRemitenteComponent implements OnInit {
 
   initLoadTipoComunicacionInterna() {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-
   }
 
   initForm() {
