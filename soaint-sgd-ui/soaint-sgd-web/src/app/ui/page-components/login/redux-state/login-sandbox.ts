@@ -27,12 +27,10 @@ export class LoginSandbox {
   }
 
   routeToHome(): void {
-    // this._router.navigate(['/home']);
     this._store.dispatch(go('/home'));
   }
 
   routeToLogin(): void {
-    // this._router.navigate(['/login']);
     this._store.dispatch(go('/login'));
   }
 

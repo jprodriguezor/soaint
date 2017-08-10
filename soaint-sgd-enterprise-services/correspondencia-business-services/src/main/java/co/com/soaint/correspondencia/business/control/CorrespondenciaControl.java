@@ -1,6 +1,5 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.business.boundary.GestionarTrazaDocumento;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
@@ -60,9 +59,6 @@ public class CorrespondenciaControl {
 
     @Autowired
     ReferidoControl referidoControl;
-
-    @Autowired
-    GestionarTrazaDocumento gestionarTrazaDocumento;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -233,23 +229,6 @@ public class CorrespondenciaControl {
         } catch (BusinessException e) {
             logger.error("Business Control - a business error has occurred", e);
             throw e;
-        } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
-     *
-     * @param ppdTrazDocumentoDTO
-     * @throws SystemException
-     */
-    public void registrarObservacionCorrespondencia(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws SystemException{
-        try{
-            gestionarTrazaDocumento.generarTrazaDocumento(ppdTrazDocumentoDTO);
         } catch (Exception ex) {
             logger.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -559,6 +538,12 @@ public class CorrespondenciaControl {
     public CorrespondenciaDTO consultarCorrespondenciaByIdeAgente(BigInteger ideAgente){
         return em.createNamedQuery("CorCorrespondencia.findByIdeAgente", CorrespondenciaDTO.class)
                 .setParameter("IDE_AGENTE", ideAgente)
+                .getSingleResult();
+    }
+
+    public CorrespondenciaDTO consultarCorrespondenciaByIdeDocumento(BigInteger ideDocumento){
+        return em.createNamedQuery("CorCorrespondencia.findByIdeDocumento", CorrespondenciaDTO.class)
+                .setParameter("IDE_DOCUMENTO", ideDocumento)
                 .getSingleResult();
     }
 

@@ -52,32 +52,36 @@ public class ProcessService implements IProcessServices {
     private RuntimeEngine engine;
     private KieSession ksession;
     private TaskService taskService;
-    @Value( "${procesos.listar.endpoint.url}" )
+    @Value("${procesos.listar.endpoint.url}")
     private String endpointProcesosListar = "";
-    @Value( "${jbpm.endpoint.url}" )
+    @Value("${jbpm.endpoint.url}")
     private String endpointJBPConsole = "";
-    @Value( "${procesos.listar.intancias.endpoint.url}" )
+    @Value("${procesos.listar.intancias.endpoint.url}")
     private String endpointProcesoListarInstancia = "";
-    @Value( "${jbpmconsole.admin.user}" )
+    @Value("${jbpmconsole.admin.user}")
     private String usuarioAdmin = "";
-    @Value( "${jbpmconsole.admin.pass}" )
+    @Value("${jbpmconsole.admin.pass}")
     private String passAdmin = "";
-    @Value( "${tarea.acciones.url}" )
+    @Value("${tarea.acciones.url}")
     private String endpointTareas = "";
-    @Value( "${header.accept}" )
+    @Value("${header.accept}")
     private String headerAccept = "";
-    @Value( "${header.authorization}" )
+    @Value("${header.authorization}")
     private String headerAuthorization = "";
-    @Value( "${header.value.application.type}" )
+    @Value("${header.value.application.type}")
     private String valueApplicationType = "";
-    @Value( "${header.value.authorization}" )
+    @Value("${header.value.authorization}")
     private String valueAuthorization = "";
-    @Value( "${mensaje.error.negocio.fallo}" )
+    @Value("${mensaje.error.negocio.fallo}")
     private String errorNegocioFallo = "";
-    @Value( "${mensaje.error.sistema}" )
+    @Value("${mensaje.error.sistema}")
     private String errorSistema = "";
-    @Value( "${mensaje.error.sistema.generico}" )
+    @Value("${mensaje.error.sistema.generico}")
     private String errorSistemaGenerico = "";
+    @Value("${parametro.sennal}")
+    private String parametroSennal = "";
+    @Value("${formato.idioma}")
+    private String formatoIdioma = "";
     HttpClient httpClient;
     HttpGet getRequest;
     HttpPost postRequest;
@@ -89,20 +93,21 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite listar todos los procesos desplegados
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Lista de procesos que contiene codigoProceso,nombreProceso y idDespliegue.
      * @throws BusinessException
      * @throws SystemException
      */
     @Override
-    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws BusinessException, SystemException {
+    public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws SystemException {
 
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         httpClient = HttpClientBuilder.create().build();
         getRequest = new HttpGet(endpointProcesosListar);
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader(headerAccept, valueApplicationType);
-        getRequest.addHeader(headerAuthorization,  valueAuthorization +" "+ encoding);
+        getRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
         try {
             response = httpClient.execute(getRequest);
             JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
@@ -115,10 +120,13 @@ public class ProcessService implements IProcessServices {
             }
 
             return listaProcesos;
-        }catch (BusinessException e) {
+        } catch (BusinessException e) {
             logger.error(e.getMessage());
-            throw e;
-        }catch (Exception ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
             logger.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
@@ -129,13 +137,13 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite listar las instancias de procesos por usuario
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Lista de procesos que contiene codigoProceso,nombreProceso y estado.
-     * @throws BusinessException
      * @throws SystemException
      */
     @Override
-    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws BusinessException, SystemException{
+    public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws SystemException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         httpClient = HttpClientBuilder.create().build();
@@ -146,7 +154,7 @@ public class ProcessService implements IProcessServices {
                     .build();
             getRequest = new HttpGet(uri);
             getRequest.addHeader(headerAccept, valueApplicationType);
-            getRequest.addHeader(headerAuthorization,  valueAuthorization +" "+ encoding);
+            getRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
             response = httpClient.execute(getRequest);
             JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
             if (response.getStatusLine().getStatusCode() != 200) {
@@ -159,7 +167,10 @@ public class ProcessService implements IProcessServices {
             return listaProcesos;
         } catch (BusinessException e) {
             logger.error(e.getMessage());
-            throw e;
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
         } catch (Exception ex) {
             logger.error("System error has occurred");
             throw ExceptionBuilder.newBuilder()
@@ -172,12 +183,13 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite iniciar un proceso
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
-     * @throws MalformedURLException
+     * @throws SystemException
      */
     @Override
-    public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws SystemException  {
+    public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws SystemException {
         try {
             logger.info("iniciar - proceso : {}", entrada);
             ksession = obtenerEngine(entrada).getKieSession();
@@ -190,12 +202,12 @@ public class ProcessService implements IProcessServices {
                     .build();
 
         } catch (Exception e) {
-            logger.error("System error has occurred");
+            logger.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
-        }finally {
+        } finally {
             logger.info("fin - iniciar - proceso ");
         }
 
@@ -203,83 +215,119 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un usuario
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
-     * @throws IOException
-     * @throws JSONException
-     * @throws URISyntaxException
+     * @throws SystemException
      */
     @Override
-    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws IOException, JSONException, URISyntaxException, SystemException, BusinessException {
+    public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entrada) throws SystemException {
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
-        ksession = obtenerEngine(entradaManual).getKieSession();
-        ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
-        entrada.setInstanciaProceso(processInstance.getId());
-        List<RespuestaTareaDTO>  tareas = listarTareasPorInstanciaProceso(entrada);
-        for (RespuestaTareaDTO tarea : tareas) {
-            entrada.setIdTarea(tarea.getIdTarea());
-            reservarTarea(entrada);
+        try {
+            logger.info("iniciar - proceso manual: {}", entrada);
+            ksession = obtenerEngine(entradaManual).getKieSession();
+            ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
+            entrada.setInstanciaProceso(processInstance.getId());
+            List<RespuestaTareaDTO> tareas = listarTareasPorInstanciaProceso(entrada);
+            for (RespuestaTareaDTO tarea : tareas) {
+                entrada.setIdTarea(tarea.getIdTarea());
+                reservarTarea(entrada);
 
+            }
+            return RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(processInstance.getId()))
+                    .nombreProceso(processInstance.getProcessId())
+                    .estado(String.valueOf(processInstance.getState()))
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .build();
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - iniciar - proceso manual ");
         }
-        return RespuestaProcesoDTO.newInstance()
-                .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessId())
-                .estado(String.valueOf(processInstance.getState()))
-                .idDespliegue(entrada.getIdDespliegue())
-                .build();
     }
 
     /**
      * Permite iniciar una tarea asociada a un proceso
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos de la tarea iniciada
      * @throws MalformedURLException
      */
     @Override
-    public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
-        taskService = obtenerEngine(entrada).getTaskService();
-        taskService.start(entrada.getIdTarea(), entrada.getUsuario());
-        Task task = taskService.getTaskById(entrada.getIdTarea());
-        return RespuestaTareaDTO.newInstance()
-                .idTarea(entrada.getIdTarea())
-                .estado(String.valueOf(EstadosEnum.ENPROGRESO))
-                .nombre(task.getName())
-                .idProceso(entrada.getIdProceso())
-                .idDespliegue(entrada.getIdDespliegue())
-                .idParent(task.getTaskData().getParentId())
-                .idResponsable(task.getTaskData().getActualOwner().getId())
-                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-                .tiempoExpiracion(task.getTaskData().getExpirationTime())
-                .tiempoActivacion(task.getTaskData().getActivationTime())
-                .fechaCreada(task.getTaskData().getCreatedOn())
-                .prioridad(task.getPriority())
-                .build();
+    public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws SystemException {
+        try {
+            logger.info("iniciar - tarea: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            taskService.start(entrada.getIdTarea(), entrada.getUsuario());
+            Task task = taskService.getTaskById(entrada.getIdTarea());
+            return RespuestaTareaDTO.newInstance()
+                    .idTarea(entrada.getIdTarea())
+                    .estado(String.valueOf(EstadosEnum.ENPROGRESO))
+                    .nombre(task.getName())
+                    .idProceso(entrada.getIdProceso())
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .idParent(task.getTaskData().getParentId())
+                    .idResponsable(task.getTaskData().getActualOwner().getId())
+                    .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
+                    .tiempoExpiracion(task.getTaskData().getExpirationTime())
+                    .tiempoActivacion(task.getTaskData().getActivationTime())
+                    .fechaCreada(task.getTaskData().getCreatedOn())
+                    .prioridad(task.getPriority())
+                    .build();
+
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - iniciar - tarea ");
+        }
 
     }
 
     /**
      * Permite completar una tarea asociada a un proceso
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos de la tarea completada
      * @throws MalformedURLException
      */
     @Override
-    public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
-        taskService = obtenerEngine(entrada).getTaskService();
-        taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
-        return RespuestaTareaDTO.newInstance()
-                .idTarea(entrada.getIdTarea())
-                .estado(String.valueOf(EstadosEnum.COMPLETADO))
-                .idProceso(entrada.getIdProceso())
-                .build();
+    public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws SystemException {
+        try {
+            logger.info("iniciar - tarea: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
+            return RespuestaTareaDTO.newInstance()
+                    .idTarea(entrada.getIdTarea())
+                    .estado(String.valueOf(EstadosEnum.COMPLETADO))
+                    .idProceso(entrada.getIdProceso())
+                    .build();
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - iniciar - tarea ");
+        }
 
     }
 
     /**
      * Permite reservar una tarea asociada a un proceso
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos de la tarea reservada
      * @throws IOException
@@ -287,16 +335,17 @@ public class ProcessService implements IProcessServices {
      * @throws JSONException
      */
     @Override
-    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws BusinessException, SystemException {
+    public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws SystemException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
         String estado = "";
+        logger.info("iniciar - reservar tarea: {}", entrada);
         try {
             URI uri = new URIBuilder(endpointJBPConsole)
-                    .setPath("/jbpm-console/rest/task/"+entrada.getIdTarea()+ "/claim")
+                    .setPath("/jbpm-console/rest/task/" + entrada.getIdTarea() + "/claim")
                     .build();
             httpClient = HttpClientBuilder.create().build();
             postRequest = new HttpPost(uri);
-            postRequest.addHeader(headerAuthorization, valueAuthorization +" "+ encoding);
+            postRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
             postRequest.addHeader("X-KIE-ContentType", "XSTREAM");
             postRequest.addHeader(headerAccept, valueApplicationType);
             response = httpClient.execute(postRequest);
@@ -308,10 +357,10 @@ public class ProcessService implements IProcessServices {
             } else {
                 String estadoResp = respuestaJson.getString("status");
 
-                if("SUCCESS".equals(estadoResp)){
-                    estado =  String.valueOf(EstadosEnum.RESERVADO);
-                }else{
-                    estado =  String.valueOf(EstadosEnum.ERROR);
+                if ("SUCCESS".equals(estadoResp)) {
+                    estado = String.valueOf(EstadosEnum.RESERVADO);
+                } else {
+                    estado = String.valueOf(EstadosEnum.ERROR);
                 }
             }
             return RespuestaTareaDTO.newInstance()
@@ -322,13 +371,18 @@ public class ProcessService implements IProcessServices {
                     .build();
         } catch (BusinessException e) {
             logger.error(e.getMessage());
-            throw e;
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
         } catch (Exception ex) {
             logger.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(ex)
                     .buildSystemException();
+        } finally {
+            logger.info("fin - reservar - tarea ");
         }
 
 
@@ -336,78 +390,60 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite reasignar una tarea a otro usuario
-      * @param entrada Objeto que contiene los parametros de entrada para un proceso
-     * @return Los datos de la tarea reasignada
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos de la tarea reservada
      * @throws MalformedURLException
      */
     @Override
-    public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws MalformedURLException {
-        taskService = obtenerEngine(entrada).getTaskService();
-        taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
-        Task task = taskService.getTaskById(entrada.getIdTarea());
-        return RespuestaTareaDTO.newInstance()
-                .idTarea(entrada.getIdTarea())
-                .estado(String.valueOf(EstadosEnum.RESERVADO))
-                .nombre(task.getName())
-                .idProceso(entrada.getIdProceso())
-                .idDespliegue(entrada.getIdDespliegue())
-                .idParent(task.getTaskData().getParentId())
-                .idResponsable(task.getTaskData().getActualOwner().getId())
-                .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-                .tiempoExpiracion(task.getTaskData().getExpirationTime())
-                .tiempoActivacion(task.getTaskData().getActivationTime())
-                .fechaCreada(task.getTaskData().getCreatedOn())
-                .prioridad(task.getPriority())
-                .build();
-
+    public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws SystemException {
+        try {
+            logger.info("iniciar - reasignar tarea: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
+            Task task = taskService.getTaskById(entrada.getIdTarea());
+            return RespuestaTareaDTO.newInstance()
+                    .idTarea(entrada.getIdTarea())
+                    .estado(String.valueOf(EstadosEnum.RESERVADO))
+                    .nombre(task.getName())
+                    .idProceso(entrada.getIdProceso())
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .idParent(task.getTaskData().getParentId())
+                    .idResponsable(task.getTaskData().getActualOwner().getId())
+                    .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
+                    .tiempoExpiracion(task.getTaskData().getExpirationTime())
+                    .tiempoActivacion(task.getTaskData().getActivationTime())
+                    .fechaCreada(task.getTaskData().getCreatedOn())
+                    .prioridad(task.getPriority())
+                    .build();
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - reasignar - tarea ");
+        }
     }
 
     /**
-     *  Permite listar las tareas por estados
+     * Permite listar las tareas por estados
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return lista de tareas que cumplen con los filtros de estado solicitdos
      * @throws MalformedURLException
      */
     @Override
-    public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws MalformedURLException {
+    public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws SystemException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
-        taskService = obtenerEngine(entrada).getTaskService();
-        List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        for (TaskSummary task : tasks) {
-                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
-                        .idTarea(task.getId())
-                        .estado(estadoRespuesta(task.getStatusId()))
-                        .idProceso(task.getProcessId())
-                        .idDespliegue(task.getDeploymentId())
-                        .nombre(task.getName())
-                        .prioridad(task.getPriority())
-                        .idInstanciaProceso(task.getProcessInstanceId())
-                        .fechaCreada(task.getCreatedOn())
-                        .tiempoActivacion(task.getActivationTime())
-                        .tiempoExpiracion(task.getExpirationTime())
-                        .build();
-                tareas.add(respuestaTarea);
-        }
-        return tareas;
-    }
-
-    /**
-     * Permite listar las tareas asociadas a una instancia de procesos por sus estados
-     * @param entrada Objeto que contiene los parametros de entrada para un proceso
-     * @return lista de tareas
-     * @throws MalformedURLException
-     */
-    @Override
-    public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
-        List<RespuestaTareaDTO> tareas = new ArrayList<>();
-        Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
-        List<Status> estadosActivos = estadosActivos(estadosEnviados);
-        taskService = obtenerEngine(entrada).getTaskService();
-        List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        for (TaskSummary task : tasks) {
-            if (task.getProcessInstanceId().longValue() == entrada.getInstanciaProceso().longValue() ) {
+        try {
+            logger.info("iniciar - listar tareas estados: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
+            for (TaskSummary task : tasks) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
                         .estado(estadoRespuesta(task.getStatusId()))
@@ -422,56 +458,124 @@ public class ProcessService implements IProcessServices {
                         .build();
                 tareas.add(respuestaTarea);
             }
+            return tareas;
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - listar - tareas - estados ");
         }
-        return tareas;
     }
 
     /**
-     * Listar tareas por instancia de proceso
+     * Permite listar las tareas asociadas a una instancia de procesos por sus estados
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return lista de tareas
      * @throws MalformedURLException
      */
     @Override
-    public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws MalformedURLException {
+    public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entrada) throws SystemException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
-        taskService = obtenerEngine(entrada).getTaskService();
-        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, "en-UK");
-        for (TaskSummary task : tasks) {
-                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
-                        .idTarea(task.getId())
-                        .estado(estadoRespuesta(task.getStatusId()))
-                        .idProceso(task.getProcessId())
-                        .idDespliegue(task.getDeploymentId())
-                        .nombre(task.getName())
-                        .prioridad(task.getPriority())
-                        .idInstanciaProceso(task.getProcessInstanceId())
-                        .fechaCreada(task.getCreatedOn())
-                        .tiempoActivacion(task.getActivationTime())
-                        .tiempoExpiracion(task.getExpirationTime())
-                        .build();
-                tareas.add(respuestaTarea);
-
+        try {
+            logger.info("iniciar - listar tareas estados instandias proceso: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
+            for (TaskSummary task : tasks) {
+                if (task.getProcessInstanceId().longValue() == entrada.getInstanciaProceso().longValue()) {
+                    RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                            .idTarea(task.getId())
+                            .estado(estadoRespuesta(task.getStatusId()))
+                            .idProceso(task.getProcessId())
+                            .idDespliegue(task.getDeploymentId())
+                            .nombre(task.getName())
+                            .prioridad(task.getPriority())
+                            .idInstanciaProceso(task.getProcessInstanceId())
+                            .fechaCreada(task.getCreatedOn())
+                            .tiempoActivacion(task.getActivationTime())
+                            .tiempoExpiracion(task.getExpirationTime())
+                            .build();
+                    tareas.add(respuestaTarea);
+                }
+            }
+            return tareas;
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - listar - tareas estados instandias proceso ");
         }
-        return tareas;
     }
 
     /**
-     * Permite listar tareas asociados a usuarios por estados
-     * @param entrada  Objeto que contiene los parametros de entrada para un proceso
+     * Listar tareas por instancia de proceso
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return lista de tareas
      * @throws MalformedURLException
      */
     @Override
-    public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws MalformedURLException {
+    public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws SystemException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
-        taskService = obtenerEngine(entrada).getTaskService();
-        List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, "en-UK");
-        for (TaskSummary task : tasks) {
+        try {
+            logger.info("iniciar - listar tareas instandias proceso: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, formatoIdioma);
+            for (TaskSummary task : tasks) {
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(task.getId())
+                        .estado(estadoRespuesta(task.getStatusId()))
+                        .idProceso(task.getProcessId())
+                        .idDespliegue(task.getDeploymentId())
+                        .nombre(task.getName())
+                        .prioridad(task.getPriority())
+                        .idInstanciaProceso(task.getProcessInstanceId())
+                        .fechaCreada(task.getCreatedOn())
+                        .tiempoActivacion(task.getActivationTime())
+                        .tiempoExpiracion(task.getExpirationTime())
+                        .build();
+                tareas.add(respuestaTarea);
+
+            }
+            return tareas;
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - listar - tareas estados instandias proceso ");
+        }
+    }
+
+    /**
+     * Permite listar tareas asociados a usuarios por estados
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
+    @Override
+    public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws SystemException {
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+        Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
+        List<Status> estadosActivos = estadosActivos(estadosEnviados);
+        try {
+            logger.info("iniciar - listar tareas estados usuarios: {}", entrada);
+            taskService = obtenerEngine(entrada).getTaskService();
+            List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
+            for (TaskSummary task : tasks) {
 
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
@@ -487,82 +591,114 @@ public class ProcessService implements IProcessServices {
                         .build();
                 tareas.add(respuestaTarea);
 
+            }
+            return tareas;
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - listar tareas estados usuarios ");
         }
-        return tareas;
     }
 
 
     /**
      * Permite enviar una sennal a un proceso
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue invocado
      * @throws IOException
      * @throws JSONException
      */
     @Override
-    public RespuestaProcesoDTO enviarSenalProceso(EntradaProcesoDTO entrada) throws IOException, JSONException {
+    public RespuestaProcesoDTO enviarSenalProceso(EntradaProcesoDTO entrada) throws SystemException {
 
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
+        try {
+            logger.info("iniciar - enviar sennal a proceso: {}", entrada);
+            ksession = obtenerEngine(entradaManual).getKieSession();
+            ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
+            String nombreSennal = entrada.getParametros().getOrDefault(parametroSennal, "estadoDigitalizacion").toString();
 
-        ksession = obtenerEngine(entradaManual).getKieSession();
-        ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
-        String nombreSennal = entrada.getParametros().getOrDefault("nombreSennal","estadoDigitalizacion").toString();
-
-        org.json.JSONObject jsonProceso = new org.json.JSONObject();
-        for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
-            if (!"nombreSennal".equalsIgnoreCase(entry.getKey())) {
-                jsonProceso.put(entry.getKey(), entry.getValue().toString());
+            org.json.JSONObject jsonProceso = new org.json.JSONObject();
+            for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
+                if (!parametroSennal.equalsIgnoreCase(entry.getKey())) {
+                    jsonProceso.put(entry.getKey(), entry.getValue().toString());
+                }
             }
+            String datosProceso = jsonProceso.toString();
+            logger.info("JSON: ".concat(datosProceso));
+            ksession.signalEvent(nombreSennal, datosProceso, processInstance.getId());
+            return RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(processInstance.getId()))
+                    .nombreProceso(processInstance.getProcessId())
+                    .estado(String.valueOf(processInstance.getState()))
+                    .idDespliegue(entradaManual.getIdDespliegue())
+                    .build();
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - enviar sennal a proceso ");
         }
-        String datosProceso = jsonProceso.toString();
-        logger.info("JSON: ".concat(datosProceso));
-        ksession.signalEvent(nombreSennal, datosProceso, processInstance.getId());
-        return RespuestaProcesoDTO.newInstance()
-                .codigoProceso(String.valueOf(processInstance.getId()))
-                .nombreProceso(processInstance.getProcessId())
-                .estado(String.valueOf(processInstance.getState()))
-                .idDespliegue(entradaManual.getIdDespliegue())
-                .build();
     }
 
     /**
      * Permite invocar automaticamente una sennal
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue invocado
      * @throws IOException
      * @throws JSONException
      */
     @Override
-    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws IOException, JSONException {
+    public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entrada) throws SystemException {
 
         EntradaProcesoDTO entradaManual = new EntradaProcesoDTO();
         entradaManual.setIdDespliegue(entrada.getIdDespliegue());
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
+        try {
+            logger.info("iniciar -  sennal inicio auntomatico: {}", entrada);
+            ksession = obtenerEngine(entradaManual).getKieSession();
+            String nombreSennal = entrada.getParametros().getOrDefault(parametroSennal, "inicioAutomatico").toString();
 
-        ksession = obtenerEngine(entradaManual).getKieSession();
-        String nombreSennal = entrada.getParametros().getOrDefault("nombreSennal","inicioAutomatico").toString();
-
-        org.json.JSONObject jsonProceso = new org.json.JSONObject();
-        for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
-            if (!"nombreSennal".equalsIgnoreCase(entry.getKey())) {
-                jsonProceso.put(entry.getKey(), entry.getValue().toString());
+            org.json.JSONObject jsonProceso = new org.json.JSONObject();
+            for (Map.Entry<String, Object> entry : entrada.getParametros().entrySet()) {
+                if (!parametroSennal.equalsIgnoreCase(entry.getKey())) {
+                    jsonProceso.put(entry.getKey(), entry.getValue().toString());
+                }
             }
+            String datosProceso = jsonProceso.toString();
+            logger.info("JSON inicio: ".concat(datosProceso));
+            ksession.signalEvent(nombreSennal, datosProceso);
+            return RespuestaProcesoDTO.newInstance()
+                    .idDespliegue(entradaManual.getIdDespliegue())
+                    .build();
+        } catch (Exception e) {
+            logger.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            logger.info("fin - sennal inicio auntomatico ");
         }
-        String datosProceso = jsonProceso.toString();
-        logger.info("JSON inicio: ".concat(datosProceso));
-        ksession.signalEvent(nombreSennal, datosProceso);
-        return  RespuestaProcesoDTO.newInstance()
-                .idDespliegue(entradaManual.getIdDespliegue())
-                .build();
     }
 
 
     /**
      * Permite crear la conexion con el servidor JPBM
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return Objeto conexion JBPM
      * @throws MalformedURLException
@@ -579,11 +715,12 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite permite parsear los estados que son enviados en las llamadas
+     *
      * @param estadosEnviados Enum de estados
      * @return Lista de estados activos en la llamada
      * @throws MalformedURLException
      */
-    private List<Status> estadosActivos(Iterator<EstadosEnum> estadosEnviados) throws MalformedURLException {
+    private List<Status> estadosActivos(Iterator<EstadosEnum> estadosEnviados) {
         List<Status> estadosActivos = new ArrayList<>();
         while (estadosEnviados.hasNext()) {
             switch (estadosEnviados.next()) {
@@ -605,16 +742,16 @@ public class ProcessService implements IProcessServices {
                 case COMPLETADO:
                     estadosActivos.add(Status.Completed);
                     break;
-                case  FALLIDO:
+                case FALLIDO:
                     estadosActivos.add(Status.Failed);
                     break;
-                case  ERROR:
+                case ERROR:
                     estadosActivos.add(Status.Error);
                     break;
-                case  SALIDO:
+                case SALIDO:
                     estadosActivos.add(Status.Exited);
                     break;
-                case  OBSOLETO:
+                case OBSOLETO:
                     estadosActivos.add(Status.Obsolete);
                     break;
                 default:
@@ -627,47 +764,48 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite cambiar el idioma del estado
+     *
      * @param estado cadena de texto con el estado en Ingles
      * @return estado en espannol
      * @throws MalformedURLException
      */
-    private String estadoRespuesta(String estado) throws MalformedURLException {
+    private String estadoRespuesta(String estado) {
         EstadosEnum estadoRespuesta = null;
-            switch (estado) {
-                case "Created":
-                    estadoRespuesta = EstadosEnum.CREADO;
-                    break;
-                case "Ready":
-                    estadoRespuesta = EstadosEnum.LISTO;
-                    break;
-                case "Reserved":
-                    estadoRespuesta = EstadosEnum.RESERVADO;
-                    break;
-                case "Suspended":
-                    estadoRespuesta = EstadosEnum.SUSPENDIDO;
-                    break;
-                case "InProgress":
-                    estadoRespuesta = EstadosEnum.ENPROGRESO;
-                    break;
-                case "Completed":
-                    estadoRespuesta = EstadosEnum.COMPLETADO;
-                    break;
-                case  "Failed":
-                    estadoRespuesta = EstadosEnum.FALLIDO;
-                    break;
-                case  "Error":
-                    estadoRespuesta = EstadosEnum.ERROR;
-                    break;
-                case  "Exited":
-                    estadoRespuesta = EstadosEnum.SALIDO;
-                    break;
-                case  "Obsolete":
-                    estadoRespuesta = EstadosEnum.OBSOLETO;
-                    break;
-                default:
-                    logger.info("Invalid selection");
-                    break;
-            }
+        switch (estado) {
+            case "Created":
+                estadoRespuesta = EstadosEnum.CREADO;
+                break;
+            case "Ready":
+                estadoRespuesta = EstadosEnum.LISTO;
+                break;
+            case "Reserved":
+                estadoRespuesta = EstadosEnum.RESERVADO;
+                break;
+            case "Suspended":
+                estadoRespuesta = EstadosEnum.SUSPENDIDO;
+                break;
+            case "InProgress":
+                estadoRespuesta = EstadosEnum.ENPROGRESO;
+                break;
+            case "Completed":
+                estadoRespuesta = EstadosEnum.COMPLETADO;
+                break;
+            case "Failed":
+                estadoRespuesta = EstadosEnum.FALLIDO;
+                break;
+            case "Error":
+                estadoRespuesta = EstadosEnum.ERROR;
+                break;
+            case "Exited":
+                estadoRespuesta = EstadosEnum.SALIDO;
+                break;
+            case "Obsolete":
+                estadoRespuesta = EstadosEnum.OBSOLETO;
+                break;
+            default:
+                logger.info("Invalid selection");
+                break;
+        }
 
         if (estadoRespuesta != null) {
             return estadoRespuesta.toString();
@@ -677,11 +815,12 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite crear lista de parametros para realizar llamada
+     *
      * @param entrada Objeto que contiene los parametros de entrada para un proceso
      * @return lista de valores
      */
     private List<NameValuePair> listaEstadosProceso(EntradaProcesoDTO entrada) {
-        List<NameValuePair> estadoProceso= new ArrayList<>();
+        List<NameValuePair> estadoProceso = new ArrayList<>();
 
         for (String key : entrada.getParametros().keySet()) {
             Object value = entrada.getParametros().get(key);
@@ -694,7 +833,8 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite procesar el json que devuelve la lista de los procesos
-     * @param respuestaJson objeto json que se optiene de la respuesta al servicio
+     *
+     * @param respuestaJson objeto json que se obtiene de la respuesta al servicio
      * @return lista de procesos
      * @throws JSONException
      */
@@ -720,8 +860,9 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite procesa la lista de procesos por usuario
+     *
      * @param respuestaJson
-     * @return objeto json que se optiene de la respuesta al servicio
+     * @return objeto json que se obtiene de la respuesta al servicio
      * @throws JSONException
      */
     private List<RespuestaProcesoDTO> procesarListaProcesosUsuario(JSONObject respuestaJson) throws JSONException {

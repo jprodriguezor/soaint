@@ -24,7 +24,7 @@ export class LoginEffects {
     .switchMap(
       (payload) => this.loginSandbox.login({login: payload.username, password: payload.password})
         .mergeMap((response: any) => [
-          new login.LoginSuccessAction({token: response.token}),
+          new login.LoginSuccessAction(response),
           go('/home')
         ])
         .catch(error => Observable.of(new login.LoginFailAction({error: error})))

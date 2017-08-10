@@ -22,6 +22,7 @@ import {
   getSelectedDependencyGroupFuncionario,
   getSuggestionsDependencyGroupFuncionarioArray
 } from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {createSelector} from 'reselect';
 
 
 @Injectable()
@@ -32,6 +33,12 @@ export class AdminLayoutSandbox {
 
   selectorLayoutMode(): Observable<models.MenuOrientation> {
     return this._store.select(selectors.LayoutMode);
+  }
+
+  selectorUsername(): Observable<string> {
+    return this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+      return profile ? profile.firstName + ' ' + profile.lastName : '';
+    }));
   }
 
   selectorProfileMode(): Observable<models.ProfileMode> {

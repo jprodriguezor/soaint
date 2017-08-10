@@ -1,8 +1,10 @@
 import {ActionTypes, Actions} from './login-actions';
 import {tassign} from 'tassign';
+import {UserProfile} from '../models/user-profile.model';
 
 export interface State {
   token: string,
+  profile: UserProfile;
   isAuthenticated: boolean,
   isLoading: boolean,
   error: string
@@ -10,6 +12,7 @@ export interface State {
 
 const initialState: State = {
   token: null,
+  profile: null,
   isLoading: false,
   error: null,
   isAuthenticated: false
@@ -27,6 +30,7 @@ export function reducer(state = initialState, action: Actions) {
     case ActionTypes.LOGIN_SUCCESS:
       return tassign(state, {
         token: action.payload.token,
+        profile: action.payload.profile,
         isLoading: false,
         error: null,
         isAuthenticated: true
@@ -35,6 +39,7 @@ export function reducer(state = initialState, action: Actions) {
     case ActionTypes.LOGIN_FAIL:
       return tassign(state, {
         token: null,
+        profile: null,
         error: action.payload.error,
         isLoading: false
       });
@@ -42,6 +47,7 @@ export function reducer(state = initialState, action: Actions) {
     case ActionTypes.LOGOUT:
       return tassign(state, {
         token: null,
+        profile: null,
         error: null,
         isLoading: false,
         isAuthenticated: false

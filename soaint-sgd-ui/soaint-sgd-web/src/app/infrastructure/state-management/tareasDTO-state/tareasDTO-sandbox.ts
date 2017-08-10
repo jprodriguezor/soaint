@@ -11,14 +11,24 @@ import {ApiBase} from '../../api/api-base';
 import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {ROUTES_PATH} from '../../../app.routes';
+import {Subscription} from 'rxjs/Subscription';
+import {createSelector} from 'reselect';
 
 @Injectable()
 export class Sandbox {
 
   routingStartState = false;
 
+  authPayload: { usuario: string, pass: string } | {};
+  authPayloadUnsubscriber: Subscription;
+
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
+    this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+      return profile ? {usuario: profile.username, pass: profile.password} : {};
+    })).subscribe((value) => {
+      this.authPayload = value;
+    });
   }
 
   loadData(payload: any) {
@@ -29,8 +39,8 @@ export class Sandbox {
         'LISTO'
       ]
     });
-    return this._api.post(environment.tasksForStatus_endpoint, clonePayload);
-    // return Observable.of(this.getMockData());
+    return this._api.post(environment.tasksForStatus_endpoint,
+      Object.assign({}, clonePayload, this.authPayload));
   }
 
   isTaskRoutingStarted() {
@@ -55,11 +65,13 @@ export class Sandbox {
         'idTarea': task.idTarea
       }
     }
-    return this._api.post(environment.tasksStartProcess, overPayload);
+    return this._api.post(environment.tasksStartProcess,
+      Object.assign({}, overPayload, this.authPayload));
   }
 
   completeTask(payload: any) {
-    return this._api.post(environment.tasksCompleteProcess, payload);
+    return this._api.post(environment.tasksCompleteProcess,
+      Object.assign({}, payload, this.authPayload));
   }
 
   filterDispatch(query) {
@@ -78,7 +90,6 @@ export class Sandbox {
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }
   }
-
 
   completeTaskDispatch(payload: any) {
     this._store.dispatch(new actions.CompleteTaskAction(payload));
@@ -111,129 +122,6 @@ export class Sandbox {
 
   loadDispatch(payload?) {
     this._store.dispatch(new actions.LoadAction(payload));
-  }
-
-  getMockData() {
-    return [
-      {
-        'idTarea': '430',
-        'nombre': 'entrardata',
-        'estado': 'Completed',
-        'prioridad': '0',
-        'skipable': 'false',
-        'idResponsable': 'krisv',
-        'fechaCreada': '2017-05-26T16:37:41.723-04:00',
-        'expiration-time': '2017-05-27T17:00:00-04:00',
-        'idInstanciaProceso': '2133',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2139',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'InProgress',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T11:10:53.769-04:00',
-        'tiempoActivacion': '2017-06-16T11:10:53.769-04:00',
-        'idInstanciaProceso': '2133',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2158',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'Reserved',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T12:42:07.488-04:00',
-        'tiempoActivacion': '2017-06-16T12:42:07.488-04:00',
-        'idInstanciaProceso': '2152',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2177',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'Reserved',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T12:42:44.448-04:00',
-        'tiempoActivacion': '2017-06-16T12:42:44.448-04:00',
-        'idInstanciaProceso': '2171',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2196',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'Ready',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T14:39:39.628-04:00',
-        'tiempoActivacion': '2017-06-16T14:39:39.628-04:00',
-        'idInstanciaProceso': '2190',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2215',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'InProgress',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T15:05:47.687-04:00',
-        'tiempoActivacion': '2017-06-16T15:05:47.687-04:00',
-        'idInstanciaProceso': '2209',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2234',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'InProgress',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-16T15:50:46.753-04:00',
-        'tiempoActivacion': '2017-06-16T15:50:46.753-04:00',
-        'idInstanciaProceso': '2228',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      },
-      {
-        'idTarea': '2270',
-        'nombre': 'Radicar COF Entrada',
-        'estado': 'Reserved',
-        'prioridad': '1',
-        'skipable': 'true',
-        'idResponsable': 'krisv',
-        'idCreador': 'krisv',
-        'fechaCreada': '2017-06-17T10:23:07.436-04:00',
-        'tiempoActivacion': '2017-06-17T10:23:07.436-04:00',
-        'idInstanciaProceso': '2264',
-        'idProceso': 'proceso.correspondencia-entrada',
-        'idDespliegue': 'co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.0.0-SNAPSHOT',
-        'idParent': '-1'
-      }
-    ]
   }
 
 

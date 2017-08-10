@@ -47,14 +47,13 @@ public class AgenteControl {
     private int numMaxRedirecciones;
 
     /**
-     *
      * @param agenteDTO
      * @throws BusinessException
      * @throws SystemException
      */
     public void actualizarEstadoAgente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
         try {
-            if (!verificarByIdeAgente(agenteDTO.getIdeAgente())){
+            if (!verificarByIdeAgente(agenteDTO.getIdeAgente())) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("agente.agente_not_exist_by_ideAgente")
                         .buildBusinessException();
@@ -65,7 +64,7 @@ public class AgenteControl {
                     .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                     .executeUpdate();
 
-            if (agenteDTO.getCodEstado().equals(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())){
+            if (agenteDTO.getCodEstado().equals(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())) {
                 CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agenteDTO.getIdeAgente());
                 correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
@@ -83,7 +82,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param agentesDTO
      * @throws SystemException
      */
@@ -91,22 +89,15 @@ public class AgenteControl {
         try {
             String codSede;
             String codDependencia;
-            int numRedirecciones = 0;
 
             for (AgenteDTO agenteDTO : agentesDTO.getAgentes()) {
                 codSede = agenteDTO.getCodSede();
                 codDependencia = agenteDTO.getCodDependencia();
                 AsignacionDTO asignacion = asignacionControl.consultarAsignacionByIdeAgente(agenteDTO.getIdeAgente());
-                if (asignacion != null) {
-                    if (asignacion.getNumRedirecciones() != null)
-                        numRedirecciones = Integer.parseInt(asignacion.getNumRedirecciones());
-                    if (numRedirecciones == numMaxRedirecciones) {
-                        CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByNroRadicado(asignacion.getNroRadicado());
-                        codSede = correspondencia.getCodSede();
-                        codDependencia = correspondencia.getCodDependencia();
-                    }
-                    numRedirecciones++;
-                    asignacionControl.actualizarNumRedirecciones(Integer.toString(numRedirecciones), asignacion.getIdeAsigUltimo());
+                if (!puedeRedireccionar(asignacion)) {
+                    CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByNroRadicado(asignacion.getNroRadicado());
+                    codSede = correspondencia.getCodSede();
+                    codDependencia = correspondencia.getCodDependencia();
                 }
 
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
@@ -125,7 +116,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param ideAgente
      * @return
      */
@@ -137,11 +127,10 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param corAgente
      * @param datosContactoDTOList
      */
-    public static void asignarDatosContacto(CorAgente corAgente, List<DatosContactoDTO> datosContactoDTOList){
+    public static void asignarDatosContacto(CorAgente corAgente, List<DatosContactoDTO> datosContactoDTOList) {
         DatosContactoControl datosContactoControl = new DatosContactoControl();
         for (DatosContactoDTO datosContactoDTO : datosContactoDTOList) {
             TvsDatosContacto datosContacto = datosContactoControl.datosContactoTransform(datosContactoDTO);
@@ -151,7 +140,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param idDocumento
      * @return
      */
@@ -162,7 +150,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param agenteDTO
      * @return
      */
@@ -186,5 +173,21 @@ public class AgenteControl {
                 .indOriginal(agenteDTO.getIndOriginal())
                 .tvsDatosContactoList(new ArrayList<>())
                 .build();
+    }
+
+    /**
+     *
+     * @param asignacion
+     * @return
+     */
+    private boolean puedeRedireccionar(AsignacionDTO asignacion) {
+        if (asignacion != null) {
+            int numRedirecciones = 0;
+            if (asignacion.getNumRedirecciones() != null)
+                numRedirecciones = Integer.parseInt(asignacion.getNumRedirecciones());
+            numRedirecciones++;
+            asignacionControl.actualizarNumRedirecciones(Integer.toString(numRedirecciones), asignacion.getIdeAsigUltimo());
+            return numRedirecciones <= numMaxRedirecciones;
+        } else return true;
     }
 }
