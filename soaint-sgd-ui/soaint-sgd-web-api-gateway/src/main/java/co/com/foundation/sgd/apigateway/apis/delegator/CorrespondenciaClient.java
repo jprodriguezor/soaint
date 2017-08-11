@@ -105,7 +105,10 @@ public class CorrespondenciaClient {
         System.out.println("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
-        return wt.request().header("Authorization","Basic a3Jpc3Y6a3Jpc3Y=")
+        return wt.request()
+                .header("Authorization","Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("X-KIE-ContentType", "json")
+                .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
     }
 }

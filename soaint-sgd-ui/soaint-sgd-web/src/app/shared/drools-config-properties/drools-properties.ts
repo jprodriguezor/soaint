@@ -26,4 +26,15 @@ export class RulesServer {
       }, ...droolsPayload.commands]
     })
   }
+
+  static extractFromResponse(response) {
+    try {
+      console.log(response.result['execution-results'].results[1].value['co.com.soaint.sgd.model.MedioRecepcion']);
+      return response.result['execution-results'].results[1].value['co.com.soaint.sgd.model.MedioRecepcion'];
+    } catch (e) {
+      console.error((<Error>e).message);
+      return {};
+    }
+
+  }
 }
