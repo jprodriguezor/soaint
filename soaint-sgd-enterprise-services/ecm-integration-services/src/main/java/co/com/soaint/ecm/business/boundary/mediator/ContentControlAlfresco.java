@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayInputStream;
@@ -39,8 +40,8 @@ import java.util.*;
 /**
  * Created by Dasiel
  */
+@PropertySource(value={"classpath:configurationServices.properties"})
 @BusinessBoundary
-@NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
 
     static final String CLASEBASE = "claseBase";
