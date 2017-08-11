@@ -17,7 +17,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './funcionarioDTO-actions';
 import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {getFirstDependencyGroupFuncionario, getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors';
+import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors';
 
 @Injectable()
 export class Effects {
