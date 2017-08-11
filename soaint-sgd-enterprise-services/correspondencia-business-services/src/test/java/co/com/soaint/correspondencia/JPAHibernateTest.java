@@ -1,5 +1,7 @@
 package co.com.soaint.correspondencia;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.tools.RunScript;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
@@ -28,6 +30,7 @@ public class JPAHibernateTest {
 
     protected static EntityManagerFactory emf;
     protected static EntityManager em;
+    private static Logger logger = LogManager.getLogger(JPAHibernateTest.class.getName());
 
     @BeforeClass
     public static void init() {
@@ -44,8 +47,8 @@ public class JPAHibernateTest {
                 try {
                     File script = new File(getClass().getResource("/data.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (Exception ex){
+                    logger.error("Test - a system error has occurred", ex);
                 }
 
             }
