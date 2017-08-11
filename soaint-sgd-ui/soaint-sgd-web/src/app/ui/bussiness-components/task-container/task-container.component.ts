@@ -6,10 +6,10 @@ import {getEntities as getProcessEntities} from '../../../infrastructure/state-m
 import {Observable} from 'rxjs/Observable';
 import {getActiveTask, getNextTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from '../../../domain/tareaDTO';
-import {back, go} from '@ngrx/router-store';
-import {subscribeOn} from 'rxjs/operator/subscribeOn';
+import {go} from '@ngrx/router-store';
 import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
-import {ROUTES_PATH} from '../../../app.routes';
+import {ROUTES_PATH} from '../../../app.route-names';
+
 
 @Component({
   selector: 'app-task-container',

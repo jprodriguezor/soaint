@@ -82,7 +82,6 @@ export class DatosRemitenteComponent implements OnInit {
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
-
   }
 
   listenForChanges() {
@@ -115,6 +114,8 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   onSelectTipoPersona(value) {
+    debugger;
+    console.log(this.validations, value);
     this.visibility = {
       'tipoPersona': this.visibility.tipoPersona
     };

@@ -9,16 +9,13 @@ import {ApiBase} from '../../api/api-base';
 import {Subscription} from 'rxjs/Subscription';
 
 @Injectable()
-export class Sandbox implements OnInit, OnDestroy {
+export class Sandbox implements OnDestroy {
 
   authPayload: { usuario: string, pass: string } |  {};
   authPayloadUnsubscriber: Subscription;
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
-  }
-
-  ngOnInit() {
     this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
       return profile ? {usuario: profile.username, pass: profile.password} : {};
     })).subscribe((value) => {

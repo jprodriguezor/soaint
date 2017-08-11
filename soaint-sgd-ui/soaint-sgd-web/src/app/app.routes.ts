@@ -8,18 +8,7 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
-
-
-export const ROUTES_PATH = {
-  task: 'task',
-  radicarCofEntrada: 'radicar-comunicaciones',
-  digitalizarDocumento: 'digitalizar-documentos',
-  dashboard: 'home',
-  login: 'login',
-  workspace: 'workspace',
-  processList: 'process',
-  asignacionComunicaciones: 'asignacion-comunicaciones'
-};
+import {ROUTES_PATH} from './app.route-names';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},

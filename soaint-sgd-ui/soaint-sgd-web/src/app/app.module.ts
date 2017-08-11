@@ -19,7 +19,7 @@ import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, B
 // import { PAGE_MODULES } from './ui/page-components/__page-components.include';
 
 // third party libs | components | modules
-import {PRIMENG_MODULES, PrintDirective, PIPES, ConfirmationService} from './shared/__shared.include';
+import {PRIMENG_MODULES, PrintDirective, DynamicDisableDirective, PIPES, ConfirmationService} from './shared/__shared.include';
 import {EmailValidator} from './shared/validators/email.validator';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
@@ -108,6 +108,7 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
   declarations: [
     AppComponent,
     PrintDirective,
+    DynamicDisableDirective,
     PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES
