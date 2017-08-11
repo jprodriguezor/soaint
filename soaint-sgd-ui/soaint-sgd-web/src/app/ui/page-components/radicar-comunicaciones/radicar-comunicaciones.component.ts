@@ -101,6 +101,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   sedeUnsubscriber: Subscription;
   validDatosGeneralesUnsubscriber: Subscription;
   reqDigitInmediataUnsubscriber: Subscription;
+  radicarChildrensValid$: Observable<any>;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
@@ -381,27 +382,30 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
   getDatosContactos(): Array<ContactoDTO> {
     const contactos = [];
-    const contactsRemitente = (this.datosRemitente.datosContactos) ? this.datosRemitente.datosContactos.contacts : [];
-    contactsRemitente.forEach(contact => {
-      contactos.push({
-        ideContacto: null,
-        nroViaGeneradora: contact.noViaPrincipal || null,
-        nroPlaca: contact.nroPlaca || null,
-        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
-        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
-        codPostal: null,
-        direccion: contact.direccion || null,
-        celular: contact.celular || null,
-        telFijo: contact.numeroTel || null,
-        extension: null,
-        corrElectronico: contact.correoEle || null,
-        codPais: contact.pais ? contact.pais.codigo : null,
-        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
-        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
-        provEstado: null,
-        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
+    if (this.datosRemitente.visibility.datosContacto) {
+      const contactsRemitente = (this.datosRemitente.datosContactos) ? this.datosRemitente.datosContactos.contacts : [];
+      contactsRemitente.forEach(contact => {
+        contactos.push({
+          ideContacto: null,
+          nroViaGeneradora: contact.noViaPrincipal || null,
+          nroPlaca: contact.nroPlaca || null,
+          codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
+          codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
+          codPostal: null,
+          direccion: contact.direccion || null,
+          celular: contact.celular || null,
+          telFijo: contact.numeroTel || null,
+          extension: null,
+          corrElectronico: contact.correoEle || null,
+          codPais: contact.pais ? contact.pais.codigo : null,
+          codDepartamento: contact.departamento ? contact.departamento.codigo : null,
+          codMunicipio: contact.municipio ? contact.municipio.codigo : null,
+          provEstado: null,
+          principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
+        });
       });
-    });
+    }
+
     return contactos;
   }
 
