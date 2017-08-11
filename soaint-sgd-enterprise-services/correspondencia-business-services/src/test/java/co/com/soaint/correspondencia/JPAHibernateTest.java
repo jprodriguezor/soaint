@@ -11,6 +11,7 @@ import org.junit.Test;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,7 +30,7 @@ public class JPAHibernateTest {
     protected static EntityManager em;
 
     @BeforeClass
-    public static void init() throws SQLException {
+    public static void init() {
         emf = Persistence.createEntityManagerFactory("servicios-correspondencia-h2-unit-test");
         em = emf.createEntityManager();
     }
@@ -39,11 +40,11 @@ public class JPAHibernateTest {
         Session session = em.unwrap(Session.class);
         session.doWork(new Work() {
             @Override
-            public void execute(Connection connection) throws SQLException {
+            public void execute(Connection connection) {
                 try {
                     File script = new File(getClass().getResource("/data.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
-                }catch (FileNotFoundException e){
+                }catch (Exception e){
                     e.printStackTrace();
                 }
 
