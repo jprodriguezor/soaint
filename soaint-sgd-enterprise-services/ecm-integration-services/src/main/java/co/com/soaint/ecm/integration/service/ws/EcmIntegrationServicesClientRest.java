@@ -19,7 +19,8 @@ import java.util.List;
 /**
  * Created by Dasiel
  */
-
+//TODO Retornar documento por Id de Documento
+//TODO Permitir diferentes mymetype por extensiones.
 /**
  * Clase que expone las operaciones como servicio Rest
  */

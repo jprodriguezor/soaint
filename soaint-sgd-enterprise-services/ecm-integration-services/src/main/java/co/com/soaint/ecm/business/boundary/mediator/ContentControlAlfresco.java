@@ -42,6 +42,7 @@ import java.util.*;
 @BusinessBoundary
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
+
     static final String CLASEBASE = "claseBase";
     static final String FCMCOR = "F:cmcor:";
     static final String CLASEDEPENDENCIA = "claseDependencia";
@@ -87,6 +88,7 @@ public class ContentControlAlfresco implements ContentControl {
      *
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
      */
+    @Override
     public Conexion obtenerConexion() {
 
         Conexion conexion = new Conexion ( );
@@ -130,6 +132,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param folderFather    Carpeta dentro de la cual se va a crear la carpeta
      * @return Devuelve la carpeta creada dentro del objeto Carpeta
      */
+    @Override
     public Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) {
         Carpeta newFolder = null;
         try {
@@ -143,36 +146,16 @@ public class ContentControlAlfresco implements ContentControl {
 
             switch (classDocumental) {
                 case CLASEBASE:
-                    props.put (PropertyIds.OBJECT_TYPE_ID, FCMCOR + Configuracion.getPropiedad (CLASEBASE));
-                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (CLASEBASE));
-                    props.put ("cmcor:CodigoBase", codOrg);
-
+                    setearPropiedadesCarpetas( props, CLASEBASE, codOrg, "cmcor:CodigoBase",null);
                     break;
                 case CLASEDEPENDENCIA:
-                    props.put (PropertyIds.OBJECT_TYPE_ID, FCMCOR + Configuracion.getPropiedad (CLASEDEPENDENCIA));
-                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (CLASEDEPENDENCIA));
-                    props.put (CMCORCODIGODEPENDENCIA, codOrg);
-                    //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
-                    if (folderFather != null) {
-                        props.put (CMCORCODIGOUNIDADADMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCORCODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCORCODIGOUNIDADADMINPADRE, codOrg);
-                    }
+                    setearPropiedadesCarpetas( props, CLASEDEPENDENCIA, codOrg, CMCORCODIGODEPENDENCIA,folderFather);
                     break;
                 case CLASESERIE:
-                    props.put (PropertyIds.OBJECT_TYPE_ID, FCMCOR + Configuracion.getPropiedad (CLASESERIE));
-                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (CLASESERIE));
-                    props.put ("cmcor:CodigoSerie", codOrg);
-                    if (folderFather != null) {
-                        props.put (CMCORCODIGOUNIDADADMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCORCODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCORCODIGOUNIDADADMINPADRE, codOrg);
-                    }
+                    setearPropiedadesCarpetas( props, CLASESERIE, codOrg, "cmcor:CodigoSerie",folderFather);
                     break;
                 case CLASESUBSERIE:
-                    props.put (PropertyIds.OBJECT_TYPE_ID, FCMCOR + Configuracion.getPropiedad (CLASESUBSERIE));
-                    props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (CLASESUBSERIE));
-                    props.put ("cmcor:CodigoSubserie", codOrg);
+                    setearPropiedadesCarpetas( props, CLASESUBSERIE, codOrg, "cmcor:CodigoSubserie",null);
                     if (folderFather != null) {
                         props.put (CMCORCODIGOUNIDADADMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
                     }
@@ -192,11 +175,22 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
+    void setearPropiedadesCarpetas(Map <String, String> props,String clase, String codOrg,String tipoCarpeta,Carpeta folderFather){
+        props.put (PropertyIds.OBJECT_TYPE_ID, FCMCOR + Configuracion.getPropiedad (clase));
+        props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (clase));
+        props.put (tipoCarpeta, codOrg);
+        if (folderFather != null) {
+            props.put (tipoCarpeta, folderFather.getFolder ( ).getPropertyValue (tipoCarpeta));
+        } else {
+            props.put (tipoCarpeta, codOrg);
+        }
+    }
     /**
      * @param informationArray Arreglo que trae el nombre de la carpeta para formatearlo para ser usado por el ECM
      * @param formatoConfig    Contiene el formato que se le dara al nombre
      * @return Nombre formateado
      */
+    @Override
     public String formatearNombre(String[] informationArray, String formatoConfig) {
         String formatoCadena;
         StringBuilder formatoFinal = new StringBuilder ( );
@@ -320,6 +314,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param carpeta Carpeta a la cual se le va a actualizar el nombre
      * @param nombre  Nuevo nombre de la carpeta
      */
+    @Override
     public void actualizarNombreCarpeta(Carpeta carpeta, String nombre) {
         logger.info ("### Actualizando nombre folder: " + nombre);
         try {
@@ -358,10 +353,8 @@ public class ContentControlAlfresco implements ContentControl {
                     if (codigoFolderCoincide (aux, "metadatoCodSerie", codFolder)) {
                         folderReturn = aux;
                     }
-                } else if (description.equals (Configuracion.getPropiedad (CLASESUBSERIE))) {
-                    if (codigoFolderCoincide (aux, "metadatoCodSubserie", codFolder)) {
+                } else if (description.equals (Configuracion.getPropiedad (CLASESUBSERIE)) && codigoFolderCoincide (aux, "metadatoCodSubserie", codFolder)) {
                         folderReturn = aux;
-                    }
                 }
             }
         }
@@ -391,6 +384,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param carpetaDestino Carpeta a donde se va a mover el documento
      * @return Mensaje de respuesta del metodo(codigo y mensaje)
      */
+    @Override
     public MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino) {
         logger.info ("### Mover documento: " + documento);
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -426,6 +420,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param folder         Carpeta padre de la estructura
      * @return Mensaje de respuesta (codigo y mensaje)
      */
+    @Override
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) {
         logger.info ("### Generando arbol");
 
@@ -446,45 +441,43 @@ public class ContentControlAlfresco implements ContentControl {
                 Carpeta folderFatherContainer = null;
                 //Recorremos la lista organigrama
                 for (OrganigramaDTO organigrama : organigramaList)
-                    switch (bandera) {
-                        case 0:
-                            folderFather = chequearCapetaPadre (folder, organigrama.getCodOrg ( ));
-                            if (folderFather == null) {
-                                logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASEBASE, null);
+                    if (bandera == 0) {
+                        folderFather = chequearCapetaPadre (folder, organigrama.getCodOrg ( ));
+                        if (folderFather == null) {
+                            logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
+                            folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASEBASE, null);
+                        } else {
+                            logger.info ("Organigrama --  La Carpeta ya esta creado: " + folderFather.getFolder ( ).getName ( ));
+                            //Actualización de folder
+                            if (!(organigrama.getNomOrg ( ).equals (folderFather.getFolder ( ).getName ( )))) {
+                                logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
+                                actualizarNombreCarpeta (folderFather, organigrama.getNomOrg ( ));
                             } else {
-                                logger.info ("Organigrama --  La Carpeta ya esta creado: " + folderFather.getFolder ( ).getName ( ));
-                                //Actualización de folder
-                                if (!(organigrama.getNomOrg ( ).equals (folderFather.getFolder ( ).getName ( )))) {
-                                    logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
-                                    actualizarNombreCarpeta (folderFather, organigrama.getNomOrg ( ));
-                                } else {
-                                    logger.info ("Organigrama --  Carpeta creada: " + organigrama.getNomOrg ( ));
-                                }
+                                logger.info ("Organigrama --  Carpeta creada: " + organigrama.getNomOrg ( ));
                             }
-                            bandera++;
-                            folderFatherContainer = folderFather;
-                            break;
+                        }
+                        bandera++;
+                        folderFatherContainer = folderFather;
 
-                        default:
-                            folderSon = chequearCapetaPadre (folderFather, organigrama.getCodOrg ( ));
-                            if (folderSon == null) {
-                                logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                                folderSon = crearCarpeta (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASEDEPENDENCIA, folderFather);
+                    } else {
+                        folderSon = chequearCapetaPadre (folderFather, organigrama.getCodOrg ( ));
+                        if (folderSon == null) {
+                            logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
+                            folderSon = crearCarpeta (folderFather, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASEDEPENDENCIA, folderFather);
+                        } else {
+                            logger.info ("Organigrama --  El folder ya esta creado2: " + folderSon.getFolder ( ).getName ( ));
+                            //Actualización de folder
+                            if (!(organigrama.getNomOrg ( ).equals (folderSon.getFolder ( ).getName ( )))) {
+                                logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
+                                actualizarNombreCarpeta (folderSon, organigrama.getNomOrg ( ));
                             } else {
-                                logger.info ("Organigrama --  El folder ya esta creado2: " + folderSon.getFolder ( ).getName ( ));
-                                //Actualización de folder
-                                if (!(organigrama.getNomOrg ( ).equals (folderSon.getFolder ( ).getName ( )))) {
-                                    logger.info ("Se debe actualizar al nombre: " + organigrama.getNomOrg ( ));
-                                    actualizarNombreCarpeta (folderSon, organigrama.getNomOrg ( ));
-                                } else {
-                                    logger.info ("Organigrama --  Carpeta ya creada: " + organigrama.getNomOrg ( ));
-                                }
+                                logger.info ("Organigrama --  Carpeta ya creada: " + organigrama.getNomOrg ( ));
                             }
-                            folderFather = folderSon;
-                            folderFatherContainer = folderSon;
-                            bandera++;
-                            break;
+                        }
+                        folderFather = folderSon;
+                        folderFatherContainer = folderSon;
+                        bandera++;
+
                     }
                 //Recorremos la lista de Dependencias TRD
                 for (ContenidoDependenciaTrdDTO dependencias : trdList) {
@@ -563,6 +556,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Devuelve el id de la carpeta creada
      * @throws IOException Excepcion ante errores de entrada/salida
      */
+    @Override
     public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
         logger.info ("Se entra al metodo subirDocumento");

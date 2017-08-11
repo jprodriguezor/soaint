@@ -34,12 +34,9 @@ public final class Configuracion {
     @Value("${ecm}")
     private static String ecm;
 
+    private Configuracion() {
 
-
-
-
-
-
+    }
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *
