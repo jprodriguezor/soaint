@@ -9,14 +9,11 @@ import {
   HostListener,
   ChangeDetectionStrategy
 } from '@angular/core';
-import {MessageBridgeService, MessageType} from 'app/infrastructure/web/message-bridge.service';
-import {Subscription} from 'rxjs/Subscription';
-import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
 
 import {MenuOrientation} from './models/admin-layout.model';
 import {Observable} from 'rxjs/Observable';
 import {AdminLayoutSandbox} from './redux-state/admin-layout-sandbox';
-import {MENU_OPTIONS} from './menu-options';
+import {MENU_OPTIONS} from '../../../../shared/menu-options/menu-options';
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
 
 declare var jQuery: any;
@@ -82,6 +79,7 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
 
   funcionarioDependenciaSuggestions$: Observable<ConstanteDTO[]>;
   funcionarioDependenciaSelected$: Observable<ConstanteDTO>;
+  usernameAuth$: Observable<string>;
 
   constructor(private _sandbox: AdminLayoutSandbox, public renderer: Renderer) {
   }
@@ -91,8 +89,8 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     this.menuOptions = MENU_OPTIONS;
 
     this.processOptions = this._sandbox.selectorDeployedProcess();
-
     this.isAuthenticated$ = this._sandbox.selectorIsAutenticated();
+    this.usernameAuth$ = this._sandbox.selectorUsername();
     this.layoutWidth$ = this._sandbox.selectorWindowWidth();
     this.funcionarioDependenciaSuggestions$ = this._sandbox.selectorFuncionarioAuthDependenciasSuggestions();
     this.funcionarioDependenciaSelected$ = this._sandbox.selectorFuncionarioAuthDependenciaSelected();

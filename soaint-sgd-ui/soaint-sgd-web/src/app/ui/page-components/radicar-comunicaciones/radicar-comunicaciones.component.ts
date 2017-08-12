@@ -1,4 +1,7 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
+  AfterContentInit
+} from '@angular/core';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {AgentDTO} from 'app/domain/agentDTO';
 import {DocumentoDTO} from 'app/domain/documentoDTO';
@@ -7,7 +10,6 @@ import {ReferidoDTO} from 'app/domain/referidoDTO';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {ContactoDTO} from 'app/domain/contactoDTO';
-import {ActivatedRoute} from '@angular/router';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
 import {Observable} from 'rxjs/Observable';
@@ -27,6 +29,19 @@ import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
+import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {TareaDTO} from '../../../domain/tareaDTO';
+import {TaskForm} from '../../../shared/interfaces/task-form.interface';
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
+import {
+  getMediosRecepcionVentanillaData
+} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -37,7 +52,9 @@ const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RadicarComunicacionesComponent implements OnInit {
+export class RadicarComunicacionesComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy, TaskForm {
+
+  type = TaskTypes.TASK_FORM;
 
   @ViewChild('datosGenerales') datosGenerales;
 
@@ -75,45 +92,73 @@ export class RadicarComunicacionesComponent implements OnInit {
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
 
-  authUserFuncionario$: Observable<any>;
-  authUserFuncionarioDependenciaSelected$: Observable<any>;
-  subscribeAuthUserFuncionario: any;
-  subscribeauthUserFuncionarioDependenciaSelected: any;
+  mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
+  tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
 
+  // Unsubscribers
+  activeTaskUnsubscriber: Subscription;
+  radicacionUnsubscriber: Subscription;
+  sedeUnsubscriber: Subscription;
+  validDatosGeneralesUnsubscriber: Subscription;
+  reqDigitInmediataUnsubscriber: Subscription;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
-              private route: ActivatedRoute,
               private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(values => this.task = values);
-    this.formsTabOrder.push(this.datosGenerales);
-    this.formsTabOrder.push(this.datosRemitente);
-    this.formsTabOrder.push(this.datosDestinatario);
+    // Default Selection for Children Components bindings
+    this.mediosRecepcionDefaultSelection$ = this._store.select(getMediosRecepcionVentanillaData);
+    this.tipoDestinatarioDefaultSelection$ = this._store.select(getDestinatarioPrincial);
 
+    // Datalist Load bindings
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
     this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
+    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
+      this.task = activeTask;
+    });
+  }
 
-    setTimeout(() => {
-      const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
-      Observable.combineLatest(
-        sedeRemitente.statusChanges,
-        sedeRemitente.valueChanges
-      )
-        .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
-        .distinctUntilChanged()
-        .subscribe(([status, value]) => {
-          if (status === 'VALID') {
-            this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
-            this._sandbox.dispatchSedeDestinatarioEntradaFilter(value);
-          } else if (status === 'DISABLED') {
-            this._sandbox.dispatchSedeDestinatarioEntradaFilter(null);
-          }
-        });
-    }, 400);
+  ngAfterContentInit() {
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
+  }
+
+  ngAfterViewInit() {
+
+    const sedeRemitente = this.datosRemitente.form.get('sedeAdministrativa');
+    this.sedeUnsubscriber = Observable.combineLatest(
+      sedeRemitente.statusChanges,
+      sedeRemitente.valueChanges
+    )
+      .filter(([status, value]) => status === 'VALID' || status === 'DISABLED')
+      .distinctUntilChanged()
+      .subscribe(([status, value]) => {
+        if (status === 'VALID') {
+          this.datosDestinatario.deleteDestinatarioIqualRemitente(value);
+          this._sandbox.dispatchSedeDestinatarioEntradaFilter(value);
+        } else if (status === 'DISABLED') {
+          this._sandbox.dispatchSedeDestinatarioEntradaFilter(null);
+        }
+      });
+
+    this.validDatosGeneralesUnsubscriber = this.datosGenerales.form.statusChanges.filter(value => value === 'VALID').first()
+      .subscribe(() => {
+        this._store.dispatch(new LoadDatosRemitenteAction())
+      });
+
+    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigitInmediata').valueChanges
+      .subscribe(value => {
+        const payload: LoadNextTaskPayload = {
+          idProceso: this.task.idProceso,
+          idInstanciaProceso: this.task.idInstanciaProceso,
+          idDespliegue: this.task.idDespliegue
+        };
+        this._store.dispatch(new ScheduleNextTaskAction(payload));
+      });
   }
 
   radicarComunicacion() {
@@ -131,6 +176,7 @@ export class RadicarComunicacionesComponent implements OnInit {
     }
 
     agentesList.push(...this.getAgentesDestinatario());
+
     this.radicacion = {
       correspondencia: this.getCorrespondencia(),
       agenteList: agentesList,
@@ -140,13 +186,13 @@ export class RadicarComunicacionesComponent implements OnInit {
       datosContactoList: this.getDatosContactos()
     };
 
-    this._sandbox.radicar(this.radicacion).subscribe((response) => {
+    this.radicacionUnsubscriber = this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
-      this.radicacion = response;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
+
       const ticketRadicado = {
         anexos: this.datosGenerales.descripcionAnexos.length,
         folios: this.valueGeneral.numeroFolio,
@@ -166,15 +212,22 @@ export class RadicarComunicacionesComponent implements OnInit {
       this.showTicketRadicado();
       this.disableEditionOnForms();
 
-      this._taskSandBox.completeTask({
+      this._store.dispatch(new RadicarSuccessAction({
+        tipoComunicacion: this.valueGeneral.tipoComunicacion,
+        numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+      }));
+
+      this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
-          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
+          digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
+          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
+
         }
-      }).subscribe();
+      });
     });
   }
 
@@ -193,7 +246,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       nroDocuIdentidad: null,
       codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
       codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
-      fecAsignacion: this.date.toISOString(),
+      fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
       codEstado: null,
       indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
@@ -215,7 +268,7 @@ export class RadicarComunicacionesComponent implements OnInit {
       nroDocuIdentidad: this.valueRemitente.nroDocumentoIdentidad,
       codSede: null,
       codDependencia: null,
-      fecAsignacion: this.date.toISOString(),
+      fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
       indOriginal: null,
       codEstado: null
@@ -240,7 +293,7 @@ export class RadicarComunicacionesComponent implements OnInit {
         nroDocuIdentidad: null,
         codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
         codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
-        fecAsignacion: this.date.toISOString(),
+        fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
         indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
@@ -310,16 +363,15 @@ export class RadicarComunicacionesComponent implements OnInit {
       codEmpMsj: null,
       nroGuia: null,
       fecVenGestion: null,
-      codEstado: null
+      codEstado: null,
+      inicioConteo: this.valueGeneral.inicioConteo || ''
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
-      console.log(funcionario);
       correspondenciaDto.codFuncRadica = funcionario.id;
     }).unsubscribe();
 
     this._store.select(getSelectedDependencyGroupFuncionario).subscribe(dependencia => {
-      console.log(dependencia);
       correspondenciaDto.codSede = dependencia.codSede;
       correspondenciaDto.codDependencia = dependencia.codigo;
     }).unsubscribe();
@@ -369,10 +421,6 @@ export class RadicarComunicacionesComponent implements OnInit {
     this.editable = false;
   }
 
-  navigateBackToWorkspace() {
-    this._taskSandBox.navigateToWorkspace();
-  }
-
   openNext() {
     this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
   }
@@ -383,6 +431,22 @@ export class RadicarComunicacionesComponent implements OnInit {
 
   updateTabIndex(event) {
     this.tabIndex = event.index;
+  }
+
+  getTask(): TareaDTO {
+    return this.task;
+  }
+
+  save(): Observable<any> {
+    return Observable.of(true).delay(5000);
+  }
+
+  ngOnDestroy() {
+    this.activeTaskUnsubscriber.unsubscribe();
+    this.validDatosGeneralesUnsubscriber.unsubscribe();
+    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    this.sedeUnsubscriber.unsubscribe();
+    this.radicacionUnsubscriber.unsubscribe();
   }
 
 }

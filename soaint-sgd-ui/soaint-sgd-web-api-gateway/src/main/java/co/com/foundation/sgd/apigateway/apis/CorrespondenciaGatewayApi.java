@@ -7,6 +7,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import com.sun.jersey.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,10 +97,41 @@ public class CorrespondenciaGatewayApi {
     }
 
     @POST
+    @Path("/reasignar")
+    public Response reasignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
+        Response response = client.asignarComunicaciones(asignacionesDTO);
+        AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
+        responseObject.getAsignaciones().forEach(asignacionDTO -> {
+            EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+            entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
+            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
+            entradaProceso.setParametros(parametros);
+            this.procesoClient.reasignarTarea(entradaProceso);
+        });
+        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
     @Path("/redireccionar")
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.redireccionarComunicaciones(agentesDTO);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/metricasTiempo")
+    public Response metricasTiempo(@QueryParam("payload") String payload) {
+        System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.metricasTiempoDrools(payload);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }

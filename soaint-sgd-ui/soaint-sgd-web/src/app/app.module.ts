@@ -8,6 +8,8 @@ import {AppRoutes} from './app.routes';
 import 'rxjs/add/operator/toPromise';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { ToastrModule } from 'ngx-toastr';
+
 
 // APP COMPONENTS
 import {AppComponent} from './app.component';
@@ -17,7 +19,7 @@ import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, B
 // import { PAGE_MODULES } from './ui/page-components/__page-components.include';
 
 // third party libs | components | modules
-import {PRIMENG_MODULES, PrintDirective, PIPES, ConfirmationService} from './shared/__shared.include';
+import {PRIMENG_MODULES, PrintDirective, DynamicDisableDirective, PIPES, ConfirmationService} from './shared/__shared.include';
 import {EmailValidator} from './shared/validators/email.validator';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
@@ -29,8 +31,9 @@ import {INFRASTRUCTURE_SERVICES, API_SERVICES, EFFECTS_MODULES} from './infrastr
 // Redux Store and Colaterals
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {ReduxStore} from './infrastructure/redux-store/__redux-states';
+import {ReduxStore} from './infrastructure/redux-store/__redux-config';
 import { RouterStoreModule } from '@ngrx/router-store';
+import {PdfViewerComponent} from 'ng2-pdf-viewer';
 
 
 @NgModule({
@@ -43,6 +46,19 @@ import { RouterStoreModule } from '@ngrx/router-store';
     BrowserAnimationsModule,
     NgxChartsModule,
     NgxBarcodeModule,
+    ToastrModule.forRoot({
+      closeButton: true, // show close button
+      timeOut: 3000, // time to live
+      enableHtml: true, // allow html in message. (UNSAFE)
+      extendedTimeOut: 1000, // time to close after a user hovers over toast
+      progressBar: true, // show progress bar
+      newestOnTop: true, // new toast placement
+      // preventDuplicates: true,
+      // toastClass: string = 'toast'; // class on toast
+      // positionClass: string = 'toast-top-right'; // class on toast
+      // titleClass: string = 'toast-title'; // class inside toast on title
+      // messageClass: string = 'toast-message';
+    }),
     // PrimeNG Modules => view components
     ...PRIMENG_MODULES,
     // third party libs
@@ -92,6 +108,8 @@ import { RouterStoreModule } from '@ngrx/router-store';
   declarations: [
     AppComponent,
     PrintDirective,
+    DynamicDisableDirective,
+    PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES
   ],

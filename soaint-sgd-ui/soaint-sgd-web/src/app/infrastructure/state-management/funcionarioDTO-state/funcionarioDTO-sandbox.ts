@@ -2,24 +2,24 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import * as actions from './funcionarioDTO-actions';
+import {ApiBase} from '../../api/api-base';
 
 
 @Injectable()
 export class Sandbox {
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService) {
+              private _api: ApiBase) {
   }
 
   loadAuthenticatedFuncionario(payload?: any) {
-    return this._listSelectionService.list(environment.obtenerFuncionario_endpoint, payload);
+    return this._api.list(`${environment.obtenerFuncionario_endpoint}/${payload.username}`, payload.payload);
   }
 
   loadAllFuncionarios(payload?: any) {
     const endpoint = `${environment.listarFuncionarios_endpoint}/${payload}`;
-    return this._listSelectionService.list(endpoint);
+    return this._api.list(endpoint);
   }
 
   loadDispatch(payload?) {

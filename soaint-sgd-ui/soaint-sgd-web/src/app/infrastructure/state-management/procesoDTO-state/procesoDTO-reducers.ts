@@ -6,7 +6,7 @@ import {ProcesoDTO} from 'app/domain/procesoDTO';
 export interface State {
   ids: string[];
   entities: { [codigoProceso: number]: ProcesoDTO };
-  menuOptions: any[]
+  menuOptions: any[];
   selectedId: number;
 }
 

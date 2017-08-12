@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.webservice.client.SecurityCardbridgeClient;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
+import co.com.foundation.sgd.dto.AccountDTO;
 import co.com.foundation.sgd.infrastructure.KeyManager;
 import co.com.soaint.foundation.canonical.seguridad.UsuarioDTO;
 
@@ -44,7 +45,8 @@ public class SecuridadGatewayApi {
                 KeyManager km = KeyManager.getInstance();
                 String token = km.issueToken(user.getLogin(), uriInfo.getAbsolutePath().toString());
                 // Return the token on the response
-                return Response.ok("{ \"token\": \"" + token + "\" }").header(AUTHORIZATION, "Bearer " + token).build();
+                AccountDTO account = new AccountDTO(token, context.getPrincipalContext());
+                return Response.ok(account).header(AUTHORIZATION, "Bearer " + token).build();
             } else {
                 return Response.status(UNAUTHORIZED).build();
             }

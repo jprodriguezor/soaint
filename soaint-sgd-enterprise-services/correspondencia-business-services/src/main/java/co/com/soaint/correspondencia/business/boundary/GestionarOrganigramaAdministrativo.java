@@ -3,18 +3,13 @@ package co.com.soaint.correspondencia.business.boundary;
 import co.com.soaint.correspondencia.business.control.OrganigramaAdministrativoControl;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -27,108 +22,59 @@ import java.util.List;
  * Purpose: BOUNDARY - business component services
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
+@NoArgsConstructor
 @BusinessBoundary
 public class GestionarOrganigramaAdministrativo {
     // [fields] -----------------------------------
 
-    private static Logger logger = LogManager.getLogger(GestionarCorrespondencia.class.getName());
-
-    @PersistenceContext
-    private EntityManager em;
-
     @Autowired
-    OrganigramaAdministrativoControl organigramaAdministrativoControl;
+    OrganigramaAdministrativoControl control;
 
     // ----------------------
 
-    public GestionarOrganigramaAdministrativo() {
-        super();
-    }
-
+    /**
+     *
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException {
-        try {
-            OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
-                    .getSingleResult();
-            return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
-                    .setParameter("ID_PADRE", String.valueOf(raiz.getIdeOrgaAdmin()))
-                    .setHint("org.hibernate.cacheable", true)
-                    .getResultList();
-        } catch (NoResultException n) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("organigrama.no_data")
-                    .withRootException(n)
-                    .buildBusinessException();
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+        return control.listarDescendientesDirectosDeElementoRayz();
     }
 
+    /**
+     *
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> consultarOrganigrama() throws BusinessException, SystemException {
-        try {
-            OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
-                    .getSingleResult();
-
-            List<OrganigramaItemDTO> organigramaItemDTOList = organigramaAdministrativoControl.listarElementosDeNivelInferior(raiz.getIdeOrgaAdmin());
-            organigramaItemDTOList.add(raiz);
-
-            return organigramaItemDTOList;
-        } catch (NoResultException n) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("organigrama.no_data")
-                    .withRootException(n)
-                    .buildBusinessException();
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+        return control.consultarOrganigrama();
     }
 
+    /**
+     *
+     * @param ideOrgaAdmin
+     * @return
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<OrganigramaItemDTO> listarElementosDeNivelInferior(BigInteger ideOrgaAdmin) throws SystemException {
-        try {
-            return organigramaAdministrativoControl.listarElementosDeNivelInferior(ideOrgaAdmin);
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+        return control.listarElementosDeNivelInferior(ideOrgaAdmin);
     }
 
+    /**
+     *
+     * @param ideOrgaAdmin
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) throws BusinessException, SystemException {
-        try {
-            OrganigramaItemDTO organigramaItem = organigramaAdministrativoControl.consultarPadreDeSegundoNivel(ideOrgaAdmin);
-            if (organigramaItem == null) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("organigrama.no_padre_segundo_nivel")
-                        .buildBusinessException();
-            }
-            return organigramaItem;
-        } catch (NoResultException n) {
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("organigrama.no_data")
-                    .withRootException(n)
-                    .buildBusinessException();
-        } catch (BusinessException e) {
-            throw e;
-        } catch (Exception ex) {
-            logger.error("Business Boundary - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+        return control.listarPadreDeSegundoNivel(ideOrgaAdmin);
     }
 
 }

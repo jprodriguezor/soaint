@@ -7,6 +7,9 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
+import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
+import {BAD_AUTHENTICATION} from '../../shared/lang/es';
+
 
 @Injectable()
 export class HttpHandler {
@@ -26,6 +29,7 @@ export class HttpHandler {
       options = options || new RequestOptions();
       options.headers = new Headers();
       if (token !== null) {
+
         options.headers.append('Content-Type', 'application/json');
         options.headers.append('Authorization', 'Bearer ' + token);
       } else {
@@ -43,18 +47,50 @@ export class HttpHandler {
         req.headers = options.headers;
         request$ = this._http.request(req, options);
       }
-
-      return request$.map((res: Response) => res.json()).catch(res => {
-        if (res.status === 401 && token !== null) {
-          this._store.dispatch(new LogoutAction());
-        } else if (res.status !== 500) {
-          return Observable.create( observer => observer.error(res));
-        } else {
-          return Observable.create( observer => observer.error(res.statusText));
-        }
-      });
+      return this.handleResponse(request$, token);
     });
 
+  }
+
+  uploadHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
+    return this.token$.take(1).switchMap(token => {
+      options = options || new RequestOptions();
+      options.headers = new Headers();
+      if (token !== null) {
+        // options.headers.append('Content-Type', 'multipart/form-data');
+        options.headers.append('Accept', 'application/json');
+        options.headers.append('Authorization', 'Bearer ' + token);
+      } else {
+        options.headers.append('Accept', 'application/json');
+        // options.headers.append('Content-Type', 'multipart/form-data');
+      }
+      const req: Request = new Request(<RequestArgs>url);
+      req.headers = options.headers;
+      const request$ = this._http.request(req, options);
+      return this.handleResponse(request$, token);
+    });
+  }
+
+  handleResponse(request$: Observable<Response>, token): Observable<Response> {
+    return request$.map((res: Response) => {
+      return res.json()
+    }).catch(res => {
+      if (res.status === 401) {
+        if (token !== null) {
+          this._store.dispatch(new LogoutAction());
+        } else {
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'info',
+            summary: BAD_AUTHENTICATION
+          }));
+        }
+      } else {
+        this._store.dispatch(new PushNotificationAction({
+          summary: res.status
+        }));
+        return Observable.create(observer => observer.error(res));
+      }
+    });
   }
 
   public get(url: string, params: any, options?: RequestOptionsArgs): Observable<Response> {
@@ -67,7 +103,6 @@ export class HttpHandler {
   }
 
   public put(url: string, body: any, options ?: RequestOptionsArgs): Observable<Response> {
-
     return this.requestHelper({url: url, body: body, method: RequestMethod.Put}, options);
   }
 
@@ -78,5 +113,10 @@ export class HttpHandler {
   public patch(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
     return this.requestHelper({url: url, body: body, method: RequestMethod.Patch}, options);
   }
+
+  public putFile(url: string, body: any, options ?: RequestOptionsArgs): Observable<Response> {
+    return this.uploadHelper({url: url, body: body, method: RequestMethod.Post}, options);
+  }
+
 
 }

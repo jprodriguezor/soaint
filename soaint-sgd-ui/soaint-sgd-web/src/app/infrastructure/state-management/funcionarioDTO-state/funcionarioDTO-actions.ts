@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {type} from 'app/infrastructure/redux-store/_util';
+import {type} from 'app/infrastructure/redux-store/redux-util';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 export const ActionTypes = {
@@ -61,7 +61,7 @@ export class LoadAllFailAction implements Action {
 export class SelectDependencyGroupAction implements Action {
   type = ActionTypes.SELECT_DEPENDENCY_GROUP;
 
-  constructor(public payload?: OrganigramaDTO) {
+  constructor(public payload?: any) {
   }
 }
 

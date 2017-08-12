@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
-import {HttpHandler} from 'app/infrastructure/security/http-handler';
+import {HttpHandler} from 'app/infrastructure/utils/http-handler';
 import {Usuario} from 'app/domain/usuario';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -22,6 +22,7 @@ import {
   getSelectedDependencyGroupFuncionario,
   getSuggestionsDependencyGroupFuncionarioArray
 } from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {createSelector} from 'reselect';
 
 
 @Injectable()
@@ -32,6 +33,12 @@ export class AdminLayoutSandbox {
 
   selectorLayoutMode(): Observable<models.MenuOrientation> {
     return this._store.select(selectors.LayoutMode);
+  }
+
+  selectorUsername(): Observable<string> {
+    return this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+      return profile ? profile.firstName + ' ' + profile.lastName : '';
+    }));
   }
 
   selectorProfileMode(): Observable<models.ProfileMode> {
@@ -78,7 +85,7 @@ export class AdminLayoutSandbox {
     this._store.dispatch(new actions.ResizeWindowAction(payload));
   }
 
-  dispatchFuncionarioAuthDependenciaSelected(payload: OrganigramaDTO) {
+  dispatchFuncionarioAuthDependenciaSelected(payload: any) {
     this._store.dispatch(new SelectDependencyGroupAction(payload));
   }
 

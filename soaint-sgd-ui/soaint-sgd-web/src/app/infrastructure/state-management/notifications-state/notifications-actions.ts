@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { type } from 'app/infrastructure/redux-store/_util';
+import { type } from 'app/infrastructure/redux-store/redux-util';
 
 export const ActionTypes = {
   PUSH_NOTIFICATION: type('[NOTIFICATION] PushNotificationAction Dispatch'),
@@ -28,16 +28,6 @@ export class DeleteNotificationAction implements Action {
 export class DeleteAllNotificationsAction implements Action {
   type = ActionTypes.DELETE_ALL_NOTIFICATIONS;
 
-  constructor(public payload?: any) { }
-}
-
-export class NotificationSuccessAction implements Action {
-  type = ActionTypes.NOTIFICATION_SUCCESS;
-  constructor(public payload?: any, public severity: messageType = 'success') { }
-}
-
-export class NotificationFailAction implements Action {
-  type = ActionTypes.NOTIFICATION_FAIL;
   constructor(public payload?: any) { }
 }
 

@@ -1,8 +1,10 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -22,6 +24,8 @@ import java.util.List;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/correspondencia/1.0.0")
 public class CorrespondenciaDTO implements Serializable {
@@ -47,10 +51,7 @@ public class CorrespondenciaDTO implements Serializable {
     private String nroGuia;
     private Date fecVenGestion;
     private String codEstado;
-
-    public CorrespondenciaDTO() {
-        super();
-    }
+    private String inicioConteo;
 
     public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
                               String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,

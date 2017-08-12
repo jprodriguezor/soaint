@@ -1,79 +1,69 @@
-<div class="ui-g ui-fluid radicar-comunicaciones">
+<div class="ui-fluid radicar-comunicaciones">
+  <app-task-container>
+    <div customActions>
 
-  <div class="ui-g-12">
-    <h2 class="text-left page-title">COMUNICACIONES OFICIALES</h2>
-  </div>
-  <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
-    <h3 class="text-left page-subtitle">Radicar comunicaciones oficiales de entrada</h3>
-  </div>
-  <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
-    <div class="page-buttons text-right">
-      <button pButton type="button" label="Radicar" style="width: auto; margin-bottom: 10px"
-              [disabled]="!datosGenerales.form.valid || !datosRemitente.form.valid ||
-  !datosDestinatario.form.valid || datosGenerales.descripcionAnexos.length === 0 ||
-  datosDestinatario.agentesDestinatario.length === 0"
-              (click)="radicarComunicacion()"></button>
+            <button pButton type="button" label="Radicar" style="width: auto; margin-bottom: 10px"
+                    [disabled]="!datosGenerales.form.valid || !datosRemitente.form.valid ||
+        !datosDestinatario.form.valid || datosGenerales.descripcionAnexos.length === 0 ||
+        datosDestinatario.agentesDestinatario.length === 0"
+                    (click)="radicarComunicacion()"></button>
 
-      <button pButton type="button" label="Ver etiqueta" style="width: auto; margin-bottom: 10px" *ngIf="radicacion"
-              (click)="showTicketRadicado()"></button>
+            <button pButton type="button" label="Ver etiqueta" style="width: auto; margin-bottom: 10px" *ngIf="radicacion"
+                    (click)="showTicketRadicado()"></button>
+    </div>
 
-      <!--<button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"></button>-->
-      <button pButton type="button" class="ui-button-danger" label="Cancelar" style="width: auto;  margin-bottom: 10px"
-              (click)="navigateBackToWorkspace()" *ngIf="!radicacion"></button>
-      <button pButton type="button" class="ui-button-success" label="Continuar" *ngIf="radicacion"
-              style="width: auto;  margin-bottom: 10px" (click)="navigateBackToWorkspace()"></button>
+    <div taskBody>
+      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+        <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+          <app-datos-generales #datosGenerales [editable]="editable"
+                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
+                               (onChangeTipoComunicacion)="datosRemitente.setTipoComunicacion($event)"></app-datos-generales>
+        </p-tabPanel>
+
+        <!--<p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" >-->
+        <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" [disabled]="!datosGenerales.form.valid" >
+          <app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>
+        </p-tabPanel>
+
+        <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">-->
+          <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">
+          <app-datos-destinatario #datosDestinatario [editable]="editable"
+                                  [tipoDestinatarioDefaultInput]="tipoDestinatarioDefaultSelection$ | async"
+                                  [tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"
+                                  [sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"
+          ></app-datos-destinatario>
+        </p-tabPanel>
+      </p-tabView>
+
+      <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
+        <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
+                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
+                [disabled]="!formsTabOrder[tabIndex].form.valid">
+        </button>
+        <button pButton  label="Anterior" style="width: 150px; float: left"
+                (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
+        </button>
+      </div>
+
+      <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
+                (onHide)="hideTicketRadicado()">
+        <app-ticket-radicado id="ticket" #ticketRadicado
+
+        ></app-ticket-radicado>
+
+        <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
+                    [inlineStyles]="printStyle" label="Imprimir ticket"></button>
+          </div>
+        </p-footer>
+
+      </p-dialog>
 
     </div>
-  </div>
-  <div class="ui-g-12">
-    <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
-      <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-        <app-datos-generales #datosGenerales [editable]="editable" [datosRemitente]="datosRemitente"
-                             (onChangeTipoComunicacion)="datosRemitente.setTipoComunicacion($event)"></app-datos-generales>
-      </p-tabPanel>
-
-      <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" >
-      <!--<p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" [disabled]="!datosGenerales.form.valid" >-->
-        <app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>
-      </p-tabPanel>
-
-      <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
-      <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">-->
-        <app-datos-destinatario #datosDestinatario [editable]="editable"
-                                [tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"
-                                [sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"
-                                [dependenciaGrupoInput]="dependenciaGrupoSuggestions$ | async"
-        ></app-datos-destinatario>
-      </p-tabPanel>
-    </p-tabView>
-  </div>
-
-  <div class="ui-g-12" style="margin-top: 10px">
-    <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
-            (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
-            [disabled]="!formsTabOrder[tabIndex].form.valid">
-    </button>
-    <button pButton  label="Anterior" style="width: 150px; float: left"
-            (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
-    </button>
-  </div>
-
-  <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
-            (onHide)="hideTicketRadicado()">
-    <app-ticket-radicado id="ticket" #ticketRadicado
-
-    ></app-ticket-radicado>
-
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                [inlineStyles]="printStyle" label="Imprimir ticket"></button>
-      </div>
-    </p-footer>
-
-  </p-dialog>
-
+  </app-task-container>
 </div>
+
 
 
 

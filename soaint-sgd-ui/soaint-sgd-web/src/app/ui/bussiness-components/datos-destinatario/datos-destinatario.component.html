@@ -11,6 +11,7 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
             <p-dropdown [options]="tipoDestinatarioInput | dropdownItem"
+                        [ngModel]="tipoDestinatarioDefaultInput"
                         id="tipoDestinatario"
                         formControlName="tipoDestinatario"
                         placeholder="Seleccione"
@@ -92,6 +93,3 @@
     </div>
   </div>
 </form>
-
-<p-confirmDialog header="Confirmación" icon="" width="425" acceptLabel="Aceptar" rejectLabel="Cancelar"  responsive="true">
-</p-confirmDialog>

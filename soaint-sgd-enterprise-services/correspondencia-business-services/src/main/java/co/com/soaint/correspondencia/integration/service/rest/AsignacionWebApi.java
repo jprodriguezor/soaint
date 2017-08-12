@@ -1,7 +1,6 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -38,7 +37,7 @@ public class AsignacionWebApi {
 
     @POST
     @Path("/asignacion")
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws SystemException{
         logger.info("processing rest request - asignar correspondencia");
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
@@ -48,13 +47,6 @@ public class AsignacionWebApi {
     public void actualizarIdInstancia(AsignacionDTO asignacion)throws BusinessException, SystemException{
         logger.info("processing rest request - actualizar instancia ultima asignacion");
         boundary.actualizarIdInstancia(asignacion);
-    }
-
-    @PUT
-    @Path("/asignacion/redireccionar")
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws BusinessException, SystemException{
-        logger.info("processing rest request - redireccionar correspondencia");
-        boundary.redireccionarCorrespondencia(agentesDTO);
     }
 
     @GET

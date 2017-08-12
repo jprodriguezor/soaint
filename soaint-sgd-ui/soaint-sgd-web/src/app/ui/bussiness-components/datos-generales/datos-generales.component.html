@@ -4,7 +4,7 @@
       <h1>Datos Generales</h1>
       <div class="ui-g ui-fluid">
 
-        <!--Tiempo Respuesta-->
+        <!--fechaRadicacion-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
              *ngIf="form.get('fechaRadicacion').value">
           <div class="ui-g form-group">
@@ -17,7 +17,7 @@
           </div>
         </div>
 
-        <!--Tiempo Respuesta-->
+        <!--nroRadicado-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
              *ngIf="form.get('nroRadicado').value">
           <div class="ui-g form-group">
@@ -87,7 +87,7 @@
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="medioRecepcionSuggestions$ | async | dropdownItem"
-                          [ngModel]="defaultSelectionMediosRecepcion$ | async"
+                          [ngModel]="mediosRecepcionInput"
                           id="medioRecepcion"
                           formControlName="medioRecepcion"
                           placeholder="Seleccione"
@@ -111,7 +111,8 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="tiempoRespuesta">
+                    <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta"
+                               [ngModel]="tiempoRespuestaMetricaTipologia$ | async"></p-spinner>
                     <label>Tiempo de respuesta</label>
                   </span>
             </div>
@@ -126,6 +127,7 @@
             </div>
             <div class="ui-g-12">
               <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItem"
+                          [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
                           id="unidadTiempo"
                           formControlName="unidadTiempo"
                           placeholder="Seleccione"
@@ -143,9 +145,10 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <!--<input type="text" pInputText id="numeroFolio" formControlName="numeroFolio"-->
-                     <!--(blur)="listenForBlurEvents('numeroFolio')"-->
-              <!--&gt;-->
-                <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio" (OnBlur)="listenForBlurEvents('numeroFolio')"></p-spinner>
+                <!--(blur)="listenForBlurEvents('numeroFolio')"-->
+                <!--&gt;-->
+                <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio"
+                           (OnBlur)="listenForBlurEvents('numeroFolio')"></p-spinner>
               <label><span class="text-danger">*</span>No. de folio</label>
                <div class="ui-message ui-messages-error"
                     *ngIf="validations.numeroFolio">
@@ -177,13 +180,18 @@
           </div>
           <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
             <div style="padding: 20px 0 0 10px">
+              <p-checkbox name="cg" label="Digitalización inmediata" id="reqDigInmediata"
+                          formControlName="reqDigitInmediata" binary="true"></p-checkbox>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
               <p-checkbox name="cg" label="Requiere distribución física" id="reqDistFisica"
                           formControlName="reqDistFisica" binary="true"></p-checkbox>
             </div>
           </div>
         </div>
       </div>
-
 
       <div class="ui-g ui-fluid" style="margin-top: 30px">
         <div class="ui-g-12 ui-lg-12 padding-12">
@@ -201,7 +209,8 @@
                 <div class="ui-media-mobile-row">
                   <span style="float: right">
                     <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="addRadicadosReferidos()" *ngIf="editable === true" [disabled]="!form.get('radicadoReferido').value"></button>
+                            (click)="addRadicadosReferidos()" *ngIf="editable === true"
+                            [disabled]="!form.get('radicadoReferido').value"></button>
                   </span>
                   <span class="md-inputfield" style="float: right; margin: 10px 0 0 0; width: 200px"
                         *ngIf="editable === true">
@@ -276,7 +285,7 @@
             <label for="descripcionAnexos">Descripción</label>
           </div>
           <div class="ui-g-12 md-inputfield">
-              <textarea [rows]="3" [cols]="30" pInputTextarea  id="descripcionAnexos"
+              <textarea [rows]="3" [cols]="30" pInputTextarea id="descripcionAnexos"
                         autoResize="autoResize" formControlName="tipoAnexosDescripcion"
                         (blur)="listenForBlurEvents('tipoAnexosDescripcion')"
               ></textarea>
@@ -318,7 +327,7 @@
           <!--Body-->
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
           <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}"  *ngIf="editable === true">
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
             <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
               <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
                       class="ui-button ui-button-icon ui-button-danger"

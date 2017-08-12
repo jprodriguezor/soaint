@@ -33,6 +33,18 @@ import java.util.List;
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
                 "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
                 "FROM CorCorrespondencia c WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c WHERE c.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorCorrespondencia.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c " +
+                "INNER JOIN c.corAgenteList a " +
+                "WHERE a.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
                 "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
                 "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +

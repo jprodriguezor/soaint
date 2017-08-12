@@ -131,8 +131,13 @@
                 </ng-template>
               </p-column>
               <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
-              <p-column field="correspondencia.codEstado" header="Estado" [sortable]="true"
-                        [style]="{'width':'100px'}"></p-column>
+              <p-column field="codEstado" header="Estado" [sortable]="true"
+                        [style]="{'width':'110px'}">
+
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
               <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
                 <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Ver detalles"
@@ -161,9 +166,9 @@
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="showRejectDialog()"></button>
             <button pButton type="button" label="Reasignar"
-                    [disabled]="form.get('estadoCorrespondencia').value === 'SA' || selectedComunications.length == 0"
+                    [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'SA'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    (click)="listarComunicaciones()"></button>
+                    (click)="reassignComunications()"></button>
             <button pButton type="button" label="Asignar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"

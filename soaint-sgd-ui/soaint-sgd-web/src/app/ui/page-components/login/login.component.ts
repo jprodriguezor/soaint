@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
+import {SessionService, WebModel} from 'app/infrastructure/utils/session.service';
 
 import {LoginSandbox} from './redux-state/login-sandbox';
 import {Observable} from 'rxjs/Observable';

@@ -1,8 +1,12 @@
 import {Observable} from 'rxjs/Observable';
-import {HttpHandler} from '../security/http-handler';
-import {RequestOptions, URLSearchParams} from '@angular/http';
+import {HttpHandler} from '../utils/http-handler';
+import {Injectable} from '@angular/core';
+import {Headers, RequestOptions} from '@angular/http';
+import {_ParseAST} from '@angular/compiler';
 
-export abstract class ApiBase {
+
+@Injectable()
+export class ApiBase {
 
   constructor(protected _http: HttpHandler) {
   }
@@ -11,14 +15,17 @@ export abstract class ApiBase {
     return this._http.get(endpoint, payload);
   }
 
-  public listParams(endpoint: string, params: URLSearchParams): Observable<any> {
-    console.log(params);
-    let options = new RequestOptions({params: params});
-    return this._http.get(endpoint, options);
-  }
-
   public post(endpoint: string, payload = {}): Observable<any> {
     return this._http.post(endpoint, payload);
+  }
+
+  public sendFile(endpoint: string, formData, pathParams: Array<string>): Observable<any> {
+
+    let fullEndpoint = `${endpoint}`;
+    pathParams.forEach((value) => {
+      fullEndpoint += `/${value}`;
+    });
+    return this._http.putFile(fullEndpoint, formData);
   }
 
 }

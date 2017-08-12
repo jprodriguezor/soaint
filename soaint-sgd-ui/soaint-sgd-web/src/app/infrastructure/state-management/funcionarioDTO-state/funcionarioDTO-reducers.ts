@@ -1,11 +1,12 @@
 import {Actions, ActionTypes} from './funcionarioDTO-actions';
+import {mockState} from './funcionarioDTO-mockState';
 import {tassign} from 'tassign';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 
 export interface State {
-  ids: string[];
+  ids: number[];
   entities: { [id: number]: FuncionarioDTO };
   authenticatedFuncionario: FuncionarioDTO;
   selectedDependencyGroup: DependenciaDTO
@@ -50,8 +51,9 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case ActionTypes.SELECT_DEPENDENCY_GROUP: {
+      console.log(action.payload);
       return tassign(state, {
-        selectedDependencyGroup: action.payload || state.authenticatedFuncionario ? state.authenticatedFuncionario.dependencias[0] : null
+        selectedDependencyGroup: action.payload ? action.payload : (state.authenticatedFuncionario ? state.authenticatedFuncionario.dependencias[0] : null)
       });
     }
 

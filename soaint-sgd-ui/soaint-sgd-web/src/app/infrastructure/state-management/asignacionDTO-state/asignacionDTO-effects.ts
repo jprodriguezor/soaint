@@ -18,7 +18,7 @@ import * as actions from './asignacionDTO-actions';
 import {Sandbox} from './asignacionDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {ReloadAction as ReloadComunicacionesAction} from '../comunicacionOficial-state/comunicacionOficialDTO-actions';
-import {SetJustificationDialogVisibleAction} from "./asignacionDTO-actions";
+import {SetJustificationDialogVisibleAction} from './asignacionDTO-actions';
 
 function isLoaded() {
   return (source) =>
@@ -47,6 +47,18 @@ export class Effects {
           .mergeMap((response) => [new actions.AssignSuccessAction(response), new ReloadComunicacionesAction()])
           .catch((error) => Observable.of(new actions.AssignFailAction({error}))
           )
+      }
+    );
+
+  @Effect()
+  reassign: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.REASSIGN)
+    .map(toPayload)
+    .switchMap(
+      (payload) => {
+        return this._sandbox.reassignComunications(payload)
+          .mergeMap((response) => [new actions.ReassignSuccessAction(response), new ReloadComunicacionesAction()])
+          .catch((error) => Observable.of(new actions.ReassignFailAction({error})))
       }
     );
 

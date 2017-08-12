@@ -44,6 +44,8 @@ export class DatosDireccionComponent implements OnInit {
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
 
   contacts: Array<any> = [];
+  showDireccionForm = false;
+  showContactForm = false;
 
 
   constructor(private _store: Store<State>,
@@ -84,7 +86,7 @@ export class DatosDireccionComponent implements OnInit {
       'complementoAdicional': [null],
       'celular': [null],
       'numeroTel': [null],
-      'correoEle': [null],
+      'correoEle': [null, Validators.email],
       'pais': [null],
       'departamento': [null],
       'municipio': [null],

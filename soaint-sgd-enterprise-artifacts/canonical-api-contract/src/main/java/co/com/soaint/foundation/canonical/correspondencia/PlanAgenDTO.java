@@ -1,7 +1,9 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,6 +19,8 @@ import java.util.Date;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-plan-agen/1.0.0")
@@ -33,20 +37,4 @@ public class PlanAgenDTO implements Serializable {
     private String observaciones;
     private String codCauDevo;
     private Date fecCarguePla;
-
-    public PlanAgenDTO(){super();}
-
-    public PlanAgenDTO(Long idePlanAgen, String varPeso, String varValor, String varNumeroGuia, Date fecObservacion,
-                       String codNuevaSede, String codNuevaDepen, String observaciones, String codCauDevo, Date fecCarguePla){
-        this.idePlanAgen = idePlanAgen;
-        this.varPeso = varPeso;
-        this.varValor = varValor;
-        this.varNumeroGuia = varNumeroGuia;
-        this.fecObservacion = fecObservacion;
-        this.codNuevaSede = codNuevaSede;
-        this.codNuevaDepen = codNuevaDepen;
-        this.observaciones = observaciones;
-        this.codCauDevo = codCauDevo;
-        this.fecCarguePla = fecCarguePla;
-    }
 }

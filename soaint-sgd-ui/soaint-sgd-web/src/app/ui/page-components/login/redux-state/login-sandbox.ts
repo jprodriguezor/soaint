@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {environment} from 'environments/environment';
-import {HttpHandler} from 'app/infrastructure/security/http-handler';
+import {HttpHandler} from 'app/infrastructure/utils/http-handler';
 import {Usuario} from 'app/domain/usuario';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
@@ -27,12 +27,10 @@ export class LoginSandbox {
   }
 
   routeToHome(): void {
-    // this._router.navigate(['/home']);
     this._store.dispatch(go('/home'));
   }
 
   routeToLogin(): void {
-    // this._router.navigate(['/login']);
     this._store.dispatch(go('/login'));
   }
 

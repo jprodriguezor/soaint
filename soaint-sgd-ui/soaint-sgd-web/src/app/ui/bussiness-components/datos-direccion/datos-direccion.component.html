@@ -1,7 +1,110 @@
 <!--Body-->
 <div class="ui-g">
-  <form [formGroup]="form" novalidate name="formContacto">
-    <div class="card card-w-title" *ngIf="editable === true">
+
+  <div class="card card-w-title" *ngIf="showContactForm !== true">
+    <h1>Lista de Contactos</h1>
+    <div class="ui-g ui-fluid">
+
+      <!--Direccion-->
+      <div class="ui-fluid">
+        <p-dataTable [value]="contacts" selectionMode="single"
+                     [paginator]="true" [rows]="10" [responsive]="true">
+          <p-header>
+
+            <div class="ui-helper-clearfix">
+                <span class="ui-panel-title"
+                      style="font-size:16px;display:inline-block;margin-top:8px"> Datos de contacto y dirección </span>
+
+              <span style="float: right">
+                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                            (click)="showContactForm = true"></button>
+                </span>
+            </div>
+
+          </p-header>
+
+          <p-column header="">
+            <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+              <!--<div class="ui-g ui-fluid">-->
+              <!---->
+              <!--</div>-->
+              <div class="ui-sm-12 ui-md-12 ui-g-5 ui-lg-5">
+                <div class="ui-g-12" *ngIf="contact.correoEle">
+                  <i class="fa ui-icon-contact-mail"></i>
+                  <span class="table-text-custom">
+                      {{ contact.correoEle }}
+                    </span>
+
+                </div>
+                <div class="ui-g-12" *ngIf="contact.numeroTel">
+                  <i class="fa ui-icon-contact-phone"></i>
+                  <span class="table-text-custom">
+                    {{ contact.numeroTel }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.celular">
+                  <i class="fa ui-icon-smartphone"></i>
+                  <span class="table-text-custom">
+                    {{ contact.celular }}
+                    </span>
+
+                </div>
+              </div>
+              <div class="ui-sm-12 ui-md-12 ui-g-7 ui-lg-7">
+
+                <div class="ui-g-12" *ngIf="contact.direccion">
+                  <i class="fa ui-icon-location-on"></i>
+                  <span class="table-text-custom">
+                        {{ contact.direccion }}
+                        </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.pais">
+                    <span class="table-text-custom">
+                      <b>País: &nbsp;</b>
+                      {{ contact.pais.nombre }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.departamento">
+                    <span class="table-text-custom">
+                      <b>Departamento: &nbsp;</b>
+                      {{ contact.departamento.nombre }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.municipio">
+                    <span class="table-text-custom">
+                      <b>Municipio: &nbsp;</b>
+                    {{ contact.municipio.nombre }}
+                    </span>
+                </div>
+
+              </div>
+            </ng-template>
+          </p-column>
+
+          <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
+            <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
+                      class="ui-button ui-button-icon ui-button-danger"></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+        <div class="ui-g-12 md-inputfield">
+          <div class="ui-message ui-messages-error"
+               *ngIf="contacts.length === 0">
+            Se requiere al menos un contacto
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form" novalidate name="formContacto" *ngIf="showContactForm === true" class="fadein-down">
+
+    <div class="card card-w-title" >
       <h1>Datos de contacto</h1>
       <!--Tipo Telefono-->
       <div class="ui-g ui-fluid">
@@ -96,11 +199,10 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <div class="card card-w-title" *ngIf="editable === true">
+    <div class="card card-w-title" *ngIf="showDireccionForm === true" ngClass="fadein-down">
       <h1>Datos Dirección</h1>
 
       <div class="ui-g ui-fluid">
@@ -280,111 +382,31 @@
                         formControlName="principal" id="reqDigit" binary="true"></p-checkbox>
           </div>
         </div>
-
       </div>
     </div>
-
-    <div class="card card-w-title">
-      <h1>Lista de Contactos</h1>
-      <div class="ui-g ui-fluid">
-
-        <!--Direccion-->
-        <div class="ui-fluid">
-          <p-dataTable [value]="contacts" selectionMode="single"
-                       [paginator]="true" [rows]="10" [responsive]="true">
-            <p-header>
-
-              <div class="ui-helper-clearfix">
-                <span class="ui-panel-title"
-                      style="font-size:16px;display:inline-block;margin-top:8px"> Datos de contacto y dirección </span>
-
-                <span style="float: right">
-                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="addContact()"></button>
-                </span>
-              </div>
-
-            </p-header>
-
-            <p-column header="">
-              <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
-                <!--<div class="ui-g ui-fluid">-->
-                <!---->
-                <!--</div>-->
-                <div class="ui-sm-12 ui-md-12 ui-g-5 ui-lg-5">
-                  <div class="ui-g-12" *ngIf="contact.correoEle">
-                    <i class="fa ui-icon-contact-mail"></i>
-                    <span class="table-text-custom">
-                      {{ contact.correoEle }}
-                    </span>
-
-                  </div>
-                  <div class="ui-g-12" *ngIf="contact.numeroTel">
-                    <i class="fa ui-icon-contact-phone"></i>
-                    <span class="table-text-custom">
-                    {{ contact.numeroTel }}
-                    </span>
-                  </div>
-
-                  <div class="ui-g-12" *ngIf="contact.celular">
-                    <i class="fa ui-icon-smartphone"></i>
-                    <span class="table-text-custom">
-                    {{ contact.celular }}
-                    </span>
-
-                  </div>
-                </div>
-                <div class="ui-sm-12 ui-md-12 ui-g-7 ui-lg-7">
-
-                  <div class="ui-g-12" *ngIf="contact.direccion">
-                    <i class="fa ui-icon-location-on"></i>
-                    <span class="table-text-custom">
-                        {{ contact.direccion }}
-                        </span>
-                  </div>
-
-                  <div class="ui-g-12" *ngIf="contact.pais">
-                    <span class="table-text-custom">
-                      <b>País: &nbsp;</b>
-                      {{ contact.pais.nombre }}
-                    </span>
-                  </div>
-
-                  <div class="ui-g-12" *ngIf="contact.departamento">
-                    <span class="table-text-custom">
-                      <b>Departamento: &nbsp;</b>
-                      {{ contact.departamento.nombre }}
-                    </span>
-                  </div>
-
-                  <div class="ui-g-12" *ngIf="contact.municipio">
-                    <span class="table-text-custom">
-                      <b>Municipio: &nbsp;</b>
-                    {{ contact.municipio.nombre }}
-                    </span>
-                  </div>
-
-                </div>
-              </ng-template>
-            </p-column>
-
-            <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
-              <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
-                <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
-                        class="ui-button ui-button-icon ui-button-danger"></button>
-              </ng-template>
-            </p-column>
-          </p-dataTable>
-          <div class="ui-g-12 md-inputfield">
-            <div class="ui-message ui-messages-error"
-                 *ngIf="contacts.length === 0">
-              Se requiere al menos un contacto
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </form>
+
+  <div class="ui-g-12" *ngIf="showContactForm === true">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6"  >
+      <div style="padding: 20px 0 0 10px">
+        <p-checkbox name="cg" label="Agregar Dirección"
+                    [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
+      </div>
+    </div>
+
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
+      <button pButton type="button" class="ui-button-info"
+              label="Aceptar" (click)="addContact(); showContactForm = false; showDireccionForm = false;"
+              style="width: auto; margin-left: 12px; margin-bottom: 10px"
+      ></button>
+
+      <button pButton type="button" class="ui-button-danger"
+              label="Cancelar" (click)="showContactForm = false; showDireccionForm = false;"
+              style="width: auto; margin-left: 12px; margin-bottom: 10px"
+      ></button>
+
+    </div>
+  </div>
+
 </div>
 

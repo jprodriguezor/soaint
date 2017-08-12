@@ -62,14 +62,19 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   funcionarioSubcription: Subscription;
 
+  comunicacionesSubcription: Subscription;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
   @ViewChild('popupReject') popupReject;
 
-  constructor(private _store: Store<RootState>, private _comunicacionOficialApi: CominicacionOficialSandbox,
-              private _asignacionSandbox: AsignacionSandbox, private _funcionarioSandbox: Sandbox, private formBuilder: FormBuilder) {
+  constructor(private _store: Store<RootState>,
+              private _comunicacionOficialApi: CominicacionOficialSandbox,
+              private _asignacionSandbox: AsignacionSandbox,
+              private _funcionarioSandbox: Sandbox,
+              private formBuilder: FormBuilder) {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -79,7 +84,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
+    this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe(() => {
+      this.selectedComunications = [];
+    });
     this.initForm();
+  }
+
+  getCodEstadoLabel(codEstado: string): string {
+    let estado = this.estadosCorrespondencia.find((item) => {
+      return item.value === codEstado;
+    });
+    return estado.label;
   }
 
   ngOnInit() {
@@ -90,6 +105,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
+    this.comunicacionesSubcription.unsubscribe();
   }
 
   initForm() {
@@ -124,6 +140,12 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   assignComunications() {
     this._asignacionSandbox.assignDispatch({
+      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
+    });
+  }
+
+  reassignComunications() {
+    this._asignacionSandbox.reassignDispatch({
       asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
     });
   }

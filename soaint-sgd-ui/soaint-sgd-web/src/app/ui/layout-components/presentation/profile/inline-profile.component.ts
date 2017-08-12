@@ -2,9 +2,10 @@ import {
   Component,
   Output,
   OnInit,
-  EventEmitter, ChangeDetectionStrategy,
+  EventEmitter, ChangeDetectionStrategy, Input,
 } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -28,14 +29,16 @@ export class InlineProfileComponent {
 
   active: boolean;
 
+  @Input() username: string;
+
   @Output() onSignOffUser: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
 
   public logout(event): void {
-     this.onSignOffUser.emit(null);
-      event.preventDefault();
+    this.onSignOffUser.emit(null);
+    event.preventDefault();
   }
 
   public onClick(event): void {

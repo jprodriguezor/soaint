@@ -1,7 +1,6 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -28,18 +27,13 @@ public class GestionarAsignacionWS {
     }
 
     @WebMethod(action = "asignarCorrespondencia", operationName = "asignarCorrespondencia")
-    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList")final AsignacionesDTO asignacionesDTO)throws BusinessException, SystemException{
+    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList")final AsignacionesDTO asignacionesDTO)throws SystemException{
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
     @WebMethod(action = "actualizarIdInstancia", operationName = "actualizarIdInstancia")
     public void actualizarIdInstancia(@WebParam(name = "asignacion")final AsignacionDTO asignacion)throws BusinessException, SystemException{
         boundary.actualizarIdInstancia(asignacion);
-    }
-
-    @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList")final AgentesDTO agentesDTO) throws BusinessException, SystemException{
-        boundary.redireccionarCorrespondencia(agentesDTO);
     }
 
     @WebMethod(action = "listarAsignacionesByFuncionarioAndNroRadicado", operationName = "listarAsignacionesByFuncionarioAndNroRadicado")

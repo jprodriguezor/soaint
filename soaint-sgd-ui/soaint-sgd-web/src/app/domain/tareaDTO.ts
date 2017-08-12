@@ -1,4 +1,4 @@
-type tareaStatus = 'RESERVADO' | 'ENPROGRESO' | 'LISTO' | 'CANCELADO';
+type tareaStatus = 'RESERVADO' | 'ENPROGRESO' | 'LISTO' | 'CANCELADO' | 'COMPLETADO';
 
 export interface TareaDTO {
   idTarea: number;

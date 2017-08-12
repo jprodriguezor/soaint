@@ -1,48 +1,57 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {environment} from 'environments/environment';
-
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {ListForSelectionApiService} from '../../api/list-for-selection.api.service';
 import {createSelector} from 'reselect';
 import * as selectors from './procesoDTO-selectors';
 import * as actions from './procesoDTO-actions';
+import {ApiBase} from '../../api/api-base';
+import {Subscription} from 'rxjs/Subscription';
 
 @Injectable()
-export class Sandbox {
+export class Sandbox implements OnDestroy {
+
+  authPayload: { usuario: string, pass: string } |  {};
+  authPayloadUnsubscriber: Subscription;
 
   constructor(private _store: Store<State>,
-              private _listSelectionService: ListForSelectionApiService) {
+              private _api: ApiBase) {
+    this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+      return profile ? {usuario: profile.username, pass: profile.password} : {};
+    })).subscribe((value) => {
+      this.authPayload = value;
+    });
   }
 
   loadData(payload: any) {
-    return this._listSelectionService.list(environment.proceso_endpoint, payload);
+    return this._api.list(environment.proceso_endpoint, payload);
   }
 
   startProcess(payload: any) {
 
-    return this._listSelectionService.post(environment.startProcess_endpoint,
-      {
+    return this._api.post(environment.startProcess_endpoint,
+      Object.assign({}, {
         idProceso: payload.codigoProceso,
         idDespliegue: payload.idDespliegue,
         estados: [
           'LISTO'
         ]
-      });
+      }, this.authPayload));
   }
 
   loadTasksInsideProcess(payload: any) {
     const params = payload.data || payload;
-    return this._listSelectionService.post(environment.tasksInsideProcess_endpoint, {
-      idProceso: params.nombreProceso,
-      instanciaProceso: params.codigoProceso,
-      estados: [
-        'RESERVADO',
-        'COMPLETADO',
-        'ENPROGRESO',
-        'LISTO'
-      ]
-    });
+    return this._api.post(environment.tasksInsideProcess_endpoint,
+      Object.assign({}, {
+        idProceso: params.nombreProceso || params.idProceso,
+        instanciaProceso: params.codigoProceso || params.idInstanciaProceso,
+        estados: [
+          'RESERVADO',
+          'COMPLETADO',
+          'ENPROGRESO',
+          'LISTO'
+        ]
+      }, this.authPayload));
   }
 
   filterDispatch(target, query) {
@@ -66,6 +75,10 @@ export class Sandbox {
         }
       })
     });
+  }
+
+  ngOnDestroy() {
+    this.authPayloadUnsubscriber.unsubscribe();
   }
 
 }

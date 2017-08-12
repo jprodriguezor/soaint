@@ -1,13 +1,12 @@
-import {ListForSelectionApiService} from './api/list-for-selection.api.service';
-import {ComunicacionApiService} from './api/comunicacionOficial.api.service';
-
+import {ApiBase} from './api/api-base';
+import {DatosGeneralesApiService} from './api/datos-generales.api';
 
 export const API_SERVICES = [
-  ListForSelectionApiService,
-  ComunicacionApiService
+  ApiBase,
+  DatosGeneralesApiService
 ];
 
 export {
-  ListForSelectionApiService,
-  ComunicacionApiService
+  ApiBase,
+  DatosGeneralesApiService
 };

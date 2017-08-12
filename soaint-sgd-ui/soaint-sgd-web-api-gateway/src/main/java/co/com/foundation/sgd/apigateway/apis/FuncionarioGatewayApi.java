@@ -23,12 +23,12 @@ public class FuncionarioGatewayApi {
     }
 
     @GET
-    @Path("/")
+    @Path("/{userName}")
     @JWTTokenSecurity
-    public Response get() {
+    public Response get(@PathParam("userName") String userName) {
         //TODO: add trafic log
         System.out.println("FuncionarioGatewayApi - [trafic] - listing Funcionario");
-        Response response = client.obtenerFuncionario("krisv");
+        Response response = client.obtenerFuncionario(userName);
         String responseContent = response.readEntity(String.class);
         System.out.println("FuncionarioGatewayApi - [content] : " + responseContent);
 

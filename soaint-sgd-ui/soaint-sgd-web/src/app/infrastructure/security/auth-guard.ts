@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router, CanActivate} from '@angular/router';
 // import {LoginModel} from 'app/ui/page-components/loginBackup/login.model';
-import {SessionService, WebModel} from 'app/infrastructure/web/session.service';
+import {SessionService, WebModel} from 'app/infrastructure/utils/session.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
