@@ -23,9 +23,13 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
 
     private static final Logger logger = LogManager.getLogger (EcmManagerAlfresco.class.getName ( ));
 
-    @Autowired
-    private
+    private final
     ContentManagerMediator content;
+
+    @Autowired
+    public EcmManagerAlfresco(ContentManagerMediator content) {
+        this.content = content;
+    }
 
     /**
      * Metodo que llama el servicio para crear la estructura del ECM
@@ -42,7 +46,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         } catch (Exception e) {
             response.setCodMensaje ("000005");
             response.setMensaje ("Error al crear estructura");
-            logger.error ("### Error..------crearEstructuraECM " + e);
+            logger.error ("### Error..------" + e);
         }
 
         return response;
@@ -62,7 +66,7 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
         try {
             idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
-            logger.error ("### Error..------subirDocumento " + e);
+            logger.error ("### Error..------" + e);
         }
 
         return idDocumento;
@@ -71,22 +75,22 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      * @param documento Nombre del documento a mover
-     * @param carpetaFuente Carpeta donde se encuentra el documento
-     * @param carpetaDestino Carpeta a donde se va a mover el documento.
+     * @param CarpetaFuente Carpeta donde se encuentra el documento
+     * @param CarpetaDestino Carpeta a donde se va a mover el documento.
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
         logger.info ("### Moviendo documento dentro del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
-            response = content.moverDocumento (documento, carpetaFuente, carpetaDestino);
+            response = content.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
             response.setCodMensaje ("000002");
             response.setMensaje ("Error al mover documento");
-            logger.error ("### Error..------moverDocumento " + e);
+            logger.error ("### Error..------" + e);
         }
 
         return response;
