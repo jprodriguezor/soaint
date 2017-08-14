@@ -14,6 +14,16 @@ public class SecurityCardbridgeClient {
 
     private SecurityAPIService service;
 
+    @Value("${proxy.securitycardbridge.endpoint}")
+    private String securitycardbridgeWsdlEndpoint = "";
+
+    /**
+     * Contructor
+     */
+    public SecurityCardbridgeClient() {
+        super();
+    }
+
     public SecurityAPIService getService() {
         if (service == null) {
             URL url = null;
@@ -25,13 +35,6 @@ public class SecurityCardbridgeClient {
             service = new SecurityAPIService(url);
         }
         return service;
-    }
-
-    @Value("${proxy.securitycardbridge.endpoint}")
-    private String securitycardbridgeWsdlEndpoint = "";
-
-    public SecurityCardbridgeClient() {
-        super();
     }
 
     public AuthenticationResponseContext verifyCredentials(String login, String password) throws SystemException_Exception {

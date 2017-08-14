@@ -5,6 +5,8 @@ import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.Auth
 import co.com.foundation.sgd.dto.AccountDTO;
 import co.com.foundation.sgd.infrastructure.KeyManager;
 import co.com.soaint.foundation.canonical.seguridad.UsuarioDTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -25,26 +27,34 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SecuridadGatewayApi {
 
+    private static Logger logger = LogManager.getLogger(SecuridadGatewayApi.class.getName());
+
     @Context
     private UriInfo uriInfo;
 
     @Autowired
     private SecurityCardbridgeClient securityCardbridgeClient;
 
+    /**
+     * Constructor
+     */
     public SecuridadGatewayApi() {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * Accion para logearse en la aplicación
+     *
+     * @param user Credenciales del usuario
+     * @return Response
+     */
     @POST
     @Path("/login")
     public Response login(final UsuarioDTO user) {
 
         try {
-            // Authenticate the user using the credentials provided
-            System.out.println("calling login service");
-            System.out.println(securityCardbridgeClient);
-
+            logger.info("Authenticate the user using the credentials provided");
             AuthenticationResponseContext context = securityCardbridgeClient.verifyCredentials(user.getLogin(), user.getPassword());
 
             if (context.isSuccessful()) {
@@ -59,6 +69,7 @@ public class SecuridadGatewayApi {
             }
 
         } catch (Exception e) {
+            logger.error(e);
             return Response.status(UNAUTHORIZED).build();
         }
     }
