@@ -2,6 +2,8 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -9,18 +11,19 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+/**
+ * Cliente para servicios relacionados a los procesos del bpm
+ */
 @ApiDelegator
+@Log4j2
+@NoArgsConstructor
 public class ProcesoClient {
 
     @Value("${backapi.enterprise.service.endpoint.url}")
     private String endpoint = "";
 
-    public ProcesoClient() {
-        super();
-    }
-
     public Response list() {
-        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        log.info("Proccess - [trafic] - listing Proccess with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         return wt.path("/bpm/proceso/listar")
@@ -29,7 +32,7 @@ public class ProcesoClient {
     }
 
     public Response iniciar(EntradaProcesoDTO entradaProcesoDTO) {
-        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        log.info("Proccess - [trafic] - starting Proccess with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/iniciar")
                 .request()
@@ -37,7 +40,7 @@ public class ProcesoClient {
     }
 
     public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {
-        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        log.info("Proccess - [trafic] - manual starting Proccess with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/proceso/iniciar/manual")
                 .request()
@@ -45,26 +48,24 @@ public class ProcesoClient {
     }
 
     public Response listarPorIdProceso(EntradaProcesoDTO entrada) {
-        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        log.info("Task - [trafic] - listing Tasks By Id Proccess with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = entrada;
-//        entradaProcesoDTO.setIdDespliegue("co.com.foundation.bpm.poc:pagos-empresariales-bpm-poc:1.0.0-SNAPSHOT");
         return wt.path("/bpm/tareas/listar/estados-instancia/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
 
     public Response listarTareas(EntradaProcesoDTO entrada) {
-        System.out.println("Pais - [trafic] - listing Pais with endpoint: " + endpoint);
+        log.info("Task - [trafic] - listing Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        EntradaProcesoDTO entradaProcesoDTO = entrada;
         return wt.path("/bpm/tareas/listar/estados/")
                 .request()
-                .post(Entity.json(entradaProcesoDTO));
+                .post(Entity.json(entrada));
     }
 
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
-        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/iniciar")
                 .request()
@@ -72,7 +73,7 @@ public class ProcesoClient {
     }
 
     public Response completarTarea(EntradaProcesoDTO entrada) {
-        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - complete Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/completar")
                 .request()
@@ -80,7 +81,7 @@ public class ProcesoClient {
     }
 
     public Response reasignarTarea(EntradaProcesoDTO entrada) {
-        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/reasignar")
                 .request()
@@ -88,7 +89,7 @@ public class ProcesoClient {
     }
 
     public Response listarIntanciasProceso() {
-        System.out.println("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");

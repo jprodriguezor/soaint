@@ -723,40 +723,11 @@ public class ProcessService implements IProcessServices {
     private List<Status> estadosActivos(Iterator<EstadosEnum> estadosEnviados) {
         List<Status> estadosActivos = new ArrayList<>();
         while (estadosEnviados.hasNext()) {
-            switch (estadosEnviados.next()) {
-                case CREADO:
-                    estadosActivos.add(Status.Created);
-                    break;
-                case LISTO:
-                    estadosActivos.add(Status.Ready);
-                    break;
-                case RESERVADO:
-                    estadosActivos.add(Status.Reserved);
-                    break;
-                case SUSPENDIDO:
-                    estadosActivos.add(Status.Suspended);
-                    break;
-                case ENPROGRESO:
-                    estadosActivos.add(Status.InProgress);
-                    break;
-                case COMPLETADO:
-                    estadosActivos.add(Status.Completed);
-                    break;
-                case FALLIDO:
-                    estadosActivos.add(Status.Failed);
-                    break;
-                case ERROR:
-                    estadosActivos.add(Status.Error);
-                    break;
-                case SALIDO:
-                    estadosActivos.add(Status.Exited);
-                    break;
-                case OBSOLETO:
-                    estadosActivos.add(Status.Obsolete);
-                    break;
-                default:
-                    logger.info("Invalid selection");
-                    break;
+            String estadoActivo = estadosEnviados.next().name();
+            for (EstadosEnum estado : EstadosEnum.values()) {
+                if (estado.name().equals(estadoActivo)) {
+                    estadosActivos.add(Status.valueOf(estado.getNombre()));
+                }
             }
         }
         return estadosActivos;
@@ -770,45 +741,11 @@ public class ProcessService implements IProcessServices {
      * @throws MalformedURLException
      */
     private String estadoRespuesta(String estado) {
-        EstadosEnum estadoRespuesta = null;
-        switch (estado) {
-            case "Created":
-                estadoRespuesta = EstadosEnum.CREADO;
-                break;
-            case "Ready":
-                estadoRespuesta = EstadosEnum.LISTO;
-                break;
-            case "Reserved":
-                estadoRespuesta = EstadosEnum.RESERVADO;
-                break;
-            case "Suspended":
-                estadoRespuesta = EstadosEnum.SUSPENDIDO;
-                break;
-            case "InProgress":
-                estadoRespuesta = EstadosEnum.ENPROGRESO;
-                break;
-            case "Completed":
-                estadoRespuesta = EstadosEnum.COMPLETADO;
-                break;
-            case "Failed":
-                estadoRespuesta = EstadosEnum.FALLIDO;
-                break;
-            case "Error":
-                estadoRespuesta = EstadosEnum.ERROR;
-                break;
-            case "Exited":
-                estadoRespuesta = EstadosEnum.SALIDO;
-                break;
-            case "Obsolete":
-                estadoRespuesta = EstadosEnum.OBSOLETO;
-                break;
-            default:
-                logger.info("Invalid selection");
-                break;
-        }
 
-        if (estadoRespuesta != null) {
-            return estadoRespuesta.toString();
+        for (Status enumEstado : Status.values()) {
+            if (enumEstado.name().equals(estado)) {
+                return EstadosEnum.obtenerClave(estado).toString();
+            }
         }
         return estado;
     }
