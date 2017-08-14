@@ -76,10 +76,10 @@ export class DatosRemitenteComponent implements OnInit {
       'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
       'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
-      'tipoDocumento': [{value: null, disabled: !this.editable}, Validators.required],
-      'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
-      'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
-      'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}, Validators.required],
+      'tipoDocumento': [{value: null, disabled: !this.editable}],
+      'razonSocial': [{value: null, disabled: !this.editable}],
+      'nombreApellidos': [{value: null, disabled: !this.editable}],
+      'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
@@ -107,10 +107,6 @@ export class DatosRemitenteComponent implements OnInit {
     this.bindToValidationErrorsOf('sedeAdministrativa');
     this.bindToValidationErrorsOf('dependenciaGrupo');
     this.bindToValidationErrorsOf('tipoPersona');
-    this.bindToValidationErrorsOf('tipoDocumento');
-    this.bindToValidationErrorsOf('razonSocial');
-    this.bindToValidationErrorsOf('nombreApellidos');
-    this.bindToValidationErrorsOf('nroDocumentoIdentidad');
   }
 
   onSelectTipoPersona(value) {

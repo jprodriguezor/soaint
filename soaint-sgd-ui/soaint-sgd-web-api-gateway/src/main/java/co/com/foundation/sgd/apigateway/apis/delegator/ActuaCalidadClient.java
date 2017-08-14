@@ -21,7 +21,7 @@ public class ActuaCalidadClient {
     }
 
     public Response list() {
-        System.out.println("Tipo Teléfono - [trafic] - listing Actua en calidad with endpoint: " + endpoint);
+        System.out.println("Client request listing Actua en calidad with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/constantes-web-api/constantes/hijos/" + actuaCaldiadValue + "/A")
                 .request()
