@@ -1,19 +1,43 @@
 package co.com.foundation.sgd.apigateway.webservice.client;
 
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
-import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SecurityAPI;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SecurityAPIService;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SystemException_Exception;
+import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+@ApiDelegator
 public class SecurityCardbridgeClient {
 
-    private static SecurityAPIService service;
+    private SecurityAPIService service;
 
-    static {
-        service = new SecurityAPIService();
+    @Value("${proxy.securitycardbridge.endpoint}")
+    private String securitycardbridgeWsdlEndpoint = "";
+
+    /**
+     * Contructor
+     */
+    public SecurityCardbridgeClient() {
+        super();
     }
 
-    public static AuthenticationResponseContext verifyCredentials(String login, String password) throws SystemException_Exception {
-        return service.getSecurityAPIPort().verifyCredentials(login, password);
+    public SecurityAPIService getService() {
+        if (service == null) {
+            URL url = null;
+            try {
+                url = new URL(securitycardbridgeWsdlEndpoint);
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            }
+            service = new SecurityAPIService(url);
+        }
+        return service;
+    }
+
+    public AuthenticationResponseContext verifyCredentials(String login, String password) throws SystemException_Exception {
+        return getService().getSecurityAPIPort().verifyCredentials(login, password);
     }
 }
