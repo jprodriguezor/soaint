@@ -1,9 +1,9 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -19,6 +19,8 @@ import java.io.InputStream;
 @ApiDelegator
 public class DigitalizarDocumentoClient {
 
+    private static Logger logger = LogManager.getLogger(DigitalizarDocumentoClient.class);
+
     @Value("${backapi.ecm.service.endpoint.url}")
     private String endpoint = "";
 
@@ -27,7 +29,7 @@ public class DigitalizarDocumentoClient {
     }
 
     public Response digitalizar(InputPart part, String fileName, String tipoComunicacion) {
-        System.out.println("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
+        logger.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
@@ -36,7 +38,7 @@ public class DigitalizarDocumentoClient {
         try {
             inputStream = part.getBody(InputStream.class, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Se ha generado un error del tipo IO:",e);
         }
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
 
