@@ -1,8 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -10,8 +9,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 @ApiDelegator
+@Log4j2
 public class ActuaCalidadClient {
-    private static Logger logger = LogManager.getLogger(ActuaCalidadClient.class);
 
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
@@ -24,7 +23,7 @@ public class ActuaCalidadClient {
     }
 
     public Response list() {
-        logger.info("Tipo Teléfono - [trafic] - listing Actua en calidad with endpoint: " + endpoint);
+        log.info("Tipo Teléfono - [trafic] - listing Actua en calidad with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/constantes-web-api/constantes/hijos/" + actuaCaldiadValue + "/A")
                 .request()

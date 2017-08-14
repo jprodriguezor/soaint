@@ -4,8 +4,7 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -14,8 +13,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 @ApiDelegator
+@Log4j2
 public class CorrespondenciaClient {
-    private static Logger logger = LogManager.getLogger(CorrespondenciaClient.class);
 
 
     @Value("${backapi.endpoint.url}")
@@ -32,7 +31,7 @@ public class CorrespondenciaClient {
     }
 
     public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
-        logger.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()
@@ -40,7 +39,7 @@ public class CorrespondenciaClient {
     }
 
     public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado) {
-        logger.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
                 .queryParam("fecha_ini", fechaIni)
@@ -52,7 +51,7 @@ public class CorrespondenciaClient {
     }
 
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
-        logger.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
+        log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/asignacion-web-api/asignacion")
                 .request()
@@ -60,7 +59,7 @@ public class CorrespondenciaClient {
     }
 
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
-        logger.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
+        log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/asignacion-web-api/asignacion/redireccionar")
                 .request()
@@ -68,7 +67,7 @@ public class CorrespondenciaClient {
     }
 
     public Response metricasTiempoDrools(String payload) {
-        logger.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
+        log.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.request()
