@@ -43,12 +43,12 @@ import java.util.*;
 
 @BusinessBoundary
 @NoArgsConstructor
-@PropertySource("classpath:connectionAlfresco.properties")
+@PropertySource("classpath:configurationServices.properties")
 public class ContentControlAlfresco extends ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
-    @Value( "${ALFRSCO_ATOMPUB_URL}" )
+    @Value( "${ALFRESCO_ATOMPUB_URL}" )
     private String propiedadALFRSCO_ATOMPUB_URL ;
     @Value( "${REPOSITORY_ID}" )
     private String propiedadREPOSITORY_ID ;
@@ -72,7 +72,7 @@ public class ContentControlAlfresco extends ContentControl {
             Map <String, String> parameter = new HashMap <> ( );
 
             // Credenciales del usuario
-            String propiedadALFRESCO_USER = "admin";
+           String propiedadALFRESCO_USER = "admin";
             parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
             String propiedadALFRESCO_PASS = "qwerty";
             parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);

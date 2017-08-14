@@ -1,47 +1,56 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
+import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author sarias
  */
-@PropertySource("classpath:configurationServices.properties")
 public final class Configuracion {
 
     @Value("${formatoNombreSerie}")
-    private static String formatoNombreSerie;
+    private static String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
-    private static String formatoNombreSubserie;
+    private static String aformatoNombreSubserie;
     @Value("${claseSubserie}")
-    private static String claseSubserie;
+    private static String aclaseSubserie;
     @Value("${claseSerie}")
-    private static String claseSerie;
+    private static String aclaseSerie;
 
     @Value("${claseDependencia}")
-    private static String claseDependencia;
+    private static String aclaseDependencia;
     @Value("${claseBase}")
-    private static String claseBase;
+    private static String aclaseBase;
     @Value("${metadatoCodBase}")
-    private static String metadatoCodBase;
+    private static String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
-    private static String metadatoCodDependencia;
+    private static String ametadatoCodDependencia;
 
     @Value("${metadatoCodSubserie}")
-    private static String metadatoCodSubserie;
+    private static String ametadatoCodSubserie;
     @Value("${metadatoCodSerie}")
-    private static String metadatoCodSerie;
+    private static String ametadatoCodSerie;
     @Value("${metadatoCodUnidadAdminParent}")
-    private static String metadatoCodUnidadAdminParent;
+    private static String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
-    private static String ecm;
+    private static String aecm;
+
+
+    @Value( "${ALFRESCO_ATOMPUB_URL}" )
+    private static String propiedadALFRESCO_ATOMPUB_URL ;
+    @Value( "${REPOSITORY_ID}" )
+    private static String propiedadREPOSITORY_ID ;
+    @Value( "${ALFRESCO_USER}" )
+    private static String propiedadALFRESCO_USER ;
+    @Value( "${ALFRESCO_PASS}" )
+    private static String propiedadALFRESCO_PASS ;
 
 
 
-
-
-
-
+    private static final Logger logger = LogManager.getLogger (Configuracion.class.getName ( ));
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *
@@ -52,36 +61,43 @@ public final class Configuracion {
 
         switch (name) {
             case "formatoNombreSerie":
-                return formatoNombreSerie;
+                return aformatoNombreSerie!=null ?aformatoNombreSerie:"1.2_3";
             case "formatoNombreSubserie":
-                return formatoNombreSubserie;
+                return aformatoNombreSubserie!=null ?aformatoNombreSubserie:"1.2.4_5";
 
             case "claseSubserie":
-                return claseSubserie;
+                return aclaseSubserie!=null ?aclaseSubserie:"CM_Subserie";
 
             case "claseSerie":
-                return claseSerie;
+                return aclaseSerie!=null ?aclaseSerie:"CM_Serie";
 
             case "claseDependencia":
-                return claseDependencia;
+                return aclaseDependencia!=null ?aclaseDependencia:"CM_Unidad_Administrativa";
             case "claseBase":
-                return claseBase;
+                return aclaseBase!=null ?aclaseBase:"CM_Unidad_Base";
 
             case "metadatoCodDependencia":
-                return metadatoCodDependencia;
+                return ametadatoCodDependencia!=null ?ametadatoCodDependencia:"CodigoDependencia";
 
             case "metadatoCodBase":
-                return metadatoCodBase;
+                return ametadatoCodBase!=null ?ametadatoCodBase:"CodigoBase";
 
             case "metadatoCodSubserie":
-                return metadatoCodSubserie;
+                return ametadatoCodSubserie!=null ?ametadatoCodSubserie:"CodigoSubserie";
 
             case "metadatoCodSerie":
-                return metadatoCodSerie;
+                return ametadatoCodSerie!=null ?ametadatoCodSerie:"CodigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return metadatoCodUnidadAdminParent;
-
+                return ametadatoCodUnidadAdminParent!=null ?ametadatoCodUnidadAdminParent:"CodUnidadPadre";
+            case "ALFRSCO_ATOMPUB_URL":
+                return propiedadALFRESCO_ATOMPUB_URL!=null ?propiedadALFRESCO_ATOMPUB_URL:"http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+            case "REPOSITORY_ID":
+                return propiedadREPOSITORY_ID!=null ?propiedadREPOSITORY_ID:"-default-";
+            case "ALFRESCO_USER":
+                return propiedadALFRESCO_USER!=null ?propiedadALFRESCO_USER:"admin";
+            case "ALFRESCO_PASS":
+                return propiedadALFRESCO_PASS!=null ?propiedadALFRESCO_PASS:"admin";
             default:
                 return "";
         }
