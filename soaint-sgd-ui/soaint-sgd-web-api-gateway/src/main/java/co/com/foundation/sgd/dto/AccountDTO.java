@@ -8,6 +8,10 @@ import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+
+/**
+ * Class for Represenet User login information
+ */
 @Data()
 @ToString
 @XmlRootElement

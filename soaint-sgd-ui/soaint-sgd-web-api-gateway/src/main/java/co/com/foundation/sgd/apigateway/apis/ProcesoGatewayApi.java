@@ -36,6 +36,11 @@ public class ProcesoGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    /**
+     *
+     * @param entrada
+     * @return Response
+     */
     @POST
     @Path("/iniciar")
     @JWTTokenSecurity

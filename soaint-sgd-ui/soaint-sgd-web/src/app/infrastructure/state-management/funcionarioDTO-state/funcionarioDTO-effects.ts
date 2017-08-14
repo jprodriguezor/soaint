@@ -18,8 +18,6 @@ import * as actions from './funcionarioDTO-actions';
 import {Sandbox} from './funcionarioDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors';
-import {createSelector} from 'reselect';
-import {tassign} from 'tassign';
 
 @Injectable()
 export class Effects {

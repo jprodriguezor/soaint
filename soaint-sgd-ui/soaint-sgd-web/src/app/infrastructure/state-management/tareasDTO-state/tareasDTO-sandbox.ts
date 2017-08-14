@@ -10,9 +10,9 @@ import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
-import {ROUTES_PATH} from '../../../app.routes';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
+import {ROUTES_PATH} from '../../../app.route-names';
 
 @Injectable()
 export class Sandbox {

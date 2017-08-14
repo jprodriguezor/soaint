@@ -1,6 +1,7 @@
 import {State} from '../constanteDTO-reducers';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
+import {DESTINATARIO_PRINCIPAL} from '../../../../shared/bussiness-properties/radicacion-properties';
 
 const rootPath = (state: rootStore.State) => state.constantes;
 
@@ -21,7 +22,7 @@ export const getTipoDestinatarioSelectedId = createSelector(rootPath, (state: St
 
 // Get Tipo destinatario principal id=> 52
 export const getDestinatarioPrincial = createSelector(getTipoDestinatarioEntities, (entities) => {
-  return entities[52];
+  return entities[DESTINATARIO_PRINCIPAL];
 });
 
 export const getTipoDestinatarioArrayData = createSelector(getTipoDestinatarioEntities, getTipoDestinatarioIds, (entities, ids) => {

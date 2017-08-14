@@ -1,5 +1,4 @@
-import {ROUTES_PATH} from '../../app.routes';
-
+import {ROUTES_PATH} from '../../app.route-names';
 export const MENU_OPTIONS = [
   {label: 'Vista Corporativa', icon: 'dashboard', routerLink: ['/' + ROUTES_PATH.dashboard]},
   {label: 'Tareas', icon: 'list', routerLink: ['/' + ROUTES_PATH.workspace]},
