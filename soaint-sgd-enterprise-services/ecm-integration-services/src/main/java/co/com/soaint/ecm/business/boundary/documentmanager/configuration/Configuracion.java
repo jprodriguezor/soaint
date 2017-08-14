@@ -1,10 +1,12 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author sarias
  */
+@PropertySource("classpath:configurationServices.properties")
 public final class Configuracion {
 
     @Value("${formatoNombreSerie}")
@@ -50,35 +52,35 @@ public final class Configuracion {
 
         switch (name) {
             case "formatoNombreSerie":
-                return "1.2_3";
+                return formatoNombreSerie;
             case "formatoNombreSubserie":
-                return "1.2.4_5";
+                return formatoNombreSubserie;
 
             case "claseSubserie":
-                return "CM_Subserie";
+                return claseSubserie;
 
             case "claseSerie":
-                return "CM_Serie";
+                return claseSerie;
 
             case "claseDependencia":
-                return "CM_Unidad_Administrativa";
+                return claseDependencia;
             case "claseBase":
-                return "CM_Unidad_Base";
+                return claseBase;
 
             case "metadatoCodDependencia":
-                return "CodigoDependencia";
+                return metadatoCodDependencia;
 
             case "metadatoCodBase":
-                return "CodigoBase";
+                return metadatoCodBase;
 
             case "metadatoCodSubserie":
-                return "CodigoSubserie";
+                return metadatoCodSubserie;
 
             case "metadatoCodSerie":
-                return "CodigoSerie";
+                return metadatoCodSerie;
 
             case "metadatoCodUnidadAdminParent":
-                return "CodUnidadPadre";
+                return metadatoCodUnidadAdminParent;
 
             default:
                 return "";
