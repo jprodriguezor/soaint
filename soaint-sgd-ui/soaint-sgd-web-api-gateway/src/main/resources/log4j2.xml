@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
     <Properties>
-        <Property name="log-path">C:/tmp/logs</Property>
+        <Property name="log-path">/home/wildfly/widlfly_logs</Property>
     </Properties>
     <Appenders>
         <RollingFile name="RollingFile" fileName="${log-path}/web-api-gateway-service.log"
