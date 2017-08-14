@@ -7,10 +7,14 @@ package co.com.soaint.bpm.services.config;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+/**
+ * Path para el apis
+ */
 @ApplicationPath("/apis")
 public class WebApiConfig extends Application {
 	
     public WebApiConfig() {
+        //
     }
     
 }
