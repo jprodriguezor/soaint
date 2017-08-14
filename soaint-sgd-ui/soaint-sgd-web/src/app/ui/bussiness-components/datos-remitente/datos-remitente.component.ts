@@ -56,6 +56,7 @@ export class DatosRemitenteComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.form.disable();
     this.listenForChanges();
     this.listenForErrors();
   }
@@ -100,7 +101,6 @@ export class DatosRemitenteComponent implements OnInit {
         this.onSelectTipoPersona(value);
       }
     });
-
   }
 
   listenForErrors() {
@@ -114,33 +114,26 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   onSelectTipoPersona(value) {
-    debugger;
-    console.log(this.validations, value);
-    this.visibility = {
-      'tipoPersona': this.visibility.tipoPersona
-    };
-
-    this.form.get('tipoDocumento').disable();
-    this.form.get('razonSocial').disable();
-    this.form.get('nombreApellidos').disable();
-    this.form.get('nroDocumentoIdentidad').disable();
+    if (!this.visibility.tipoPersona) {
+      return;
+    } else {
+      this.visibility = {
+        tipoPersona: true
+      };
+    }
 
     if (value.codigo === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
-      // this.form.get('tipoPersona').enable();
 
     } else if (value.codigo === PERSONA_JURIDICA) {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
-      this.form.get('razonSocial').enable();
       this.visibility['nombreApellidos'] = true;
-      this.form.get('nombreApellidos').enable();
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
-        this.form.get('tipoDocumento').enable();
 
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
@@ -149,10 +142,8 @@ export class DatosRemitenteComponent implements OnInit {
       }
     } else if (value.codigo === PERSONA_NATURAL) {
       this.visibility['nombreApellidos'] = true;
-      this.form.get('nombreApellidos').enable();
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
-      this.form.get('nroDocumentoIdentidad').enable();
       this.visibility['datosContacto'] = true;
       if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['tipoDocumento'] = true;
@@ -161,8 +152,6 @@ export class DatosRemitenteComponent implements OnInit {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
           this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
         }).unsubscribe();
-
-        this.form.get('tipoDocumento').enable();
       }
     }
   }
@@ -172,28 +161,14 @@ export class DatosRemitenteComponent implements OnInit {
       this.visibility = {};
       this.tipoComunicacion = value.codigo;
       if (this.tipoComunicacion === COMUNICACION_INTERNA) {
-        this.form.get('tipoPersona').disable();
-        this.form.get('sedeAdministrativa').enable();
-        this.form.get('dependenciaGrupo').enable();
-        this.form.get('tipoDocumento').disable();
         this.visibility['sedeAdministrativa'] = true;
         this.visibility['dependenciaGrupo'] = true;
-
         this.initLoadTipoComunicacionInterna();
 
       } else {
-        this.form.get('tipoPersona').enable();
-        this.form.get('tipoDocumento').enable();
-        this.form.get('sedeAdministrativa').disable();
-        this.form.get('dependenciaGrupo').disable();
         this.visibility['tipoPersona'] = true;
-
         this.initLoadTipoComunicacionExterna();
       }
-      this.form.get('tipoDocumento').disable();
-      this.form.get('razonSocial').disable();
-      this.form.get('nombreApellidos').disable();
-      this.form.get('nroDocumentoIdentidad').disable();
     }
   }
 

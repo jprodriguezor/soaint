@@ -6027,6 +6027,9 @@ General Animations
     transform: translate(1px, -5px); }
   100% {
     transform: translate(1px, 0px); } }
+[hidden] {
+  display: none !important; }
+
 @media print {
   @page {
     size: auto;
