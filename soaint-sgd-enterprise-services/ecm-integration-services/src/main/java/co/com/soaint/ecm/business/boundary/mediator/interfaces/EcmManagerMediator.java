@@ -6,9 +6,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import java.util.List;
 
-/**
- * Interface de los metodos de las operaciones del servicio
- */
 public interface EcmManagerMediator {
      /**
       * Interfaz para crear la estructura dentro del ECM
@@ -29,9 +26,9 @@ public interface EcmManagerMediator {
      /**
       * Interfaz para mover documento en el ECM
       * @param documento Nombre del documento a mover
-      * @param carpetaFuente Carpeta donde se encuentra el documento
-      * @param carpetaDestino Carpeta a donde se va a mover el documento.
+      * @param CarpetaFuente Carpeta donde se encuentra el documento
+      * @param CarpetaDestino Carpeta a donde se va a mover el documento.
       * @return Mensaje de respuesta del metodo(codigo y mensaje)
       */
-     MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino);
+     MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino);
 }

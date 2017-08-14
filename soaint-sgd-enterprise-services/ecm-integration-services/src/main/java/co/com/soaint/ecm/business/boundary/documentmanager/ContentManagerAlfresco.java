@@ -25,12 +25,20 @@ import java.util.List;
 @Service
 public class ContentManagerAlfresco extends ContentManagerMediator {
 
-    @Autowired
-    private
+    private final
     ContentControlAlfresco control;
 
     private static final Logger logger = LogManager.getLogger (ContentManagerAlfresco.class.getName ( ));
 
+    /**
+     * Constructor de la clase
+     *
+     * @param control parametro que recibe la clase
+     */
+    @Autowired
+    public ContentManagerAlfresco(ContentControlAlfresco control) {
+        this.control = control;
+    }
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -54,7 +62,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             }
 
             logger.info ("### Estableciendo Conexion con el ECM..");
-            conexion = control.obtenerConexion ( );
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
 
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
@@ -72,7 +80,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
     /**
      * Metodo generico para subir los dccumentos al content
      *
-     * @param nombreDocumento  Nombre del documento que se va a subir
+     * @param nombreDocumento  NOmbre del documento que se va a subir
      * @param documento        Documento que se va a subir
      * @param tipoComunicacion tipo de comunicacion puede ser externa o interna.
      * @return Identificador del documento que se inserto
@@ -89,7 +97,7 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             Conexion conexion;
             new Conexion ( );
             logger.info ("### Estableciendo la conexion..");
-            conexion = control.obtenerConexion ( );
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
 
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
@@ -115,14 +123,14 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
      * Metodo generico para mover documentos dentro del ECM
      *
      * @param documento      Nombre del documento que se va a mover
-     * @param carpetaFuente  Carpeta donde esta actualmente el documento.
-     * @param carpetaDestino Carpeta a donde se movera el documento.
+     * @param CarpetaFuente  Carpeta donde esta actualmente el documento.
+     * @param CarpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
      * @throws InfrastructureException Excepcion que devuelve el metodo en error
      */
-    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
 
-        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
+        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
@@ -130,9 +138,9 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             logger.info ("###Se va a establecer la conexion");
             Conexion conexion;
             new Conexion ( );
-            conexion = control.obtenerConexion ( );
+            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
             logger.info ("###Conexion establecida");
-            response = control.movDocumento (conexion.getSession ( ), documento, carpetaFuente, carpetaDestino);
+            response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
             e.printStackTrace ( );
