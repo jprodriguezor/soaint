@@ -1,9 +1,8 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -17,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @ApiDelegator
+@Log4j2
 public class DigitalizarDocumentoClient {
+
 
     @Value("${backapi.ecm.service.endpoint.url}")
     private String endpoint = "";
@@ -27,7 +28,7 @@ public class DigitalizarDocumentoClient {
     }
 
     public Response digitalizar(InputPart part, String fileName, String tipoComunicacion) {
-        System.out.println("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
+        log.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
@@ -36,7 +37,7 @@ public class DigitalizarDocumentoClient {
         try {
             inputStream = part.getBody(InputStream.class, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Se ha generado un error del tipo IO:",e);
         }
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
 

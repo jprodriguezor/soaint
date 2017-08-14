@@ -187,7 +187,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       datosContactoList: this.getDatosContactos()
     };
 
-    this.radicacionUnsubscriber = this._sandbox.radicar(this.radicacion).subscribe((response) => {
+    this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
       this.editable = false;
@@ -450,7 +450,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.validDatosGeneralesUnsubscriber.unsubscribe();
     this.reqDigitInmediataUnsubscriber.unsubscribe();
     this.sedeUnsubscriber.unsubscribe();
-    this.radicacionUnsubscriber.unsubscribe();
   }
 
 }
