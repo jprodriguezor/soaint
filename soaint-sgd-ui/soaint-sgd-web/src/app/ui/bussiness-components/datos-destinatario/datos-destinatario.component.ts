@@ -57,7 +57,6 @@ export class DatosDestinatarioComponent implements OnInit {
           this.dependenciaGrupoInput = dependencias.organigrama;
           depedenciaSubscription.unsubscribe();
         });
-        // this._store.dispatch(new DependenciaGrupoLoadAction({codigo: value.id}));
       } else {
         grupoControl.disable();
       }
@@ -86,7 +85,7 @@ export class DatosDestinatarioComponent implements OnInit {
       'tipoDestinatario': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}],
-      'destinatarioPrincipal': [{value: null, disabled: !this.editable}, Validators.required]
+      'destinatarioPrincipal': [{value: null, disabled: !this.editable}, Validators.required],
     });
   }
 
@@ -175,19 +174,11 @@ export class DatosDestinatarioComponent implements OnInit {
   }
 
   deleteDestinatarioIqualRemitente(sedeRemitente: OrganigramaDTO) {
-    // this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sedeRemitente.codigo).map(value => value.);
-    this.agentesDestinatario = [...this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo !== sedeRemitente.codigo)];
-    this.form.get('destinatarioPrincipal').setValue(null);
-  }
-
-  getFormValues() {
-    const values = this.form.value;
-    if (values.destinatarioPrincipal === null &&
-      values.tipoDestinatario !== null &&
-      values.sedeAdministrativa !== null &&
-      values.dependenciaGrupo !== null
-    ) {
-      this.addAgentesDestinatario();
+    const before =  this.agentesDestinatario.length;
+    const filtered = this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo !== sedeRemitente.codigo);
+    if (before > filtered.length) {
+      this.agentesDestinatario = [...filtered];
+      this.form.get('destinatarioPrincipal').setValue(null);
     }
   }
 

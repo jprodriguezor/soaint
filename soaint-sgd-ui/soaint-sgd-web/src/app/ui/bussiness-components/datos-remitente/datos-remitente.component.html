@@ -3,7 +3,7 @@
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
 
-      <div class="ui-g ui-fluid" *ngIf="visibility.sedeAdministrativa">
+      <div class="ui-g ui-fluid" [hidden]="!visibility.sedeAdministrativa">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
@@ -16,6 +16,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          [dynamicDisable]="!visibility.sedeAdministrativa"
                           (onBlur)="listenForBlurEvents('sedeAdministrativa')">
               </p-dropdown>
 
@@ -40,6 +41,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          [dynamicDisable]="!visibility.dependenciaGrupo"
                           (onBlur)="listenForBlurEvents('dependenciaGrupo')"
               >
               </p-dropdown>
@@ -53,7 +55,7 @@
         </div>
       </div>
 
-      <div class="ui-g ui-fluid" *ngIf="visibility.tipoPersona">
+      <div class="ui-g ui-fluid" [hidden]="!visibility.tipoPersona">
 
         <!--Tipo Persona-->
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
@@ -67,6 +69,7 @@
                           formControlName="tipoPersona"
                           placeholder="Seleccione"
                           [autoWidth]="false"
+                          [dynamicDisable]="visibility.tipoPersona"
                           (onBlur)="listenForBlurEvents('tipoPersona')"
               >
               </p-dropdown>
@@ -80,7 +83,7 @@
         </div>
 
         <!--Tipo Documento-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.tipoDocumento">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.tipoDocumento">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoDocumento"><span class="text-danger">*</span>Tipo documento</label>
@@ -91,6 +94,7 @@
                           formControlName="tipoDocumento"
                           placeholder="Seleccione"
                           [autoWidth]="false"
+                          [dynamicDisable]="!visibility.tipoDocumento"
                           (onBlur)="listenForBlurEvents('tipoDocumento')"
               >
               </p-dropdown>
@@ -104,11 +108,11 @@
         </div>
 
         <!--Razon Social-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.razonSocial">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.razonSocial">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="razonSocial" formControlName="razonSocial">
+              <input type="text" pInputText id="razonSocial" formControlName="razonSocial" [dynamicDisable]="!visibility.razonSocial">
               <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
 
                  <div class="ui-message ui-messages-error"
@@ -121,11 +125,11 @@
         </div>
 
         <!--Nit-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nit">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nit">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nit" formControlName="nit">
+              <input type="text" pInputText id="nit" formControlName="nit" [dynamicDisable]="!visibility.nit">
               <label for="nit">Nit</label>
               </span>
             </div>
@@ -133,7 +137,7 @@
         </div>
 
         <!--Actua en Calidad-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.actuaCalidad">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.actuaCalidad">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="actuaCalidad">Actua en calidad</label>
@@ -145,6 +149,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          [dynamicDisable]="!visibility.actuaCalidad"
               >
               </p-dropdown>
             </div>
@@ -152,11 +157,11 @@
         </div>
 
         <!--Nombre y Apellidos-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nombreApellidos">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nombreApellidos">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos">
+              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos" [dynamicDisable]="!visibility.nombreApellidos">
                 <label for="nombreApellidos"><span class="text-danger">*</span>Nombre y Apellidos</label>
 
                 <div class="ui-message ui-messages-error"
@@ -169,11 +174,11 @@
         </div>
 
         <!--Nro Documento Identidad-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" *ngIf="visibility.nroDocumentoIdentidad">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nroDocumentoIdentidad">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad">
+              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad" [dynamicDisable]="!visibility.nroDocumentoIdentidad">
               <label for="nroDocumentoIdentidad"><span class="text-danger">*</span>No. Documento identidad</label>
 
                  <div class="ui-message ui-messages-error"

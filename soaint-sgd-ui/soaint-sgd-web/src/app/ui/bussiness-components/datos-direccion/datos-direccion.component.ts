@@ -56,6 +56,7 @@ export class DatosDireccionComponent implements OnInit {
               private formBuilder: FormBuilder) {
     this.initForm();
     this.listenForChanges();
+    this.listenForErrors();
   }
 
 
@@ -73,14 +74,14 @@ export class DatosDireccionComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      'tipoVia': [null],
-      'noViaPrincipal': [null],
+      'tipoVia': [{value: null, disabled: true}, Validators.required],
+      'noViaPrincipal': [{value: null, disabled: true}, Validators.required],
       'prefijoCuadrante': [null],
       'bis': [null],
       'orientacion': [null],
-      'noVia': [null],
+      'noVia': [{value: null, disabled: true}, Validators.required],
       'prefijoCuadrante_se': [null],
-      'placa': [null],
+      'placa': [{value: null, disabled: true}, Validators.required],
       'orientacion_se': [null],
       'complementoTipo': [null],
       'complementoAdicional': [null],
@@ -92,6 +93,13 @@ export class DatosDireccionComponent implements OnInit {
       'municipio': [null],
       'principal': [null]
     });
+  }
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('tipoVia');
+    this.bindToValidationErrorsOf('noViaPrincipal');
+    this.bindToValidationErrorsOf('noVia');
+    this.bindToValidationErrorsOf('placa');
   }
 
   listenForChanges() {
@@ -137,14 +145,14 @@ export class DatosDireccionComponent implements OnInit {
     }
   }
 
-  listenForBlurEvents(control: string) {
-    const ac = this.form.get(control);
-    if (ac.touched && ac.invalid) {
-      const error_keys = Object.keys(ac.errors);
-      const last_error_key = error_keys[error_keys.length - 1];
-      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-    }
-  }
+  // listenForBlurEvents(control: string) {
+  //   const ac = this.form.get(control);
+  //   if (ac.touched && ac.invalid) {
+  //     const error_keys = Object.keys(ac.errors);
+  //     const last_error_key = error_keys[error_keys.length - 1];
+  //     this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+  //   }
+  // }
 
   bindToValidationErrorsOf(control: string) {
     const ac = this.form.get(control);
@@ -160,30 +168,35 @@ export class DatosDireccionComponent implements OnInit {
   }
 
   addContact() {
-    const pais = this.form.get('pais');
-    const departamento = this.form.get('departamento');
-    const municipio = this.form.get('municipio');
-    const numeroTel = this.form.get('numeroTel');
-    const celular = this.form.get('celular');
-    const email = this.form.get('correoEle');
+    if (this.form.valid) {
+      const pais = this.form.get('pais');
+      const departamento = this.form.get('departamento');
+      const municipio = this.form.get('municipio');
+      const numeroTel = this.form.get('numeroTel');
+      const celular = this.form.get('celular');
+      const email = this.form.get('correoEle');
 
-    const insert = [tassign({
-      pais: pais.value,
-      departamento: departamento.value,
-      municipio: municipio.value,
-      numeroTel: numeroTel.value,
-      celular: celular.value,
-      correoEle: email.value
-    }, this.addDireccion())];
+      const insert = [tassign({
+        pais: pais.value,
+        departamento: departamento.value,
+        municipio: municipio.value,
+        numeroTel: numeroTel.value,
+        celular: celular.value,
+        correoEle: email.value
+      }, this.addDireccion())];
 
-    this.contacts = [...insert, ...this.contacts];
+      this.contacts = [...insert, ...this.contacts];
 
-    pais.reset();
-    departamento.reset();
-    municipio.reset();
-    numeroTel.reset();
-    celular.reset();
-    email.reset();
+      pais.reset();
+      departamento.reset();
+      municipio.reset();
+      numeroTel.reset();
+      celular.reset();
+      email.reset();
+
+      this.showContactForm = false;
+      this.showDireccionForm = false;
+    }
   }
 
   addDireccion() {
