@@ -71,11 +71,11 @@ public class ContentControlAlfresco extends ContentControl {
             // Credenciales del usuario
             String propiedadALFRESCO_USER = "admin";
             parameter.put (SessionParameter.USER, propiedadALFRESCO_USER);
-            String propiedadALFRESCO_PASS = "admin";
+            String propiedadALFRESCO_PASS = "qwerty";
             parameter.put (SessionParameter.PASSWORD, propiedadALFRESCO_PASS);
 
             // Configuracion de conexion
-            String propiedadALFRSCO_ATOMPUB_URL = "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+            String propiedadALFRSCO_ATOMPUB_URL = "http://localhost:8282/alfresco/api/-default-/public/cmis/versions/1.1/atom";
             parameter.put (SessionParameter.ATOMPUB_URL, propiedadALFRSCO_ATOMPUB_URL);
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
             String propiedadREPOSITORY_ID = "-default-";
