@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayInputStream;
@@ -39,8 +40,10 @@ import java.util.*;
 /**
  * Created by Dasiel
  */
+
 @BusinessBoundary
 @NoArgsConstructor
+@PropertySource("classpath:connectionAlfresco.properties")
 public class ContentControlAlfresco extends ContentControl {
 
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
