@@ -1,13 +1,28 @@
 package co.com.soaint.foundation.canonical.bpm;
 
-import javax.xml.bind.annotation.XmlType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Created by Arce on 6/9/2017.
  */
-@XmlType
+@Getter
+@AllArgsConstructor
 public enum EstadosEnum {
 
-    CREADO, LISTO, RESERVADO, ENPROGRESO, SUSPENDIDO, COMPLETADO, FALLIDO, ERROR, SALIDO, OBSOLETO
+    CREADO("Created"), LISTO("Ready"), RESERVADO("Reserved"), ENPROGRESO("InProgress"), SUSPENDIDO("Suspended"), COMPLETADO("Completed"), FALLIDO("Failed"), ERROR("Error"), SALIDO("Exited"), OBSOLETO("Obsolete");
+
+    private final String nombre;
+
+
+    public static EstadosEnum obtenerClave(String nombre){
+
+        for (EstadosEnum valor : EstadosEnum.values()) {
+            if (valor.getNombre().equals(nombre)) {
+                return valor;
+            }
+        }
+        return null;
+    }
 
 }

@@ -30,7 +30,7 @@ public class FuncionarioClient {
     }
 
     public Response listarFuncionarios(String codigoDependencia) {
-        logger.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
+        log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/funcionarios-web-api/funcionarios/dependencia/" + codigoDependencia + "/A")
                 .request()
