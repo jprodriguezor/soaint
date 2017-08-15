@@ -38,7 +38,7 @@ public class ContentManager {
      * @return Mensaje de respuesta
      * @throws InfrastructureException Excepcion que se recoje ante cualquier error
      */
-    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
+    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure)  {
         logger.info ("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         Carpeta carpeta;
@@ -59,7 +59,6 @@ public class ContentManager {
             response = contentControl.generarArbol (structure, carpeta);
 
         } catch (Exception e) {
-            e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
             logger.error ("Error creando estructura" , e);
@@ -76,7 +75,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
+    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion)  {
 
 
         logger.info ("### Subiendo documento al content..");
@@ -99,7 +98,6 @@ public class ContentManager {
             response.setMensaje ("OK");
 
         } catch (Exception e) {
-            e.printStackTrace ( );
             logger.error ("Error subiendo documento" , e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
@@ -113,14 +111,14 @@ public class ContentManager {
      * Metodo generico para mover documentos dentro del ECM
      *
      * @param documento      Nombre del documento que se va a mover
-     * @param CarpetaFuente  Carpeta donde esta actualmente el documento.
+     * @param carpetaFuente  Carpeta donde esta actualmente el documento.
      * @param CarpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
      * @throws InfrastructureException Excepcion que devuelve el metodo en error
      */
-    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String CarpetaDestino)  {
 
-        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + CarpetaFuente + " a la carpeta: " + CarpetaDestino);
+        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + CarpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
@@ -130,10 +128,9 @@ public class ContentManager {
             new Conexion ( );
             conexion = contentControl.obtenerConexion ( );
             logger.info ("###Conexion establecida");
-            response = contentControl.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
+            response = contentControl.movDocumento (conexion.getSession ( ), documento, carpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
-            e.printStackTrace ( );
             logger.error ("Error moviendo documento" , e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
