@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
  * @author jrodriguez
  */
 @Data
@@ -27,7 +26,7 @@ import java.util.List;
 @Entity
 @Table(name = "DCT_ASIGNACION")
 @NamedQueries({
-    @NamedQuery(name = "DctAsignacion.findAll", query = "SELECT d FROM DctAsignacion d"),
+        @NamedQuery(name = "DctAsignacion.findAll", query = "SELECT d FROM DctAsignacion d"),
         @NamedQuery(name = "DctAsignacion.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DctAsignacionDTO " +
                 "(d.ideAsignacion, d.fecAsignacion, d.ideFunci, d.codDependencia, d.codTipAsignacion, d.observaciones, d.codTipCausal, d.codTipProceso)" +
                 "FROM DctAsignacion d " +
@@ -61,7 +60,7 @@ public class DctAsignacion implements Serializable {
     @Column(name = "IDE_USUARIO_CREO")
     private String ideUsuarioCreo;
     @Basic(optional = false)
-    @Column(name = "FEC_CREO")
+    @Column(name = "FEC_CREO", insertable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecCreo;
     @Column(name = "COD_TIP_PROCESO")
@@ -74,5 +73,10 @@ public class DctAsignacion implements Serializable {
     private CorCorrespondencia corCorrespondencia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dctAsignacion")
     private List<DctAsigUltimo> dctAsigUltimoList;
+
+    @PrePersist
+    protected void onCreate() {
+        fecCreo = new Date();
+    }
 
 }

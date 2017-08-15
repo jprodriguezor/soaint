@@ -86,7 +86,6 @@ public class AsignacionControl {
                 } else {
                     dctAsigUltimo = DctAsigUltimo.newInstance()
                             .ideUsuarioCreo(usuarioCreo)
-                            .fecCreo(fecha)
                             .build();
                 }
 
@@ -94,13 +93,11 @@ public class AsignacionControl {
                 dctAsigUltimo.setCorAgente(corAgente);
                 dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
                 dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
-                dctAsigUltimo.setFecCambio(fecha);
 
                 dctAsignacion.setFecAsignacion(fecha);
                 dctAsignacion.setCorAgente(corAgente);
                 dctAsignacion.setCorCorrespondencia(corCorrespondencia);
                 dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
-                dctAsignacion.setFecCreo(fecha);//TODO
 
                 em.persist(dctAsignacion);
                 em.merge(dctAsigUltimo);
@@ -213,7 +210,7 @@ public class AsignacionControl {
      * @param ideAgente
      * @return
      */
-    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente)throws SystemException{
+    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente) throws SystemException {
         try {
             List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
                     .setParameter("IDE_AGENTE", ideAgente)

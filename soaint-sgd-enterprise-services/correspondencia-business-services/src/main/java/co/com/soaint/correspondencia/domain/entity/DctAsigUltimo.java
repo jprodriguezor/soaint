@@ -16,7 +16,6 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- *
  * @author jrodriguez
  */
 @Data
@@ -26,7 +25,7 @@ import java.util.Date;
 @Entity
 @Table(name = "DCT_ASIG_ULTIMO")
 @NamedQueries({
-    @NamedQuery(name = "DctAsigUltimo.findAll", query = "SELECT d FROM DctAsigUltimo d"),
+        @NamedQuery(name = "DctAsigUltimo.findAll", query = "SELECT d FROM DctAsigUltimo d"),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAgente", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
                 "(d.ideAsigUltimo, d.numRedirecciones, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
                 "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
@@ -91,7 +90,7 @@ public class DctAsigUltimo implements Serializable {
     @Column(name = "IDE_USUARIO_CREO")
     private String ideUsuarioCreo;
     @Basic(optional = false)
-    @Column(name = "FEC_CREO")
+    @Column(name = "FEC_CREO", insertable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecCreo;
     @Basic(optional = false)
@@ -122,8 +121,19 @@ public class DctAsigUltimo implements Serializable {
     @ManyToOne(optional = false)
     private DctAsignacion dctAsignacion;
 
+    /**
+     * @param ideAsigUltimo
+     * @param numRedirecciones
+     * @param ideUsuarioCreo
+     * @param fecCreo
+     * @param nivLectura
+     * @param nivEscritura
+     * @param fechaVencimiento
+     * @param idInstancia
+     * @param codTipProceso
+     */
     public DctAsigUltimo(BigInteger ideAsigUltimo, String numRedirecciones, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
-                         Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso){
+                         Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso) {
         this.ideAsigUltimo = ideAsigUltimo;
         this.numRedirecciones = numRedirecciones;
         this.ideUsuarioCreo = ideUsuarioCreo;
@@ -134,6 +144,17 @@ public class DctAsigUltimo implements Serializable {
         this.idInstancia = idInstancia;
         this.codTipProceso = codTipProceso;
 
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        fecCreo = new Date();
+        fecCambio = fecCreo;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        fecCambio = new Date();
     }
 
 }
