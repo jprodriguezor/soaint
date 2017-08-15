@@ -22,27 +22,51 @@ public class GestionarOrganigramaAdministrativoWS {
     @Autowired
     GestionarOrganigramaAdministrativo boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarOrganigramaAdministrativoWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "consultarOrganigrama", operationName = "consultarOrganigrama")
-    public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException{
+    public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException {
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.consultarOrganigrama()).build();
     }
 
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "listarDescendientesDirectosDeElementoRayz", operationName = "listarDescendientesDirectosDeElementoRayz")
-    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException{
+    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException {
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarDescendientesDirectosDeElementoRayz()).build();
     }
 
+    /**
+     * @param idPadre
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarElementosDeNivelInferior", operationName = "listarElementosDeNivelInferior")
-    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre")final String idPadre) throws SystemException{
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre") final String idPadre) throws SystemException {
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }
 
+    /**
+     * @param idHijo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "consultarPadreDeSegundoNivel", operationName = "consultarPadreDeSegundoNivel")
-    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@WebParam(name = "id_hijo")final String idHijo) throws BusinessException, SystemException{
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@WebParam(name = "id_hijo") final String idHijo) throws BusinessException, SystemException {
         return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idHijo)));
     }
 }

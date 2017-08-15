@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.BisClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 @Path("/bis-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Log4j2
 public class BisGatewayApi {
 
     @Autowired
@@ -30,10 +32,10 @@ public class BisGatewayApi {
     @JWTTokenSecurity
     public Response list() {
         //TODO: add trafic log
-        System.out.println("BisGatewayApi - [trafic] - listing Bis");
+        log.info("BisGatewayApi - [trafic] - listing Bis");
         Response response = client.list();
         String responseContent = response.readEntity(String.class);
-        System.out.println("BisGatewayApi - [content] : " + responseContent);
+        log.info("BisGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

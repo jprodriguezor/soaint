@@ -6,8 +6,7 @@ import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.hornetq.utils.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -30,9 +29,9 @@ import java.util.List;
 @Path("/bpm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Log4j2
 public class BpmIntegrationServicesClientRest {
 
-    private static Logger logger = LogManager.getLogger(BpmIntegrationServicesClientRest.class.getName());
 
     @Autowired
     private IProcessServices proceso;
@@ -54,7 +53,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/listar/")
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - listar procesos");
+        log.info("processing rest request - listar procesos");
         return proceso.listarProcesos(entradaProceso);
     }
 
@@ -68,7 +67,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/sennal/")
     public RespuestaProcesoDTO enviarSennalProceso(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - enviar señal proceso");
+        log.info("processing rest request - enviar señal proceso");
         return proceso.enviarSenalProceso(entradaProceso);
     }
 
@@ -85,7 +84,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/sennal/inicio/")
     public RespuestaProcesoDTO senalInicioAutomatico(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - enviar señal inicia automatico proceso ");
+        log.info("processing rest request - enviar señal inicia automatico proceso ");
         return proceso.senalInicioAutomatico(entradaProceso);
     }
 
@@ -99,7 +98,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/listar-instancias/")
     public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - listar instancias de procesos por usuarios");
+        log.info("processing rest request - listar instancias de procesos por usuarios");
         return proceso.listarProcesosInstanciaPorUsuarios(entradaProceso);
     }
 
@@ -115,7 +114,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/iniciar/")
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - iniciar proceso");
+        log.info("processing rest request - iniciar proceso");
         return proceso.iniciarProceso(entradaProceso);
     }
 
@@ -131,7 +130,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/proceso/iniciar/manual")
     public RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entradaProceso) throws SystemException {
-        logger.info("processing rest request - iniciar proceso manual");
+        log.info("processing rest request - iniciar proceso manual");
         return proceso.iniciarProcesoManual(entradaProceso);
     }
 
@@ -145,7 +144,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/completar/")
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - completar tarea");
+        log.info("processing rest request - completar tarea");
         return proceso.completarTarea(entradaTarea);
     }
 
@@ -159,7 +158,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/iniciar/")
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - iniciar tarea");
+        log.info("processing rest request - iniciar tarea");
         return proceso.iniciarTarea(entradaTarea);
     }
 
@@ -175,7 +174,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/reservar/")
     public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - reservar tarea");
+        log.info("processing rest request - reservar tarea");
         return proceso.reservarTarea(entradaTarea);
     }
 
@@ -189,7 +188,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/reasignar/")
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - reasignar tarea");
+        log.info("processing rest request - reasignar tarea");
         return proceso.reasignarTarea(entradaTarea);
     }
 
@@ -204,7 +203,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/listar/estados")
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - listar tareas con sus estados");
+        log.info("processing rest request - listar tareas con sus estados");
         return proceso.listarTareasEstados(entradaTarea);
     }
 
@@ -218,7 +217,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/listar/estados-usuario/")
     public List<RespuestaTareaDTO> listarTareaPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - listar tareas con sus estados por usuario");
+        log.info("processing rest request - listar tareas con sus estados por usuario");
         return proceso.listarTareasEstadosPorUsuario(entradaTarea);
     }
 
@@ -232,7 +231,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - listar instancias de procesos");
+        log.info("processing rest request - listar instancias de procesos");
         return proceso.listarTareasEstadosInstanciaProceso(entradaTarea);
     }
 
@@ -246,7 +245,7 @@ public class BpmIntegrationServicesClientRest {
     @POST
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException {
-        logger.info("processing rest request - listar tareas por instancias de procesos");
+        log.info("processing rest request - listar tareas por instancias de procesos");
         return proceso.listarTareasPorInstanciaProceso(entradaTarea);
     }
 

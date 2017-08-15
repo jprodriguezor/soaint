@@ -6,8 +6,7 @@ import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumento
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -26,35 +25,52 @@ import java.math.BigInteger;
 @Path("/documento-web-api")
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
+@Log4j2
 public class DocumentoWebApi {
-
-    private static Logger logger = LogManager.getLogger(AsignacionWebApi.class.getName());
 
     @Autowired
     GestionarDocumento boundary;
 
+    /**
+     * Constructor
+     */
     public DocumentoWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param documentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @PUT
     @Path("/documento/actualizar-referencia-ecm")
     public void actualizarReferenciaECM(DocumentoDTO documentoDTO) throws BusinessException, SystemException {
-        logger.info("processing rest request - actualizar referencia ECM");
+        log.info("processing rest request - actualizar referencia ECM");
         boundary.actualizarReferenciaECM(documentoDTO);
     }
 
+    /**
+     * @param ppdTrazDocumentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @POST
     @Path("/documento/registrar-observacion")
-    public void registrarObservacion(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
-        logger.info("processing rest request - registrar observacion a un documento");
+    public void registrarObservacion(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - registrar observacion a un documento");
         boundary.generarTrazaDocumento(ppdTrazDocumentoDTO);
     }
 
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
     @GET
     @Path("/documento/listar-observaciones/{ide-documento}")
-    public ObservacionesDocumentoDTO listarObservacionesDocumento(@PathParam("ide-documento")final BigInteger ideDocumento) throws SystemException{
-        logger.info("processing rest request - listar observaciones de un documento");
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(@PathParam("ide-documento") final BigInteger ideDocumento) throws SystemException {
+        log.info("processing rest request - listar observaciones de un documento");
         return boundary.listarObservacionesDocumento(ideDocumento);
     }
 }

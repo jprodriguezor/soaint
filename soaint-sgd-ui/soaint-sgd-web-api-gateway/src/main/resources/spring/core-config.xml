@@ -17,5 +17,6 @@
     
     <context:property-placeholder location="classpath:sgd-service.properties" />
 	<context:component-scan base-package="co.com.foundation.sgd.apigateway.apis.delegator"/>
-	
+	<context:component-scan base-package="co.com.foundation.sgd.apigateway.webservice.client"/>
+
 </beans>

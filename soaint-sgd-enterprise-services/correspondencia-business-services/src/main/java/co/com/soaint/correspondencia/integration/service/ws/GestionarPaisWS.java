@@ -19,16 +19,29 @@ public class GestionarPaisWS {
     @Autowired
     public GestionarPais boundary;
 
-
+    /**
+     * Constructor
+     */
     public GestionarPaisWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarPaisesByEstado", operationName = "listarPaisesByEstado")
     public PaisesDTO listarPaisesByEstado(@WebParam(name = "estado") String estado) throws SystemException {
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
     }
 
+    /**
+     * @param nombrePais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarPaisesByNombrePaisAndEstado", operationName = "listarPaisesByNombrePaisAndEstado")
     public PaisesDTO listarPaisesByNombrePaisAndEstado(@WebParam(name = "nombre_pais") String nombrePais, @WebParam(name = "estado") String estado) throws SystemException {
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByNombrePaisAndEstado(nombrePais, estado)).build();

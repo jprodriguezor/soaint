@@ -9,8 +9,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -30,9 +29,8 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class AgenteControl {
-
-    private static Logger logger = LogManager.getLogger(AgenteControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -70,10 +68,10 @@ public class AgenteControl {
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
             }
         } catch (BusinessException e) {
-            logger.error("Business Control - a business error has occurred", e);
+            log.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -107,7 +105,7 @@ public class AgenteControl {
                         .executeUpdate();
             }
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -176,11 +174,10 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param asignacion
      * @return
      */
-    private boolean puedeRedireccionar(AsignacionDTO asignacion) {
+    private boolean puedeRedireccionar(AsignacionDTO asignacion) throws SystemException {
         if (asignacion != null) {
             int numRedirecciones = 0;
             if (asignacion.getNumRedirecciones() != null)

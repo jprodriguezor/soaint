@@ -7,7 +7,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import com.sun.jersey.multipart.FormDataParam;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +16,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +23,10 @@ import java.util.Map;
 @Path("/correspondencia-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Log4j2
 public class CorrespondenciaGatewayApi {
 
+    private static final String CONTENT = "CorrespondenciaGatewayApi - [content] : ";
     @Autowired
     private CorrespondenciaClient client;
 
@@ -43,10 +44,10 @@ public class CorrespondenciaGatewayApi {
     @JWTTokenSecurity
     public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
         //TODO: add trafic log
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
+        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicar(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
-        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseContent);
+        log.info(CONTENT + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
@@ -58,10 +59,10 @@ public class CorrespondenciaGatewayApi {
                                          @QueryParam("cod_dependencia") final String codDependencia,
                                          @QueryParam("cod_estado") final String codEstado) {
         //TODO: add trafic log
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
         Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
         String responseContent = response.readEntity(String.class);
-        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseContent);
+        log.info(CONTENT + responseContent);
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
@@ -71,7 +72,7 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/asignar")
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
+        log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
@@ -89,7 +90,7 @@ public class CorrespondenciaGatewayApi {
             entradaProceso.setParametros(parametros);
             this.procesoClient.iniciar(entradaProceso);
         });
-        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
+        log.info(CONTENT + responseObject);
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
@@ -99,7 +100,7 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/reasignar")
     public Response reasignarComunicaciones(AsignacionesDTO asignacionesDTO) {
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
+        log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
@@ -111,7 +112,7 @@ public class CorrespondenciaGatewayApi {
             entradaProceso.setParametros(parametros);
             this.procesoClient.reasignarTarea(entradaProceso);
         });
-        System.out.println("CorrespondenciaGatewayApi - [content] : " + responseObject);
+        log.info(CONTENT + responseObject);
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
@@ -121,7 +122,7 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/redireccionar")
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.redireccionarComunicaciones(agentesDTO);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
@@ -130,7 +131,7 @@ public class CorrespondenciaGatewayApi {
     @GET
     @Path("/metricasTiempo")
     public Response metricasTiempo(@QueryParam("payload") String payload) {
-        System.out.println("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.metricasTiempoDrools(payload);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();

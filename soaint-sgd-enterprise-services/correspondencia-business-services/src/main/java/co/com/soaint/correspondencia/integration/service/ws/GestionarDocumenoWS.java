@@ -23,22 +23,40 @@ public class GestionarDocumenoWS {
     @Autowired
     GestionarDocumento boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarDocumenoWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param documentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "actualizarReferenciaECM", operationName = "actualizarReferenciaECM")
-    public  void actualizarReferenciaECM(@WebParam(name = "documento") final DocumentoDTO documentoDTO) throws BusinessException, SystemException {
+    public void actualizarReferenciaECM(@WebParam(name = "documento") final DocumentoDTO documentoDTO) throws BusinessException, SystemException {
         boundary.actualizarReferenciaECM(documentoDTO);
     }
 
+    /**
+     * @param ppdTrazDocumentoDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "registrarObservacion", operationName = "registrarObservacion")
-    public void registrarObservacion(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException{
+    public void registrarObservacion(PpdTrazDocumentoDTO ppdTrazDocumentoDTO) throws BusinessException, SystemException {
         boundary.generarTrazaDocumento(ppdTrazDocumentoDTO);
     }
 
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarObservacionesDocumento", operationName = "listarObservacionesDocumento")
-    public ObservacionesDocumentoDTO listarObservacionesDocumento(@WebParam(name = "ide-documento")final BigInteger ideDocumento) throws SystemException{
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(@WebParam(name = "ide-documento") final BigInteger ideDocumento) throws SystemException {
         return boundary.listarObservacionesDocumento(ideDocumento);
     }
 }
