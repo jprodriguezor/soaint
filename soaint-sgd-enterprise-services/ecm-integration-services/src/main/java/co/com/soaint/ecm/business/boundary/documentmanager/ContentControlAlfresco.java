@@ -47,10 +47,11 @@ public class ContentControlAlfresco implements ContentControl {
     private static String aclaseSubserie;
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
-    private static final String CLASE_BASE="claseBase";
-    private static final String CLASE_DEPENDENCIA="claseDependencia";
-    private static final String CLASE_SERIE="claseSerie";
-    private static final String CLASE_SUBSERIE="claseSubserie";
+    private static final String CLASE_BASE = "claseBase";
+    private static final String CLASE_DEPENDENCIA = "claseDependencia";
+    private static final String CLASE_SERIE = "claseSerie";
+    private static final String CLASE_SUBSERIE = "claseSubserie";
+
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
      *
@@ -112,10 +113,10 @@ public class ContentControlAlfresco implements ContentControl {
 
             switch (classDocumental) {
                 case CLASE_BASE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoBase",CLASE_BASE, props, codOrg,null);
+                    llenarPropiedadesCarpeta ("cmcor:CodigoBase", CLASE_BASE, props, codOrg);
                     break;
                 case CLASE_DEPENDENCIA:
-                    llenarPropiedadesCarpeta("cmcor:CodigoDependencia",CLASE_DEPENDENCIA, props, codOrg,folderFather);
+                    llenarPropiedadesCarpeta ("cmcor:CodigoDependencia", CLASE_DEPENDENCIA, props, codOrg);
                     //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
                     if (folderFather != null) {
                         props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
@@ -124,7 +125,7 @@ public class ContentControlAlfresco implements ContentControl {
                     }
                     break;
                 case CLASE_SERIE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoSerie",CLASE_SERIE, props, codOrg,folderFather);
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg);
                     if (folderFather != null) {
                         props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoDependencia"));
                     } else {
@@ -132,13 +133,13 @@ public class ContentControlAlfresco implements ContentControl {
                     }
                     break;
                 case CLASE_SUBSERIE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoSubserie",CLASE_SUBSERIE, props, codOrg,null);
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg);
                     if (folderFather != null) {
                         props.put ("cmcor:CodigoUnidadAdminPadre", folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
                     }
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
             //Se crea la carpeta dentro de la carpeta folder
             logger.info ("*** Se procede a crear la carpeta ***");
@@ -189,7 +190,7 @@ public class ContentControlAlfresco implements ContentControl {
                     formatoFinal = null;
                     break;
                 } else {
-                        formatoFinal.append (aFormatoCadenaArray);
+                    formatoFinal.append (aFormatoCadenaArray);
                 }
             }
         } catch (Exception e) {
@@ -581,11 +582,36 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return idDocumento;
     }
-    private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg, Carpeta folderFather){
+
+    /**
+     * Metodo para llenar propiedades para crear carpeta
+     *
+     * @param tipoCarpeta tipo de carpeta
+     * @param clase       clase de la carpeta
+     * @param props       objeto de propiedades
+     * @param codOrg      codigo
+     */
+    private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg) {
         props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad (clase));
         props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
     }
+
+    /**
+     * Metodo para devolver carpeta
+     * @param aux carpeta
+     * @param metadado metadato para hacer busqueda
+     * @param codigoCarpeta codigo de carpeta
+     * @return devuelve carpeta
+     */
+//    private Carpeta devuelveCarpeta(Carpeta aux, String metadado, String codigoCarpeta) {
+//        Carpeta folderReturn = new Carpeta ( );
+//        if (aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad (metadado)) != null &&
+//                aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad (metadado)).equals (codigoCarpeta)) {
+//            folderReturn = aux;
+//        }
+//        return folderReturn;
+//    }
 }
 
 
