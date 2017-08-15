@@ -597,21 +597,6 @@ public class ContentControlAlfresco implements ContentControl {
         props.put (tipoCarpeta, codOrg);
     }
 
-    /**
-     * Metodo para devolver carpeta
-     * @param aux carpeta
-     * @param metadado metadato para hacer busqueda
-     * @param codigoCarpeta codigo de carpeta
-     * @return devuelve carpeta
-     */
-//    private Carpeta devuelveCarpeta(Carpeta aux, String metadado, String codigoCarpeta) {
-//        Carpeta folderReturn = new Carpeta ( );
-//        if (aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad (metadado)) != null &&
-//                aux.getFolder ( ).getPropertyValue ("cmcor:" + Configuracion.getPropiedad (metadado)).equals (codigoCarpeta)) {
-//            folderReturn = aux;
-//        }
-//        return folderReturn;
-//    }
 }
 
 
