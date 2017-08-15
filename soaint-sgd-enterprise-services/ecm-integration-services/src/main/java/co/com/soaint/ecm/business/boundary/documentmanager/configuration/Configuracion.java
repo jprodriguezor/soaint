@@ -94,24 +94,5 @@ public final class Configuracion {
             default:
                 return "";
         }
-//        private static Properties propiedades = null;
-//        public static void inicializacion() {
-//
-//            if (propiedades == null) {
-//                propiedades = new Properties ( );
-//            }
-//
-//        }
-//        static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
-//        String propiedad = null;
-//        try {
-//            inicializacion ( );
-//            propiedades.load (new FileInputStream ("ecm-integration-services/src/main/resources/configurationServices.properties"));
-//            propiedad = propiedades.getProperty (name);
-//        } catch (Exception e) {
-//            e.printStackTrace ( );
-//            LOGGER.info ("Error al leer properties de configuracion");
-//        }
-//        return propiedad;
     }
 }
