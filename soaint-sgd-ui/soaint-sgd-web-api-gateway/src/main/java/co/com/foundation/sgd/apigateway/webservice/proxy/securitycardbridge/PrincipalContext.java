@@ -172,7 +172,7 @@ public class PrincipalContext {
      */
     public List<String> getRoles() {
         if (roles == null) {
-            roles = new ArrayList<String>();
+            roles = new ArrayList<>();
         }
         return this.roles;
     }

@@ -40,7 +40,6 @@ public class JWTTokenFilter implements ContainerRequestFilter {
 
 			token = authorizationHeader.substring("Bearer".length()).trim();
 			// Validate the token
-			//Key key = keyGenerator.generateKey();
 			Key key = KeyManager.getInstance().getKey();
 			Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 
