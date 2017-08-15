@@ -112,13 +112,13 @@ public class ContentManager {
      *
      * @param documento      Nombre del documento que se va a mover
      * @param carpetaFuente  Carpeta donde esta actualmente el documento.
-     * @param CarpetaDestino Carpeta a donde se movera el documento.
+     * @param carpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
      * @throws InfrastructureException Excepcion que devuelve el metodo en error
      */
-    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String CarpetaDestino)  {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino)  {
 
-        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + CarpetaDestino);
+        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
 
         try {
@@ -128,7 +128,7 @@ public class ContentManager {
             new Conexion ( );
             conexion = contentControl.obtenerConexion ( );
             logger.info ("###Conexion establecida");
-            response = contentControl.movDocumento (conexion.getSession ( ), documento, carpetaFuente, CarpetaDestino);
+            response = contentControl.movDocumento (conexion.getSession ( ), documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
             logger.error ("Error moviendo documento" , e);
