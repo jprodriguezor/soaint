@@ -99,7 +99,7 @@ public class CorAgente implements Serializable {
     private String codTipAgent;
     @Column(name = "IND_ORIGINAL")
     private String indOriginal;
-    @Column(name = "FEC_CREACION")
+    @Column(name = "FEC_CREACION", insertable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecCreacion;
     @JoinColumn(name = "IDE_DOCUMENTO", referencedColumnName = "IDE_DOCUMENTO")
@@ -114,4 +114,8 @@ public class CorAgente implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corAgente")
     private List<DctAsigUltimo> dctAsigUltimoList;
 
+    @PrePersist
+    protected void onCreate(){
+        fecCreacion = new Date();
+    }
 }
