@@ -21,17 +21,33 @@ public class GestionarFuncionariosWS {
     @Autowired
     private GestionarFuncionarios boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarFuncionariosWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param loginName
+     * @param estado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "listarFuncionarioByLoginNameAndEstado", operationName = "listarFuncionarioByLoginNameAndEstado")
-    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@WebParam(name = "login_name") final String loginName, @WebParam(name = "estado")final String estado)throws BusinessException, SystemException{
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@WebParam(name = "login_name") final String loginName, @WebParam(name = "estado") final String estado) throws BusinessException, SystemException {
         return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 
+    /**
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarFuncionariosByCodDependenciaAndCodEstado", operationName = "listarFuncionariosByCodDependenciaAndCodEstado")
-    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@WebParam(name = "cod_dependencia") final String codDependencia, @WebParam(name = "cod_estado")final String codEstado)throws SystemException{
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@WebParam(name = "cod_dependencia") final String codDependencia, @WebParam(name = "cod_estado") final String codEstado) throws SystemException {
         return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
     }
 }

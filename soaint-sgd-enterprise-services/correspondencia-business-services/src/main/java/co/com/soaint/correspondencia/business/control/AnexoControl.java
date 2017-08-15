@@ -4,6 +4,9 @@ import co.com.soaint.correspondencia.domain.entity.CorAnexo;
 import co.com.soaint.foundation.canonical.correspondencia.AnexoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +23,7 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class AnexoControl {
 
     @PersistenceContext
@@ -30,16 +34,24 @@ public class AnexoControl {
      * @param ppdDocumentoDTOList
      * @return
      */
-    public List<AnexoDTO> consultarAnexosByPpdDocumentos(List<PpdDocumentoDTO> ppdDocumentoDTOList){
+    public List<AnexoDTO> consultarAnexosByPpdDocumentos(List<PpdDocumentoDTO> ppdDocumentoDTOList)throws SystemException{
         List<AnexoDTO> anexoList = new ArrayList<>();
-        for (PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList) {
-            em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
-                    .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
-                    .getResultList()
-                    .stream()
-                    .forEach(anexoList::add);
+        try {
+            for (PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList) {
+                em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
+                        .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
+                        .getResultList()
+                        .stream()
+                        .forEach(anexoList::add);
+            }
+            return anexoList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
         }
-        return anexoList;
     }
 
     /**

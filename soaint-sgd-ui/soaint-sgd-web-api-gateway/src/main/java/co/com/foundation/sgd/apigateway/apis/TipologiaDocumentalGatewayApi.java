@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.TipologiaDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 @Path("/tipologia-documental-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Log4j2
 public class TipologiaDocumentalGatewayApi {
 
     @Autowired
@@ -30,10 +32,10 @@ public class TipologiaDocumentalGatewayApi {
     @JWTTokenSecurity
     public Response list() {
         //TODO: add trafic log
-        System.out.println("TipologiaDocumentalGatewayApi - [trafic] - listing TipologiaDocumental");
+        log.info("TipologiaDocumentalGatewayApi - [trafic] - listing TipologiaDocumental");
         Response response = tipologiaDocumentalClient.list();
         String responseContent = response.readEntity(String.class);
-        System.out.println("TipologiaDocumentalGatewayApi - [content] : " + responseContent);
+        log.info("TipologiaDocumentalGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

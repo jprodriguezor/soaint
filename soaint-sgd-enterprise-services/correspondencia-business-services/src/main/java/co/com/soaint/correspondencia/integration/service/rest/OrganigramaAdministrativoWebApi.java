@@ -5,8 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.OrganigramaAdministrat
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -28,41 +27,65 @@ import java.math.BigInteger;
 
 @Path("/organigrama-web-api")
 @Produces({"application/json", "application/xml"})
+@Log4j2
 public class OrganigramaAdministrativoWebApi {
-    private static Logger logger = LogManager.getLogger(OrganigramaAdministrativoWebApi.class.getName());
 
     @Autowired
     private GestionarOrganigramaAdministrativo boundary;
 
-    public OrganigramaAdministrativoWebApi(){
+    /**
+     * Constructor
+     */
+    public OrganigramaAdministrativoWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/organigrama")
-    public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException{
-        logger.info("processing rest request - consultar organigrama administrativo");
+    public OrganigramaAdministrativoDTO consultarOrganigrama() throws BusinessException, SystemException {
+        log.info("processing rest request - consultar organigrama administrativo");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.consultarOrganigrama()).build();
     }
 
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/organigrama/sedes")
-    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException{
-        logger.info("processing rest request - listar descendientes directos del elemento raiz");
+    public OrganigramaAdministrativoDTO listarDescendientesDirectosDeElementoRayz() throws BusinessException, SystemException {
+        log.info("processing rest request - listar descendientes directos del elemento raiz");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarDescendientesDirectosDeElementoRayz()).build();
     }
 
+    /**
+     * @param idPadre
+     * @return
+     * @throws SystemException
+     */
     @GET
     @Path("/organigrama/dependencias/{ide_orga_admin_padre}")
-    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws SystemException{
-        logger.info("processing rest request - listar descendientes directos de un elemento");
+    public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@PathParam("ide_orga_admin_padre") final String idPadre) throws SystemException {
+        log.info("processing rest request - listar descendientes directos de un elemento");
         return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
     }
 
+    /**
+     * @param idDependencia
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/organigrama/sede/dependencia/{ide_orga_admin}")
-    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("ide_orga_admin")final String idDependencia) throws BusinessException, SystemException{
-        logger.info("processing rest request - listar padre de segundo nivel");
+    public OrganigramaItemDTO consultarPadreDeSegundoNivel(@PathParam("ide_orga_admin") final String idDependencia) throws BusinessException, SystemException {
+        log.info("processing rest request - listar padre de segundo nivel");
         return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idDependencia)));
     }
 }

@@ -7,12 +7,10 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.List;
@@ -27,11 +25,10 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class DocumentoControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(DocumentoControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -67,10 +64,10 @@ public class DocumentoControl {
 
 
         } catch (BusinessException e) {
-            logger.error("Business Control - a business error has occurred", e);
+            log.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

@@ -4,8 +4,7 @@ import co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +22,10 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class MunicipioControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(MunicipioControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -35,7 +33,6 @@ public class MunicipioControl {
     // ----------------------
 
     /**
-     *
      * @param codDepar
      * @param estado
      * @return
@@ -49,7 +46,7 @@ public class MunicipioControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -58,7 +55,6 @@ public class MunicipioControl {
     }
 
     /**
-     *
      * @param estado
      * @return
      * @throws SystemException
@@ -70,7 +66,7 @@ public class MunicipioControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

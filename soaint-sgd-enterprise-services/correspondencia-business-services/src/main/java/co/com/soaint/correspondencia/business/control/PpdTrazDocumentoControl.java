@@ -8,8 +8,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
@@ -27,11 +26,10 @@ import java.util.Date;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class PpdTrazDocumentoControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(PpdTrazDocumentoControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -71,10 +69,10 @@ public class PpdTrazDocumentoControl {
             em.persist(ppdTrazDocumento);
             em.flush();
         } catch (BusinessException e) {
-            logger.error("Business Control - a business error has occurred", e);
+            log.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -83,19 +81,18 @@ public class PpdTrazDocumentoControl {
     }
 
     /**
-     *
      * @param ideDocumento
      * @return
      * @throws SystemException
      */
-    public ObservacionesDocumentoDTO listarTrazasDocumento(BigInteger ideDocumento) throws SystemException{
+    public ObservacionesDocumentoDTO listarTrazasDocumento(BigInteger ideDocumento) throws SystemException {
         try {
             return ObservacionesDocumentoDTO.newInstance().observaciones(em.createNamedQuery("PpdTrazDocumento.findAllByIdeDocumento", PpdTrazDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList())
                     .build();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

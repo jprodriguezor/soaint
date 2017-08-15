@@ -4,12 +4,14 @@ import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.Auth
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SecurityAPIService;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SystemException_Exception;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 @ApiDelegator
+@Log4j2
 public class SecurityCardbridgeClient {
 
     private SecurityAPIService service;
@@ -30,7 +32,7 @@ public class SecurityCardbridgeClient {
             try {
                 url = new URL(securitycardbridgeWsdlEndpoint);
             } catch (MalformedURLException ex) {
-                ex.printStackTrace();
+                log.error(ex);
             }
             service = new SecurityAPIService(url);
         }

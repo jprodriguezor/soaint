@@ -4,7 +4,7 @@
         <Property name="log-path">/home/wildfly/wildfly_logs/</Property>
     </Properties>
     <Appenders>
-        <RollingFile name="RollingFile" fileName="${log-path}/correspondencia-service.log"
+        <RollingFile name="RollingFile" fileName="${log-path}/bmp-integration-service.log"
                      filePattern="${log-path}/pagos-service-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
