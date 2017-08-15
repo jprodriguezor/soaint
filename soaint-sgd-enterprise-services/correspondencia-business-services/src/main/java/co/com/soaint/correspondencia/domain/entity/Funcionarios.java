@@ -10,14 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 /**
- *
  * @author jrodriguez
  */
 @Data
@@ -27,7 +25,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "FUNCIONARIOS")
 @NamedQueries({
-    @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
+        @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
         @NamedQuery(name = "Funcionarios.findByLoginNameAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
@@ -65,8 +63,9 @@ public class Funcionarios implements Serializable {
     @Basic(optional = false)
     @Column(name = "LOGIN_NAME")
     private String loginName;
+    @Embedded
     private AuditColumns auditColumns;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "funcionarios")
     private List<TvsOrgaAdminXFunciPk> tvsOrgaAdminXFunciPkList;
-    
+
 }

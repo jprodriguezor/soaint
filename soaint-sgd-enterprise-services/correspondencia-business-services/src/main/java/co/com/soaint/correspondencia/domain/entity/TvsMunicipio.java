@@ -10,21 +10,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
- *
  * @author jrodriguez
  */
 
@@ -35,10 +25,10 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "TVS_MUNICIPIO")
 @NamedQueries({
-    @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
-            "(t.ideMunic, t.nombreMunic, t.codMunic, t.codDepar) " +
-            "FROM TvsMunicipio t " +
-            "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
+                "(t.ideMunic, t.nombreMunic, t.codMunic, t.codDepar) " +
+                "FROM TvsMunicipio t " +
+                "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsMunicipio.findAllByCodDeparAndEstado", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
                 "(t.ideMunic, t.nombreMunic, t.codMunic, t.codDepar) " +
                 "FROM TvsMunicipio t " +
@@ -57,6 +47,7 @@ public class TvsMunicipio implements Serializable {
     @Basic(optional = false)
     @Column(name = "COD_DEPAR")
     private String codDepar;
+    @Embedded
     private AuditColumns auditColumns;
-    
+
 }

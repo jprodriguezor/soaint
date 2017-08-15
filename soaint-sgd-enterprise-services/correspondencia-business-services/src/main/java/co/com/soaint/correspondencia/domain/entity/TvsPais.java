@@ -10,10 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
-import javax.persistence.*;
 
 /**
  * @author jrodriguez
@@ -48,6 +47,7 @@ public class TvsPais implements Serializable {
     @Basic(optional = false)
     @Column(name = "COD_PAIS")
     private String codPais;
+    @Embedded
     private AuditColumns auditColumns;
 
 }
