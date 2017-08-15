@@ -3,8 +3,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 import co.com.soaint.correspondencia.business.boundary.GestionarPais;
 import co.com.soaint.foundation.canonical.correspondencia.PaisesDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -25,28 +24,41 @@ import javax.ws.rs.Produces;
 
 @Path("/paises-web-api")
 @Produces({"application/json", "application/xml"})
+@Log4j2
 public class PaisesWebApi {
-
-    private static Logger logger = LogManager.getLogger(PaisesWebApi.class.getName());
 
     @Autowired
     private GestionarPais boundary;
 
-    public PaisesWebApi(){
+    /**
+     * Constructor
+     */
+    public PaisesWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @GET
     @Path("/paises/{estado}")
-    public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado)throws SystemException {
-        logger.info("processing rest request - listar paises por estado");
+    public PaisesDTO listarPaisesByEstado(@PathParam("estado") final String estado) throws SystemException {
+        log.info("processing rest request - listar paises por estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByEstado(estado)).build();
     }
 
+    /**
+     * @param nombrePais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @GET
     @Path("/paises/{nombre_pais}/{estado}")
-    public PaisesDTO listarPaisesByNombrePaisAndEstado(@PathParam("nombre_pais") final String nombrePais, @PathParam("estado") final String estado)throws SystemException {
-        logger.info("processing rest request - listar paises por nombre y estado");
+    public PaisesDTO listarPaisesByNombrePaisAndEstado(@PathParam("nombre_pais") final String nombrePais, @PathParam("estado") final String estado) throws SystemException {
+        log.info("processing rest request - listar paises por nombre y estado");
         return PaisesDTO.newInstance().paises(boundary.listarPaisesByNombrePaisAndEstado(nombrePais, estado)).build();
     }
 }
