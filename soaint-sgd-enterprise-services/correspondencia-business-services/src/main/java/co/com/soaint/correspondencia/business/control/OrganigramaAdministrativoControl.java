@@ -5,8 +5,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +26,10 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class OrganigramaAdministrativoControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(OrganigramaAdministrativoControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -39,7 +37,6 @@ public class OrganigramaAdministrativoControl {
     // ----------------------
 
     /**
-     *
      * @return
      * @throws BusinessException
      * @throws SystemException
@@ -54,13 +51,13 @@ public class OrganigramaAdministrativoControl {
                     .setHint("org.hibernate.cacheable", true)
                     .getResultList();
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -69,7 +66,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @return
      * @throws BusinessException
      * @throws SystemException
@@ -85,13 +81,13 @@ public class OrganigramaAdministrativoControl {
 
             return organigramaItemDTOList;
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -100,7 +96,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @param ideOrgaAdmin
      * @return
      * @throws SystemException
@@ -110,7 +105,7 @@ public class OrganigramaAdministrativoControl {
         try {
             return consultarElementosDeNivelInferior(ideOrgaAdmin);
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -119,7 +114,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @param ideOrgaAdmin
      * @return
      * @throws BusinessException
@@ -136,7 +130,7 @@ public class OrganigramaAdministrativoControl {
             }
             return organigramaItem;
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("organigrama.no_data")
                     .withRootException(n)
@@ -144,7 +138,7 @@ public class OrganigramaAdministrativoControl {
         } catch (BusinessException e) {
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -153,7 +147,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @param data
      * @param storage
      */
@@ -171,7 +164,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @param ideOrgaAdmin
      * @return
      */
@@ -181,7 +173,7 @@ public class OrganigramaAdministrativoControl {
                 .setHint("org.hibernate.cacheable", true)
                 .getSingleResult();
 
-        if (organigramaItem.getIdOrgaAdminPadre() == null){
+        if (organigramaItem.getIdOrgaAdminPadre() == null) {
             return null;
         }
 
@@ -202,7 +194,6 @@ public class OrganigramaAdministrativoControl {
     }
 
     /**
-     *
      * @param ideOrgaAdmin
      * @return
      */

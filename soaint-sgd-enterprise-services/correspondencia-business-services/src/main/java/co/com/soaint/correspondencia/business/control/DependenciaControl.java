@@ -3,6 +3,9 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
@@ -21,6 +24,7 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class DependenciaControl {
     @PersistenceContext
     private EntityManager em;
@@ -29,12 +33,11 @@ public class DependenciaControl {
     OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
     /**
-     *
      * @param dependencia
      * @param sede
      * @return
      */
-    public DependenciaDTO dependenciaDTOTransform(OrganigramaItemDTO dependencia, OrganigramaItemDTO sede){
+    public DependenciaDTO dependenciaDTOTransform(OrganigramaItemDTO dependencia, OrganigramaItemDTO sede) {
         return DependenciaDTO.newInstance()
                 .ideDependencia(dependencia.getIdeOrgaAdmin())
                 .codDependencia(dependencia.getCodOrg())
@@ -47,22 +50,21 @@ public class DependenciaControl {
     }
 
     /**
-     *
      * @param ideFunci
      * @return
      */
-    public List<DependenciaDTO> obtenerDependenciasByFuncionario(BigInteger ideFunci){
+    public List<DependenciaDTO> obtenerDependenciasByFuncionario(BigInteger ideFunci) {
         List<DependenciaDTO> dependenciaDTOList = new ArrayList<>();
         List<String> codOrgaAdmiList = em.createNamedQuery("TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci")
                 .setParameter("IDE_FUNCI", ideFunci)
                 .getResultList();
-        if (!codOrgaAdmiList.isEmpty()){
+        if (!codOrgaAdmiList.isEmpty()) {
             em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementosByCodOrgList", OrganigramaItemDTO.class)
                     .setParameter("COD_ORG_LIST", codOrgaAdmiList)
                     .getResultList()
                     .stream()
                     .forEach(organigramaItemDTO ->
-                        dependenciaDTOList.add(dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin())))
+                                    dependenciaDTOList.add(dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin())))
                     );
 
         }

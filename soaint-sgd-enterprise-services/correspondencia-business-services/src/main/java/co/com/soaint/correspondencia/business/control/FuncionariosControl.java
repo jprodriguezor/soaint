@@ -6,8 +6,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +27,10 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class FuncionariosControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(FuncionariosControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -42,7 +40,6 @@ public class FuncionariosControl {
     // ----------------------
 
     /**
-     *
      * @param loginName
      * @param estado
      * @return
@@ -60,13 +57,13 @@ public class FuncionariosControl {
             funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
             return funcionario;
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("funcionarios.funcionario_not_exist_by_loginName_and_estado")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -75,7 +72,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param codDependencia
      * @param codEstado
      * @return
@@ -97,7 +93,7 @@ public class FuncionariosControl {
 
             return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
