@@ -32,7 +32,7 @@ public class EcmManager {
      * @return Mensaje de respuesta(codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
+    public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) {
         logger.info ("### Creando estructura content..------");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
@@ -41,7 +41,7 @@ public class EcmManager {
         } catch (Exception e) {
             response.setCodMensaje ("000005");
             response.setMensaje ("Error al crear estructura");
-            logger.error ("### Error..------" , e);
+            logger.error ("### Error Creando estructura content..------" , e);
         }
 
         return response;
@@ -55,7 +55,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
+    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion)  {
         logger.info ("### Subiendo documento al content..");
         String idDocumento = "";
         try {
@@ -70,17 +70,17 @@ public class EcmManager {
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      * @param documento Nombre del documento a mover
-     * @param CarpetaFuente Carpeta donde se encuentra el documento
-     * @param CarpetaDestino Carpeta a donde se va a mover el documento.
+     * @param carpetaFuente Carpeta donde se encuentra el documento
+     * @param carpetaDestino Carpeta a donde se va a mover el documento.
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino){
         logger.info ("### Moviendo documento dentro del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
-            response = contentManager.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
+            response = contentManager.moverDocumento (documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
             response.setCodMensaje ("000002");
