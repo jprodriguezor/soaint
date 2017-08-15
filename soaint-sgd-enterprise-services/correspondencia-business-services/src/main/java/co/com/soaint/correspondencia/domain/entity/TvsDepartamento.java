@@ -35,9 +35,13 @@ import javax.persistence.TemporalType;
 @Table(name = "TVS_DEPARTAMENTO")
 @NamedQueries({
     @NamedQuery(name = "TvsDepartamento.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
-            "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) FROM TvsDepartamento t WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
+            "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) " +
+            "FROM TvsDepartamento t " +
+            "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsDepartamento.findAllByCodPaisAndEstado", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
-                "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) FROM TvsDepartamento t WHERE TRIM(t.codPais) = TRIM(:COD_PAIS) AND TRIM(t.estado) = TRIM(:ESTADO)")})
+                "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) " +
+                "FROM TvsDepartamento t " +
+                "WHERE TRIM(t.codPais) = TRIM(:COD_PAIS) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)")})
 public class TvsDepartamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,15 +55,6 @@ public class TvsDepartamento implements Serializable {
     private String codDepar;
     @Column(name = "COD_PAIS")
     private String codPais;
-    @Column(name = "ESTADO")
-    private String estado;
-    @Column(name = "FEC_CAMBIO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCambio;
-    @Column(name = "FEC_CREACION")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCreacion;
-    @Column(name = "COD_USUARIO_CREA")
-    private String codUsuarioCrea;
+    private AuditColumns auditColumns;
     
 }
