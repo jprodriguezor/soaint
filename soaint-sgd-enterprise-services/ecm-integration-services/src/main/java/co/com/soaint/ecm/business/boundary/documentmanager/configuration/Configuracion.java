@@ -1,10 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
-import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author sarias
@@ -39,18 +35,15 @@ public final class Configuracion {
     private static String aecm;
 
 
-    @Value( "${ALFRESCO_ATOMPUB_URL}" )
-    private static String propiedadALFRESCO_ATOMPUB_URL ;
-    @Value( "${REPOSITORY_ID}" )
-    private static String propiedadREPOSITORY_ID ;
-    @Value( "${ALFRESCO_USER}" )
-    private static String propiedadALFRESCO_USER ;
-    @Value( "${ALFRESCO_PASS}" )
-    private static String propiedadALFRESCO_PASS ;
+    @Value("${ALFRESCO_ATOMPUB_URL}")
+    private static String propiedadALFRESCO_ATOMPUB_URL;
+    @Value("${REPOSITORY_ID}")
+    private static String propiedadREPOSITORY_ID;
+    @Value("${ALFRESCO_USER}")
+    private static String propiedadALFRESCO_USER;
+    @Value("${ALFRESCO_PASS}")
+    private static String propiedadALFRESCO_PASS;
 
-
-
-    private static final Logger logger = LogManager.getLogger (Configuracion.class.getName ( ));
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *
@@ -61,43 +54,43 @@ public final class Configuracion {
 
         switch (name) {
             case "formatoNombreSerie":
-                return aformatoNombreSerie!=null ?aformatoNombreSerie:"1.2_3";
+                return aformatoNombreSerie != null ? aformatoNombreSerie : "1.2_3";
             case "formatoNombreSubserie":
-                return aformatoNombreSubserie!=null ?aformatoNombreSubserie:"1.2.4_5";
+                return aformatoNombreSubserie != null ? aformatoNombreSubserie : "1.2.4_5";
 
             case "claseSubserie":
-                return aclaseSubserie!=null ?aclaseSubserie:"CM_Subserie";
+                return aclaseSubserie != null ? aclaseSubserie : "CM_Subserie";
 
             case "claseSerie":
-                return aclaseSerie!=null ?aclaseSerie:"CM_Serie";
+                return aclaseSerie != null ? aclaseSerie : "CM_Serie";
 
             case "claseDependencia":
-                return aclaseDependencia!=null ?aclaseDependencia:"CM_Unidad_Administrativa";
+                return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";
             case "claseBase":
-                return aclaseBase!=null ?aclaseBase:"CM_Unidad_Base";
+                return aclaseBase != null ? aclaseBase : "CM_Unidad_Base";
 
             case "metadatoCodDependencia":
-                return ametadatoCodDependencia!=null ?ametadatoCodDependencia:"CodigoDependencia";
+                return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
 
             case "metadatoCodBase":
-                return ametadatoCodBase!=null ?ametadatoCodBase:"CodigoBase";
+                return ametadatoCodBase != null ? ametadatoCodBase : "CodigoBase";
 
             case "metadatoCodSubserie":
-                return ametadatoCodSubserie!=null ?ametadatoCodSubserie:"CodigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "CodigoSubserie";
 
             case "metadatoCodSerie":
-                return ametadatoCodSerie!=null ?ametadatoCodSerie:"CodigoSerie";
+                return ametadatoCodSerie != null ? ametadatoCodSerie : "CodigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return ametadatoCodUnidadAdminParent!=null ?ametadatoCodUnidadAdminParent:"CodUnidadPadre";
-            case "ALFRSCO_ATOMPUB_URL":
-                return propiedadALFRESCO_ATOMPUB_URL!=null ?propiedadALFRESCO_ATOMPUB_URL:"http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
+            case "ALFRESCO_ATOMPUB_URL":
+                return propiedadALFRESCO_ATOMPUB_URL != null ? propiedadALFRESCO_ATOMPUB_URL : "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
             case "REPOSITORY_ID":
-                return propiedadREPOSITORY_ID!=null ?propiedadREPOSITORY_ID:"-default-";
+                return propiedadREPOSITORY_ID != null ? propiedadREPOSITORY_ID : "-default-";
             case "ALFRESCO_USER":
-                return propiedadALFRESCO_USER!=null ?propiedadALFRESCO_USER:"admin";
+                return propiedadALFRESCO_USER != null ? propiedadALFRESCO_USER : "admin";
             case "ALFRESCO_PASS":
-                return propiedadALFRESCO_PASS!=null ?propiedadALFRESCO_PASS:"admin";
+                return propiedadALFRESCO_PASS != null ? propiedadALFRESCO_PASS : "admin";
             default:
                 return "";
         }

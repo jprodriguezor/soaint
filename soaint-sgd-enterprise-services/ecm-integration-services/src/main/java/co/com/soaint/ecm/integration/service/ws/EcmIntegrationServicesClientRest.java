@@ -1,6 +1,6 @@
 package co.com.soaint.ecm.integration.service.ws;
 
-import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediator;
+import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Path("/ecm")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Service
 public class EcmIntegrationServicesClientRest {
 
     private static final Logger logger = LogManager.getLogger (EcmIntegrationServicesClientRest.class.getName ( ));
@@ -36,7 +38,7 @@ public class EcmIntegrationServicesClientRest {
 
     @Autowired
     private
-    EcmManagerMediator fEcmManager;
+    EcmManager fEcmManager;
 
     @POST
     @Path("/crearEstructuraContent/")
@@ -46,7 +48,7 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.crearEstructuraECM (structure);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            logger.error ("Error servicio creando estructura "+e);
+            logger.error ("Error servicio creando estructura ",e);
             throw e;
         }
     }
@@ -63,7 +65,7 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            logger.info("Error en operacion - Subir Documento ECM "+e);
+            logger.info("Error en operacion - Subir Documento ECM ",e);
             throw e;
 
         }
@@ -81,7 +83,7 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.moverDocumento (moverDocumento,carpetaFuente,carpetaDestino );
         } catch (RuntimeException e) {
             e.printStackTrace();
-            logger.error ("Error servicio moviendo documento "+e);
+            logger.error ("Error servicio moviendo documento ",e);
             throw e;
         }
     }

@@ -1,18 +1,18 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
-import co.com.soaint.ecm.business.boundary.mediator.ContentControlAlfresco;
+import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -21,24 +21,15 @@ import java.util.List;
  * Created by dasiel
  */
 
-
-@Service
-public class ContentManagerAlfresco extends ContentManagerMediator {
-
-    private final
-    ContentControlAlfresco control;
-
-    private static final Logger logger = LogManager.getLogger (ContentManagerAlfresco.class.getName ( ));
-
-    /**
-     * Constructor de la clase
-     *
-     * @param control parametro que recibe la clase
-     */
+@BusinessBoundary
+@NoArgsConstructor
+public class ContentManager {
     @Autowired
-    public ContentManagerAlfresco(ContentControlAlfresco control) {
-        this.control = control;
-    }
+    private
+    ContentControl contentControl;
+
+    private static final Logger logger = LogManager.getLogger (ContentManager.class.getName ( ));
+
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -47,7 +38,6 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
      * @return Mensaje de respuesta
      * @throws InfrastructureException Excepcion que se recoje ante cualquier error
      */
-    @Override
     public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) throws InfrastructureException {
         logger.info ("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -62,17 +52,17 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             }
 
             logger.info ("### Estableciendo Conexion con el ECM..");
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = contentControl.obtenerConexion ( );
 
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            response = control.generarArbol (structure, carpeta);
+            response = contentControl.generarArbol (structure, carpeta);
 
         } catch (Exception e) {
             e.printStackTrace ( );
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            logger.error ("Error creando estructura" + e);
+            logger.error ("Error creando estructura" , e);
         }
         return response;
     }
@@ -97,20 +87,20 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             Conexion conexion;
             new Conexion ( );
             logger.info ("### Estableciendo la conexion..");
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = contentControl.obtenerConexion ( );
 
             //Carpeta donde se va a guardar el documento
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             logger.info ("### Se invoca el metodo de subir el documento..");
-            idDocumento = control.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
+            idDocumento = contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
             response.setCodMensaje ("0000");
             response.setMensaje ("OK");
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            logger.error ("Error subiendo documento" + e);
+            logger.error ("Error subiendo documento" , e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
 
@@ -138,13 +128,13 @@ public class ContentManagerAlfresco extends ContentManagerMediator {
             logger.info ("###Se va a establecer la conexion");
             Conexion conexion;
             new Conexion ( );
-            conexion = FactoriaContent.getContentControl ("alfresco").obtenerConexion ( );
+            conexion = contentControl.obtenerConexion ( );
             logger.info ("###Conexion establecida");
-            response = control.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
+            response = contentControl.movDocumento (conexion.getSession ( ), documento, CarpetaFuente, CarpetaDestino);
 
         } catch (Exception e) {
             e.printStackTrace ( );
-            logger.error ("Error moviendo documento" + e);
+            logger.error ("Error moviendo documento" , e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }

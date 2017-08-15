@@ -20,7 +20,7 @@
     <context:component-scan base-package="co.com.soaint.ecm.domain.entity"/>
     <context:component-scan base-package="co.com.soaint.ecm.business.boundary.documentmanager.configuration"/>
     <context:property-placeholder location="classpath:configurationServices.properties" />
-    <context:property-placeholder location="classpath:messages.properties" />
+    <!--<context:property-placeholder location="classpath:messages.properties" />-->
 
 
 </beans>
