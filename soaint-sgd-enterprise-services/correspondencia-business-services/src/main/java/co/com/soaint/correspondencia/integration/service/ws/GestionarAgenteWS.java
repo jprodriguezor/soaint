@@ -21,17 +21,29 @@ public class GestionarAgenteWS {
     @Autowired
     GestionarAgente boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarAgenteWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param agenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "actualizarEstadoAgente", operationName = "actualizarEstadoAgente")
-    public void actualizarEstadoAgente(@WebParam(name = "agente")AgenteDTO agenteDTO)throws BusinessException, SystemException {
+    public void actualizarEstadoAgente(@WebParam(name = "agente") AgenteDTO agenteDTO) throws BusinessException, SystemException {
         boundary.actualizarEstadoAgente(agenteDTO);
     }
 
+    /**
+     * @param agentesDTO
+     * @throws SystemException
+     */
     @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList")final AgentesDTO agentesDTO) throws SystemException{
+    public void redireccionarCorrespondencia(@WebParam(name = "agenteList") final AgentesDTO agentesDTO) throws SystemException {
         boundary.redireccionarCorrespondencia(agentesDTO);
     }
 }
