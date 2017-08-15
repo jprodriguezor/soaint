@@ -18,17 +18,31 @@ public class GestionarDepartamentoWS {
     @Autowired
     private GestionarDepartamento boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarDepartamentoWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param codPais
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarDepartamentosByCodPaisAndEstado", operationName = "listarDepartamentosByCodPaisAndEstado")
-    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@WebParam(name = "codPais") final String codPais, @WebParam(name = "estado") final String estado)throws SystemException{
+    public DepartamentosDTO listarDepartamentosByCodPaisAndEstado(@WebParam(name = "codPais") final String codPais, @WebParam(name = "estado") final String estado) throws SystemException {
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByCodPaisAndEstado(codPais, estado)).build();
     }
 
+    /**
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarDepartamentosByEstado", operationName = "listarDepartamentosByEstado")
-    public DepartamentosDTO listarDepartamentosByEstado(@WebParam(name = "estado") final String estado)throws SystemException{
+    public DepartamentosDTO listarDepartamentosByEstado(@WebParam(name = "estado") final String estado) throws SystemException {
         return DepartamentosDTO.newInstance().departamentos(boundary.listarDepartamentosByEstado(estado)).build();
     }
 }

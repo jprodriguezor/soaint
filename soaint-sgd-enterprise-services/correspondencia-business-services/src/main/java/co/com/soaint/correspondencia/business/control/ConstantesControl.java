@@ -5,8 +5,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +24,10 @@ import java.util.List;
  */
 @NoArgsConstructor
 @BusinessControl
+@Log4j2
 public class ConstantesControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(ConstantesControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -38,7 +36,6 @@ public class ConstantesControl {
     // ----------------------
 
     /**
-     *
      * @param estado
      * @return
      * @throws SystemException
@@ -50,7 +47,7 @@ public class ConstantesControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -59,7 +56,6 @@ public class ConstantesControl {
     }
 
     /**
-     *
      * @param codigo
      * @param estado
      * @return
@@ -73,7 +69,7 @@ public class ConstantesControl {
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -82,21 +78,20 @@ public class ConstantesControl {
     }
 
     /**
-     *
      * @param codPadre
      * @param estado
      * @return
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<ConstanteDTO> listarConstantesByCodPadreAndEstado(String codPadre, String estado)throws SystemException{
+    public List<ConstanteDTO> listarConstantesByCodPadreAndEstado(String codPadre, String estado) throws SystemException {
         try {
             return em.createNamedQuery("TvsConstantes.findAllByCodPadreAndEstado", ConstanteDTO.class)
                     .setParameter("COD_PADRE", codPadre)
                     .setParameter("ESTADO", estado)
                     .getResultList();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)

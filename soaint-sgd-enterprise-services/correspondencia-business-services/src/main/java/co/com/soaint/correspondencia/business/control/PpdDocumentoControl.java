@@ -6,8 +6,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -26,9 +25,8 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class PpdDocumentoControl {
-
-    private static Logger logger = LogManager.getLogger(PpdDocumentoControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -37,30 +35,47 @@ public class PpdDocumentoControl {
      *
      * @param idDocumento
      * @return
+     * @throws SystemException
      */
-    public List<PpdDocumentoDTO> consultarPpdDocumentosByCorrespondencia(BigInteger idDocumento){
-        return em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
-                .setParameter("IDE_DOCUMENTO", idDocumento)
-                .getResultList();
+    public List<PpdDocumentoDTO> consultarPpdDocumentosByCorrespondencia(BigInteger idDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+                    .setParameter("IDE_DOCUMENTO", idDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     /**
      *
      * @param nroRadicado
      * @return
+     * @throws SystemException
      */
-    public List<BigInteger> consultarPpdDocumentosByNroRadicado(String nroRadicado){
-        return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByNroRadicado", BigInteger.class)
-                .setParameter("NRO_RADICADO", nroRadicado)
-                .getResultList();
+    public List<BigInteger> consultarPpdDocumentosByNroRadicado(String nroRadicado) throws SystemException {
+        try {
+            return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByNroRadicado", BigInteger.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     /**
-     *
      * @param ppdDocumentoDTO
      * @return
      */
-    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO){
+    public PpdDocumento ppdDocumentoTransform(PpdDocumentoDTO ppdDocumentoDTO) {
         Date fecha = new Date();
         return PpdDocumento.newInstance()
                 .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
@@ -75,25 +90,24 @@ public class PpdDocumentoControl {
     }
 
     /**
-     *
      * @param ideDocumento
      * @return
      * @throws SystemException
      * @throws BusinessException
      */
-    public BigInteger consultarIdePpdDocumentoByIdeDocumento(BigInteger ideDocumento)throws SystemException, BusinessException {
+    public BigInteger consultarIdePpdDocumentoByIdeDocumento(BigInteger ideDocumento) throws SystemException, BusinessException {
         try {
             return em.createNamedQuery("PpdDocumento.findIdePpdDocumentoByIdeDocumento", BigInteger.class)
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getSingleResult();
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("ppdDocumento.ppdDocumento_not_exist_by_ideDocumento")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
