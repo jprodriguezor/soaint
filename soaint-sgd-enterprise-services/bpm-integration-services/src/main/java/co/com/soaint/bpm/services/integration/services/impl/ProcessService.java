@@ -8,6 +8,7 @@ import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -17,8 +18,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
@@ -47,6 +46,7 @@ import java.util.Map;
  * Created by Arce on 6/7/2017.
  */
 @Service
+@Log4j2
 public class ProcessService implements IProcessServices {
 
     private RuntimeEngine engine;
@@ -86,7 +86,7 @@ public class ProcessService implements IProcessServices {
     HttpGet getRequest;
     HttpPost postRequest;
     HttpResponse response;
-    private static Logger logger = LogManager.getLogger(ProcessService.class);
+
 
     private ProcessService() {
     }
@@ -101,7 +101,7 @@ public class ProcessService implements IProcessServices {
      */
     @Override
     public List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws SystemException {
-
+        log.info("iniciar - Listar Procesos: {}", entrada);
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         httpClient = HttpClientBuilder.create().build();
         getRequest = new HttpGet(endpointProcesosListar);
@@ -121,19 +121,22 @@ public class ProcessService implements IProcessServices {
 
             return listaProcesos;
         } catch (BusinessException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)
                     .buildSystemException();
         } catch (Exception ex) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(ex)
                     .buildSystemException();
-        }
+        } finally {
+        log.info("fin - iniciar - listar Proceso ");
     }
+
+}
 
     /**
      * Permite listar las instancias de procesos por usuario
@@ -144,6 +147,7 @@ public class ProcessService implements IProcessServices {
      */
     @Override
     public List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws SystemException {
+        log.info("iniciar - listar instancias de usarios de proceso ");
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         httpClient = HttpClientBuilder.create().build();
@@ -166,20 +170,23 @@ public class ProcessService implements IProcessServices {
             }
             return listaProcesos;
         } catch (BusinessException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)
                     .buildSystemException();
         } catch (Exception ex) {
-            logger.error("System error has occurred");
+            log.error("System error has occurred");
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
-        }
-
+        } finally {
+        log.info("fin - listar instancias de usarios de proceso ");
     }
+
+
+}
 
     /**
      * Permite iniciar un proceso
@@ -191,7 +198,7 @@ public class ProcessService implements IProcessServices {
     @Override
     public RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entrada) throws SystemException {
         try {
-            logger.info("iniciar - proceso : {}", entrada);
+            log.info("iniciar - proceso : {}", entrada);
             ksession = obtenerEngine(entrada).getKieSession();
             ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
             return RespuestaProcesoDTO.newInstance()
@@ -202,13 +209,13 @@ public class ProcessService implements IProcessServices {
                     .build();
 
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - iniciar - proceso ");
+            log.info("fin - iniciar - proceso ");
         }
 
     }
@@ -227,7 +234,7 @@ public class ProcessService implements IProcessServices {
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
         try {
-            logger.info("iniciar - proceso manual: {}", entrada);
+            log.info("iniciar - proceso manual: {}", entrada);
             ksession = obtenerEngine(entradaManual).getKieSession();
             ProcessInstance processInstance = ksession.startProcess(entrada.getIdProceso(), entrada.getParametros());
             entrada.setInstanciaProceso(processInstance.getId());
@@ -244,13 +251,13 @@ public class ProcessService implements IProcessServices {
                     .idDespliegue(entrada.getIdDespliegue())
                     .build();
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - iniciar - proceso manual ");
+            log.info("fin - iniciar - proceso manual ");
         }
     }
 
@@ -264,7 +271,7 @@ public class ProcessService implements IProcessServices {
     @Override
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entrada) throws SystemException {
         try {
-            logger.info("iniciar - tarea: {}", entrada);
+            log.info("iniciar - tarea: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             taskService.start(entrada.getIdTarea(), entrada.getUsuario());
             Task task = taskService.getTaskById(entrada.getIdTarea());
@@ -284,13 +291,13 @@ public class ProcessService implements IProcessServices {
                     .build();
 
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - iniciar - tarea ");
+            log.info("fin - iniciar - tarea ");
         }
 
     }
@@ -305,7 +312,7 @@ public class ProcessService implements IProcessServices {
     @Override
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entrada) throws SystemException {
         try {
-            logger.info("iniciar - tarea: {}", entrada);
+            log.info("iniciar - tarea: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             taskService.complete(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros());
             return RespuestaTareaDTO.newInstance()
@@ -314,13 +321,13 @@ public class ProcessService implements IProcessServices {
                     .idProceso(entrada.getIdProceso())
                     .build();
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - iniciar - tarea ");
+            log.info("fin - iniciar - tarea ");
         }
 
     }
@@ -338,7 +345,7 @@ public class ProcessService implements IProcessServices {
     public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws SystemException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
         String estado = "";
-        logger.info("iniciar - reservar tarea: {}", entrada);
+        log.info("iniciar - reservar tarea: {}", entrada);
         try {
             URI uri = new URIBuilder(endpointJBPConsole)
                     .setPath("/jbpm-console/rest/task/" + entrada.getIdTarea() + "/claim")
@@ -370,19 +377,19 @@ public class ProcessService implements IProcessServices {
                     .idDespliegue(entrada.getIdDespliegue())
                     .build();
         } catch (BusinessException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)
                     .buildSystemException();
         } catch (Exception ex) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(ex)
                     .buildSystemException();
         } finally {
-            logger.info("fin - reservar - tarea ");
+            log.info("fin - reservar - tarea ");
         }
 
 
@@ -398,7 +405,7 @@ public class ProcessService implements IProcessServices {
     @Override
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws SystemException {
         try {
-            logger.info("iniciar - reasignar tarea: {}", entrada);
+            log.info("iniciar - reasignar tarea: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
             Task task = taskService.getTaskById(entrada.getIdTarea());
@@ -417,13 +424,13 @@ public class ProcessService implements IProcessServices {
                     .prioridad(task.getPriority())
                     .build();
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - reasignar - tarea ");
+            log.info("fin - reasignar - tarea ");
         }
     }
 
@@ -440,7 +447,7 @@ public class ProcessService implements IProcessServices {
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         try {
-            logger.info("iniciar - listar tareas estados: {}", entrada);
+            log.info("iniciar - listar tareas estados: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
             for (TaskSummary task : tasks) {
@@ -460,13 +467,13 @@ public class ProcessService implements IProcessServices {
             }
             return tareas;
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - listar - tareas - estados ");
+            log.info("fin - listar - tareas - estados ");
         }
     }
 
@@ -483,7 +490,7 @@ public class ProcessService implements IProcessServices {
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         try {
-            logger.info("iniciar - listar tareas estados instandias proceso: {}", entrada);
+            log.info("iniciar - listar tareas estados instancias proceso: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
             for (TaskSummary task : tasks) {
@@ -505,13 +512,13 @@ public class ProcessService implements IProcessServices {
             }
             return tareas;
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - listar - tareas estados instandias proceso ");
+            log.info("fin - listar - tareas estados instandias proceso ");
         }
     }
 
@@ -528,7 +535,7 @@ public class ProcessService implements IProcessServices {
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         try {
-            logger.info("iniciar - listar tareas instandias proceso: {}", entrada);
+            log.info("iniciar - listar tareas instancias proceso: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, formatoIdioma);
             for (TaskSummary task : tasks) {
@@ -549,13 +556,13 @@ public class ProcessService implements IProcessServices {
             }
             return tareas;
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - listar - tareas estados instandias proceso ");
+            log.info("fin - listar - tareas estados instancias proceso ");
         }
     }
 
@@ -572,7 +579,7 @@ public class ProcessService implements IProcessServices {
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosActivos(estadosEnviados);
         try {
-            logger.info("iniciar - listar tareas estados usuarios: {}", entrada);
+            log.info("iniciar - listar tareas estados usuarios: {}", entrada);
             taskService = obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
             for (TaskSummary task : tasks) {
@@ -594,13 +601,13 @@ public class ProcessService implements IProcessServices {
             }
             return tareas;
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - listar tareas estados usuarios ");
+            log.info("fin - listar tareas estados usuarios ");
         }
     }
 
@@ -621,7 +628,7 @@ public class ProcessService implements IProcessServices {
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
         try {
-            logger.info("iniciar - enviar sennal a proceso: {}", entrada);
+            log.info("iniciar - enviar sennal a proceso: {}", entrada);
             ksession = obtenerEngine(entradaManual).getKieSession();
             ProcessInstance processInstance = ksession.getProcessInstance(entrada.getInstanciaProceso());
             String nombreSennal = entrada.getParametros().getOrDefault(parametroSennal, "estadoDigitalizacion").toString();
@@ -633,7 +640,7 @@ public class ProcessService implements IProcessServices {
                 }
             }
             String datosProceso = jsonProceso.toString();
-            logger.info("JSON: ".concat(datosProceso));
+            log.info("JSON: ".concat(datosProceso));
             ksession.signalEvent(nombreSennal, datosProceso, processInstance.getId());
             return RespuestaProcesoDTO.newInstance()
                     .codigoProceso(String.valueOf(processInstance.getId()))
@@ -642,13 +649,13 @@ public class ProcessService implements IProcessServices {
                     .idDespliegue(entradaManual.getIdDespliegue())
                     .build();
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - enviar sennal a proceso ");
+            log.info("fin - enviar sennal a proceso ");
         }
     }
 
@@ -668,7 +675,7 @@ public class ProcessService implements IProcessServices {
         entradaManual.setUsuario(usuarioAdmin);
         entradaManual.setPass(passAdmin);
         try {
-            logger.info("iniciar -  sennal inicio auntomatico: {}", entrada);
+            log.info("iniciar -  sennal inicio auntomatico: {}", entrada);
             ksession = obtenerEngine(entradaManual).getKieSession();
             String nombreSennal = entrada.getParametros().getOrDefault(parametroSennal, "inicioAutomatico").toString();
 
@@ -679,19 +686,19 @@ public class ProcessService implements IProcessServices {
                 }
             }
             String datosProceso = jsonProceso.toString();
-            logger.info("JSON inicio: ".concat(datosProceso));
+            log.info("JSON inicio: ".concat(datosProceso));
             ksession.signalEvent(nombreSennal, datosProceso);
             return RespuestaProcesoDTO.newInstance()
                     .idDespliegue(entradaManual.getIdDespliegue())
                     .build();
         } catch (Exception e) {
-            logger.error(errorSistema);
+            log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
                     .withMessage(errorSistemaGenerico)
                     .withRootException(e)
                     .buildSystemException();
         } finally {
-            logger.info("fin - sennal inicio auntomatico ");
+            log.info("fin - sennal inicio auntomatico ");
         }
     }
 
