@@ -19,17 +19,31 @@ public class GestionarMunicipioWS {
     @Autowired
     private GestionarMunicipio boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarMunicipioWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param codDepar
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarMunicipiosByCodDeparAndEstado", operationName = "listarMunicipiosByCodDeparAndEstado")
-    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@WebParam(name = "codDepar") final String codDepar, @WebParam(name = "estado") final String estado)throws SystemException{
+    public MunicipiosDTO listarMunicipiosByCodDeparAndEstado(@WebParam(name = "codDepar") final String codDepar, @WebParam(name = "estado") final String estado) throws SystemException {
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByCodDeparAndEstado(codDepar, estado)).build();
     }
 
+    /**
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "listarMunicipiosByEstado", operationName = "listarMunicipiosByEstado")
-    public MunicipiosDTO listarMunicipiosByEstado(@WebParam(name = "estado") final String estado)throws SystemException{
+    public MunicipiosDTO listarMunicipiosByEstado(@WebParam(name = "estado") final String estado) throws SystemException {
         return MunicipiosDTO.newInstance().municipios(boundary.listarMunicipiosByEstado(estado)).build();
     }
 }

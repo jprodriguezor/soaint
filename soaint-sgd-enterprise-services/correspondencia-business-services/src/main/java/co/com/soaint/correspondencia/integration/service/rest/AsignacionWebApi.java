@@ -5,8 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -25,35 +24,55 @@ import java.math.BigInteger;
 @Path("/asignacion-web-api")
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
+@Log4j2
 public class AsignacionWebApi {
-    private static Logger logger = LogManager.getLogger(AsignacionWebApi.class.getName());
 
     @Autowired
     GestionarAsignacion boundary;
 
+    /**
+     * Constructor
+     */
     public AsignacionWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param asignacionesDTO
+     * @return
+     * @throws SystemException
+     */
     @POST
     @Path("/asignacion")
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO)throws SystemException{
-        logger.info("processing rest request - asignar correspondencia");
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
+        log.info("processing rest request - asignar correspondencia");
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
+    /**
+     * @param asignacion
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @PUT
     @Path("/asignacion/actualizar-instancia")
-    public void actualizarIdInstancia(AsignacionDTO asignacion)throws BusinessException, SystemException{
-        logger.info("processing rest request - actualizar instancia ultima asignacion");
+    public void actualizarIdInstancia(AsignacionDTO asignacion) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizar instancia ultima asignacion");
         boundary.actualizarIdInstancia(asignacion);
     }
 
+    /**
+     * @param ideFunci
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/asignacion")
-    public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@QueryParam("ide_funci")final BigInteger ideFunci,
-                                                                         @QueryParam("nro_radicado")final String nroRadicado)throws  BusinessException, SystemException{
-        logger.info("processing rest request - listar asignaciones por funcionario y nroradicado");
+    public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@QueryParam("ide_funci") final BigInteger ideFunci,
+                                                                         @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar asignaciones por funcionario y nroradicado");
         return boundary.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
     }
 }

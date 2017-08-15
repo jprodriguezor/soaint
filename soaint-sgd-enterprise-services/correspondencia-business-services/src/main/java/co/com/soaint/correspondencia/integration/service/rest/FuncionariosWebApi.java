@@ -5,8 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -27,27 +26,43 @@ import javax.ws.rs.Produces;
 
 @Path("/funcionarios-web-api")
 @Produces({"application/json", "application/xml"})
+@Log4j2
 public class FuncionariosWebApi {
-    private static Logger logger = LogManager.getLogger(FuncionariosWebApi.class.getName());
 
     @Autowired
     private GestionarFuncionarios boundary;
 
-    public FuncionariosWebApi(){
+    /**
+     * Constructor
+     */
+    public FuncionariosWebApi() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param loginName
+     * @param estado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @GET
     @Path("/funcionarios/{login_name}/{estado}")
-    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@PathParam("login_name") final String loginName, @PathParam("estado")final String estado) throws BusinessException, SystemException{
-        logger.info("processing rest request - listar funcionarios por login_name");
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@PathParam("login_name") final String loginName, @PathParam("estado") final String estado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar funcionarios por login_name");
         return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 
+    /**
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
     @GET
     @Path("/funcionarios/dependencia/{cod_dependencia}/{cod_estado}")
-    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia")final String codDependencia, @PathParam("cod_estado")final String codEstado)throws SystemException{
-        logger.info("processing rest request - listar funcionarios por dependencia");
+    public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia") final String codDependencia, @PathParam("cod_estado") final String codEstado) throws SystemException {
+        log.info("processing rest request - listar funcionarios por dependencia");
         return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
     }
 

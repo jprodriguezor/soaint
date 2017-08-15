@@ -22,22 +22,42 @@ public class GestionarAsignacionWS {
     @Autowired
     GestionarAsignacion boundary;
 
+    /**
+     * Constructor
+     */
     public GestionarAsignacionWS() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     * @param asignacionesDTO
+     * @return
+     * @throws SystemException
+     */
     @WebMethod(action = "asignarCorrespondencia", operationName = "asignarCorrespondencia")
-    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList")final AsignacionesDTO asignacionesDTO)throws SystemException{
+    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList") final AsignacionesDTO asignacionesDTO) throws SystemException {
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 
+    /**
+     * @param asignacion
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "actualizarIdInstancia", operationName = "actualizarIdInstancia")
-    public void actualizarIdInstancia(@WebParam(name = "asignacion")final AsignacionDTO asignacion)throws BusinessException, SystemException{
+    public void actualizarIdInstancia(@WebParam(name = "asignacion") final AsignacionDTO asignacion) throws BusinessException, SystemException {
         boundary.actualizarIdInstancia(asignacion);
     }
 
+    /**
+     * @param ideFunci
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @WebMethod(action = "listarAsignacionesByFuncionarioAndNroRadicado", operationName = "listarAsignacionesByFuncionarioAndNroRadicado")
-    public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@WebParam(name = "ide_funcionario")final BigInteger ideFunci, @WebParam(name = "nro_radicado")final String nroRadicado)throws BusinessException, SystemException{
+    public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@WebParam(name = "ide_funcionario") final BigInteger ideFunci, @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         return boundary.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
     }
 }

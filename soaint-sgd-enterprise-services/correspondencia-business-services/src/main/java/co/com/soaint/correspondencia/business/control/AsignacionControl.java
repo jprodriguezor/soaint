@@ -11,8 +11,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +34,10 @@ import java.util.List;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 @BusinessControl
+@Log4j2
 public class AsignacionControl {
 
     // [fields] -----------------------------------
-
-    private static Logger logger = LogManager.getLogger(AsignacionControl.class.getName());
 
     @PersistenceContext
     private EntityManager em;
@@ -55,7 +53,6 @@ public class AsignacionControl {
     // ----------------------
 
     /**
-     * 
      * @param asignacionesDTO
      * @return
      * @throws SystemException
@@ -124,7 +121,7 @@ public class AsignacionControl {
             }
             return asignacionesDTOResult;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -133,7 +130,6 @@ public class AsignacionControl {
     }
 
     /**
-     * 
      * @param asignacion
      * @throws BusinessException
      * @throws SystemException
@@ -148,13 +144,13 @@ public class AsignacionControl {
                     .setParameter("ID_INSTANCIA", asignacion.getIdInstancia())
                     .executeUpdate();
         } catch (NoResultException n) {
-            logger.error("Business Control - a business error has occurred", n);
+            log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("asignacion.asignacion_not_exist_by_ideAsignacion")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -163,7 +159,6 @@ public class AsignacionControl {
     }
 
     /**
-     *
      * @param ideFunci
      * @param nroRadicado
      * @return
@@ -184,10 +179,10 @@ public class AsignacionControl {
             }
             return AsignacionesDTO.newInstance().asignaciones(asignacionDTOList).build();
         } catch (BusinessException e) {
-            logger.error("Business Control - a business error has occurred", e);
+            log.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
-            logger.error("Business Control - a system error has occurred", ex);
+            log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
@@ -196,26 +191,40 @@ public class AsignacionControl {
     }
 
     /**
-     *
      * @param numRedirecciones
      * @param ideAsigUltimo
      */
-    public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) {
-        em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
-                .setParameter("NUM_REDIRECCIONES", numRedirecciones)
-                .setParameter("IDE_ASIG_ULTIMO", ideAsigUltimo)
-                .executeUpdate();
+    public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) throws SystemException {
+        try {
+            em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
+                    .setParameter("NUM_REDIRECCIONES", numRedirecciones)
+                    .setParameter("IDE_ASIG_ULTIMO", ideAsigUltimo)
+                    .executeUpdate();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     /**
-     *
      * @param ideAgente
      * @return
      */
-    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente){
-        List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
-                .setParameter("IDE_AGENTE", ideAgente)
-                .getResultList();
-        return asignacionDTOList.isEmpty() ? null : asignacionDTOList.get(0);
+    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente)throws SystemException{
+        try {
+            List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getResultList();
+            return asignacionDTOList.isEmpty() ? null : asignacionDTOList.get(0);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }
