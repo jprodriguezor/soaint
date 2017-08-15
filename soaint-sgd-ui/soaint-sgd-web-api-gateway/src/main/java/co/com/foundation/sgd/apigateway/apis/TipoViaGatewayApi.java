@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.TipoViaClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 @Path("/tipo-via-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Log4j2
 public class TipoViaGatewayApi {
 
     @Autowired
@@ -30,10 +32,10 @@ public class TipoViaGatewayApi {
     @JWTTokenSecurity
     public Response list() {
         //TODO: add trafic log
-        System.out.println("TipoViaGatewayApi - [trafic] - listing TipoVia");
+        log.info("TipoViaGatewayApi - [trafic] - listing TipoVia");
         Response response = client.list();
         String responseContent = response.readEntity(String.class);
-        System.out.println("TipoViaGatewayApi - [content] : " + responseContent);
+        log.info("TipoViaGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
