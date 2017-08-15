@@ -52,6 +52,7 @@ public class ContentControlAlfresco implements ContentControl {
      *
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
      */
+    @Override
     public Conexion obtenerConexion() {
         Conexion conexion = new Conexion ( );
 
@@ -169,7 +170,6 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             formatoCadena = Configuracion.getPropiedad (formatoConfig);
             String[] formatoCadenaArray = formatoCadena.split ("");
-            int bandera = 000;
             for (String aFormatoCadenaArray : formatoCadenaArray) {
 
                 String NOM_SERIE = "3";
@@ -180,22 +180,22 @@ public class ContentControlAlfresco implements ContentControl {
                 String NOM_SUBSERIE = "5";
                 if (aFormatoCadenaArray.equals (ID_ORG_ADM)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_ADM)]);
-                    bandera = Integer.parseInt (ID_ORG_ADM);
+                     Integer.parseInt (ID_ORG_ADM);
                 } else if (aFormatoCadenaArray.equals (ID_ORG_OFC)) {
                     formatoFinal.append (informationArray[Integer.parseInt (ID_ORG_OFC)]);
-                    bandera = Integer.parseInt (ID_ORG_OFC);
+                     Integer.parseInt (ID_ORG_OFC);
                 } else if (aFormatoCadenaArray.equals (COD_SERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (COD_SERIE)]);
-                    bandera = Integer.parseInt (COD_SERIE);
+                     Integer.parseInt (COD_SERIE);
                 } else if (aFormatoCadenaArray.equals (NOM_SERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (NOM_SERIE)]);
-                    bandera = Integer.parseInt (NOM_SERIE);
+                     Integer.parseInt (NOM_SERIE);
                 } else if (aFormatoCadenaArray.equals (COD_SUBSERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (COD_SUBSERIE)]);
-                    bandera = Integer.parseInt (COD_SUBSERIE);
+                     Integer.parseInt (COD_SUBSERIE);
                 } else if (aFormatoCadenaArray.equals (NOM_SUBSERIE)) {
                     formatoFinal.append (informationArray[Integer.parseInt (NOM_SUBSERIE)]);
-                    bandera = Integer.parseInt (NOM_SUBSERIE);
+                     Integer.parseInt (NOM_SUBSERIE);
                 } else if (isNumeric (aFormatoCadenaArray)) {
                     //El formato no cumple con los requerimientos minimos
                     logger.info ("El formato no cumple con los requerimientos.");
@@ -359,8 +359,8 @@ public class ContentControlAlfresco implements ContentControl {
             new Carpeta ( );
             Carpeta carpetaD;
 
-            carpetaF = (obtenerCarpetaPorNombre (carpetaFuente, session));
-            carpetaD = (obtenerCarpetaPorNombre (carpetaDestino, session));
+            carpetaF = obtenerCarpetaPorNombre (carpetaFuente, session);
+            carpetaD = obtenerCarpetaPorNombre (carpetaDestino, session);
 
             CmisObject object = session.getObjectByPath (carpetaF.getFolder ( ).getPath ( ) + "/" + documento);
             Document mvndocument = (Document) object;
@@ -369,7 +369,6 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje ("0000");
 
         } catch (CmisObjectNotFoundException e) {
-            System.err.println ("Document is not found: " + documento);
             logger.error ("*** Error al mover el documento *** ", e);
             response.setMensaje ("Documento no encontrado");
             response.setCodMensaje ("00006");
@@ -384,6 +383,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param folder         Carpeta padre de la estructura
      * @return Mensaje de respuesta (codigo y mensaje)
      */
+    @Override
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) {
         logger.info ("### Generando arbol");
 
@@ -473,11 +473,11 @@ public class ContentControlAlfresco implements ContentControl {
                         }
                     }
                     folderFather = folderSon;
-                    if (dependencias.getCodSubSerie ( ) != null && !dependencias.getCodSubSerie ( ).equals ("")) {
+                    if (dependencias.getCodSubSerie ( ) != null && !"".equals (dependencias.getCodSubSerie ( ))) {
                         String nombreSubserie = formatearNombre (dependenciasArray, "formatoNombreSubserie");
                         folderSon = chequearCapetaPadre (folderFather, dependencias.getCodSubSerie ( ));
                         if (folderSon == null) {
-                            if (!nombreSubserie.equals ("")) {
+                            if (!"".equals (nombreSubserie)) {
                                 logger.info ("TRD --  Creando folder: " + nombreSubserie);
                                 folderSon = crearCarpeta (folderFather, nombreSubserie, dependencias.getCodSubSerie ( ), "claseSubserie", folderFather);
                             } else {
@@ -503,7 +503,6 @@ public class ContentControlAlfresco implements ContentControl {
             }
         } catch (Exception e) {
             logger.error ("Error al crear arbol content ", e);
-            e.printStackTrace ( );
             response.setCodMensaje ("Error al crear el arbol");
             response.setMensaje ("111112");
         }
