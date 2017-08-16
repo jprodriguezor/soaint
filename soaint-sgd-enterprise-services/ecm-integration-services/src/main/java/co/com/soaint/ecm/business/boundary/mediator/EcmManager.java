@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentManagerMediator;
-import co.com.soaint.ecm.business.boundary.mediator.interfaces.EcmManagerMediator;
+import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
@@ -19,17 +18,13 @@ import java.util.List;
  * Created by Dasiel
  */
 @Service
-public class EcmManagerAlfresco implements EcmManagerMediator {
+public class EcmManager {
 
-    private static final Logger logger = LogManager.getLogger (EcmManagerAlfresco.class.getName ( ));
-
-    private final
-    ContentManagerMediator content;
+    private static final Logger logger = LogManager.getLogger (EcmManager.class.getName ( ));
 
     @Autowired
-    public EcmManagerAlfresco(ContentManagerMediator content) {
-        this.content = content;
-    }
+    private
+    ContentManager contentManager;
 
     /**
      * Metodo que llama el servicio para crear la estructura del ECM
@@ -37,16 +32,16 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
      * @return Mensaje de respuesta(codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) throws InfrastructureException {
+    public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) {
         logger.info ("### Creando estructura content..------");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
-            response = content.crearEstructuraContent (structure);
+            response = contentManager.crearEstructuraContent (structure);
 
         } catch (Exception e) {
             response.setCodMensaje ("000005");
             response.setMensaje ("Error al crear estructura");
-            logger.error ("### Error..------" + e);
+            logger.error ("### Error Creando estructura content..------" , e);
         }
 
         return response;
@@ -60,13 +55,13 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws InfrastructureException {
+    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion)  {
         logger.info ("### Subiendo documento al content..");
         String idDocumento = "";
         try {
-            idDocumento = content.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
+            idDocumento = contentManager.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
-            logger.error ("### Error..------" + e);
+            logger.error ("### Error..------" , e);
         }
 
         return idDocumento;
@@ -75,22 +70,22 @@ public class EcmManagerAlfresco implements EcmManagerMediator {
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      * @param documento Nombre del documento a mover
-     * @param CarpetaFuente Carpeta donde se encuentra el documento
-     * @param CarpetaDestino Carpeta a donde se va a mover el documento.
+     * @param carpetaFuente Carpeta donde se encuentra el documento
+     * @param carpetaDestino Carpeta a donde se va a mover el documento.
      * @return Mensaje de respuesta (codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta moverDocumento(String documento, String CarpetaFuente, String CarpetaDestino) throws InfrastructureException {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino){
         logger.info ("### Moviendo documento dentro del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
 
-            response = content.moverDocumento (documento, CarpetaFuente, CarpetaDestino);
+            response = contentManager.moverDocumento (documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
             response.setCodMensaje ("000002");
             response.setMensaje ("Error al mover documento");
-            logger.error ("### Error..------" + e);
+            logger.error ("### Error..------" , e);
         }
 
         return response;

@@ -3,8 +3,6 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 

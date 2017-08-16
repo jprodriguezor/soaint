@@ -100,7 +100,6 @@ public class CorrespondenciaControl {
 
             for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
-                corAgente.setFecCreacion(fecha);
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {

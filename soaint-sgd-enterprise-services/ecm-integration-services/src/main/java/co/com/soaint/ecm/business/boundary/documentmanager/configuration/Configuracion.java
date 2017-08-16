@@ -8,37 +8,41 @@ import org.springframework.beans.factory.annotation.Value;
 public final class Configuracion {
 
     @Value("${formatoNombreSerie}")
-    private static String formatoNombreSerie;
+    private static String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
-    private static String formatoNombreSubserie;
+    private static String aformatoNombreSubserie;
     @Value("${claseSubserie}")
-    private static String claseSubserie;
+    private static String aclaseSubserie;
     @Value("${claseSerie}")
-    private static String claseSerie;
+    private static String aclaseSerie;
 
     @Value("${claseDependencia}")
-    private static String claseDependencia;
+    private static String aclaseDependencia;
     @Value("${claseBase}")
-    private static String claseBase;
+    private static String aclaseBase;
     @Value("${metadatoCodBase}")
-    private static String metadatoCodBase;
+    private static String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
-    private static String metadatoCodDependencia;
+    private static String ametadatoCodDependencia;
 
     @Value("${metadatoCodSubserie}")
-    private static String metadatoCodSubserie;
+    private static String ametadatoCodSubserie;
     @Value("${metadatoCodSerie}")
-    private static String metadatoCodSerie;
+    private static String ametadatoCodSerie;
     @Value("${metadatoCodUnidadAdminParent}")
-    private static String metadatoCodUnidadAdminParent;
+    private static String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
-    private static String ecm;
+    private static String aecm;
 
 
-
-
-
-
+    @Value("${ALFRESCO_ATOMPUB_URL}")
+    private static String propiedadALFRESCO_ATOMPUB_URL;
+    @Value("${REPOSITORY_ID}")
+    private static String propiedadREPOSITORY_ID;
+    @Value("${ALFRESCO_USER}")
+    private static String propiedadALFRESCO_USER;
+    @Value("${ALFRESCO_PASS}")
+    private static String propiedadALFRESCO_PASS;
 
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
@@ -50,57 +54,45 @@ public final class Configuracion {
 
         switch (name) {
             case "formatoNombreSerie":
-                return "1.2_3";
+                return aformatoNombreSerie != null ? aformatoNombreSerie : "1.2_3";
             case "formatoNombreSubserie":
-                return "1.2.4_5";
+                return aformatoNombreSubserie != null ? aformatoNombreSubserie : "1.2.4_5";
 
             case "claseSubserie":
-                return "CM_Subserie";
+                return aclaseSubserie != null ? aclaseSubserie : "CM_Subserie";
 
             case "claseSerie":
-                return "CM_Serie";
+                return aclaseSerie != null ? aclaseSerie : "CM_Serie";
 
             case "claseDependencia":
-                return "CM_Unidad_Administrativa";
+                return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";
             case "claseBase":
-                return "CM_Unidad_Base";
+                return aclaseBase != null ? aclaseBase : "CM_Unidad_Base";
 
             case "metadatoCodDependencia":
-                return "CodigoDependencia";
+                return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
 
             case "metadatoCodBase":
-                return "CodigoBase";
+                return ametadatoCodBase != null ? ametadatoCodBase : "CodigoBase";
 
             case "metadatoCodSubserie":
-                return "CodigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "CodigoSubserie";
 
             case "metadatoCodSerie":
-                return "CodigoSerie";
+                return ametadatoCodSerie != null ? ametadatoCodSerie : "CodigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return "CodUnidadPadre";
-
+                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
+            case "ALFRESCO_ATOMPUB_URL":
+                return propiedadALFRESCO_ATOMPUB_URL != null ? propiedadALFRESCO_ATOMPUB_URL : "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+            case "REPOSITORY_ID":
+                return propiedadREPOSITORY_ID != null ? propiedadREPOSITORY_ID : "-default-";
+            case "ALFRESCO_USER":
+                return propiedadALFRESCO_USER != null ? propiedadALFRESCO_USER : "admin";
+            case "ALFRESCO_PASS":
+                return propiedadALFRESCO_PASS != null ? propiedadALFRESCO_PASS : "admin";
             default:
                 return "";
         }
-//        private static Properties propiedades = null;
-//        public static void inicializacion() {
-//
-//            if (propiedades == null) {
-//                propiedades = new Properties ( );
-//            }
-//
-//        }
-//        static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
-//        String propiedad = null;
-//        try {
-//            inicializacion ( );
-//            propiedades.load (new FileInputStream ("ecm-integration-services/src/main/resources/configurationServices.properties"));
-//            propiedad = propiedades.getProperty (name);
-//        } catch (Exception e) {
-//            e.printStackTrace ( );
-//            LOGGER.info ("Error al leer properties de configuracion");
-//        }
-//        return propiedad;
     }
 }
