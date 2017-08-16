@@ -30,7 +30,7 @@ public class DigitalizarDocumentoGatewayApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName, MultipartFormDataInput file) {
-        //TODO: add trafic log
+
         List<String> ecmIds = new ArrayList<>();
         log.info("DigitalizarDocumentoGatewayApi - [content] : ");
         file.getFormDataMap().forEach((key, parts) -> {

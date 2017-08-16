@@ -43,7 +43,7 @@ public class CorrespondenciaGatewayApi {
     @Path("/radicar")
     @JWTTokenSecurity
     public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-        //TODO: add trafic log
+        
         log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicar(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
@@ -58,7 +58,7 @@ public class CorrespondenciaGatewayApi {
                                          @QueryParam("fecha_fin") final String fechaFin,
                                          @QueryParam("cod_dependencia") final String codDependencia,
                                          @QueryParam("cod_estado") final String codEstado) {
-        //TODO: add trafic log
+
         log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
         Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
         String responseContent = response.readEntity(String.class);

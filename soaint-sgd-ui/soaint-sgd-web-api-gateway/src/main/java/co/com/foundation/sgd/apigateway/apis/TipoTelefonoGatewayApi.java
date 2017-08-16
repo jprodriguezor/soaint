@@ -31,7 +31,6 @@ public class TipoTelefonoGatewayApi {
 	@Path("/")
 	@JWTTokenSecurity
 	public Response list() {
-		//TODO: add trafic log
 		log.info("TipoTelefonoGatewayApi - [trafic] - listing TipoTelefono");
 		Response response = client.list();
 		String responseContent = response.readEntity(String.class);

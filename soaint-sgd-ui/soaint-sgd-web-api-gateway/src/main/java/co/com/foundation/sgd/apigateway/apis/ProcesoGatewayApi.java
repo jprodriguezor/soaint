@@ -30,7 +30,7 @@ public class ProcesoGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - listing Procesos");
         Response response = procesoClient.list();
         String responseContent = response.readEntity(String.class);
@@ -48,7 +48,7 @@ public class ProcesoGatewayApi {
     @Path("/iniciar")
     @JWTTokenSecurity
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - starting Process");
         Response response = procesoClient.iniciarManual(entrada);
         String responseContent = response.readEntity(String.class);
@@ -61,7 +61,7 @@ public class ProcesoGatewayApi {
     @Path("/listar/estados-instancia")
     @JWTTokenSecurity
     public Response listTareasIdProceso(EntradaProcesoDTO entrada) {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - listing Precess");
         Response response = procesoClient.listarPorIdProceso(entrada);
         String responseContent = response.readEntity(String.class);
@@ -74,7 +74,7 @@ public class ProcesoGatewayApi {
     @Path("/tareas/listar/estados")
     @JWTTokenSecurity
     public Response listTareas(EntradaProcesoDTO entrada) {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
         Response response = procesoClient.listarTareas(entrada);
         String responseContent = response.readEntity(String.class);
@@ -87,7 +87,7 @@ public class ProcesoGatewayApi {
     @Path("/tareas/iniciar")
     @JWTTokenSecurity
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - start Task");
         Response response = procesoClient.iniciarTarea(entrada);
         String responseContent = response.readEntity(String.class);
@@ -100,7 +100,7 @@ public class ProcesoGatewayApi {
     @Path("/tareas/completar")
     @JWTTokenSecurity
     public Response completarTarea(EntradaProcesoDTO entrada) {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - start Task");
         Response response = procesoClient.completarTarea(entrada);
         String responseContent = response.readEntity(String.class);
@@ -113,7 +113,7 @@ public class ProcesoGatewayApi {
     @Path("/proceso/listar-instancias")
     @JWTTokenSecurity
     public Response listarIntanciasProceso() {
-        //TODO: add trafic log
+
         log.info("ProcesoGatewayApi - [trafic] - listing Process Instances");
         Response response = procesoClient.listarIntanciasProceso();
         String responseContent = response.readEntity(String.class);

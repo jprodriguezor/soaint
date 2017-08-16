@@ -32,7 +32,7 @@ public class ProductosGatewayApi {
 	@Path("/")
 	@JWTTokenSecurity
 	public Response list() {
-		//TODO: add trafic log
+
 		log.info("ProductosGatewayApi - [trafic] - listing products");
 		Response response = productosClient.list();
 		String responseContent = response.readEntity(String.class);
