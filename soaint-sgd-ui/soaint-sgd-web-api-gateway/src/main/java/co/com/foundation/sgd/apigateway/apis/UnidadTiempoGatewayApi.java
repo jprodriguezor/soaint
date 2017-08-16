@@ -31,7 +31,6 @@ public class UnidadTiempoGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
         log.info("UnidadTiempoGatewayApi - [trafic] - listing UnidadTiempo");
         Response response = unidadTiempoClient.list();
         String responseContent = response.readEntity(String.class);

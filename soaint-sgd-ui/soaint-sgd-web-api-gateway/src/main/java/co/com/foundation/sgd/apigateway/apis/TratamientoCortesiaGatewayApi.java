@@ -31,7 +31,6 @@ public class TratamientoCortesiaGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
         log.info("TipoTelefonoGatewayApi - [trafic] - listing TipoTelefono");
         Response response = tratamientoCortesiaClient.list();
         String responseContent = response.readEntity(String.class);

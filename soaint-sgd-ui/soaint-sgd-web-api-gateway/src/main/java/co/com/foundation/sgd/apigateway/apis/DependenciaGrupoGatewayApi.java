@@ -28,7 +28,7 @@ public class DependenciaGrupoGatewayApi {
     @Path("/{cod-sede-administrativa}")
     @JWTTokenSecurity
     public Response listBySedeAdministrativa(@PathParam("cod-sede-administrativa") String codSedeAdministrativa) {
-        //TODO: add trafic log
+
         log.info("DependenciaGrupoGatewayApi - [trafic] - listing Dependencia");
         Response response = client.listBySedeAdministrativa(codSedeAdministrativa);
         String responseContent = response.readEntity(String.class);

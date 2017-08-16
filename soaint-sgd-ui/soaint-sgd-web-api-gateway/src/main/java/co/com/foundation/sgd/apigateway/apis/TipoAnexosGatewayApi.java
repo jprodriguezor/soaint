@@ -32,7 +32,7 @@ public class TipoAnexosGatewayApi {
 	@Path("/")
 	@JWTTokenSecurity
 	public Response list() {
-		//TODO: add trafic log
+
 		log.info("TipoAnexosGatewayApi - [trafic] - listing TipoAnexos");
 		Response response = client.list();
 		String responseContent = response.readEntity(String.class);

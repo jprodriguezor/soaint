@@ -31,7 +31,7 @@ public class SedeAdministrativaGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("SedeAdministrativaGatewayApi - [trafic] - listing SedeAdministrativa");
         Response response = client.list();
         String responseContent = response.readEntity(String.class);
