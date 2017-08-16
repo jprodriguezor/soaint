@@ -85,7 +85,7 @@ public final class Configuracion {
             case "metadatoCodUnidadAdminParent":
                 return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
             case "ALFRESCO_ATOMPUB_URL":
-                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "";
+                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
             case "ALFRESCO_USER":
