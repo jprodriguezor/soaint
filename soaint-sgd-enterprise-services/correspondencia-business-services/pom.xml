@@ -15,7 +15,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-framework.version>4.3.2.RELEASE</spring-framework.version>
+        <spring-framework.version>4.3.10.RELEASE</spring-framework.version>
         <hibernate-entitymanager.version>5.2.2.Final</hibernate-entitymanager.version>
 
         <!-- Inicio de propiedades de JaCoCo -->
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.10.2.RELEASE</version>
+            <version>1.11.6.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -234,7 +234,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.4</version>
+            <version>4.12</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -279,7 +279,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-framework.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
