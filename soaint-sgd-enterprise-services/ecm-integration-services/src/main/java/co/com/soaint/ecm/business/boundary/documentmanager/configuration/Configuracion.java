@@ -15,7 +15,6 @@ public final class Configuracion {
     private static String aclaseSubserie;
     @Value("${claseSerie}")
     private static String aclaseSerie;
-
     @Value("${claseDependencia}")
     private static String aclaseDependencia;
     @Value("${claseBase}")
@@ -24,7 +23,6 @@ public final class Configuracion {
     private static String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
     private static String ametadatoCodDependencia;
-
     @Value("${metadatoCodSubserie}")
     private static String ametadatoCodSubserie;
     @Value("${metadatoCodSerie}")
@@ -33,17 +31,20 @@ public final class Configuracion {
     private static String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
     private static String aecm;
-
-
     @Value("${ALFRESCO_ATOMPUB_URL}")
-    private static String propiedadALFRESCO_ATOMPUB_URL;
+    private static String aAlfrescoAtompubUrl;
     @Value("${REPOSITORY_ID}")
-    private static String propiedadREPOSITORY_ID;
+    private static String aRepositoryId;
     @Value("${ALFRESCO_USER}")
-    private static String propiedadALFRESCO_USER;
+    private static String aAlfrescoUser;
     @Value("${ALFRESCO_PASS}")
-    private static String propiedadALFRESCO_PASS;
+    private static String aAlfrescoPass;
 
+    private Configuracion(){
+        /*
+         *a
+          */
+    }
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *
@@ -84,13 +85,13 @@ public final class Configuracion {
             case "metadatoCodUnidadAdminParent":
                 return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
             case "ALFRESCO_ATOMPUB_URL":
-                return propiedadALFRESCO_ATOMPUB_URL != null ? propiedadALFRESCO_ATOMPUB_URL : "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "";
             case "REPOSITORY_ID":
-                return propiedadREPOSITORY_ID != null ? propiedadREPOSITORY_ID : "-default-";
+                return aRepositoryId != null ? aRepositoryId : "-default-";
             case "ALFRESCO_USER":
-                return propiedadALFRESCO_USER != null ? propiedadALFRESCO_USER : "admin";
+                return aAlfrescoUser != null ? aAlfrescoUser : "admin";
             case "ALFRESCO_PASS":
-                return propiedadALFRESCO_PASS != null ? propiedadALFRESCO_PASS : "admin";
+                return aAlfrescoPass != null ? aAlfrescoPass : "admin";
             default:
                 return "";
         }

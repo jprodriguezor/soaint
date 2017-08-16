@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * Creado por Dasiel
+ */
 @Service
 public interface ContentControl {
 
