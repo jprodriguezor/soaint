@@ -40,9 +40,12 @@ export const environment = {
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
-  asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
-  reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
+
+  // Asignacion Enpoints
+  asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
+  reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
+  obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
 };

@@ -5,6 +5,7 @@ import 'rxjs/add/operator/take';
 import {LoginSandbox} from '../redux-state/login-sandbox';
 
 
+
 /**
  * Prevent unauthorized activating and loading of routes
  * @class AuthenticatedGuard

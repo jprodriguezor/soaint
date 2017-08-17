@@ -97,11 +97,10 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
   // Unsubscribers
   activeTaskUnsubscriber: Subscription;
-  radicacionUnsubscriber: Subscription;
   sedeUnsubscriber: Subscription;
   validDatosGeneralesUnsubscriber: Subscription;
   reqDigitInmediataUnsubscriber: Subscription;
-  radicarChildrensValid$: Observable<any>;
+
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
@@ -167,6 +166,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
+
+
     const agentesList = [];
     const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
 

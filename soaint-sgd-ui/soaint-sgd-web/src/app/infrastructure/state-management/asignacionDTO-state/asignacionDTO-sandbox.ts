@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './asignacionDTO-actions';
 import {ApiBase} from '../../api/api-base';
+import {ObservacionDTO} from '../../../domain/observacionDTO';
 
 @Injectable()
 export class Sandbox {
@@ -18,6 +19,14 @@ export class Sandbox {
 
   reassignComunications(payload: any) {
     return this._api.post(environment.reasignarComunicaciones_endpoint, payload);
+  }
+
+  obtenerObservaciones(documentId: any) {
+    return this._api.list(`${environment.obtenerObservaciones_endpoint}${documentId}`);
+  }
+
+  registrarObservacion(payload: ObservacionDTO) {
+    return this._api.post(environment.obtenerObservaciones_endpoint, payload);
   }
 
   redirectComunications(payload: any) {

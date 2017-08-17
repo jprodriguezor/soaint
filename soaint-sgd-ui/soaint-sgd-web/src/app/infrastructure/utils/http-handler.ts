@@ -17,13 +17,12 @@ export class HttpHandler {
   private token$: Observable<string>;
 
   constructor(private _http: Http, private _store: Store<State>) {
-
     this.token$ = _store.select(s => s.auth.token);
   }
 
   requestHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
 
-    return this.token$.take(1).switchMap(token => {
+    return this.token$.take(1).switchMap( token => {
       // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
