@@ -25,7 +25,7 @@ public interface SecurityAPI {
      * @param login
      * @return
      *     returns co.com.foundation.sgd.apigateway.webserviceclients.securitycardbridge.AuthenticationResponseContext
-     * @throws SystemException_Exception
+     * @throws SystemExceptionException
      */
     @WebMethod(action = "verifyCredentials")
     @WebResult(targetNamespace = "")
@@ -36,7 +36,7 @@ public interface SecurityAPI {
         String login,
         @WebParam(name = "password", targetNamespace = "")
         String password)
-        throws SystemException_Exception
+        throws SystemExceptionException
     ;
 
 }
