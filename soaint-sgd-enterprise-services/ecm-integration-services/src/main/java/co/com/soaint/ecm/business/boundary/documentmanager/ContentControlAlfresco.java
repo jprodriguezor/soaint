@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -43,6 +44,10 @@ import java.util.*;
 @BusinessControl
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
+    @Autowired
+    Configuracion configuracion;
+
+
     @Value("${claseSubserie}")
     private static String aclaseSubserie;
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
@@ -70,13 +75,13 @@ public class ContentControlAlfresco implements ContentControl {
             Map <String, String> parameter = new HashMap <> ( );
 
             // Credenciales del usuario
-            parameter.put (SessionParameter.USER, Configuracion.getPropiedad ("ALFRESCO_USER"));
-            parameter.put (SessionParameter.PASSWORD, Configuracion.getPropiedad ("ALFRESCO_PASS"));
+            parameter.put (SessionParameter.USER, configuracion.getPropiedad ("ALFRESCO_USER"));
+            parameter.put (SessionParameter.PASSWORD, configuracion.getPropiedad ("ALFRESCO_PASS"));
 
-            // Configuracion de conexion
-            parameter.put (SessionParameter.ATOMPUB_URL, Configuracion.getPropiedad ("ALFRESCO_ATOMPUB_URL"));
+            // configuracion de conexion
+            parameter.put (SessionParameter.ATOMPUB_URL, configuracion.getPropiedad ("ALFRESCO_ATOMPUB_URL"));
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
-            parameter.put (SessionParameter.REPOSITORY_ID, Configuracion.getPropiedad ("REPOSITORY_ID"));
+            parameter.put (SessionParameter.REPOSITORY_ID, configuracion.getPropiedad ("REPOSITORY_ID"));
 
             // Object factory de Alfresco
             parameter.put (SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
@@ -165,7 +170,7 @@ public class ContentControlAlfresco implements ContentControl {
         String formatoCadena;
         StringBuilder formatoFinal = new StringBuilder ( );
         try {
-            formatoCadena = Configuracion.getPropiedad (formatoConfig);
+            formatoCadena = configuracion.getPropiedad (formatoConfig);
             String[] formatoCadenaArray = formatoCadena.split ("");
             for (String aFormatoCadenaArray : formatoCadenaArray) {
 
@@ -208,7 +213,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param cadena Cadena de texto que se le pasa al metodo
      * @return Retorna true o false
      */
-    private static boolean isNumeric(String cadena) {
+    private boolean isNumeric(String cadena) {
             return (cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE);
     }
 
@@ -219,7 +224,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session       objeto de conexion al Alfresco
      * @return Retorna la Carpeta que se busca
      */
-    private static Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) {
+    private Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) {
         Carpeta folder = new Carpeta ( );
         try {
 
@@ -243,7 +248,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param carpetaPadre Carpeta a la cual se le van a buscar las carpetas hijas
      * @return Lista de carpetas resultantes de la busqueda
      */
-    private static List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) {
+    private List <Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) {
         logger.info ("### Obtener Carpetas Hijas Dado Padre: " + carpetaPadre.getFolder ( ).getName ( ));
         List <Carpeta> listaCarpetas = null;
 
@@ -303,20 +308,20 @@ public class ContentControlAlfresco implements ContentControl {
 
                 Carpeta carpeta = obtenerCarpetaPorNombre (aux.getFolder ( ).getName ( ), conexion.getSession ( ));
                 String description = carpeta.getFolder ( ).getDescription ( );
-                if (description.equals (Configuracion.getPropiedad (CLASE_DEPENDENCIA))) {
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodDependencia")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodDependencia")).equals (codFolder)) {
+                if (description.equals (configuracion.getPropiedad (CLASE_DEPENDENCIA))) {
+                    if (aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodDependencia")) != null &&
+                            aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodDependencia")).equals (codFolder)) {
                         folderReturn = aux;
                     }
-                } else if (description.equals (Configuracion.getPropiedad (CLASE_SERIE))) {
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSerie")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSerie")).equals (codFolder)) {
+                } else if (description.equals (configuracion.getPropiedad (CLASE_SERIE))) {
+                    if (aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodSerie")) != null &&
+                            aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodSerie")).equals (codFolder)) {
                         folderReturn = aux;
                     }
-                } else if (description.equals (Configuracion.getPropiedad (CLASE_SUBSERIE))) {
+                } else if (description.equals (configuracion.getPropiedad (CLASE_SUBSERIE))) {
                     logger.info ("Entro a clase subserie cargando los valores");
-                    if (aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")) != null &&
-                            aux.getFolder ( ).getPropertyValue (CMCOR + Configuracion.getPropiedad ("metadatoCodSubserie")).equals (codFolder)) {
+                    if (aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodSubserie")) != null &&
+                            aux.getFolder ( ).getPropertyValue (CMCOR + configuracion.getPropiedad ("metadatoCodSubserie")).equals (codFolder)) {
                         folderReturn = aux;
                     }
                 }
@@ -588,8 +593,8 @@ public class ContentControlAlfresco implements ContentControl {
      * @param codOrg      codigo
      */
     private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg) {
-        props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + Configuracion.getPropiedad (clase));
-        props.put (PropertyIds.DESCRIPTION, Configuracion.getPropiedad (clase));
+        props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad (clase));
+        props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
     }
 

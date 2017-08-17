@@ -1,45 +1,46 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @author sarias
  */
-public final class Configuracion {
+@Component
+public class Configuracion {
 
     @Value("${formatoNombreSerie}")
-    private static String aformatoNombreSerie;
+    private String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
-    private static String aformatoNombreSubserie;
+    private String aformatoNombreSubserie;
     @Value("${claseSubserie}")
-    private static String aclaseSubserie;
+    private String aclaseSubserie;
     @Value("${claseSerie}")
-    private static String aclaseSerie;
+    private String aclaseSerie;
     @Value("${claseDependencia}")
-    private static String aclaseDependencia;
+    private String aclaseDependencia;
     @Value("${claseBase}")
-    private static String aclaseBase;
+    private String aclaseBase;
     @Value("${metadatoCodBase}")
-    private static String ametadatoCodBase;
+    private String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
-    private static String ametadatoCodDependencia;
+    private String ametadatoCodDependencia;
     @Value("${metadatoCodSubserie}")
-    private static String ametadatoCodSubserie;
+    private String ametadatoCodSubserie;
     @Value("${metadatoCodSerie}")
-    private static String ametadatoCodSerie;
+    private String ametadatoCodSerie;
     @Value("${metadatoCodUnidadAdminParent}")
-    private static String ametadatoCodUnidadAdminParent;
+    private String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
-    private static String aecm;
+    private String aecm;
     @Value("${ALFRESCO_ATOMPUB_URL}")
-    public static String aAlfrescoAtompubUrl;
-
+    public String aAlfrescoAtompubUrl;
     @Value("${REPOSITORY_ID}")
-    private static String aRepositoryId;
+    private String aRepositoryId;
     @Value("${ALFRESCO_USER}")
-    private static String aAlfrescoUser;
+    private String aAlfrescoUser;
     @Value("${ALFRESCO_PASS}")
-    private static String aAlfrescoPass;
+    private String aAlfrescoPass;
 
     private Configuracion(){
         /*
@@ -52,7 +53,7 @@ public final class Configuracion {
      * @param name Nombre del parametro
      * @return Retorna el valor de la propiedad que se pide
      */
-    public static String getPropiedad(String name) {
+    public String getPropiedad(String name) {
 
         switch (name) {
             case "formatoNombreSerie":
@@ -86,7 +87,7 @@ public final class Configuracion {
             case "metadatoCodUnidadAdminParent":
                 return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
             case "ALFRESCO_ATOMPUB_URL":
-                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "http://192.168.1.82:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom";
+                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
             case "ALFRESCO_USER":
