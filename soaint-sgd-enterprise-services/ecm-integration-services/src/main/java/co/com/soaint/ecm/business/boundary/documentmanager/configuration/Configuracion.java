@@ -31,8 +31,14 @@ public final class Configuracion {
     private static String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
     private static String aecm;
+
+    public static String aAlfrescoAtompubUrl;
+
     @Value("${ALFRESCO_ATOMPUB_URL}")
-    private static String aAlfrescoAtompubUrl;
+    public void setAlfrescoAtompubUrl(String url) {
+        aAlfrescoAtompubUrl = url;
+    }
+
     @Value("${REPOSITORY_ID}")
     private static String aRepositoryId;
     @Value("${ALFRESCO_USER}")
