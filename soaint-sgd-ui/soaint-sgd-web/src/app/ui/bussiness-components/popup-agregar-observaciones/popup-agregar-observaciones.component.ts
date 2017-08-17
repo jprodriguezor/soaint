@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
-import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {ObservacionDTO} from "../../../domain/observacionDTO";
 
@@ -10,6 +9,7 @@ import {ObservacionDTO} from "../../../domain/observacionDTO";
 @Component({
   selector: 'app-popup-agregar-observaciones',
   templateUrl: './popup-agregar-observaciones.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopupAgregarObservacionesComponent implements OnInit {
 
@@ -23,7 +23,7 @@ export class PopupAgregarObservacionesComponent implements OnInit {
 
   idFuncionario: number;
 
-  constructor(private formBuilder: FormBuilder, private _asignacionSandbox: AsignacionSandbox) {
+  constructor(private formBuilder: FormBuilder, private _asignacionSandbox: AsignacionSandbox, private _changeDetectorRef: ChangeDetectorRef) {
     this.initForm();
     this.listenForErrors();
   }
@@ -41,6 +41,7 @@ export class PopupAgregarObservacionesComponent implements OnInit {
   loadObservations() {
     this._asignacionSandbox.obtenerObservaciones(this.idDocumento).subscribe((results) => {
       this.observaciones = [...results.observaciones];
+      this._changeDetectorRef.detectChanges();
     });
   }
 
