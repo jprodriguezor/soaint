@@ -11,17 +11,45 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * Creado por Dasiel
+ */
 @Service
 public interface ContentControl {
 
-
+    /**
+     *Obtener objeto conexion
+     * @return Objeto conexion
+     */
     Conexion obtenerConexion();
 
-    MensajeRespuesta movDocumento(Session session, String documento, String CarpetaFuente, String carpetaDestino);
+    /**
+     *MOver documento
+     * @param session objeto conexion
+     * @param documento nombre de documento
+     * @param carpetaFuente carpeta fuente
+     * @param carpetaDestino carpeta destino
+     * @return mensaje respuesta
+     */
+    MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino);
 
+    /**
+     *Generar estructura
+     * @param estructuraList lista de estructura
+     * @param folder carpeta padre
+     * @return mensaje respuesta
+     */
     MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder);
 
+    /**
+     *Subir documento
+     * @param session lista de estructura
+     * @param nombreDocumento nombre de documento
+     * @param documento documento a subir
+     * @param tipoComunicacion tipo de comunicacion
+     * @return ide de documento
+     * @throws IOException exception
+     */
     String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
 
 
