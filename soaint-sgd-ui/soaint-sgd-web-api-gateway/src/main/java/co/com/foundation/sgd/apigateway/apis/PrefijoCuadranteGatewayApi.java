@@ -31,7 +31,7 @@ public class PrefijoCuadranteGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("PrefijoCuadranteGatewayApi - [trafic] - listing PrefijoCuadrante");
         Response response = client.list();
         String responseContent = response.readEntity(String.class);

@@ -191,52 +191,10 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
-                <version>1.0.2.Final</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>standalone-mode</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                            <filename>${project.artifactId}.${project.packaging}</filename>
-                            <port>${wildfly.mgtPort}</port>
-                            <hostname>${wildfly-hostname}</hostname>
-                            <username>${wildfly-username}</username>
-                            <password>${wildfly-password}</password>
-                        </configuration>
-                        <executions>
-                            <!-- Deploy the application on install -->
-                            <execution>
-                                <id>deploy</id>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-
-                            <execution>
-                                <id>undeploy</id>
-                                <goals>
-                                    <goal>undeploy</goal>
-                                </goals>
-                                <configuration>
-                                    <ignoreMissingDeployment>true</ignoreMissingDeployment>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

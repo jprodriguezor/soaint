@@ -10,10 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
-import javax.persistence.*;
 
 /**
  * @author jrodriguez
@@ -29,11 +28,11 @@ import javax.persistence.*;
         @NamedQuery(name = "TvsPais.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
                 "(t.idePais, t.nombrePais, t.codPais) " +
                 "FROM TvsPais t " +
-                "WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
+                "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsPais.findByNombrePaisAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
                 "(t.idePais, t.nombrePais, t.codPais) " +
                 "FROM TvsPais t " +
-                "WHERE TRIM(t.nombrePais) LIKE :NOMBRE_PAIS AND TRIM(t.estado) = TRIM(:ESTADO) " +
+                "WHERE TRIM(t.nombrePais) LIKE :NOMBRE_PAIS AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO) " +
                 "ORDER BY t.nombrePais")})
 
 public class TvsPais implements Serializable {
@@ -48,15 +47,7 @@ public class TvsPais implements Serializable {
     @Basic(optional = false)
     @Column(name = "COD_PAIS")
     private String codPais;
-    @Column(name = "ESTADO")
-    private String estado;
-    @Column(name = "FEC_CAMBIO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCambio;
-    @Column(name = "FEC_CREACION")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCreacion;
-    @Column(name = "COD_USUARIO_CREA")
-    private String codUsuarioCrea;
+    @Embedded
+    private AuditColumns auditColumns;
 
 }

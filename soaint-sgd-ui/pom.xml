@@ -1,14 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>co.com.soaint.sgd.ui</groupId>
-  <artifactId>soaint-sgd-ui</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>soaint-sgd-ui</name>
-  
-  <modules>
-	  <module>soaint-sgd-web-api-gateway</module>
-  </modules>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>co.com.soaint.sgd.ui</groupId>
+    <artifactId>soaint-sgd-ui</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>soaint-sgd-ui</name>
+
+    <modules>
+        <module>soaint-sgd-web-api-gateway</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>1.0.2.Final</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <profiles>
+        <profile>
+            <id>standalone-mode</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                            <filename>${project.artifactId}.${project.packaging}</filename>
+                            <port>${wildfly.mgtPort}</port>
+                            <hostname>${wildfly-hostname}</hostname>
+                            <username>${wildfly-username}</username>
+                            <password>${wildfly-password}</password>
+                        </configuration>
+                        <executions>
+                            <!-- Deploy the application on install -->
+                            <execution>
+                                <id>deploy</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>undeploy</id>
+                                <goals>
+                                    <goal>undeploy</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreMissingDeployment>true</ignoreMissingDeployment>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

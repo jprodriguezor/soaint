@@ -51,6 +51,12 @@ public class GestionarDocumento {
         control.generarTrazaDocumento(ppdTrazDocumentoDTO);
     }
 
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
     public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws SystemException{
         return control.listarObservacionesDocumento(ideDocumento);
     }

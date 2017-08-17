@@ -31,7 +31,7 @@ public class OrientacionGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("OrientacionGatewayApi - [trafic] - listing Orientacion");
         Response response = client.list();
         String responseContent = response.readEntity(String.class);

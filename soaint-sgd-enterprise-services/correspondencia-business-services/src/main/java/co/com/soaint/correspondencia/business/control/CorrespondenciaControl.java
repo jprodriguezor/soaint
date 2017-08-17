@@ -100,7 +100,6 @@ public class CorrespondenciaControl {
 
             for (AgenteDTO agenteDTO : comunicacionOficialDTO.getAgenteList()) {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
-                corAgente.setFecCreacion(fecha);
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
@@ -433,12 +432,12 @@ public class CorrespondenciaControl {
     public Date calcularFechaVencimientoGestion(CorrespondenciaDTO correspondenciaDTO) {
         Calendar calendario = Calendar.getInstance();
         calendario.setTime(correspondenciaDTO.getFecRadicado());
-        if (correspondenciaDTO.getInicioConteo().equals(diaSiguienteHabil))
+        if (diaSiguienteHabil.equals(correspondenciaDTO.getInicioConteo()))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
         Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
         long cantHorasLaborales = horasHabilesDia(horarioLaboral[0], horarioLaboral[1]);
-        if (correspondenciaDTO.getCodUnidadTiempo().equals(unidadTiempoDias))
+        if (unidadTiempoDias.equals(correspondenciaDTO.getCodUnidadTiempo()))
             tiempoDuracionTramite *= cantHorasLaborales;
 
         SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
