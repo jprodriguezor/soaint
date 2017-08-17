@@ -22,9 +22,9 @@ public class SecurityAPIService
     extends Service
 {
 
-    private final static URL SECURITYAPISERVICE_WSDL_LOCATION;
-    private final static WebServiceException SECURITYAPISERVICE_EXCEPTION;
-    private final static QName SECURITYAPISERVICE_QNAME = new QName("http://www.soaint.com/services/security-cartridge/1.0.0", "SecurityAPIService");
+    private static final  URL SECURITYAPISERVICE_WSDL_LOCATION;
+    private static final WebServiceException SECURITYAPISERVICE_EXCEPTION;
+    private static final QName SECURITYAPISERVICE_QNAME = new QName("http://www.soaint.com/services/security-cartridge/1.0.0", "SecurityAPIService");
 
     static {
         URL url = null;
