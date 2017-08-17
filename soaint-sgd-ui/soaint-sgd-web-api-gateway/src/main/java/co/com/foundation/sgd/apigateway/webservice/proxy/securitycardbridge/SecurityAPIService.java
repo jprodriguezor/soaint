@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "SecurityAPIService", targetNamespace = "http://www.soaint.com/services/security-cartridge/1.0.0", wsdlLocation = "http://192.168.1.81:28080/Security-Cartridge/SecurityAPI?wsdl")
+@WebServiceClient(name = "SecurityAPIService", targetNamespace = "http://www.soaint.com/services/security-cartridge/1.0.0", wsdlLocation = "http://www.soaint.com/services/Security-Cartridge/SecurityAPI?wsdl")
 public class SecurityAPIService
     extends Service
 {
@@ -30,7 +30,7 @@ public class SecurityAPIService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://192.168.1.81:28080/Security-Cartridge/SecurityAPI?wsdl");
+            url = new URL("http://www.soaint.com/services/Security-Cartridge/SecurityAPI?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
