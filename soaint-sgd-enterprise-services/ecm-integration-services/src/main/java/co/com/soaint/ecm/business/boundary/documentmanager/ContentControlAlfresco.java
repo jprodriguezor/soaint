@@ -214,7 +214,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Retorna true o false
      */
     private boolean isNumeric(String cadena) {
-            return (cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE);
+            return cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE;
     }
 
     /**
