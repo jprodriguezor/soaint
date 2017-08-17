@@ -26,7 +26,7 @@ export class Sandbox {
   }
 
   registrarObservacion(payload: ObservacionDTO) {
-    return this._api.post(environment.obtenerObservaciones_endpoint, payload);
+    return this._api.post(environment.registrarObservaciones_endpoint, payload);
   }
 
   redirectComunications(payload: any) {

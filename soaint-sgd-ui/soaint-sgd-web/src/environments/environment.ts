@@ -48,4 +48,5 @@ export const environment = {
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
   reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
+  registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`
 };

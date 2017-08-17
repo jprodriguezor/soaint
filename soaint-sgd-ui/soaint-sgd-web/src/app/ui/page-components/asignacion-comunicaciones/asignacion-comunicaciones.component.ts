@@ -175,8 +175,13 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(false);
   }
 
-  showAddObservationsDialog() {
+  showAddObservationsDialog(idDocuemento: number) {
     this.popupAgregarObservaciones.form.reset();
+    this.popupAgregarObservaciones.setData({
+      idDocumento: idDocuemento,
+      idFuncionario: this.funcionarioLog.id,
+    });
+    this.popupAgregarObservaciones.loadObservations();
     this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(true);
   }
 

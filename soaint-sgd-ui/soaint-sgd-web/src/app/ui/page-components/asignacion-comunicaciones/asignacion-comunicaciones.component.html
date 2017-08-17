@@ -145,9 +145,9 @@
                 </ng-template>
               </p-column>
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
-                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Agregar observaciones"
-                          style="width: auto;" (click)="showAddObservationsDialog()"></button>
+                          style="width: auto;" (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
                 </ng-template>
               </p-column>
             </p-dataTable>
