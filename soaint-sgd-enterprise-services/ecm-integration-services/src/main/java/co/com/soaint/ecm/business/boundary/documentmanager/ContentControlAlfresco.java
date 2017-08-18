@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -60,9 +59,9 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
-    private static final String CMCOR="cmcor:";
-    private static final String CMCOR_CODIGOUNIDADAMINPADRE="cmcor:CodigoUnidadAdminPadre";
-    private static final String CMCOR_CODIGODEPENDENCIA="cmcor:CodigoDependencia";
+    private static final String CMCOR = "cmcor:";
+    private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
+    private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -213,22 +212,21 @@ public class ContentControlAlfresco implements ContentControl {
 
     /**
      * Metodo para devolver documento para su visualización
-     * @param object_id Identificador del documento dentro del ECM
-     * @param session Objeto de conexion
+     *
+     * @param idDocumento Identificador del documento dentro del ECM
+     * @param session   Objeto de conexion
      * @return Objeto de tipo response que devuleve el documento
      */
-    public Response descargarDocumento(String object_id, Session session ) {
+    public Response descargarDocumento(String idDocumento, Session session) {
 
-        logger.info("Se entra al metodo de descargar el documento");
-        Document doc = (Document) session.getObject(object_id);
-        File file= new File(doc.getPaths().get(0));
-//        ResponseBuilder responseBuilder = Response.ok((Object) file);
-//        String header="";
+        logger.info ("Se entra al metodo de descargar el documento");
+        Document doc = (Document) session.getObject (idDocumento);
+        File file = new File (doc.getPaths ( ).get (0));
 
-        logger.info("Se procede a devolver el documento");
-        return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" ) //optional
-                .build();
+        logger.info ("Se procede a devolver el documento");
+        return Response.ok (file, MediaType.APPLICATION_OCTET_STREAM)
+                .header ("Content-Disposition", "attachment; filename=\"" + file.getName ( ) + "\"") //optional
+                .build ( );
     }
 
 
@@ -239,7 +237,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Retorna true o false
      */
     private boolean isNumeric(String cadena) {
-            return (cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE);
+        return cadena.matches ("[+-]?\\d*(\\.\\d+)?") && "".equals (cadena) == Boolean.FALSE;
     }
 
     /**

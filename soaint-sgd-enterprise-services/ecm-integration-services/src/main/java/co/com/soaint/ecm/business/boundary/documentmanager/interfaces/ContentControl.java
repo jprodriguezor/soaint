@@ -55,10 +55,10 @@ public interface ContentControl {
 
     /**
      * Descargar documento
-     * @param object_id Identificador del documento en el ECM
+     * @param idDocumento Identificador del documento en el ECM
      * @param session Objeto conexion
      * @return Se retorna el documento
      */
-    Response descargarDocumento(String object_id, Session session ) ;
+    Response descargarDocumento(String idDocumento, Session session ) ;
 
 }

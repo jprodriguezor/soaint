@@ -106,8 +106,10 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
     }
+
     /**
      * Operacion para descargar documentos
+     *
      * @param identificadorDoc identificador del documento
      * @return Documento
      */

@@ -149,7 +149,7 @@ public class ContentManager {
     public Response descargarDocumentoContent(String idDoc) {
 
         logger.info ("### Descargando documento del content..");
-        ResponseBuilder response=new ResponseBuilderImpl ();
+        ResponseBuilder response = new ResponseBuilderImpl ( );
 
         try {
             Conexion conexion;
@@ -157,14 +157,14 @@ public class ContentManager {
             logger.info ("### Estableciendo la conexion..");
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de descargar el documento..");
-            response = Response.ok( contentControl.descargarDocumento (idDoc, conexion.getSession ( )));
+            response = Response.ok (contentControl.descargarDocumento (idDoc, conexion.getSession ( )));
 
         } catch (Exception e) {
             logger.error ("Error descargando documento", e);
 
         }
         logger.info ("### Se devuelve el documento del content..");
-        return response.build();
+        return response.build ( );
 
     }
 
