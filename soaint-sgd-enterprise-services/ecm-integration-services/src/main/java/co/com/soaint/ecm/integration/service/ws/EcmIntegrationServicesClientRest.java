@@ -13,6 +13,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -105,6 +106,25 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
     }
+    /**
+     * Operacion para descargar documentos
+     * @param identificadorDoc identificador del documento
+     * @return Documento
+     */
+    @GET
+    @Path("/descargarDocumentoECM/")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response descargarDocumento(@QueryParam("identificadorDoc") final String identificadorDoc) {
+
+        logger.info ("processing rest request - Descargar Documento ECM");
+        try {
+            return fEcmManager.descargarDocumento (identificadorDoc);
+        } catch (RuntimeException e) {
+            logger.error ("Error servicio descargando documento ", e);
+            throw e;
+        }
+    }
+
 
 }
 

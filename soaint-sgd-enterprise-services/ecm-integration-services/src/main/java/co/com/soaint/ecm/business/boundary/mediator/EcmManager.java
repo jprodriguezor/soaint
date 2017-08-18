@@ -7,9 +7,12 @@ import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.specimpl.ResponseBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.List;
 
 
@@ -91,5 +94,22 @@ public class EcmManager {
         return response;
     }
 
+    /**
+     * Metodo generico para descargar los documentos del ECM
+     *
+     * @param idDoc Identificador del documento dentro del ECM
+     * @return Documento
+     */
+    public Response descargarDocumento(String idDoc){
+        logger.info ("### Descargando documento del content..");
+        ResponseBuilder response=new com.sun.jersey.core.spi.factory.ResponseBuilderImpl ();
+        try{
+            response=Response.ok(contentManager.descargarDocumentoContent (idDoc));
+        }catch(Exception e){
+        logger.error("Error descargando documento",e);
+        }
+        logger.info ("### Se devuelve el documento del content..");
+        return response.build ();
+    }
 
 }
