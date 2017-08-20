@@ -168,4 +168,33 @@ public class ContentManager {
 
     }
 
+    /**
+     * Metodo generico para eliminar los documentos del ECM
+     *
+     * @param idDoc Identificador del documento dentro del ECM
+     * @return true en exito y false en error
+     */
+    public boolean eliminarDocumento(String idDoc) {
+
+        logger.info ("### Eliminando documento del content..");
+
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info ("### Estableciendo la conexion..");
+            conexion = contentControl.obtenerConexion ( );
+            logger.info ("### Se invoca el metodo de eliminar el documento..");
+            if(contentControl.eliminardocumento (idDoc, conexion.getSession ( ))){
+                logger.info("Documento eliminado con exito");
+                return Boolean.TRUE;
+            }
+            else
+                return Boolean.FALSE;
+
+        } catch (Exception e) {
+            logger.error ("Error eliminando documento", e);
+            return Boolean.FALSE;
+        }
+    }
+
 }

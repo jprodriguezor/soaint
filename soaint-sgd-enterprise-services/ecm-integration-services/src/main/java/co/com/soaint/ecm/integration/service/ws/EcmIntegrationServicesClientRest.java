@@ -116,7 +116,7 @@ public class EcmIntegrationServicesClientRest {
     @GET
     @Path("/descargarDocumentoECM/")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response descargarDocumento(@QueryParam("identificadorDoc") final String identificadorDoc) {
+    public Response descargarDocumentoECM(@QueryParam("identificadorDoc") final String identificadorDoc) {
 
         logger.info ("processing rest request - Descargar Documento ECM");
         try {
@@ -126,7 +126,30 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
     }
+    /**
+     * Operacion para eliminar documentos
+     *
+     * @param idDocumento Identificador del documento
+     * @return True en exito false en error
+     */
+    @POST
+    @Path("/moverDocumentoECM/")
+    public boolean eliminarDocumentoECM(@QueryParam("idDocumento") final String idDocumento) {
 
+        logger.info ("processing rest request - Eliminar Documento ECM");
+        try {
+            boolean respuesta;
+            respuesta = fEcmManager.eliminarDocumentoECM (idDocumento);
+            if (respuesta)
+                logger.info("Documento eliminado con exito");
+            else
+                logger.info("No se pudo eliminar el documento");
+            return respuesta;
+        } catch (RuntimeException e) {
+            logger.error ("Error servicio eliminando documento ", e);
+            throw e;
+        }
+    }
 
 }
 

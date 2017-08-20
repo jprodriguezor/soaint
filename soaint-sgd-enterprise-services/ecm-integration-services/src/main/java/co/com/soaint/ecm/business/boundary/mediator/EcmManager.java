@@ -112,5 +112,26 @@ public class EcmManager {
         logger.info ("### Se devuelve el documento del content..");
         return response.build ( );
     }
-
+    /**
+     * Metodo generico para eliminar los documentos del ECM
+     *
+     * @param idDoc Identificador del documento dentro del ECM
+     * @return True en exito false en error
+     */
+    public boolean eliminarDocumentoECM(String idDoc) {
+        logger.info ("### Eliminando documento del content..");
+        try {
+           if( contentManager.eliminarDocumento (idDoc)){
+               logger.info ("### Se elimina el documento del content..");
+               return Boolean.TRUE;
+           }
+           else{
+               logger.error ("No se pudo eliminar el documento");
+               return Boolean.FALSE;
+           }
+        } catch (Exception e) {
+            logger.error ("Error eliminando documento", e);
+            return Boolean.FALSE;
+        }
+    }
 }

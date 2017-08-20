@@ -12,6 +12,7 @@ import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -620,7 +621,28 @@ public class ContentControlAlfresco implements ContentControl {
         props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
     }
+     /**
+     * Eliminar documento del Alfresco
+     * @param idDoc Identificador del documento a borrar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna true si borró con exito y false si no
+     */
+    @Override
+    public boolean eliminardocumento(String idDoc, Session session) {
+        try {
+            logger.info("Se procede a eliminar");
+            ObjectId a=new ObjectIdImpl (idDoc);
+            CmisObject object = session.getObject(a);
+            Document delDoc = (Document) object;
+            delDoc.delete(true);
+            logger.info("Se logro eliminar el documento");
+            return Boolean.TRUE;
+        } catch (CmisObjectNotFoundException e) {
+            logger.error("No se pudo eliminar el documento :",e);
+            return Boolean.FALSE;
+        }
 
+    }
 }
 
 

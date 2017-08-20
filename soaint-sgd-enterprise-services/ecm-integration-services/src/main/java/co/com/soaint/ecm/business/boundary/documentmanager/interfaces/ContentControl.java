@@ -66,4 +66,12 @@ public interface ContentControl {
      */
     Response descargarDocumento(String idDocumento, Session session);
 
+    /**
+     * Eliminar documento del ECM
+     * @param idDoc Identificador del documento a borrar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna true si borró con exito y false si no
+     */
+    boolean eliminardocumento(String idDoc, Session session);
+
 }
