@@ -50,6 +50,16 @@ public class GestionarAsignacionWS {
     }
 
     /**
+     *
+     * @param asignacion
+     * @throws SystemException
+     */
+    @WebMethod(action = "actualizarTipoProceso", operationName = "actualizarTipoProceso")
+    public void actualizarTipoProceso(@WebParam(name = "asignacion")final AsignacionDTO asignacion) throws SystemException {
+        boundary.actualizarTipoProceso(asignacion);
+    }
+
+    /**
      * @param ideFunci
      * @param nroRadicado
      * @return

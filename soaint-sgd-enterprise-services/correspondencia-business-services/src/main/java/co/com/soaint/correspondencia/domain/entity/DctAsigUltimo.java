@@ -73,6 +73,9 @@ import java.util.Date;
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
         @NamedQuery(name = "DctAsigUltimo.updateNumRedirecciones", query = "UPDATE DctAsigUltimo d " +
                 "SET d.numRedirecciones = :NUM_REDIRECCIONES " +
+                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
+        @NamedQuery(name = "DctAsigUltimo.updateTipoProceso", query = "UPDATE DctAsigUltimo d " +
+                "SET d.codTipProceso = :COD_TIPO_PROCESO " +
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO")})
 @javax.persistence.TableGenerator(name = "DCT_ASIG_ULTIMO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIG_ULTIMO_SEQ", allocationSize = 1)
