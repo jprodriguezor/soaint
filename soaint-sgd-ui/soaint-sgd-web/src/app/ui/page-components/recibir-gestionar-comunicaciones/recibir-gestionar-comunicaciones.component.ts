@@ -54,7 +54,7 @@ export class RecibirGestionarComunicacionesComponent implements OnInit, OnDestro
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
               private formBuilder: FormBuilder) {
-    this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
+    // this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
     this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
