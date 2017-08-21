@@ -1,0 +1,95 @@
+<div class="page-title">
+  <h2>Recibir y Gestionar documentos</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Comunicación oficial" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [(selection)]="selectedComunications"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+              <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="fecVenGestion" header="Fecha de vencimiento" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
+              <p-column field="codEstado" header="Estado" [sortable]="true"
+                        [style]="{'width':'110px'}">
+
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Tramitar" [style]="{'text-align':'center','width':'200px'}">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
+                  <button pButton type="button" label="Agregar observaciones"
+                          style="width: auto;"
+                          (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideJustificationPopup()" [width]="800">
+    <p-header>
+      Redireccionar
+    </p-header>
+    <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
+                             #popupjustificaciones></app-popup-justificacion>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideJustificationPopup()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
+                label="Redireccionar" (click)="sendRedirect()"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideAddObservationsPopup()" [width]="800">
+    <p-header>
+      Agregar observaciones
+    </p-header>
+    <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+
+  </p-dialog>
+  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideRejectDialog()" [width]="800">
+    <p-header>
+      Devolver
+    </p-header>
+    <app-popup-reject #popupReject></app-popup-reject>
+
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideRejectDialog()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
+                label="Devolver" (click)="sendReject()"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+</div>
+
+
+
