@@ -157,7 +157,7 @@ public class ContentManager {
             logger.info ("### Estableciendo la conexion..");
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de descargar el documento..");
-            response = Response.ok (contentControl.descargarDocumento (idDoc, conexion.getSession ( )));
+            return contentControl.descargarDocumento (idDoc, conexion.getSession ( ));
 
         } catch (Exception e) {
             logger.error ("Error descargando documento", e);
@@ -184,11 +184,10 @@ public class ContentManager {
             logger.info ("### Estableciendo la conexion..");
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de eliminar el documento..");
-            if(contentControl.eliminardocumento (idDoc, conexion.getSession ( ))){
-                logger.info("Documento eliminado con exito");
+            if (contentControl.eliminardocumento (idDoc, conexion.getSession ( ))) {
+                logger.info ("Documento eliminado con exito");
                 return Boolean.TRUE;
-            }
-            else
+            } else
                 return Boolean.FALSE;
 
         } catch (Exception e) {

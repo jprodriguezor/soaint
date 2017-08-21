@@ -31,13 +31,9 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -215,18 +211,17 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo para devolver documento para su visualización
      *
      * @param idDocumento Identificador del documento dentro del ECM
-     * @param session   Objeto de conexion
+     * @param session     Objeto de conexion
      * @return Objeto de tipo response que devuleve el documento
      */
-    public Response descargarDocumento(String idDocumento, Session session) {
+    public Response descargarDocumento(String idDocumento, Session session) throws IOException {
 
         logger.info ("Se entra al metodo de descargar el documento");
         Document doc = (Document) session.getObject (idDocumento);
-        File file = new File (doc.getPaths ( ).get (0));
-
-        logger.info ("Se procede a devolver el documento");
-        return Response.ok (file, MediaType.APPLICATION_OCTET_STREAM)
-                .header ("Content-Disposition", "attachment; filename=\"" + file.getName ( ) + "\"") //optional
+        File file = (convertInputStreamToFile (doc.getContentStream ( )));
+        logger.info ("Se procede a devolver el documento" + file.getName ( ));
+        return Response.ok (file)
+                .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
                 .build ( );
     }
 
@@ -621,27 +616,67 @@ public class ContentControlAlfresco implements ContentControl {
         props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
     }
-     /**
+
+    /**
      * Eliminar documento del Alfresco
-     * @param idDoc Identificador del documento a borrar
+     *
+     * @param idDoc   Identificador del documento a borrar
      * @param session Objeto de conexion al Alfresco
      * @return Retorna true si borró con exito y false si no
      */
     @Override
     public boolean eliminardocumento(String idDoc, Session session) {
         try {
-            logger.info("Se procede a eliminar");
-            ObjectId a=new ObjectIdImpl (idDoc);
-            CmisObject object = session.getObject(a);
+            logger.info ("Se procede a eliminar");
+            ObjectId a = new ObjectIdImpl (idDoc);
+            CmisObject object = session.getObject (a);
             Document delDoc = (Document) object;
-            delDoc.delete(true);
-            logger.info("Se logro eliminar el documento");
+            delDoc.delete (true);
+            logger.info ("Se logro eliminar el documento");
             return Boolean.TRUE;
         } catch (CmisObjectNotFoundException e) {
-            logger.error("No se pudo eliminar el documento :",e);
+            logger.error ("No se pudo eliminar el documento :", e);
             return Boolean.FALSE;
         }
 
+    }
+
+    /**
+     * Convierte contentStream a File
+     *
+     * @param contentStream contentStream
+     * @return Un objeto File
+     * @throws IOException En caso de error
+     */
+    private static File convertInputStreamToFile(ContentStream contentStream)
+            throws IOException {
+
+        InputStream inputStream = contentStream.getStream ( );
+
+        File file = File.createTempFile (contentStream.getFileName ( ), "");
+
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream (file);
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read (bytes)) != -1) {
+                out.write (bytes, 0, read);
+            }
+
+        } catch (IOException e) {
+            logger.error ("Error al convertir el contentStream a File", e);
+        } finally {
+            inputStream.close ( );
+            assert out != null;
+            out.flush ( );
+            out.close ( );
+        }
+
+        file.deleteOnExit ( );
+        return file;
     }
 }
 

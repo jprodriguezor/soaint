@@ -14,6 +14,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -133,7 +134,7 @@ public class EcmIntegrationServicesClientRest {
      * @return True en exito false en error
      */
     @POST
-    @Path("/moverDocumentoECM/")
+    @Path("/eliminarDocumentoECM/")
     public boolean eliminarDocumentoECM(@QueryParam("idDocumento") final String idDocumento) {
 
         logger.info ("processing rest request - Eliminar Documento ECM");

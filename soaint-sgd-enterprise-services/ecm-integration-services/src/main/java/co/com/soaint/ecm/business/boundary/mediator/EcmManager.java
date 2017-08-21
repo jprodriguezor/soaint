@@ -105,13 +105,14 @@ public class EcmManager {
         logger.info ("### Descargando documento del content..");
         ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl ( );
         try {
-            response = Response.ok (contentManager.descargarDocumentoContent (idDoc));
+            return contentManager.descargarDocumentoContent (idDoc);
         } catch (Exception e) {
             logger.error ("Error descargando documento", e);
         }
         logger.info ("### Se devuelve el documento del content..");
         return response.build ( );
     }
+
     /**
      * Metodo generico para eliminar los documentos del ECM
      *
@@ -121,14 +122,13 @@ public class EcmManager {
     public boolean eliminarDocumentoECM(String idDoc) {
         logger.info ("### Eliminando documento del content..");
         try {
-           if( contentManager.eliminarDocumento (idDoc)){
-               logger.info ("### Se elimina el documento del content..");
-               return Boolean.TRUE;
-           }
-           else{
-               logger.error ("No se pudo eliminar el documento");
-               return Boolean.FALSE;
-           }
+            if (contentManager.eliminarDocumento (idDoc)) {
+                logger.info ("### Se elimina el documento del content..");
+                return Boolean.TRUE;
+            } else {
+                logger.error ("No se pudo eliminar el documento");
+                return Boolean.FALSE;
+            }
         } catch (Exception e) {
             logger.error ("Error eliminando documento", e);
             return Boolean.FALSE;
