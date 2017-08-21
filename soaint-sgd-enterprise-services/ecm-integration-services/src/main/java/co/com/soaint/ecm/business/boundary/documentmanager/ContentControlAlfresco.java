@@ -218,7 +218,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         logger.info ("Se entra al metodo de descargar el documento");
         Document doc = (Document) session.getObject (idDocumento);
-        File file = (convertInputStreamToFile (doc.getContentStream ( )));
+        File file = convertInputStreamToFile (doc.getContentStream ( ));
         logger.info ("Se procede a devolver el documento" + file.getName ( ));
         return Response.ok (file)
                 .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
