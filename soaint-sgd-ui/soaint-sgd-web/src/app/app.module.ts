@@ -7,32 +7,37 @@ import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
 import 'rxjs/add/operator/toPromise';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import { NgxBarcodeModule } from 'ngx-barcode';
-import { ToastrModule } from 'ngx-toastr';
-
-
+import {NgxBarcodeModule} from 'ngx-barcode';
+import {ToastrModule} from 'ngx-toastr';
 // APP COMPONENTS
 import {AppComponent} from './app.component';
-import {UI_COMPONENTS, PAGE_COMPONENTS_PROVIDERS, LAYOUT_COMPONENTS_PROVIDERS, BUSSINESS_COMPONENTS_PROVIDERS} from 'app/ui/__ui.include';
-
+import {
+  BUSSINESS_COMPONENTS_PROVIDERS,
+  LAYOUT_COMPONENTS_PROVIDERS,
+  PAGE_COMPONENTS_PROVIDERS,
+  UI_COMPONENTS
+} from 'app/ui/__ui.include';
 // APP MODULES
 // import { PAGE_MODULES } from './ui/page-components/__page-components.include';
-
 // third party libs | components | modules
-import {PRIMENG_MODULES, PrintDirective, DynamicDisableDirective, PIPES, ConfirmationService} from './shared/__shared.include';
+import {
+  ConfirmationService,
+  DynamicDisableDirective,
+  PIPES,
+  PRIMENG_MODULES,
+  PrintDirective
+} from './shared/__shared.include';
 import {EmailValidator} from './shared/validators/email.validator';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
 import {LocalStorageModule} from 'angular-2-local-storage';
-
 // APP SERVICES
-import {INFRASTRUCTURE_SERVICES, API_SERVICES, EFFECTS_MODULES} from './infrastructure/__infrastructure.include';
-
+import {API_SERVICES, EFFECTS_MODULES, INFRASTRUCTURE_SERVICES} from './infrastructure/__infrastructure.include';
 // Redux Store and Colaterals
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {ReduxStore} from './infrastructure/redux-store/__redux-config';
-import { RouterStoreModule } from '@ngrx/router-store';
+import {RouterStoreModule} from '@ngrx/router-store';
 import {PdfViewerComponent} from 'ng2-pdf-viewer';
 
 

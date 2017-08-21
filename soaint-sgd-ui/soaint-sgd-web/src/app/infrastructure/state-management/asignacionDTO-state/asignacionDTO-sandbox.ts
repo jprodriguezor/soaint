@@ -49,6 +49,10 @@ export class Sandbox {
     this._store.dispatch(new actions.SetJustificationDialogVisibleAction(payload));
   }
 
+  setVisibleDetailsDialogDispatch(payload: boolean) {
+    this._store.dispatch(new actions.SetDetailsDialogVisibleAction(payload));
+  }
+
   setVisibleAddObservationsDialogDispatch(payload: boolean) {
     this._store.dispatch(new actions.SetAddObservationsDialogVisibleAction(payload));
   }
