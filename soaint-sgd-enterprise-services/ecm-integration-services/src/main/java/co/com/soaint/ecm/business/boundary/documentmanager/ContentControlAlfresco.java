@@ -590,7 +590,11 @@ public class ContentControlAlfresco implements ContentControl {
                 //Se crea el documento
                 logger.info ("### Se va a crear el documento..");
                 Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+
                 idDocumento = newDocument.getId ( );
+                String[] parts = idDocumento.split(";");
+                idDocumento = parts[0];
+
                 logger.info ("### Documento creado con id " + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
