@@ -12,6 +12,7 @@ import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -31,9 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.MultivaluedMap;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.ws.rs.core.Response;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -56,9 +56,9 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
-    private static final String CMCOR="cmcor:";
-    private static final String CMCOR_CODIGOUNIDADAMINPADRE="cmcor:CodigoUnidadAdminPadre";
-    private static final String CMCOR_CODIGODEPENDENCIA="cmcor:CodigoDependencia";
+    private static final String CMCOR = "cmcor:";
+    private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
+    private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -208,13 +208,32 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo para devolver documento para su visualización
+     *
+     * @param idDocumento Identificador del documento dentro del ECM
+     * @param session     Objeto de conexion
+     * @return Objeto de tipo response que devuleve el documento
+     */
+    public Response descargarDocumento(String idDocumento, Session session) throws IOException {
+
+        logger.info ("Se entra al metodo de descargar el documento");
+        Document doc = (Document) session.getObject (idDocumento);
+        File file = (convertInputStreamToFile (doc.getContentStream ( )));
+        logger.info ("Se procede a devolver el documento" + file.getName ( ));
+        return Response.ok (file)
+                .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
+                .build ( );
+    }
+
+
+    /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
      *
      * @param cadena Cadena de texto que se le pasa al metodo
      * @return Retorna true o false
      */
     private boolean isNumeric(String cadena) {
-            return (cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE);
+        return cadena.matches ("[+-]?\\d*(\\.\\d+)?") && "".equals (cadena) == Boolean.FALSE;
     }
 
     /**
@@ -598,6 +617,67 @@ public class ContentControlAlfresco implements ContentControl {
         props.put (tipoCarpeta, codOrg);
     }
 
+    /**
+     * Eliminar documento del Alfresco
+     *
+     * @param idDoc   Identificador del documento a borrar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna true si borró con exito y false si no
+     */
+    @Override
+    public boolean eliminardocumento(String idDoc, Session session) {
+        try {
+            logger.info ("Se procede a eliminar");
+            ObjectId a = new ObjectIdImpl (idDoc);
+            CmisObject object = session.getObject (a);
+            Document delDoc = (Document) object;
+            delDoc.delete (true);
+            logger.info ("Se logro eliminar el documento");
+            return Boolean.TRUE;
+        } catch (CmisObjectNotFoundException e) {
+            logger.error ("No se pudo eliminar el documento :", e);
+            return Boolean.FALSE;
+        }
+
+    }
+
+    /**
+     * Convierte contentStream a File
+     *
+     * @param contentStream contentStream
+     * @return Un objeto File
+     * @throws IOException En caso de error
+     */
+    private static File convertInputStreamToFile(ContentStream contentStream)
+            throws IOException {
+
+        InputStream inputStream = contentStream.getStream ( );
+
+        File file = File.createTempFile (contentStream.getFileName ( ), "");
+
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream (file);
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read (bytes)) != -1) {
+                out.write (bytes, 0, read);
+            }
+
+        } catch (IOException e) {
+            logger.error ("Error al convertir el contentStream a File", e);
+        } finally {
+            inputStream.close ( );
+            assert out != null;
+            out.flush ( );
+            out.close ( );
+        }
+
+        file.deleteOnExit ( );
+        return file;
+    }
 }
 
 
