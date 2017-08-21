@@ -8,12 +8,15 @@ import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.List;
 
 
@@ -38,7 +41,7 @@ public class ContentManager {
      * @return Mensaje de respuesta
      * @throws InfrastructureException Excepcion que se recoje ante cualquier error
      */
-    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure)  {
+    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) {
         logger.info ("### Creando estructura content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         Carpeta carpeta;
@@ -61,7 +64,7 @@ public class ContentManager {
         } catch (Exception e) {
             response.setCodMensaje ("Error creando estructura");
             response.setMensaje ("11113");
-            logger.error ("Error creando estructura" , e);
+            logger.error ("Error creando estructura", e);
         }
         return response;
     }
@@ -75,7 +78,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion)  {
+    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) {
 
 
         logger.info ("### Subiendo documento al content..");
@@ -98,7 +101,7 @@ public class ContentManager {
             response.setMensaje ("OK");
 
         } catch (Exception e) {
-            logger.error ("Error subiendo documento" , e);
+            logger.error ("Error subiendo documento", e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
 
@@ -114,9 +117,8 @@ public class ContentManager {
      * @param carpetaFuente  Carpeta donde esta actualmente el documento.
      * @param carpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
-     * @throws InfrastructureException Excepcion que devuelve el metodo en error
      */
-    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino)  {
+    public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) {
 
         logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -131,12 +133,67 @@ public class ContentManager {
             response = contentControl.movDocumento (conexion.getSession ( ), documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
-            logger.error ("Error moviendo documento" , e);
+            logger.error ("Error moviendo documento", e);
             response.setCodMensaje ("0003");
             response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }
         return response;
     }
 
+    /**
+     * Metodo generico para descargar los documentos del ECM
+     *
+     * @param idDoc Identificador del documento dentro del ECM
+     * @return Documento
+     */
+    public Response descargarDocumentoContent(String idDoc) {
+
+        logger.info ("### Descargando documento del content..");
+        ResponseBuilder response = new ResponseBuilderImpl ( );
+
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info ("### Estableciendo la conexion..");
+            conexion = contentControl.obtenerConexion ( );
+            logger.info ("### Se invoca el metodo de descargar el documento..");
+            return contentControl.descargarDocumento (idDoc, conexion.getSession ( ));
+
+        } catch (Exception e) {
+            logger.error ("Error descargando documento", e);
+
+        }
+        logger.info ("### Se devuelve el documento del content..");
+        return response.build ( );
+
+    }
+
+    /**
+     * Metodo generico para eliminar los documentos del ECM
+     *
+     * @param idDoc Identificador del documento dentro del ECM
+     * @return true en exito y false en error
+     */
+    public boolean eliminarDocumento(String idDoc) {
+
+        logger.info ("### Eliminando documento del content..");
+
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info ("### Estableciendo la conexion..");
+            conexion = contentControl.obtenerConexion ( );
+            logger.info ("### Se invoca el metodo de eliminar el documento..");
+            if (contentControl.eliminardocumento (idDoc, conexion.getSession ( ))) {
+                logger.info ("Documento eliminado con exito");
+                return Boolean.TRUE;
+            } else
+                return Boolean.FALSE;
+
+        } catch (Exception e) {
+            logger.error ("Error eliminando documento", e);
+            return Boolean.FALSE;
+        }
+    }
 
 }
