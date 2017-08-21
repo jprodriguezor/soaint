@@ -674,9 +674,10 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error ("Error al convertir el contentStream a File", e);
         } finally {
             inputStream.close ( );
-            assert out != null;
-            out.flush ( );
-            out.close ( );
+            if (out != null)
+            {
+                out.flush ( );
+                out.close ( );}
         }
 
         file.deleteOnExit ( );
