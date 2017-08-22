@@ -30,7 +30,7 @@ public class ContentManager {
     @Autowired
     private
     ContentControl contentControl;
-
+    private static final String MSGCONEXION="### Estableciendo la conexion..";
     private static final Logger logger = LogManager.getLogger (ContentManager.class.getName ( ));
 
 
@@ -88,7 +88,7 @@ public class ContentManager {
         try {
             Conexion conexion;
             new Conexion ( );
-            logger.info ("### Estableciendo la conexion..");
+            logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
 
             //Carpeta donde se va a guardar el documento
@@ -154,7 +154,7 @@ public class ContentManager {
         try {
             Conexion conexion;
             new Conexion ( );
-            logger.info ("### Estableciendo la conexion..");
+            logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de descargar el documento..");
             return contentControl.descargarDocumento (idDoc, conexion.getSession ( ));
@@ -181,7 +181,7 @@ public class ContentManager {
         try {
             Conexion conexion;
             new Conexion ( );
-            logger.info ("### Estableciendo la conexion..");
+            logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de eliminar el documento..");
             if (contentControl.eliminardocumento (idDoc, conexion.getSession ( ))) {
