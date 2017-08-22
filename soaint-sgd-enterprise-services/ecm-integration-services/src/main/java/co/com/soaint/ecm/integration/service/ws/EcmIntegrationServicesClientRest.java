@@ -14,7 +14,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.util.List;
 
 /**
@@ -127,6 +126,7 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
     }
+
     /**
      * Operacion para eliminar documentos
      *
@@ -142,9 +142,9 @@ public class EcmIntegrationServicesClientRest {
             boolean respuesta;
             respuesta = fEcmManager.eliminarDocumentoECM (idDocumento);
             if (respuesta)
-                logger.info("Documento eliminado con exito");
+                logger.info ("Documento eliminado con exito");
             else
-                logger.info("No se pudo eliminar el documento");
+                logger.info ("No se pudo eliminar el documento");
             return respuesta;
         } catch (RuntimeException e) {
             logger.error ("Error servicio eliminando documento ", e);

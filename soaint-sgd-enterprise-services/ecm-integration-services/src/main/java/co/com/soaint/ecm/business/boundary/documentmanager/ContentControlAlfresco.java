@@ -655,15 +655,13 @@ public class ContentControlAlfresco implements ContentControl {
     private static File convertInputStreamToFile(ContentStream contentStream)
             throws IOException {
 
-        InputStream inputStream = contentStream.getStream ( );
-
         File file = File.createTempFile (contentStream.getFileName ( ), "");
 
         OutputStream out = null;
-        try {
+        try (InputStream inputStream = contentStream.getStream ( )) {
             out = new FileOutputStream (file);
 
-            int read = 0;
+            int read ;
             byte[] bytes = new byte[1024];
 
             while ((read = inputStream.read (bytes)) != -1) {
@@ -673,11 +671,10 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (IOException e) {
             logger.error ("Error al convertir el contentStream a File", e);
         } finally {
-            inputStream.close ( );
-            if (out != null)
-            {
+            if (out != null) {
                 out.flush ( );
-                out.close ( );}
+                out.close ( );
+            }
         }
 
         file.deleteOnExit ( );

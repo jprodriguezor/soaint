@@ -26,17 +26,6 @@ public interface ContentControl {
     Conexion obtenerConexion();
 
     /**
-     * MOver documento
-     *
-     * @param session        objeto conexion
-     * @param documento      nombre de documento
-     * @param carpetaFuente  carpeta fuente
-     * @param carpetaDestino carpeta destino
-     * @return mensaje respuesta
-     */
-    MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino);
-
-    /**
      * Generar estructura
      *
      * @param estructuraList lista de estructura
@@ -65,6 +54,17 @@ public interface ContentControl {
      * @return Se retorna el documento
      */
     Response descargarDocumento(String idDocumento, Session session) throws IOException;
+
+    /**
+     * MOver documento
+     *
+     * @param session        objeto conexion
+     * @param documento      nombre de documento
+     * @param carpetaFuente  carpeta fuente
+     * @param carpetaDestino carpeta destino
+     * @return mensaje respuesta
+     */
+    MensajeRespuesta movDocumento(Session session, String documento, String carpetaFuente, String carpetaDestino);
 
     /**
      * Eliminar documento del ECM
