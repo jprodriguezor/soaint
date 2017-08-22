@@ -83,11 +83,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
-    this.detailsDialogVisible$.subscribe((val) => {
-      console.log(val);
-      if (val === true)
-        this.detallesView.refreshView();
-    });
     this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
     this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
     this.start_date.setHours(this.start_date.getHours() - 24);
@@ -186,7 +181,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
 
-  showDetailsDialog() {
+  showDetailsDialog(nroRadicado: string): void {
+    this.detallesView.setNroRadicado(nroRadicado);
+    this.detallesView.loadComunication();
     this._asignacionSandbox.setVisibleDetailsDialogDispatch(true);
   }
 

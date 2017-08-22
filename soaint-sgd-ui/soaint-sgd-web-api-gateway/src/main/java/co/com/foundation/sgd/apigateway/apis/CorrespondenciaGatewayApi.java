@@ -45,7 +45,7 @@ public class CorrespondenciaGatewayApi {
     @Path("/radicar")
     @JWTTokenSecurity
     public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-        
+
         log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicar(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
@@ -140,6 +140,16 @@ public class CorrespondenciaGatewayApi {
     public Response metricasTiempo(@QueryParam("payload") String payload) {
         log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.metricasTiempoDrools(payload);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/obtener-comunicacion/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerComunicacion(@PathParam("nro_radicado") String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.obtenerCorrespondenciaPorNroRadicado(nroRadicado);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }

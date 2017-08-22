@@ -60,6 +60,14 @@ public class CorrespondenciaClient {
                 .get();
     }
 
+    public Response obtenerCorrespondenciaPorNroRadicado(String nroRadicado) {
+        log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/" + nroRadicado)
+                .request()
+                .get();
+    }
+
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
         log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

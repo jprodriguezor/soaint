@@ -139,9 +139,9 @@
                 </ng-template>
               </p-column>
               <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
-                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Ver detalles"
-                          style="width: auto;" (click)="showDetailsDialog()"></button>
+                          style="width: auto;" (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">

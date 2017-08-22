@@ -9,7 +9,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">10/12/2017</label>
+              <label
+                style="color: inherit">{{comunicacion.correspondencia?.fecRadicado | date:'dd/MM/yyyy hh:mm a'}}</label>
           </span>
         </div>
       </div>
@@ -23,7 +24,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">C008855555-A</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.nroRadicado}}</label>
           </span>
         </div>
       </div>
@@ -39,7 +40,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Comunicacion oficial</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoCmc}}</label>
           </span>
         </div>
       </div>
@@ -53,7 +54,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Medio de Recepción</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codMedioRecepcion}}</label>
           </span>
         </div>
       </div>
@@ -69,7 +70,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">tipologia</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoDoc}}</label>
           </span>
         </div>
       </div>
@@ -83,7 +84,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">15</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.tiempoRespuesta}}</label>
           </span>
         </div>
       </div>
@@ -97,7 +98,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">dias</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codUnidadTiempo}}</label>
           </span>
         </div>
       </div>
@@ -113,7 +114,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">5</label>
+              <label style="color: inherit">{{comunicacion.ppdDocumentoList ? comunicacion.ppdDocumentoList[0].nroFolios : ''}}</label>
           </span>
         </div>
       </div>
@@ -127,7 +128,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">5</label>
+              <label style="color: inherit">{{comunicacion.anexoList?.length}}</label>
           </span>
         </div>
       </div>
@@ -141,7 +142,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Sí</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.reqDigita ? 'Sí' : 'No'}}</label>
           </span>
         </div>
       </div>
@@ -155,7 +156,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Sí</label>
+
+              <label style="color: inherit">{{comunicacion.correspondencia?.reqDistFisica ? 'Sí' : 'No'}}</label>
           </span>
         </div>
       </div>
@@ -166,11 +168,11 @@
     <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
       <div class="ui-g-12">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                     [paginator]="true" [rows]="5" [responsive]="true">
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.referidoList">
           <p-header>
             Radicados Refereidos
           </p-header>
-          <p-column header="Radicado referido" [sortable]="true"></p-column>
+          <p-column header="Radicado referido" [sortable]="true" field="nroRadRef"></p-column>
         </p-dataTable>
       </div>
     </div>
@@ -187,7 +189,7 @@
         </div>
         <div class="ui-g-12" padding-bottom>
           <span class="md-inputfield">
-              <label style="color: inherit">loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant</label>
+              <p style="color: inherit;word-wrap: break-word">{{comunicacion.correspondencia?.descripcion}}</p>
           </span>
         </div>
       </div>
@@ -199,12 +201,12 @@
     <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
       <div class="ui-g-12">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                     [paginator]="true" [rows]="5" [responsive]="true">
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.anexoList">
           <p-header>
             Descripción de anexos
           </p-header>
-          <p-column header="Tipo anexo" [sortable]="true"></p-column>
-          <p-column header="Descripción" [sortable]="true"></p-column>
+          <p-column header="Tipo anexo" [sortable]="true" field="codAnexo"></p-column>
+          <p-column header="Descripción" [sortable]="true" field="descripcion"></p-column>
         </p-dataTable>
       </div>
     </div>

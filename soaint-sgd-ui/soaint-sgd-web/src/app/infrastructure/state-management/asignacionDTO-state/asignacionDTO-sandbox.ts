@@ -25,6 +25,10 @@ export class Sandbox {
     return this._api.list(`${environment.obtenerObservaciones_endpoint}${documentId}`);
   }
 
+  obtenerComunicacionPorNroRadicado(nroRadicado: string) {
+    return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
+  }
+
   registrarObservacion(payload: ObservacionDTO) {
     return this._api.post(environment.registrarObservaciones_endpoint, payload);
   }

@@ -9,7 +9,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Persona Juridica</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codTipoPers : ''}}</label>
           </span>
         </div>
       </div>
@@ -23,7 +24,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Documento de tipo documento</label>
+
+              <label style="color: inherit">{{comunicacion.ppdDocumentoList ? comunicacion.ppdDocumentoList[0].codTipoDoc : ''}}</label>
           </span>
         </div>
       </div>
@@ -37,7 +39,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">765</label>
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nit : ''}}</label>
           </span>
         </div>
       </div>
@@ -53,7 +55,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">55555587412</label>
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nroDocuIdentidad : ''}}</label>
           </span>
         </div>
       </div>
@@ -69,7 +71,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Ciudadano</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].razonSocial : ''}}</label>
           </span>
         </div>
       </div>
@@ -83,7 +86,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Jefe de la unidad</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codEnCalidad : ''}}</label>
           </span>
         </div>
       </div>
@@ -97,7 +101,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">Leinier Alvarez Armas</label>
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nombre : ''}}</label>
           </span>
         </div>
       </div>
@@ -107,7 +111,7 @@
     <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
       <div class="ui-g-12">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                     [paginator]="true" [rows]="5" [responsive]="true">
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.datosContactoList">
           <p-header>
             Datos de contacto
           </p-header>
@@ -133,7 +137,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">10400</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codSede : ''}}</label>
           </span>
         </div>
       </div>
@@ -147,7 +152,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">10402</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : ''}}</label>
           </span>
         </div>
       </div>
