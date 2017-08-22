@@ -124,27 +124,14 @@ public class ContentControlAlfresco implements ContentControl {
                     llenarPropiedadesCarpeta ("cmcor:CodigoBase", CLASE_BASE, props, codOrg);
                     break;
                 case CLASE_DEPENDENCIA:
-                    llenarPropiedadesCarpeta (CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg);
-                    //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
-                    }
+                    llenarPropiedadesCarpeta (CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg, folderFather);
                     break;
                 case CLASE_SERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg);
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
-                    }
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg, folderFather);
                     break;
                 case CLASE_SUBSERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg);
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
-                    }
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg, folderFather);
+
                     break;
                 default:
                     break;
@@ -214,6 +201,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session     Objeto de conexion
      * @return Objeto de tipo response que devuleve el documento
      */
+    @Override
     public Response descargarDocumento(String idDocumento, Session session) throws IOException {
 
         logger.info ("Se entra al metodo de descargar el documento");
@@ -592,7 +580,7 @@ public class ContentControlAlfresco implements ContentControl {
                 Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
 
                 idDocumento = newDocument.getId ( );
-                String[] parts = idDocumento.split(";");
+                String[] parts = idDocumento.split (";");
                 idDocumento = parts[0];
 
                 logger.info ("### Documento creado con id " + idDocumento);
@@ -605,6 +593,34 @@ public class ContentControlAlfresco implements ContentControl {
             }
         }
         return idDocumento;
+    }
+
+    /**
+     * Metodo para llenar propiedades para crear carpeta
+     *
+     * @param tipoCarpeta tipo de carpeta
+     * @param clase       clase de la carpeta
+     * @param props       objeto de propiedades
+     * @param codOrg      codigo
+     */
+    private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg, Carpeta folderFather) {
+        props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad (clase));
+        props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
+        props.put (tipoCarpeta, codOrg);
+        logger.info ("Estamos mirando las propiedades");
+        logger.info (folderFather);
+        logger.info ("Estamos mirando las propiedades FIN");
+        if ("cmcor:CodigoSubserie".equals (tipoCarpeta)) {
+            if (folderFather != null) {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
+            }
+        } else {
+            if (folderFather != null) {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
+            } else {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
+            }
+        }
     }
 
     /**
@@ -661,7 +677,7 @@ public class ContentControlAlfresco implements ContentControl {
         try (InputStream inputStream = contentStream.getStream ( )) {
             out = new FileOutputStream (file);
 
-            int read ;
+            int read;
             byte[] bytes = new byte[1024];
 
             while ((read = inputStream.read (bytes)) != -1) {
