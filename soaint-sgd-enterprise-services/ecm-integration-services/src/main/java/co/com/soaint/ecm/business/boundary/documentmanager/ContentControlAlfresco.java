@@ -218,7 +218,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         logger.info ("Se entra al metodo de descargar el documento");
         Document doc = (Document) session.getObject (idDocumento);
-        File file = (convertInputStreamToFile (doc.getContentStream ( )));
+        File file = convertInputStreamToFile (doc.getContentStream ( ));
         logger.info ("Se procede a devolver el documento" + file.getName ( ));
         return Response.ok (file)
                 .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
@@ -590,7 +590,11 @@ public class ContentControlAlfresco implements ContentControl {
                 //Se crea el documento
                 logger.info ("### Se va a crear el documento..");
                 Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+
                 idDocumento = newDocument.getId ( );
+                String[] parts = idDocumento.split(";");
+                idDocumento = parts[0];
+
                 logger.info ("### Documento creado con id " + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
@@ -670,9 +674,10 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error ("Error al convertir el contentStream a File", e);
         } finally {
             inputStream.close ( );
-            assert out != null;
-            out.flush ( );
-            out.close ( );
+            if (out != null)
+            {
+                out.flush ( );
+                out.close ( );}
         }
 
         file.deleteOnExit ( );
