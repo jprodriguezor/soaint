@@ -1,0 +1,212 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Fecha y Hora de Radicación</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">10/12/2017</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Nro de radicado</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">C008855555-A</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de comunicación</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">Comunicacion oficial</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Medio de recepción</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">Medio de Recepción</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipología documental</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">tipologia</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tiempo de respuesta</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">15</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Unidad de tiempo</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">dias</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-6 ui-md-2 ui-g-2 ui-lg-2">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>No. Folios</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">5</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-6 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Cantidad de anexos</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">5</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Requiere digitalización</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">Sí</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Requiere distribución física</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">Sí</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="5" [responsive]="true">
+          <p-header>
+            Radicados Refereidos
+          </p-header>
+          <p-column header="Radicado referido" [sortable]="true"></p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Asunto</label>
+          </span>
+        </div>
+        <div class="ui-g-12" padding-bottom>
+          <span class="md-inputfield">
+              <label style="color: inherit">loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant loremipsum valagrant</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="5" [responsive]="true">
+          <p-header>
+            Descripción de anexos
+          </p-header>
+          <p-column header="Tipo anexo" [sortable]="true"></p-column>
+          <p-column header="Descripción" [sortable]="true"></p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+</div>
