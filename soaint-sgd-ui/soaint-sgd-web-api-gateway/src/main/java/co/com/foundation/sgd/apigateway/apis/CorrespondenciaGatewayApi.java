@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/correspondencia-gateway-api")
@@ -173,5 +174,16 @@ public class CorrespondenciaGatewayApi {
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
+
+    @GET
+    @Path("/constantes")
+    @JWTTokenSecurity
+    public Response constantes(@QueryParam("codigos") List<String> codigos) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - obteniendo constantes por codigos: " + codigos);
+        Response response = client.obtnerContantesPorCodigo(codigos);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
 
 }
