@@ -18,7 +18,7 @@ import {Subscription} from "rxjs/Subscription";
 import {AgentDTO} from "../../../domain/agentDTO";
 import {OrganigramaDTO} from "../../../domain/organigramaDTO";
 import {
-  getAgragarObservacionesDialogVisible,
+  getAgragarObservacionesDialogVisible, getDetailsDialogVisible,
   getJustificationDialogVisible, getRejectDialogVisible
 } from "app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
 
@@ -52,6 +52,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   justificationDialogVisible$: Observable<boolean>;
 
+  detailsDialogVisible$: Observable<boolean>;
+
   agregarObservacionesDialogVisible$: Observable<boolean>;
 
   rejectDialogVisible$: Observable<boolean>;
@@ -70,6 +72,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   @ViewChild('popupReject') popupReject;
 
+  @ViewChild('detallesView') detallesView;
+
   constructor(private _store: Store<RootState>,
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
@@ -78,6 +82,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
+    this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
     this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
     this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
     this.start_date.setHours(this.start_date.getHours() - 24);
@@ -173,6 +178,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   hideJustificationPopup() {
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(false);
+  }
+
+
+  showDetailsDialog(nroRadicado: string): void {
+    this.detallesView.setNroRadicado(nroRadicado);
+    this.detallesView.loadComunication();
+    this._asignacionSandbox.setVisibleDetailsDialogDispatch(true);
+  }
+
+  hideDetailsDialog() {
+    this._asignacionSandbox.setVisibleDetailsDialogDispatch(false);
   }
 
   showAddObservationsDialog(idDocuemento: number) {

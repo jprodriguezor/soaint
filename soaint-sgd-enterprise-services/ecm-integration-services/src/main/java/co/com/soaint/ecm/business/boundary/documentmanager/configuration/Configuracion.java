@@ -34,7 +34,7 @@ public class Configuracion {
     @Value("${ecm}")
     private String aecm;
     @Value("${ALFRESCO_ATOMPUB_URL}")
-    public String aAlfrescoAtompubUrl;
+    private String aAlfrescoAtompubUrl;
     @Value("${REPOSITORY_ID}")
     private String aRepositoryId;
     @Value("${ALFRESCO_USER}")

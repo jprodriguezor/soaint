@@ -1,0 +1,214 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Fecha y Hora de Radicación</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.correspondencia?.fecRadicado | date:'dd/MM/yyyy hh:mm a'}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Nro de radicado</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.nroRadicado}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de comunicación</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoCmc}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Medio de recepción</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.codMedioRecepcion}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipología documental</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoDoc}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tiempo de respuesta</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.tiempoRespuesta}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Unidad de tiempo</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.codUnidadTiempo}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-6 ui-md-2 ui-g-2 ui-lg-2">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>No. Folios</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.ppdDocumentoList ? comunicacion.ppdDocumentoList[0].nroFolios : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-6 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Cantidad de anexos</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.anexoList?.length}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Requiere digitalización</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.correspondencia?.reqDigita ? 'Sí' : 'No'}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Requiere distribución física</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+
+              <label style="color: inherit">{{comunicacion.correspondencia?.reqDistFisica ? 'Sí' : 'No'}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.referidoList">
+          <p-header>
+            Radicados Refereidos
+          </p-header>
+          <p-column header="Radicado referido" [sortable]="true" field="nroRadRef"></p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Asunto</label>
+          </span>
+        </div>
+        <div class="ui-g-12" padding-bottom>
+          <span class="md-inputfield">
+              <p style="color: inherit;word-wrap: break-word">{{comunicacion.correspondencia?.descripcion}}</p>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.anexoList">
+          <p-header>
+            Descripción de anexos
+          </p-header>
+          <p-column header="Tipo anexo" [sortable]="true" field="codAnexo"></p-column>
+          <p-column header="Descripción" [sortable]="true" field="descripcion"></p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+</div>

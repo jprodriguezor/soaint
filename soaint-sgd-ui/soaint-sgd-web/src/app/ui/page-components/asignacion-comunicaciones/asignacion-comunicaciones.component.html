@@ -139,15 +139,16 @@
                 </ng-template>
               </p-column>
               <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
-                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Ver detalles"
-                          style="width: auto;"></button>
+                          style="width: auto;" (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
                 <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Agregar observaciones"
-                          style="width: auto;" (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
+                          style="width: auto;"
+                          (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
                 </ng-template>
               </p-column>
             </p-dataTable>
@@ -178,6 +179,11 @@
       </p-panel>
     </div>
   </div>
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideDetailsDialog()" [width]="1000">
+    <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+  </p-dialog>
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
             [contentStyle]="{'overflow':'visible'}"
             (onHide)="hideJustificationPopup()" [width]="800">

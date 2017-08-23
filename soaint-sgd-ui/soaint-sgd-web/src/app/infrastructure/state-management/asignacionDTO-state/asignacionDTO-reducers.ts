@@ -9,6 +9,7 @@ export interface State {
   justificationDialogVisible: boolean;
   agregarObservacionesDialogVisible: boolean;
   rejectDialogVisible: boolean;
+  detailsDialogVisible: boolean;
 }
 
 const initialState: State = {
@@ -16,7 +17,8 @@ const initialState: State = {
   entities: {},
   justificationDialogVisible: false,
   agregarObservacionesDialogVisible: false,
-  rejectDialogVisible: false
+  rejectDialogVisible: false,
+  detailsDialogVisible: false
 };
 
 /**
@@ -43,6 +45,12 @@ export function reducer(state = initialState, action: Actions) {
       console.log(action.payload);
       return tassign(state, {
         rejectDialogVisible: action.payload
+      });
+    }
+    case Autocomplete.SET_DETAILS_DIALOG_VISIBLE: {
+      console.log(action.payload);
+      return tassign(state, {
+        detailsDialogVisible: action.payload
       });
     }
 

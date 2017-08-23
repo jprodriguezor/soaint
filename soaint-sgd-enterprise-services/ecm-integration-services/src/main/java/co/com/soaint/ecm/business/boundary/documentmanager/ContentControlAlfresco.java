@@ -12,6 +12,7 @@ import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -31,9 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.MultivaluedMap;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.ws.rs.core.Response;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -56,9 +56,9 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
-    private static final String CMCOR="cmcor:";
-    private static final String CMCOR_CODIGOUNIDADAMINPADRE="cmcor:CodigoUnidadAdminPadre";
-    private static final String CMCOR_CODIGODEPENDENCIA="cmcor:CodigoDependencia";
+    private static final String CMCOR = "cmcor:";
+    private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
+    private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -124,27 +124,14 @@ public class ContentControlAlfresco implements ContentControl {
                     llenarPropiedadesCarpeta ("cmcor:CodigoBase", CLASE_BASE, props, codOrg);
                     break;
                 case CLASE_DEPENDENCIA:
-                    llenarPropiedadesCarpeta (CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg);
-                    //En dependencia de la clase documental que venga por parametro se crea el tipo de carpeta
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
-                    }
+                    llenarPropiedadesCarpeta (CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg, folderFather);
                     break;
                 case CLASE_SERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg);
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
-                    } else {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
-                    }
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg, folderFather);
                     break;
                 case CLASE_SUBSERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg);
-                    if (folderFather != null) {
-                        props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
-                    }
+                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg, folderFather);
+
                     break;
                 default:
                     break;
@@ -208,13 +195,33 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo para devolver documento para su visualización
+     *
+     * @param idDocumento Identificador del documento dentro del ECM
+     * @param session     Objeto de conexion
+     * @return Objeto de tipo response que devuleve el documento
+     */
+    @Override
+    public Response descargarDocumento(String idDocumento, Session session) throws IOException {
+
+        logger.info ("Se entra al metodo de descargar el documento");
+        Document doc = (Document) session.getObject (idDocumento);
+        File file = convertInputStreamToFile (doc.getContentStream ( ));
+        logger.info ("Se procede a devolver el documento" + file.getName ( ));
+        return Response.ok (file)
+                .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
+                .build ( );
+    }
+
+
+    /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
      *
      * @param cadena Cadena de texto que se le pasa al metodo
      * @return Retorna true o false
      */
     private boolean isNumeric(String cadena) {
-            return (cadena.matches("[+-]?\\d*(\\.\\d+)?") && cadena.equals("")==Boolean.FALSE);
+        return cadena.matches ("[+-]?\\d*(\\.\\d+)?") && "".equals (cadena) == Boolean.FALSE;
     }
 
     /**
@@ -571,7 +578,11 @@ public class ContentControlAlfresco implements ContentControl {
                 //Se crea el documento
                 logger.info ("### Se va a crear el documento..");
                 Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+
                 idDocumento = newDocument.getId ( );
+                String[] parts = idDocumento.split (";");
+                idDocumento = parts[0];
+
                 logger.info ("### Documento creado con id " + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
@@ -592,12 +603,99 @@ public class ContentControlAlfresco implements ContentControl {
      * @param props       objeto de propiedades
      * @param codOrg      codigo
      */
+    private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg, Carpeta folderFather) {
+        props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad (clase));
+        props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
+        props.put (tipoCarpeta, codOrg);
+        logger.info ("Estamos mirando las propiedades");
+        logger.info (folderFather);
+        logger.info ("Estamos mirando las propiedades FIN");
+        if ("cmcor:CodigoSubserie".equals (tipoCarpeta)) {
+            if (folderFather != null) {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));
+            }
+        } else {
+            if (folderFather != null) {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue (CMCOR_CODIGODEPENDENCIA));
+            } else {
+                props.put (CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
+            }
+        }
+    }
+
+    /**
+     * Metodo para llenar propiedades para crear carpeta
+     *
+     * @param tipoCarpeta tipo de carpeta
+     * @param clase       clase de la carpeta
+     * @param props       objeto de propiedades
+     * @param codOrg      codigo
+     */
     private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map <String, String> props, String codOrg) {
         props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad (clase));
         props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
     }
 
+    /**
+     * Eliminar documento del Alfresco
+     *
+     * @param idDoc   Identificador del documento a borrar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna true si borró con exito y false si no
+     */
+    @Override
+    public boolean eliminardocumento(String idDoc, Session session) {
+        try {
+            logger.info ("Se procede a eliminar");
+            ObjectId a = new ObjectIdImpl (idDoc);
+            CmisObject object = session.getObject (a);
+            Document delDoc = (Document) object;
+            delDoc.delete (true);
+            logger.info ("Se logro eliminar el documento");
+            return Boolean.TRUE;
+        } catch (CmisObjectNotFoundException e) {
+            logger.error ("No se pudo eliminar el documento :", e);
+            return Boolean.FALSE;
+        }
+
+    }
+
+    /**
+     * Convierte contentStream a File
+     *
+     * @param contentStream contentStream
+     * @return Un objeto File
+     * @throws IOException En caso de error
+     */
+    private static File convertInputStreamToFile(ContentStream contentStream)
+            throws IOException {
+
+        File file = File.createTempFile (contentStream.getFileName ( ), "");
+
+        OutputStream out = null;
+        try (InputStream inputStream = contentStream.getStream ( )) {
+            out = new FileOutputStream (file);
+
+            int read;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read (bytes)) != -1) {
+                out.write (bytes, 0, read);
+            }
+
+        } catch (IOException e) {
+            logger.error ("Error al convertir el contentStream a File", e);
+        } finally {
+            if (out != null) {
+                out.flush ( );
+                out.close ( );
+            }
+        }
+
+        file.deleteOnExit ( );
+        return file;
+    }
 }
 
 

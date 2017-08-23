@@ -13,6 +13,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -102,6 +103,51 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.moverDocumento (moverDocumento, carpetaFuente, carpetaDestino);
         } catch (RuntimeException e) {
             logger.error ("Error servicio moviendo documento ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Operacion para descargar documentos
+     *
+     * @param identificadorDoc identificador del documento
+     * @return Documento
+     */
+    @GET
+    @Path("/descargarDocumentoECM/")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response descargarDocumentoECM(@QueryParam("identificadorDoc") final String identificadorDoc) {
+
+        logger.info ("processing rest request - Descargar Documento ECM");
+        try {
+            return fEcmManager.descargarDocumento (identificadorDoc);
+        } catch (RuntimeException e) {
+            logger.error ("Error servicio descargando documento ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Operacion para eliminar documentos
+     *
+     * @param idDocumento Identificador del documento
+     * @return True en exito false en error
+     */
+    @POST
+    @Path("/eliminarDocumentoECM/")
+    public boolean eliminarDocumentoECM(@QueryParam("idDocumento") final String idDocumento) {
+
+        logger.info ("processing rest request - Eliminar Documento ECM");
+        try {
+            boolean respuesta;
+            respuesta = fEcmManager.eliminarDocumentoECM (idDocumento);
+            if (respuesta)
+                logger.info ("Documento eliminado con exito");
+            else
+                logger.info ("No se pudo eliminar el documento");
+            return respuesta;
+        } catch (RuntimeException e) {
+            logger.error ("Error servicio eliminando documento ", e);
             throw e;
         }
     }

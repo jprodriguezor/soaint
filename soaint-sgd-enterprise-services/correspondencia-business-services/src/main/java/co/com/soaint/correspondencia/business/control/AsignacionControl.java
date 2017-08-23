@@ -207,6 +207,26 @@ public class AsignacionControl {
     }
 
     /**
+     *
+     * @param asignacion
+     * @throws SystemException
+     */
+    public void actualizarTipoProceso(AsignacionDTO asignacion) throws SystemException {
+        try {
+            em.createNamedQuery("DctAsigUltimo.updateTipoProceso")
+                    .setParameter("COD_TIPO_PROCESO", asignacion.getCodTipProceso())
+                    .setParameter("IDE_ASIG_ULTIMO", asignacion.getIdeAsigUltimo())
+                    .executeUpdate();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param ideAgente
      * @return
      */

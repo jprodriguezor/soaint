@@ -13,6 +13,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
+import java.util.List;
 
 @ApiDelegator
 @Log4j2
@@ -60,6 +61,14 @@ public class CorrespondenciaClient {
                 .get();
     }
 
+    public Response obtenerCorrespondenciaPorNroRadicado(String nroRadicado) {
+        log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/" + nroRadicado)
+                .request()
+                .get();
+    }
+
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
         log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -93,5 +102,13 @@ public class CorrespondenciaClient {
         return wt.path("/documento-web-api/documento/registrar-observacion")
                 .request()
                 .post(Entity.json(observacion));
+    }
+
+    public Response obtnerContantesPorCodigo(String codigos) {
+        log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget target = wt.path("/constantes-web-api/constantes").queryParam("codigos", codigos);
+
+        return target.request().get();
     }
 }

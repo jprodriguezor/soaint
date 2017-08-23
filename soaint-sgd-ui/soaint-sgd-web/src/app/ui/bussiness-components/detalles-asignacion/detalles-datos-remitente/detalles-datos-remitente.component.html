@@ -1,0 +1,162 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de persona</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codTipoPers : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de documento</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+
+              <label style="color: inherit">{{comunicacion.ppdDocumentoList ? comunicacion.ppdDocumentoList[0].codTipoDoc : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Nit</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nit : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Número documento identidad</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nroDocuIdentidad : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Razon social</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].razonSocial : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Actual en calidad</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codEnCalidad : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Nombre y apellidos</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].nombre : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12">
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="5" [responsive]="true" [value]="comunicacion.datosContactoList">
+          <p-header>
+            Datos de contacto
+          </p-header>
+          <p-column header="Pais" [sortable]="true"></p-column>
+          <p-column header="Departamento" [sortable]="true"></p-column>
+          <p-column header="Municipio" [sortable]="true"></p-column>
+          <p-column header="Teléfono" [sortable]="true"></p-column>
+          <p-column header="Celular" [sortable]="true"></p-column>
+          <p-column header="Correo-e" [sortable]="true"></p-column>
+          <p-column header="Dirección" [sortable]="true"></p-column>
+          <p-column header="Contacto principal" [sortable]="true"></p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Sede Administrativa</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codSede : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Dependencia/Grupo</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : ''}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
