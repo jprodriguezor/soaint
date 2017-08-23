@@ -40,7 +40,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoCmc}}</label>
+              <label
+                style="color: inherit">{{comunicacion.correspondencia?.codTipoCmc | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
@@ -54,7 +55,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.correspondencia?.codMedioRecepcion}}</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codMedioRecepcion| constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
@@ -70,7 +71,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoDoc}}</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoDoc | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
@@ -98,7 +99,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.correspondencia?.codUnidadTiempo}}</label>
+              <label style="color: inherit">{{comunicacion.correspondencia?.codUnidadTiempo | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
@@ -205,7 +206,11 @@
           <p-header>
             Descripción de anexos
           </p-header>
-          <p-column header="Tipo anexo" [sortable]="true" field="codAnexo"></p-column>
+          <p-column header="Tipo anexo" [sortable]="true" field="codAnexo">
+            <ng-template let-col let-anexo="rowData" pTemplate="body">
+              {{anexo[col.field] | constantCode:constantesList}}
+            </ng-template>
+          </p-column>
           <p-column header="Descripción" [sortable]="true" field="descripcion"></p-column>
         </p-dataTable>
       </div>

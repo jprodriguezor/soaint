@@ -28,4 +28,12 @@ public class DependeciaGrupoClient {
                 .get();
     }
 
+    public Response obtenerPorDependencia(String codigoDependencia) {
+        log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/dependencia-web-api/dependencia/" + codigoDependencia)
+                .request()
+                .get();
+    }
+
 }
