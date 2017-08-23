@@ -167,7 +167,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
 
-
+    debugger;
     const agentesList = [];
     const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
 
@@ -362,8 +362,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       codSede: null,
       codDependencia: null,
       reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
-      codEmpMsj: null,
-      nroGuia: null,
+      codEmpMsj: this.datosGenerales.form.get('empresaMensajeria').value,
+      nroGuia: this.datosGenerales.form.get('numeroGuia').value,
       fecVenGestion: null,
       codEstado: null,
       inicioConteo: this.valueGeneral.inicioConteo || ''
