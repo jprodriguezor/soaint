@@ -13,6 +13,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
+import java.util.List;
 
 @ApiDelegator
 @Log4j2
@@ -101,5 +102,13 @@ public class CorrespondenciaClient {
         return wt.path("/documento-web-api/documento/registrar-observacion")
                 .request()
                 .post(Entity.json(observacion));
+    }
+
+    public Response obtnerContantesPorCodigo(List<String> codigos) {
+        log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/constantes-web-api/constantes")
+                .request()
+                .post(Entity.json(codigos));
     }
 }
