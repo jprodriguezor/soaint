@@ -178,7 +178,7 @@ public class CorrespondenciaGatewayApi {
     @GET
     @Path("/constantes")
     @JWTTokenSecurity
-    public Response constantes(@QueryParam("codigos") List<String> codigos) {
+    public Response constantes(@QueryParam("codigos") String codigos) {
         log.info("CorrespondenciaGatewayApi - [trafic] - obteniendo constantes por codigos: " + codigos);
         Response response = client.obtnerContantesPorCodigo(codigos);
         String responseObject = response.readEntity(String.class);

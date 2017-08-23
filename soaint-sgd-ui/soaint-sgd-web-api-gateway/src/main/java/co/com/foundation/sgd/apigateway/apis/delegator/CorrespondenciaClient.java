@@ -104,11 +104,11 @@ public class CorrespondenciaClient {
                 .post(Entity.json(observacion));
     }
 
-    public Response obtnerContantesPorCodigo(List<String> codigos) {
+    public Response obtnerContantesPorCodigo(String codigos) {
         log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/constantes-web-api/constantes")
-                .request()
-                .post(Entity.json(codigos));
+        WebTarget target = wt.path("/constantes-web-api/constantes").queryParam("codigos", codigos);
+
+        return target.request().get();
     }
 }

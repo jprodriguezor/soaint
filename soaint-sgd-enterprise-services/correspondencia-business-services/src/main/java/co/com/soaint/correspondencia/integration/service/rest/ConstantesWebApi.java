@@ -72,9 +72,9 @@ public class ConstantesWebApi {
      * @throws SystemException
      */
     @GET
-    @Path("constantes/")
-    public ConstantesDTO listarConstantesByCodigo(@QueryParam("codigos")String[] codigos) throws SystemException {
+    @Path("constantes")
+    public ConstantesDTO listarConstantesByCodigo(@QueryParam("codigos")String codigos) throws SystemException {
         log.info("processing rest request - listar constantes por codigo");
-        return boundary.listarConstantesByCodigo(codigos);
+        return boundary.listarConstantesByCodigo(codigos.split(","));
     }
 }
