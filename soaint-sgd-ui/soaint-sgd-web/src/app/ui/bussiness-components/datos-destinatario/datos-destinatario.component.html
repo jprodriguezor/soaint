@@ -2,7 +2,7 @@
   <div class="ui-g ui-fluid">
 
     <div class="card card-w-title">
-      <h1>Descripción anexos</h1>
+      <h1>Datos destinatario</h1>
 
       <div class="ui-sm-12 ui-g-4 ui-lg-4">
         <div class="ui-g form-group">
@@ -72,7 +72,7 @@
         <p-dataTable [value]="agentesDestinatario" selectionMode="single" [(selection)]="selectedagenteDestinatario"
                      [paginator]="true" [rows]="10" [responsive]="true">
           <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
-          <p-column field="sedeAdministrativa.nombre" header="Sede administrativa" [sortable]="true"></p-column>
+          <p-column field="sedeAdministrativa.nombre" header="Sede" [sortable]="true"></p-column>
           <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
           <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
             <ng-template let-i="rowIndex" pTemplate="item">

@@ -341,7 +341,7 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo para mover carpetas dentro de Alfresco
      *
      * @param session        Objeto de conexion al Alfresco
-     * @param documento      Nombre del documento que se va a mover
+     * @param documento      Identificador del documento que se va a mover
      * @param carpetaFuente  Carpeta desde donde se va a mover el documento
      * @param carpetaDestino Carpeta a donde se va a mover el documento
      * @return Mensaje de respuesta del metodo(codigo y mensaje)
@@ -359,8 +359,9 @@ public class ContentControlAlfresco implements ContentControl {
 
             carpetaF = obtenerCarpetaPorNombre (carpetaFuente, session);
             carpetaD = obtenerCarpetaPorNombre (carpetaDestino, session);
+            ObjectId idDoc=new ObjectIdImpl (documento);
 
-            CmisObject object = session.getObjectByPath (carpetaF.getFolder ( ).getPath ( ) + "/" + documento);
+            CmisObject object = session.getObject(idDoc);
             Document mvndocument = (Document) object;
             mvndocument.move (carpetaF.getFolder ( ), carpetaD.getFolder ( ));
             response.setMensaje ("OK");

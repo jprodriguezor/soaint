@@ -103,7 +103,50 @@
               </div>
             </div>
           </div>
+        </div>
 
+        <!--Empresa de mensajeria-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.empresaMensajeria">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText
+                     id="empresaMensajeria"
+                     formControlName="empresaMensajeria"
+                     [dynamicDisable]="!visibility.empresaMensajeria"
+                     (blur)="listenForBlurEvents('empresaMensajeria')"
+              >
+              <label for="empresaMensajeria"><span class="text-danger">*</span>Empresa de mensajería</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.empresaMensajeria">
+                 {{ validations.empresaMensajeria }}
+              </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Numero Guia-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.empresaMensajeria">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText
+                         id="numeroGuia"
+                         formControlName="numeroGuia"
+                         [dynamicDisable]="!visibility.numeroGuia"
+                         (blur)="listenForBlurEvents('numeroGuia')"
+              >
+              <label for="empresaMensajeria"><span class="text-danger">*</span>Número guía</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.numeroGuia">
+                 {{ validations.numeroGuia }}
+              </div>
+              </span>
+            </div>
+          </div>
         </div>
 
         <!--Tiempo Respuesta-->
@@ -178,10 +221,16 @@
                           formControlName="reqDigit" id="reqDigit" binary="true"></p-checkbox>
             </div>
           </div>
-          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6" [hidden]="!visibility.reqDigitInmediata">
             <div style="padding: 20px 0 0 10px">
-              <p-checkbox name="cg" label="Digitalización inmediata" id="reqDigInmediata"
-                          formControlName="reqDigitInmediata" binary="true"></p-checkbox>
+              <p-checkbox name="cg"
+                          label="Digitalización inmediata"
+                          id="reqDigInmediata"
+                          formControlName="reqDigitInmediata"
+                          binary="true"
+                          [dynamicDisable]="!visibility.reqDigitInmediata"
+
+              ></p-checkbox>
             </div>
           </div>
           <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
@@ -193,7 +242,32 @@
         </div>
       </div>
 
+
       <div class="ui-g ui-fluid" style="margin-top: 30px">
+
+        <!-- Radicados Referidos -->
+        <div class="ui-g-12" *ngIf="editable === true" style="margin-top: 8px">
+
+            <div class="form-group" style="display: flex; margin: 16px">
+              <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                  <input type="text" pInputText
+                         id="radicadoReferido"
+                         formControlName="radicadoReferido"
+                  >
+                  <label>Radicados Referidos</label>
+              </span>
+
+              <span style="float: right">
+                 <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                         (click)="addRadicadosReferidos()" *ngIf="editable === true"
+                         [disabled]="!form.get('radicadoReferido').value">
+
+                </button>
+              </span>
+
+            </div>
+        </div>
+
         <div class="ui-g-12 ui-lg-12 padding-12">
 
           <p-dataTable selectionMode="single"
@@ -203,23 +277,7 @@
                        [value]="radicadosReferidos"
           >
             <!--Header-->
-            <p-header>
-              <div class="ui-helper-clearfix">
-                <span class="ui-panel-title" style="font-size:16px;display:inline-block; margin: auto 0"> Radicados referidos</span>
-                <div class="ui-media-mobile-row">
-                  <span style="float: right">
-                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="addRadicadosReferidos()" *ngIf="editable === true"
-                            [disabled]="!form.get('radicadoReferido').value"></button>
-                  </span>
-                  <span class="md-inputfield" style="float: right; margin: 10px 0 0 0; width: 200px"
-                        *ngIf="editable === true">
-                      <input type="text" pInputText id="radicadosReferidos" formControlName="radicadoReferido">
-                      <label>Referidos</label>
-                  </span>
-                </div>
-              </div>
-            </p-header>
+            <p-header> Radicados referidos </p-header>
             <!--End Header-->
 
             <!--Body-->
@@ -242,8 +300,8 @@
               <label><span class="text-danger">*</span>Asunto</label>
             </div>
             <div class="ui-g-12 md-inputfield">
-              <textarea [rows]="3" [cols]="30" pInputTextarea placeholder="Descripción"
-                        autoResize="autoResize" formControlName="asunto"
+              <textarea [rows]="3" pInputTextarea placeholder="Descripción"
+                        autoResize="true" formControlName="asunto"
                         (blur)="listenForBlurEvents('asunto')"
               ></textarea>
               <div class="ui-message ui-messages-error"
@@ -279,21 +337,29 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="descripcionAnexos">Descripción</label>
-          </div>
-          <div class="ui-g-12 md-inputfield">
-              <textarea [rows]="3" [cols]="30" pInputTextarea id="descripcionAnexos"
-                        autoResize="autoResize" formControlName="tipoAnexosDescripcion"
-                        (blur)="listenForBlurEvents('tipoAnexosDescripcion')"
-              ></textarea>
-            <div class="ui-message ui-messages-error"
-                 *ngIf="validations.tipoAnexosDescripcion">
-              {{ validations.tipoAnexosDescripcion }}
-            </div>
-          </div>
+      <div class="ui-sm-12 ui-g-12 ui-g-12">
+
+        <div class="form-group" style="display: flex; margin: 16px">
+              <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                <label for="descripcionAnexos">Descripción</label>
+                 <textarea [rows]="3"  pInputTextarea
+                           id="descripcionAnexos"
+                           autoResize="false"
+                           formControlName="tipoAnexosDescripcion"
+                 ></textarea>
+                  <div class="ui-message ui-messages-error"
+                       *ngIf="validations.tipoAnexosDescripcion">
+                      {{ validations.tipoAnexosDescripcion }}
+                  </div>
+              </span>
+
+          <span style="float: right; margin-top: 30px">
+                  <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
+                          style="width: auto; margin-left: 12px;"
+                          *ngIf="editable === true"
+                          [disabled]="!form.get('tipoAnexos').value"
+                  ></button>
+              </span>
 
         </div>
       </div>
@@ -305,24 +371,8 @@
                      [value]="descripcionAnexos"
                      inmutable="false"
         >
-          <p-header></p-header>
 
-          <p-header>
-
-            <div class="ui-helper-clearfix">
-                <span class="ui-panel-title"
-                      style="font-size:16px;display:inline-block;margin-top:8px"> Listado de anexos</span>
-
-              <span style="float: right">
-                <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
-                        style="width: auto; margin-left: 12px;"
-                        *ngIf="editable === true"
-                        [disabled]="!form.get('tipoAnexos').value"
-                ></button>
-                </span>
-            </div>
-
-          </p-header>
+          <p-header> Listado de anexos </p-header>
 
           <!--Body-->
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
