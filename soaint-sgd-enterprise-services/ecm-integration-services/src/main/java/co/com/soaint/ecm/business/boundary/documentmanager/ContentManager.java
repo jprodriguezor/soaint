@@ -113,7 +113,7 @@ public class ContentManager {
     /**
      * Metodo generico para mover documentos dentro del ECM
      *
-     * @param documento      Nombre del documento que se va a mover
+     * @param documento      Identificador del documento que se va a mover
      * @param carpetaFuente  Carpeta donde esta actualmente el documento.
      * @param carpetaDestino Carpeta a donde se movera el documento.
      * @return Mensaje de respuesta del metodo (coigo y mensaje)
