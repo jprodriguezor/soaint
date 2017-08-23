@@ -205,4 +205,15 @@ public class OrganigramaAdministrativoControl {
         this.consultarElementosRecursivamente(new ArrayList<>(data), data);
         return data;
     }
+
+    /**
+     *
+     * @param codOrg
+     * @return
+     */
+    public OrganigramaItemDTO consultarElementoByCodOrg(String codOrg){
+        return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByCodOrg", OrganigramaItemDTO.class)
+                .setParameter("COD_ORG", codOrg)
+                .getSingleResult();
+    }
 }
