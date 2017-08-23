@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ConstantesDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -90,6 +93,29 @@ public class ConstantesControl {
                     .setParameter("COD_PADRE", codPadre)
                     .setParameter("ESTADO", estado)
                     .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ConstantesDTO listarConstantesByCodigo(String[] codigos) throws SystemException {
+        List<ConstanteDTO> constanteDTOList = new ArrayList<>();
+        try {
+            constanteDTOList = em.createNamedQuery("TvsConstantes.findAllByCodigo", ConstanteDTO.class)
+                    .setParameter("CODIGOS", Arrays.asList(codigos))
+                    .getResultList();
+            return ConstantesDTO.newInstance().constantes(constanteDTOList).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

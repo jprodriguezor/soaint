@@ -7,10 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * Created by esanchez on 5/24/2017.
@@ -66,5 +63,18 @@ public class ConstantesWebApi {
     public ConstantesDTO listarConstantesByCodPadreAndEstado(@PathParam("cod-padre") final String codPadre, @PathParam("estado") final String estado) throws SystemException {
         log.info("processing rest request - listar constantes por codigo del padre y estado");
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("constantes/")
+    public ConstantesDTO listarConstantesByCodigo(@QueryParam("codigos")String[] codigos) throws SystemException {
+        log.info("processing rest request - listar constantes por codigo");
+        return boundary.listarConstantesByCodigo(codigos);
     }
 }

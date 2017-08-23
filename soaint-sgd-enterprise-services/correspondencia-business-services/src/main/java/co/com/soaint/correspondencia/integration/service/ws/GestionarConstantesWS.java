@@ -56,4 +56,15 @@ public class GestionarConstantesWS {
     public ConstantesDTO listarConstantesByCodPadreAndEstado(@WebParam(name = "codPadre") String codPadre, @WebParam(name = "estado") String estado) throws SystemException {
         return ConstantesDTO.newInstance().constantes(boundary.listarConstantesByCodPadreAndEstado(codPadre, estado)).build();
     }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarConstantesByCodigo", operationName = "listarConstantesByCodigo")
+    public ConstantesDTO listarConstantesByCodigo(@WebParam(name = "codigos") final String[] codigos) throws SystemException {
+        return boundary.listarConstantesByCodigo(codigos);
+    }
 }

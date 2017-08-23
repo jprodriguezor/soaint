@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.ConstantesControl;
 import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ConstantesDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
@@ -64,5 +65,16 @@ public class GestionarConstantes {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<ConstanteDTO> listarConstantesByCodPadreAndEstado(String codPadre, String estado)throws SystemException{
         return control.listarConstantesByCodPadreAndEstado(codPadre, estado);
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ConstantesDTO listarConstantesByCodigo(String[] codigos) throws SystemException {
+        return control.listarConstantesByCodigo(codigos);
     }
 }
