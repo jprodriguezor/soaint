@@ -1,6 +1,6 @@
 <div class="ui-fluid">
   <div>
-    <p-tabView [activeIndex]="tabIndex">
+    <p-tabView [activeIndex]="tabIndex" [lazy]="true">
       <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
         <app-detalles-datos-generales [comunicacion]="comunicacion"
                                       [constantesList]="constantes"></app-detalles-datos-generales>
@@ -19,6 +19,16 @@
         <app-detalles-datos-destinatario [comunicacion]="comunicacion"
                                          [constantesList]="constantes"></app-detalles-datos-destinatario>
       </p-tabPanel>
+      <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment">
+        <pdf-viewer
+          [src]="docSrc"
+          [show-all]="true" [original-size]="false" style="display: block;">
+        </pdf-viewer>
+      </p-tabPanel>
     </p-tabView>
   </div>
 </div>
+<!--
+
+          [src]="'http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=d126e9fa-bd82-4689-9b96-3f3ca4dcf109'"
+-->

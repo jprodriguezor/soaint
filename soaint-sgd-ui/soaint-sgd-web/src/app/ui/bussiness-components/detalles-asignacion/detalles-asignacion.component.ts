@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncap
 import {Sandbox as AsiganacionDTOSandbox} from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
 import {ComunicacionOficialDTO} from "../../../domain/comunicacionOficialDTO";
 import {ConstanteDTO} from "../../../domain/constanteDTO";
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 
 @Component({
@@ -21,7 +22,9 @@ export class DetallesAsignacionComponent implements OnInit {
 
   constantes: ConstanteDTO[];
 
-  constantesDest: ConstanteDTO[];
+  dependencias: OrganigramaDTO[];
+
+  docSrc: any = "";
 
   constructor(private _changeDetectorRef: ChangeDetectorRef, private _asiganacionSandbox: AsiganacionDTOSandbox) {
   }
@@ -34,10 +37,33 @@ export class DetallesAsignacionComponent implements OnInit {
 
   }
 
+  loadDocumento() {
+    this._asiganacionSandbox.obtenerDocumento("d126e9fa-bd82-4689-9b96-3f3ca4dcf109").subscribe((result) => {
+      console.info(result._body);
+      this.preview(result._body);
+    }, (error) => {
+      console.log(error);
+    });
+  }
+
+  preview(file) {
+    const self = this;
+    let myblob = new Blob([file], {
+      type: 'application/pdf'
+    });
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      self.docSrc = reader.result;
+      self._changeDetectorRef.detectChanges();
+    }, false);
+    reader.readAsArrayBuffer(myblob);
+  }
+
   loadComunication() {
     this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.nroRadicado).subscribe((result) => {
       this.comunicacion = result;
       console.log(this.comunicacion);
+      this.loadDocumento();
       this.loadConstantsByCodes();
     });
   }
@@ -58,11 +84,19 @@ export class DetallesAsignacionComponent implements OnInit {
     return result;
   }
 
+  getDependenciesCodes() {
+    let result = '';
+    this.comunicacion.agenteList.forEach((item) => {
+      result += item.codDependencia + ',';
+    });
+    return result;
+  }
+
   loadConstantsByCodes() {
     this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()).subscribe((response) => {
       this.constantes = response.constantes;
-      this._asiganacionSandbox.obtnerDependenciaPorCodigo(this.comunicacion.agenteList[0].codDependencia).subscribe((result) => {
-        this.constantes.push(result);
+      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
+        this.constantes.push(...result.dependencias);
         this.refreshView();
       });
     });
