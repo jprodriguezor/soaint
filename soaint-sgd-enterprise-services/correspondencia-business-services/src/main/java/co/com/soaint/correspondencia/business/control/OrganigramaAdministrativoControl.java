@@ -14,6 +14,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -215,5 +216,16 @@ public class OrganigramaAdministrativoControl {
         return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByCodOrg", OrganigramaItemDTO.class)
                 .setParameter("COD_ORG", codOrg)
                 .getSingleResult();
+    }
+
+    /**
+     *
+     * @param codigosOrg
+     * @return
+     */
+    public List<OrganigramaItemDTO> consultarElementosByCodOrg(String[] codigosOrg){
+        return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementosByCodigosOrg", OrganigramaItemDTO.class)
+                .setParameter("CODIGOS_ORG", Arrays.asList(codigosOrg))
+                .getResultList();
     }
 }

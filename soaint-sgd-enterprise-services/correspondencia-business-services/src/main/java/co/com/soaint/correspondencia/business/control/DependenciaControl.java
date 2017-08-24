@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciasDTO;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -94,6 +95,28 @@ public class DependenciaControl {
                     .withMessage("dependencia.dependencia_not_exist_by_codOrg")
                     .withRootException(n)
                     .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public DependenciasDTO listarDependenciasByCodigo(String[] codigos)throws SystemException{
+        List<DependenciaDTO> dependencias = new ArrayList<>();
+        try {
+            organigramaAdministrativoControl.consultarElementosByCodOrg(codigos).stream().forEach(organigramaItemDTO ->
+                    dependencias.add(dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin()))));
+            return DependenciasDTO.newInstance().dependencias(dependencias).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

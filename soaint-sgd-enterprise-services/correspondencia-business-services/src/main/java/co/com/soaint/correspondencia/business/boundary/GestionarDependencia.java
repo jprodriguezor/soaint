@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.DependenciaControl;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciasDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -36,5 +37,15 @@ public class GestionarDependencia {
      */
     public DependenciaDTO listarDependenciaByCodigo(String codOrg)throws BusinessException, SystemException {
         return control.listarDependenciaByCodigo(codOrg);
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    public DependenciasDTO listarDependenciasByCodigo(String[] codigos)throws SystemException{
+        return control.listarDependenciasByCodigo(codigos);
     }
 }
