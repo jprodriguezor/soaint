@@ -25,6 +25,16 @@ export class Sandbox {
     return this._api.list(`${environment.obtenerObservaciones_endpoint}${documentId}`);
   }
 
+  obtnerConstantesPorCodigos(codigos: string) {
+    return this._api.list(`${environment.obtenerConstantesPorCodigo_endpoint}`, {
+      codigos: codigos
+    });
+  }
+
+  obtnerDependenciaPorCodigo(codigo: string) {
+    return this._api.list(`${environment.obtenerDependenciaPorCodigo_endpoint}${codigo}`);
+  }
+
   obtenerComunicacionPorNroRadicado(nroRadicado: string) {
     return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
   }

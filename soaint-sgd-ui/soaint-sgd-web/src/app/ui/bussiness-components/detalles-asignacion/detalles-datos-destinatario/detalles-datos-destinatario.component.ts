@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {ComunicacionOficialDTO} from "../../../../domain/comunicacionOficialDTO";
 import {AgentDTO} from "../../../../domain/agentDTO";
+import {ConstanteDTO} from '../../../../domain/constanteDTO';
 
 @Component({
   selector: 'app-detalles-datos-destinatario',
@@ -13,7 +14,8 @@ export class DetallesDatosDestinatarioComponent implements OnInit {
   @Input()
   comunicacion: ComunicacionOficialDTO;
 
-  agentList: AgentDTO[];
+  @Input()
+  constantesList: ConstanteDTO[];
 
   constructor() {
   }

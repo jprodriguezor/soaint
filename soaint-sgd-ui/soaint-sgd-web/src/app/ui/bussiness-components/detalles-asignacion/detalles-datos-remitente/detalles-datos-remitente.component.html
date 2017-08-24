@@ -128,7 +128,7 @@
     </div>
   </div>
   <div class="ui-g-12" padding-bottom>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -138,12 +138,12 @@
         <div class="ui-g-12">
           <span class="md-inputfield">
               <label
-                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codSede : ''}}</label>
+                style="color: inherit">{{(comunicacion.agenteList ? comunicacion.agenteList[0].codSede : '') | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -153,7 +153,7 @@
         <div class="ui-g-12">
           <span class="md-inputfield">
               <label
-                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : ''}}</label>
+                style="color: inherit">{{(comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : '') | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
