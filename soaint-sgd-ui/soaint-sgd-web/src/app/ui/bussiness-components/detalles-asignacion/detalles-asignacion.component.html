@@ -1,6 +1,6 @@
 <div class="ui-fluid">
   <div>
-    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)" [lazy]="true">
+    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)">
       <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
         <app-detalles-datos-generales [comunicacion]="comunicacion"
                                       [constantesList]="constantes"></app-detalles-datos-generales>
@@ -16,11 +16,8 @@
                                          [constantesList]="constantes"></app-detalles-datos-destinatario>
       </p-tabPanel>
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment">
-        <div style="overflow-y: scroll">
-          <pdf-viewer
-            [src]="docSrc"
-            [show-all]="true" [original-size]="false" style="display: block;">
-          </pdf-viewer>
+        <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
+          <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
         </div>
       </p-tabPanel>
     </p-tabView>

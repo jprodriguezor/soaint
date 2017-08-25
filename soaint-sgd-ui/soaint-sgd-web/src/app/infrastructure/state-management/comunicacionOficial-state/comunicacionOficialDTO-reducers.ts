@@ -1,6 +1,7 @@
 import {Actions, ActionTypes as Autocomplete} from './comunicacionOficialDTO-actions';
 import {tassign} from 'tassign';
 import {CorrespondenciaDTO} from 'app/domain/correspondenciaDTO';
+import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 
 
 export interface State {
@@ -47,10 +48,10 @@ export function reducer(state = initialState, action: Actions) {
         });
       }
       // const newValues = values.filter(data => !state.entities[data.ideDocumento]);
-      const ids = values.map(data => data.ideDocumento);
-      const entities = values.reduce((entities: { [ideDocumento: number]: CorrespondenciaDTO }, value: CorrespondenciaDTO) => {
+      const ids = values.map(data => data.correspondencia.ideDocumento);
+      const entities = values.reduce((entities: { [ideDocumento: number]: ComunicacionOficialDTO }, value: ComunicacionOficialDTO) => {
         return Object.assign(entities, {
-          [value.ideDocumento]: value
+          [value.correspondencia.ideDocumento]: value
         });
       }, {});
       return tassign(state, {

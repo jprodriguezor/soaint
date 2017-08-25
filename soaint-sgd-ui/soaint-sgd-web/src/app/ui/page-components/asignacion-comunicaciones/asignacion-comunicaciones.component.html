@@ -179,7 +179,7 @@
       </p-panel>
     </div>
   </div>
-  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true"
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="false"
             [contentStyle]="{'overflow':'visible'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
     <app-detalles-asignacion #detallesView></app-detalles-asignacion>

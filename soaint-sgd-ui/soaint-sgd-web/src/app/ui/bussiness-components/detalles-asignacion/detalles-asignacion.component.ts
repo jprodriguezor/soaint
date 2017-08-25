@@ -25,7 +25,7 @@ export class DetallesAsignacionComponent implements OnInit {
 
   dependencias: OrganigramaDTO[];
 
-  docSrc: any = environment.obtenerDocumento;
+  docSrc: any;
 
   constructor(private _changeDetectorRef: ChangeDetectorRef, private _asiganacionSandbox: AsiganacionDTOSandbox) {
   }
@@ -39,7 +39,7 @@ export class DetallesAsignacionComponent implements OnInit {
   }
 
   loadDocumento() {
-    this.docSrc += this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.docSrc = environment.obtenerDocumento + this.comunicacion.ppdDocumentoList[0].ideEcm;
   }
 
   preview(file) {
