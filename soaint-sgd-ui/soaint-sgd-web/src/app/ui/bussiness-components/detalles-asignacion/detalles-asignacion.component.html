@@ -16,7 +16,7 @@
         <app-detalles-datos-destinatario [destinatarios]="destinatarios$ | async"
                                          [constantesList]="constantes"></app-detalles-datos-destinatario>
       </p-tabPanel>
-      <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment">
+      <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding>
         <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
           <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
         </div>

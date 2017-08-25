@@ -31,4 +31,8 @@ app-detalles-asignacion {
   tbody tr {
     background-color: #ffffff !important;
   }
+
+  [no-padding] .ui-tabview-panel.ui-widget-content {
+    padding: 0 !important;
+  }
 }
