@@ -167,7 +167,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
 
-    debugger;
     const agentesList = [];
     const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
 
@@ -332,7 +331,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   getDocumento(): DocumentoDTO {
     const documento: DocumentoDTO = {
       idePpdDocumento: null,
-      codTipoDoc: null,
+      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       fecDocumento: this.date.toISOString(),
       asunto: this.valueGeneral.asunto,
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
@@ -354,7 +353,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       fecRadicado: this.date.toISOString(),
       fecDocumento: this.date.toISOString(),
       nroRadicado: null,
-      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
+      codTipoDoc: null,
       codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
       ideInstancia: this.task.idInstanciaProceso,
       reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
