@@ -8,7 +8,11 @@
           <p-header>
             Datos destinatario
           </p-header>
-          <p-column header="Tipo destinatario" [sortable]="true"></p-column>
+          <p-column header="Tipo destinatario" [sortable]="true" field="indOriginal">
+            <ng-template let-col let-agent="rowData" pTemplate="body">
+            {{agent[col.field] | constantCode:constantesList}}
+            </ng-template>
+          </p-column>
           <p-column header="Sede administrativa" [sortable]="true" field="codSede">
             <ng-template let-col let-agent="rowData" pTemplate="body">
               {{agent[col.field] | constantCode:constantesList}}

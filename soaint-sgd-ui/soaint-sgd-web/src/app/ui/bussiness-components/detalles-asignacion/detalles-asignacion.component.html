@@ -1,13 +1,9 @@
 <div class="ui-fluid">
   <div>
-    <p-tabView [activeIndex]="tabIndex" [lazy]="true">
+    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)" [lazy]="true">
       <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
         <app-detalles-datos-generales [comunicacion]="comunicacion"
                                       [constantesList]="constantes"></app-detalles-datos-generales>
-        <!--<pdf-viewer
-          [src]="'http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=ff9182bb-871d-49a3-9a3f-65c715ea2056'"
-          [show-all]="true" [original-size]="false" style="display: block;">
-        </pdf-viewer>-->
       </p-tabPanel>
 
       <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
@@ -20,10 +16,12 @@
                                          [constantesList]="constantes"></app-detalles-datos-destinatario>
       </p-tabPanel>
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment">
-        <pdf-viewer
-          [src]="docSrc"
-          [show-all]="true" [original-size]="false" style="display: block;">
-        </pdf-viewer>
+        <div style="overflow-y: scroll">
+          <pdf-viewer
+            [src]="docSrc"
+            [show-all]="true" [original-size]="false" style="display: block;">
+          </pdf-viewer>
+        </div>
       </p-tabPanel>
     </p-tabView>
   </div>

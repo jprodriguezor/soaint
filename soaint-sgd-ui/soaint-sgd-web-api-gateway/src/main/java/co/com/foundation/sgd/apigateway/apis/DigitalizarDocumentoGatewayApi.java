@@ -11,6 +11,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class DigitalizarDocumentoGatewayApi {
     public Response constantes(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento desde el ecm: " + idDocumento);
         Response response = digitalizarDocumentoClient.obtenerDocumento(idDocumento);
-        String responseObject = response.readEntity(String.class);
+        InputStream responseObject = response.readEntity(InputStream.class);
 //        response.ok(responseObject).header ("Content-Type", "application/pdf");
         return Response.status(Response.Status.OK).entity(responseObject).build();
     }

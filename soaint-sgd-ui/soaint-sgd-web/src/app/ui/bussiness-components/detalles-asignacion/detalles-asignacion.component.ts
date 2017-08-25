@@ -3,6 +3,7 @@ import {Sandbox as AsiganacionDTOSandbox} from "../../../infrastructure/state-ma
 import {ComunicacionOficialDTO} from "../../../domain/comunicacionOficialDTO";
 import {ConstanteDTO} from "../../../domain/constanteDTO";
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
+import {environment} from '../../../../environments/environment';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class DetallesAsignacionComponent implements OnInit {
 
   dependencias: OrganigramaDTO[];
 
-  docSrc: any = "";
+  docSrc: any = environment.obtenerDocumento;
 
   constructor(private _changeDetectorRef: ChangeDetectorRef, private _asiganacionSandbox: AsiganacionDTOSandbox) {
   }
@@ -38,12 +39,7 @@ export class DetallesAsignacionComponent implements OnInit {
   }
 
   loadDocumento() {
-    this._asiganacionSandbox.obtenerDocumento("d126e9fa-bd82-4689-9b96-3f3ca4dcf109").subscribe((result) => {
-      console.info(result._body);
-      this.preview(result._body);
-    }, (error) => {
-      console.log(error);
-    });
+    this.docSrc += this.comunicacion.ppdDocumentoList[0].ideEcm;
   }
 
   preview(file) {
@@ -62,7 +58,6 @@ export class DetallesAsignacionComponent implements OnInit {
   loadComunication() {
     this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.nroRadicado).subscribe((result) => {
       this.comunicacion = result;
-      console.log(this.comunicacion);
       this.loadDocumento();
       this.loadConstantsByCodes();
     });
@@ -73,6 +68,7 @@ export class DetallesAsignacionComponent implements OnInit {
     this.comunicacion.agenteList.forEach((item) => {
       result += item.codTipAgent + ',';
       result += item.codEnCalidad + ',';
+      result += item.indOriginal + ',';
     });
     this.comunicacion.anexoList.forEach((item) => {
       result += item.codAnexo + ',';
@@ -82,6 +78,10 @@ export class DetallesAsignacionComponent implements OnInit {
     result += this.comunicacion.correspondencia.codUnidadTiempo + ',';
     result += this.comunicacion.correspondencia.codTipoDoc + ',';
     return result;
+  }
+
+  onTabChange() {
+    this.refreshView();
   }
 
   getDependenciesCodes() {
