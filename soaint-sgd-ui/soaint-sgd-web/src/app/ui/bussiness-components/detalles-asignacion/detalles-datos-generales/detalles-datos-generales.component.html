@@ -71,7 +71,7 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.correspondencia?.codTipoDoc | constantCode:constantesList}}</label>
+              <label style="color: inherit">{{((comunicacion.ppdDocumentoList && comunicacion.ppdDocumentoList[0]) ? comunicacion.ppdDocumentoList[0].codTipoDoc : "") | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>

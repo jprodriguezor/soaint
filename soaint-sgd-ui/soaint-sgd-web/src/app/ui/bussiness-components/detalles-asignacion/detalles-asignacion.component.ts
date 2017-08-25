@@ -65,6 +65,7 @@ export class DetallesAsignacionComponent implements OnInit {
 
   getConstantsCodes() {
     let result = '';
+    console.log(this.comunicacion);
     this.comunicacion.agenteList.forEach((item) => {
       result += item.codTipAgent + ',';
       result += item.codEnCalidad + ',';
@@ -72,6 +73,9 @@ export class DetallesAsignacionComponent implements OnInit {
     });
     this.comunicacion.anexoList.forEach((item) => {
       result += item.codAnexo + ',';
+    });
+    this.comunicacion.ppdDocumentoList.forEach((item) => {
+      result += item.codTipoDoc + ',';
     });
     result += this.comunicacion.correspondencia.codTipoCmc + ',';
     result += this.comunicacion.correspondencia.codMedioRecepcion + ',';
