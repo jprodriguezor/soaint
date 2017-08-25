@@ -25,6 +25,22 @@ export class Sandbox {
     return this._api.list(`${environment.obtenerObservaciones_endpoint}${documentId}`);
   }
 
+  obtenerDocumento(documentId: any) {
+    return this._api.list(`${environment.obtenerDocumento_endpoint}${documentId}`);
+  }
+
+  obtnerConstantesPorCodigos(codigos: string) {
+    return this._api.list(`${environment.obtenerConstantesPorCodigo_endpoint}`, {
+      codigos: codigos
+    });
+  }
+
+  obtnerDependenciasPorCodigos(codigos: string) {
+    return this._api.list(`${environment.obtenerDependenciasPorCodigo_endpoint}`, {
+      codigos: codigos
+    });
+  }
+
   obtenerComunicacionPorNroRadicado(nroRadicado: string) {
     return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
   }

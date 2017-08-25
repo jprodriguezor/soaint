@@ -20,6 +20,9 @@ import java.io.InputStream;
 public class DigitalizarDocumentoClient {
 
 
+    @Value("${ecm.service.endpoint.url}")
+    private String endpointEcm = "";
+
     @Value("${backapi.ecm.service.endpoint.url}")
     private String endpoint = "";
 
@@ -28,8 +31,8 @@ public class DigitalizarDocumentoClient {
     }
 
     public Response digitalizar(InputPart part, String fileName, String tipoComunicacion) {
-        log.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        log.info("Municipios - [trafic] - listing Municipios with endpointEcm: " + endpointEcm);
+        WebTarget wt = ClientBuilder.newClient().target(endpointEcm);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
 
@@ -37,7 +40,7 @@ public class DigitalizarDocumentoClient {
         try {
             inputStream = part.getBody(InputStream.class, null);
         } catch (IOException e) {
-            log.error("Se ha generado un error del tipo IO:",e);
+            log.error("Se ha generado un error del tipo IO:", e);
         }
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
 
@@ -48,6 +51,14 @@ public class DigitalizarDocumentoClient {
         return wt.path("/ecm/subirDocumentoECM/" + fileName + "/" + tipoComunicacion)
                 .request()
                 .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+    }
+
+    public Response obtenerDocumento(String idDocumento) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/descargarDocumentoECM/")
+                .queryParam("identificadorDoc", idDocumento)
+                .request()
+                .get();
     }
 
 }

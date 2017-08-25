@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarDependencia;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciasDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,16 @@ public class GestionarDependenciaWS {
     @WebMethod(action = "listarDependenciaByCodigo", operationName = "listarDependenciaByCodigo")
     public DependenciaDTO listarDependenciaByCodigo(@WebParam(name = "cod-org")final String codOrg)throws BusinessException, SystemException{
         return boundary.listarDependenciaByCodigo(codOrg);
+    }
+
+    /**
+     *
+     * @param codigosOrg
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarDependenciasByCodigo", operationName = "listarDependenciasByCodigo")
+    public DependenciasDTO listarDependenciasByCodigo(@WebParam(name = "cod-org")final String[] codigosOrg)throws SystemException{
+        return boundary.listarDependenciasByCodigo(codigosOrg);
     }
 }

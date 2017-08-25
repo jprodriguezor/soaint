@@ -1,7 +1,6 @@
 <div class="ui-g ui-fluid">
-
   <div class="ui-g-12" padding-bottom>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].codTipoPers">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -10,14 +9,13 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codTipoPers : ''}}</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codTipoPers : ''}}</label>
           </span>
         </div>
       </div>
     </div>
-
-
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.ppdDocumentoList && comunicacion.ppdDocumentoList[0].codTipoPers">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -26,12 +24,13 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
+
               <label style="color: inherit">{{comunicacion.ppdDocumentoList ? comunicacion.ppdDocumentoList[0].codTipoDoc : ''}}</label>
           </span>
         </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].nit">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -47,7 +46,7 @@
     </div>
   </div>
   <div class="ui-g-12" padding-bottom>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].nroDocuIdentidad">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -63,7 +62,7 @@
     </div>
   </div>
   <div class="ui-g-12" padding-bottom>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].razonSocial">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -72,12 +71,13 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].razonSocial : ''}}</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].razonSocial : ''}}</label>
           </span>
         </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].codEnCalidad">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -86,12 +86,13 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codEnCalidad : ''}}</label>
+              <label
+                style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codEnCalidad : ''}}</label>
           </span>
         </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].nombre">
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -127,21 +128,22 @@
     </div>
   </div>
   <div class="ui-g-12" padding-bottom>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].codSede">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
-            <label>Sede</label>
+            <label>Sede Administrativa</label>
           </span>
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codSede : ''}}</label>
+              <label
+                style="color: inherit">{{(comunicacion.agenteList ? comunicacion.agenteList[0].codSede : '') | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" style="align-content: flex-end" [hidden]="comunicacion.agenteList && comunicacion.agenteList[0].codDependencia">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
       <div class="ui-g form-group">
         <div class="ui-g-12">
           <span class="md-inputfield">
@@ -150,7 +152,8 @@
         </div>
         <div class="ui-g-12">
           <span class="md-inputfield">
-              <label style="color: inherit">{{comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : ''}}</label>
+              <label
+                style="color: inherit">{{(comunicacion.agenteList ? comunicacion.agenteList[0].codDependencia : '') | constantCode:constantesList}}</label>
           </span>
         </div>
       </div>

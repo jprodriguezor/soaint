@@ -22,7 +22,7 @@ export class HttpHandler {
 
   requestHelper(url: string | RequestArgs, options?: RequestOptionsArgs): Observable<Response> {
 
-    return this.token$.take(1).switchMap( token => {
+    return this.token$.take(1).switchMap(token => {
       // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
@@ -72,7 +72,11 @@ export class HttpHandler {
 
   handleResponse(request$: Observable<Response>, token): Observable<Response> {
     return request$.map((res: Response) => {
-      return res.json()
+      console.log(res.headers.get('Content-Type'));
+      if ('application/json' === res.headers.get('Content-Type'))
+        return res.json()
+      else
+        return res;
     }).catch(res => {
       if (res.status === 401) {
         if (token !== null) {
