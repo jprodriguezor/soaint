@@ -1,6 +1,8 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {ComunicacionOficialDTO} from "../../../../domain/comunicacionOficialDTO";
+import {ComunicacionOficialDTO} from '../../../../domain/comunicacionOficialDTO';
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
+import {AgentDTO} from '../../../../domain/agentDTO';
+import {ContactoDTO} from '../../../../domain/contactoDTO';
 
 @Component({
   selector: 'app-detalles-datos-remitente',
@@ -8,18 +10,18 @@ import {ConstanteDTO} from '../../../../domain/constanteDTO';
   styleUrls: ['./detalles-datos-remitente.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DetallesDatosRemitenteComponent implements OnInit {
-
-  @Input()
-  comunicacion: ComunicacionOficialDTO;
+export class DetallesDatosRemitenteComponent {
 
   @Input()
   constantesList: ConstanteDTO[];
 
-  constructor() {
-  }
+  @Input()
+  remitente: AgentDTO;
 
-  ngOnInit() {
-  }
+  @Input()
+  contactos: ContactoDTO[];
+
+
+  constructor() {}
 
 }

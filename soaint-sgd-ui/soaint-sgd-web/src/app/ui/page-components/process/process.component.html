@@ -1,7 +1,7 @@
 <div class="card card-w-title">
   <h1>Listado de Procesos</h1>
   <p-dataTable [value]="(procesos$ | async)" selectionMode="single" [(selection)]="selectedProcess"
-               [paginator]="true" [rows]="10" [responsive]="true">
+               [paginator]="true" [rows]="10" [responsive]="true" emptyMessage="No se encontraron resultados">
     <p-header>Lista De Productos</p-header>
     <p-column field="codigoProceso" header="Código" [sortable]="true"></p-column>
     <p-column field="nombreProceso" header="Nombre" [sortable]="true"></p-column>

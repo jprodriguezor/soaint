@@ -70,7 +70,7 @@
 
       <div class="ui-g-12">
         <p-dataTable [value]="agentesDestinatario" selectionMode="single" [(selection)]="selectedagenteDestinatario"
-                     [paginator]="true" [rows]="10" [responsive]="true">
+                     [paginator]="true" [rows]="10" [responsive]="true" emptyMessage="No se encontraron resultados">
           <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
           <p-column field="sedeAdministrativa.nombre" header="Sede" [sortable]="true"></p-column>
           <p-column field="dependenciaGrupo.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>

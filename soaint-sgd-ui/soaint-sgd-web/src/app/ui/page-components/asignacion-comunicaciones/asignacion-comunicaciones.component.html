@@ -179,13 +179,17 @@
       </p-panel>
     </div>
   </div>
-  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="false"
-            [contentStyle]="{'overflow':'visible'}"
+
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="false" positionTop="20"
+            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
-    <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+    <div style="overflow: auto">
+      <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+    </div>
   </p-dialog>
-  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+
+  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [contentStyle]="{'overflow':'scroll'}"
             (onHide)="hideJustificationPopup()" [width]="800">
     <p-header>
       Redireccionar
@@ -202,8 +206,7 @@
       </div>
     </p-footer>
   </p-dialog>
-  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
       Agregar observaciones

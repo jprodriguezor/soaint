@@ -1,9 +1,12 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Sandbox as AsiganacionDTOSandbox} from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
-import {ComunicacionOficialDTO} from "../../../domain/comunicacionOficialDTO";
-import {ConstanteDTO} from "../../../domain/constanteDTO";
+import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
+import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {environment} from '../../../../environments/environment';
+import {AgentDTO} from '../../../domain/agentDTO';
+import {Observable} from 'rxjs/Observable';
+import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacionEntradaDTV';
 
 
 @Component({
@@ -15,7 +18,7 @@ import {environment} from '../../../../environments/environment';
 })
 export class DetallesAsignacionComponent implements OnInit {
 
-  tabIndex: number = 0;
+  tabIndex = 0;
 
   nroRadicado: string;
 
@@ -24,6 +27,14 @@ export class DetallesAsignacionComponent implements OnInit {
   constantes: ConstanteDTO[];
 
   dependencias: OrganigramaDTO[];
+
+  remitente$: Observable<AgentDTO>;
+
+  contactos$: Observable<ConstanteDTO[]>;
+
+  destinatarios$: Observable<AgentDTO[]>;
+
+  radicacionEntradaDTV: any;
 
   docSrc: any;
 
@@ -60,6 +71,12 @@ export class DetallesAsignacionComponent implements OnInit {
       this.comunicacion = result;
       this.loadDocumento();
       this.loadConstantsByCodes();
+
+      this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+      this.remitente$ = this.radicacionEntradaDTV.getDatosRemitente();
+      this.contactos$ = this.radicacionEntradaDTV.getDatosContactos();
+      this.destinatarios$ = this.radicacionEntradaDTV.getDatosDestinatarios();
+
     });
   }
 
@@ -70,6 +87,8 @@ export class DetallesAsignacionComponent implements OnInit {
       result += item.codTipAgent + ',';
       result += item.codEnCalidad + ',';
       result += item.indOriginal + ',';
+      result += item.codTipoPers + ',';
+      result += item.codTipDocIdent + ',';
     });
     this.comunicacion.anexoList.forEach((item) => {
       result += item.codAnexo + ',';

@@ -15,4 +15,7 @@ app-asignacion-comunicaciones tbody tr {
 app-asignacion-comunicaciones .short-table {
   width: 25%; }
 
+p-dialog .ui-dialog {
+  max-height: 90%; }
+
 /*# sourceMappingURL=asignacion-comunicaciones.component.css.map */
