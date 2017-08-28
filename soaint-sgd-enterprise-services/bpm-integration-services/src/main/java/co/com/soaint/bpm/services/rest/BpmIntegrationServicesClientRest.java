@@ -7,7 +7,6 @@ import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.hornetq.utils.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -58,6 +57,20 @@ public class BpmIntegrationServicesClientRest {
     }
 
     /**
+     * Permite listar procesos
+     *
+     * @param entradaProceso Objeto que define los parametros de un proceso
+     * @return lista de Procesos
+     * @throws Throwable
+     */
+    @POST
+    @Path("/proceso/listar-variables/")
+    public String listarVariablesProcesos(EntradaProcesoDTO entradaProceso) throws SystemException {
+        log.info("processing rest request - listar variables procesos");
+        return proceso.listarVariablesProcesos(entradaProceso);
+    }
+
+    /**
      * Permite enviar una sennal al proceso
      *
      * @param entradaProceso Objeto que define los parametros de un proceso
@@ -79,7 +92,6 @@ public class BpmIntegrationServicesClientRest {
      * @throws SystemException
      * @throws BusinessException
      * @throws IOException
-     * @throws JSONException
      */
     @POST
     @Path("/proceso/sennal/inicio/")
@@ -124,7 +136,6 @@ public class BpmIntegrationServicesClientRest {
      * @param entradaProceso Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
      * @throws IOException
-     * @throws JSONException
      * @throws URISyntaxException
      */
     @POST
@@ -169,7 +180,6 @@ public class BpmIntegrationServicesClientRest {
      * @return Los datos de la tarea reservada
      * @throws IOException
      * @throws URISyntaxException
-     * @throws JSONException
      */
     @POST
     @Path("/tareas/reservar/")

@@ -1,0 +1,81 @@
+<div class="comunicacion-detalles">
+  <form name="formDefault" [formGroup]="form">
+    <div class="ui-g ui-fluid" padding-bottom>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="proceso"><span class="text-danger">*</span>Sede administrativa</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="procesosSuggestions | dropdownItem"
+                        formControlName="proceso"
+                        id="proceso"
+                        [autoWidth]="false"
+                        (onChange)="onChange()"
+                        (onBlur)="listenForBlurEvents('proceso')"
+                        placeholder="Seleccione">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g ui-fluid" padding-bottom>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <p-checkbox name="responseToRem"
+                      label="Responder a remitente"
+                      formControlName="responseToRem"
+                      id="responseToRem"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <button pButton type="button" label="Gestionar proceso" style="width: auto;"
+                  (click)="gestionarProceso()" [disabled]="!form.valid"></button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<p-dialog [visible]="rejectDialogVisible" modal="modal" [responsive]="true"
+          [contentStyle]="{'overflow':'visible'}"
+          (onHide)="hideRejectDialog()" [width]="800">
+  <p-header>
+    Devolver
+  </p-header>
+  <app-popup-reject #popupReject></app-popup-reject>
+
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideRejectDialog()"></button>
+      <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
+              label="Devolver" (click)="sendReject()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+
+<p-dialog [visible]="justificationDialogVisible" modal="modal" [responsive]="true" positionTop="20"
+          [contentStyle]="{'overflow':'scroll'}"
+          (onHide)="hideJustificationPopup()" [width]="800">
+  <p-header>
+    Redireccionar
+  </p-header>
+  <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
+                           #popupjustificaciones></app-popup-justificacion>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideJustificationPopup()"></button>
+      <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
+              label="Redireccionar" (click)="sendRedirect()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+

@@ -10,6 +10,7 @@ import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/t
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
 import {ROUTES_PATH} from './app.route-names';
 import {RecibirGestionarComunicacionesComponent} from "./ui/page-components/recibir-gestionar-comunicaciones/recibir-gestionar-comunicaciones.component";
+import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -38,6 +39,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.recibirGestionarComunicaciones,
     component: RecibirGestionarComunicacionesComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.documentosTramite,
+    component: DocumentosTramiteComponent,
     canActivate: [AuthenticatedGuard]
   },
 ];

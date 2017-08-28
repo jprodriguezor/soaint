@@ -157,8 +157,6 @@
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 
-
-
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -217,7 +215,6 @@
             <artifactId>base-framework</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-
 
 
     </dependencies>
