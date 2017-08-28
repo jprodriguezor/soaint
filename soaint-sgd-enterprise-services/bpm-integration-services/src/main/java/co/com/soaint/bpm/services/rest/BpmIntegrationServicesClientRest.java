@@ -92,7 +92,6 @@ public class BpmIntegrationServicesClientRest {
      * @throws SystemException
      * @throws BusinessException
      * @throws IOException
-     * @throws JSONException
      */
     @POST
     @Path("/proceso/sennal/inicio/")
@@ -137,7 +136,6 @@ public class BpmIntegrationServicesClientRest {
      * @param entradaProceso Objeto que contiene los parametros de entrada para un proceso
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
      * @throws IOException
-     * @throws JSONException
      * @throws URISyntaxException
      */
     @POST
@@ -182,7 +180,6 @@ public class BpmIntegrationServicesClientRest {
      * @return Los datos de la tarea reservada
      * @throws IOException
      * @throws URISyntaxException
-     * @throws JSONException
      */
     @POST
     @Path("/tareas/reservar/")
