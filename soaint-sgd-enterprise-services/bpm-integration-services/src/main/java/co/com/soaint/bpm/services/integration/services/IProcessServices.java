@@ -15,6 +15,8 @@ public interface IProcessServices {
 
     List<RespuestaProcesoDTO> listarProcesos(EntradaProcesoDTO entrada) throws SystemException;
 
+    String listarVariablesProcesos(EntradaProcesoDTO entrada) throws SystemException;
+
     List<RespuestaProcesoDTO> listarProcesosInstanciaPorUsuarios(EntradaProcesoDTO entrada) throws SystemException;
 
     RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException;

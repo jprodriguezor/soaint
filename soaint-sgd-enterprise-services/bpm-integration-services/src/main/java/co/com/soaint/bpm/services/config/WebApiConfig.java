@@ -12,9 +12,9 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("/apis")
 public class WebApiConfig extends Application {
-	
+
     public WebApiConfig() {
         //
     }
-    
+
 }

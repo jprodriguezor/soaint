@@ -1,6 +1,7 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
+import co.com.soaint.bpm.services.util.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
@@ -54,6 +55,8 @@ public class ProcessService implements IProcessServices {
     private TaskService taskService;
     @Value("${procesos.listar.endpoint.url}")
     private String endpointProcesosListar = "";
+    @Value("${procesos.listar.intancias.endpoint.url}")
+    private String endpointProcesoVariablesListar = "";
     @Value("${jbpm.endpoint.url}")
     private String endpointJBPConsole = "";
     @Value("${procesos.listar.intancias.endpoint.url}")
@@ -82,6 +85,8 @@ public class ProcessService implements IProcessServices {
     private String parametroSennal = "";
     @Value("${formato.idioma}")
     private String formatoIdioma = "";
+    @Value("${protocolo}")
+    private String protocolo = "";
     HttpClient httpClient;
     HttpGet getRequest;
     HttpPost postRequest;
@@ -104,7 +109,7 @@ public class ProcessService implements IProcessServices {
         log.info("iniciar - Listar Procesos: {}", entrada);
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
         httpClient = HttpClientBuilder.create().build();
-        getRequest = new HttpGet(endpointProcesosListar);
+        getRequest = new HttpGet(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)).concat(endpointProcesosListar));
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader(headerAccept, valueApplicationType);
         getRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
@@ -133,10 +138,57 @@ public class ProcessService implements IProcessServices {
                     .withRootException(ex)
                     .buildSystemException();
         } finally {
-        log.info("fin - iniciar - listar Proceso ");
+            log.info("fin - iniciar - listar Proceso ");
+        }
+
     }
 
-}
+
+    /**
+     * Permite listar todos los procesos desplegados
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Lista de procesos que contiene codigoProceso,nombreProceso y idDespliegue.
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Override
+    public String listarVariablesProcesos(EntradaProcesoDTO entrada) throws SystemException {
+        log.info("iniciar - Listar Procesos: {}", entrada);
+        String encoding = java.util.Base64.getEncoder().encodeToString(new String(usuarioAdmin + ":" + passAdmin).getBytes());
+        try {
+            URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)))
+                    .setPath("jbpm-console/rest/runtime/".concat(entrada.getIdDespliegue()).concat("/withvars/process/instance/").concat(String.valueOf(entrada.getInstanciaProceso())))
+                    .build();
+            httpClient = HttpClientBuilder.create().build();
+            getRequest = new HttpGet(uri);
+            getRequest.addHeader(headerAccept, valueApplicationType);
+            getRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
+
+            response = httpClient.execute(getRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            }
+            return String.valueOf(respuestaJson);
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - iniciar - listar Proceso ");
+        }
+    }
 
     /**
      * Permite listar las instancias de procesos por usuario
@@ -152,7 +204,7 @@ public class ProcessService implements IProcessServices {
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         httpClient = HttpClientBuilder.create().build();
         try {
-            URI uri = new URIBuilder(endpointProcesoListarInstancia)
+            URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)).concat(endpointProcesoListarInstancia))
                     .addParameter("var_initiator", entrada.getUsuario())
                     .addParameters(listaEstadosProceso(entrada))
                     .build();
@@ -182,11 +234,11 @@ public class ProcessService implements IProcessServices {
                     .withRootException(ex)
                     .buildSystemException();
         } finally {
-        log.info("fin - listar instancias de usarios de proceso ");
+            log.info("fin - listar instancias de usarios de proceso ");
+        }
+
+
     }
-
-
-}
 
     /**
      * Permite iniciar un proceso
@@ -347,7 +399,7 @@ public class ProcessService implements IProcessServices {
         String estado = "";
         log.info("iniciar - reservar tarea: {}", entrada);
         try {
-            URI uri = new URIBuilder(endpointJBPConsole)
+            URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)))
                     .setPath("/jbpm-console/rest/task/" + entrada.getIdTarea() + "/claim")
                     .build();
             httpClient = HttpClientBuilder.create().build();
@@ -715,7 +767,7 @@ public class ProcessService implements IProcessServices {
                 .addDeploymentId(entrada.getIdDespliegue())
                 .addUserName(entrada.getUsuario())
                 .addPassword(entrada.getPass())
-                .addUrl(new URL(endpointJBPConsole))
+                .addUrl(new URL("http://".concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)).concat(endpointJBPConsole)))
                 .build();
         return engine;
     }
