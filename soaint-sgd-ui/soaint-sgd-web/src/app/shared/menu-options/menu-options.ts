@@ -5,7 +5,7 @@ export const MENU_OPTIONS = [
   {label: 'Tareas', icon: 'list', routerLink: ['/' + ROUTES_PATH.workspace]},
   {label: 'Procesos', icon: 'work', routerLink: ['/' + ROUTES_PATH.processList]},
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
-  {label: 'Gestionar documentos', icon: 'subject', routerLink: ['/' + ROUTES_PATH.recibirGestionarComunicaciones]}
+  {label: 'Documentos en tramite', icon: 'subject', routerLink: ['/' + ROUTES_PATH.documentosTramite]}
 ];
 
 export const PROCESS_OPTION = {

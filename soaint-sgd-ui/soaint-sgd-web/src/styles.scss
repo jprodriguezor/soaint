@@ -186,6 +186,46 @@ span.table-text-custom {
 }
 
 
+.comunicacion-detalles {
+  [padding-bottom] {
+    padding-bottom: 20px !important;
+  }
+
+  [padding-top] {
+    padding-top: 16px;
+  }
+
+  .ui-datatable-header {
+    text-align: left !important;
+  }
+  thead th {
+    background-color: #eee !important;
+  }
+
+  thead tr th {
+    overflow: inherit !important;
+  }
+
+  .ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
+    background-color: #26C6DA !important;
+    color: #ffffff;
+  }
+
+  .ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
+    background-color: #26C6DA !important;
+    color: #ffffff;
+  }
+
+  tbody tr {
+    background-color: #ffffff !important;
+  }
+
+  [no-padding] .ui-tabview-panel.ui-widget-content {
+    padding: 0 !important;
+  }
+}
+
+
 
 
 

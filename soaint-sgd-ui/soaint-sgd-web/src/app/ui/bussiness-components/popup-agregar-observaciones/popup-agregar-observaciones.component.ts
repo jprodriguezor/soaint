@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
@@ -19,8 +19,10 @@ export class PopupAgregarObservacionesComponent implements OnInit {
 
   observaciones: ObservacionDTO[];
 
+  @Input()
   idDocumento: number;
 
+  @Input()
   idFuncionario: number;
 
   constructor(private formBuilder: FormBuilder, private _asignacionSandbox: AsignacionSandbox, private _changeDetectorRef: ChangeDetectorRef) {

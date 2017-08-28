@@ -7,5 +7,6 @@ export const ROUTES_PATH = {
   workspace: 'workspace',
   processList: 'process',
   asignacionComunicaciones: 'asignacion-comunicaciones',
-  recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones'
+  recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones',
+  documentosTramite: 'documentos-tramite'
 };

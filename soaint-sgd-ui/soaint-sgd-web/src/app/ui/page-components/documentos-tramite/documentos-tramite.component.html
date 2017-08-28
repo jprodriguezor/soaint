@@ -17,14 +17,13 @@
                                          [constantesList]="constantes"></app-detalles-datos-destinatario>
       </p-tabPanel>
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding>
-        <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
+        <div style="overflow-y: scroll;max-height: 100%" *ngIf="docSrc">
           <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
         </div>
+      </p-tabPanel>
+      <p-tabPanel header="Observaciones" leftIcon="ui-icon-assignment">
+        <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
       </p-tabPanel>
     </p-tabView>
   </div>
 </div>
-<!--
-
-          [src]="'http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=d126e9fa-bd82-4689-9b96-3f3ca4dcf109'"
--->
