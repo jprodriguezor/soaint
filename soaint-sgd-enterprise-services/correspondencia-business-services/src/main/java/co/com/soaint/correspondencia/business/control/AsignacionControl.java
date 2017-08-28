@@ -86,7 +86,6 @@ public class AsignacionControl {
                 } else {
                     dctAsigUltimo = DctAsigUltimo.newInstance()
                             .ideUsuarioCreo(usuarioCreo)
-                            .fecCreo(fecha)
                             .build();
                 }
 
@@ -94,13 +93,11 @@ public class AsignacionControl {
                 dctAsigUltimo.setCorAgente(corAgente);
                 dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
                 dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
-                dctAsigUltimo.setFecCambio(fecha);
 
                 dctAsignacion.setFecAsignacion(fecha);
                 dctAsignacion.setCorAgente(corAgente);
                 dctAsignacion.setCorCorrespondencia(corCorrespondencia);
                 dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
-                dctAsignacion.setFecCreo(fecha);//TODO
 
                 em.persist(dctAsignacion);
                 em.merge(dctAsigUltimo);
@@ -210,10 +207,30 @@ public class AsignacionControl {
     }
 
     /**
+     *
+     * @param asignacion
+     * @throws SystemException
+     */
+    public void actualizarTipoProceso(AsignacionDTO asignacion) throws SystemException {
+        try {
+            em.createNamedQuery("DctAsigUltimo.updateTipoProceso")
+                    .setParameter("COD_TIPO_PROCESO", asignacion.getCodTipProceso())
+                    .setParameter("IDE_ASIG_ULTIMO", asignacion.getIdeAsigUltimo())
+                    .executeUpdate();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param ideAgente
      * @return
      */
-    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente)throws SystemException{
+    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente) throws SystemException {
         try {
             List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
                     .setParameter("IDE_AGENTE", ideAgente)

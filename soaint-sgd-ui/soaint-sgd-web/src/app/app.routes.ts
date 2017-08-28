@@ -9,6 +9,8 @@ import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-co
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
 import {ROUTES_PATH} from './app.route-names';
+import {RecibirGestionarComunicacionesComponent} from "./ui/page-components/recibir-gestionar-comunicaciones/recibir-gestionar-comunicaciones.component";
+import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -29,7 +31,21 @@ export const routes: Routes = [
   },
   {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
   {path: ROUTES_PATH.processList, component: ProcessComponent, canActivate: [AuthenticatedGuard]},
-  {path: ROUTES_PATH.asignacionComunicaciones, component: AsignarComunicacionesComponent, canActivate: [AuthenticatedGuard]},
+  {
+    path: ROUTES_PATH.asignacionComunicaciones,
+    component: AsignarComunicacionesComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.recibirGestionarComunicaciones,
+    component: RecibirGestionarComunicacionesComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.documentosTramite,
+    component: DocumentosTramiteComponent,
+    canActivate: [AuthenticatedGuard]
+  },
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

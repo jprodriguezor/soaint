@@ -7,6 +7,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,10 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/correspondencia-gateway-api")
@@ -43,7 +46,7 @@ public class CorrespondenciaGatewayApi {
     @Path("/radicar")
     @JWTTokenSecurity
     public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-        //TODO: add trafic log
+
         log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicar(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
@@ -54,11 +57,12 @@ public class CorrespondenciaGatewayApi {
 
     @GET
     @Path("/listar-comunicaciones")
+    @JWTTokenSecurity
     public Response listarComunicaciones(@QueryParam("fecha_ini") final String fechaIni,
                                          @QueryParam("fecha_fin") final String fechaFin,
                                          @QueryParam("cod_dependencia") final String codDependencia,
                                          @QueryParam("cod_estado") final String codEstado) {
-        //TODO: add trafic log
+
         log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
         Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
         String responseContent = response.readEntity(String.class);
@@ -71,6 +75,7 @@ public class CorrespondenciaGatewayApi {
 
     @POST
     @Path("/asignar")
+    @JWTTokenSecurity
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
@@ -99,6 +104,7 @@ public class CorrespondenciaGatewayApi {
 
     @POST
     @Path("/reasignar")
+    @JWTTokenSecurity
     public Response reasignarComunicaciones(AsignacionesDTO asignacionesDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
@@ -121,6 +127,7 @@ public class CorrespondenciaGatewayApi {
 
     @POST
     @Path("/redireccionar")
+    @JWTTokenSecurity
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.redireccionarComunicaciones(agentesDTO);
@@ -130,11 +137,53 @@ public class CorrespondenciaGatewayApi {
 
     @GET
     @Path("/metricasTiempo")
+    @JWTTokenSecurity
     public Response metricasTiempo(@QueryParam("payload") String payload) {
         log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
         Response response = client.metricasTiempoDrools(payload);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
+
+    @GET
+    @Path("/obtener-comunicacion/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerComunicacion(@PathParam("nro_radicado") String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.obtenerCorrespondenciaPorNroRadicado(nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/obtenerObservaciones/{idCorrespondencia}")
+    @JWTTokenSecurity
+    public Response obtenerObservaciones(@PathParam("idCorrespondencia") BigInteger idCorrespondencia) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listing Observaciones for document: " + idCorrespondencia);
+        Response response = client.listarObservaciones(idCorrespondencia);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/registrarObservacion")
+    @JWTTokenSecurity
+    public Response registrarObservacion(PpdTrazDocumentoDTO observacion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.registrarObservacion(observacion);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/constantes")
+    @JWTTokenSecurity
+    public Response constantes(@QueryParam("codigos") String codigos) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - obteniendo constantes por codigos: " + codigos);
+        Response response = client.obtnerContantesPorCodigo(codigos);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
 
 }

@@ -28,7 +28,7 @@ public class FuncionarioGatewayApi {
     @Path("/{userName}")
     @JWTTokenSecurity
     public Response get(@PathParam("userName") String userName) {
-        //TODO: add trafic log
+
         log.info("FuncionarioGatewayApi - [trafic] - listing Funcionario");
         Response response = client.obtenerFuncionario(userName);
         String responseContent = response.readEntity(String.class);
@@ -41,7 +41,7 @@ public class FuncionarioGatewayApi {
     @Path("/funcionarios/{cod_dependencia}")
     @JWTTokenSecurity
     public Response listarFuncionarios(@PathParam("cod_dependencia") String codigoDependencia) {
-        //TODO: add trafic log
+
         log.info("FuncionarioGatewayApi - [trafic] - listing Funcionario");
         Response response = client.listarFuncionarios(codigoDependencia);
         String responseContent = response.readEntity(String.class);

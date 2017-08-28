@@ -10,6 +10,8 @@ import {AsignarComunicacionesComponent} from './asignacion-comunicaciones/asigna
 import {PopupJustificacionComponent} from "../bussiness-components/popup-justificacion/popup-justificacion.component";
 import {PopupAgregarObservacionesComponent} from "../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component";
 import {PopupRejectComponent} from "../bussiness-components/popup-reject/popup-reject.component";
+import {RecibirGestionarComunicacionesComponent} from "./recibir-gestionar-comunicaciones/recibir-gestionar-comunicaciones.component";
+import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -33,7 +35,9 @@ export const PAGE_COMPONENTS = [
   AsignarComunicacionesComponent,
   PopupJustificacionComponent,
   PopupAgregarObservacionesComponent,
-  PopupRejectComponent
+  PopupRejectComponent,
+  RecibirGestionarComunicacionesComponent,
+  GestionarComunicacionComponent
 ];
 
 export * from './__page-providers.include';

@@ -31,7 +31,7 @@ public class ActuaCalidadGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("ActuaCalidadGatewayApi - [trafic] - listing ActuaCalidad");
         Response response = actuaCalidadClienta.list();
         String responseContent = response.readEntity(String.class);

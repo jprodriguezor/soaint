@@ -62,6 +62,18 @@ public class AsignacionWebApi {
     }
 
     /**
+     *
+     * @param asignacion
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/asignacion/actualizar-tipo-proceso")
+    public void actualizarTipoProceso(AsignacionDTO asignacion) throws SystemException {
+        log.info("processing rest request - actualizar codigo tipo proceso");
+        boundary.actualizarTipoProceso(asignacion);
+    }
+
+    /**
      * @param ideFunci
      * @param nroRadicado
      * @return

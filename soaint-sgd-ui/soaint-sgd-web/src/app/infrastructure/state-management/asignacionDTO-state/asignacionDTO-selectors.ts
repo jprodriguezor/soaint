@@ -23,6 +23,8 @@ export const getAgragarObservacionesDialogVisible = createSelector(rootPath, (st
 
 export const getRejectDialogVisible = createSelector(rootPath, (state: State) => state.rejectDialogVisible);
 
+export const getDetailsDialogVisible = createSelector(rootPath, (state: State) => state.detailsDialogVisible);
+
 
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);

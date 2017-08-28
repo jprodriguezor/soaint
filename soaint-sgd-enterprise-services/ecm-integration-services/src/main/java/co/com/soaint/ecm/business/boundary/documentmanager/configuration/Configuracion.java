@@ -1,106 +1,101 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @author sarias
  */
-public final class Configuracion {
+@Component
+public class Configuracion {
 
     @Value("${formatoNombreSerie}")
-    private static String formatoNombreSerie;
+    private String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
-    private static String formatoNombreSubserie;
+    private String aformatoNombreSubserie;
     @Value("${claseSubserie}")
-    private static String claseSubserie;
+    private String aclaseSubserie;
     @Value("${claseSerie}")
-    private static String claseSerie;
-
+    private String aclaseSerie;
     @Value("${claseDependencia}")
-    private static String claseDependencia;
+    private String aclaseDependencia;
     @Value("${claseBase}")
-    private static String claseBase;
+    private String aclaseBase;
     @Value("${metadatoCodBase}")
-    private static String metadatoCodBase;
+    private String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
-    private static String metadatoCodDependencia;
-
+    private String ametadatoCodDependencia;
     @Value("${metadatoCodSubserie}")
-    private static String metadatoCodSubserie;
+    private String ametadatoCodSubserie;
     @Value("${metadatoCodSerie}")
-    private static String metadatoCodSerie;
+    private String ametadatoCodSerie;
     @Value("${metadatoCodUnidadAdminParent}")
-    private static String metadatoCodUnidadAdminParent;
+    private String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
-    private static String ecm;
+    private String aecm;
+    @Value("${ALFRESCO_ATOMPUB_URL}")
+    private String aAlfrescoAtompubUrl;
+    @Value("${REPOSITORY_ID}")
+    private String aRepositoryId;
+    @Value("${ALFRESCO_USER}")
+    private String aAlfrescoUser;
+    @Value("${ALFRESCO_PASS}")
+    private String aAlfrescoPass;
 
-
-
-
-
-
-
+    private Configuracion(){
+        /*
+         *a
+          */
+    }
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
      *
      * @param name Nombre del parametro
      * @return Retorna el valor de la propiedad que se pide
      */
-    public static String getPropiedad(String name) {
+    public String getPropiedad(String name) {
 
         switch (name) {
             case "formatoNombreSerie":
-                return "1.2_3";
+                return aformatoNombreSerie != null ? aformatoNombreSerie : "1.2_3";
             case "formatoNombreSubserie":
-                return "1.2.4_5";
+                return aformatoNombreSubserie != null ? aformatoNombreSubserie : "1.2.4_5";
 
             case "claseSubserie":
-                return "CM_Subserie";
+                return aclaseSubserie != null ? aclaseSubserie : "CM_Subserie";
 
             case "claseSerie":
-                return "CM_Serie";
+                return aclaseSerie != null ? aclaseSerie : "CM_Serie";
 
             case "claseDependencia":
-                return "CM_Unidad_Administrativa";
+                return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";
             case "claseBase":
-                return "CM_Unidad_Base";
+                return aclaseBase != null ? aclaseBase : "CM_Unidad_Base";
 
             case "metadatoCodDependencia":
-                return "CodigoDependencia";
+                return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
 
             case "metadatoCodBase":
-                return "CodigoBase";
+                return ametadatoCodBase != null ? ametadatoCodBase : "CodigoBase";
 
             case "metadatoCodSubserie":
-                return "CodigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "CodigoSubserie";
 
             case "metadatoCodSerie":
-                return "CodigoSerie";
+                return ametadatoCodSerie != null ? ametadatoCodSerie : "CodigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return "CodUnidadPadre";
-
+                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
+            case "ALFRESCO_ATOMPUB_URL":
+                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "";
+            case "REPOSITORY_ID":
+                return aRepositoryId != null ? aRepositoryId : "-default-";
+            case "ALFRESCO_USER":
+                return aAlfrescoUser != null ? aAlfrescoUser : "admin";
+            case "ALFRESCO_PASS":
+                return aAlfrescoPass != null ? aAlfrescoPass : "admin";
             default:
                 return "";
         }
-//        private static Properties propiedades = null;
-//        public static void inicializacion() {
-//
-//            if (propiedades == null) {
-//                propiedades = new Properties ( );
-//            }
-//
-//        }
-//        static final Logger LOGGER = Logger.getLogger (Configuracion.class.getName ( ));
-//        String propiedad = null;
-//        try {
-//            inicializacion ( );
-//            propiedades.load (new FileInputStream ("ecm-integration-services/src/main/resources/configurationServices.properties"));
-//            propiedad = propiedades.getProperty (name);
-//        } catch (Exception e) {
-//            e.printStackTrace ( );
-//            LOGGER.info ("Error al leer properties de configuracion");
-//        }
-//        return propiedad;
     }
 }

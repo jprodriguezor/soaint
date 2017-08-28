@@ -2,13 +2,15 @@
 <div class="ui-g">
 
   <div class="card card-w-title" *ngIf="showContactForm !== true">
-    <h1>Lista de Contactos</h1>
+    <h1>Datos de Contactos</h1>
     <div class="ui-g ui-fluid">
 
       <!--Direccion-->
       <div class="ui-fluid">
         <p-dataTable [value]="contacts" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true">
+                     [paginator]="true" [rows]="10" [responsive]="true"
+                     emptyMessage="No se encontraron resultados"
+        >
           <p-header>
 
             <div class="ui-helper-clearfix">

@@ -1,14 +1,19 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciasDTO;
 import co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -53,6 +58,7 @@ public class DependenciaControl {
      * @param ideFunci
      * @return
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DependenciaDTO> obtenerDependenciasByFuncionario(BigInteger ideFunci) {
         List<DependenciaDTO> dependenciaDTOList = new ArrayList<>();
         List<String> codOrgaAdmiList = em.createNamedQuery("TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci")
@@ -69,5 +75,54 @@ public class DependenciaControl {
 
         }
         return dependenciaDTOList;
+    }
+
+    /**
+     *
+     * @param codOrg
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public DependenciaDTO listarDependenciaByCodigo(String codOrg)throws BusinessException, SystemException{
+        try {
+            OrganigramaItemDTO organigramaItemDTO = organigramaAdministrativoControl.consultarElementoByCodOrg(codOrg);
+            return dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin()));
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("dependencia.dependencia_not_exist_by_codOrg")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public DependenciasDTO listarDependenciasByCodigo(String[] codigos)throws SystemException{
+        List<DependenciaDTO> dependencias = new ArrayList<>();
+        try {
+            organigramaAdministrativoControl.consultarElementosByCodOrg(codigos).stream().forEach(organigramaItemDTO ->
+                    dependencias.add(dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin()))));
+            return DependenciasDTO.newInstance().dependencias(dependencias).build();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }

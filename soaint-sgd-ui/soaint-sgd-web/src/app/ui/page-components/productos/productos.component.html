@@ -4,7 +4,7 @@
 <div class="card card-w-title">
   <h1>DataTable</h1>
   <p-dataTable [value]="model.productos" selectionMode="single" [(selection)]="model.selectedProducto"
-               [paginator]="true" [rows]="10" [responsive]="true">
+               [paginator]="true" [rows]="10" [responsive]="true" emptyMessage="No se encontraron resultados">
     <p-header>Lista De Productos</p-header>
     <p-column field="id" header="ID" [sortable]="true"></p-column>
     <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>

@@ -17,6 +17,7 @@ public class Authenticator implements ClientRequestFilter {
         this.password = password;
     }
 
+    @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
         MultivaluedMap<String, Object> headers = requestContext.getHeaders();
         final String basicAuthentication = getBasicAuthentication();

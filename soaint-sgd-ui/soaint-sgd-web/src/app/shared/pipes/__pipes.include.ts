@@ -3,12 +3,14 @@
 import {EllipsisPipe} from './ellipsis';
 import {DropdownItemPipe, DropdownItemPipeFullName} from './dropdown-item';
 import {DropdownSingleItemPipe} from './dropdown-single-item';
+import {ConstantCodePipe} from "./constant-code-pipe.pipe";
 
 export const PIPES = [
   EllipsisPipe,
   DropdownItemPipe,
   DropdownSingleItemPipe,
-  DropdownItemPipeFullName
+  DropdownItemPipeFullName,
+  ConstantCodePipe
 ];
 //
 // @NgModule({

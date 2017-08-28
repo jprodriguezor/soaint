@@ -18,6 +18,7 @@ import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-genera
 import {createSelector} from 'reselect';
 import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-properties/radicacion-properties';
 
 @Component({
   selector: 'app-datos-generales',
@@ -32,6 +33,7 @@ import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/sta
 export class DatosGeneralesComponent implements OnInit {
 
   form: FormGroup;
+  visibility: any = {};
 
   radicadosReferidos: Array<{ nombre: string }> = [];
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
@@ -71,6 +73,8 @@ export class DatosGeneralesComponent implements OnInit {
       'nroRadicado': [null],
       'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
       'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
+      'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
+      'numeroGuia': [{value: null, disabled: true}, Validators.required],
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
       'unidadTiempo': [{value: null, disabled: !this.editable}],
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
@@ -92,6 +96,9 @@ export class DatosGeneralesComponent implements OnInit {
     this.bindToValidationErrorsOf('tipologiaDocumental');
     this.bindToValidationErrorsOf('numeroFolio');
     this.bindToValidationErrorsOf('asunto');
+    this.bindToValidationErrorsOf('tipoAnexosDescripcion');
+    this.bindToValidationErrorsOf('empresaMensajeria');
+    this.bindToValidationErrorsOf('numeroGuia');
   }
 
   ngOnInit(): void {
@@ -114,11 +121,21 @@ export class DatosGeneralesComponent implements OnInit {
       this.onSelectTipologiaDocumental(value);
     });
 
+    this.form.get('medioRecepcion').valueChanges.subscribe((value) => {
+      if (value && (value.codigo === MEDIO_RECEPCION_EMPRESA_MENSAJERIA)) {
+        this.visibility.empresaMensajeria = true;
+        this.visibility.numeroGuia = true;
+      } else if (this.visibility.empresaMensajeria && this.visibility.numeroGuia) {
+        delete this.visibility.empresaMensajeria;
+        delete this.visibility.numeroGuia;
+      }
+    });
+
     this.form.get('reqDigit').valueChanges.distinctUntilChanged().subscribe((value) => {
       if (value) {
-        this.form.get('reqDigitInmediata').enable();
+        this.visibility.reqDigitInmediata = true;
       } else {
-        this.form.get('reqDigitInmediata').disable();
+        delete this.visibility.reqDigitInmediata;
       }
     });
 
@@ -143,7 +160,7 @@ export class DatosGeneralesComponent implements OnInit {
       ...insertVal,
       ...this.descripcionAnexos.filter(
         value => value.tipoAnexo.nombre !== tipoAnexo.nombre ||
-        value.descripcion !== descripcion
+          value.descripcion !== descripcion
       )
     ];
     this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);

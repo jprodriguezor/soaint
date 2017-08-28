@@ -31,7 +31,7 @@ public class MediosRecepcionGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-        //TODO: add trafic log
+
         log.info("MediosRecepcionGatewayApi - [trafic] - listing MediosRecepcion");
         Response response = clmediosRecepcionClientent.list();
         String responseContent = response.readEntity(String.class);

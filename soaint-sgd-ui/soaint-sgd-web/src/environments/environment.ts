@@ -3,6 +3,7 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -40,9 +41,18 @@ export const environment = {
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
-  asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
-  reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
+
+  // Asignacion Enpoints
+  asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
+  reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
+  obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
+  obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
+  obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
+  obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
+  obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
+  obtenerDocumento:`${ecmHost}/descargarDocumentoECM/?identificadorDoc=`
 };

@@ -54,6 +54,15 @@ public class GestionarAsignacion {
 
     /**
      *
+     * @param asignacion
+     * @throws SystemException
+     */
+    public void actualizarTipoProceso(AsignacionDTO asignacion) throws SystemException {
+        control.actualizarTipoProceso(asignacion);
+    }
+
+    /**
+     *
      * @param ideFunci
      * @param nroRadicado
      * @return

@@ -97,11 +97,10 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
   // Unsubscribers
   activeTaskUnsubscriber: Subscription;
-  radicacionUnsubscriber: Subscription;
   sedeUnsubscriber: Subscription;
   validDatosGeneralesUnsubscriber: Subscription;
   reqDigitInmediataUnsubscriber: Subscription;
-  radicarChildrensValid$: Observable<any>;
+
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _store: Store<RootState>,
@@ -167,6 +166,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.valueRemitente = this.datosRemitente.form.value;
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
+
     const agentesList = [];
     const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
 
@@ -331,7 +331,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   getDocumento(): DocumentoDTO {
     const documento: DocumentoDTO = {
       idePpdDocumento: null,
-      codTipoDoc: null,
+      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
       fecDocumento: this.date.toISOString(),
       asunto: this.valueGeneral.asunto,
       nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
@@ -361,8 +361,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       codSede: null,
       codDependencia: null,
       reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
-      codEmpMsj: null,
-      nroGuia: null,
+      codEmpMsj: this.datosGenerales.form.get('empresaMensajeria').value,
+      nroGuia: this.datosGenerales.form.get('numeroGuia').value,
       fecVenGestion: null,
       codEstado: null,
       inicioConteo: this.valueGeneral.inicioConteo || ''

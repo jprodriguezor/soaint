@@ -4,6 +4,7 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -11,6 +12,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
+import java.util.List;
 
 @ApiDelegator
 @Log4j2
@@ -50,6 +53,22 @@ public class CorrespondenciaClient {
                 .get();
     }
 
+    public Response listarObservaciones(BigInteger idCorrespondencia) {
+        log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/documento-web-api/documento/listar-observaciones/" + idCorrespondencia)
+                .request()
+                .get();
+    }
+
+    public Response obtenerCorrespondenciaPorNroRadicado(String nroRadicado) {
+        log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/" + nroRadicado)
+                .request()
+                .get();
+    }
+
     public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
         log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -71,9 +90,25 @@ public class CorrespondenciaClient {
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.request()
-                .header("Authorization","Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
+    }
+
+    public Response registrarObservacion(PpdTrazDocumentoDTO observacion) {
+        log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/documento-web-api/documento/registrar-observacion")
+                .request()
+                .post(Entity.json(observacion));
+    }
+
+    public Response obtnerContantesPorCodigo(String codigos) {
+        log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        WebTarget target = wt.path("/constantes-web-api/constantes").queryParam("codigos", codigos);
+
+        return target.request().get();
     }
 }

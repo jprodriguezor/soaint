@@ -1,0 +1,220 @@
+<div class="ui-g ui-fluid" *ngIf="remitente !== null">
+
+
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipoPers">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de persona</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{ remitente.codTipoPers | constantCode: constantesList }}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipDocIdent">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Tipo de documento</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+
+              <label style="color: inherit">{{ remitente.codTipDocIdent | constantCode: constantesList }}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.nit">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <!--nit-->
+            <label>No Documento identidad</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{ remitente.nit }}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom style="align-content: flex-end" [hidden]="!remitente.nroDocuIdentidad">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Número documento identidad</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{ remitente.nroDocuIdentidad | constantCode: constantesList}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.razonSocial">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+          <label>Razon social</label>
+        </span>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <label
+              style="color: inherit">{{remitente.razonSocial}}</label>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codEnCalidad">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+          <label>Actual en calidad</label>
+        </span>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <label
+              style="color: inherit">{{ remitente.codEnCalidad | constantCode: constantesList }}</label>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.nombre">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+          <label>Nombre y apellidos</label>
+        </span>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <label style="color: inherit">{{ remitente.nombre }}</label>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12" *ngIf="contactos.length > 0" padding-top >
+    <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
+      <div class="ui-g-12">
+
+        <p-dataTable [value]="contactos" selectionMode="single" emptyMessage="No se encontraron resultados"
+                     [paginator]="true" [rows]="10" [responsive]="true">
+
+          // Header
+          <p-header>Datos de contacto y dirección</p-header>
+
+          <p-column header="">
+            <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+
+              <div class="ui-sm-12 ui-md-12 ui-g-5 ui-lg-5">
+                <div class="ui-g-12" *ngIf="contact.corrElectronico">
+                  <i class="fa ui-icon-contact-mail"></i>
+                  <span class="table-text-custom">
+                      {{ contact.corrElectronico }}
+                    </span>
+
+                </div>
+                <div class="ui-g-12" *ngIf="contact.telFijo">
+                  <i class="fa ui-icon-contact-phone"></i>
+                  <span class="table-text-custom">
+                    {{ contact.telFijo }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.celular">
+                  <i class="fa ui-icon-smartphone"></i>
+                  <span class="table-text-custom">
+                    {{ contact.celular }}
+                    </span>
+
+                </div>
+              </div>
+              <div class="ui-sm-12 ui-md-12 ui-g-7 ui-lg-7">
+
+                <div class="ui-g-12" *ngIf="contact.direccion">
+                  <i class="fa ui-icon-location-on"></i>
+                  <span class="table-text-custom">
+                        {{ contact.direccion }}
+                        </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.codPais">
+                    <span class="table-text-custom">
+                      <b>País: &nbsp;</b>
+                      {{ contact.codPais | constantCode: constantesList  }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.codDepartamento">
+                    <span class="table-text-custom">
+                      <b>Departamento: &nbsp;</b>
+                      {{ contact.codDepartamento | constantCode: constantesList}}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.codMunicipio">
+                    <span class="table-text-custom">
+                      <b>Municipio: &nbsp;</b>
+                    {{ contact.codMunicipio | constantCode: constantesList }}
+                    </span>
+                </div>
+
+              </div>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui-g-12" padding-bottom [hidden]="!remitente.codSede && !remitente.codDependencia">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Sede Administrativa</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{ remitente.codSede | constantCode:constantesList}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="align-content: flex-end">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Dependencia/Grupo</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{ remitente.codDependencia | constantCode:constantesList}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

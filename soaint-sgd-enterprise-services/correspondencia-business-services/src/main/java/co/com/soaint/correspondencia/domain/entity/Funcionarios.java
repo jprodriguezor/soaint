@@ -10,14 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
 /**
- *
  * @author jrodriguez
  */
 @Data
@@ -27,18 +25,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "FUNCIONARIOS")
 @NamedQueries({
-    @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
+        @NamedQuery(name = "Funcionarios.findAll", query = "SELECT f FROM Funcionarios f"),
         @NamedQuery(name = "Funcionarios.findByLoginNameAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
-                "f.corrElectronico, f.loginName, f.estado) " +
+                "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
                 "FROM Funcionarios f " +
-                "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.estado) = TRIM(:ESTADO)"),
+                "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "Funcionarios.findAllByCodOrgaAdmiAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
-                "f.corrElectronico, f.loginName, f.estado) " +
+                "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
                 "FROM Funcionarios f " +
                 "INNER JOIN f.tvsOrgaAdminXFunciPkList o " +
-                "WHERE TRIM(f.estado) = TRIM(:ESTADO) AND o.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORGA_ADMI")})
+                "WHERE TRIM(f.auditColumns.estado) = TRIM(:ESTADO) AND o.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORGA_ADMI")})
 public class Funcionarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,17 +63,9 @@ public class Funcionarios implements Serializable {
     @Basic(optional = false)
     @Column(name = "LOGIN_NAME")
     private String loginName;
-    @Column(name = "ESTADO")
-    private String estado;
-    @Column(name = "FEC_CAMBIO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCambio;
-    @Column(name = "FEC_CREACION")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecCreacion;
-    @Column(name = "COD_USUARIO_CREA")
-    private String codUsuarioCrea;
+    @Embedded
+    private AuditColumns auditColumns;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "funcionarios")
     private List<TvsOrgaAdminXFunciPk> tvsOrgaAdminXFunciPkList;
-    
+
 }

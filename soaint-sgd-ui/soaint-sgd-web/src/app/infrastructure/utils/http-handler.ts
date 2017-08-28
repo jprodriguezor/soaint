@@ -17,7 +17,6 @@ export class HttpHandler {
   private token$: Observable<string>;
 
   constructor(private _http: Http, private _store: Store<State>) {
-
     this.token$ = _store.select(s => s.auth.token);
   }
 
@@ -73,7 +72,11 @@ export class HttpHandler {
 
   handleResponse(request$: Observable<Response>, token): Observable<Response> {
     return request$.map((res: Response) => {
-      return res.json()
+      console.log(res.headers.get('Content-Type'));
+      if ('application/json' === res.headers.get('Content-Type'))
+        return res.json()
+      else
+        return res;
     }).catch(res => {
       if (res.status === 401) {
         if (token !== null) {

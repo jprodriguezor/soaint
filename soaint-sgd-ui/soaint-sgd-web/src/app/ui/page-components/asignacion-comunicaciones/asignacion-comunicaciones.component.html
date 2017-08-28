@@ -139,15 +139,16 @@
                 </ng-template>
               </p-column>
               <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
-                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Ver detalles"
-                          style="width: auto;"></button>
+                          style="width: auto;" (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
-                <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+                <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Agregar observaciones"
-                          style="width: auto;" (click)="showAddObservationsDialog()"></button>
+                          style="width: auto;"
+                          (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
                 </ng-template>
               </p-column>
             </p-dataTable>
@@ -178,8 +179,17 @@
       </p-panel>
     </div>
   </div>
-  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="false" positionTop="20"
+            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
+            (onHide)="hideDetailsDialog()" [width]="1000">
+    <div style="overflow: auto">
+      <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+    </div>
+  </p-dialog>
+
+  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [contentStyle]="{'overflow':'scroll'}"
             (onHide)="hideJustificationPopup()" [width]="800">
     <p-header>
       Redireccionar
@@ -196,8 +206,7 @@
       </div>
     </p-footer>
   </p-dialog>
-  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
       Agregar observaciones

@@ -26,8 +26,7 @@
               (click)="hideDialog()">
       </button>
       <button pButton type="button" label="Agregar"
-              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              (click)="addObservation()">
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px" (click)="addObservation()">
       </button>
     </div>
   </div>
@@ -36,18 +35,16 @@
     <div class="ui-g-12">
       <p-dataTable emptyMessage="No se encontraron resultados" [paginator]="true" [rows]="5" [responsive]="true"
                    [value]="observaciones">
-        <p-column header="Funcionario" [sortable]="true"></p-column>
-        <p-column header="Fecha y hora" [sortable]="true">
-          <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-            {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+        <p-column header="Funcionario" [sortable]="true" field="nomFuncionario">
+          <ng-template let-col let-observacion="rowData" pTemplate="body">
+            {{observacion.nomFuncionario + ' ' + observacion.valApellido1 + ' ' + observacion.valApellido2}}
           </ng-template>
         </p-column>
-        <p-column header="Estado" [sortable]="true"
-                  [style]="{'width':'100px'}"></p-column>
-        <p-column header="Observaciones" [sortable]="true"></p-column>
+        <p-column header="Fecha y hora" [sortable]="true" field="fecha"></p-column>
+        <p-column header="Estado" [sortable]="true" [style]="{'width':'100px'}" field="estado"></p-column>
+        <p-column header="Observaciones" [sortable]="true" field="observacion"></p-column>
         <p-column header="Causal de devolución" [sortable]="true"></p-column>
         <p-column header="Dependencia asignada" [sortable]="true"></p-column>
-
       </p-dataTable>
     </div>
   </div>

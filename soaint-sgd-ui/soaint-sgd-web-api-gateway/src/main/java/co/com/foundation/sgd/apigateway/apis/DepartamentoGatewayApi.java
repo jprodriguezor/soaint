@@ -28,7 +28,7 @@ public class DepartamentoGatewayApi {
     @Path("/{pais}")
     @JWTTokenSecurity
     public Response list(@PathParam("pais") String pais) {
-        //TODO: add trafic log
+
         log.info("DepartamentoGatewayApi - [trafic] - listing Departamento");
         Response response = client.listarPorPais(pais);
         String responseContent = response.readEntity(String.class);

@@ -2,7 +2,7 @@ package co.com.foundation.sgd.apigateway.webservice.client;
 
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SecurityAPIService;
-import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SystemException_Exception;
+import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.SystemExceptionException;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +39,7 @@ public class SecurityCardbridgeClient {
         return service;
     }
 
-    public AuthenticationResponseContext verifyCredentials(String login, String password) throws SystemException_Exception {
+    public AuthenticationResponseContext verifyCredentials(String login, String password) throws SystemExceptionException {
         return getService().getSecurityAPIPort().verifyCredentials(login, password);
     }
 }
