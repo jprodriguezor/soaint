@@ -1,5 +1,7 @@
 package co.com.soaint.funcionario.integration.service.rest;
 
+import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -49,6 +51,21 @@ public class FuncionariosWebApi {
     public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(@PathParam("cod_dependencia")final String codDependencia,
                                                                           @PathParam("rol")final String rol,
                                                                           @PathParam("cod_estado")final String codEstado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar funcionarios por dependencia, rol y estado");
         return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
+    }
+
+    /**
+     *
+     * @param credenciales
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @POST
+    @Path("/funcionarios/verificar-credenciales")
+    public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
+        log.info("processing rest request - verificar credenciales");
+        return boundary.verificarCredenciales(credenciales);
     }
 }

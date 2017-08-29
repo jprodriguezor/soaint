@@ -1,5 +1,6 @@
 package co.com.soaint.funcionario.apis.delegator.funcionarios;
 
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -24,13 +25,12 @@ public class FuncionariosWebApiClient {
     private String endpoint = "";
 
     /**
-     *
      * @param codDependencia
      * @param codEstado
      * @return
      * @throws SystemException
      */
-    public FuncionariosDTO listarFuncionariosByDependenciaAndEstado(String codDependencia, String codEstado)throws SystemException{
+    public FuncionariosDTO listarFuncionariosByDependenciaAndEstado(String codDependencia, String codEstado) throws SystemException {
         log.info("Funcionarios - [trafic] - listing Funcionarios with endpoint: " + endpoint);
         try {
             WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -39,12 +39,36 @@ public class FuncionariosWebApiClient {
                     .get();
             if (Response.Status.OK.getStatusCode() == respuesta.getStatus()) {
                 return respuesta.readEntity(FuncionariosDTO.class);
-            }
-            else{
+            } else {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionarios.error consultando servicio de negocio GestionarFuncionarios")
                         .buildSystemException();
             }
+        } catch (SystemException e) {
+            log.error("Api Delegator - a api delegator error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public FuncionarioDTO listarFuncionarioByLoginName(String loginName)throws SystemException {
+        try {
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios/" + loginName)
+                    .request()
+                    .get();
+            if (Response.Status.OK.getStatusCode() == respuesta.getStatus()) {
+                return respuesta.readEntity(FuncionarioDTO.class);
+            }
+            else
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionarios.error consultando servicio de negocio GestionarFuncionarios")
+                        .buildSystemException();
         } catch (SystemException e) {
             log.error("Api Delegator - a api delegator error has occurred", e);
             throw e;

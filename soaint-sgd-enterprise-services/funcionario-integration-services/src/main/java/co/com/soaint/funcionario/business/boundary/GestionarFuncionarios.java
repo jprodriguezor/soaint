@@ -1,5 +1,7 @@
 package co.com.soaint.funcionario.business.boundary;
 
+import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -24,8 +26,27 @@ public class GestionarFuncionarios {
     @Autowired
     FuncionariosControl control;
 
+    /**
+     *
+     * @param codDependencia
+     * @param rol
+     * @param codEstado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(String codDependencia, String rol, String codEstado) throws BusinessException, SystemException {
         return control.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
     }
 
+    /**
+     * 
+     * @param credenciales
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
+        return control.verificarCredenciales(credenciales);
+    }
 }

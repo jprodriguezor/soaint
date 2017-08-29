@@ -1,5 +1,7 @@
 package co.com.soaint.funcionario.integration.service.ws;
 
+import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -39,5 +41,9 @@ public class GestionarFuncionariosWS {
                                                                           @WebParam(name = "rol")final String rol,
                                                                           @WebParam(name = "cod-estado")final String codEstado) throws BusinessException, SystemException {
         return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
+    }
+    @WebMethod(action = "verificarCredenciales", operationName = "verificarCredenciales")
+    public FuncionarioDTO verificarCredenciales(@WebParam(name = "credenciales")final CredencialesDTO credenciales) throws BusinessException, SystemException {
+        return boundary.verificarCredenciales(credenciales);
     }
 }

@@ -1,5 +1,6 @@
 package co.com.soaint.funcionario.business.control;
 
+import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -34,6 +35,32 @@ public class FuncionariosControl {
     SecurityApiClient securityApiClient;
 
     /**
+     * 
+     * @param credenciales
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
+        FuncionarioDTO funcionario;
+        try {
+            FuncionarioDTO usuario = securityApiClient.verificarCredenciales(credenciales);
+            funcionario = funcionariosWebApiClient.listarFuncionarioByLoginName(usuario.getLoginName());
+            funcionario.setRoles(usuario.getRoles());
+            return funcionario;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param codDependencia
      * @param rol
      * @param codEstado
@@ -46,17 +73,9 @@ public class FuncionariosControl {
                 .funcionarios(new ArrayList<>())
                 .build();
         try {
-            List<FuncionarioDTO> usuariosRol = securityApiClient.listarUsusriosByRol(rol);
-            if (usuariosRol.isEmpty())
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("funcionario.funcionario_not_exist_by_rol")
-                        .buildBusinessException();
+            List<FuncionarioDTO> usuariosRol = listarUsuariosByRol(rol);
 
-            List<FuncionarioDTO> funcionariosDepenendencia = funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios();
-            if (funcionariosDepenendencia.isEmpty())
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("funcionario.funcionario_not_exist_by_codDependencia")
-                        .buildBusinessException();
+            List<FuncionarioDTO> funcionariosDepenendencia = listarFuncionariosByCodDependenciaAndEstado(codDependencia, codEstado);
 
             funcionariosDepenendencia.stream().forEach(funcionario -> {
                 FuncionarioDTO usuarioRol = usuariosRol.stream().filter(x -> x.getLoginName().equals(funcionario.getLoginName())).findFirst().get();
@@ -66,6 +85,60 @@ public class FuncionariosControl {
                 }
             });
             return funcionariosDTO;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(String codDependencia, String codEstado) throws BusinessException, SystemException {
+        try {
+            List<FuncionarioDTO> funcionariosDepenendencia = funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios();
+            if (funcionariosDepenendencia.isEmpty())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.funcionario_not_exist_by_codDependencia")
+                        .buildBusinessException();
+            return funcionariosDepenendencia;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param rol
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public List<FuncionarioDTO> listarUsuariosByRol(String rol) throws BusinessException, SystemException {
+        try {
+            List<FuncionarioDTO> usuariosRol = securityApiClient.listarUsusriosByRol(rol);
+            if (usuariosRol.isEmpty())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.funcionario_not_exist_by_rol")
+                        .buildBusinessException();
+            return usuariosRol;
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;

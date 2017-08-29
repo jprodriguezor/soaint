@@ -8,8 +8,6 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +35,6 @@ public class GestionarFuncionarios {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws BusinessException, SystemException {
         return control.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
@@ -49,8 +46,18 @@ public class GestionarFuncionarios {
      * @return
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(String codDependencia, String codEstado) throws SystemException {
         return control.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
+    }
+
+    /**
+     *
+     * @param loginName
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws BusinessException, SystemException {
+        return control.listarFuncionarioByLoginName(loginName);
     }
 }
