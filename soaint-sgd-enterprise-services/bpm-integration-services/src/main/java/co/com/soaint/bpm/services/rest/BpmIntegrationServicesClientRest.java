@@ -146,6 +146,20 @@ public class BpmIntegrationServicesClientRest {
     }
 
     /**
+     * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un tercero
+     * @param entradaProceso
+     * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
+     * @throws SystemException
+     */
+    @POST
+    @Path("/proceso/iniciar-tercero")
+    public RespuestaProcesoDTO iniciarProcesoPorTercero(EntradaProcesoDTO entradaProceso) throws SystemException {
+        log.info("processing rest request - iniciar proceso");
+        return proceso.iniciarProcesoPorTercero(entradaProceso);
+    }
+
+
+    /**
      * Permite completar una tarea asociada a un proceso
      *
      * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso

@@ -272,6 +272,40 @@ public class ProcessService implements IProcessServices {
 
     }
 
+
+    /**
+     * Permite iniciar un proceso y asignarle una tarea a una tercera persona
+     * @param entrada
+     * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
+     * @throws SystemException
+     */
+    @Override
+    public RespuestaProcesoDTO iniciarProcesoPorTercero(EntradaProcesoDTO entrada) throws SystemException {
+        try {
+
+            entrada.setUsuario(usuarioAdmin);
+            entrada.setPass(passAdmin);
+            RespuestaProcesoDTO processInstance = iniciarProcesoManual(entrada);
+            reasignarTarea(entrada);
+            return RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(processInstance.getCodigoProceso()))
+                    .nombreProceso(processInstance.getNombreProceso())
+                    .estado(String.valueOf(processInstance.getEstado()))
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .build();
+
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - iniciar - proceso ");
+        }
+
+    }
+
     /**
      * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un usuario
      *
