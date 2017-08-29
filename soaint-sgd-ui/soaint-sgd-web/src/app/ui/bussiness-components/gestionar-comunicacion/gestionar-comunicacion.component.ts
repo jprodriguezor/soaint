@@ -105,7 +105,6 @@ export class GestionarComunicacionComponent implements OnInit {
         procesoSeguir: this.procesoSeguir
       }
     });
-
   }
 
 

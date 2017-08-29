@@ -81,7 +81,7 @@ public class ProcesoClient {
     }
 
     public Response reasignarTarea(EntradaProcesoDTO entrada) {
-        log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - reasign Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/bpm/tareas/reasignar")
                 .request()
@@ -89,11 +89,19 @@ public class ProcesoClient {
     }
 
     public Response listarIntanciasProceso() {
-        log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
+        log.info("Task - [trafic] - list process instances with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         EntradaProcesoDTO entradaProcesoDTO = new EntradaProcesoDTO();
         entradaProcesoDTO.setIdProceso("proceso.correspondencia-entrada");
         return wt.path("/bpm/proceso/listar-instancias/")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
+    public Response obtenerVariablesTarea(EntradaProcesoDTO entradaProcesoDTO) {
+        log.info("Task - [trafic] - get task variables with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/proceso/listar-variables/")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }

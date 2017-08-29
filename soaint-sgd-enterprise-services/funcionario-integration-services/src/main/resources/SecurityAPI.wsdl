@@ -1,0 +1,478 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.soaint.com/services/security-cartridge/1.0.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="SecurityAPIService" targetNamespace="http://www.soaint.com/services/security-cartridge/1.0.0">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.soaint.com/services/security-cartridge/1.0.0" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.soaint.com/services/security-cartridge/1.0.0">
+            <xs:element name="actualizarUsuario" type="tns:actualizarUsuario"/>
+            <xs:element name="actualizarUsuarioResponse" type="tns:actualizarUsuarioResponse"/>
+            <xs:element name="crearRol" type="tns:crearRol"/>
+            <xs:element name="crearRolResponse" type="tns:crearRolResponse"/>
+            <xs:element name="crearUsuario" type="tns:crearUsuario"/>
+            <xs:element name="crearUsuarioResponse" type="tns:crearUsuarioResponse"/>
+            <xs:element name="eliminarRol" type="tns:eliminarRol"/>
+            <xs:element name="eliminarRolResponse" type="tns:eliminarRolResponse"/>
+            <xs:element name="eliminarUsuarioporNombre" type="tns:eliminarUsuarioporNombre"/>
+            <xs:element name="eliminarUsuarioporNombreResponse" type="tns:eliminarUsuarioporNombreResponse"/>
+            <xs:element name="getRolesbyUser" type="tns:getRolesbyUser"/>
+            <xs:element name="getRolesbyUserResponse" type="tns:getRolesbyUserResponse"/>
+            <xs:element name="listadoDeRoles" type="tns:listadoDeRoles"/>
+            <xs:element name="listadoDeRolesResponse" type="tns:listadoDeRolesResponse"/>
+            <xs:element name="listadoDeUsuarios" type="tns:listadoDeUsuarios"/>
+            <xs:element name="listadoDeUsuariosResponse" type="tns:listadoDeUsuariosResponse"/>
+            <xs:element name="obtenerDatosUsuario" type="tns:obtenerDatosUsuario"/>
+            <xs:element name="obtenerDatosUsuarioResponse" type="tns:obtenerDatosUsuarioResponse"/>
+            <xs:element name="obtenerUsuariosporRol" type="tns:obtenerUsuariosporRol"/>
+            <xs:element name="obtenerUsuariosporRolResponse" type="tns:obtenerUsuariosporRolResponse"/>
+            <xs:element name="verifyCredentials" type="tns:verifyCredentials"/>
+            <xs:element name="verifyCredentialsResponse" type="tns:verifyCredentialsResponse"/>
+            <xs:complexType name="getRolesbyUser">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="uid" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getRolesbyUserResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="getRolesbyUser" type="tns:listadoRoles"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listadoRoles">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="roles" type="tns:roles"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="roles">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rol" nillable="true" type="tns:rol"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="rol">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerUsuariosporRol">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="rol" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerUsuariosporRolResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="obtenerUsuariosporRol" type="tns:OperationPrincipalContextListStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="OperationPrincipalContextListStatus">
+                <xs:sequence>
+                    <xs:element name="successful" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                    <xs:element minOccurs="0" name="usuarios" type="tns:usuarios"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="usuarios">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="usuario" nillable="true" type="tns:PrincipalContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="PrincipalContext">
+                <xs:sequence>
+                    <xs:element name="username" type="xs:string"/>
+                    <xs:element name="firstName" type="xs:string"/>
+                    <xs:element name="lastName" type="xs:string"/>
+                    <xs:element name="email" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                    <xs:element minOccurs="0" name="roles" type="tns:roles"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="eliminarRol">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="rol" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="eliminarRolResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="eliminarRol" type="tns:OperationStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="OperationStatus">
+                <xs:sequence>
+                    <xs:element name="successful" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listadoDeRoles">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listadoDeRolesResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="listadoDeRoles" type="tns:OperationRolesListStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="OperationRolesListStatus">
+                <xs:sequence>
+                    <xs:element name="successful" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                    <xs:element minOccurs="0" name="roles" type="tns:roles"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearRol">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="rol" type="tns:rol"/>
+                    <xs:element minOccurs="0" name="usuario" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearRolResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="crearRol" type="tns:OperationStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="actualizarUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="usuario" type="tns:PrincipalContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="actualizarUsuarioResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="actualizarUsuario" type="tns:OperationStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerDatosUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="uid" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerDatosUsuarioResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="obtenerDatosUsuario" type="tns:OperationPrincipalStatusContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="OperationPrincipalStatusContext">
+                <xs:sequence>
+                    <xs:element name="successful" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                    <xs:element minOccurs="0" name="principalContext" type="tns:PrincipalContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verifyCredentials">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="login" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verifyCredentialsResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="verifyCredentials" type="tns:AuthenticationResponseContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="AuthenticationResponseContext">
+                <xs:sequence>
+                    <xs:element name="successful" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="principalContext" type="tns:PrincipalContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="eliminarUsuarioporNombre">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="uid" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="eliminarUsuarioporNombreResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="eliminarUsuarioporNombre" type="tns:OperationStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listadoDeUsuarios">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listadoDeUsuariosResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="listadoDeUsuarios" type="tns:OperationPrincipalContextListStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="usuario" type="tns:PrincipalContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearUsuarioResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="crearUsuario" type="tns:OperationPrincipalStatusContext"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="SystemException" type="tns:SystemException"/>
+            <xs:complexType name="SystemException">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="eliminarRolResponse">
+        <wsdl:part element="tns:eliminarRolResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listadoDeRoles">
+        <wsdl:part element="tns:listadoDeRoles" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="actualizarUsuarioResponse">
+        <wsdl:part element="tns:actualizarUsuarioResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearRol">
+        <wsdl:part element="tns:crearRol" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="actualizarUsuario">
+        <wsdl:part element="tns:actualizarUsuario" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearRolResponse">
+        <wsdl:part element="tns:crearRolResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getRolesbyUserResponse">
+        <wsdl:part element="tns:getRolesbyUserResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="eliminarUsuarioporNombre">
+        <wsdl:part element="tns:eliminarUsuarioporNombre" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="eliminarUsuarioporNombreResponse">
+        <wsdl:part element="tns:eliminarUsuarioporNombreResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearUsuario">
+        <wsdl:part element="tns:crearUsuario" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getRolesbyUser">
+        <wsdl:part element="tns:getRolesbyUser" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerUsuariosporRol">
+        <wsdl:part element="tns:obtenerUsuariosporRol" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listadoDeUsuariosResponse">
+        <wsdl:part element="tns:listadoDeUsuariosResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearUsuarioResponse">
+        <wsdl:part element="tns:crearUsuarioResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verifyCredentialsResponse">
+        <wsdl:part element="tns:verifyCredentialsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="eliminarRol">
+        <wsdl:part element="tns:eliminarRol" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerDatosUsuarioResponse">
+        <wsdl:part element="tns:obtenerDatosUsuarioResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listadoDeRolesResponse">
+        <wsdl:part element="tns:listadoDeRolesResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerDatosUsuario">
+        <wsdl:part element="tns:obtenerDatosUsuario" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SystemException">
+        <wsdl:part element="tns:SystemException" name="SystemException">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verifyCredentials">
+        <wsdl:part element="tns:verifyCredentials" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerUsuariosporRolResponse">
+        <wsdl:part element="tns:obtenerUsuariosporRolResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listadoDeUsuarios">
+        <wsdl:part element="tns:listadoDeUsuarios" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="SecurityAPI">
+        <wsdl:operation name="getRolesbyUser">
+            <wsdl:input message="tns:getRolesbyUser" name="getRolesbyUser">
+            </wsdl:input>
+            <wsdl:output message="tns:getRolesbyUserResponse" name="getRolesbyUserResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerUsuariosporRol">
+            <wsdl:input message="tns:obtenerUsuariosporRol" name="obtenerUsuariosporRol">
+            </wsdl:input>
+            <wsdl:output message="tns:obtenerUsuariosporRolResponse" name="obtenerUsuariosporRolResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="eliminarRol">
+            <wsdl:input message="tns:eliminarRol" name="eliminarRol">
+            </wsdl:input>
+            <wsdl:output message="tns:eliminarRolResponse" name="eliminarRolResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listadoDeRoles">
+            <wsdl:input message="tns:listadoDeRoles" name="listadoDeRoles">
+            </wsdl:input>
+            <wsdl:output message="tns:listadoDeRolesResponse" name="listadoDeRolesResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearRol">
+            <wsdl:input message="tns:crearRol" name="crearRol">
+            </wsdl:input>
+            <wsdl:output message="tns:crearRolResponse" name="crearRolResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="actualizarUsuario">
+            <wsdl:input message="tns:actualizarUsuario" name="actualizarUsuario">
+            </wsdl:input>
+            <wsdl:output message="tns:actualizarUsuarioResponse" name="actualizarUsuarioResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerDatosUsuario">
+            <wsdl:input message="tns:obtenerDatosUsuario" name="obtenerDatosUsuario">
+            </wsdl:input>
+            <wsdl:output message="tns:obtenerDatosUsuarioResponse" name="obtenerDatosUsuarioResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verifyCredentials">
+            <wsdl:input message="tns:verifyCredentials" name="verifyCredentials">
+            </wsdl:input>
+            <wsdl:output message="tns:verifyCredentialsResponse" name="verifyCredentialsResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:SystemException" name="SystemException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="eliminarUsuarioporNombre">
+            <wsdl:input message="tns:eliminarUsuarioporNombre" name="eliminarUsuarioporNombre">
+            </wsdl:input>
+            <wsdl:output message="tns:eliminarUsuarioporNombreResponse" name="eliminarUsuarioporNombreResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listadoDeUsuarios">
+            <wsdl:input message="tns:listadoDeUsuarios" name="listadoDeUsuarios">
+            </wsdl:input>
+            <wsdl:output message="tns:listadoDeUsuariosResponse" name="listadoDeUsuariosResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearUsuario">
+            <wsdl:input message="tns:crearUsuario" name="crearUsuario">
+            </wsdl:input>
+            <wsdl:output message="tns:crearUsuarioResponse" name="crearUsuarioResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="SecurityAPIServiceSoapBinding" type="tns:SecurityAPI">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getRolesbyUser">
+            <soap:operation soapAction="getRolesbyUser" style="document"/>
+            <wsdl:input name="getRolesbyUser">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getRolesbyUserResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerUsuariosporRol">
+            <soap:operation soapAction="obtenerUsuariosporRol" style="document"/>
+            <wsdl:input name="obtenerUsuariosporRol">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerUsuariosporRolResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="eliminarRol">
+            <soap:operation soapAction="eliminarRol" style="document"/>
+            <wsdl:input name="eliminarRol">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="eliminarRolResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listadoDeRoles">
+            <soap:operation soapAction="listadoDeRoles" style="document"/>
+            <wsdl:input name="listadoDeRoles">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listadoDeRolesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearRol">
+            <soap:operation soapAction="crearRol" style="document"/>
+            <wsdl:input name="crearRol">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="crearRolResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="actualizarUsuario">
+            <soap:operation soapAction="actualizarUsuario" style="document"/>
+            <wsdl:input name="actualizarUsuario">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="actualizarUsuarioResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerDatosUsuario">
+            <soap:operation soapAction="obtenerDatosUsuario" style="document"/>
+            <wsdl:input name="obtenerDatosUsuario">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerDatosUsuarioResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verifyCredentials">
+            <soap:operation soapAction="verifyCredentials" style="document"/>
+            <wsdl:input name="verifyCredentials">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="verifyCredentialsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SystemException">
+                <soap:fault name="SystemException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="eliminarUsuarioporNombre">
+            <soap:operation soapAction="eliminarUsuarioporNombre" style="document"/>
+            <wsdl:input name="eliminarUsuarioporNombre">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="eliminarUsuarioporNombreResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listadoDeUsuarios">
+            <soap:operation soapAction="listadoDeUsuarios" style="document"/>
+            <wsdl:input name="listadoDeUsuarios">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listadoDeUsuariosResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearUsuario">
+            <soap:operation soapAction="crearUsuario" style="document"/>
+            <wsdl:input name="crearUsuario">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="crearUsuarioResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="SecurityAPIService">
+        <wsdl:port binding="tns:SecurityAPIServiceSoapBinding" name="SecurityAPIPort">
+            <soap:address location="http://192.168.3.242:28080/Security-Cartridge/SecurityAPI"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
