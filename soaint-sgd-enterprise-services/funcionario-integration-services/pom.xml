@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>funcionario-business-services</artifactId>
+    <artifactId>funcionario-integration-services</artifactId>
     <packaging>war</packaging>
 
-    <name>funcionario-business-services</name>
+    <name>funcionario-integration-services</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -285,7 +285,7 @@
     </dependencies>
 
     <build>
-        <finalName>funcionario-business-services</finalName>
+        <finalName>funcionario-integration-services</finalName>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -359,6 +359,37 @@
                     <skip>false</skip>
                 </configuration>
             </plugin>
+            <!-- Plugin para generar el cliente del servicio-->
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlDirectory>
+                                src/main/resources
+                            </wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>SecurityAPI.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlLocation>/*</wsdlLocation>
+                            <sourceDestDir>
+                                ${basedir}/target/generated-sources
+                            </sourceDestDir>
+                            <!-- Needed with JAXP 1.5, see https://netbeans.org/bugzilla/show_bug.cgi?id=241570#c2 -->
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 
