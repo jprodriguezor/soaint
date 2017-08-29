@@ -49,7 +49,7 @@ public class FuncionariosWebApi {
     @GET
     @Path("/funcionarios/{login_name}/{estado}")
     public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(@PathParam("login_name") final String loginName, @PathParam("estado") final String estado) throws BusinessException, SystemException {
-        log.info("processing rest request - listar funcionarios por login_name");
+        log.info("processing rest request - listar funcionarios por login_name and estado");
         return boundary.listarFuncionarioByLoginNameAndEstado(loginName, estado);
     }
 
@@ -64,6 +64,20 @@ public class FuncionariosWebApi {
     public FuncionariosDTO listarFuncionariosByCodDependenciaAndCodEstado(@PathParam("cod_dependencia") final String codDependencia, @PathParam("cod_estado") final String codEstado) throws SystemException {
         log.info("processing rest request - listar funcionarios por dependencia");
         return boundary.listarFuncionariosByCodDependenciaAndCodEstado(codDependencia, codEstado);
+    }
+
+    /**
+     *
+     * @param loginName
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/{login_name}")
+    public FuncionarioDTO listarFuncionarioByLoginName(@PathParam("login_name") final String loginName) throws BusinessException, SystemException {
+        log.info("processing rest request - listar funcionarios por login_name");
+        return boundary.listarFuncionarioByLoginName(loginName);
     }
 
 }

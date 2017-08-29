@@ -100,4 +100,35 @@ public class FuncionariosControl {
                     .buildSystemException();
         }
     }
+
+    /**
+     *
+     * @param loginName
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws BusinessException, SystemException {
+        try {
+            FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByLoginName", FuncionarioDTO.class)
+                    .setParameter("LOGIN_NAME", loginName)
+                    .getSingleResult();
+
+            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
+            return funcionario;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("funcionarios.funcionario_not_exist_by_loginName")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }
