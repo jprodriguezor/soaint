@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/filter';
@@ -52,7 +53,10 @@ export class Effects {
     .ofType(actions.ActionTypes.START_TASK)
     .map(toPayload)
     .switchMap(
-      (payload) => this._sandbox.startTask(payload)
+      (payload) => this._sandbox.getTaskVariables(payload)
+        .mergeMap((taskVariables) => this._sandbox.startTask(payload)
+          .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
+          ))
         .map((response: any) => new actions.StartTaskSuccessAction(response))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );

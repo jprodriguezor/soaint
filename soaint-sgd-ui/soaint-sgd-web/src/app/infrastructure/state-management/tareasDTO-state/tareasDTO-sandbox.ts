@@ -8,7 +8,7 @@ import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
-import {TASK_DIGITALIZAR_DOCUMENTO, TASK_RADICACION_ENTRADA} from './task-properties';
+import {TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_RADICACION_ENTRADA} from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
@@ -43,16 +43,10 @@ export class Sandbox {
       Object.assign({}, clonePayload, this.authPayload));
   }
 
-  getTaskVaraibles(payload: any) {
-    const clonePayload = tassign(payload, {
-      /*estados: [
-        'RESERVADO',
-        'ENPROGRESO',
-        'LISTO'
-      ]*/
-    });
+  getTaskVariables(payload: any) {
+    const overPayload = this.extractProcessVariablesPayload(payload);
     return this._api.post(environment.obtenerVariablesTarea,
-      Object.assign({}, clonePayload, this.authPayload));
+      Object.assign({}, overPayload, this.authPayload));
   }
 
   isTaskRoutingStarted() {
@@ -68,17 +62,35 @@ export class Sandbox {
   }
 
   startTask(payload: any) {
+    const overPayload = this.extractInitTaskPayload(payload);
+    return this._api.post(environment.tasksStartProcess,
+      Object.assign({}, overPayload, this.authPayload));
+  }
+
+  extractProcessVariablesPayload(payload) {
     let overPayload = payload;
     if (isArray(payload) && payload.length > 0) {
       const task = payload[0];
-      overPayload = {
+      return overPayload = {
+        'idProceso': task.idProceso,
+        'idDespliegue': task.idDespliegue,
+        'instanciaProceso': task.idInstanciaProceso
+      }
+    }
+    return payload;
+  }
+
+  extractInitTaskPayload(payload) {
+    let overPayload = payload;
+    if (isArray(payload) && payload.length > 0) {
+      const task = payload[0];
+      return overPayload = {
         'idProceso': task.idProceso,
         'idDespliegue': task.idDespliegue,
         'idTarea': task.idTarea
       }
     }
-    return this._api.post(environment.tasksStartProcess,
-      Object.assign({}, overPayload, this.authPayload));
+    return payload;
   }
 
   completeTask(payload: any) {
@@ -91,12 +103,16 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
+    // debugger;
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
         break;
       case TASK_DIGITALIZAR_DOCUMENTO:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
+        break;
+      case TASK_DOCUMENTOS_TRAMITES:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
         break;
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
