@@ -180,12 +180,11 @@
     </div>
   </div>
 
-  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="false" positionTop="20"
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
             [contentStyle]="{'overflow':'auto','max-height':'90%'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
-    <div style="overflow: auto">
+
       <app-detalles-asignacion #detallesView></app-detalles-asignacion>
-    </div>
   </p-dialog>
 
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"

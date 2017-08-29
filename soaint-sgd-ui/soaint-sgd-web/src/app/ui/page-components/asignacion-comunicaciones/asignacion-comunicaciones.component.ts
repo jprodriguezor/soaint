@@ -14,13 +14,13 @@ import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-s
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {AsignacionDTO} from '../../../domain/AsignacionDTO';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
-import {Subscription} from "rxjs/Subscription";
-import {AgentDTO} from "../../../domain/agentDTO";
-import {OrganigramaDTO} from "../../../domain/organigramaDTO";
+import {Subscription} from 'rxjs/Subscription';
+import {AgentDTO} from '../../../domain/agentDTO';
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {
   getAgragarObservacionesDialogVisible, getDetailsDialogVisible,
   getJustificationDialogVisible, getRejectDialogVisible
-} from "app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
+} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -40,7 +40,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   selectedFuncionarios: FuncionarioDTO[] = [];
 
-  asignationType: string = 'manual';
+  asignationType = 'manual';
 
   start_date: Date = new Date();
 
@@ -96,7 +96,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   getCodEstadoLabel(codEstado: string): string {
-    let estado = this.estadosCorrespondencia.find((item) => {
+    const estado = this.estadosCorrespondencia.find((item) => {
       return item.value === codEstado;
     });
     return estado.label;
@@ -139,7 +139,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       return (s < 10) ? '0' + s : s;
     }
 
-    let d = new Date(inputFormat);
+    const d = new Date(inputFormat);
     return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
   }
 
@@ -215,7 +215,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   createAsignacionesAuto(): AsignacionDTO[] {
-    let asignaciones: AsignacionDTO[] = [];
+    const asignaciones: AsignacionDTO[] = [];
     let funcIndex = 0;
     this.selectedComunications.forEach((value, index) => {
       if (!this.selectedFuncionarios[funcIndex]) {
@@ -247,7 +247,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   createAsignaciones(idFuncionario?, loginNameFuncionario?): AsignacionDTO[] {
-    let asignaciones: AsignacionDTO[] = [];
+    const asignaciones: AsignacionDTO[] = [];
     this.selectedComunications.forEach((value) => {
       asignaciones.push({
         ideAsignacion: null,
@@ -274,9 +274,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
-    let agentes: AgentDTO[] = [];
+    const agentes: AgentDTO[] = [];
     this.selectedComunications.forEach((value) => {
-      let agente = value.agenteList[0];
+      const agente = value.agenteList[0];
       agente.codSede = justificationValues.sedeAdministrativa.codigo;
       agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
       delete agente['_$visited'];
