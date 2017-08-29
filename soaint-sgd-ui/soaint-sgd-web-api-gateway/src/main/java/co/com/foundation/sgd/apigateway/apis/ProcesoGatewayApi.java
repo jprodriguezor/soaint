@@ -40,7 +40,6 @@ public class ProcesoGatewayApi {
     }
 
     /**
-     *
      * @param entrada
      * @return Response
      */
@@ -116,6 +115,19 @@ public class ProcesoGatewayApi {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Process Instances");
         Response response = procesoClient.listarIntanciasProceso();
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/tareas/obtener-variables")
+    @JWTTokenSecurity
+    public Response obtenerVaraiblesTarea(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - get task variables");
+        Response response = procesoClient.obtenerVariablesTarea(entrada);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
