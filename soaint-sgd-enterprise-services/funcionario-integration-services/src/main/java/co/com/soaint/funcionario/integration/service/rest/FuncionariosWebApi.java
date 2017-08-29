@@ -1,6 +1,7 @@
 package co.com.soaint.funcionario.integration.service.rest;
 
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.business.boundary.GestionarFuncionarios;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +48,7 @@ public class FuncionariosWebApi {
     @Path("/funcionarios/{cod_dependencia}/{rol}/{cod_estado}")
     public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(@PathParam("cod_dependencia")final String codDependencia,
                                                                           @PathParam("rol")final String rol,
-                                                                          @PathParam("cod_estado")final String codEstado) throws SystemException {
+                                                                          @PathParam("cod_estado")final String codEstado) throws BusinessException, SystemException {
         return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
     }
 }

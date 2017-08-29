@@ -4,6 +4,7 @@ import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.apis.delegator.funcionarios.FuncionariosWebApiClient;
 import co.com.soaint.funcionario.apis.delegator.security.SecurityApiClient;
@@ -39,14 +40,25 @@ public class FuncionariosControl {
      * @return
      * @throws SystemException
      */
-    public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(String codDependencia, String rol, String codEstado) throws SystemException {
+    public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(String codDependencia, String rol, String codEstado) throws BusinessException, SystemException {
         FuncionariosDTO funcionariosDTO = FuncionariosDTO
                 .newInstance()
                 .funcionarios(new ArrayList<>())
                 .build();
         try {
             List<FuncionarioDTO> usuariosRol = securityApiClient.listarUsusriosByRol(rol);
-            funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios().stream().forEach(funcionario -> {
+            if (usuariosRol.isEmpty())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.funcionario_not_exist_by_rol")
+                        .buildBusinessException();
+
+            List<FuncionarioDTO> funcionariosDepenendencia = funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios();
+            if (funcionariosDepenendencia.isEmpty())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.funcionario_not_exist_by_codDependencia")
+                        .buildBusinessException();
+
+            funcionariosDepenendencia.stream().forEach(funcionario -> {
                 FuncionarioDTO usuarioRol = usuariosRol.stream().filter(x -> x.getLoginName().equals(funcionario.getLoginName())).findFirst().get();
                 if (usuarioRol != null) {
                     funcionario.setRoles(usuarioRol.getRoles());
@@ -54,6 +66,9 @@ public class FuncionariosControl {
                 }
             });
             return funcionariosDTO;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

@@ -1,6 +1,7 @@
 package co.com.soaint.funcionario.integration.service.ws;
 
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.business.boundary.GestionarFuncionarios;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class GestionarFuncionariosWS {
     @WebMethod(action = "listarFuncionariosByDependenciaAndRolAndEstado", operationName = "listarFuncionariosByDependenciaAndRolAndEstado")
     public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(@WebParam(name = "cod-dependencia")final String codDependencia,
                                                                           @WebParam(name = "rol")final String rol,
-                                                                          @WebParam(name = "cod-estado")final String codEstado) throws SystemException {
+                                                                          @WebParam(name = "cod-estado")final String codEstado) throws BusinessException, SystemException {
         return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
     }
 }
