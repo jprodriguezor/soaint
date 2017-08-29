@@ -54,5 +54,6 @@ export const environment = {
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
-  obtenerDocumento:`${ecmHost}/descargarDocumentoECM/?identificadorDoc=`
+  obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
+  obtenerVariablesTarea: `${host}/proceso-gateway-api//tareas/obtener-variables`,
 };

@@ -43,6 +43,18 @@ export class Sandbox {
       Object.assign({}, clonePayload, this.authPayload));
   }
 
+  getTaskVaraibles(payload: any) {
+    const clonePayload = tassign(payload, {
+      /*estados: [
+        'RESERVADO',
+        'ENPROGRESO',
+        'LISTO'
+      ]*/
+    });
+    return this._api.post(environment.obtenerVariablesTarea,
+      Object.assign({}, clonePayload, this.authPayload));
+  }
+
   isTaskRoutingStarted() {
     return this.routingStartState;
   }
