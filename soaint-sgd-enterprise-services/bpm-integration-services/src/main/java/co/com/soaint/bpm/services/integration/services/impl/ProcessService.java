@@ -285,8 +285,7 @@ public class ProcessService implements IProcessServices {
 
             entrada.setUsuario(usuarioAdmin);
             entrada.setPass(passAdmin);
-            RespuestaProcesoDTO processInstance = iniciarProcesoManual(entrada);
-            reasignarTarea(entrada);
+            RespuestaProcesoDTO processInstance = iniciarProceso(entrada);
             return RespuestaProcesoDTO.newInstance()
                     .codigoProceso(String.valueOf(processInstance.getCodigoProceso()))
                     .nombreProceso(processInstance.getNombreProceso())

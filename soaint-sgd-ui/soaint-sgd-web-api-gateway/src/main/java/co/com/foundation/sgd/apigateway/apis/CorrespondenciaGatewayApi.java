@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.CorrespondenciaClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
 import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
@@ -80,20 +81,28 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
         Response response = client.asignarComunicaciones(asignacionesDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
+
+
+        List<EstadosEnum> estados = new ArrayList();
+        estados.add(EstadosEnum.LISTO);
+//        estados.add(EstadosEnum.RESERVADO);
+
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
-            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
+            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
+            entradaProceso.setEstados(estados);
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion().toString());
             parametros.put("idAgente", asignacionDTO.getIdeAgente());
             parametros.put("usuario", asignacionDTO.getLoginName());
+//            parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
             parametros.put("idDocumento", asignacionDTO.getIdeDocumento());
             parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
             if (asignacionDTO.getFechaVencimiento() != null)
                 parametros.put("fechaVencimiento", asignacionDTO.getFechaVencimiento().toString());
             entradaProceso.setParametros(parametros);
-            this.procesoClient.iniciar(entradaProceso);
+            this.procesoClient.iniciarTercero(entradaProceso);
         });
         log.info(CONTENT + responseObject);
         if (response.getStatus() != HttpStatus.OK.value()) {
@@ -112,7 +121,7 @@ public class CorrespondenciaGatewayApi {
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
-            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.1-SNAPSHOT");
+            entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
             entradaProceso.setParametros(parametros);

@@ -39,6 +39,14 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
+    public Response iniciarTercero(EntradaProcesoDTO entradaProcesoDTO) {
+        log.info("Proccess - [trafic] - starting Proccess with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/proceso/iniciar-tercero")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
     public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Proccess - [trafic] - manual starting Proccess with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -101,7 +109,7 @@ public class ProcesoClient {
     public Response obtenerVariablesTarea(EntradaProcesoDTO entradaProcesoDTO) {
         log.info("Task - [trafic] - get task variables with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/bpm/proceso/listar-variables/")
+        return wt.path("/bpm/proceso/listar-variables")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
