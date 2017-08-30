@@ -35,7 +35,7 @@ public class GestionarAsignacionWS {
      * @throws SystemException
      */
     @WebMethod(action = "asignarCorrespondencia", operationName = "asignarCorrespondencia")
-    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList") final AsignacionesDTO asignacionesDTO) throws SystemException {
+    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList") final AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
         return boundary.asignarCorrespondencia(asignacionesDTO);
     }
 

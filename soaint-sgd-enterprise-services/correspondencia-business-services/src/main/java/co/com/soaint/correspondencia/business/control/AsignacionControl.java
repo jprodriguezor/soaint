@@ -20,7 +20,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +60,7 @@ public class AsignacionControl {
      * @return
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
@@ -114,9 +117,16 @@ public class AsignacionControl {
                         .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
+                asignacionDTOResult.setAlertaVencimiento(calcularAlertaVencimiento(
+                        correspondenciaControl.consultarFechaVencimientoByIdeDocumento(asignacionDTO.getIdeDocumento()),
+                        fecha)
+                );
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
             return asignacionesDTOResult;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -243,5 +253,23 @@ public class AsignacionControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    private String calcularAlertaVencimiento(Date fechaVencimientoTramite, Date fechaAsignacion){
+        int diferenciaMinutos = (int) ChronoUnit.MINUTES.between(convertToLocalDateTime(fechaAsignacion),
+                convertToLocalDateTime(fechaVencimientoTramite));
+        return  String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m");
+    }
+
+    private LocalDateTime convertToLocalDateTime(Date fecha){
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fecha);
+        return LocalDateTime.of(calendario.get(Calendar.YEAR),
+                calendario.get(Calendar.MONTH),
+                calendario.get(Calendar.DATE),
+                calendario.get(Calendar.HOUR),
+                calendario.get(Calendar.MINUTE),
+                calendario.get(Calendar.SECOND)
+        );
     }
 }

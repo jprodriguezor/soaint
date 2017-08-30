@@ -586,4 +586,24 @@ public class CorrespondenciaControl {
         }
     }
 
+    public Date consultarFechaVencimientoByIdeDocumento(BigInteger ideDocumento)throws BusinessException, SystemException{
+        try {
+            return em.createNamedQuery("CorCorrespondencia.findFechaVenGestionByIdeDocumento", Date.class)
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_not_exist_by_ideDocumento")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
 }
