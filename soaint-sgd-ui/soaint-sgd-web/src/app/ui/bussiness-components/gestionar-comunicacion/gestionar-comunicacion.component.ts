@@ -107,7 +107,6 @@ export class GestionarComunicacionComponent implements OnInit {
     });
   }
 
-
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
     this._asignacionSandbox.redirectComunications({
       agentes: this.createAgentes(justificationValues)

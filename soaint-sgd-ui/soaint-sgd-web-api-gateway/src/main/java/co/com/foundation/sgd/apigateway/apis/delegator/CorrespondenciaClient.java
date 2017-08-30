@@ -80,7 +80,7 @@ public class CorrespondenciaClient {
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/asignacion-web-api/asignacion/redireccionar")
+        return wt.path("/agente-web-api/agente/redireccionar")
                 .request()
                 .put(Entity.json(agentesDTO));
     }
