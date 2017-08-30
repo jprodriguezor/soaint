@@ -51,6 +51,8 @@ export class DocumentosTramiteComponent implements OnInit {
 
   docSrc: any;
 
+  task: any;
+
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
   constructor(private _store: Store<RootState>,
@@ -59,9 +61,10 @@ export class DocumentosTramiteComponent implements OnInit {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-    this.nroRadicado = '1040TP-CMCOE2017000005';
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
-      console.log(activeTask);;
+      this.task = activeTask;
+      if (this.task)
+        this.nroRadicado = this.task.variables.numeroRadicado;
     });
   }
 
