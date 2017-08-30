@@ -18,16 +18,6 @@ import * as actions from './procesoDTO-actions';
 import {StartTaskAction} from '../tareasDTO-state/tareasDTO-actions';
 import {Sandbox} from './procesoDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {go} from '@ngrx/router-store';
-
-function isLoaded() {
-  return (source) =>
-    source.filter(values => {
-      console.log(values);
-      return true
-    })
-}
-
 
 @Injectable()
 export class Effects {

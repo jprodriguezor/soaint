@@ -61,6 +61,19 @@ export class Effects {
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );
 
+  @Effect()
+  takeInProgressTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.START_INPROGRESS_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.getTaskVariables(payload)
+        .mergeMap((taskVariables: any) => [
+          new actions.LockActiveTaskAction(Object.assign({}, payload, {variables: taskVariables.variables})),
+          new actions.StartTaskSuccessAction(Object.assign({}, payload, {variables: taskVariables.variables}))
+        ])
+        .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
+    );
+
 
   @Effect({dispatch: false})
   upViewRelatedToTask: Observable<Action> = this.actions$
