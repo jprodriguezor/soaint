@@ -68,7 +68,6 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case ActionTypes.START_TASK_SUCCESS: {
-
       const task = action.payload;
       const cloneEntities = tassign({}, state.entities);
       cloneEntities[task.idTarea] = task;

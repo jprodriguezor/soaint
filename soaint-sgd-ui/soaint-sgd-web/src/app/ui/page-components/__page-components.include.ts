@@ -2,15 +2,13 @@ import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {WorkspaceComponent} from './workspace/workspace.component';
 import {DigitalizarDocumentoComponent} from './digitalizar-documento/digitalizar-documento.component';
-// import {ProductosComponent} from './productos/productos.component';
 import {RadicarComunicacionesComponent} from './radicar-comunicaciones/radicar-comunicaciones.component';
 import {ProcessComponent} from './process/process.component';
 import {DatosDireccionComponent} from '../bussiness-components/datos-direccion/datos-direccion.component';
 import {AsignarComunicacionesComponent} from './asignacion-comunicaciones/asignacion-comunicaciones.component';
-import {PopupJustificacionComponent} from "../bussiness-components/popup-justificacion/popup-justificacion.component";
-import {PopupAgregarObservacionesComponent} from "../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component";
-import {PopupRejectComponent} from "../bussiness-components/popup-reject/popup-reject.component";
-import {RecibirGestionarComunicacionesComponent} from "./recibir-gestionar-comunicaciones/recibir-gestionar-comunicaciones.component";
+import {PopupJustificacionComponent} from '../bussiness-components/popup-justificacion/popup-justificacion.component';
+import {PopupAgregarObservacionesComponent} from '../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component';
+import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-reject.component';
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 
 /**
@@ -36,7 +34,6 @@ export const PAGE_COMPONENTS = [
   PopupJustificacionComponent,
   PopupAgregarObservacionesComponent,
   PopupRejectComponent,
-  RecibirGestionarComunicacionesComponent,
   GestionarComunicacionComponent
 ];
 

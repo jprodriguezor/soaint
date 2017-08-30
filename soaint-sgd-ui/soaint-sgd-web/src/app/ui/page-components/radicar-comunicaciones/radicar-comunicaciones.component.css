@@ -6157,6 +6157,27 @@ span.table-text-custom {
   position: relative;
   top: -5px; }
 
+.comunicacion-detalles [padding-bottom] {
+  padding-bottom: 20px !important; }
+.comunicacion-detalles [padding-top] {
+  padding-top: 16px; }
+.comunicacion-detalles .ui-datatable-header {
+  text-align: left !important; }
+.comunicacion-detalles thead th {
+  background-color: #eee !important; }
+.comunicacion-detalles thead tr th {
+  overflow: inherit !important; }
+.comunicacion-detalles .ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff; }
+.comunicacion-detalles .ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff; }
+.comunicacion-detalles tbody tr {
+  background-color: #ffffff !important; }
+.comunicacion-detalles [no-padding] .ui-tabview-panel.ui-widget-content {
+  padding: 0 !important; }
+
 .radicar-comunicaciones a span.ui-tabview-left-icon.ui-icon-edit {
   color: #0273D4; }
 .radicar-comunicaciones a span.ui-tabview-left-icon.ui-icon-done {
