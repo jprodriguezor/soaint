@@ -15,6 +15,7 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacionEntradaDTV';
 import {environment} from '../../../../environments/environment';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 
 @Component({
   selector: 'app-documentos-tramite',
@@ -42,6 +43,8 @@ export class DocumentosTramiteComponent implements OnInit {
 
   radicacionEntradaDTV: any;
 
+  activeTaskUnsubscriber: Subscription;
+
   funcionarioSubcription: Subscription;
 
   funcionarioLog: FuncionarioDTO;
@@ -57,6 +60,9 @@ export class DocumentosTramiteComponent implements OnInit {
       this.funcionarioLog = funcionario;
     });
     this.nroRadicado = '1040TP-CMCOE2017000005';
+    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
+      console.log(activeTask);;
+    });
   }
 
   ngOnInit() {
