@@ -586,6 +586,13 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public Date consultarFechaVencimientoByIdeDocumento(BigInteger ideDocumento)throws BusinessException, SystemException{
         try {
             return em.createNamedQuery("CorCorrespondencia.findFechaVenGestionByIdeDocumento", Date.class)
