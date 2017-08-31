@@ -113,6 +113,7 @@ export class GestionarComunicacionComponent implements OnInit {
     }).subscribe(() => {
       this.procesoSeguir = 0;
       this.completeTask();
+      this.justificationDialogVisible = false;
     });
   }
 
@@ -127,10 +128,12 @@ export class GestionarComunicacionComponent implements OnInit {
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
     let agentes: AgentDTO[] = [];
     let agente = this.remitente;
+    console.log(this.remitente);
+    agente.ideAgente = this.task.variables.idAgente;
     agente.codSede = justificationValues.sedeAdministrativa.codigo;
     agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
     delete agente['_$visited'];
-    agentes.push(agente)
+    agentes.push(agente);
     return agentes;
   }
 

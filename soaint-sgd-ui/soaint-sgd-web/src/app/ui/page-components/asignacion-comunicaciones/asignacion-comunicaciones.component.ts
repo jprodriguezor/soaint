@@ -235,6 +235,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         nivLectura: null,
         nivEscritura: null,
         fechaVencimiento: null,
+        alertaVencimiento: null,
         idInstancia: null,
         ideAgente: value.agenteList[0].ideAgente,
         ideDocumento: value.correspondencia.ideDocumento,
@@ -252,6 +253,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       asignaciones.push({
         ideAsignacion: null,
         fecAsignacion: null,
+        alertaVencimiento: null,
         ideFunci: idFuncionario || this.funcionarioSelected.id,
         codDependencia: value.agenteList[0].codDependencia,
         codTipAsignacion: 'TA',

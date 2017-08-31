@@ -17,4 +17,5 @@ export interface AsignacionDTO {
   ideDocumento: number;
   nroRadicado: string;
   loginName: string;
+  alertaVencimiento: string;
 }

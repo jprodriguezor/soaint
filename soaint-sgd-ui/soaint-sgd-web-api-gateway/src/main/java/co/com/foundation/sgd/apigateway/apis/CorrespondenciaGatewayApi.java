@@ -94,13 +94,12 @@ public class CorrespondenciaGatewayApi {
             entradaProceso.setEstados(estados);
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("idAsignacion", asignacionDTO.getIdeAsignacion().toString());
-            parametros.put("idAgente", asignacionDTO.getIdeAgente());
+            parametros.put("idAgente", asignacionDTO.getIdeAgente().toString());
             parametros.put("usuario", asignacionDTO.getLoginName());
-//            parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
-            parametros.put("idDocumento", asignacionDTO.getIdeDocumento());
+            parametros.put("idDocumento", asignacionDTO.getIdeDocumento().toString());
             parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
-            if (asignacionDTO.getFechaVencimiento() != null)
-                parametros.put("fechaVencimiento", asignacionDTO.getFechaVencimiento().toString());
+            if (asignacionDTO.getAlertaVencimiento() != null)
+                parametros.put("fechaVencimiento", asignacionDTO.getAlertaVencimiento());
             entradaProceso.setParametros(parametros);
             this.procesoClient.iniciarTercero(entradaProceso);
         });
