@@ -13,6 +13,7 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +55,10 @@ public class AsignacionControl {
 
     @Autowired
     CorrespondenciaControl correspondenciaControl;
+
+    @Value("${radicado.cant.horas.para.activar.alerta.vencimiento}")
+    private int cantHorasParaActivarAlertaVencimiento;
+
     // ----------------------
 
     /**
@@ -256,20 +262,14 @@ public class AsignacionControl {
     }
 
     private String calcularAlertaVencimiento(Date fechaVencimientoTramite, Date fechaAsignacion){
-        int diferenciaMinutos = (int) ChronoUnit.MINUTES.between(convertToLocalDateTime(fechaAsignacion),
-                convertToLocalDateTime(fechaVencimientoTramite));
-        return  String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m");
+        int diferenciaMinutos = (int) ChronoUnit.MINUTES.between(convertToLocalDateTime(fechaAsignacion), convertToLocalDateTime(fechaVencimientoTramite));
+
+        diferenciaMinutos -=  (cantHorasParaActivarAlertaVencimiento * 60);
+
+        return  diferenciaMinutos > 0 ? String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m") : "0h0m";
     }
 
     private LocalDateTime convertToLocalDateTime(Date fecha){
-        Calendar calendario = Calendar.getInstance();
-        calendario.setTime(fecha);
-        return LocalDateTime.of(calendario.get(Calendar.YEAR),
-                calendario.get(Calendar.MONTH),
-                calendario.get(Calendar.DATE),
-                calendario.get(Calendar.HOUR),
-                calendario.get(Calendar.MINUTE),
-                calendario.get(Calendar.SECOND)
-        );
+        return LocalDateTime.ofInstant(fecha.toInstant(), ZoneId.systemDefault());
     }
 }
