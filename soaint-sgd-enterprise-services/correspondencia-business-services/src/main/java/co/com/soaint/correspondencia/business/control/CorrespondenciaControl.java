@@ -115,20 +115,25 @@ public class CorrespondenciaControl {
 
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
             ppdDocumento.setCorCorrespondencia(correspondencia);
-            ppdDocumento.setCorAnexoList(new ArrayList<>());
 
-            comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
-                CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
-                corAnexo.setPpdDocumento(ppdDocumento);
-                ppdDocumento.getCorAnexoList().add(corAnexo);
-            });
+            if (comunicacionOficialDTO.getAnexoList() != null) {
+                ppdDocumento.setCorAnexoList(new ArrayList<>());
+                comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
+                    CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                    corAnexo.setPpdDocumento(ppdDocumento);
+                    ppdDocumento.getCorAnexoList().add(corAnexo);
+                });
+
+            }
+
             correspondencia.getPpdDocumentoList().add(ppdDocumento);
 
-            comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
-                CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
-                corReferido.setCorCorrespondencia(correspondencia);
-                correspondencia.getCorReferidoList().add(corReferido);
-            });
+            if (comunicacionOficialDTO.getReferidoList() != null)
+                comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
+                    CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                    corReferido.setCorCorrespondencia(correspondencia);
+                    correspondencia.getCorReferidoList().add(corReferido);
+                });
 
             em.persist(correspondencia);
             em.flush();
@@ -587,13 +592,12 @@ public class CorrespondenciaControl {
     }
 
     /**
-     *
      * @param ideDocumento
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public Date consultarFechaVencimientoByIdeDocumento(BigInteger ideDocumento)throws BusinessException, SystemException{
+    public Date consultarFechaVencimientoByIdeDocumento(BigInteger ideDocumento) throws BusinessException, SystemException {
         try {
             return em.createNamedQuery("CorCorrespondencia.findFechaVenGestionByIdeDocumento", Date.class)
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
