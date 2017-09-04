@@ -9,35 +9,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * Soaint Generic Artifact
- * Created:6-Jun-2017
+ * Created:4-Sep-2017
  * Author: esanchez
  * Type: JAVA class Artifact
  * Purpose: DTO - Model Artifact
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder(builderMethodName = "newInstance")
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-plan-agen/1.0.0")
-public class PlanAgenDTO implements Serializable {
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-planillas/1.0.0")
+public class PlanillaDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private BigInteger idePlanAgen;
-    private String varPeso;
-    private String varValor;
-    private String varNumeroGuia;
-    private Date fecObservacion;
-    private String codNuevaSede;
-    private String codNuevaDepen;
-    private String observaciones;
-    private String codCauDevo;
-    private Date fecCarguePla;
-    private BigInteger ideAgente;
-    private BigInteger ideDocumento;
+    private BigInteger idePlanilla;
+    private String nroPlanilla;
+    private Date fecGeneracion;
+    private String codTipoPlanilla;
+    private String codFuncGenera;
+    private String codSedeOrigen;
+    private String codDependenciaOrigen;
+    private String codSedeDestino;
+    private String codDependenciaDestino;
+    private String codClaseEnvio;
+    private String codModalidadEnvio;
+    private List<PlanAgenDTO> planAgenList;
 }

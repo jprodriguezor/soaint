@@ -81,23 +81,36 @@ public class CorrespondenciaControl {
 
     // ----------------------
 
+    private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc) throws BusinessException, SystemException {
+        String nRadicado = null;
+        try {
+            if (nroRadicado == null)
+                nRadicado = generarNumeroRadicado(codSede, codTipoCmc);
+
+            if (verificarByNroRadicado(nRadicado))
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_duplicated_nroRadicado")
+                        .buildBusinessException();
+            return nRadicado;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        }
+    }
+
     /**
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
+
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
-            if (comunicacionOficialDTO.getCorrespondencia().getNroRadicado() == null) {
-                comunicacionOficialDTO.getCorrespondencia().setNroRadicado(generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
-            } else {
-                if (verificarByNroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado()))
-                    throw ExceptionBuilder.newBuilder()
-                            .withMessage("correspondencia.correspondencia_duplicated_nroRadicado")
-                            .buildBusinessException();
-            }
+            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(procesarNroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado(),
+                    comunicacionOficialDTO.getCorrespondencia().getCodSede(),
+                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc()));
 
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
@@ -437,22 +450,18 @@ public class CorrespondenciaControl {
         }
     }
 
-    /**
-     * @param correspondencia
-     * @return
-     */
-    public String generarNumeroRadicado(CorrespondenciaDTO correspondencia) throws SystemException {
+    private String generarNumeroRadicado(String codSede, String codTipoCmc) throws SystemException {
         try {
             int rangoI = Integer.parseInt(this.rangoReservado[0]);
             int rangoF = Integer.parseInt(this.rangoReservado[1]);
-            String reservadoIni = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+            String reservadoIni = this.formarNroRadicado(codSede, codTipoCmc,
                     String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoI);
-            String reservadoFin = this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+            String reservadoFin = this.formarNroRadicado(codSede, codTipoCmc,
                     String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoF);
 
             String nroR = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
-                    .setParameter("COD_SEDE", correspondencia.getCodSede())
-                    .setParameter("COD_TIPO_CMC", correspondencia.getCodTipoCmc())
+                    .setParameter("COD_SEDE", codSede)
+                    .setParameter("COD_TIPO_CMC", codTipoCmc)
                     .setParameter("RESERVADO_INI", reservadoIni)
                     .setParameter("RESERVADO_FIN", reservadoFin)
                     .getSingleResult();
@@ -474,7 +483,7 @@ public class CorrespondenciaControl {
                 consecRadicado = rangoF + 1;
             }
 
-            return this.formarNroRadicado(correspondencia.getCodSede(), correspondencia.getCodTipoCmc(),
+            return this.formarNroRadicado(codSede, codTipoCmc,
                     String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), consecRadicado);
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);

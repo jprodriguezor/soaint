@@ -45,6 +45,12 @@ public class AgenteControl {
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
     public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento)throws SystemException{
         try{
             return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -35,7 +36,7 @@ public class CorPlanAgen implements Serializable {
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_PLAN_AGEN_GENERATOR")
     @Column(name = "IDE_PLAN_AGEN")
-    private Long idePlanAgen;
+    private BigInteger idePlanAgen;
     @Basic(optional = false)
     @Column(name = "ESTADO")
     private String estado;

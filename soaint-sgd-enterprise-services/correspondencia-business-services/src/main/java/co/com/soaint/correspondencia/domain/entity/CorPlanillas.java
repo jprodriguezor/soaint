@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -36,7 +37,7 @@ public class CorPlanillas implements Serializable {
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_PLANILLAS_GENERATOR")
     @Column(name = "IDE_PLANILLA")
-    private Long idePlanilla;
+    private BigInteger idePlanilla;
     @Column(name = "NRO_PLANILLA")
     private String nroPlanilla;
     @Column(name = "FEC_GENERACION")
