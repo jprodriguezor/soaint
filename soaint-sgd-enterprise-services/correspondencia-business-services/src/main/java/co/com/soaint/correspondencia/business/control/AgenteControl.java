@@ -5,6 +5,7 @@ import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -44,6 +45,47 @@ public class AgenteControl {
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
+    public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento)throws SystemException{
+        try{
+            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param ideDocumento
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
+    public List<AgenteDTO> listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
+                                                                                   String codDependencia,
+                                                                                   String codEstado)throws SystemException{
+        try{
+        return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
+                .setParameter("COD_ESTADO", codEstado)
+                .setParameter("COD_DEPENDENCIA", codDependencia)
+                .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                .setParameter("IDE_DOCUMENTO", ideDocumento)
+                .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
     /**
      * @param agenteDTO
      * @throws BusinessException

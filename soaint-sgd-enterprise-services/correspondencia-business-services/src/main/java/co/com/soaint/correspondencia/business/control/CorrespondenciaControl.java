@@ -76,6 +76,9 @@ public class CorrespondenciaControl {
     @Value("${radicado.dias.festivos}")
     private String[] diasFestivos;
 
+    @Value("${radicado.req.dist.fisica}")
+    private String reqDistFisica;
+
     // ----------------------
 
     /**
@@ -276,14 +279,72 @@ public class CorrespondenciaControl {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-                List<AgenteDTO> agenteDTOList = em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
-                        .setParameter("COD_ESTADO", codEstado)
-                        .setParameter("COD_DEPENDENCIA", codDependencia)
-                        .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
-                        .setParameter("IDE_DOCUMENTO", correspondenciaDTO.getIdeDocumento())
-                        .getResultList();
+                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
+                        codDependencia,
+                        codEstado);
                 ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
                         .correspondencia(correspondenciaDTO)
+                        .agenteList(agenteDTOList)
+                        .build();
+                comunicacionOficialDTOList.add(comunicacionOficialDTO);
+            }
+
+            return ComunicacionesOficialesDTO.newInstance().comunicacionesOficiales(comunicacionOficialDTOList).build();
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codTipoDoc
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fechaFin);
+            cal.add(Calendar.DATE, 1);
+            List<CorrespondenciaDTO> correspondenciaDTOList = em.createNamedQuery("CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodTipoDocAndNroRadicado", CorrespondenciaDTO.class)
+                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
+                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("REQ_DIST_FISICA", reqDistFisica)
+                    .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("COD_TIPO_DOC", codTipoDoc)
+                    .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
+                    .getResultList();
+
+            if (correspondenciaDTOList.isEmpty()) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_codTipoDoc_and_nroRadicado")
+                        .buildBusinessException();
+            }
+
+            List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
+
+            for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
+                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
+                        codDependencia,
+                        null);
+                agenteControl.listarRemitentesByIdeDocumento(correspondenciaDTO.getIdeDocumento()).stream().forEach(agenteDTOList::add);
+
+                ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
+                        .correspondencia(correspondenciaDTO)
+                        .ppdDocumentoList(ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaDTO.getIdeDocumento()))
                         .agenteList(agenteDTOList)
                         .build();
                 comunicacionOficialDTOList.add(comunicacionOficialDTO);
