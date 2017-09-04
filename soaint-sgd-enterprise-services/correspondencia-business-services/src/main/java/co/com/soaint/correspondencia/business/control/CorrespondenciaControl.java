@@ -89,6 +89,11 @@ public class CorrespondenciaControl {
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getNroRadicado() == null) {
                 comunicacionOficialDTO.getCorrespondencia().setNroRadicado(generarNumeroRadicado(comunicacionOficialDTO.getCorrespondencia()));
+            } else {
+                if (verificarByNroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado()))
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage("correspondencia.correspondencia_duplicated_nroRadicado")
+                            .buildBusinessException();
             }
 
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
@@ -139,6 +144,9 @@ public class CorrespondenciaControl {
             em.flush();
 
             return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
