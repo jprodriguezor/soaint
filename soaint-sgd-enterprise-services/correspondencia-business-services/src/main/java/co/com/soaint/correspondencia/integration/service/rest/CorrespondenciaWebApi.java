@@ -121,4 +121,17 @@ public class CorrespondenciaWebApi {
                     .buildSystemException();
         }
     }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/verificar-numero-radicado/{nro_radicado}")
+    public Boolean verificarByNroRadicado(@PathParam("nro_radicado")final String nroRadicado) throws SystemException{
+        log.info("processing rest request - verificar correspondencia por numeroRadicado");
+        return boundary.verificarByNroRadicado(nroRadicado);
+    }
 }

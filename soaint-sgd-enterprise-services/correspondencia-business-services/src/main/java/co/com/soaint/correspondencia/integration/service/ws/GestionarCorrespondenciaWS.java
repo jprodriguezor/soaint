@@ -90,4 +90,15 @@ public class GestionarCorrespondenciaWS {
                                                                                                                 @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
     }
+
+    /**
+     * 
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "verificarByNroRadicado", operationName = "verificarByNroRadicado")
+    public Boolean verificarByNroRadicado(@WebParam(name = "nro_radicado")final String nroRadicado) throws SystemException{
+        return boundary.verificarByNroRadicado(nroRadicado);
+    }
 }
