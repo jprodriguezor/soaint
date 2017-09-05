@@ -1,0 +1,56 @@
+<div class="ui-fluid carga-masiva">
+  <app-task-container>
+    <div customActions>
+
+    </div>
+
+    <div taskBody>
+      <p-fileUpload id="massive-load" #uploader
+                    mode="advanced"
+                    chooseLabel="Buscar"
+                    uploadLabel="Subir"
+                    cancelLabel="Cancelar"
+                    multiple="false"
+                    accept="application/*"
+                    maxFileSize="1000000"
+                    customUpload="true"
+                    (uploadHandler)="customUploaderMassLoad($event)"
+                    (onUpload)="onUpload($event)"
+                    (onClear)="onClear($event)"
+                    (onSelect)="onSelect($event)"
+
+      >
+
+        <ng-template pTemplate="content" #parent>
+          <pdf-viewer #viewer [src]="url" *ngIf="status >= 1 && previewWasRefreshed"
+                      [show-all]="true"
+                      [original-size]="false"
+                      style="display: block;"
+          ></pdf-viewer>
+        </ng-template>
+
+
+        <ng-template let-file pTemplate="file" class="ui-fluid">
+          <div class="ui-g ui-fileupload-row">
+            <div>{{ file.name }}</div>
+            <div>{{ file.size }} KB</div>
+            <div>{{ file.type }}</div>
+            <div>{{ file.lastModifiedDate | date:'dd/mm/yyyy' }}</div>
+            <div>
+              <button alt="Visualizar Contenido" icon="ui-icon-remove-red-eye" pButton type="button" class="ui-button ui-button-icon-only orange-btn" (click)="preview(file)"></button>
+            </div>
+          </div>
+
+        </ng-template>
+
+        <!--<ng-template let-file pTemplate="file">-->
+        <!--<div>Custom UI to display a file</div>-->
+        <!--</ng-template>-->
+        <!--<ng-template pTemplate="content">-->
+        <!--<div>Custom UI to manage uploaded files</div>-->
+        <!--</ng-template>-->
+      </p-fileUpload>
+
+    </div>
+  </app-task-container>
+</div>

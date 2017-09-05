@@ -8,6 +8,7 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
+import {CargaMasivaComponent} from './ui/page-components/carga-masiva/carga-masiva.component';
 import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 
@@ -39,7 +40,8 @@ export const routes: Routes = [
     path: ROUTES_PATH.asignacionComunicaciones,
     component: AsignarComunicacionesComponent,
     canActivate: [AuthenticatedGuard]
-  }
+  },
+  {path: ROUTES_PATH.cargaMasiva, component: CargaMasivaComponent, canActivate: [AuthenticatedGuard]}
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

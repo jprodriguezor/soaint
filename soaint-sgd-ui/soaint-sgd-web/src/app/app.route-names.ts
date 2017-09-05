@@ -8,5 +8,6 @@ export const ROUTES_PATH = {
   processList: 'process',
   asignacionComunicaciones: 'asignacion-comunicaciones',
   recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones',
-  documentosTramite: 'documentos-tramite'
+  documentosTramite: 'documentos-tramite',
+  cargaMasiva: 'carga-masiva'
 };
