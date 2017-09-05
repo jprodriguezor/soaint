@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -27,7 +28,8 @@ import java.util.Date;
 public class PlanAgenDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long idePlanAgen;
+    private BigInteger idePlanAgen;
+    private String estado;
     private String varPeso;
     private String varValor;
     private String varNumeroGuia;
@@ -37,4 +39,6 @@ public class PlanAgenDTO implements Serializable {
     private String observaciones;
     private String codCauDevo;
     private Date fecCarguePla;
+    private BigInteger ideAgente;
+    private BigInteger ideDocumento;
 }
