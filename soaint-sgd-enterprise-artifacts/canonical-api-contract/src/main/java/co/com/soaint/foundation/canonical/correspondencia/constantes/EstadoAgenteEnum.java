@@ -10,7 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EstadoAgenteEnum {
     SIN_ASIGNAR("SA", "SIN ASIGNAR"),
-    ASIGNADO("AS", "ASIGNADO");
+    ASIGNADO("AS", "ASIGNADO"),
+    DISTRIBUCION("DT", "DISTRIBUCION");
 
     private final String codigo;
     private final String nombre;
