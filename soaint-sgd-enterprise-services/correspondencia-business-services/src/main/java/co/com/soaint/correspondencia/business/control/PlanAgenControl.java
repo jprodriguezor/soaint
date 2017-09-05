@@ -5,7 +5,14 @@ import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +26,35 @@ import lombok.extern.log4j.Log4j2;
 @BusinessControl
 @Log4j2
 public class PlanAgenControl {
-    public CorPlanAgen corPlanAgenTransform(PlanAgenDTO planAgenDTO){
+
+    @PersistenceContext
+    private EntityManager em;
+
+    /**
+     *
+     * @param idePlanilla
+     * @return
+     * @throws SystemException
+     */
+    public List<PlanAgenDTO> listarAgentesByIdePlanilla(BigInteger idePlanilla) throws SystemException {
+        try {
+            return em.createNamedQuery("CorPlanAgen.findByIdePlanilla", PlanAgenDTO.class)
+                    .setParameter("IDE_PLANILLA", idePlanilla)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param planAgenDTO
+     * @return
+     */
+    public CorPlanAgen corPlanAgenTransform(PlanAgenDTO planAgenDTO) {
         return CorPlanAgen.newInstance()
                 .idePlanAgen(planAgenDTO.getIdePlanAgen())
                 .varPeso(planAgenDTO.getVarPeso())

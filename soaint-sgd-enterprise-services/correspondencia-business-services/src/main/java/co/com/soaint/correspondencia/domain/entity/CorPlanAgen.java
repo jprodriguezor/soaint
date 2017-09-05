@@ -26,7 +26,15 @@ import javax.persistence.*;
 @Entity
 @Table(name = "COR_PLAN_AGEN")
 @NamedQueries({
-    @NamedQuery(name = "CorPlanAgen.findAll", query = "SELECT c FROM CorPlanAgen c")})
+    @NamedQuery(name = "CorPlanAgen.findAll", query = "SELECT c FROM CorPlanAgen c"),
+        @NamedQuery(name = "CorPlanAgen.findByIdePlanilla", query = "SELECT   NEW co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO " +
+                "(c.idePlanAgen, c.estado, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
+                "c.codNuevaDepen, c.observaciones, c.codCauDevo, c.fecCarguePla, a.ideAgente, co.ideDocumento) " +
+                "FROM CorPlanAgen c " +
+                "INNER JOIN c.corCorrespondencia co " +
+                "INNER JOIN c.corAgente a " +
+                "INNER JOIN c.corPlanillas cp " +
+                "WHERE cp.idePlanilla = :IDE_PLANILLA")})
 @javax.persistence.TableGenerator(name = "COR_PLAN_AGEN_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_PLAN_AGEN_SEQ", allocationSize = 1)
 public class CorPlanAgen implements Serializable {

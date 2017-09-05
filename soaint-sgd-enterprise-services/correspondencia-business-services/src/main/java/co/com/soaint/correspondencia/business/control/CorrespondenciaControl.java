@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
@@ -82,7 +83,7 @@ public class CorrespondenciaControl {
     // ----------------------
 
     private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc) throws BusinessException, SystemException {
-        String nRadicado = null;
+        String nRadicado = nroRadicado;
         try {
             if (nroRadicado == null)
                 nRadicado = generarNumeroRadicado(codSede, codTipoCmc);
@@ -123,13 +124,11 @@ public class CorrespondenciaControl {
                 CorAgente corAgente = agenteControl.corAgenteTransform(agenteDTO);
                 corAgente.setCorCorrespondencia(correspondencia);
 
-                if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite())) {
+                if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()))
                     AgenteControl.asignarDatosContacto(corAgente, comunicacionOficialDTO.getDatosContactoList());
-                }
 
-                if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
-                    corAgente.setCodEstado(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo());
-                }
+                if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent()))
+                    corAgente.setCodEstado(reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
 
                 correspondencia.getCorAgenteList().add(corAgente);
             }
@@ -158,7 +157,7 @@ public class CorrespondenciaControl {
 
             em.persist(correspondencia);
             em.flush();
-
+            log.info("Correspondencia - radicacion exitosa nro-radicado -> " + correspondencia.getNroRadicado());
             return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
