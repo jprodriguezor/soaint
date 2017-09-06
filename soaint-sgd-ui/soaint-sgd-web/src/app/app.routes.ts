@@ -8,7 +8,7 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
-import {CargaMasivaUploaderComponent} from './ui/page-components/carga-masiva/uploader/carga-masiva-uploader.component';
+// import {CargaMasivaUploaderComponent} from './ui/page-components/carga-masiva/uploader/carga-masiva-uploader.component';
 import {CargaMasivaDetailsComponent} from './ui/page-components/carga-masiva/details/carga-masiva-details.component';
 
 import {ROUTES_PATH} from './app.route-names';
@@ -49,11 +49,11 @@ export const routes: Routes = [
     component: RadicarSalidaComponent,
     canActivate: [AuthenticatedGuard]
   },
-  {
-    path: ROUTES_PATH.cargaMasivaUploader,
-    canActivate: [AuthenticatedGuard],
-    component: CargaMasivaUploaderComponent,
-  },
+  // {
+  //   path:ROUTES_PATH.cargaMasivaUploader,
+  //   canActivate: [AuthenticatedGuard],
+  //   component: CargaMasivaUploaderComponent,
+  // },
   {
     path: ROUTES_PATH.cargaMasivaDetails,
     canActivate: [AuthenticatedGuard],
