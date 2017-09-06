@@ -8,7 +8,9 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
-import {CargaMasivaComponent} from './ui/page-components/carga-masiva/carga-masiva.component';
+import {CargaMasivaUploaderComponent} from './ui/page-components/carga-masiva/uploader/carga-masiva-uploader.component';
+import {CargaMasivaDetailsComponent} from './ui/page-components/carga-masiva/details/carga-masiva-details.component';
+
 import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 
@@ -41,7 +43,16 @@ export const routes: Routes = [
     component: AsignarComunicacionesComponent,
     canActivate: [AuthenticatedGuard]
   },
-  {path: ROUTES_PATH.cargaMasiva, component: CargaMasivaComponent, canActivate: [AuthenticatedGuard]}
+  {
+    path:ROUTES_PATH.cargaMasivaUploader,
+    canActivate: [AuthenticatedGuard],
+    component: CargaMasivaUploaderComponent,
+  },
+  {
+    path:ROUTES_PATH.cargaMasivaDetails,
+    canActivate: [AuthenticatedGuard],
+    component: CargaMasivaDetailsComponent,
+  }
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
