@@ -9,13 +9,17 @@ import {Observable} from 'rxjs/Observable';
 import {AgentDTO} from '../../../domain/agentDTO';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {Subscription} from 'rxjs/Subscription';
-import {getAuthenticatedFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
+} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacionEntradaDTV';
 import {environment} from '../../../../environments/environment';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 @Component({
   selector: 'app-documentos-tramite',
@@ -49,7 +53,13 @@ export class DocumentosTramiteComponent implements OnInit {
 
   funcionarioLog: FuncionarioDTO;
 
+  dependenciaSelected$: Observable<DependenciaDTO>;
+
+  dependenciaSelected: DependenciaDTO;
+
   docSrc: any;
+
+  task: any;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
@@ -59,9 +69,14 @@ export class DocumentosTramiteComponent implements OnInit {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-    this.nroRadicado = '1040TP-CMCOE2017000005';
+    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+    this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+    });
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
-      console.log(activeTask);;
+      this.task = activeTask;
+      if (this.task)
+        this.nroRadicado = this.task.variables.numeroRadicado;
     });
   }
 
@@ -74,6 +89,7 @@ export class DocumentosTramiteComponent implements OnInit {
     this.popupAgregarObservaciones.setData({
       idDocumento: this.comunicacion.correspondencia.ideDocumento,
       idFuncionario: this.funcionarioLog.id,
+      codOrgaAdmin: this.dependenciaSelected.codigo,
     });
     this.popupAgregarObservaciones.loadObservations();
   }

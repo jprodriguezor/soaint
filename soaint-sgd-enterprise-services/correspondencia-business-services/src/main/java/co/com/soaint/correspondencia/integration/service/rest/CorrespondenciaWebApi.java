@@ -121,4 +121,38 @@ public class CorrespondenciaWebApi {
                     .buildSystemException();
         }
     }
+
+    @GET
+    @Path("/correspondencia/listar-distribucion")
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(@QueryParam("fecha_ini") final String fechaIni,
+                                                                                                                          @QueryParam("fecha_fin") final String fechaFin,
+                                                                                                                          @QueryParam("cod_dependencia") final String codDependencia,
+                                                                                                                          @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                                                                                                          @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_tipologia_documental and nro_radicado");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            Date fechaInicial = dateFormat.parse(fechaIni);
+            Date fechaFinal = dateFormat.parse(fechaFin);
+            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codTipoDoc, nroRadicado);
+        } catch (ParseException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/verificar-numero-radicado/{nro_radicado}")
+    public Boolean verificarByNroRadicado(@PathParam("nro_radicado")final String nroRadicado) throws SystemException{
+        log.info("processing rest request - verificar correspondencia por numeroRadicado");
+        return boundary.verificarByNroRadicado(nroRadicado);
+    }
 }

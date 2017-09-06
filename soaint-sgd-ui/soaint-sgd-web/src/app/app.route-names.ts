@@ -10,5 +10,6 @@ export const ROUTES_PATH = {
   asignacionComunicaciones: 'asignacion-comunicaciones',
   recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones',
   documentosTramite: 'documentos-tramite',
-
+  cargaMasivaUploader: 'carga-masiva-uploader',
+  cargaMasivaDetails: 'carga-masiva-details'
 };

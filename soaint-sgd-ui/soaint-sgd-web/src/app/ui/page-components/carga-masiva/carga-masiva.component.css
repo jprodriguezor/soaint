@@ -1,0 +1,14 @@
+.ui-fileupload-row div {
+  margin: auto;
+  vertical-align: middle;
+}
+
+.ui-fileupload-files {
+  display: table;
+  width: 100%;
+  background-color: aliceblue;
+}
+
+.error p {
+  color : red;
+}

@@ -54,6 +54,16 @@ import java.util.List;
                 "WHERE c.fecRadicado BETWEEN :FECHA_INI AND :FECHA_FIN " +
                 "AND ca.codEstado = :COD_EST_AG AND c.codEstado = :COD_ESTADO AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
                 "AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findByPeriodoAndCodDependenciaAndCodTipoDocAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c " +
+                "INNER JOIN c.ppdDocumentoList d " +
+                "INNER JOIN c.corAgenteList ca " +
+                "WHERE c.fecRadicado BETWEEN :FECHA_INI AND :FECHA_FIN " +
+                "AND c.reqDistFisica = :REQ_DIST_FISICA AND ca.codDependencia = :COD_DEPENDENCIA AND ca.codTipAgent = :COD_TIP_AGENT " +
+                "AND (:COD_TIPO_DOC IS NULL OR d.codTipoDoc = :COD_TIPO_DOC) AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.findIdeDocumentoByNroRadicado", query = "SELECT c.ideDocumento " +
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
@@ -64,6 +74,9 @@ import java.util.List;
                 "FROM CorCorrespondencia c " +
                 "WHERE TRIM(c.codSede) = TRIM(:COD_SEDE) AND TRIM(c.codTipoCmc) = TRIM(:COD_TIPO_CMC) " +
                 "AND NOT c.nroRadicado BETWEEN :RESERVADO_INI AND :RESERVADO_FIN "),
+        @NamedQuery(name = "CorCorrespondencia.findFechaVenGestionByIdeDocumento", query = "SELECT c.fecVenGestion " +
+                "FROM CorCorrespondencia c " +
+                "WHERE c.ideDocumento = :IDE_DOCUMENTO "),
         @NamedQuery(name = "CorCorrespondencia.updateEstado", query = "UPDATE CorCorrespondencia c " +
                 "SET c.codEstado = :COD_ESTADO " +
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),

@@ -9,8 +9,6 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -52,7 +50,6 @@ public class GestionarCorrespondencia {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         return control.listarCorrespondenciaByNroRadicado(nroRadicado);
     }
@@ -88,8 +85,32 @@ public class GestionarCorrespondencia {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
         return control.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
+    }
+
+    /**
+     * 
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codTipoDoc
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
+        return control.listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public Boolean verificarByNroRadicado(String nroRadicado) throws SystemException{
+        return control.verificarByNroRadicado(nroRadicado);
     }
 }

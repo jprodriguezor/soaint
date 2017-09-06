@@ -45,6 +45,7 @@ public class AsignacionDTO implements Serializable {
     private BigInteger ideDocumento;
     private String nroRadicado;
     private String loginName;
+    private String alertaVencimiento;
 
     public AsignacionDTO(BigInteger ideAsignacion, Date fecAsignacion, BigInteger ideFunci, String codDependencia,
                          String codTipAsignacion, String observaciones, String codTipCausal, String codTipProceso,

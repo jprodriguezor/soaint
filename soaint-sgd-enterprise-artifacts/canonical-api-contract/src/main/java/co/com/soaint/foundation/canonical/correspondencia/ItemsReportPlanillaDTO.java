@@ -5,40 +5,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Date;
+import java.util.ArrayList;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * Soaint Generic Artifact
- * Created:6-Jun-2017
- * Author: esanchez
+ * Created:05-Sep-2017
+ * Author: esachez
  * Type: JAVA class Artifact
  * Purpose: DTO - Model Artifact
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder(builderMethodName = "newInstance")
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-plan-agen/1.0.0")
-public class PlanAgenDTO implements Serializable {
+public class ItemsReportPlanillaDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private BigInteger idePlanAgen;
-    private String estado;
-    private String varPeso;
-    private String varValor;
-    private String varNumeroGuia;
-    private Date fecObservacion;
-    private String codNuevaSede;
-    private String codNuevaDepen;
-    private String observaciones;
-    private String codCauDevo;
-    private Date fecCarguePla;
-    private BigInteger ideAgente;
-    private BigInteger ideDocumento;
+    private ArrayList<ItemReportPlanillaDTO> itemsPlanilla;
 }

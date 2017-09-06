@@ -38,7 +38,7 @@ public class GestionarAsignacion {
      * @return
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
         return control.asignarCorrespondencia(asignacionesDTO);
     }
 
