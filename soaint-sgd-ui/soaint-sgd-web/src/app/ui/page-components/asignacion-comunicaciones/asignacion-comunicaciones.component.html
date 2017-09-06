@@ -5,7 +5,7 @@
 <div class="ui-g ui-fluid">
   <div class="ui-g-12">
     <div class="card card-w-title">
-      <p-panel header="Opciones asignación" [style]="{border: 'none'}">
+      <!--<p-panel header="Opciones asignación" [style]="{border: 'none'}">
         <div class="ui-g ui-fluid">
           <div class="ui-g-12" style="padding: 10px">
             <p-radioButton name="groupname" value="auto" [(ngModel)]="asignationType"
@@ -14,7 +14,7 @@
                            [style]="{'margin-left':'10px'}"></p-radioButton>
           </div>
         </div>
-      </p-panel>
+      </p-panel>-->
       <p-panel header="Busqueda de tareas" [style]="{border: 'none'}">
         <div class="ui-g ui-fluid">
           <div class="ui-g-12">
@@ -50,13 +50,13 @@
                 </div>
               </div>
             </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
               <div class="ui-g form-group">
                 <div class="ui-g-12">
                   <label for="numeroRadicado">Número de radicado</label>
                 </div>
                 <div class="ui-g-12">
-                  <input type="text" pInputText id="numeroRadicado">
+                  <input type="text" pInputText id="numeroRadicado" formControlName="nroRadicado">
                 </div>
               </div>
             </div>

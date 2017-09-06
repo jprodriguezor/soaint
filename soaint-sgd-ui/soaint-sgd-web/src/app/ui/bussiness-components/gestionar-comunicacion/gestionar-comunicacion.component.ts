@@ -31,6 +31,8 @@ export class GestionarComunicacionComponent implements OnInit {
 
   justificationDialogVisible: boolean = false;
 
+  hideCheckBox: boolean = true;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupReject') popupReject;
@@ -119,7 +121,9 @@ export class GestionarComunicacionComponent implements OnInit {
 
   onChange() {
     this.form.get('responseToRem').disable();
+    this.hideCheckBox = true;
     if (this.form.get('proceso').value.id === 4) {
+      this.hideCheckBox = false;
       this.form.get('responseToRem').enable();
     }
   }
