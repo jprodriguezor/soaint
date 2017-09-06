@@ -21,15 +21,6 @@
 
       >
 
-        <ng-template pTemplate="content" #parent>
-          <pdf-viewer #viewer [src]="url" *ngIf="status >= 1 && previewWasRefreshed"
-                      [show-all]="true"
-                      [original-size]="false"
-                      style="display: block;"
-          ></pdf-viewer>
-        </ng-template>
-
-
         <ng-template let-file pTemplate="file" class="ui-fluid">
           <div class="ui-g ui-fileupload-row">
             <div>{{ file.name }}</div>
@@ -43,12 +34,7 @@
 
         </ng-template>
 
-        <!--<ng-template let-file pTemplate="file">-->
-        <!--<div>Custom UI to display a file</div>-->
-        <!--</ng-template>-->
-        <!--<ng-template pTemplate="content">-->
-        <!--<div>Custom UI to manage uploaded files</div>-->
-        <!--</ng-template>-->
+
       </p-fileUpload>
 
     </div>
@@ -57,7 +43,8 @@
   <br/>
 
   <div *ngIf="resultUpload" class="result" [ngClass]="{'error': resultUpload.success == 'false'}">
-     <p>{{ resultUpload.error }}</p>
+      <p>{{ resultUpload.error }}</p>
+      <a routerLink="/carga-masiva-details">Ver detalles</a>
   </div>
 
 

@@ -38,10 +38,10 @@ export class CargaMasivaUploaderComponent {
   }
 
   uploadFileAction (event) : void {
-      this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"}).then(result => {
-        this.resultUpload = result;
-        this.onClear(event);
-      });
+    this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"}).then(result => {
+      this.resultUpload = result;
+      this.onClear(event);
+    });
   }
 
   onUpload(event) {
