@@ -25,8 +25,8 @@ export class CargaMasivaComponent implements OnInit{
     }
 
     goToDetails(id: string): void {
-      console.log('Mostrando detalles...');
-      this.router.navigate([ROUTES_PATH.cargaMasivaDetails, id]);
+      console.log('Mostrando detalles...'+ROUTES_PATH.cargaMasivaDetails);
+      this.router.navigate(['/carga-masiva/record', id]);
     }
 
     ngOnInit(): void {

@@ -1,3 +1,43 @@
 <div>
-    Mostrar detalles
+    <p>Mostrar detalles</p>
+
+    <table class="table">
+
+        <tr>
+            <th>Nombre</th><td>{{ registro.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Fecha</th><td>{{ registro.fecha_creacion }}</td>
+        </tr>
+        <tr>
+            <th>Estado</th><td>{{ registro.estado }}</td>
+        </tr>
+        <tr>
+            <th>Registros</th><td>{{ registro.total_registros }}</td>
+        </tr>
+        <tr>
+            <th>Exitosos</th><td>{{ registro.total_registros_exitosos }}</td>
+        </tr>
+        <tr>
+            <th>Fallidos</th><td>{{ registro.total_registros_error }}</td>
+        </tr>
+
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Contenido</th><th>Estado</th><th>Mensajes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let r of registro.registros_carga_masiva">
+                <td>{{ r.contenido }}</td>
+                <td>{{ r.estado }}</td>
+                <td>{{ r.mensajes }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn" (click)="goBack()">Atras</button>
 </div>
