@@ -52,14 +52,12 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.cargaMasiva,
     canActivate: [AuthenticatedGuard],
-    component: CargaMasivaComponent,
-    children: [
-      {
-        path: ROUTES_PATH.cargaMasivaDetails,
-        component: CargaMasivaDetailsComponent,
-        canActivate: [AuthenticatedGuard]
-      }
-    ]
+    component: CargaMasivaComponent
+  },
+  {
+    path: ROUTES_PATH.cargaMasivaDetails,
+    component: CargaMasivaDetailsComponent,
+    canActivate: [AuthenticatedGuard]
   }
 ];
 
