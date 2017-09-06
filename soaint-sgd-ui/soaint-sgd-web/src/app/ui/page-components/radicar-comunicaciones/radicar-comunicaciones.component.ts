@@ -226,7 +226,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
           requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
           digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
-
         }
       });
     });

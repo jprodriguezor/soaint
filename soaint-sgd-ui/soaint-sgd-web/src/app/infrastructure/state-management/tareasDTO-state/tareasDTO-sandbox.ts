@@ -132,10 +132,7 @@ export class Sandbox {
   }
 
   startTaskDispatch(task?: TareaDTO) {
-
     if (task.estado === 'ENPROGRESO') {
-      // this._store.dispatch(new actions.LockActiveTaskAction(task));
-      // this.initTaskDispatch(task);
       this._store.dispatch(new actions.StartInProgressTaskAction(task));
     } else if (task.estado === 'RESERVADO') {
       this._store.dispatch(new actions.StartTaskAction(task));

@@ -10,6 +10,7 @@ import {PopupJustificacionComponent} from '../bussiness-components/popup-justifi
 import {PopupAgregarObservacionesComponent} from '../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component';
 import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-reject.component';
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
+import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -34,7 +35,8 @@ export const PAGE_COMPONENTS = [
   PopupJustificacionComponent,
   PopupAgregarObservacionesComponent,
   PopupRejectComponent,
-  GestionarComunicacionComponent
+  GestionarComunicacionComponent,
+  RadicarSalidaComponent
 ];
 
 export * from './__page-providers.include';

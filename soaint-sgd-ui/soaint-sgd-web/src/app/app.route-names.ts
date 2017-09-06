@@ -1,6 +1,7 @@
 export const ROUTES_PATH = {
   task: 'task',
   radicarCofEntrada: 'radicar-comunicaciones',
+  radicarCofSalida: 'radicacion-salida',
   digitalizarDocumento: 'digitalizar-documentos',
   dashboard: 'home',
   login: 'login',
@@ -8,5 +9,6 @@ export const ROUTES_PATH = {
   processList: 'process',
   asignacionComunicaciones: 'asignacion-comunicaciones',
   recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones',
-  documentosTramite: 'documentos-tramite'
+  documentosTramite: 'documentos-tramite',
+
 };

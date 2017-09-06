@@ -25,7 +25,6 @@ export class WorkspaceComponent implements OnInit {
   }
 
   iniciarTarea(task) {
-    debugger;
     this._taskSandbox.startTaskDispatch(task);
   }
 
