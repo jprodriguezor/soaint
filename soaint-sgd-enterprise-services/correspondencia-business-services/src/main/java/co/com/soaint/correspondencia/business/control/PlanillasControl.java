@@ -131,6 +131,7 @@ public class PlanillasControl {
     private String conformarNroPlanilla(String codSede, int consecutivo) {
         String nro = codSede;
         int relleno = 16 - (codSede.length() + String.valueOf(consecutivo).length());
-        return nro.concat(String.format("%0"+relleno+"d", consecutivo));
+        String formato = "%0"+relleno+"d";
+        return nro.concat(String.format(formato, consecutivo));
     }
 }
