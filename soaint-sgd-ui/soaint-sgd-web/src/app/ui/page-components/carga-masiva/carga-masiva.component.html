@@ -1,0 +1,27 @@
+<div>
+    <cm-uploader></cm-uploader>
+
+    <br />
+
+    <table style="width:100%" class="table">
+        <thead>
+            <tr>
+                <th>ID</th><th>Nombre</th><th>Fecha</th><th>Estado</th><th>Registros</th><th>Exitosos</th><th>Fallidos</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let record of (registros$ | async)">
+                <td>{{ record.id }}</td>
+                <td>{{ record.nombre }}</td>
+                <td>{{ record.fecha_creacion }}</td>
+                <td>{{ record.estado }}</td>
+                <td>{{ record.total_registros }}</td>
+                <td>{{ record.total_registros_exitosos }}</td>
+                <td>{{ record.total_registros_error }}</td>
+                <td>
+                    <button (click)="goToDetails(record.id)" class="btn" >Ver detalles</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -8,12 +8,12 @@ import {ProcessComponent} from './ui/page-components/process/process.component';
 import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-comunicaciones/asignacion-comunicaciones.component';
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
-// import {CargaMasivaUploaderComponent} from './ui/page-components/carga-masiva/uploader/carga-masiva-uploader.component';
-import {CargaMasivaDetailsComponent} from './ui/page-components/carga-masiva/details/carga-masiva-details.component';
+import {CargaMasivaComponent} from './ui/page-components/carga-masiva/carga-masiva.component';
 
 import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 import {RadicarSalidaComponent} from './ui/page-components/radicacion-salida/radicar-salida.component';
+import {CargaMasivaDetailsComponent} from "./ui/page-components/carga-masiva/components/cm-details.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -49,15 +49,17 @@ export const routes: Routes = [
     component: RadicarSalidaComponent,
     canActivate: [AuthenticatedGuard]
   },
-  // {
-  //   path:ROUTES_PATH.cargaMasivaUploader,
-  //   canActivate: [AuthenticatedGuard],
-  //   component: CargaMasivaUploaderComponent,
-  // },
   {
-    path: ROUTES_PATH.cargaMasivaDetails,
+    path: ROUTES_PATH.cargaMasiva,
     canActivate: [AuthenticatedGuard],
-    component: CargaMasivaDetailsComponent,
+    component: CargaMasivaComponent,
+    children: [
+      {
+        path: ROUTES_PATH.cargaMasivaDetails,
+        component: CargaMasivaDetailsComponent,
+        canActivate: [AuthenticatedGuard]
+      }
+    ]
   }
 ];
 

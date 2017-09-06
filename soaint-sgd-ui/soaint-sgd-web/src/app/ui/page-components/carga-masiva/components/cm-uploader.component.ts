@@ -1,7 +1,3 @@
-/**
- * Created by Ernesto on 2017-09-04.
- */
-
 import { Component,ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
@@ -15,8 +11,8 @@ enum UploadStatus {
 }
 
 @Component({
-  selector: 'carga-masiva-uploader',
-  templateUrl: 'carga-masiva-uploader.component.html',
+  selector: 'cm-uploader',
+  templateUrl: 'cm-uploader.component.html',
   styleUrls: ['../carga-masiva.component.css'],
   providers: [CargaMasivaService]
 })

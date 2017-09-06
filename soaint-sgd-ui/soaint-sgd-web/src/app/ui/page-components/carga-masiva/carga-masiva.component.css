@@ -9,6 +9,8 @@
   background-color: aliceblue;
 }
 
+table.table th { text-align: left; }
+
 .error p {
   color : red;
 }
