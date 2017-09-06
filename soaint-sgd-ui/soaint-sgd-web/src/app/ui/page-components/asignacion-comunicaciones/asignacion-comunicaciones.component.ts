@@ -7,7 +7,7 @@ import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {
   getArrayData as getFuncionarioArrayData,
-  getAuthenticatedFuncionario
+  getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario
 } from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
 import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
@@ -21,6 +21,7 @@ import {
   getAgragarObservacionesDialogVisible, getDetailsDialogVisible,
   getJustificationDialogVisible, getRejectDialogVisible
 } from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -40,7 +41,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   selectedFuncionarios: FuncionarioDTO[] = [];
 
-  asignationType = 'manual';
+  asignationType = 'auto';
 
   start_date: Date = new Date();
 
@@ -57,6 +58,10 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   agregarObservacionesDialogVisible$: Observable<boolean>;
 
   rejectDialogVisible$: Observable<boolean>;
+
+  dependenciaSelected$: Observable<DependenciaDTO>;
+
+  dependenciaSelected: DependenciaDTO;
 
   funcionarioSelected: FuncionarioDTO;
 
@@ -79,6 +84,10 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
               private formBuilder: FormBuilder) {
+    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+    this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+    });
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -117,6 +126,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.form = this.formBuilder.group({
       'funcionario': [null],
       'estadoCorrespondencia': [null],
+      'nroRadicado': [null],
     });
   }
 
@@ -196,6 +206,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.popupAgregarObservaciones.setData({
       idDocumento: idDocuemento,
       idFuncionario: this.funcionarioLog.id,
+      codOrgaAdmin: this.dependenciaSelected.codigo
     });
     this.popupAgregarObservaciones.loadObservations();
     this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(true);
@@ -291,7 +302,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._comunicacionOficialApi.loadDispatch({
       fecha_ini: this.convertDate(this.start_date),
       fecha_fin: this.convertDate(this.end_date),
-      cod_estado: this.form.get('estadoCorrespondencia').value
+      cod_estado: this.form.get('estadoCorrespondencia').value,
+      nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
     });
   }
 }

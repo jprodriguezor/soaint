@@ -87,9 +87,10 @@ public class DocumentoControl {
      *
      * @param ideDocumento
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
-    public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws SystemException{
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws BusinessException, SystemException{
         return ppdTrazDocumentoControl.listarTrazasDocumento(ideDocumento);
     }
 }

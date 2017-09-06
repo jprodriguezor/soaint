@@ -63,13 +63,15 @@ public class DocumentoWebApi {
     }
 
     /**
+     *
      * @param ideDocumento
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
     @GET
     @Path("/documento/listar-observaciones/{ide-documento}")
-    public ObservacionesDocumentoDTO listarObservacionesDocumento(@PathParam("ide-documento") final BigInteger ideDocumento) throws SystemException {
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(@PathParam("ide-documento") final BigInteger ideDocumento) throws BusinessException, SystemException {
         log.info("processing rest request - listar observaciones de un documento");
         return boundary.listarObservacionesDocumento(ideDocumento);
     }

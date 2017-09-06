@@ -25,6 +25,9 @@ export class PopupAgregarObservacionesComponent implements OnInit {
   @Input()
   idFuncionario: number;
 
+  @Input()
+  codOrgaAdmin: string;
+
   constructor(private formBuilder: FormBuilder, private _asignacionSandbox: AsignacionSandbox, private _changeDetectorRef: ChangeDetectorRef) {
     this.initForm();
     this.listenForErrors();
@@ -71,6 +74,7 @@ export class PopupAgregarObservacionesComponent implements OnInit {
   setData(data: any) {
     this.idDocumento = data.idDocumento;
     this.idFuncionario = data.idFuncionario;
+    this.codOrgaAdmin = data.codOrgaAdmin;
   }
 
   addObservation() {
@@ -78,8 +82,9 @@ export class PopupAgregarObservacionesComponent implements OnInit {
       observacion: this.form.get('observacion').value,
       ideFunci: this.idFuncionario,
       ideDocumento: this.idDocumento,
-      codOrgaAdmin: null,
+      codDependencia: this.codOrgaAdmin,
       nomFuncionario: null,
+      nomDependencia: null,
       valApellido1: null,
       valApellido2: null,
       corrElectronico: null,

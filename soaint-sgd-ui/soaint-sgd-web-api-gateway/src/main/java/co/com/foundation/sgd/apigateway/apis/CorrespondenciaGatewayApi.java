@@ -62,10 +62,11 @@ public class CorrespondenciaGatewayApi {
     public Response listarComunicaciones(@QueryParam("fecha_ini") final String fechaIni,
                                          @QueryParam("fecha_fin") final String fechaFin,
                                          @QueryParam("cod_dependencia") final String codDependencia,
-                                         @QueryParam("cod_estado") final String codEstado) {
+                                         @QueryParam("cod_estado") final String codEstado,
+                                         @QueryParam("nro_radicado") final String nroRadicado) {
 
         log.info("CorrespondenciaGatewayApi - [trafic] - listing Correspondencia");
-        Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado);
+        Response response = client.listarComunicaciones(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
         if (response.getStatus() != HttpStatus.OK.value()) {

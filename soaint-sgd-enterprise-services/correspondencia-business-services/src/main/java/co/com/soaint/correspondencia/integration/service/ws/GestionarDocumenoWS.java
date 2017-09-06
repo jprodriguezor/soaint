@@ -51,12 +51,14 @@ public class GestionarDocumenoWS {
     }
 
     /**
+     *
      * @param ideDocumento
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
     @WebMethod(action = "listarObservacionesDocumento", operationName = "listarObservacionesDocumento")
-    public ObservacionesDocumentoDTO listarObservacionesDocumento(@WebParam(name = "ide-documento") final BigInteger ideDocumento) throws SystemException {
+    public ObservacionesDocumentoDTO listarObservacionesDocumento(@WebParam(name = "ide-documento") final BigInteger ideDocumento) throws BusinessException, SystemException {
         return boundary.listarObservacionesDocumento(ideDocumento);
     }
 }

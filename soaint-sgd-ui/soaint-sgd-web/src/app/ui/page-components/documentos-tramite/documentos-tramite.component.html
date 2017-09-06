@@ -8,13 +8,11 @@
                                           [constantesList]="constantes"></app-detalles-datos-generales>
           </p-tabPanel>
 
-          <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
+          <p-tabPanel header="Remitente / Destinatario" leftIcon="ui-icon-assignment">
             <app-detalles-datos-remitente [remitente]="remitente$ | async"
                                           [contactos]="contactos$ | async"
                                           [constantesList]="constantes"></app-detalles-datos-remitente>
-          </p-tabPanel>
 
-          <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
             <app-detalles-datos-destinatario [destinatarios]="destinatarios$ | async"
                                              [constantesList]="constantes"></app-detalles-datos-destinatario>
           </p-tabPanel>

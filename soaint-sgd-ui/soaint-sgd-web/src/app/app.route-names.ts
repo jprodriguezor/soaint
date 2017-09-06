@@ -1,6 +1,7 @@
 export const ROUTES_PATH = {
   task: 'task',
   radicarCofEntrada: 'radicar-comunicaciones',
+  radicarCofSalida: 'radicacion-salida',
   digitalizarDocumento: 'digitalizar-documentos',
   dashboard: 'home',
   login: 'login',

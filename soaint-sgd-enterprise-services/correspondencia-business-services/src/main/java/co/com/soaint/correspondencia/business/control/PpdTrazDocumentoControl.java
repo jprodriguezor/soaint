@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
 import co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -15,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,9 @@ public class PpdTrazDocumentoControl {
     @Autowired
     PpdDocumentoControl ppdDocumentoControl;
 
+    @Autowired
+    DependenciaControl dependenciaControl;
+
     // ----------------------
 
     /**
@@ -49,6 +54,7 @@ public class PpdTrazDocumentoControl {
                 .ideFunci(ppdTrazDocumentoDTO.getIdeFunci())
                 .codEstado(ppdTrazDocumentoDTO.getCodEstado())
                 .ideDocumento(ppdTrazDocumentoDTO.getIdeDocumento())
+                .codOrgaAdmin(ppdTrazDocumentoDTO.getCodOrgaAdmin())
                 .build();
     }
 
@@ -81,16 +87,23 @@ public class PpdTrazDocumentoControl {
     }
 
     /**
+     *
      * @param ideDocumento
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
-    public ObservacionesDocumentoDTO listarTrazasDocumento(BigInteger ideDocumento) throws SystemException {
+    public ObservacionesDocumentoDTO listarTrazasDocumento(BigInteger ideDocumento) throws BusinessException, SystemException {
         try {
-            return ObservacionesDocumentoDTO.newInstance().observaciones(em.createNamedQuery("PpdTrazDocumento.findAllByIdeDocumento", PpdTrazDocumentoDTO.class)
+            List<PpdTrazDocumentoDTO> observaciones = em.createNamedQuery("PpdTrazDocumento.findAllByIdeDocumento", PpdTrazDocumentoDTO.class)
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
-                    .getResultList())
-                    .build();
+                    .getResultList();
+            if (!observaciones.isEmpty())
+                for (int i = 0; i < observaciones.size(); i++) {
+                    DependenciaDTO dependencia = dependenciaControl.listarDependenciaByCodigo(observaciones.get(i).getCodOrgaAdmin());
+                    observaciones.get(i).setNomDependencia(dependencia.getNomDependencia());
+                }
+            return ObservacionesDocumentoDTO.newInstance().observaciones(observaciones).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
