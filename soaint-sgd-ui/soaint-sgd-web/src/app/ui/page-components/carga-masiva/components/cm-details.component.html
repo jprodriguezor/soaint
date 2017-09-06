@@ -1,5 +1,5 @@
 <div>
-    <p>Mostrar detalles</p>
+    <h1>Detalles de la carga masiva</h1>
 
     <table class="table">
 
@@ -24,20 +24,26 @@
 
     </table>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Contenido</th><th>Estado</th><th>Mensajes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let r of registro.registros_carga_masiva">
-                <td>{{ r.contenido }}</td>
-                <td>{{ r.estado }}</td>
-                <td>{{ r.mensajes }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div  *ngIf="registro.registros_carga_masiva.length > 0">
+        <h2>Detalles de los registros</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                  <th>Contenido</th><th>Estado</th><th>Mensajes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let r of registro.registros_carga_masiva">
+                    <td>{{ r.contenido }}</td>
+                    <td>{{ r.estado }}</td>
+                    <td>{{ r.mensajes }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
 
     <button class="btn" (click)="goBack()">Atras</button>
 </div>

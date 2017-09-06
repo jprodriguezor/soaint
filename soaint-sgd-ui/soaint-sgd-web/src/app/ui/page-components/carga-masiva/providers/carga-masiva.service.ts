@@ -4,7 +4,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {Router} from '@angular/router';
 import {ResultUploadDTO} from '../domain/ResultUploadDTO';
 import {CargaMasivaDTO} from '../domain/CargaMasivaDTO';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class CargaMasivaService {
@@ -15,22 +15,24 @@ export class CargaMasivaService {
   }
 
   // Subir documento para carga masiva
-  uploadFile(files: File[], postData: any): Observable<ResultUploadDTO> {
-    const headers = new Headers();
-    const formData: FormData = new FormData();
-    formData.append('file', files[0], files[0].name);
+  uploadFile(files: File[], postData: any): Promise<ResultUploadDTO> {
+      const headers = new Headers();
+      const formData: FormData = new FormData();
+      formData.append('file', files[0], files[0].name);
 
-    if (postData !== '' && postData !== undefined && postData !== null) {
-      for (const property in postData) {
-        if (postData.hasOwnProperty(property)) {
-          formData.append(property, postData[property]);
-        }
+      if (postData !== '' && postData !== undefined && postData !== null) {
+          for (const property in postData) {
+              if (postData.hasOwnProperty(property)) {
+                formData.append(property, postData[property]);
+              }
+          }
       }
-    }
 
-    return this.http.post(this.host + '/upload', formData, {headers: headers})
-      .map(response => response.json())
-      .catch(this.handleError);
+
+
+      return this.http.post(this.host + '/upload', formData, {headers: headers})
+          .toPromise().then(res => res.json() as ResultUploadDTO)
+          .catch(this.handleError);
 
   }
 

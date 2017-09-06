@@ -2,6 +2,7 @@ import { Component,ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from "../domain/ResultUploadDTO";
+import {Observable} from "rxjs/Observable";
 
 enum UploadStatus {
   CLEAN = 0,
@@ -34,10 +35,11 @@ export class CargaMasivaUploaderComponent {
   }
 
   uploadFileAction (event) : void {
-    this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"}).then(result => {
-      this.resultUpload = result;
-      this.onClear(event);
-    });
+      this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"})
+        .then(result => {
+            this.resultUpload = result;
+            this.changeDetection.detectChanges();
+        });
   }
 
   onUpload(event) {
