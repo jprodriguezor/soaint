@@ -14,7 +14,7 @@
                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                     maxFileSize="1000000"
                     customUpload="true"
-                    (uploadHandler)="customUploaderMassLoad($event)"
+                    (uploadHandler)="uploadFileAction($event)"
                     (onUpload)="onUpload($event)"
                     (onClear)="onClear($event)"
                     (onSelect)="onSelect($event)"
@@ -53,4 +53,12 @@
 
     </div>
   </app-task-container>
+
+  <br/>
+
+  <div *ngIf="resultUpload" class="result" [ngClass]="{'error': resultUpload.success == 'false'}">
+     <p>{{ resultUpload.error }}</p>
+  </div>
+
+
 </div>

@@ -10,7 +10,8 @@ import {PopupJustificacionComponent} from '../bussiness-components/popup-justifi
 import {PopupAgregarObservacionesComponent} from '../bussiness-components/popup-agregar-observaciones/popup-agregar-observaciones.component';
 import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-reject.component';
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
-import {CargaMasivaComponent} from './carga-masiva/carga-masiva.component';
+import {CargaMasivaUploaderComponent} from './carga-masiva/uploader/carga-masiva-uploader.component';
+import {CargaMasivaDetailsComponent} from "./carga-masiva/details/carga-masiva-details.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -36,7 +37,8 @@ export const PAGE_COMPONENTS = [
   PopupAgregarObservacionesComponent,
   PopupRejectComponent,
   GestionarComunicacionComponent,
-  CargaMasivaComponent
+  CargaMasivaUploaderComponent,
+  CargaMasivaDetailsComponent
 ];
 
 export * from './__page-providers.include';
