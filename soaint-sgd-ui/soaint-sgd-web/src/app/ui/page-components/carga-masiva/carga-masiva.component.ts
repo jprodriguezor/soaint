@@ -3,7 +3,6 @@ import {Router} from "@angular/router";
 import {CargaMasivaService} from "./providers/carga-masiva.service";
 import {Observable} from "rxjs/Observable";
 import {CargaMasivaDTO} from "./domain/CargaMasivaDTO";
-import {ROUTES_PATH} from "../../../app.route-names";
 
 @Component({
     selector: 'carga-masiva',
@@ -24,8 +23,8 @@ export class CargaMasivaComponent implements OnInit{
         this.registros$ = this.cmService.getRecords();
     }
 
-    goToDetails(id: string): void {
-        this.router.navigate(['/carga-masiva/record', id]);
+    goToDetails(id: any): void {
+        // this.router.navigate(['/carga-masiva/record/', id]);
     }
 
     ngOnInit(): void {

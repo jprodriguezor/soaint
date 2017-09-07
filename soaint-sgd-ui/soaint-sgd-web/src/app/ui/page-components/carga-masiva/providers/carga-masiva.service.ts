@@ -54,8 +54,13 @@ export class CargaMasivaService {
 
   // Obtener detalles de un registro de carga masiva específico
   getRecord(id: any): Observable<CargaMasivaDTO> {
+      let url = `${this.host}/estadocargamasiva/${id}`;
 
-      return this.http.get(`${this.host}/estadocargamasiva/${id}`).map(res => res.json())
+      if (id == 'last' || isNaN(id)) {
+          url = `${this.host}/estadocargamasiva`;
+      }
+
+      return this.http.get(url).map(res => res.json())
           .catch(this.handleError);
   }
 
