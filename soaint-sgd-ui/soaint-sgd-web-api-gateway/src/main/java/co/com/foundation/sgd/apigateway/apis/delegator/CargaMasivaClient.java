@@ -50,7 +50,7 @@ public class CargaMasivaClient {
     }
 
     public Response cargarDocumento(InputPart file, String codigoSede, String codigoDependencia) {
-        log.info("\"Carga Masiva - [trafic] - listing Cargar Documento with endpoint: " + endpoint);
+        log.info("Carga Masiva - [trafic] - listing Cargar Documento with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
         InputStream inputStream = null;
@@ -59,13 +59,13 @@ public class CargaMasivaClient {
         } catch (IOException e) {
             log.error("Se ha generado un error del tipo IO:", e);
         }
+        multipart.addFormData ("codigoSede", codigoSede,MediaType.TEXT_PLAIN_TYPE);
+        multipart.addFormData ("codigoDependencia", codigoDependencia,MediaType.TEXT_PLAIN_TYPE);
         multipart.addFormData("file", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
-
-
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {
         };
 
-        return wt.path("/cargar-fichero/"+codigoSede+"/"+codigoDependencia)
+        return wt.path("/cargar-fichero")
                 .request()
                 .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
