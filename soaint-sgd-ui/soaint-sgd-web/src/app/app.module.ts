@@ -40,6 +40,8 @@ import {ReduxStore} from './infrastructure/redux-store/__redux-config';
 import {RouterStoreModule} from '@ngrx/router-store';
 import {PdfViewerComponent} from 'ng2-pdf-viewer';
 import {ClearValidatorsDirective} from './shared/directives/form/clear-validators.directive';
+import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
+import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
 
 
 @NgModule({
@@ -116,6 +118,7 @@ import {ClearValidatorsDirective} from './shared/directives/form/clear-validator
     PrintDirective,
     DynamicDisableDirective,
     ClearValidatorsDirective,
+    PhoneInputDirective,
     PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES,
@@ -127,7 +130,8 @@ import {ClearValidatorsDirective} from './shared/directives/form/clear-validator
     ...PAGE_COMPONENTS_PROVIDERS,
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
-    ConfirmationService
+    ConfirmationService,
+    CountryPhonePipe
   ],
   bootstrap: [AppComponent]
 })

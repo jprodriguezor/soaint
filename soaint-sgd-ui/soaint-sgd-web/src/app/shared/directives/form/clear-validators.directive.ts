@@ -24,13 +24,11 @@ export class ClearValidatorsDirective implements OnInit {
   @Input('clearValidators')
   set clearValidators(check: boolean) {
 
-    debugger;
-
     if (!this.ctrl) {
       return;
     }
 
-    if (!check) {
+    if (check) {
       (<any>this.ctrl).__validator = this.ctrl.validator || (<any>this.ctrl).__validator;
       this.ctrl.clearValidators();
     } else {
