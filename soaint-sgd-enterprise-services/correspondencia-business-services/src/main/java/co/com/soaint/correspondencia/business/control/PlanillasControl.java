@@ -5,6 +5,7 @@ import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.PlanAgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -51,7 +52,7 @@ public class PlanillasControl {
             corPlanillas.setCorPlanAgenList(new ArrayList<>());
             planilla.getAgentes().getAgente().stream().forEach(planAgenDTO -> {
                 CorPlanAgen corPlanAgen = planAgenControl.corPlanAgenTransform(planAgenDTO);
-                corPlanAgen.setEstado(EstadoAgenteEnum.DISTRIBUCION.getCodigo());
+                corPlanAgen.setEstado(EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
                 corPlanAgen.setCorPlanillas(corPlanillas);
                 corPlanillas.getCorPlanAgenList().add(corPlanAgen);
             });
@@ -131,6 +132,7 @@ public class PlanillasControl {
     private String conformarNroPlanilla(String codSede, int consecutivo) {
         String nro = codSede;
         int relleno = 16 - (codSede.length() + String.valueOf(consecutivo).length());
-        return nro.concat(String.format("%0"+relleno+"d", consecutivo));
+        String formato = "%0"+relleno+"d";
+        return nro.concat(String.format(formato, consecutivo));
     }
 }

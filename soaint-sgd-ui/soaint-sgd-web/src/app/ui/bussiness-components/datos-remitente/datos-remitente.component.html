@@ -112,7 +112,7 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText id="razonSocial" formControlName="razonSocial" [dynamicDisable]="!visibility.razonSocial">
-              <label for="razonSocial">Razon social</label>
+              <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
 
                  <div class="ui-message ui-messages-error"
                       *ngIf="validations.razonSocial">
@@ -160,8 +160,8 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos" [dynamicDisable]="!visibility.nombreApellidos">
-                <label for="nombreApellidos"><span class="text-danger">*</span>Nombre y Apellidos</label>
+              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos" [dynamicDisable]="!visibility.nombreApellidos" [clearValidators]="visibility.personaJuridica">
+                <label for="nombreApellidos"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y Apellidos</label>
 
                 <div class="ui-message ui-messages-error"
                      *ngIf="validations.nombreApellidos">

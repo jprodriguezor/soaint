@@ -127,7 +127,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <p-inputMask id="numeroTel" formControlName="numeroTel" mask="+99 (999) 9999999"></p-inputMask>
+                <input type="text" pInputText id="numeroTel" formControlName="numeroTel" phoneInput />
               <label>No. de teléfono</label>
               </span>
             </div>
@@ -139,7 +139,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <p-inputMask id="celular" formControlName="celular" mask="999-999-9999"></p-inputMask>
+                <p-inputMask id="celular" formControlName="celular" mask="999-999-9999" [autoClear]="false"></p-inputMask>
               <label>celular</label>
               </span>
             </div>
@@ -147,7 +147,7 @@
         </div>
 
         <!--Pais-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="pais">Pais</label>
@@ -166,7 +166,7 @@
         </div>
 
         <!--Departamento-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="departamento">Departamento</label>
@@ -184,7 +184,7 @@
         </div>
 
         <!--Municipio-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="municipio">Municipio</label>
@@ -208,7 +208,7 @@
 
       <div class="ui-g ui-fluid">
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoVia"><span class="text-danger">*</span> Tipo Via</label>
@@ -226,7 +226,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -237,7 +237,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -255,7 +255,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="bis">Bis</label>
@@ -273,7 +273,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -291,7 +291,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -302,7 +302,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -320,7 +320,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -331,7 +331,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -349,7 +349,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Tipo complemento</label>
@@ -367,7 +367,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -378,7 +378,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-6 ui-md-6 ui-g-3 ui-lg-3">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div style="padding: 55px 0 0 10px">
             <p-checkbox name="cg" label="Principal"
                         formControlName="principal" id="reqDigit" binary="true"></p-checkbox>

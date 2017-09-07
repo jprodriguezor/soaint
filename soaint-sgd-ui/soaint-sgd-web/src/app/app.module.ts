@@ -39,6 +39,9 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {ReduxStore} from './infrastructure/redux-store/__redux-config';
 import {RouterStoreModule} from '@ngrx/router-store';
 import {PdfViewerComponent} from 'ng2-pdf-viewer';
+import {ClearValidatorsDirective} from './shared/directives/form/clear-validators.directive';
+import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
+import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
 
 
 @NgModule({
@@ -114,9 +117,11 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
     AppComponent,
     PrintDirective,
     DynamicDisableDirective,
+    ClearValidatorsDirective,
+    PhoneInputDirective,
     PdfViewerComponent,
     ...UI_COMPONENTS,
-    ...PIPES
+    ...PIPES,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -125,8 +130,8 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
     ...PAGE_COMPONENTS_PROVIDERS,
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
-    EmailValidator,
-    ConfirmationService
+    ConfirmationService,
+    CountryPhonePipe
   ],
   bootstrap: [AppComponent]
 })
