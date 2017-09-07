@@ -6,20 +6,15 @@
     <table class="table vertical">
         <thead>
             <tr>
-                <th>ID</th><th>Nombre</th><th>Fecha</th><th>Estado</th><th>Registros</th><th>Exitosos</th><th>Fallidos</th><th></th>
+                <th>ID</th><th>Nombre</th><th></th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let record of (registros$ | async)">
                 <td>{{ record.idCargaMasiva }}</td>
-                <td>{{ record.nombreCargaMasiva }}</td>
-                <td>{{ record.fechaCreacionCargaMasiva }}</td>
-                <td>{{ record.estadoCargaMasiva }}</td>
-                <td>{{ record.totalRegistrosCargaMasiva }}</td>
-                <td>{{ record.totalRegistrosExitososCargaMasiva }}</td>
-                <td>{{ record.totalRegistrosErrorCargaMasiva }}</td>
+                <td>{{ record.nombreCarga }}</td>
                 <td>
-                    <button (click)="goToDetails(record.id)" class="ui-button" >Ver detalles</button>
+                    <button (click)="goToDetails(record.idCargaMasiva)" class="ui-button" >Ver detalles</button>
                 </td>
             </tr>
         </tbody>

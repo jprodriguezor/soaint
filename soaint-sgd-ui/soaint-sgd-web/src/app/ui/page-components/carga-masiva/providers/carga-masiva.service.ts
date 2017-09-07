@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {ResultUploadDTO} from '../domain/ResultUploadDTO';
 import {CargaMasivaDTO} from '../domain/CargaMasivaDTO';
 import {Observable} from 'rxjs/Observable';
+import {CargaMasivaList} from "../domain/CargaMasivaList";
 
 @Injectable()
 export class CargaMasivaService {
@@ -37,8 +38,7 @@ export class CargaMasivaService {
   }
 
   // Obtener todos los registros de cargas masivas realizadas
-  getRecords(): Observable<CargaMasivaDTO[]> {
-
+  getRecords(): Observable<CargaMasivaList[]> {
 
       return this.http.get(this.host + '/listadocargamasiva').map(res => res.json())
           .catch(this.handleError);

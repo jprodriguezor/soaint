@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {CargaMasivaService} from "./providers/carga-masiva.service";
 import {Observable} from "rxjs/Observable";
-import {CargaMasivaDTO} from "./domain/CargaMasivaDTO";
 import {Store} from "@ngrx/store";
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {go} from '@ngrx/router-store';
+import {CargaMasivaList} from "./domain/CargaMasivaList";
 
 @Component({
     selector: 'carga-masiva',
@@ -15,7 +15,7 @@ import {go} from '@ngrx/router-store';
 
 export class CargaMasivaComponent implements OnInit{
 
-    registros$: Observable<CargaMasivaDTO[]>;
+    registros$: Observable<CargaMasivaList[]>;
 
 
     constructor(private _store: Store<State>, private cmService: CargaMasivaService) {}
