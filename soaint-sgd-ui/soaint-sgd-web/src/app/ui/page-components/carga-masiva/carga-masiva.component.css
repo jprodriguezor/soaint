@@ -10,6 +10,8 @@
 }
 
 table.table { background: #ffffff; padding: 5px; border: 1px solid #cccccc; width: 100%; }
+table.table-grid tr td { border-bottom: 1px solid #cccccc; }
+table.table-grid tr:last-child td { border-bottom: none; }
 
 table.table th { text-align: left; }
 
