@@ -6,13 +6,17 @@ import {ResultUploadDTO} from '../domain/ResultUploadDTO';
 import {CargaMasivaDTO} from '../domain/CargaMasivaDTO';
 import {Observable} from 'rxjs/Observable';
 import {CargaMasivaList} from "../domain/CargaMasivaList";
+import {ApiBase} from "../../../../infrastructure/api/api-base";
+import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
+import {Store} from '@ngrx/store';
+import {environment} from "../../../../../environments/environment";
 
 @Injectable()
 export class CargaMasivaService {
 
-  private host = 'http://heroes.local/Massive-Loader';
+  private host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis/carga-masiva-gateway-api';
 
-  constructor(private router: Router, private http: Http) {
+  constructor(private router: Router, private http: Http, private _api: ApiBase, private _store: Store<RootState>) {
   }
 
   // Subir documento para carga masiva
@@ -40,30 +44,42 @@ export class CargaMasivaService {
   // Obtener todos los registros de cargas masivas realizadas
   getRecords(): Observable<CargaMasivaList[]> {
 
-      return this.http.get(this.host + '/listadocargamasiva').map(res => res.json())
-          .catch(this.handleError);
+      return this._api.list(`${environment.carga_masiva_endpoint_listar}`).map(res => res.cargaMasiva)
+              .catch(this.handleError);
+
+      // return this.http.get(this.host + '/listadocargamasiva').map(res => res.json().cargaMasiva)
+      //     .catch(this.handleError);
   }
 
   // Obtener el ultimo registro de carga masiva
   getLastRecord(): Observable<CargaMasivaDTO> {
 
-      return this.http.get(this.host + '/estadocargamasiva').map(res => res.json())
+
+
+    return this.http.get(this.host + '/estadocargamasiva').map(res => res.json())
           .catch(this.handleError);
   }
 
   // Obtener detalles de un registro de carga masiva específico
   getRecord(id: any): Observable<CargaMasivaDTO> {
-      if (id == 'last' || isNaN(id)) {
+    console.log('ID: '+id);
+
+    if (id == 'last' || isNaN(id)) {
+      console.log('LAST');
           return this.getLastRecord();
       }
-
+    console.log('BYID');
       return this.getRecordById(id);
   }
 
 
   getRecordById(id: any) : Observable<CargaMasivaDTO> {
-      return this.http.get(`${this.host}/estadocargamasiva/${id}`).map(res => res.json())
-        .catch(this.handleError);
+
+    return this._api.list(`${environment.carga_masiva_endpoint_estado}/${id}`).map(res => res.correspondencia)
+      .catch(this.handleError);
+
+    // return this.http.get(`${this.host}/estadocargamasiva/${id}`).map(res => res.json())
+    //     .catch(this.handleError);
   }
 
 

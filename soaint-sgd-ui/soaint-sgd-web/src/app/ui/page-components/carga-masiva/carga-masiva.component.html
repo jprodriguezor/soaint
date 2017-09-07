@@ -11,10 +11,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let record of (registros$ | async)">
-                <td>{{ record.idCargaMasiva }}</td>
+                <td>{{ record.id }}</td>
                 <td>{{ record.nombreCarga }}</td>
                 <td>
-                    <button (click)="goToDetails(record.idCargaMasiva)" class="ui-button" >Ver detalles</button>
+                    <button (click)="goToDetails(record.id)" class="ui-button" >Ver detalles</button>
                 </td>
             </tr>
         </tbody>
