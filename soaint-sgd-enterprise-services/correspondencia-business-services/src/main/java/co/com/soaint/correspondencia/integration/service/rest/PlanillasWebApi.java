@@ -8,10 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,10 +35,43 @@ public class PlanillasWebApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
+    /**
+     *
+     * @param planilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @POST
     @Path("/planillas")
     public PlanillaDTO generarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         log.info("processing rest request - generar planilla distribucion");
         return boundary.generarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param planilla
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/planillas")
+    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+        log.info("processing rest request - cargar planilla distribucion");
+        boundary.cargarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/planillas/{nro_planilla}")
+    public PlanillaDTO listarPlanillasByNroPlanilla(@PathParam("nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
+        return boundary.listarPlanillasByNroPlanilla(nroPlanilla);
     }
 }

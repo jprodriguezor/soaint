@@ -2,9 +2,9 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
+import co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlanAgentesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -59,6 +59,27 @@ public class PlanillasControl {
             em.persist(corPlanillas);
             em.flush();
             return listarPlanillasByNroPlanilla(corPlanillas.getNroPlanilla());
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param planilla
+     * @throws SystemException
+     */
+    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+        try {
+            for (PlanAgenDTO planAgenDTO : planilla.getAgentes().getAgente()) {
+                planAgenControl.updateEstadoDistribucion(planAgenDTO);
+            }
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -132,7 +153,7 @@ public class PlanillasControl {
     private String conformarNroPlanilla(String codSede, int consecutivo) {
         String nro = codSede;
         int relleno = 16 - (codSede.length() + String.valueOf(consecutivo).length());
-        String formato = "%0"+relleno+"d";
+        String formato = "%0" + relleno + "d";
         return nro.concat(String.format(formato, consecutivo));
     }
 }

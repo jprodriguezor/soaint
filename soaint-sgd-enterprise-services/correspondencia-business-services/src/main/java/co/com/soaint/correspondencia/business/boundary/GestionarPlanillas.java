@@ -38,4 +38,25 @@ public class GestionarPlanillas {
     public PlanillaDTO generarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         return control.generarPlanilla(planilla);
     }
+
+    /**
+     *
+     * @param planilla
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+        control.cargarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla) throws BusinessException, SystemException {
+        return control.listarPlanillasByNroPlanilla(nroPlanilla);
+    }
 }

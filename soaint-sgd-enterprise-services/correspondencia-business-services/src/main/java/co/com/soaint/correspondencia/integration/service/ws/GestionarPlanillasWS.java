@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 
 /**
@@ -36,5 +37,28 @@ public class GestionarPlanillasWS {
     @WebMethod(action = "generarPlanilla", operationName = "generarPlanilla")
     public PlanillaDTO generarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         return boundary.generarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param planilla
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @WebMethod(action = "cargarPlanilla", operationName = "cargarPlanilla")
+    public void cargarPlanilla(@WebParam(name = "planilla")final PlanillaDTO planilla) throws BusinessException, SystemException {
+        boundary.cargarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarPlanillasByNroPlanilla", operationName = "listarPlanillasByNroPlanilla")
+    public PlanillaDTO listarPlanillasByNroPlanilla(@WebParam(name = "nro_planilla")final String nroPlanilla) throws BusinessException, SystemException {
+        return boundary.listarPlanillasByNroPlanilla(nroPlanilla);
     }
 }
