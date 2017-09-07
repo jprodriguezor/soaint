@@ -9,6 +9,8 @@
   background-color: aliceblue;
 }
 
+table.table { background: #ffffff; padding: 5px; border: 1px solid #cccccc; width: 100%; }
+
 table.table th { text-align: left; }
 
 .error p {
