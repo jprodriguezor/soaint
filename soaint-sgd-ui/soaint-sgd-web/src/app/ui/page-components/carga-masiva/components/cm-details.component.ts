@@ -4,6 +4,9 @@ import {Observable} from "rxjs/Observable";
 import {CargaMasivaDTO} from "../domain/CargaMasivaDTO";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import { Location }  from '@angular/common';
+import {Store} from "@ngrx/store";
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
+import {go, back} from '@ngrx/router-store';
 
 @Component({
     selector: 'cm-details',
@@ -16,19 +19,19 @@ export class CargaMasivaDetailsComponent implements OnInit {
     @Input() registro: CargaMasivaDTO;
 
     constructor(
-        // private cmService: CargaMasivaService,
-        // private route: ActivatedRoute,
-        // private location: Location
+        private cmService: CargaMasivaService,
+        private route: ActivatedRoute,
+        private _store: Store<State>,
     ) {}
 
     goBack(): void {
-        // this.location.back();
+      this._store.dispatch(back());
     }
 
 
     ngOnInit(): void {
-      // this.route.paramMap
-      //     .switchMap((params: ParamMap) => this.cmService.getRecord(+params.get('id')))
-      //     .subscribe(registro => this.registro = registro);
+      this.route.paramMap
+          .switchMap((params: ParamMap) => this.cmService.getRecord(+params.get('id')))
+          .subscribe(registro => this.registro = registro);
     }
 }
