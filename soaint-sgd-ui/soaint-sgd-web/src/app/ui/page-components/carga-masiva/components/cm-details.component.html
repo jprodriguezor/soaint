@@ -4,44 +4,48 @@
     <table class="table">
 
         <tr>
-            <th>Nombre</th><td>{{ registro.nombre }}</td>
+            <th>Nombre</th><td>{{ (registro$ | async)?.nombre }}</td>
         </tr>
         <tr>
-            <th>Fecha</th><td>{{ registro.fecha_creacion }}</td>
+            <th>Fecha creación</th><td>{{ (registro$ | async)?.fecha_creacion }}</td>
         </tr>
         <tr>
-            <th>Estado</th><td>{{ registro.estado }}</td>
+            <th>Estado</th><td>{{ (registro$ | async)?.estado }}</td>
         </tr>
         <tr>
-            <th>Registros</th><td>{{ registro.total_registros }}</td>
+            <th>Total registros</th><td>{{ (registro$ | async)?.total_registros }}</td>
         </tr>
         <tr>
-            <th>Exitosos</th><td>{{ registro.total_registros_exitosos }}</td>
+            <th>Registros exitosos</th><td>{{ (registro$ | async)?.total_registros_exitosos }}</td>
         </tr>
         <tr>
-            <th>Fallidos</th><td>{{ registro.total_registros_error }}</td>
+            <th>Registros fallidos</th><td>{{ (registro$ | async)?.total_registros_error }}</td>
         </tr>
 
     </table>
 
-    <div  *ngIf="registro.registros_carga_masiva.length > 0">
-        <h2>Detalles de los registros</h2>
+    <div *ngIf="(registro$ | async)?.registros_carga_masiva.length > 0">
+      <h2>Detalles registros de la carga masiva</h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                  <th>Contenido</th><th>Estado</th><th>Mensajes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let r of registro.registros_carga_masiva">
-                    <td>{{ r.contenido }}</td>
-                    <td>{{ r.estado }}</td>
-                    <td>{{ r.mensajes }}</td>
-                </tr>
-            </tbody>
-        </table>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Contenido</th>
+          <th>Estado</th>
+          <th>Mensajes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let reg of (registro$ | async)?.registros_carga_masiva">
+          <td>{{ reg.contenido }}</td>
+          <td>{{ reg.estado }}</td>
+          <td>{{ reg.mensajes }}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
+
+
 
 
 

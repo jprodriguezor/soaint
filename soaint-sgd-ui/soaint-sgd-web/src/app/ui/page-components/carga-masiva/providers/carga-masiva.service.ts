@@ -47,21 +47,23 @@ export class CargaMasivaService {
   // Obtener el ultimo registro de carga masiva
   getLastRecord(): Observable<CargaMasivaDTO> {
 
-
       return this.http.get(this.host + '/estadocargamasiva').map(res => res.json())
           .catch(this.handleError);
   }
 
   // Obtener detalles de un registro de carga masiva específico
   getRecord(id: any): Observable<CargaMasivaDTO> {
-      let url = `${this.host}/estadocargamasiva/${id}`;
-
       if (id == 'last' || isNaN(id)) {
-          url = `${this.host}/estadocargamasiva`;
+          return this.getLastRecord();
       }
 
-      return this.http.get(url).map(res => res.json())
-          .catch(this.handleError);
+      return this.getRecordById(id);
+  }
+
+
+  getRecordById(id: any) : Observable<CargaMasivaDTO> {
+      return this.http.get(`${this.host}/estadocargamasiva/${id}`).map(res => res.json())
+        .catch(this.handleError);
   }
 
 

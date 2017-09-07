@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CargaMasivaService} from "../providers/carga-masiva.service";
 import {Observable} from "rxjs/Observable";
 import {CargaMasivaDTO} from "../domain/CargaMasivaDTO";
@@ -16,22 +16,16 @@ import {go, back} from '@ngrx/router-store';
 })
 
 export class CargaMasivaDetailsComponent implements OnInit {
-    @Input() registro: CargaMasivaDTO;
+    registro$: Observable<CargaMasivaDTO>;
 
-    constructor(
-        private cmService: CargaMasivaService,
-        private route: ActivatedRoute,
-        private _store: Store<State>,
-    ) {}
+    constructor(private cmService: CargaMasivaService,private route: ActivatedRoute,private _store: Store<State>) {}
 
     goBack(): void {
       this._store.dispatch(back());
     }
 
-
     ngOnInit(): void {
-      this.route.paramMap
-          .switchMap((params: ParamMap) => this.cmService.getRecord(+params.get('id')))
-          .subscribe(registro => this.registro = registro);
+      this.registro$ = this.route.paramMap
+          .switchMap((params: ParamMap) => this.cmService.getRecord(params.get('id')));
     }
 }

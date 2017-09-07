@@ -35,7 +35,7 @@ export class CargaMasivaUploaderComponent {
   }
 
   uploadFileAction (event) : void {
-      this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"})
+      this.cmService.uploadFile(event.files, {codigoSede:1040, codigoDependencia:10401040})
         .then(result => {
             this.resultUpload = result;
             this.changeDetection.detectChanges();
