@@ -33,8 +33,6 @@ export class CargaMasivaService {
           }
       }
 
-
-
       return this.http.post(this.host + '/upload', formData, {headers: headers})
           .toPromise().then(res => res.json() as ResultUploadDTO)
           .catch(this.handleError);
@@ -44,42 +42,29 @@ export class CargaMasivaService {
   // Obtener todos los registros de cargas masivas realizadas
   getRecords(): Observable<CargaMasivaList[]> {
 
-      return this._api.list(`${environment.carga_masiva_endpoint_listar}`).map(res => res.cargaMasiva)
-              .catch(this.handleError);
-
-      // return this.http.get(this.host + '/listadocargamasiva').map(res => res.json().cargaMasiva)
-      //     .catch(this.handleError);
+      return this._api.list(`${environment.carga_masiva_endpoint_listar}`).map(res => res.cargaMasiva);
   }
 
   // Obtener el ultimo registro de carga masiva
   getLastRecord(): Observable<CargaMasivaDTO> {
 
-
-
-    return this.http.get(this.host + '/estadocargamasiva').map(res => res.json())
-          .catch(this.handleError);
+      return this._api.list(`${environment.carga_masiva_endpoint_estado}`).map(res => res.correspondencia);
   }
 
   // Obtener detalles de un registro de carga masiva específico
   getRecord(id: any): Observable<CargaMasivaDTO> {
-    console.log('ID: '+id);
 
-    if (id == 'last' || isNaN(id)) {
-      console.log('LAST');
+      if (id == 'last' || isNaN(id)) {
           return this.getLastRecord();
       }
-    console.log('BYID');
+
       return this.getRecordById(id);
   }
 
 
   getRecordById(id: any) : Observable<CargaMasivaDTO> {
 
-    return this._api.list(`${environment.carga_masiva_endpoint_estado}/${id}`).map(res => res.correspondencia)
-      .catch(this.handleError);
-
-    // return this.http.get(`${this.host}/estadocargamasiva/${id}`).map(res => res.json())
-    //     .catch(this.handleError);
+      return this._api.list(`${environment.carga_masiva_endpoint_estado}/${id}`).map(res => res.correspondencia);
   }
 
 
