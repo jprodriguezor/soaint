@@ -1,4 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+.ui-datatable-header {
+  text-align: left !important;
+  min-height: 35px;
+}
+
+thead th {
+  background-color: #eee !important;
+}
+
+thead tr th {
+  overflow: inherit !important;
+}
+
+.ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff;
+}
+
+.ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
+  background-color: #26C6DA !important;
+  color: #ffffff;
+}
+
+tbody tr {
+  background-color: #ffffff !important;
+}
+
+.short-table {
+  width: 25%;
+}
+
 @import "assets/theme/theme-indigo";
 
 [hidden] {
@@ -7,8 +39,7 @@
 
 @media print {
 
-  @page
-  {
+  @page {
     size: auto;   /* auto is the initial value */
     margin: 0mm;  /* this affects the margin in the printer settings */
   }
@@ -22,7 +53,6 @@
     background-color: #fff;
   }
 
-
   #ticket {
     z-index: 999999999999999999;
     visibility: visible;
@@ -31,7 +61,6 @@
     display: block;
     margin: 0 auto;
   }
-
 
 }
 
@@ -142,7 +171,7 @@ p-dataTable {
     border-color: white;
   }
 
- button .ui-widget:disabled, .ui-state-disabled {
+  button .ui-widget:disabled, .ui-state-disabled {
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
     -webkit-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
     -moz-box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.26) inset;
@@ -151,7 +180,7 @@ p-dataTable {
 
   @media (max-width: 500px) {
     p-header {
-      .ui-media-mobile-row{
+      .ui-media-mobile-row {
         width: 100%;
       }
       .md-inputfield {
@@ -164,7 +193,6 @@ p-dataTable {
 .ui-button-primaryDark {
   background-color: darken($primaryColor, 8%);
 }
-
 
 body .md-dropdownfield {
   .ui-message {
@@ -184,7 +212,6 @@ span.table-text-custom {
   position: relative;
   top: -5px;
 }
-
 
 .comunicacion-detalles {
   [padding-bottom] {
