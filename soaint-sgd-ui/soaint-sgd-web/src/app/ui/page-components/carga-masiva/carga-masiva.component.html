@@ -11,13 +11,13 @@
         </thead>
         <tbody>
             <tr *ngFor="let record of (registros$ | async)">
-                <td>{{ record.id }}</td>
-                <td>{{ record.nombre }}</td>
-                <td>{{ record.fecha_creacion }}</td>
-                <td>{{ record.estado }}</td>
-                <td>{{ record.total_registros }}</td>
-                <td>{{ record.total_registros_exitosos }}</td>
-                <td>{{ record.total_registros_error }}</td>
+                <td>{{ record.idCargaMasiva }}</td>
+                <td>{{ record.nombreCargaMasiva }}</td>
+                <td>{{ record.fechaCreacionCargaMasiva }}</td>
+                <td>{{ record.estadoCargaMasiva }}</td>
+                <td>{{ record.totalRegistrosCargaMasiva }}</td>
+                <td>{{ record.totalRegistrosExitososCargaMasiva }}</td>
+                <td>{{ record.totalRegistrosErrorCargaMasiva }}</td>
                 <td>
                     <button (click)="goToDetails(record.id)" class="ui-button" >Ver detalles</button>
                 </td>

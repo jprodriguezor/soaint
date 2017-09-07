@@ -13,7 +13,7 @@
             {{agent[col.field] | constantCode:constantesList}}
             </ng-template>
           </p-column>
-          <p-column header="Sede administrativa" [sortable]="true" field="codSede">
+          <p-column header="Sede" [sortable]="true" field="codSede">
             <ng-template let-col let-agent="rowData" pTemplate="body">
               {{agent[col.field] | constantCode:constantesList}}
             </ng-template>
