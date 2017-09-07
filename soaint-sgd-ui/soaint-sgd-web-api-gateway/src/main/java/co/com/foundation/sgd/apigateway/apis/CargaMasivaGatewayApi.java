@@ -64,10 +64,12 @@ public class CargaMasivaGatewayApi {
 
     @POST
     @Path("/cargar-fichero/{codigoSede}/{codigoDependencia}")
-    @JWTTokenSecurity
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    @JWTTokenSecurity
     public Response cargarDocumento( @PathParam("codigoSede") String codigoSede, @PathParam("codigoDependencia") String codigoDependencia, MultipartFormDataInput file) {
         final String[] responseContent = {""};
-        final int[] estadoRespuesta = {};
+        final int[] estadoRespuesta = {0};
         log.info("CargaMasivaGatewayApi - [trafic] - carga masiva");
         file.getFormDataMap().forEach((key, parts) -> {
             parts.forEach((part) -> {
@@ -77,10 +79,11 @@ public class CargaMasivaGatewayApi {
 
             });
         });
-
+log.info (responseContent[0] );
+        log.info (estadoRespuesta[0] );
         log.info(CONTENT + responseContent[0]);
 
-        return Response.status( estadoRespuesta[1]).entity(responseContent[0]).build();
+        return Response.status( estadoRespuesta[0]).entity(responseContent[0]).build();
     }
 
 }
