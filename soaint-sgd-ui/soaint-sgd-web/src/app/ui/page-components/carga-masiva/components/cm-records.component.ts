@@ -23,6 +23,10 @@ export class CargaMasivaRecordsComponent implements OnInit{
     this.registros$ = this.cmService.getRecords();
   }
 
+  refresh() : void {
+      this.getRegistros();
+  }
+
   goToDetails(id: any): void {
     this._store.dispatch(go('/carga-masiva/record/'+id));
   }

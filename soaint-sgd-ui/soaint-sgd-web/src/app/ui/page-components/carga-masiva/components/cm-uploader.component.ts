@@ -1,4 +1,4 @@
-import { Component,ChangeDetectorRef, ViewChild } from '@angular/core';
+import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter} from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from "../domain/ResultUploadDTO";
@@ -25,6 +25,9 @@ export class CargaMasivaUploaderComponent {
   previewWasRefreshed = false;
   resultUpload: ResultUploadDTO;
 
+  @Output()
+  docUploaded = new EventEmitter<boolean>();
+
   @ViewChild('uploader') uploader;
 
   constructor(private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {}
@@ -37,6 +40,8 @@ export class CargaMasivaUploaderComponent {
       this.cmService.uploadFile(event.files, {codigoSede:1040, codigoDependencia:10401040})
         .then(result => {
             this.resultUpload = result;
+            console.log("READY!!!");
+            this.docUploaded.emit(true);
             this.changeDetection.detectChanges();
         });
   }

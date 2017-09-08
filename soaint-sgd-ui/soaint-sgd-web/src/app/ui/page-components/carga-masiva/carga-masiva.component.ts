@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 
 @Component({
     selector: 'carga-masiva',
@@ -6,7 +6,11 @@ import {Component} from '@angular/core';
     styleUrls: ['./carga-masiva.component.css']
 })
 
-export class CargaMasivaComponent{
+export class CargaMasivaComponent {
 
+    @ViewChild('records') records;
 
+    onDocUploaded(event) : void {
+        this.records.getRegistros();
+    }
 }

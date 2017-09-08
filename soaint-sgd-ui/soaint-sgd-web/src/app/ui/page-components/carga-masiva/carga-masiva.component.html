@@ -1,7 +1,7 @@
 <div>
-    <cm-uploader></cm-uploader>
+    <cm-uploader  (docUploaded)="onDocUploaded($event)"></cm-uploader>
 
     <br />
 
-    <cm-records></cm-records>
+    <cm-records #records></cm-records>
 </div>
