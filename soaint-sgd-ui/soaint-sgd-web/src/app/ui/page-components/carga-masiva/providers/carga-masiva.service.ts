@@ -14,7 +14,7 @@ import {environment} from "../../../../../environments/environment";
 @Injectable()
 export class CargaMasivaService {
 
-  private host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis/carga-masiva-gateway-api';
+  private host = 'http://192.168.1.81:28080/Massive-Loader';
 
   constructor(private router: Router, private http: Http, private _api: ApiBase, private _store: Store<RootState>) {
   }
@@ -33,7 +33,7 @@ export class CargaMasivaService {
           }
       }
 
-      return this.http.post(this.host + '/upload', formData, {headers: headers})
+      return this.http.post(this.host + '/cargar-fichero', formData, {headers: headers})
           .toPromise().then(res => res.json() as ResultUploadDTO)
           .catch(this.handleError);
 

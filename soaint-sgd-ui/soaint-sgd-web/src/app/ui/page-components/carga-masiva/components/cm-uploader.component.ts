@@ -2,7 +2,6 @@ import { Component,ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from "../domain/ResultUploadDTO";
-import {Observable} from "rxjs/Observable";
 
 enum UploadStatus {
   CLEAN = 0,
@@ -13,7 +12,7 @@ enum UploadStatus {
 
 @Component({
   selector: 'cm-uploader',
-  templateUrl: 'cm-uploader.component.html',
+  templateUrl: './cm-uploader.component.html',
   styleUrls: ['../carga-masiva.component.css'],
   providers: [CargaMasivaService]
 })
