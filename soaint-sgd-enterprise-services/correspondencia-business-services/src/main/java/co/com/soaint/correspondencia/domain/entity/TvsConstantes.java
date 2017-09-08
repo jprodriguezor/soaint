@@ -35,7 +35,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "TvsConstantes.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
             "(t.ideConst, t.codigo, t.nombre, t.codPadre) FROM TvsConstantes t WHERE TRIM(t.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsConstantes.findAllByCodigoAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
-                "(t.ideConst, t.codigo, t.nombre, t.codPadre) FROM TvsConstantes t WHERE TRIM(t.codigo) = TRIM(:CODIGO) AND TRIM(t.estado) = TRIM(:ESTADO)")
+                "(t.ideConst, t.codigo, t.nombre, t.codPadre) " +
+                "FROM TvsConstantes t " +
+                "WHERE TRIM(t.codigo) = TRIM(:CODIGO) AND (:ESTADO IS NULL OR TRIM(t.estado) = TRIM(:ESTADO))")
         ,
         @NamedQuery(name = "TvsConstantes.findAllByCodPadreAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
                 "(t.ideConst, t.codigo, t.nombre, t.codPadre) FROM TvsConstantes t WHERE TRIM(t.codPadre) = TRIM(:COD_PADRE) AND TRIM(t.estado) = TRIM(:ESTADO)"),

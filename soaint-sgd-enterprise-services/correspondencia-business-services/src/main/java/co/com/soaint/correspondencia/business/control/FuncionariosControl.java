@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,6 +122,30 @@ public class FuncionariosControl {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("funcionarios.funcionario_not_exist_by_loginName")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws BusinessException, SystemException {
+        try {
+            FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByIdeFunci", FuncionarioDTO.class)
+                    .setParameter("IDE_FUNCI", ideFunci)
+                    .getSingleResult();
+
+            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
+            return funcionario;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("funcionarios.funcionario_not_exist_by_ideFunci")
                     .withRootException(n)
                     .buildBusinessException();
         } catch (Exception ex) {
