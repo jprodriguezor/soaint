@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.sql.Blob;
 
 /**
  * Created by esanchez on 9/6/2017.
