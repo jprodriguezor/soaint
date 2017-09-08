@@ -23,6 +23,11 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 
+enum FormContextEnum {
+  SAVE,
+  CREATE
+}
+
 @Component({
   selector: 'app-datos-direccion',
   templateUrl: './datos-direccion.component.html',
@@ -46,6 +51,8 @@ export class DatosDireccionComponent implements OnInit {
   contacts: Array<any> = [];
   showDireccionForm = false;
   showContactForm = false;
+  formContext: FormContextEnum;
+  editIndexContext: number;
 
 
   constructor(private _store: Store<State>,
@@ -87,7 +94,7 @@ export class DatosDireccionComponent implements OnInit {
       'complementoAdicional': [null],
       'celular': [null],
       'numeroTel': [null],
-      'correoEle': [null, Validators.email],
+      'correoEle': [null],
       'pais': [null],
       'departamento': [null],
       'municipio': [null],
@@ -100,6 +107,7 @@ export class DatosDireccionComponent implements OnInit {
     this.bindToValidationErrorsOf('noViaPrincipal');
     this.bindToValidationErrorsOf('noVia');
     this.bindToValidationErrorsOf('placa');
+    this.bindToValidationErrorsOf('correoEle');
   }
 
   listenForChanges() {
@@ -167,8 +175,8 @@ export class DatosDireccionComponent implements OnInit {
     });
   }
 
-  addContact() {
-    if (this.form.valid) {
+  saveAndRetriveContact(): any {
+
       const pais = this.form.get('pais');
       const departamento = this.form.get('departamento');
       const municipio = this.form.get('municipio');
@@ -176,16 +184,14 @@ export class DatosDireccionComponent implements OnInit {
       const celular = this.form.get('celular');
       const email = this.form.get('correoEle');
 
-      const insert = [tassign({
+      const toSave = tassign({
         pais: pais.value,
         departamento: departamento.value,
         municipio: municipio.value,
         numeroTel: numeroTel.value,
         celular: celular.value,
         correoEle: email.value
-      }, this.addDireccion())];
-
-      this.contacts = [...insert, ...this.contacts];
+      }, this.saveDireccionData());
 
       pais.reset();
       departamento.reset();
@@ -196,10 +202,12 @@ export class DatosDireccionComponent implements OnInit {
 
       this.showContactForm = false;
       this.showDireccionForm = false;
-    }
+
+      return toSave;
+
   }
 
-  addDireccion() {
+  saveDireccionData() {
 
     let direccion = '';
     const tipoVia = this.form.get('tipoVia');
@@ -279,6 +287,40 @@ export class DatosDireccionComponent implements OnInit {
     const radref = [...this.contacts];
     radref.splice(index, 1);
     this.contacts = radref;
+  }
+
+  editContact(index) {
+    const values = this.contacts[index];
+    this.form.patchValue(values);
+    this.showContactForm = true;
+    this.showDireccionForm = !!values['tipoVia'];
+    this.formContext = FormContextEnum.SAVE;
+    this.editIndexContext = index;
+  }
+
+  addContact() {
+    this.showContactForm = true;
+    this.formContext = FormContextEnum.CREATE;
+  }
+
+  save() {
+    if (this.form.valid) {
+      // debugger;
+      // ;
+      if (this.formContext === FormContextEnum.CREATE) {
+        this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
+      } else {
+        const temp = [...this.contacts];
+        temp[this.editIndexContext] = this.saveAndRetriveContact();
+        this.contacts = temp;
+      }
+      this.formContext = null;
+      this.editIndexContext = null;
+    }
+  }
+
+  toggleDireccionVisibility() {
+    this.showDireccionForm = !this.showDireccionForm;
   }
 
 }
