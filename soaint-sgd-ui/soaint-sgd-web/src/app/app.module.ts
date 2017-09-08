@@ -42,6 +42,7 @@ import {PdfViewerComponent} from 'ng2-pdf-viewer';
 import {ClearValidatorsDirective} from './shared/directives/form/clear-validators.directive';
 import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
 import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
+import {OptionalEmailValidatorDirective} from './shared/directives/form/optional-email-validator.directive';
 
 
 @NgModule({
@@ -119,6 +120,7 @@ import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
     DynamicDisableDirective,
     ClearValidatorsDirective,
     PhoneInputDirective,
+    OptionalEmailValidatorDirective,
     PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES,

@@ -14,12 +14,16 @@ export class PhoneInputDirective implements OnInit {
   }
 
   ngOnInit() {
-    // this.el.value = this.phonePipe.transform(this.el.value);
+    if (this.el.value) {
+      this.el.value = this.phonePipe.transform(this.el.value);
+    }
   }
 
   @HostListener('blur', ['$event.target.value'])
   onBlur(value) {
-    this.el.value = this.phonePipe.transform(value);
+    if (this.el.value) {
+        this.el.value = this.phonePipe.transform(value);
+    }
   }
 
 }
