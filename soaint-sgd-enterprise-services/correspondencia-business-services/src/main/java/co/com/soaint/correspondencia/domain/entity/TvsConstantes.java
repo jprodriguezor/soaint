@@ -37,14 +37,17 @@ import javax.persistence.Table;
         @NamedQuery(name = "TvsConstantes.findAllByCodigoAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
                 "(t.ideConst, t.codigo, t.nombre, t.codPadre) " +
                 "FROM TvsConstantes t " +
-                "WHERE TRIM(t.codigo) = TRIM(:CODIGO) AND (:ESTADO IS NULL OR TRIM(t.estado) = TRIM(:ESTADO))")
-        ,
+                "WHERE TRIM(t.codigo) = TRIM(:CODIGO) AND TRIM(t.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsConstantes.findAllByCodPadreAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
                 "(t.ideConst, t.codigo, t.nombre, t.codPadre) FROM TvsConstantes t WHERE TRIM(t.codPadre) = TRIM(:COD_PADRE) AND TRIM(t.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsConstantes.findAllByCodigo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
                 "(t.ideConst, t.codigo, t.nombre, t.codPadre) " +
                 "FROM TvsConstantes t " +
-                "WHERE t.codigo IN :CODIGOS")})
+                "WHERE t.codigo IN :CODIGOS"),
+        @NamedQuery(name = "TvsConstantes.findByCodigo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
+                "(t.ideConst, t.codigo, t.nombre, t.codPadre) " +
+                "FROM TvsConstantes t " +
+                "WHERE t.codigo = :CODIGO")})
 public class TvsConstantes implements Serializable {
 
     private static final long serialVersionUID = 1L;

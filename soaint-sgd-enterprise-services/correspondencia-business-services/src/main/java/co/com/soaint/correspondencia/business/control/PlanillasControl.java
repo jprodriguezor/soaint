@@ -5,21 +5,30 @@ import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.FormatoDocEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
@@ -61,8 +70,14 @@ public class PlanillasControl {
     @Autowired
     private FuncionariosControl funcionariosControl;
 
-    @Value("${radicado.planilla.report.path}")
-    private String reportPath;
+    @Value("${radicado.reports.path}")
+    private String reportsPath;
+
+    @Value("${radicado.reports.logo}")
+    private String reportsLogo;
+
+    @Value("${radicado.planilla.distribucion.report}")
+    private String planillaDistribucionReport;
 
     /**
      * @param planilla
@@ -154,12 +169,17 @@ public class PlanillasControl {
     public ReportDTO exportarPlanilla(String nroPlanilla, String formato) throws SystemException {
         try {
             PlanillaDTO planilla = listarPlanillasByNroPlanilla(nroPlanilla);
-            JasperReport report = JasperCompileManager.compileReport(reportPath);
-            String base64EncodedFile = FormatoDocEnum.PDF.getCodigo().equals(formato) ? getPdfReport(report, planilla): null;
+            JasperReport report = JasperCompileManager.compileReport(reportsPath + planillaDistribucionReport);
+            byte[] bytes;
+            if (FormatoDocEnum.PDF.getCodigo().equals(formato)){
+                bytes = getPdfReport(report, planilla);
+            }
+            else
+                bytes = getXlsReport(report, planilla);
             return ReportDTO.newInstance()
-                    .base64EncodedFile(base64EncodedFile)
-                    .formato(formato)
-                    .build();
+                    .base64EncodedFile(Base64.getEncoder().encodeToString(bytes))
+                            .formato(formato)
+                            .build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -169,10 +189,9 @@ public class PlanillasControl {
         }
     }
 
-    private String getPdfReport(JasperReport report, PlanillaDTO planilla) throws BusinessException, SystemException, IOException {
+    private byte[] getPdfReport(JasperReport report, PlanillaDTO planilla) throws BusinessException, SystemException, IOException {
         try {
-            byte[] arrayBytes = JasperRunManager.runReportToPdf(report, getReportParameters(planilla), getReportDataSource(planilla));
-            return Base64.getEncoder().encodeToString(arrayBytes);
+            return JasperRunManager.runReportToPdf(report, getReportParameters(planilla), getReportDataSource(planilla));
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -182,15 +201,50 @@ public class PlanillasControl {
         }
     }
 
-    private Map<String, Object> getReportParameters(PlanillaDTO planilla) throws BusinessException, SystemException {
+    private byte[] getXlsReport(JasperReport report, PlanillaDTO planilla) throws BusinessException, SystemException, IOException {
+        FileInputStream fileInputStream = null;
+        try {
+            File fileTmp = File.createTempFile(planilla.getNroPlanilla() + ".xslx", "");
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, getReportParameters(planilla), getReportDataSource(planilla));
+            JRXlsxExporter xlsxExporter = new JRXlsxExporter();
+            xlsxExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+            xlsxExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(fileTmp.getPath()));
+            SimpleXlsxReportConfiguration xlsxReportConfiguration = new SimpleXlsxReportConfiguration();
+            xlsxReportConfiguration.setOnePagePerSheet(false);
+            xlsxReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
+            xlsxReportConfiguration.setDetectCellType(false);
+            xlsxReportConfiguration.setWhitePageBackground(false);
+            xlsxExporter.setConfiguration(xlsxReportConfiguration);
+            xlsxExporter.exportReport();
+
+            fileInputStream = new FileInputStream(fileTmp);
+
+            fileTmp.deleteOnExit();
+            return IOUtils.toByteArray(fileInputStream);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }finally {
+            if (fileInputStream != null)
+                fileInputStream.close();
+        }
+    }
+
+    private Map<String, Object> getReportParameters(PlanillaDTO planilla) throws BusinessException, SystemException, IOException {
         DependenciaDTO dependenciaOrigen = dependenciaControl.listarDependenciaByCodigo(planilla.getCodDependenciaOrigen());
+        BufferedImage image = ImageIO.read(new FileImageInputStream(new File(reportsPath + reportsLogo)));
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("lugarAdministrativo", dependenciaOrigen.getNomSede());
-        parameters.put("dependenciaDestino", dependenciaControl.listarDependenciaByCodigo(planilla.getCodDependenciaDestino()));
+        parameters.put("dependenciaDestino", dependenciaControl.listarDependenciaByCodigo(planilla.getCodDependenciaDestino()).getNomDependencia());
         parameters.put("responsable", dependenciaOrigen.getNomDependencia());
         parameters.put("nroPlanilla", planilla.getNroPlanilla());
         parameters.put("fecGeneracion", planilla.getFecGeneracion());
-        parameters.put("funcGenera", funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera()))));
+        parameters.put("funcGenera", funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera()))).getNombreCompleto());
+        parameters.put("logo", image );
         return parameters;
     }
 
@@ -208,13 +262,14 @@ public class PlanillasControl {
         PpdDocumentoDTO documento = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO remitente = agenteControl.listarRemitentesByIdeDocumento(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO destinatario = agenteControl.consultarAgenteByIdeAgente(planAgen.getIdeAgente());
+        log.info("Codigo de IndOriginal ------------------- >" + destinatario.getIndOriginal());
         return ItemReportPlanillaDTO.newInstance()
                 .nroRadicado(correspondencia.getNroRadicado())
                 .fecRadicado(correspondencia.getFecRadicado())
-                .indOriginal(constantesControl.listarConstantesByCodigoAndEstado(destinatario.getIndOriginal(), null).get(0).getNombre())
+                .indOriginal(constantesControl.consultarConstanteByCodigo(destinatario.getIndOriginal()).getNombre())
                 .nroDocumento(remitente.getNroDocuIdentidad())
                 .nombreRemitente(remitente.getNombre())
-                .dependenciaOrigen(dependenciaControl.listarDependenciaByCodigo(remitente.getCodDependencia()).getNomDependencia())
+                .dependenciaOrigen(TipoRemitenteEnum.INTERNO.getCodigo().equals(remitente.getCodTipoRemite()) ? dependenciaControl.listarDependenciaByCodigo(remitente.getCodDependencia()).getNomDependencia() : null)
                 .asunto(documento.getAsunto())
                 .nroFolios(String.valueOf(documento.getNroFolios()))
                 .nroAnexos(String.valueOf(documento.getNroAnexos()))
