@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -92,6 +93,27 @@ public class AgenteControl {
                     .buildSystemException();
         }
     }
+
+    public AgenteDTO consultarAgenteByIdeAgente(BigInteger ideAgente)throws BusinessException, SystemException{
+        try{
+            return em.createNamedQuery("CorAgente.findByIdeAgente", AgenteDTO.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("agente.agente_not_exist_by_ideAgente")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     /**
      * @param agenteDTO
      * @throws BusinessException

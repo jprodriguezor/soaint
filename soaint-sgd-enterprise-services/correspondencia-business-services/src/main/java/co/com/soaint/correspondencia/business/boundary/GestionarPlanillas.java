@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.PlanillasControl;
 import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ReportDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -37,5 +38,37 @@ public class GestionarPlanillas {
      */
     public PlanillaDTO generarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         return control.generarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param planilla
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+        control.cargarPlanilla(planilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla) throws BusinessException, SystemException {
+        return control.listarPlanillasByNroPlanilla(nroPlanilla);
+    }
+
+    /**
+     *
+     * @param nroPlanilla
+     * @param formato
+     * @return
+     * @throws SystemException
+     */
+    public ReportDTO exportarPlanilla(String nroPlanilla, String formato) throws SystemException {
+        return control.exportarPlanilla(nroPlanilla, formato);
     }
 }
