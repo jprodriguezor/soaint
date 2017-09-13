@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -58,10 +59,10 @@ public class PlanillasControl {
     private DependenciaControl dependenciaControl;
 
     @Autowired
-    private SedeControl sedeControl;
-
-    @Autowired
     private FuncionariosControl funcionariosControl;
+
+    @Value("${radicado.planilla.report.path}")
+    private String reportPath;
 
     /**
      * @param planilla
@@ -153,7 +154,7 @@ public class PlanillasControl {
     public ReportDTO exportarPlanilla(String nroPlanilla, String formato) throws SystemException {
         try {
             PlanillaDTO planilla = listarPlanillasByNroPlanilla(nroPlanilla);
-            JasperReport report = JasperCompileManager.compileReport("C:\\Users\\esanchez\\JaspersoftWorkspace\\MyReports\\Planilla_Distribucion.jrxml");
+            JasperReport report = JasperCompileManager.compileReport(reportPath);
             String base64EncodedFile = FormatoDocEnum.PDF.getCodigo().equals(formato) ? getPdfReport(report, planilla): null;
             return ReportDTO.newInstance()
                     .base64EncodedFile(base64EncodedFile)
