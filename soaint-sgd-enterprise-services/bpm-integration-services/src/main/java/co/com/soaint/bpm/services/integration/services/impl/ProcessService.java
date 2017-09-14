@@ -2,10 +2,7 @@ package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
 import co.com.soaint.bpm.services.util.SystemParameters;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -33,6 +30,8 @@ import org.kie.services.client.api.RemoteRuntimeEngineFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -46,6 +45,7 @@ import java.util.Map;
 /**
  * Created by Arce on 6/7/2017.
  */
+
 @Service
 @Log4j2
 public class ProcessService implements IProcessServices {
@@ -91,6 +91,8 @@ public class ProcessService implements IProcessServices {
     HttpGet getRequest;
     HttpPost postRequest;
     HttpResponse response;
+    @PersistenceContext
+    private EntityManager em;
 
 
     private ProcessService() {
@@ -113,6 +115,7 @@ public class ProcessService implements IProcessServices {
         List<RespuestaProcesoDTO> listaProcesos = new ArrayList<>();
         getRequest.addHeader(headerAccept, valueApplicationType);
         getRequest.addHeader(headerAuthorization, valueAuthorization + " " + encoding);
+
         try {
             response = httpClient.execute(getRequest);
             JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
@@ -275,6 +278,7 @@ public class ProcessService implements IProcessServices {
 
     /**
      * Permite iniciar un proceso y asignarle una tarea a una tercera persona
+     *
      * @param entrada
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
      * @throws SystemException
@@ -559,6 +563,35 @@ public class ProcessService implements IProcessServices {
                     .buildSystemException();
         } finally {
             log.info("fin - listar - tareas - estados ");
+        }
+    }
+
+    /**
+     * Permite listar las tareas por estados
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas que cumplen con los filtros de estado solicitdos
+     * @throws MalformedURLException
+     */
+    @Override
+    public List<RespuestaTareaBamDTO> listarTareasCompletadas(EntradaProcesoDTO entrada) throws SystemException {
+
+        try {
+            log.info("iniciar - listar tareas completadas por usuario: {}", entrada);
+
+            return em.createNamedQuery("BamTaskSummary.findTaskComplete", RespuestaTareaBamDTO.class)
+                    .setParameter("ESTADO", Status.Completed.name())
+                    .setParameter("USUARIO", entrada.getParametros().get("usuario").toString())
+                    .getResultList();
+
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - listar tareas completadas por usuario ");
         }
     }
 

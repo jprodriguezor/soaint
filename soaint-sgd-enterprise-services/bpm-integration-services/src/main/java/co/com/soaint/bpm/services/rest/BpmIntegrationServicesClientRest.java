@@ -3,6 +3,7 @@ package co.com.soaint.bpm.services.rest;
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -147,6 +148,7 @@ public class BpmIntegrationServicesClientRest {
 
     /**
      * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un tercero
+     *
      * @param entradaProceso
      * @return Los datos del proceso que fue iniciado codigoProceso,nombreProceso,estado y idDespliegue
      * @throws SystemException
@@ -229,6 +231,20 @@ public class BpmIntegrationServicesClientRest {
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas con sus estados");
         return proceso.listarTareasEstados(entradaTarea);
+    }
+
+    /**
+     * Permite listar las tareas por estados
+     *
+     * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas que cumplen con los filtros de estado solicitdos
+     * @throws MalformedURLException
+     */
+    @POST
+    @Path("/tareas/listar/completadas")
+    public List<RespuestaTareaBamDTO> listarTareasCompletadas(EntradaProcesoDTO entradaTarea) throws SystemException {
+        log.info("processing rest request - listar tareas con sus estados");
+        return proceso.listarTareasCompletadas(entradaTarea);
     }
 
     /**

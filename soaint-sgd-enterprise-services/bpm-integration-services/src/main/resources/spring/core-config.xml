@@ -14,7 +14,9 @@
       Purpose: define generic configurations
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     -->
+    <import resource="classpath:spring/db-persistence-integration.xml"/>
     <context:property-placeholder location="classpath:sgd-service.properties"/>
     <context:component-scan base-package="co.com.soaint.bpm.services.integration.services"/>
+
 
 </beans>

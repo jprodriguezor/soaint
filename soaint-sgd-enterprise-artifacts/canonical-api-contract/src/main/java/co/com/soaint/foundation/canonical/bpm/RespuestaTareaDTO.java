@@ -32,4 +32,15 @@ public class RespuestaTareaDTO {
     private String idDespliegue;
     private Long idParent;
 
+    public RespuestaTareaDTO(Long idTarea, String nombre, String estado, String idResponsable, Date fechaCreada, Date tiempoActivacion, Date tiempoExpiracion, Long idInstanciaProceso) {
+        this.idTarea = idTarea;
+        this.nombre = nombre;
+        this.estado = estado;
+        this.idResponsable = idResponsable;
+        this.fechaCreada = fechaCreada;
+        this.tiempoActivacion = tiempoActivacion;
+        this.tiempoExpiracion = tiempoExpiracion;
+        this.idInstanciaProceso = idInstanciaProceso;
+    }
 }
+
