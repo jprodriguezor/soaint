@@ -74,7 +74,7 @@ export class DatosGeneralesComponent implements OnInit {
       'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
       'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
       'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
-      'numeroGuia': [{value: null, disabled: true}, Validators.required],
+      'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
       'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
       'unidadTiempo': [{value: null, disabled: !this.editable}],
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],

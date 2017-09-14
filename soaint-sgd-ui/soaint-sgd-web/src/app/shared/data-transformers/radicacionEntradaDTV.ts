@@ -10,7 +10,7 @@ export class RadicacionEntradaDTV {
   }
 
   getDatosRemitente(): Observable<AgentDTO> {
-    return Observable.of(this.dataSource.agenteList.find(value => value.codTipoRemite !== null));
+    return Observable.of(this.dataSource.agenteList.find(value => value.codTipAgent === 'TP-AGEE'));
   }
 
   getDatosContactos(): Observable<ContactoDTO[]> {
@@ -18,7 +18,7 @@ export class RadicacionEntradaDTV {
   }
 
   getDatosDestinatarios(): Observable<AgentDTO[]> {
-    return Observable.of(this.dataSource.agenteList.filter(value => value.codTipoRemite === null));
+    return Observable.of(this.dataSource.agenteList.filter(value => value.codTipAgent === 'TP-AGEI'));
   }
 
 }

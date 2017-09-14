@@ -5,36 +5,47 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  *
  * @author jrodriguez
  */
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "COR_PLANILLAS")
 @NamedQueries({
-    @NamedQuery(name = "CorPlanillas.findAll", query = "SELECT c FROM CorPlanillas c")})
+    @NamedQuery(name = "CorPlanillas.findAll", query = "SELECT c FROM CorPlanillas c"),
+        @NamedQuery(name = "CorPlanillas.findByNroPlanilla", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO " +
+                "(c.idePlanilla, c.nroPlanilla, c.fecGeneracion, c.codTipoPlanilla, c.codFuncGenera, c.codSedeOrigen, " +
+                "c.codDependenciaOrigen, c.codSedeDestino, c.codDependenciaDestino, c.codClaseEnvio, c.codModalidadEnvio) " +
+                "FROM CorPlanillas c " +
+                "WHERE c.nroPlanilla = :NRO_PLANILLA"),
+        @NamedQuery(name = "CorPlanillas.findMaxNroPlanillaByCodSede", query = "SELECT MAX(c.nroPlanilla) " +
+                "FROM CorPlanillas c " +
+                "WHERE c.codSedeOrigen = :COD_SEDE")})
+@javax.persistence.TableGenerator(name = "COR_PLANILLAS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_PLANILLAS_SEQ", allocationSize = 1)
 public class CorPlanillas implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_PLANILLAS_GENERATOR")
     @Column(name = "IDE_PLANILLA")
-    private Long idePlanilla;
+    private BigInteger idePlanilla;
     @Column(name = "NRO_PLANILLA")
     private String nroPlanilla;
     @Column(name = "FEC_GENERACION")
@@ -69,164 +80,4 @@ public class CorPlanillas implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corPlanillas")
     private List<CorPlanAgen> corPlanAgenList;
 
-    public CorPlanillas() {
-    }
-
-    public CorPlanillas(Long idePlanilla) {
-        this.idePlanilla = idePlanilla;
-    }
-
-    public Long getIdePlanilla() {
-        return idePlanilla;
-    }
-
-    public void setIdePlanilla(Long idePlanilla) {
-        this.idePlanilla = idePlanilla;
-    }
-
-    public String getNroPlanilla() {
-        return nroPlanilla;
-    }
-
-    public void setNroPlanilla(String nroPlanilla) {
-        this.nroPlanilla = nroPlanilla;
-    }
-
-    public Date getFecGeneracion() {
-        return fecGeneracion;
-    }
-
-    public void setFecGeneracion(Date fecGeneracion) {
-        this.fecGeneracion = fecGeneracion;
-    }
-
-    public String getCodTipoPlanilla() {
-        return codTipoPlanilla;
-    }
-
-    public void setCodTipoPlanilla(String codTipoPlanilla) {
-        this.codTipoPlanilla = codTipoPlanilla;
-    }
-
-    public String getCodFuncGenera() {
-        return codFuncGenera;
-    }
-
-    public void setCodFuncGenera(String codFuncGenera) {
-        this.codFuncGenera = codFuncGenera;
-    }
-
-    public String getCodSedeOrigen() {
-        return codSedeOrigen;
-    }
-
-    public void setCodSedeOrigen(String codSedeOrigen) {
-        this.codSedeOrigen = codSedeOrigen;
-    }
-
-    public String getCodDependenciaOrigen() {
-        return codDependenciaOrigen;
-    }
-
-    public void setCodDependenciaOrigen(String codDependenciaOrigen) {
-        this.codDependenciaOrigen = codDependenciaOrigen;
-    }
-
-    public String getCodSedeDestino() {
-        return codSedeDestino;
-    }
-
-    public void setCodSedeDestino(String codSedeDestino) {
-        this.codSedeDestino = codSedeDestino;
-    }
-
-    public String getCodDependenciaDestino() {
-        return codDependenciaDestino;
-    }
-
-    public void setCodDependenciaDestino(String codDependenciaDestino) {
-        this.codDependenciaDestino = codDependenciaDestino;
-    }
-
-    public String getCodClaseEnvio() {
-        return codClaseEnvio;
-    }
-
-    public void setCodClaseEnvio(String codClaseEnvio) {
-        this.codClaseEnvio = codClaseEnvio;
-    }
-
-    public String getCodModalidadEnvio() {
-        return codModalidadEnvio;
-    }
-
-    public void setCodModalidadEnvio(String codModalidadEnvio) {
-        this.codModalidadEnvio = codModalidadEnvio;
-    }
-
-    public Date getFechaCrea() {
-        return fechaCrea;
-    }
-
-    public void setFechaCrea(Date fechaCrea) {
-        this.fechaCrea = fechaCrea;
-    }
-
-    public String getCodUsuarioCrea() {
-        return codUsuarioCrea;
-    }
-
-    public void setCodUsuarioCrea(String codUsuarioCrea) {
-        this.codUsuarioCrea = codUsuarioCrea;
-    }
-
-    public Date getFechaModif() {
-        return fechaModif;
-    }
-
-    public void setFechaModif(Date fechaModif) {
-        this.fechaModif = fechaModif;
-    }
-
-    public String getCodUsuarioModif() {
-        return codUsuarioModif;
-    }
-
-    public void setCodUsuarioModif(String codUsuarioModif) {
-        this.codUsuarioModif = codUsuarioModif;
-    }
-
-    public List<CorPlanAgen> getCorPlanAgenList() {
-        return corPlanAgenList;
-    }
-
-    public void setCorPlanAgenList(List<CorPlanAgen> corPlanAgenList) {
-        this.corPlanAgenList = corPlanAgenList;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idePlanilla != null ? idePlanilla.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CorPlanillas)) {
-            return false;
-        }
-        CorPlanillas other = (CorPlanillas) object;
-        if ((this.idePlanilla == null && other.idePlanilla != null) || (this.idePlanilla != null && !this.idePlanilla.equals(other.idePlanilla))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.CorPlanillas[ idePlanilla=" + idePlanilla + " ]";
-    }
-    
 }

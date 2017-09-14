@@ -68,29 +68,29 @@ export class Sandbox {
   }
 
   extractProcessVariablesPayload(payload) {
-    let overPayload = payload;
+    let task = payload;
     if (isArray(payload) && payload.length > 0) {
-      const task = payload[0];
-      return overPayload = {
-        'idProceso': task.idProceso,
-        'idDespliegue': task.idDespliegue,
-        'instanciaProceso': task.idInstanciaProceso
-      }
+      task = payload[0];
     }
-    return payload;
+
+    return {
+      'idProceso': task.idProceso,
+      'idDespliegue': task.idDespliegue,
+      'instanciaProceso': task.idInstanciaProceso
+    }
   }
 
   extractInitTaskPayload(payload) {
-    let overPayload = payload;
+    let task = payload;
     if (isArray(payload) && payload.length > 0) {
-      const task = payload[0];
-      return overPayload = {
-        'idProceso': task.idProceso,
-        'idDespliegue': task.idDespliegue,
-        'idTarea': task.idTarea
-      }
+      task = payload[0];
     }
-    return payload;
+
+    return {
+      'idProceso': task.idProceso,
+      'idDespliegue': task.idDespliegue,
+      'idTarea': task.idTarea
+    }
   }
 
   completeTask(payload: any) {
@@ -132,19 +132,10 @@ export class Sandbox {
   }
 
   startTaskDispatch(task?: TareaDTO) {
-
     if (task.estado === 'ENPROGRESO') {
-      this._store.dispatch(new actions.LockActiveTaskAction(task));
-      this.initTaskDispatch(task);
-
+      this._store.dispatch(new actions.StartInProgressTaskAction(task));
     } else if (task.estado === 'RESERVADO') {
-
-      this._store.dispatch(new actions.StartTaskAction({
-        'idProceso': task.idProceso,
-        'idDespliegue': task.idDespliegue,
-        'idTarea': task.idTarea
-      }));
-
+      this._store.dispatch(new actions.StartTaskAction(task));
     }
   }
 

@@ -41,7 +41,7 @@ public class CorrespondenciaClient {
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
-    public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado) {
+    public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado, String nroRadicado) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia")
@@ -49,6 +49,7 @@ public class CorrespondenciaClient {
                 .queryParam("fecha_fin", fechaFin)
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("cod_estado", codEstado)
+                .queryParam("nro_radicado", nroRadicado)
                 .request()
                 .get();
     }
@@ -80,7 +81,7 @@ public class CorrespondenciaClient {
     public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/asignacion-web-api/asignacion/redireccionar")
+        return wt.path("/agente-web-api/agente/redireccionar")
                 .request()
                 .put(Entity.json(agentesDTO));
     }

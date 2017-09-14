@@ -5,6 +5,7 @@ import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -43,6 +45,74 @@ public class AgenteControl {
 
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
+
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento)throws SystemException{
+        try{
+            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param ideDocumento
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
+    public List<AgenteDTO> listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
+                                                                                   String codDependencia,
+                                                                                   String codEstado)throws SystemException{
+        try{
+        return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
+                .setParameter("COD_ESTADO", codEstado)
+                .setParameter("COD_DEPENDENCIA", codDependencia)
+                .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                .setParameter("IDE_DOCUMENTO", ideDocumento)
+                .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public AgenteDTO consultarAgenteByIdeAgente(BigInteger ideAgente)throws BusinessException, SystemException{
+        try{
+            return em.createNamedQuery("CorAgente.findByIdeAgente", AgenteDTO.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("agente.agente_not_exist_by_ideAgente")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 
     /**
      * @param agenteDTO

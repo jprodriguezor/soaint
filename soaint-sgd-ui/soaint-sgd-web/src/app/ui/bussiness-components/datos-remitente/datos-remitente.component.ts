@@ -77,8 +77,8 @@ export class DatosRemitenteComponent implements OnInit {
       'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}],
-      'razonSocial': [{value: null, disabled: !this.editable}],
-      'nombreApellidos': [{value: null, disabled: !this.editable}],
+      'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
+      'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
@@ -121,34 +121,32 @@ export class DatosRemitenteComponent implements OnInit {
     if (value.codigo === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
 
-    } else if (value.codigo === PERSONA_JURIDICA) {
+    } else if (value.codigo === PERSONA_JURIDICA && this.tipoComunicacion === COMUNICACION_EXTERNA) {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
       this.visibility['nombreApellidos'] = true;
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
-      if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
-        this.visibility['tipoDocumento'] = true;
-
-        this.tipoDocumentoSuggestions$.subscribe(docs => {
-          this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
-        }).unsubscribe();
-      }
-    } else if (value.codigo === PERSONA_NATURAL) {
+      this.visibility['tipoDocumento'] = true;
+      this.tipoDocumentoSuggestions$.subscribe(docs => {
+        this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
+        this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
+      }).unsubscribe();
+      this.visibility['personaJuridica'] = true;
+    } else if (value.codigo === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
       this.visibility['nombreApellidos'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
       this.visibility['datosContacto'] = true;
-      if (this.tipoComunicacion === COMUNICACION_EXTERNA) {
-        this.visibility['tipoDocumento'] = true;
+      this.visibility['tipoDocumento'] = true;
 
-        this.tipoDocumentoSuggestions$.subscribe(docs => {
-          this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
-        }).unsubscribe();
-      }
+
+      this.tipoDocumentoSuggestions$.subscribe(docs => {
+        this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
+        this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
+      }).unsubscribe();
+
     }
   }
 

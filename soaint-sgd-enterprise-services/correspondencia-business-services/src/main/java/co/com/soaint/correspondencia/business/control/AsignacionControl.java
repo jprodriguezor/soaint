@@ -13,6 +13,7 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +55,10 @@ public class AsignacionControl {
 
     @Autowired
     CorrespondenciaControl correspondenciaControl;
+
+    @Value("${radicado.cant.horas.para.activar.alerta.vencimiento}")
+    private int cantHorasParaActivarAlertaVencimiento;
+
     // ----------------------
 
     /**
@@ -57,7 +66,7 @@ public class AsignacionControl {
      * @return
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
@@ -114,9 +123,16 @@ public class AsignacionControl {
                         .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
+                asignacionDTOResult.setAlertaVencimiento(calcularAlertaVencimiento(
+                        correspondenciaControl.consultarFechaVencimientoByIdeDocumento(asignacionDTO.getIdeDocumento()),
+                        fecha)
+                );
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
             return asignacionesDTOResult;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -243,5 +259,17 @@ public class AsignacionControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    private String calcularAlertaVencimiento(Date fechaVencimientoTramite, Date fechaAsignacion){
+        int diferenciaMinutos = (int) ChronoUnit.MINUTES.between(convertToLocalDateTime(fechaAsignacion), convertToLocalDateTime(fechaVencimientoTramite));
+
+        diferenciaMinutos -=  (cantHorasParaActivarAlertaVencimiento * 60);
+
+        return  diferenciaMinutos > 0 ? String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m") : "0h0m";
+    }
+
+    private LocalDateTime convertToLocalDateTime(Date fecha){
+        return LocalDateTime.ofInstant(fecha.toInstant(), ZoneId.systemDefault());
     }
 }

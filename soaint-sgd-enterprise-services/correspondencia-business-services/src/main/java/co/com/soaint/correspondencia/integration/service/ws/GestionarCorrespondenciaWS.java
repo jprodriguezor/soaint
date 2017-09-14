@@ -90,4 +90,35 @@ public class GestionarCorrespondenciaWS {
                                                                                                                 @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaIni, fechaFin, codDependencia, codEstado, nroRadicado);
     }
+
+    /**
+     *
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codTipoDoc
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado", operationName = "listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado")
+    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(@WebParam(name = "fecha_ini") final Date fechaIni,
+                                                                                                                          @WebParam(name = "fecha_fin") final Date fechaFin,
+                                                                                                                          @WebParam(name = "cod_dependencia") final String codDependencia,
+                                                                                                                          @WebParam(name = "cod_tipologia_documental") final String codTipoDoc,
+                                                                                                                          @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+    }
+
+    /**
+     * 
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "verificarByNroRadicado", operationName = "verificarByNroRadicado")
+    public Boolean verificarByNroRadicado(@WebParam(name = "nro_radicado")final String nroRadicado) throws SystemException{
+        return boundary.verificarByNroRadicado(nroRadicado);
+    }
 }

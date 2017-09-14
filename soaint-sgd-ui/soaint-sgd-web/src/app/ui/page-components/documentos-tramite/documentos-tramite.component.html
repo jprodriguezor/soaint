@@ -1,32 +1,34 @@
 <div class="ui-fluid">
-  <div class="comunicacion-detalles">
-    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)">
-      <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-        <app-detalles-datos-generales [comunicacion]="comunicacion"
-                                      [constantesList]="constantes"></app-detalles-datos-generales>
-      </p-tabPanel>
+  <app-task-container>
+    <div taskBody>
+      <div class="comunicacion-detalles">
+        <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)">
+          <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+            <app-detalles-datos-generales [comunicacion]="comunicacion"
+                                          [constantesList]="constantes"></app-detalles-datos-generales>
+          </p-tabPanel>
 
-      <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
-        <app-detalles-datos-remitente [remitente]="remitente$ | async"
-                                      [contactos]="contactos$ | async"
-                                      [constantesList]="constantes"></app-detalles-datos-remitente>
-      </p-tabPanel>
+          <p-tabPanel header="Remitente / Destinatario" leftIcon="ui-icon-assignment">
+            <app-detalles-datos-remitente [remitente]="remitente$ | async"
+                                          [contactos]="contactos$ | async"
+                                          [constantesList]="constantes"></app-detalles-datos-remitente>
 
-      <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
-        <app-detalles-datos-destinatario [destinatarios]="destinatarios$ | async"
-                                         [constantesList]="constantes"></app-detalles-datos-destinatario>
-      </p-tabPanel>
-      <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding>
-        <div style="overflow-y: scroll;max-height: 100%" *ngIf="docSrc">
-          <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
-        </div>
-      </p-tabPanel>
-      <p-tabPanel header="Observaciones" leftIcon="ui-icon-assignment">
-        <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
-      </p-tabPanel>
-      <p-tabPanel header="Gestionar" leftIcon="ui-icon-assignment">
-        <app-gestionar-comunicacion [remitente]="remitente$ | async"></app-gestionar-comunicacion>
-      </p-tabPanel>
-    </p-tabView>
-  </div>
+            <app-detalles-datos-destinatario [destinatarios]="destinatarios$ | async"
+                                             [constantesList]="constantes"></app-detalles-datos-destinatario>
+          </p-tabPanel>
+          <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding>
+            <div style="overflow-y: scroll;max-height: 100%" *ngIf="docSrc">
+              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="Observaciones" leftIcon="ui-icon-assignment">
+            <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+          </p-tabPanel>
+          <p-tabPanel header="Gestionar" leftIcon="ui-icon-assignment">
+            <app-gestionar-comunicacion [remitente]="remitente$ | async" [task]="task"></app-gestionar-comunicacion>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </app-task-container>
 </div>

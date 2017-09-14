@@ -2,7 +2,8 @@ export interface ObservacionDTO {
   observacion: string;
   ideFunci: number;
   ideDocumento: number;
-  codOrgaAdmin: string;
+  codDependencia: string;
+  nomDependencia: string;
   nomFuncionario: string;
   valApellido1: string;
   valApellido2: string;

@@ -31,6 +31,8 @@ export class GestionarComunicacionComponent implements OnInit {
 
   justificationDialogVisible: boolean = false;
 
+  hideCheckBox: boolean = true;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupReject') popupReject;
@@ -107,19 +109,21 @@ export class GestionarComunicacionComponent implements OnInit {
     });
   }
 
-
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
     this._asignacionSandbox.redirectComunications({
       agentes: this.createAgentes(justificationValues)
     }).subscribe(() => {
       this.procesoSeguir = 0;
       this.completeTask();
+      this.justificationDialogVisible = false;
     });
   }
 
   onChange() {
     this.form.get('responseToRem').disable();
+    this.hideCheckBox = true;
     if (this.form.get('proceso').value.id === 4) {
+      this.hideCheckBox = false;
       this.form.get('responseToRem').enable();
     }
   }
@@ -128,10 +132,12 @@ export class GestionarComunicacionComponent implements OnInit {
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
     let agentes: AgentDTO[] = [];
     let agente = this.remitente;
+    console.log(this.remitente);
+    agente.ideAgente = this.task.variables.idAgente;
     agente.codSede = justificationValues.sedeAdministrativa.codigo;
     agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
     delete agente['_$visited'];
-    agentes.push(agente)
+    agentes.push(agente);
     return agentes;
   }
 

@@ -23,6 +23,7 @@
         <class>co.com.soaint.correspondencia.domain.entity.CorCorrespondencia</class>
         <class>co.com.soaint.correspondencia.domain.entity.Funcionarios</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsTarea</class>
 
         <properties>
             <property name="hibernate.show_sql" value="true"/>

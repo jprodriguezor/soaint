@@ -19,7 +19,7 @@
 
               <span style="float: right">
                     <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                            (click)="showContactForm = true"></button>
+                            (click)="addContact()"></button>
                 </span>
             </div>
 
@@ -41,7 +41,7 @@
                 <div class="ui-g-12" *ngIf="contact.numeroTel">
                   <i class="fa ui-icon-contact-phone"></i>
                   <span class="table-text-custom">
-                    {{ contact.numeroTel }}
+                    {{ contact.numeroTel | countryPhone}}
                     </span>
                 </div>
 
@@ -89,8 +89,13 @@
 
           <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
             <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+
+              <button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"
+                      class="amber-btn ui-button ui-button-icon"></button>
+
               <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
                       class="ui-button ui-button-icon ui-button-danger"></button>
+
             </ng-template>
           </p-column>
         </p-dataTable>
@@ -115,7 +120,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <input type="text" pInputText id="correoEle" formControlName="correoEle">
+                <input type="text" pInputText id="correoEle" emailOptional="" formControlName="correoEle" />
                 <label>Correo electronico</label>
               </span>
             </div>
@@ -127,7 +132,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <p-inputMask id="numeroTel" formControlName="numeroTel" mask="+99 (999) 9999999"></p-inputMask>
+                <input type="text" pInputText id="numeroTel" formControlName="numeroTel" phoneInput />
               <label>No. de teléfono</label>
               </span>
             </div>
@@ -139,7 +144,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <p-inputMask id="celular" formControlName="celular" mask="999-999-9999"></p-inputMask>
+                <p-inputMask id="celular" formControlName="celular" mask="999-999-9999" [autoClear]="false"></p-inputMask>
               <label>celular</label>
               </span>
             </div>
@@ -147,7 +152,7 @@
         </div>
 
         <!--Pais-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="pais">Pais</label>
@@ -166,7 +171,7 @@
         </div>
 
         <!--Departamento-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="departamento">Departamento</label>
@@ -184,7 +189,7 @@
         </div>
 
         <!--Municipio-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="municipio">Municipio</label>
@@ -208,7 +213,7 @@
 
       <div class="ui-g ui-fluid">
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="tipoVia"><span class="text-danger">*</span> Tipo Via</label>
@@ -226,7 +231,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
@@ -237,7 +242,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -255,7 +260,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="bis">Bis</label>
@@ -273,7 +278,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -291,18 +296,18 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="noVia" formControlName="noVia" [dynamicDisable]="showDireccionForm">
-              <label for="noVia"><span class="text-danger">*</span> No. Via</label>
+                <input type="text" pInputText id="noVia" formControlName="noVia" [dynamicDisable]="showDireccionForm">
+                <label for="noVia"><span class="text-danger">*</span> No. Via</label>
               </span>
             </div>
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
@@ -320,7 +325,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -331,7 +336,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Orientacion</label>
@@ -349,7 +354,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <label for="orientacion">Tipo complemento</label>
@@ -367,7 +372,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
@@ -378,7 +383,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-6 ui-md-6 ui-g-3 ui-lg-3">
+        <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div style="padding: 55px 0 0 10px">
             <p-checkbox name="cg" label="Principal"
                         formControlName="principal" id="reqDigit" binary="true"></p-checkbox>
@@ -391,14 +396,13 @@
   <div class="ui-g-12" *ngIf="showContactForm === true">
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6"  >
       <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="cg" label="Agregar Dirección"
-                    [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
+        <p-checkbox name="cg" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
       </div>
     </div>
 
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
       <button pButton type="button" class="ui-button-info"
-              label="Aceptar" (click)="addContact();"
+              label="Aceptar" (click)="save();"
               style="width: auto; margin-left: 12px; margin-bottom: 10px"
       ></button>
 
