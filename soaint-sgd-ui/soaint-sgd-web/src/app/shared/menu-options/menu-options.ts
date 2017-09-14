@@ -6,7 +6,7 @@ export const MENU_OPTIONS = [
   {label: 'Procesos', icon: 'work', routerLink: ['/' + ROUTES_PATH.processList]},
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Radicacion Salida (Prueba)', icon: 'subject', routerLink: ['/' + ROUTES_PATH.radicarCofSalida]},
-  {label: 'Carga Masiva Detalles', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasivaDetails]},
+  {label: 'Carga Masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
 ];
 
 
