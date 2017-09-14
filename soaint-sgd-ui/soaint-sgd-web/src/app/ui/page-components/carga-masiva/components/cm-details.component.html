@@ -1,0 +1,53 @@
+<div>
+    <h1>Detalles de la carga masiva</h1>
+
+    <table class="table">
+
+        <tr>
+            <th>Nombre</th><td>{{ (registro$ | async)?.nombreCargaMasiva }}</td>
+        </tr>
+        <tr>
+            <th>Fecha creación</th><td>{{ (registro$ | async)?.fechaCreacionCargaMasiva }}</td>
+        </tr>
+        <tr>
+            <th>Estado</th><td>{{ (registro$ | async)?.estadoCargaMasiva }}</td>
+        </tr>
+        <tr>
+            <th>Total registros</th><td>{{ (registro$ | async)?.totalRegistrosCargaMasiva }}</td>
+        </tr>
+        <tr>
+            <th>Registros exitosos</th><td>{{ (registro$ | async)?.totalRegistrosExitososCargaMasiva }}</td>
+        </tr>
+        <tr>
+            <th>Registros fallidos</th><td>{{ (registro$ | async)?.totalRegistrosErrorCargaMasiva }}</td>
+        </tr>
+
+    </table>
+
+    <div *ngIf="(registro$ | async)?.registrosCargaMasiva.length > 0">
+        <h2>Detalles registros de la carga masiva</h2>
+
+        <table class="table table-grid">
+            <thead>
+                <tr>
+                    <th>Contenido</th>
+                    <th>Estado</th>
+                    <th>Mensajes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let reg of (registro$ | async)?.registrosCargaMasiva">
+                    <td>{{ reg.contenido }}</td>
+                    <td>{{ reg.estado }}</td>
+                    <td>{{ reg.mensajes }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <br/>
+    <button class="ui-button ui-button-danger" (click)="goBack()">Atras</button>
+</div>

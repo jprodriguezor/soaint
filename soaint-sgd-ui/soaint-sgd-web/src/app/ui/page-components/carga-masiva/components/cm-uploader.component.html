@@ -22,15 +22,12 @@
       >
 
         <ng-template let-file pTemplate="file" class="ui-fluid">
-          <div class="ui-g ui-fileupload-row">
-            <div>{{ file.name }}</div>
-            <div>{{ file.size }} KB</div>
-            <div>{{ file.type }}</div>
-            <div>{{ file.lastModifiedDate | date:'dd/mm/yyyy' }}</div>
-            <div>
-              <button alt="Visualizar Contenido" icon="ui-icon-remove-red-eye" pButton type="button" class="ui-button ui-button-icon-only orange-btn" (click)="preview(file)"></button>
+            <div class="ui-g ui-fileupload-row">
+                <div>{{ file.name }}</div>
+                <div>{{ file.size }} KB</div>
+                <div>{{ file.type }}</div>
+                <div>{{ file.lastModifiedDate | date:'dd/mm/yyyy' }}</div>
             </div>
-          </div>
 
         </ng-template>
 
@@ -44,7 +41,6 @@
 
   <div *ngIf="resultUpload" class="result" [ngClass]="{'error': resultUpload.success == 'false'}">
       <p>{{ resultUpload.error }}</p>
-      <a routerLink="/carga-masiva-details">Ver detalles</a>
   </div>
 
 

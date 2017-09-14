@@ -1,8 +1,4 @@
-/**
- * Created by Ernesto on 2017-09-04.
- */
-
-import { Component,ChangeDetectorRef, ViewChild } from '@angular/core';
+import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter} from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from "../domain/ResultUploadDTO";
@@ -15,8 +11,8 @@ enum UploadStatus {
 }
 
 @Component({
-  selector: 'carga-masiva-uploader',
-  templateUrl: 'carga-masiva-uploader.component.html',
+  selector: 'cm-uploader',
+  templateUrl: './cm-uploader.component.html',
   styleUrls: ['../carga-masiva.component.css'],
   providers: [CargaMasivaService]
 })
@@ -29,6 +25,9 @@ export class CargaMasivaUploaderComponent {
   previewWasRefreshed = false;
   resultUpload: ResultUploadDTO;
 
+  @Output()
+  docUploaded = new EventEmitter<boolean>();
+
   @ViewChild('uploader') uploader;
 
   constructor(private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {}
@@ -38,10 +37,13 @@ export class CargaMasivaUploaderComponent {
   }
 
   uploadFileAction (event) : void {
-    this.cmService.uploadFile(event.files, {field1:"field1", field2:"field2"}).then(result => {
-      this.resultUpload = result;
-      this.onClear(event);
-    });
+      this.cmService.uploadFile(event.files, {codigoSede:1040, codigoDependencia:10401040})
+        .then(result => {
+            this.resultUpload = result;
+            console.log("READY!!!");
+            this.docUploaded.emit(true);
+            this.changeDetection.detectChanges();
+        });
   }
 
   onUpload(event) {
