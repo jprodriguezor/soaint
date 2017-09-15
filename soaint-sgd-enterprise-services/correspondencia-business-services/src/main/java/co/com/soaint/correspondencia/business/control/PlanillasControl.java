@@ -262,7 +262,6 @@ public class PlanillasControl {
         PpdDocumentoDTO documento = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO remitente = agenteControl.listarRemitentesByIdeDocumento(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO destinatario = agenteControl.consultarAgenteByIdeAgente(planAgen.getIdeAgente());
-        log.info("Codigo de IndOriginal ------------------- >" + destinatario.getIndOriginal());
         return ItemReportPlanillaDTO.newInstance()
                 .nroRadicado(correspondencia.getNroRadicado())
                 .fecRadicado(correspondencia.getFecRadicado())
