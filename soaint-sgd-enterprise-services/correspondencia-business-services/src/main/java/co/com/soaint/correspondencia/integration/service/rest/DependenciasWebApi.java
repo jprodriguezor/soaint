@@ -5,6 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciasDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -24,6 +25,7 @@ import javax.ws.rs.*;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
+@Api(value = "DependenciasWebApi", description = "")
 public class DependenciasWebApi {
 
     @Autowired

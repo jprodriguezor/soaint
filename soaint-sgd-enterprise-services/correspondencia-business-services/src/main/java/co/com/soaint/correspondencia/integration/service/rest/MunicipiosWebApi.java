@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 import co.com.soaint.correspondencia.business.boundary.GestionarMunicipio;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipiosDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -18,6 +19,7 @@ import javax.ws.rs.Produces;
 @Path("/municipios-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
+@Api(value = "MunicipiosWebApi", description = "")
 public class MunicipiosWebApi {
 
     @Autowired
