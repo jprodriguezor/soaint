@@ -100,8 +100,8 @@ public class GestionarCorrespondencia {
      * @throws BusinessException
      * @throws SystemException
      */
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
-        return control.listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+    public ComunicacionesOficialesDTO listarCorrespondenciaSinDistribuir(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
+        return control.listarCorrespondenciaSinDistribuir(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
     }
 
     /**

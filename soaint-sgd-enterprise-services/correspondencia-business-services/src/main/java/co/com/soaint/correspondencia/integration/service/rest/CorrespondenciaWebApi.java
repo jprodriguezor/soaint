@@ -7,6 +7,7 @@ import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -29,6 +30,7 @@ import java.util.Date;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
+@Api(value = "CorrespondenciaWebApi", description = "")
 public class CorrespondenciaWebApi {
 
     @Autowired
@@ -124,17 +126,17 @@ public class CorrespondenciaWebApi {
 
     @GET
     @Path("/correspondencia/listar-distribucion")
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(@QueryParam("fecha_ini") final String fechaIni,
-                                                                                                                          @QueryParam("fecha_fin") final String fechaFin,
-                                                                                                                          @QueryParam("cod_dependencia") final String codDependencia,
-                                                                                                                          @QueryParam("cod_tipologia_documental") final String codTipoDoc,
-                                                                                                                          @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
-        log.info("processing rest request - listar correspondencia by periodo and cod_dependencia and cod_tipologia_documental and nro_radicado");
+    public ComunicacionesOficialesDTO listarCorrespondenciaSinDistribuir(@QueryParam("fecha_ini") final String fechaIni,
+                                                                         @QueryParam("fecha_fin") final String fechaFin,
+                                                                         @QueryParam("cod_dependencia") final String codDependencia,
+                                                                         @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                                                         @QueryParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar correspondencia sin distribuir");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try{
+        try {
             Date fechaInicial = dateFormat.parse(fechaIni);
             Date fechaFinal = dateFormat.parse(fechaFin);
-            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codTipoDoc, nroRadicado);
+            return boundary.listarCorrespondenciaSinDistribuir(fechaInicial, fechaFinal, codDependencia, codTipoDoc, nroRadicado);
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -144,14 +146,13 @@ public class CorrespondenciaWebApi {
     }
 
     /**
-     *
      * @param nroRadicado
      * @return
      * @throws SystemException
      */
     @GET
     @Path("/correspondencia/verificar-numero-radicado/{nro_radicado}")
-    public Boolean verificarByNroRadicado(@PathParam("nro_radicado")final String nroRadicado) throws SystemException{
+    public Boolean verificarByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws SystemException {
         log.info("processing rest request - verificar correspondencia por numeroRadicado");
         return boundary.verificarByNroRadicado(nroRadicado);
     }

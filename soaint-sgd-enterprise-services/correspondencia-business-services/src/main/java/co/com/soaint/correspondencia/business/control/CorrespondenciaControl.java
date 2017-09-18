@@ -325,7 +325,7 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndTipologiaDocumentalAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
+    public ComunicacionesOficialesDTO listarCorrespondenciaSinDistribuir(Date fechaIni, Date fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) throws BusinessException, SystemException {
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(fechaFin);
@@ -336,6 +336,7 @@ public class CorrespondenciaControl {
                     .setParameter("REQ_DIST_FISICA", reqDistFisica)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("ESTADO_AGENTE", EstadoAgenteEnum.DISTRIBUCION.getCodigo())
                     .setParameter("COD_TIPO_DOC", codTipoDoc)
                     .setParameter("NRO_RADICADO", nroRadicado == null ? null : "%" + nroRadicado + "%")
                     .getResultList();

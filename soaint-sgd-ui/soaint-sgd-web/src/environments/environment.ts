@@ -45,6 +45,11 @@ export const environment = {
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
 
+  //Carga masiva endpoint
+  carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
+  carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
+  carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
+
   // Asignacion Enpoints
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
   reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
