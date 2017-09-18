@@ -1,6 +1,7 @@
 package co.com.soaint.bpm.services.rest;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
+import co.com.soaint.bpm.services.integration.services.ITaskServices;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
@@ -35,6 +36,8 @@ public class BpmIntegrationServicesClientRest {
 
     @Autowired
     private IProcessServices proceso;
+    @Autowired
+    private ITaskServices tarea;
 
     /**
      * Contructor de la clase
@@ -172,7 +175,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/completar/")
     public RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - completar tarea");
-        return proceso.completarTarea(entradaTarea);
+        return tarea.completarTarea(entradaTarea);
     }
 
     /**
@@ -186,7 +189,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/iniciar/")
     public RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - iniciar tarea");
-        return proceso.iniciarTarea(entradaTarea);
+        return tarea.iniciarTarea(entradaTarea);
     }
 
     /**
@@ -201,7 +204,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/reservar/")
     public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - reservar tarea");
-        return proceso.reservarTarea(entradaTarea);
+        return tarea.reservarTarea(entradaTarea);
     }
 
     /**
@@ -215,7 +218,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/reasignar/")
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - reasignar tarea");
-        return proceso.reasignarTarea(entradaTarea);
+        return tarea.reasignarTarea(entradaTarea);
     }
 
 
@@ -230,7 +233,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/listar/estados")
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas con sus estados");
-        return proceso.listarTareasEstados(entradaTarea);
+        return tarea.listarTareasEstados(entradaTarea);
     }
 
     /**
@@ -244,7 +247,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/listar/completadas")
     public List<RespuestaTareaBamDTO> listarTareasCompletadas(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas con sus estados");
-        return proceso.listarTareasCompletadas(entradaTarea);
+        return tarea.listarTareasCompletadas(entradaTarea);
     }
 
     /**
@@ -258,7 +261,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/listar/estados-usuario/")
     public List<RespuestaTareaDTO> listarTareaPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas con sus estados por usuario");
-        return proceso.listarTareasEstadosPorUsuario(entradaTarea);
+        return tarea.listarTareasEstadosPorUsuario(entradaTarea);
     }
 
     /**
@@ -272,7 +275,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasEstadosInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar instancias de procesos");
-        return proceso.listarTareasEstadosInstanciaProceso(entradaTarea);
+        return tarea.listarTareasEstadosInstanciaProceso(entradaTarea);
     }
 
     /**
@@ -286,7 +289,7 @@ public class BpmIntegrationServicesClientRest {
     @Path("/tareas/listar/estados-instancia/")
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas por instancias de procesos");
-        return proceso.listarTareasPorInstanciaProceso(entradaTarea);
+        return tarea.listarTareasPorInstanciaProceso(entradaTarea);
     }
 
 }
