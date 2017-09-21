@@ -5,6 +5,7 @@ import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {
   getArrayData as getFuncionarioArrayData,
   getAuthenticatedFuncionario,
@@ -25,6 +26,8 @@ import {
   getRejectDialogVisible
 } from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -74,6 +77,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
+  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -86,6 +91,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
               private _distribucionFisicaApi: DistribucionFisicaSandbox,
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
+              private _constSandbox: ConstanteSandbox,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -115,7 +121,9 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
+    this._constSandbox.loadDatosGeneralesDispatch();
     this.llenarEstadosCorrespondencias();
     this.listarDistribuciones();
   }
