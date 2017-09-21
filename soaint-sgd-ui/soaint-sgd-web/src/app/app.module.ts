@@ -43,6 +43,7 @@ import {ClearValidatorsDirective} from './shared/directives/form/clear-validator
 import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
 import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
 import {OptionalEmailValidatorDirective} from './shared/directives/form/optional-email-validator.directive';
+import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
 
 
 @NgModule({
@@ -124,6 +125,7 @@ import {OptionalEmailValidatorDirective} from './shared/directives/form/optional
     PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES,
+    DistribucionFisicaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

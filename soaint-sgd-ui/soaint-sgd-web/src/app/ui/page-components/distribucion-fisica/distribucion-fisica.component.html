@@ -1,0 +1,174 @@
+<div class="page-title">
+  <h2>Generar plantillas de entrada</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Busqueda de tareas" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="dependencia">Dependencia</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options]="estadosCorrespondencia" id="dependencia"
+                              [autoWidth]="false" formControlName="estadoCorrespondencia"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="tipologia">Tipología documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options]="estadosCorrespondencia" id="tipologia"
+                              [autoWidth]="false" formControlName="estadoCorrespondencia"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="numeroRadicado">Número de radicado</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText id="numeroRadicado" formControlName="nroRadicado">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="startDate">Fecha inicial</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"
+                              id="startDate"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="endDate">Fecha final</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy" id="endDate"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-12" [style.padding-top]="'40px'">
+              <button pButton type="button" label="Buscar"
+                      style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right"
+                      (click)="listarDistribuciones()"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [(selection)]="selectedComunications"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Número de radicado" [sortable]="true"></p-column>
+              <p-column header="Fecha y hora de radicación" [sortable]="true"></p-column>
+              <p-column header="Nro radicación/NIT" [sortable]="true"></p-column>
+              <p-column header="Nombre/Razón social" [sortable]="true"></p-column>
+              <p-column header="Sede administrativa" [sortable]="true"></p-column>
+              <p-column header="Dependencia" [sortable]="true"></p-column>
+              <p-column header="Tipología documental" [sortable]="true"></p-column>
+              <p-column header="Asunto" [sortable]="true"></p-column>
+              <p-column header="Folios" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+              <p-column header="Anexos" [sortable]="true" [style]="{'width':'110px'}"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Redireccionar"
+                    [disabled]="selectedComunications.length === 0  || form.get('estadoCorrespondencia').value === 'AS' || asignationType === 'auto'"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="showRedirectDialog()"></button>
+            <button pButton type="button" label="Tramitar"
+                    [disabled]="selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="processComunications()"></button>
+            <button pButton type="button" label="Devolver"
+                    [disabled]="selectedComunications.length == 0"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="showRejectDialog()"></button>
+            <button pButton type="button" label="Reasignar"
+                    [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'SA'"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="reassignComunications()"></button>
+            <button pButton type="button" label="Asignar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    [disabled]="(!funcionarioSelected && selectedFuncionarios.length === 0) || selectedComunications.length == 0 || form.get('estadoCorrespondencia').value === 'AS'"
+                    (click)="assignComunications()"></button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
+            (onHide)="hideDetailsDialog()" [width]="1000">
+
+    <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+  </p-dialog>
+
+  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [contentStyle]="{'overflow':'scroll'}"
+            (onHide)="hideJustificationPopup()" [width]="800">
+    <p-header>
+      Redireccionar
+    </p-header>
+    <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
+                             #popupjustificaciones></app-popup-justificacion>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideJustificationPopup()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
+                label="Redireccionar" (click)="sendRedirect()"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            (onHide)="hideAddObservationsPopup()" [width]="800">
+    <p-header>
+      Agregar observaciones
+    </p-header>
+    <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+
+  </p-dialog>
+  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideRejectDialog()" [width]="800">
+    <p-header>
+      Devolver
+    </p-header>
+    <app-popup-reject #popupReject></app-popup-reject>
+
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-primary"
+                label="Cerrar" (click)="hideRejectDialog()"></button>
+        <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
+                label="Devolver" (click)="sendReject()"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+</div>
+
+
+
+

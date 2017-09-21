@@ -13,6 +13,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 @ApiDelegator
@@ -109,6 +110,20 @@ public class CorrespondenciaClient {
         log.info("Correspondencia - [trafic] -registrar observacion: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         WebTarget target = wt.path("/constantes-web-api/constantes").queryParam("codigos", codigos);
+
+        return target.request().get();
+    }
+
+    public Response listarDistribucion(String fechaIni, String fechaFin, String codDependencia, String codTipoDoc, String nroRadicado) {
+        log.info("Correspondencia - [trafic] - listar distribucion: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        WebTarget target = wt.path("/correspondencia-web-api/correspondencia/listar-distribucion")
+                .queryParam("fecha_ini", fechaIni)
+                .queryParam("fecha_fin", fechaFin)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("cod_tipologia_documental", codTipoDoc)
+                .queryParam("nro_radicado", nroRadicado);
 
         return target.request().get();
     }

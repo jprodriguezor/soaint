@@ -12,6 +12,7 @@ import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-r
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
+import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -38,6 +39,7 @@ export const PAGE_COMPONENTS = [
   PopupRejectComponent,
   GestionarComunicacionComponent,
   RadicarSalidaComponent,
+  DistribucionFisicaComponent,
   ...CARGA_MASIVA_COMPONENTS
 ];
 

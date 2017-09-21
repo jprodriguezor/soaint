@@ -7,6 +7,7 @@ import * as paisStore from 'app/infrastructure/state-management/paisDTO-state/pa
 import * as municipioStore from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-reducers';
 import * as departamentoStore from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-reducers';
 import * as correspondenciaStore from 'app/infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-reducers';
+import * as distribucionStore from 'app/infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-reducers';
 import * as dependenciaGrupoStore from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-reducers';
 import * as sedeAdministrativaStore from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-reducers';
 import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
@@ -27,6 +28,7 @@ export interface State {
   municipios: municipioStore.State,
   departamentos: departamentoStore.State,
   comunicacionesOficiales: correspondenciaStore.State,
+  distribucionFisica: distribucionStore.State,
   asignaciones: asignacionStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,
   sedeAdministrativa: sedeAdministrativaStore.State,
@@ -55,6 +57,7 @@ export const reducers = {
   municipios: municipioStore.reducer,
   departamentos: departamentoStore.reducer,
   comunicacionesOficiales: correspondenciaStore.reducer,
+  distribucionFisica: distribucionStore.reducer,
   asignaciones: asignacionStore.reducer,
   dependenciaGrupo: dependenciaGrupoStore.reducer,
   sedeAdministrativa: sedeAdministrativaStore.reducer,

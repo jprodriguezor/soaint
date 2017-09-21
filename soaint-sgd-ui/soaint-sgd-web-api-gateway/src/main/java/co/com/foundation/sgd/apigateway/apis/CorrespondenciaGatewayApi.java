@@ -194,5 +194,22 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-distribucion")
+    @JWTTokenSecurity
+    public Response listarDistribucion(@QueryParam("fecha_ini") final String fechaIni,
+                                       @QueryParam("fecha_fin") final String fechaFin,
+                                       @QueryParam("cod_dependencia") final String codDependencia,
+                                       @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                       @QueryParam("nro_radicado") final String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando distribucion");
+        Response response = client.listarDistribucion(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
 
 }

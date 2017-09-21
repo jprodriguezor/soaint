@@ -61,4 +61,6 @@ export const environment = {
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
+  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
+
 };
