@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
     <Properties>
-        <Property name="log-path">/home/wildfly/wildfly_logs</Property>
+        <Property name="log-path">/home/wildfly/widlfly_logs</Property>
     </Properties>
     <Appenders>
         <RollingFile name="RollingFile" fileName="${log-path}/web-api-gateway-service.log"
-                     filePattern="${log-path}/pagos-service-%d{yyyy-MM-dd}-%i.log">
+                     filePattern="${log-path}/web-api-gateway-service-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1}: %m%n</pattern>
             </PatternLayout>
