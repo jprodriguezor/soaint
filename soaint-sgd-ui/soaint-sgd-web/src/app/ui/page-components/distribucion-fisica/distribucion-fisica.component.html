@@ -102,12 +102,12 @@
               </p-column>
               <p-column header="Sede administrativa" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(getDatosRemitente(correspondencia) | async).codSede}}
+                  {{findSede((getDatosDestinatario(correspondencia) | async)[0].codSede)}}
                 </ng-template>
               </p-column>
               <p-column header="Dependencia" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{findDependency((getDatosRemitente(correspondencia) | async).codDependencia)}}
+                  {{findDependency((getDatosDestinatario(correspondencia) | async)[0].codDependencia)}}
                 </ng-template>
               </p-column>
               <p-column header="Tipología documental" [sortable]="true">
@@ -131,7 +131,10 @@
             </p-dataTable>
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
-
+            <button pButton type="button" label="Exportar"
+                    [disabled]="selectedComunications.length == 0"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
           </div>
         </div>
       </p-panel>

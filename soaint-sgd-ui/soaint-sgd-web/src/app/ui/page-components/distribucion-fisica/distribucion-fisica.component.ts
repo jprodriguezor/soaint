@@ -144,6 +144,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return radicacionEntradaDTV.getDatosRemitente();
   }
 
+  getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
+    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+    return radicacionEntradaDTV.getDatosDestinatarios();
+  }
+
   getDatosDocumentos(comunicacion): Observable<DocumentoDTO[]> {
     const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
     return radicacionEntradaDTV.getDatosDocumento();
@@ -186,6 +191,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   findDependency(code): string {
     const result = this.dependencias.find((element) => element.codigo == code);
     return result ? result.nombre : '';
+  }
+
+  findSede(code): string {
+    const result = this.dependencias.find((element) => element.codSede == code);
+    return result ? result.nomSede : '';
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
