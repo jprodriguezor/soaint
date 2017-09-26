@@ -46,10 +46,10 @@ export class Effects {
     .distinctUntilChanged()
     .switchMap(
       ([payload, state]) => {
-        const new_payload = tassign(payload, {
-          cod_dependencia: state.codigo
-        });
-        return this._sandbox.loadData(new_payload)
+        // const new_payload = tassign(payload, {
+        //   cod_dependencia: state.codigo
+        // });
+        return this._sandbox.loadData(payload)
           .map((response) => new actions.LoadSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadFailAction({error}))
           )

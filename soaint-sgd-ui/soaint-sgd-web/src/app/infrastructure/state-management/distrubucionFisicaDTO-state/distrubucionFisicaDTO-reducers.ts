@@ -68,9 +68,9 @@ export function reducer(state = initialState, action: Actions) {
         filters: {
           fecha_ini: filters.fecha_ini || null,
           fecha_fin: filters.fecha_fin || null,
-          cod_dependencia: filters.fecha_fin || null,
-          nro_radicado: filters.fecha_fin || null,
-          cod_tipologia_documental: filters.cod_estado || null
+          cod_dependencia: filters.cod_dependencia || null,
+          nro_radicado: filters.nro_radicado || null,
+          cod_tipologia_documental: filters.cod_tipologia_documental || null
         }
       });
     }

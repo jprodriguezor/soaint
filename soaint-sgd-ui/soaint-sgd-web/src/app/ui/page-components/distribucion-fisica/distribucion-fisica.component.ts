@@ -29,8 +29,9 @@ import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
 import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
-import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
+import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {DocumentoDTO} from "../../../domain/documentoDTO";
+import {element} from "protractor";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -56,7 +57,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   end_date: Date = new Date();
 
-  estadoCorrespondencia: any;
+  dependencia: any;
 
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
 
@@ -82,7 +83,9 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
 
-  constantesList: ConstanteDTO[];
+  tipologiasDocumentales: ConstanteDTO[];
+
+  dependencias: DependenciaDTO[] = [];
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -97,7 +100,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
               private _constSandbox: ConstanteSandbox,
-              private _asiganacionSandbox: AsiganacionDTOSandbox,
+              private _dependenciaSandbox: DependenciaSandbox,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -128,10 +131,12 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
+    this.tipologiaDocumentalSuggestions$.subscribe((results) => {
+      this.tipologiasDocumentales = results;
+    });
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this._constSandbox.loadDatosGeneralesDispatch();
-    this.llenarEstadosCorrespondencias();
-    this.listarDistribuciones();
+    this.listarDependencias();
   }
 
   getDatosRemitente(comunicacion): Observable<AgentDTO> {
@@ -144,38 +149,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return radicacionEntradaDTV.getDatosDocumento();
   }
 
-  getConstantsCodes(comunicacion) {
-    let result = '';
-    console.log(comunicacion);
-    comunicacion.agenteList.forEach((item) => {
-      result += item.codTipAgent + ',';
-      result += item.codEnCalidad + ',';
-      result += item.indOriginal + ',';
-      result += item.codTipoPers + ',';
-      result += item.codTipDocIdent + ',';
-    });
-    comunicacion.anexoList.forEach((item) => {
-      result += item.codAnexo + ',';
-    });
-    comunicacion.ppdDocumentoList.forEach((item) => {
-      result += item.codTipoDoc + ',';
-    });
-    result += comunicacion.correspondencia.codTipoCmc + ',';
-    result += comunicacion.correspondencia.codMedioRecepcion + ',';
-    result += comunicacion.correspondencia.codUnidadTiempo + ',';
-    result += comunicacion.correspondencia.codTipoDoc + ',';
-    return result;
-  }
-
-  /*loadConstantsByCodes() {
-    this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes({})).subscribe((response) => {
-      this.constantesList = response.constantes;
-      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
-        this.constantesList.push(...result.dependencias);
-      });
-    });
-  }*/
-
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
@@ -184,23 +157,17 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.formBuilder.group({
       'funcionario': [null],
-      'estadoCorrespondencia': [null],
+      'dependencia': [null],
       'nroRadicado': [null],
+      'tipologia': [null],
     });
   }
 
-  llenarEstadosCorrespondencias() {
-    this.estadosCorrespondencia = [
-      {
-        label: 'SIN ASIGNAR',
-        value: 'SA'
-      },
-      {
-        label: 'ASIGNADA',
-        value: 'AS'
-      }
-    ];
-    this.form.get('estadoCorrespondencia').setValue(this.estadosCorrespondencia[0].value);
+  listarDependencias() {
+    this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
+      this.dependencias = results.dependencias;
+      this.listarDistribuciones();
+    });
   }
 
   convertDate(inputFormat) {
@@ -212,16 +179,13 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
   }
 
-  assignComunications() {
-    this._asignacionSandbox.assignDispatch({
-      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
-    });
+  findTipoDoc(code): string {
+    return this.tipologiasDocumentales.find((element) => element.codigo == code).nombre;
   }
 
-  reassignComunications() {
-    this._asignacionSandbox.reassignDispatch({
-      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
-    });
+  findDependency(code): string {
+    const result = this.dependencias.find((element) => element.codigo == code);
+    return result ? result.nombre : '';
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
@@ -234,50 +198,16 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     this.popupjustificaciones.redirectComunications();
   }
 
-  processComunications() {
-    this._asignacionSandbox.assignDispatch({
-      asignaciones: this.createAsignaciones(this.funcionarioLog.id, this.funcionarioLog.loginName)
-    });
-  }
-
-  showRedirectDialog() {
-    this.popupjustificaciones.form.reset();
-    this._asignacionSandbox.setVisibleJustificationDialogDispatch(true);
-  }
-
   hideJustificationPopup() {
     this._asignacionSandbox.setVisibleJustificationDialogDispatch(false);
-  }
-
-
-  showDetailsDialog(nroRadicado: string): void {
-    this.detallesView.setNroRadicado(nroRadicado);
-    this.detallesView.loadComunication();
-    this._asignacionSandbox.setVisibleDetailsDialogDispatch(true);
   }
 
   hideDetailsDialog() {
     this._asignacionSandbox.setVisibleDetailsDialogDispatch(false);
   }
 
-  showAddObservationsDialog(idDocuemento: number) {
-    this.popupAgregarObservaciones.form.reset();
-    this.popupAgregarObservaciones.setData({
-      idDocumento: idDocuemento,
-      idFuncionario: this.funcionarioLog.id,
-      codOrgaAdmin: this.dependenciaSelected.codigo
-    });
-    this.popupAgregarObservaciones.loadObservations();
-    this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(true);
-  }
-
   hideAddObservationsPopup() {
     this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(false);
-  }
-
-  showRejectDialog() {
-    this.popupReject.form.reset();
-    this._asignacionSandbox.setVisibleRejectDialogDispatch(true);
   }
 
   hideRejectDialog() {
@@ -358,11 +288,15 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   listarDistribuciones() {
+    console.log(this.form.get('dependencia').value);
+    console.log(this.form.get('tipologia').value);
+    console.log(this.form.get('nroRadicado').value);
+
     this._distribucionFisicaApi.loadDispatch({
       fecha_ini: this.convertDate(this.start_date),
       fecha_fin: this.convertDate(this.end_date),
-      cod_dependencia: "",
-      cod_tipologia_documental: "",
+      cod_dependencia: this.form.get('dependencia').value ? this.form.get('dependencia').value.codigo : '',
+      cod_tipologia_documental: this.form.get('tipologia').value ? this.form.get('tipologia').value.codigo : '',
       nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
     });
   }

@@ -14,8 +14,10 @@
                   <label for="dependencia">Dependencia</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-dropdown [options]="estadosCorrespondencia" id="dependencia"
-                              [autoWidth]="false" formControlName="estadoCorrespondencia"></p-dropdown>
+                  <p-dropdown [options]="dependencias | dropdownItem" id="dependencia"
+                              placeholder="Seleccione"
+                              [autoWidth]="false" formControlName="dependencia">
+                  </p-dropdown>
                 </div>
               </div>
             </div>
@@ -28,8 +30,8 @@
                   <p-dropdown [options]="tipologiaDocumentalSuggestions$ | async | dropdownItem"
                               id="tipologia"
                               placeholder="Seleccione"
-
                               [filter]="true"
+                              formControlName="tipologia"
                               [autoWidth]="false">
                   </p-dropdown>
                 </div>
@@ -105,12 +107,12 @@
               </p-column>
               <p-column header="Dependencia" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(getDatosRemitente(correspondencia) | async).codDependencia}}
+                  {{findDependency((getDatosRemitente(correspondencia) | async).codDependencia)}}
                 </ng-template>
               </p-column>
               <p-column header="Tipología documental" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(getDatosDocumentos(correspondencia) | async)[0].codTipoDoc}}
+                  {{findTipoDoc((getDatosDocumentos(correspondencia) | async)[0].codTipoDoc)}}
                 </ng-template>
               </p-column>
               <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>

@@ -14,6 +14,7 @@ export class Sandbox {
   }
 
   loadData(payload: any) {
+    console.log(payload);
     return this._api.list(environment.listarDistrubucion_endpoint, payload);
   }
 
