@@ -28,6 +28,9 @@ import {
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
+import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
+import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
+import {DocumentoDTO} from "../../../domain/documentoDTO";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -79,6 +82,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
 
+  constantesList: ConstanteDTO[];
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -92,6 +97,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
               private _constSandbox: ConstanteSandbox,
+              private _asiganacionSandbox: AsiganacionDTOSandbox,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -127,6 +133,48 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     this.llenarEstadosCorrespondencias();
     this.listarDistribuciones();
   }
+
+  getDatosRemitente(comunicacion): Observable<AgentDTO> {
+    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+    return radicacionEntradaDTV.getDatosRemitente();
+  }
+
+  getDatosDocumentos(comunicacion): Observable<DocumentoDTO[]> {
+    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+    return radicacionEntradaDTV.getDatosDocumento();
+  }
+
+  getConstantsCodes(comunicacion) {
+    let result = '';
+    console.log(comunicacion);
+    comunicacion.agenteList.forEach((item) => {
+      result += item.codTipAgent + ',';
+      result += item.codEnCalidad + ',';
+      result += item.indOriginal + ',';
+      result += item.codTipoPers + ',';
+      result += item.codTipDocIdent + ',';
+    });
+    comunicacion.anexoList.forEach((item) => {
+      result += item.codAnexo + ',';
+    });
+    comunicacion.ppdDocumentoList.forEach((item) => {
+      result += item.codTipoDoc + ',';
+    });
+    result += comunicacion.correspondencia.codTipoCmc + ',';
+    result += comunicacion.correspondencia.codMedioRecepcion + ',';
+    result += comunicacion.correspondencia.codUnidadTiempo + ',';
+    result += comunicacion.correspondencia.codTipoDoc + ',';
+    return result;
+  }
+
+  /*loadConstantsByCodes() {
+    this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes({})).subscribe((response) => {
+      this.constantesList = response.constantes;
+      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
+        this.constantesList.push(...result.dependencias);
+      });
+    });
+  }*/
 
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();

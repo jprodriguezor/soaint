@@ -2,6 +2,7 @@ import {ComunicacionOficialDTO} from '../../domain/comunicacionOficialDTO';
 import {Observable} from 'rxjs/Observable';
 import {AgentDTO} from '../../domain/agentDTO';
 import {ContactoDTO} from '../../domain/contactoDTO';
+import {DocumentoDTO} from "../../domain/documentoDTO";
 
 export class RadicacionEntradaDTV {
 
@@ -15,6 +16,10 @@ export class RadicacionEntradaDTV {
 
   getDatosContactos(): Observable<ContactoDTO[]> {
     return Observable.of(this.dataSource.datosContactoList);
+  }
+
+  getDatosDocumento(): Observable<DocumentoDTO[]> {
+    return Observable.of(this.dataSource.ppdDocumentoList);
   }
 
   getDatosDestinatarios(): Observable<AgentDTO[]> {

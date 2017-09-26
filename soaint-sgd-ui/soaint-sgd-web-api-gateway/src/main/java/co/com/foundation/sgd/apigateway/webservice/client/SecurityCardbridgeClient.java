@@ -30,6 +30,7 @@ public class SecurityCardbridgeClient {
         if (service == null) {
             URL url = null;
             try {
+                log.debug(securitycardbridgeWsdlEndpoint);
                 url = new URL(securitycardbridgeWsdlEndpoint);
             } catch (MalformedURLException ex) {
                 log.error(ex);
