@@ -64,4 +64,16 @@ public class DependenciasWebApi {
         log.info("processing rest request - listar dependencias by codigosOrg");
         return boundary.listarDependenciasByCodigo(codigos.split(","));
     }
+
+    /**
+     *
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/dependencias")
+    public DependenciasDTO listarDependencias() throws SystemException {
+        log.info("processing rest request - listar dependencias");
+        return boundary.listarDependencias();
+    }
 }

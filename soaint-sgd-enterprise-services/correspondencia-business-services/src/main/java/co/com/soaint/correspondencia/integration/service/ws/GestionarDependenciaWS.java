@@ -50,4 +50,14 @@ public class GestionarDependenciaWS {
     public DependenciasDTO listarDependenciasByCodigo(@WebParam(name = "cod-org")final String[] codigosOrg)throws SystemException{
         return boundary.listarDependenciasByCodigo(codigosOrg);
     }
+
+    /**
+     *
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarDependencias", operationName = "listarDependencias")
+    public DependenciasDTO listarDependencias() throws SystemException {
+        return boundary.listarDependencias();
+    }
 }
