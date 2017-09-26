@@ -78,14 +78,13 @@ public class DependenciaControl {
     }
 
     /**
-     *
      * @param codOrg
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public DependenciaDTO listarDependenciaByCodigo(String codOrg)throws BusinessException, SystemException{
+    public DependenciaDTO listarDependenciaByCodigo(String codOrg) throws BusinessException, SystemException {
         try {
             OrganigramaItemDTO organigramaItemDTO = organigramaAdministrativoControl.consultarElementoByCodOrg(codOrg);
             return dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin()));
@@ -105,17 +104,40 @@ public class DependenciaControl {
     }
 
     /**
-     *
      * @param codigos
      * @return
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public DependenciasDTO listarDependenciasByCodigo(String[] codigos)throws SystemException{
+    public DependenciasDTO listarDependenciasByCodigo(String[] codigos) throws SystemException {
         List<DependenciaDTO> dependencias = new ArrayList<>();
         try {
             organigramaAdministrativoControl.consultarElementosByCodOrg(codigos).stream().forEach(organigramaItemDTO ->
                     dependencias.add(dependenciaDTOTransform(organigramaItemDTO, organigramaAdministrativoControl.consultarPadreDeSegundoNivel(organigramaItemDTO.getIdeOrgaAdmin()))));
+            return DependenciasDTO.newInstance().dependencias(dependencias).build();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public DependenciasDTO listarDependencias() throws SystemException {
+        List<DependenciaDTO> dependencias = new ArrayList<>();
+        try {
+            for (OrganigramaItemDTO sede : organigramaAdministrativoControl.listarDescendientesDirectosDeElementoRayz()) {
+                for(OrganigramaItemDTO dependencia : organigramaAdministrativoControl.listarElementosDeNivelInferior(sede.getIdeOrgaAdmin())){
+                    dependencias.add(dependenciaDTOTransform(dependencia, sede));
+                }
+            }
             return DependenciasDTO.newInstance().dependencias(dependencias).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
