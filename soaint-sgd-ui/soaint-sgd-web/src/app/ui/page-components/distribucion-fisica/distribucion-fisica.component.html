@@ -132,7 +132,7 @@
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
             <button pButton type="button" label="Exportar"
-                    [disabled]="selectedComunications.length == 0"
+                    [disabled]="selectedComunications.length == 0" (click)="exportarPlanilla()"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
             </button>
           </div>
@@ -140,58 +140,6 @@
       </p-panel>
     </div>
   </div>
-
-  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
-            (onHide)="hideDetailsDialog()" [width]="1000">
-
-    <app-detalles-asignacion #detallesView></app-detalles-asignacion>
-  </p-dialog>
-
-  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'scroll'}"
-            (onHide)="hideJustificationPopup()" [width]="800">
-    <p-header>
-      Redireccionar
-    </p-header>
-    <app-popup-justificacion (onRedirectComunication)="redirectComunications($event)"
-                             #popupjustificaciones></app-popup-justificacion>
-
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button pButton type="button" class="ui-button-primary"
-                label="Cerrar" (click)="hideJustificationPopup()"></button>
-        <button pButton type="button" class="ui-button-primary" [disabled]="!popupjustificaciones.form.valid"
-                label="Redireccionar" (click)="sendRedirect()"></button>
-      </div>
-    </p-footer>
-  </p-dialog>
-  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            (onHide)="hideAddObservationsPopup()" [width]="800">
-    <p-header>
-      Agregar observaciones
-    </p-header>
-    <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
-
-  </p-dialog>
-  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
-            (onHide)="hideRejectDialog()" [width]="800">
-    <p-header>
-      Devolver
-    </p-header>
-    <app-popup-reject #popupReject></app-popup-reject>
-
-
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button pButton type="button" class="ui-button-primary"
-                label="Cerrar" (click)="hideRejectDialog()"></button>
-        <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
-                label="Devolver" (click)="sendReject()"></button>
-      </div>
-    </p-footer>
-  </p-dialog>
 </div>
 
 

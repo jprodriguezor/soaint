@@ -32,6 +32,10 @@ import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacion
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {DocumentoDTO} from "../../../domain/documentoDTO";
 import {element} from "protractor";
+import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
+import {PlanillaDTO} from "../../../domain/PlanillaDTO";
+import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
+import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -101,6 +105,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
               private _funcionarioSandbox: Sandbox,
               private _constSandbox: ConstanteSandbox,
               private _dependenciaSandbox: DependenciaSandbox,
+              private _planillaService: PlanillasApiService,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -298,16 +303,64 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   listarDistribuciones() {
-    console.log(this.form.get('dependencia').value);
-    console.log(this.form.get('tipologia').value);
-    console.log(this.form.get('nroRadicado').value);
-
     this._distribucionFisicaApi.loadDispatch({
       fecha_ini: this.convertDate(this.start_date),
       fecha_fin: this.convertDate(this.end_date),
       cod_dependencia: this.form.get('dependencia').value ? this.form.get('dependencia').value.codigo : '',
       cod_tipologia_documental: this.form.get('tipologia').value ? this.form.get('tipologia').value.codigo : '',
       nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
+    });
+  }
+
+  generarDatosExportar(): PlanillaDTO {
+    let agensDTO: PlanAgenDTO[] = [];
+
+    this.selectedComunications.forEach((element) => {
+      let agenDTO: PlanAgenDTO = {
+        idePlanAgen: null,
+        estado: null,
+        varPeso: null,
+        varValor: null,
+        varNumeroGuia: null,
+        fecObservacion: null,
+        codNuevaSede: null,
+        codNuevaDepen: null,
+        observaciones: null,
+        codCauDevo: null,
+        fecCarguePla: null,
+        ideAgente: null,
+        ideDocumento: null,
+      };
+      agensDTO.push(agenDTO);
+    });
+
+    let agentes: PlanAgentesDTO = {
+      agentes: agensDTO
+    };
+
+    let planilla: PlanillaDTO = {
+      idePlanilla: null,
+      nroPlanilla: null,
+      fecGeneracion: null,
+      codTipoPlanilla: null,
+      codFuncGenera: null,
+      codSedeOrigen: null,
+      codDependenciaOrigen: null,
+      codSedeDestino: null,
+      codDependenciaDestino: null,
+      codClaseEnvio: null,
+      codModalidadEnvio: null,
+      agentes: agentes,
+    };
+
+    return planilla;
+  };
+
+  exportarPlanilla() {
+    const planilla = this.generarDatosExportar();
+    console.log(planilla);
+    this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
+      console.log(result);
     });
   }
 

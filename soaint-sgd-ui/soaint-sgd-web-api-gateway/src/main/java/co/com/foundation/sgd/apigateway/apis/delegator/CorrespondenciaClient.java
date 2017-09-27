@@ -1,10 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -126,5 +123,13 @@ public class CorrespondenciaClient {
                 .queryParam("nro_radicado", nroRadicado);
 
         return target.request().get();
+    }
+
+    public Response generarPlantilla(PlanillaDTO planilla) {
+        log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/planillas-web-api/planillas")
+                .request()
+                .post(Entity.json(planilla));
     }
 }
