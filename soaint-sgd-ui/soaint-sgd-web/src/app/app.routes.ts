@@ -14,6 +14,7 @@ import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 import {RadicarSalidaComponent} from './ui/page-components/radicacion-salida/radicar-salida.component';
 import {CargaMasivaDetailsComponent} from "./ui/page-components/carga-masiva/components/cm-details.component";
+import {ProduccionDocumentalComponent} from "./ui/page-components/produccion-documental/produccion-documental.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -58,6 +59,11 @@ export const routes: Routes = [
     path: ROUTES_PATH.cargaMasivaDetails,
     component: CargaMasivaDetailsComponent,
     canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.produccionDocumental,
+    canActivate: [AuthenticatedGuard],
+    component: ProduccionDocumentalComponent
   }
 ];
 

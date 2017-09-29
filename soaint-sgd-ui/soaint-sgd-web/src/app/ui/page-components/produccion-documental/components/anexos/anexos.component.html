@@ -1,0 +1,73 @@
+<form [formGroup]="form">
+  
+  
+  <p-panel header="Anexos" [style]="{border: 'none'}">
+    
+    <div class="ui-g ui-fluid">
+      
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label>Soporte</label>
+          </div>
+          <div class="ui-g-12">
+            <label class="md-check">
+              <input type="radio" value="fisico" name="usuarioResponsable" formControlName="usuarioResponsable"> Físico
+            </label>
+  
+            <label class="md-check">
+              <input type="radio" value="electronico" name="usuarioResponsable" formControlName="usuarioResponsable"> Electrónico
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexo">Tipo de anexo</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoAnexoInput | dropdownItem"
+                        id="tipoAnexo"
+                        formControlName="tipoAnexo"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="descripcion">Sede</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="descripcion" formControlName="descripcion" />
+          </div>
+        </div>
+      </div>
+      
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12"></div>
+          <div class="ui-g-12">
+            <button pButton type="button" label="Adjuntar"
+                    style="width: auto; margin-bottom: 10px;margin-left: 2px"
+            ></button>
+            <button pButton type="button" label="Agregar"
+                    style="width: auto; margin-bottom: 10px;margin-left: 2px"
+            ></button>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+  
+  </p-panel>
+
+
+</form>

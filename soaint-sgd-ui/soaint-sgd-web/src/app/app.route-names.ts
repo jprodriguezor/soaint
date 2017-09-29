@@ -11,5 +11,6 @@ export const ROUTES_PATH = {
   recibirGestionarComunicaciones: 'recibir-gestionar-comunicaciones',
   documentosTramite: 'documentos-tramite',
   cargaMasiva: 'carga-masiva',
-  cargaMasivaDetails: 'carga-masiva/record/:id'
+  cargaMasivaDetails: 'carga-masiva/record/:id',
+  produccionDocumental: 'produccion-documental',
 };

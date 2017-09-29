@@ -7,6 +7,7 @@ export const MENU_OPTIONS = [
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Radicacion Salida (Prueba)', icon: 'subject', routerLink: ['/' + ROUTES_PATH.radicarCofSalida]},
   {label: 'Carga Masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
+  {label: 'Producción Documental', icon: 'subject', routerLink: ['/' + ROUTES_PATH.produccionDocumental]},
 ];
 
 

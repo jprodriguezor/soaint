@@ -1,0 +1,106 @@
+<form [formGroup]="form">
+  
+      
+      <p-panel header="Producir Documento" [style]="{border: 'none'}">
+  
+        <div class="ui-g ui-fluid">
+  
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+                <p-dropdown [options]="tipoComunicacionInput | dropdownItem"
+                            id="tipoComunicacion"
+                            formControlName="tipoComunicacion"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+  
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="tipoPlantilla">Tipo de plantilla</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+        
+                <p-dropdown [options]="tipoPlantillaInput | dropdownItem"
+                            id="tipoPlantilla"
+                            formControlName="tipoPlantilla"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+  
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <button pButton type="button" label="Cargar"
+                        style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                ></button>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        <br/>
+  
+        <div class="ui-g ui-fluid">
+          <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <textarea id="elaborarDocumento"
+                          pInputTextarea
+                          title="Elaborar documento"
+                          formControlName="elaborarDocumento"
+                          class="prod-doc"
+                          placeholder="Elaborar documento"
+                          style="width:100%;resize:vertical"
+                ></textarea>
+              </div>
+              <div class="ui-g-12">
+                <button pButton type="button" label="Versionar"
+                        style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <br/>
+  
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="card card-w-title">
+              <div class="ui-g ui-fluid">
+                <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                  <h1>Tabla versiones documento</h1>
+                </div>
+                <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                  <table>
+                      
+                  </table>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+  
+        
+        
+      </p-panel>
+      
+    
+</form>
