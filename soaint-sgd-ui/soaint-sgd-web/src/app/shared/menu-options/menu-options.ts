@@ -7,7 +7,8 @@ export const MENU_OPTIONS = [
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Radicacion salida (Prueba)', icon: 'subject', routerLink: ['/' + ROUTES_PATH.radicarCofSalida]},
   {label: 'Carga masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
-  {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]}
+  {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
+  {label: 'Cargar planillas', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargarPlanillas]}
 ];
 
 

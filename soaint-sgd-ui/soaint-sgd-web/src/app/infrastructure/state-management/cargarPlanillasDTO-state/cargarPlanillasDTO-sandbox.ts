@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import * as actions from './distrubucionFisicaDTO-actions';
+import * as actions from './cargarPlanillasDTO-actions';
 import {ApiBase} from '../../api/api-base';
 
 
@@ -14,7 +14,7 @@ export class Sandbox {
   }
 
   loadData(payload: any) {
-    return this._api.list(environment.listarDistrubucion_endpoint, payload);
+    return this._api.list(environment.listarPlanillas_endpoint, payload);
   }
 
   filterDispatch(query) {

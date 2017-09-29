@@ -1,45 +1,44 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
+import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
+import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {Sandbox as DistribucionFisicaSandbox} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-sandbox';
-import {Observable} from 'rxjs/Observable';
-import {Store} from '@ngrx/store';
-import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
+import {AgentDTO} from "../../../domain/agentDTO";
+import {Observable} from "rxjs/Observable";
+import {getTipologiaDocumentalArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors";
+import {DocumentoDTO} from "../../../domain/documentoDTO";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {ComunicacionOficialDTO} from "../../../domain/comunicacionOficialDTO";
+import {FuncionarioDTO} from "../../../domain/funcionarioDTO";
+import {DependenciaDTO} from "../../../domain/dependenciaDTO";
+import {Subscription} from "rxjs/Subscription";
+import {ConstanteDTO} from "../../../domain/constanteDTO";
+import {Store} from "@ngrx/store";
+import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {
   getArrayData as getFuncionarioArrayData,
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
-} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
-import {getArrayData as DistribucionArrayData} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-selectors';
-import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
-import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
-import {Subscription} from 'rxjs/Subscription';
-import {AgentDTO} from '../../../domain/agentDTO';
+} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {
   getAgragarObservacionesDialogVisible,
   getDetailsDialogVisible,
-  getJustificationDialogVisible,
-  getRejectDialogVisible
-} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
-import {DependenciaDTO} from '../../../domain/dependenciaDTO';
-import {ConstanteDTO} from '../../../domain/constanteDTO';
-import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
-import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
+  getJustificationDialogVisible, getRejectDialogVisible
+} from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {Sandbox as FuncionarioSandbox} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {DocumentoDTO} from "../../../domain/documentoDTO";
-import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
-import {PlanillaDTO} from "../../../domain/PlanillaDTO";
-import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
-import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
+import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
+import {Sandbox as CargarPlanillasSandbox} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox";
 
 @Component({
-  selector: 'app-distribucion-fisica',
-  templateUrl: './distribucion-fisica.component.html',
-  styleUrls: ['./distribucion-fisica.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  selector: 'app-cargar-planillas',
+  templateUrl: './cargar-planillas.component.html',
+  styleUrls: ['./cargar-planillas.component.css']
 })
-export class DistribucionFisicaComponent implements OnInit, OnDestroy {
+export class CargarPlanillasComponent implements OnInit {
 
   form: FormGroup;
 
@@ -88,8 +87,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   @ViewChild('detallesView') detallesView;
 
   constructor(private _store: Store<RootState>,
-              private _distribucionFisicaApi: DistribucionFisicaSandbox,
-              private _funcionarioSandbox: Sandbox,
+              private _cargarPlanillasApi: CargarPlanillasSandbox,
+              private _funcionarioSandbox: FuncionarioSandbox,
               private _constSandbox: ConstanteSandbox,
               private _dependenciaSandbox: DependenciaSandbox,
               private _planillaService: PlanillasApiService,
@@ -98,7 +97,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     this.dependenciaSelected$.subscribe((result) => {
       this.dependenciaSelected = result;
     });
-    this.comunicaciones$ = this._store.select(DistribucionArrayData);
+    this.comunicaciones$ = this._store.select(PlanillasArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
@@ -108,7 +107,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-    this.comunicacionesSubcription = this._store.select(DistribucionArrayData).subscribe(() => {
+    this.comunicacionesSubcription = this._store.select(PlanillasArrayData).subscribe(() => {
       this.selectedComunications = [];
     });
     this.initForm();
@@ -153,7 +152,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     this.form = this.formBuilder.group({
       'funcionario': [null],
       'dependencia': [null],
-      'nroRadicado': [null],
+      'numeroPlanilla': [null],
       'tipologia': [null],
     });
   }
@@ -189,12 +188,12 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   listarDistribuciones() {
-    this._distribucionFisicaApi.loadDispatch({
-      fecha_ini: this.convertDate(this.start_date),
-      fecha_fin: this.convertDate(this.end_date),
-      cod_dependencia: this.form.get('dependencia').value ? this.form.get('dependencia').value.codigo : '',
-      cod_tipologia_documental: this.form.get('tipologia').value ? this.form.get('tipologia').value.codigo : '',
-      nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
+    this._cargarPlanillasApi.loadDispatch({
+      // fecha_ini: this.convertDate(this.start_date),
+      // fecha_fin: this.convertDate(this.end_date),
+      // cod_dependencia: this.form.get('dependencia').value ? this.form.get('dependencia').value.codigo : '',
+      // cod_tipologia_documental: this.form.get('tipologia').value ? this.form.get('tipologia').value.codigo : '',
+      nro_planilla: this.form.get('numeroPlanilla').value ? this.form.get('numeroPlanilla').value : '',
     });
   }
 
@@ -250,6 +249,10 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       alert(result.nroPlanilla);
       this.listarDistribuciones();
     });
+  }
+
+  editarPlanilla() {
+
   }
 
 }

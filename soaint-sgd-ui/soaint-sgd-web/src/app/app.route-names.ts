@@ -13,4 +13,5 @@ export const ROUTES_PATH = {
   cargaMasiva: 'carga-masiva',
   cargaMasivaDetails: 'carga-masiva/record/:id',
   distribucionFisica: 'distribucion-fisica',
+  cargarPlanillas: 'cargar-planillas',
 };

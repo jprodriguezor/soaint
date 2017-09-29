@@ -13,6 +13,7 @@ import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-
 import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
 import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
+import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -40,6 +41,7 @@ export const PAGE_COMPONENTS = [
   GestionarComunicacionComponent,
   RadicarSalidaComponent,
   DistribucionFisicaComponent,
+  CargarPlanillasComponent,
   ...CARGA_MASIVA_COMPONENTS
 ];
 

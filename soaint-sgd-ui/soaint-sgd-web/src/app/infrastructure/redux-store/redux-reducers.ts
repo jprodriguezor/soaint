@@ -14,6 +14,7 @@ import * as tareasStore from 'app/infrastructure/state-management/tareasDTO-stat
 import * as comunicacionOficialStore from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-reducers';
 import * as funcionarioStore from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-reducers';
 import * as asignacionStore from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-reducers';
+import * as cargarPlanillasStore from 'app/infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-reducers';
 import * as notificationStore from 'app/infrastructure/state-management/notifications-state/notifications-reducers';
 
 /**
@@ -29,6 +30,7 @@ export interface State {
   departamentos: departamentoStore.State,
   comunicacionesOficiales: correspondenciaStore.State,
   distribucionFisica: distribucionStore.State,
+  cargarPlanillas: cargarPlanillasStore.State,
   asignaciones: asignacionStore.State,
   dependenciaGrupo: dependenciaGrupoStore.State,
   sedeAdministrativa: sedeAdministrativaStore.State,
@@ -58,6 +60,7 @@ export const reducers = {
   departamentos: departamentoStore.reducer,
   comunicacionesOficiales: correspondenciaStore.reducer,
   distribucionFisica: distribucionStore.reducer,
+  cargarPlanillas: cargarPlanillasStore.reducer,
   asignaciones: asignacionStore.reducer,
   dependenciaGrupo: dependenciaGrupoStore.reducer,
   sedeAdministrativa: sedeAdministrativaStore.reducer,

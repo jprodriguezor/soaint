@@ -12,6 +12,7 @@ import {Sandbox as SedeAdministrativaDtoSandbox} from 'app/infrastructure/state-
 import {Sandbox as AsignacionDtoSandbox} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {Sandbox as NotificationsSandbox} from 'app/infrastructure/state-management/notifications-state/notifications-sandbox';
 import {Sandbox as DistribucionFisicaSandbox} from 'app/infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-sandbox';
+import {Sandbox as CargarPlanillasSandbox} from 'app/infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox'
 
 
 export const STATE_MANAGEMENT_PROVIDERS = [
@@ -29,5 +30,6 @@ export const STATE_MANAGEMENT_PROVIDERS = [
   SedeAdministrativaDtoSandbox,
   AsignacionDtoSandbox,
   NotificationsSandbox,
-  DistribucionFisicaSandbox
+  DistribucionFisicaSandbox,
+  CargarPlanillasSandbox
 ];

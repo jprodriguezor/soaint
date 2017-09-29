@@ -63,6 +63,7 @@ export const environment = {
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
+  listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
   exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
 
 };
