@@ -26,4 +26,8 @@ export class RadicacionEntradaDTV {
     return Observable.of(this.dataSource.agenteList.filter(value => value.codTipAgent === 'TP-AGEI'));
   }
 
+  getDatosDestinatarioInmediate(): AgentDTO[] {
+    return this.dataSource.agenteList.filter(value => value.codTipAgent === 'TP-AGEI');
+  }
+
 }

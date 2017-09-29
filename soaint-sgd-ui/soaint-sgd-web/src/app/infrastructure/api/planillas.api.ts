@@ -10,6 +10,6 @@ export class PlanillasApiService {
   }
 
   exportarPlanillas(payload: PlanillaDTO) {
-    return this._api.post(environment.exportarPlanilla_endpoint);
+    return this._api.post(environment.exportarPlanilla_endpoint, payload);
   }
 }

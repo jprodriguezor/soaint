@@ -154,6 +154,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return radicacionEntradaDTV.getDatosDestinatarios();
   }
 
+  getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
+    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+    return radicacionEntradaDTV.getDatosDestinatarioInmediate();
+  }
+
   getDatosDocumentos(comunicacion): Observable<DocumentoDTO[]> {
     const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
     return radicacionEntradaDTV.getDatosDocumento();
@@ -203,93 +208,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return result ? result.nomSede : '';
   }
 
-  redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-    this._asignacionSandbox.redirectDispatch({
-      agentes: this.createAgentes(justificationValues)
-    });
-  }
-
-  sendRedirect() {
-    this.popupjustificaciones.redirectComunications();
-  }
-
-  hideJustificationPopup() {
-    this._asignacionSandbox.setVisibleJustificationDialogDispatch(false);
-  }
-
-  hideDetailsDialog() {
-    this._asignacionSandbox.setVisibleDetailsDialogDispatch(false);
-  }
-
-  hideAddObservationsPopup() {
-    this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(false);
-  }
-
-  hideRejectDialog() {
-    this._asignacionSandbox.setVisibleRejectDialogDispatch(false);
-  }
-
-  createAsignacionesAuto(): AsignacionDTO[] {
-    const asignaciones: AsignacionDTO[] = [];
-    let funcIndex = 0;
-    this.selectedComunications.forEach((value, index) => {
-      if (!this.selectedFuncionarios[funcIndex]) {
-        funcIndex = 0;
-      }
-      asignaciones.push({
-        ideAsignacion: null,
-        fecAsignacion: null,
-        ideFunci: this.selectedFuncionarios[funcIndex].id,
-        codDependencia: value.agenteList[0].codDependencia,
-        codTipAsignacion: 'TA',
-        observaciones: null,
-        codTipCausal: null,
-        codTipProceso: null,
-        ideAsigUltimo: null,
-        numRedirecciones: null,
-        nivLectura: null,
-        nivEscritura: null,
-        fechaVencimiento: null,
-        alertaVencimiento: null,
-        idInstancia: null,
-        ideAgente: value.agenteList[0].ideAgente,
-        ideDocumento: value.correspondencia.ideDocumento,
-        nroRadicado: value.correspondencia.nroRadicado,
-        loginName: this.selectedFuncionarios[funcIndex].loginName
-      });
-      funcIndex++;
-    });
-    return asignaciones;
-  }
-
-  createAsignaciones(idFuncionario?, loginNameFuncionario?): AsignacionDTO[] {
-    const asignaciones: AsignacionDTO[] = [];
-    this.selectedComunications.forEach((value) => {
-      asignaciones.push({
-        ideAsignacion: null,
-        fecAsignacion: null,
-        alertaVencimiento: null,
-        ideFunci: idFuncionario || this.funcionarioSelected.id,
-        codDependencia: value.agenteList[0].codDependencia,
-        codTipAsignacion: 'TA',
-        observaciones: null,
-        codTipCausal: null,
-        codTipProceso: null,
-        ideAsigUltimo: null,
-        numRedirecciones: null,
-        nivLectura: null,
-        nivEscritura: null,
-        fechaVencimiento: null,
-        idInstancia: null,
-        ideAgente: value.agenteList[0].ideAgente,
-        ideDocumento: value.correspondencia.ideDocumento,
-        nroRadicado: value.correspondencia.nroRadicado,
-        loginName: loginNameFuncionario || this.funcionarioSelected.loginName
-      })
-    });
-    return asignaciones;
-  }
-
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
     const agentes: AgentDTO[] = [];
     this.selectedComunications.forEach((value) => {
@@ -316,6 +234,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     let agensDTO: PlanAgenDTO[] = [];
 
     this.selectedComunications.forEach((element) => {
+      console.log(element);
       let agenDTO: PlanAgenDTO = {
         idePlanAgen: null,
         estado: null,
@@ -328,14 +247,14 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
         observaciones: null,
         codCauDevo: null,
         fecCarguePla: null,
-        ideAgente: null,
-        ideDocumento: null,
+        ideAgente: this.getDatosDestinatarioInmediate(element)[0].ideAgente,
+        ideDocumento: element.correspondencia.ideDocumento,
       };
       agensDTO.push(agenDTO);
     });
 
     let agentes: PlanAgentesDTO = {
-      agentes: agensDTO
+      agente: agensDTO
     };
 
     let planilla: PlanillaDTO = {
@@ -343,11 +262,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       nroPlanilla: null,
       fecGeneracion: null,
       codTipoPlanilla: null,
-      codFuncGenera: null,
-      codSedeOrigen: null,
-      codDependenciaOrigen: null,
-      codSedeDestino: null,
-      codDependenciaDestino: null,
+      codFuncGenera: this.funcionarioLog.id.toString(),
+      codSedeOrigen: this.dependenciaSelected.codSede,
+      codDependenciaOrigen: this.dependenciaSelected.codigo,
+      codSedeDestino: this.form.get("dependencia").value.codSede,
+      codDependenciaDestino: this.form.get("dependencia").value.codigo,
       codClaseEnvio: null,
       codModalidadEnvio: null,
       agentes: agentes,
@@ -360,7 +279,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     const planilla = this.generarDatosExportar();
     console.log(planilla);
     this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
-      console.log(result);
+      alert(result.nroPlanilla);
+      this.listarDistribuciones();
     });
   }
 
