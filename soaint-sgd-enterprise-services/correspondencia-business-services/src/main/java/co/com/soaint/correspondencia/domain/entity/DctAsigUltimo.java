@@ -27,20 +27,20 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "DctAsigUltimo.findAll", query = "SELECT d FROM DctAsigUltimo d"),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAgente", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
-                "(d.ideAsigUltimo, d.numRedirecciones, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
+                "(d.ideAsigUltimo, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
                 "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.corAgente c " +
                 "WHERE c.ideAgente = :IDE_AGENTE "),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
-                "(d.ideAsigUltimo, d.numRedirecciones, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
+                "(d.ideAsigUltimo, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
                 "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "WHERE a.ideAsignacion = :IDE_ASIGNACION "),
         @NamedQuery(name = "DctAsigUltimo.findByIdeFunciAndNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
-                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
+                "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
                 "c.ideDocumento, c.nroRadicado) " +
                 "FROM DctAsigUltimo d " +
@@ -50,7 +50,7 @@ import java.util.Date;
                 "WHERE a.ideFunci = :IDE_FUNCI AND d.idInstancia IS NULL AND (:NRO_RADICADO IS NULL OR c.nroRadicado LIKE :NRO_RADICADO)"),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAgenteAndCodEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
-                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
+                "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
                 "c.ideDocumento, c.nroRadicado) " +
                 "FROM DctAsigUltimo d " +
@@ -60,7 +60,7 @@ import java.util.Date;
                 "WHERE g.ideAgente = :IDE_AGENTE AND g.codEstado = :COD_ESTADO "),
         @NamedQuery(name = "DctAsigUltimo.consultarByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO " +
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
-                "d.ideAsigUltimo, d.numRedirecciones, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
+                "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
                 "c.ideDocumento, c.nroRadicado) " +
                 "FROM DctAsigUltimo d " +
@@ -70,9 +70,6 @@ import java.util.Date;
                 "WHERE g.ideAgente = :IDE_AGENTE "),
         @NamedQuery(name = "DctAsigUltimo.updateIdInstancia", query = "UPDATE DctAsigUltimo d " +
                 "SET d.idInstancia = :ID_INSTANCIA " +
-                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
-        @NamedQuery(name = "DctAsigUltimo.updateNumRedirecciones", query = "UPDATE DctAsigUltimo d " +
-                "SET d.numRedirecciones = :NUM_REDIRECCIONES " +
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
         @NamedQuery(name = "DctAsigUltimo.updateTipoProceso", query = "UPDATE DctAsigUltimo d " +
                 "SET d.codTipProceso = :COD_TIPO_PROCESO " +
@@ -133,10 +130,9 @@ public class DctAsigUltimo implements Serializable {
      * @param idInstancia
      * @param codTipProceso
      */
-    public DctAsigUltimo(BigInteger ideAsigUltimo, String numRedirecciones, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
+    public DctAsigUltimo(BigInteger ideAsigUltimo, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
                          Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso) {
         this.ideAsigUltimo = ideAsigUltimo;
-        this.numRedirecciones = numRedirecciones;
         this.ideUsuarioCreo = ideUsuarioCreo;
         this.fecCreo = fecCreo;
         this.nivLectura = nivLectura;
