@@ -5,12 +5,12 @@
 <div class="ui-g ui-fluid">
   <div class="ui-g-12">
     <div class="card card-w-title">
-  
-      <pd-datos-generales></pd-datos-generales>
-      <pd-radicado-asociado></pd-radicado-asociado>
-      <pd-producir-documento></pd-producir-documento>
-      <pd-anexos></pd-anexos>
-      
+
+      <pd-datos-generales *ngIf="step == 1"></pd-datos-generales> <br/>
+      <pd-radicado-asociado *ngIf="step == 1"></pd-radicado-asociado> <br/>
+      <pd-producir-documento *ngIf="step == 2"></pd-producir-documento> <br/>
+      <pd-anexos *ngIf="step == 3"></pd-anexos>
+
     </div>
   </div>
 </div>

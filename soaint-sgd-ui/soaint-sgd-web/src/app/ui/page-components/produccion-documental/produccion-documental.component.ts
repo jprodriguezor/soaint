@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
     selector: 'produccion-documental',
@@ -8,9 +9,16 @@ import {Component, OnInit} from '@angular/core';
 
 export class ProduccionDocumentalComponent implements OnInit{
 
+    constructor(private activatedRoute: ActivatedRoute) {}
 
+    step : number = 1;
 
     ngOnInit(): void {
+
+      this.activatedRoute.queryParams.subscribe((params: Params) => {
+        this.step = params.hasOwnProperty('step')? params['step'] : 1;
+        console.log(this.step);
+      });
 
     }
 }
