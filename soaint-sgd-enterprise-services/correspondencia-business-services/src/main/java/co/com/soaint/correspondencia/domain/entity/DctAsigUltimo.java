@@ -87,8 +87,6 @@ public class DctAsigUltimo implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "DCT_ASIG_ULTIMO_GENERATOR")
     @Column(name = "IDE_ASIG_ULTIMO")
     private BigInteger ideAsigUltimo;
-    @Column(name = "NUM_REDIRECCIONES")
-    private String numRedirecciones;
     @Basic(optional = false)
     @Column(name = "IDE_USUARIO_CREO")
     private String ideUsuarioCreo;

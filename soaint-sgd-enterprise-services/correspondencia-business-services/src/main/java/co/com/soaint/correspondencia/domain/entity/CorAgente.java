@@ -106,6 +106,10 @@ public class CorAgente implements Serializable {
     private String codTipAgent;
     @Column(name = "IND_ORIGINAL")
     private String indOriginal;
+    @Column(name = "NUM_REDIRECCIONES")
+    private Long numRedirecciones;
+    @Column(name = "NUM_DEVOLUCIONES")
+    private Long numDevoluciones;
     @Column(name = "FEC_CREACION", insertable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecCreacion;
