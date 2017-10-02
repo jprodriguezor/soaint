@@ -9,6 +9,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 export class PDProducirDocumentoComponent implements OnInit{
 
   form: FormGroup;
+  versionesDocumento: Array<{ nombre: string, tipo: string, size: string }> = [];
 
 
   constructor(private formBuilder: FormBuilder){}
