@@ -221,7 +221,7 @@ public class CorrespondenciaGatewayApi {
         String responseObject = response.readEntity(String.class);
         if (response.getStatus() != HttpStatus.OK.value()) {
             PlanillaDTO emptyPlanilla = new PlanillaDTO();
-            emptyPlanilla.setAgentes(new PlanAgentesDTO());
+            emptyPlanilla.setPAgentes(new PlanAgentesDTO());
             return Response.status(HttpStatus.OK.value()).entity(emptyPlanilla).build();
         }
         return Response.status(response.getStatus()).entity(responseObject).build();

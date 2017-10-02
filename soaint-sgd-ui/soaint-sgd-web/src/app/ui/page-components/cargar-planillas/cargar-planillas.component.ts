@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
 import {PlanillaDTO} from "../../../domain/PlanillaDTO";
-import {Sandbox as DistribucionFisicaSandbox} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-sandbox';
 import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
 import {AgentDTO} from "../../../domain/agentDTO";
 import {Observable} from "rxjs/Observable";
@@ -25,12 +24,16 @@ import {
 import {
   getAgragarObservacionesDialogVisible,
   getDetailsDialogVisible,
-  getJustificationDialogVisible, getRejectDialogVisible
+  getJustificationDialogVisible,
+  getRejectDialogVisible
 } from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as FuncionarioSandbox} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
+import {
+  getArrayData as PlanillasArrayData,
+  getDataobj
+} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
 import {Sandbox as CargarPlanillasSandbox} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox";
 
 @Component({
@@ -44,11 +47,13 @@ export class CargarPlanillasComponent implements OnInit {
 
   comunicaciones$: Observable<ComunicacionOficialDTO[]>;
 
+  data$: Observable<any>;
+
   selectedComunications: ComunicacionOficialDTO[] = [];
 
   start_date: Date = new Date();
 
-  end_date: Date = new Date();
+  editarPlanillaDialogVisible: boolean = false;
 
   dependencia: any;
 
@@ -98,6 +103,7 @@ export class CargarPlanillasComponent implements OnInit {
       this.dependenciaSelected = result;
     });
     this.comunicaciones$ = this._store.select(PlanillasArrayData);
+    this.data$ = this._store.select(getDataobj);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
@@ -107,7 +113,7 @@ export class CargarPlanillasComponent implements OnInit {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-    this.comunicacionesSubcription = this._store.select(PlanillasArrayData).subscribe(() => {
+    this.comunicacionesSubcription = this._store.select(PlanillasArrayData).subscribe((result) => {
       this.selectedComunications = [];
     });
     this.initForm();
@@ -118,6 +124,7 @@ export class CargarPlanillasComponent implements OnInit {
     this.tipologiaDocumentalSuggestions$.subscribe((results) => {
       this.tipologiasDocumentales = results;
     });
+
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
     this._constSandbox.loadDatosGeneralesDispatch();
     this.listarDependencias();
@@ -221,7 +228,7 @@ export class CargarPlanillasComponent implements OnInit {
     });
 
     let agentes: PlanAgentesDTO = {
-      agente: agensDTO
+      pagente: agensDTO
     };
 
     let planilla: PlanillaDTO = {
@@ -236,19 +243,18 @@ export class CargarPlanillasComponent implements OnInit {
       codDependenciaDestino: this.form.get("dependencia").value.codigo,
       codClaseEnvio: null,
       codModalidadEnvio: null,
-      agentes: agentes,
+      pagentes: agentes,
     };
 
     return planilla;
   };
 
-  exportarPlanilla() {
-    const planilla = this.generarDatosExportar();
-    console.log(planilla);
-    this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
-      alert(result.nroPlanilla);
-      this.listarDistribuciones();
-    });
+  showEditarPlanillaDialog() {
+    this.editarPlanillaDialogVisible = true;
+  }
+
+  hideEditarPlanillaDialog() {
+    this.editarPlanillaDialogVisible = false;
   }
 
   editarPlanilla() {

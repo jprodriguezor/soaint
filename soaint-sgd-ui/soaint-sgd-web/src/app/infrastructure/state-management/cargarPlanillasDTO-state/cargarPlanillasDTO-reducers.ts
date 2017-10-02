@@ -8,6 +8,7 @@ export interface State {
   ids: number[];
   entities: { [ideDocumento: number]: PlanillaDTO };
   selectedId: number;
+  data: any,
   filters: {
     // fecha_ini: string;
     // fecha_fin: string;
@@ -20,6 +21,7 @@ export interface State {
 const initialState: State = {
   ids: [],
   entities: {},
+  data: {},
   selectedId: null,
   filters: {
     // fecha_ini: null,
@@ -41,11 +43,12 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
-      const values = action.payload.agentes.agente;
+      const values = action.payload.pagentes.pagente;
       if (!values) {
         return tassign(state, {
           ids: [],
           entities: {},
+          data: action.payload,
           selectedId: null
         });
       }
@@ -59,12 +62,12 @@ export function reducer(state = initialState, action: Actions) {
       return tassign(state, {
         ids: [...ids],
         entities: entities,
+        data: action.payload,
         selectedId: state.selectedId
       });
     }
     case Autocomplete.LOAD: {
       const filters = action.payload;
-      console.log(filters);
       return tassign(state, {
         filters: {
           // fecha_ini: filters.fecha_ini || null,

@@ -222,7 +222,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     });
 
     let agentes: PlanAgentesDTO = {
-      agente: agensDTO
+      pagente: agensDTO
     };
 
     let planilla: PlanillaDTO = {
@@ -237,7 +237,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       codDependenciaDestino: this.form.get("dependencia").value.codigo,
       codClaseEnvio: null,
       codModalidadEnvio: null,
-      agentes: agentes,
+      pagentes: agentes,
     };
 
     return planilla;

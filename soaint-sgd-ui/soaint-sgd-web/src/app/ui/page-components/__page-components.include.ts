@@ -14,6 +14,7 @@ import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.compone
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
 import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
 import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
+import {EditarPlanillaComponent} from "../bussiness-components/editar-planilla/editar-planilla.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -42,6 +43,7 @@ export const PAGE_COMPONENTS = [
   RadicarSalidaComponent,
   DistribucionFisicaComponent,
   CargarPlanillasComponent,
+  EditarPlanillaComponent,
   ...CARGA_MASIVA_COMPONENTS
 ];
 
