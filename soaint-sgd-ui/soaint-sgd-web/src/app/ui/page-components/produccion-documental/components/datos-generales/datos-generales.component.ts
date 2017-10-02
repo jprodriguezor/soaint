@@ -16,8 +16,8 @@ export class PDDatosGeneralesComponent implements OnInit{
 
   initForm() {
     this.form = this.formBuilder.group({
+      'usuarioResponsable': [null],
       'fechaCreacion': [null],
-      'nroRadicado': [null],
       'sedeAdministrativa': [{value: null}],
       'dependenciaGrupo': [{value: null}],
     });
