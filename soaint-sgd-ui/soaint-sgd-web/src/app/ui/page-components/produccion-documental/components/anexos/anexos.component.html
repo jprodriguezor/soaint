@@ -1,10 +1,10 @@
 <form [formGroup]="form">
-  
-  
+
+
   <p-panel header="Anexos" [style]="{border: 'none'}">
-    
+
     <div class="ui-g ui-fluid">
-      
+
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12">
@@ -14,14 +14,14 @@
             <label class="md-check">
               <input type="radio" value="fisico" name="usuarioResponsable" formControlName="usuarioResponsable"> Físico
             </label>
-  
+
             <label class="md-check">
               <input type="radio" value="electronico" name="usuarioResponsable" formControlName="usuarioResponsable"> Electrónico
             </label>
           </div>
         </div>
       </div>
-      
+
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12">
@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12">
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12"></div>
@@ -64,9 +64,33 @@
           </div>
         </div>
       </div>
-    
+
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
+        <br/>
+        <p-dataTable selectionMode="single"
+                     [paginator]="true"
+                     [rows]="10"
+                     [responsive]="true"
+                     [value]="anexosDocumento"
+                     emptyMessage="No se encontraron resultados"
+        >
+          <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
+          <p-column field="tipo" header="Tipo de anexo" [sortable]="true"></p-column>
+          <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+          <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton
+                      class="ui-button ui-button-icon ui-button-danger"
+                      *ngIf="editable === true"
+              ></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+
+
     </div>
-  
+
   </p-panel>
 
 

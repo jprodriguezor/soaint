@@ -9,6 +9,7 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 export class PDAnexosComponent implements OnInit{
 
   form: FormGroup;
+  anexosDocumento: Array<{ soporte: string, tipo: string, descripcion: string }> = [];
 
 
   constructor(private formBuilder: FormBuilder){}
