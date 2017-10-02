@@ -27,5 +27,5 @@ public class PlanAgentesDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<PlanAgenDTO> agente;
+    private List<PlanAgenDTO> pAgente;
 }
