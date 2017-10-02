@@ -12,5 +12,5 @@ export const ROUTES_PATH = {
   documentosTramite: 'documentos-tramite',
   cargaMasiva: 'carga-masiva',
   cargaMasivaDetails: 'carga-masiva/record/:id',
-  produccionDocumental: 'produccion-documental',
+  produccionDocumental: 'produccion-documental'
 };
