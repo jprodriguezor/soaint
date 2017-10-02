@@ -5,10 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -190,6 +187,51 @@ public class CorrespondenciaGatewayApi {
     public Response constantes(@QueryParam("codigos") String codigos) {
         log.info("CorrespondenciaGatewayApi - [trafic] - obteniendo constantes por codigos: " + codigos);
         Response response = client.obtnerContantesPorCodigo(codigos);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/listar-distribucion")
+    @JWTTokenSecurity
+    public Response listarDistribucion(@QueryParam("fecha_ini") final String fechaIni,
+                                       @QueryParam("fecha_fin") final String fechaFin,
+                                       @QueryParam("cod_dependencia") final String codDependencia,
+                                       @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                       @QueryParam("nro_radicado") final String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando distribucion");
+        Response response = client.listarDistribucion(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/listar-planillas")
+    @JWTTokenSecurity
+    public Response listarPlanillas(@QueryParam("fecha_ini") final String fechaIni,
+                                    @QueryParam("fecha_fin") final String fechaFin,
+                                    @QueryParam("cod_dependencia") final String codDependencia,
+                                    @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                    @QueryParam("nro_planilla") final String nroPlanilla) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando planillas");
+        Response response = client.listarPlanillas(nroPlanilla);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            PlanillaDTO emptyPlanilla = new PlanillaDTO();
+            emptyPlanilla.setAgentes(new PlanAgentesDTO());
+            return Response.status(HttpStatus.OK.value()).entity(emptyPlanilla).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/generar-plantilla")
+    public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla distribucion");
+        Response response = client.generarPlantilla(planilla);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }

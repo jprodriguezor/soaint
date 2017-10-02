@@ -12,6 +12,8 @@ import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-r
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
+import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
+import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
 import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
 
 /**
@@ -39,6 +41,8 @@ export const PAGE_COMPONENTS = [
   PopupRejectComponent,
   GestionarComunicacionComponent,
   RadicarSalidaComponent,
+  DistribucionFisicaComponent,
+  CargarPlanillasComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];

@@ -1,0 +1,147 @@
+<div class="page-title">
+  <h2>Generar plantillas de entrada</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Busqueda de tareas" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="dependencia">Dependencia</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options]="dependencias | dropdownItem" id="dependencia"
+                              placeholder="Seleccione"
+                              [autoWidth]="false" formControlName="dependencia">
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="tipologia">Tipología documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options]="tipologiaDocumentalSuggestions$ | async | dropdownItem"
+                              id="tipologia"
+                              placeholder="Seleccione"
+                              [filter]="true"
+                              formControlName="tipologia"
+                              [autoWidth]="false">
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="numeroRadicado">Número de radicado</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText id="numeroRadicado" formControlName="nroRadicado">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="startDate">Fecha inicial</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"
+                              id="startDate"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="endDate">Fecha final</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy" id="endDate"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-12" [style.padding-top]="'40px'">
+              <button pButton type="button" label="Buscar"
+                      style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right"
+                      (click)="listarDistribuciones()"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [(selection)]="selectedComunications"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+              <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nro identificación/NIT" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{(getDatosRemitente(correspondencia) | async).codTipoPers}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre/Razón social" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{(getDatosRemitente(correspondencia) | async).razonSocial}}
+                </ng-template>
+              </p-column>
+              <p-column header="Sede administrativa" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findSede((getDatosDestinatario(correspondencia) | async)[0].codSede)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Dependencia" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findDependency((getDatosDestinatario(correspondencia) | async)[0].codDependencia)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Tipología documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findTipoDoc((getDatosDocumentos(correspondencia) | async)[0].codTipoDoc)}}
+                </ng-template>
+              </p-column>
+              <p-column field="correspondencia.descripcion" header="Asunto" [sortable]="true"></p-column>
+              <p-column field="correspondencia.folio" header="Folios" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{(getDatosDocumentos(correspondencia) | async)[0].nroFolios}}
+                </ng-template>
+              </p-column>
+              <p-column field="correspondencia.anexos" header="Anexos" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{(getDatosDocumentos(correspondencia) | async)[0].nroAnexos}}
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Exportar"
+                    [disabled]="selectedComunications.length == 0" (click)="exportarPlanilla()"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</div>
+
+
+
+

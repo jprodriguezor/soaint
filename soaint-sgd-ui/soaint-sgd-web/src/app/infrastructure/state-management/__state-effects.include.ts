@@ -13,6 +13,8 @@ import {Effects as FuncionarioDtoEffects} from 'app/infrastructure/state-managem
 import {Effects as sedeAdministrativaDtoEffects} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-effects';
 import {Effects as asignacionDtoEffects} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-effects';
 import {Effects as notificationEffects} from 'app/infrastructure/state-management/notifications-state/notifications-effects';
+import {Effects as DistribucionFisicaEffects} from 'app/infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-effects';
+import {Effects as CargarPlanillasEffects} from 'app/infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-effects';
 
 /**
  * Effects offer a way to isolate and easily test side-effects within your
@@ -47,4 +49,6 @@ export const EFFECTS_MODULES = [
   EffectsModule.run(sedeAdministrativaDtoEffects),
   EffectsModule.run(asignacionDtoEffects),
   EffectsModule.run(notificationEffects),
+  EffectsModule.run(DistribucionFisicaEffects),
+  EffectsModule.run(CargarPlanillasEffects),
 ];

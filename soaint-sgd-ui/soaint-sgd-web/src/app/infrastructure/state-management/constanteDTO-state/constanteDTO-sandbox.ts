@@ -90,7 +90,7 @@ export class Sandbox {
   loadDatosGeneralesDispatch() {
     this._store.dispatch(new actions.LoadDatosGeneralesAction());
   }
-  
+
   loadDatosRemitenteDispatch() {
     this._store.dispatch(new actions.LoadDatosRemitenteAction());
   }

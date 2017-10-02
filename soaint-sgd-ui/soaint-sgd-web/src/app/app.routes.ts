@@ -14,6 +14,8 @@ import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 import {RadicarSalidaComponent} from './ui/page-components/radicacion-salida/radicar-salida.component';
 import {CargaMasivaDetailsComponent} from "./ui/page-components/carga-masiva/components/cm-details.component";
+import {DistribucionFisicaComponent} from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
+import {CargarPlanillasComponent} from "./ui/page-components/cargar-planillas/cargar-planillas.component";
 import {ProduccionDocumentalComponent} from "./ui/page-components/produccion-documental/produccion-documental.component";
 
 export const routes: Routes = [
@@ -58,6 +60,16 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.cargaMasivaDetails,
     component: CargaMasivaDetailsComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.distribucionFisica,
+    component: DistribucionFisicaComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.cargarPlanillas,
+    component: CargarPlanillasComponent,
     canActivate: [AuthenticatedGuard]
   },
   {

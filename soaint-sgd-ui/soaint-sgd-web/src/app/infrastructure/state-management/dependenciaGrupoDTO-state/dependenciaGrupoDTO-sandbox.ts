@@ -1,10 +1,8 @@
-import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Injectable} from '@angular/core';
 import {environment} from 'environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './dependenciaGrupoDTO-actions';
-import {Observable} from 'rxjs/Observable';
 import {ApiBase} from '../../api/api-base';
 
 
@@ -20,6 +18,10 @@ export class Sandbox {
     return this._api.list(_endpoint, payload);
 
     // return Observable.of(this.getMock()).delay(400);
+  }
+
+  loadDependencies(payload: any) {
+    return this._api.list(environment.dependencias_endpoint, payload);
   }
 
   loadDispatch(payload) {

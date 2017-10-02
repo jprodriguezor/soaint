@@ -2,6 +2,8 @@
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
+//const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
+//const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
 const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
@@ -21,6 +23,7 @@ export const environment = {
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
+  dependencias_endpoint: `${host}/dependencia-grupo-gateway-api/all-dependencias`,
   tratamientoCortesia_endpoint: `${host}/tratamiento-cortesia-gateway-api`,
   actuaCalidad_endpoint: `${host}/actua-calidad-gateway-api`,
   departamento_endpoint: `${host}/departamento-gateway-api`,
@@ -61,4 +64,8 @@ export const environment = {
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
+  listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
+  listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
+  exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+
 };

@@ -94,6 +94,13 @@ public class AgenteControl {
         }
     }
 
+    /**
+     *
+     * @param ideAgente
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public AgenteDTO consultarAgenteByIdeAgente(BigInteger ideAgente)throws BusinessException, SystemException{
         try{
             return em.createNamedQuery("CorAgente.findByIdeAgente", AgenteDTO.class)
