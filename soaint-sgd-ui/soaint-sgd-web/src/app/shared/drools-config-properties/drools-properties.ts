@@ -1,4 +1,5 @@
 import {tassign} from 'tassign';
+
 export const droolsPayload = {
   'lookup': 'ksession-rules',
   'commands': [
@@ -27,10 +28,9 @@ export class RulesServer {
     })
   }
 
-  static extractFromResponse(response) {
+  static extractFromResponse(response, key: string) {
     try {
-      console.log(response.result['execution-results'].results[1].value['co.com.soaint.sgd.model.MedioRecepcion']);
-      return response.result['execution-results'].results[1].value['co.com.soaint.sgd.model.MedioRecepcion'];
+      return response.result['execution-results'].results[1].value[key];
     } catch (e) {
       console.error((<Error>e).message);
       return {};

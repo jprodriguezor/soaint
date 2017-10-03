@@ -42,6 +42,7 @@ import {
 import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
 import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
+
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
 
@@ -408,6 +409,12 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     return contactos;
   }
 
+  setTipoComunicacion(event) {
+    if (this.editable) {
+      this.datosRemitente.setTipoComunicacion(event);
+    }
+  }
+
 
   hideTicketRadicado() {
     this.barCodeVisible = false;
@@ -418,10 +425,10 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   disableEditionOnForms() {
+    this.editable = false;
     this.datosDestinatario.form.disable();
     this.datosRemitente.form.disable();
     this.datosGenerales.form.disable();
-    this.editable = false;
   }
 
   openNext() {

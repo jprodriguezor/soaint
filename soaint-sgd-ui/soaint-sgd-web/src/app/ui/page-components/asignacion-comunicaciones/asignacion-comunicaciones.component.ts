@@ -22,6 +22,8 @@ import {
   getJustificationDialogVisible, getRejectDialogVisible
 } from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {RedireccionDTO} from '../../../domain/redireccionDTO';
+import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -71,6 +73,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
+  redireccionesFallidas: Array<RedireccionDTO>;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -83,6 +87,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
+              private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -166,9 +171,27 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-    this._asignacionSandbox.redirectDispatch({
-      agentes: this.createAgentes(justificationValues)
-    });
+
+    const failChecks = this.checkRedirectionsAgentes('numRedirecciones', justificationValues);
+
+    if (failChecks.length > 0) {
+        // @todo
+      this.redireccionesFallidas = failChecks;
+    } else {
+      const payload: RedireccionDTO = {
+        agentes: this.createAgentes(justificationValues),
+        traza: {
+          observacion: justificationValues.justificacion,
+          ideFunci: this.funcionarioLog.id,
+          codOrgaAdmin: this.dependenciaSelected.codigo,
+          codEstado: null,
+          ideTrazDocumento: null,
+          ideDocumento: null
+        }
+      };
+
+      this._asignacionSandbox.redirectDispatch(payload);
+    }
   }
 
   sendRedirect() {
@@ -242,7 +265,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         codTipCausal: null,
         codTipProceso: null,
         ideAsigUltimo: null,
-        numRedirecciones: null,
         nivLectura: null,
         nivEscritura: null,
         fechaVencimiento: null,
@@ -272,7 +294,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         codTipCausal: null,
         codTipProceso: null,
         ideAsigUltimo: null,
-        numRedirecciones: null,
         nivLectura: null,
         nivEscritura: null,
         fechaVencimiento: null,
@@ -297,6 +318,41 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     });
     return agentes;
   }
+
+  checkRedirectionsAgentes(key, justification) {
+    const toMuchRecursionChecks = [];
+    this.selectedComunications.forEach((value) => {
+      const agente = value.agenteList[0];
+      agente.codSede = value.correspondencia.codSede;
+      agente.codDependencia = value.correspondencia.codDependencia;
+      delete agente['_$visited'];
+
+      if (this.ruleCheckRedirectionNumber.check(agente[key])) {
+        toMuchRecursionChecks.push(this.createRecursiveRedirectsPayload(agente, justification))
+      };
+    });
+
+    return toMuchRecursionChecks;
+  }
+
+  createRecursiveRedirectsPayload(agente, justification): RedireccionDTO {
+    return {
+      agentes: [agente],
+      traza: {
+        observacion: justification.justificacion,
+        ideFunci: this.funcionarioLog.id,
+        codOrgaAdmin: this.dependenciaSelected.codigo,
+        codEstado: null,
+        ideTrazDocumento: null,
+        ideDocumento: null
+      }
+    };
+  }
+
+  hideAndCleanDevolucionesFallidasDialog() {
+    this.redireccionesFallidas = null;
+  }
+
 
   listarComunicaciones() {
     this._comunicacionOficialApi.loadDispatch({

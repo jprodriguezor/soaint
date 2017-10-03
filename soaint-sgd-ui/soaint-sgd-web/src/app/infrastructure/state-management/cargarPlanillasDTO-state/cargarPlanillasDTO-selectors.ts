@@ -15,6 +15,8 @@ const rootPath = (state: rootStore.State) => state.cargarPlanillas;
 
 export const getEntities = createSelector(rootPath, (state: State) => state.entities);
 
+export const getData = createSelector(rootPath, (state: State) => state.data);
+
 export const getGrupoIds = createSelector(rootPath, (state: State) => state.ids);
 
 export const getSelectedId = createSelector(rootPath, (state: State) => state.selectedId);
@@ -26,4 +28,11 @@ export const getSelectedEntity =
 
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);
+});
+
+export const getDataobj = createSelector(getData, getData, (entities, ids) => {
+  console.log(entities);
+  console.log(ids);
+
+  return ids;
 });

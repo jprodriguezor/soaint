@@ -12,5 +12,5 @@ export interface PlanillaDTO {
   codDependenciaDestino: string;
   codClaseEnvio: string;
   codModalidadEnvio: string;
-  agentes: PlanAgentesDTO;
+  pagentes: PlanAgentesDTO;
 }

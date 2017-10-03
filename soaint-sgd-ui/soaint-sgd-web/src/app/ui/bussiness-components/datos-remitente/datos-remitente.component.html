@@ -67,6 +67,7 @@
               <p-dropdown [options]="tipoPersonaSuggestions$ | async | dropdownItem"
                           id="tipoPersona"
                           formControlName="tipoPersona"
+                          (onChange)="onSelectTipoPersona($event)"
                           placeholder="Seleccione"
                           [autoWidth]="false"
                           [dynamicDisable]="!visibility.tipoPersona"

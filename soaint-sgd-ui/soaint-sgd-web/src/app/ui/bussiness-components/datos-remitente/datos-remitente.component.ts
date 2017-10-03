@@ -86,7 +86,7 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   listenForChanges() {
-    this.form.get('sedeAdministrativa').valueChanges.subscribe((sede) => {
+    this.form.get('sedeAdministrativa').valueChanges.distinctUntilChanged().subscribe((sede) => {
       if (this.editable && sede) {
         this.form.get('dependenciaGrupo').reset();
         const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
@@ -96,11 +96,13 @@ export class DatosRemitenteComponent implements OnInit {
       }
     });
 
-    this.form.get('tipoPersona').valueChanges.subscribe((value) => {
-      if (value) {
-        this.onSelectTipoPersona(value);
-      }
-    });
+    // const persona = this.form.get('tipoPersona');
+    // persona.valueChanges.subscribe((value) => {
+    //   if (this.editable && !persona.disabled && value) {
+    //     this.onSelectTipoPersona(value);
+    //   }
+    // });
+
   }
 
   listenForErrors() {
@@ -109,7 +111,8 @@ export class DatosRemitenteComponent implements OnInit {
     this.bindToValidationErrorsOf('tipoPersona');
   }
 
-  onSelectTipoPersona(value) {
+  onSelectTipoPersona(event) {
+    const value = event.value;
     if (!this.visibility.tipoPersona) {
       return;
     } else {

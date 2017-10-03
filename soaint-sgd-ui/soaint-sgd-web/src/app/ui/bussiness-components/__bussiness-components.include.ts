@@ -9,6 +9,7 @@ import {DetallesDatosRemitenteComponent} from './detalles-asignacion/detalles-da
 import {DetallesDatosDestinatarioComponent} from './detalles-asignacion/detalles-datos-destinatario/detalles-datos-destinatario.component';
 import {DocumentosTramiteComponent} from '../page-components/documentos-tramite/documentos-tramite.component';
 import {DestinatarioSalidaComponent} from './destinatario-salida/destinatario-salida.component';
+import {RedireccionesRecursivasTrazaComponent} from './redirecciones-recursivas-traza/redirecciones-recursivas-traza.component';
 
 /**
  * Presentational components receieve data through @Input() and communicate events
@@ -30,7 +31,8 @@ export const BUSSINESS_COMPONENTS = [
   DetallesDatosRemitenteComponent,
   DetallesDatosDestinatarioComponent,
   DocumentosTramiteComponent,
-  DestinatarioSalidaComponent
+  DestinatarioSalidaComponent,
+  RedireccionesRecursivasTrazaComponent
 ];
 
 export * from './__bussiness-providers.include';

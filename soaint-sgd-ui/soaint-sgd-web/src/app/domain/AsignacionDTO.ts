@@ -8,7 +8,6 @@ export interface AsignacionDTO {
   codTipCausal: string;
   codTipProceso: string;
   ideAsigUltimo: number;
-  numRedirecciones: string;
   nivLectura: number;
   nivEscritura: number;
   fechaVencimiento: string;

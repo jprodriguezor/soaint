@@ -14,6 +14,7 @@ import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.compone
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
 import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
 import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
+import {EditarPlanillaComponent} from "../bussiness-components/editar-planilla/editar-planilla.component";
 import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
 
 /**
@@ -43,6 +44,7 @@ export const PAGE_COMPONENTS = [
   RadicarSalidaComponent,
   DistribucionFisicaComponent,
   CargarPlanillasComponent,
+  EditarPlanillaComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];
