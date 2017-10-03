@@ -2,12 +2,14 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.AgenteControl;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,10 +41,20 @@ public class GestionarAgente {
 
     /**
      *
-     * @param agentesDTO
+     * @param redireccion
      * @throws SystemException
      */
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
-        control.redireccionarCorrespondencia(agentesDTO);
+    public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
+        control.redireccionarCorrespondencia(redireccion);
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void actualizarNumDevoluciones(BigInteger ideAgente)throws BusinessException, SystemException{
+        control.actualizarNumDevoluciones(ideAgente);
     }
 }
