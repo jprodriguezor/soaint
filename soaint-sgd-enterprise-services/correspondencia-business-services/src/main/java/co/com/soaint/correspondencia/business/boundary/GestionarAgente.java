@@ -9,6 +9,8 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
+
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
@@ -44,5 +46,15 @@ public class GestionarAgente {
      */
     public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
         control.redireccionarCorrespondencia(redireccion);
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void actualizarNumDevoluciones(BigInteger ideAgente)throws BusinessException, SystemException{
+        control.actualizarNumDevoluciones(ideAgente);
     }
 }
