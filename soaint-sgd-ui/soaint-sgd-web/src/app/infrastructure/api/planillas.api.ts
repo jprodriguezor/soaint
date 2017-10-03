@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiBase} from './api-base';
 import {environment} from '../../../environments/environment';
-import {PlanillaDTO} from "../../domain/PlanillaDTO";
+import {PlanillaDTO} from '../../domain/PlanillaDTO';
 
 @Injectable()
 export class PlanillasApiService {
