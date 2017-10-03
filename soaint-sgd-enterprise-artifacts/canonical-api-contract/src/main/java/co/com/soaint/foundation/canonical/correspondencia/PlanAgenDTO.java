@@ -69,4 +69,22 @@ public class PlanAgenDTO implements Serializable {
         this.ideDocumento = ideDocumento;
         this.nroRadicado = nroRadicado;
     }
+
+    public PlanAgenDTO(BigInteger idePlanAgen, String varPeso, String varValor, String varNumeroGuia, Date fecObservacion,
+                       String codNuevaSede, String codNuevaDepen, String observaciones, String codCauDevo, Date fecCarguePla,
+                       BigInteger ideAgente, BigInteger ideDocumento, String nroRadicado){
+        this.idePlanAgen = idePlanAgen;
+        this.varPeso = varPeso;
+        this.varValor = varValor;
+        this.varNumeroGuia = varNumeroGuia;
+        this.fecObservacion = fecObservacion;
+        this.codNuevaSede = codNuevaSede;
+        this.codNuevaDepen = codNuevaDepen;
+        this.observaciones = observaciones;
+        this.codCauDevo = codCauDevo;
+        this.fecCarguePla = fecCarguePla;
+        this.ideAgente = ideAgente;
+        this.ideDocumento = ideDocumento;
+        this.nroRadicado = nroRadicado;
+    }
 }
