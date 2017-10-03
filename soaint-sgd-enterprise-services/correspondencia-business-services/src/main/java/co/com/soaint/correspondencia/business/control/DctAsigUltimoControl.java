@@ -23,7 +23,6 @@ public class DctAsigUltimoControl {
     public DctAsigUltimo dctAsigUltimoTransform(DctAsigUltimoDTO dctAsigUltimoDTO){
         return DctAsigUltimo.newInstance()
                 .ideAsigUltimo(dctAsigUltimoDTO.getIdeAsigUltimo())
-                .numRedirecciones(dctAsigUltimoDTO.getNumRedirecciones())
                 .nivLectura(dctAsigUltimoDTO.getNivLectura())
                 .nivEscritura(dctAsigUltimoDTO.getNivEscritura())
                 .fechaVencimiento(dctAsigUltimoDTO.getFechaVencimiento())

@@ -12,10 +12,12 @@ import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-r
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
 import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
+<<<<<<< HEAD
+import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
+=======
 import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
 import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
-import {EditarPlanillaComponent} from "../bussiness-components/editar-planilla/editar-planilla.component";
-import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
+>>>>>>> 197b2e50ae28231663d99478b52a6373bc425a44
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -42,11 +44,14 @@ export const PAGE_COMPONENTS = [
   PopupRejectComponent,
   GestionarComunicacionComponent,
   RadicarSalidaComponent,
-  DistribucionFisicaComponent,
-  CargarPlanillasComponent,
-  EditarPlanillaComponent,
+<<<<<<< HEAD
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
+=======
+  DistribucionFisicaComponent,
+  CargarPlanillasComponent,
+  ...CARGA_MASIVA_COMPONENTS
+>>>>>>> 197b2e50ae28231663d99478b52a6373bc425a44
 ];
 
 export * from './__page-providers.include';

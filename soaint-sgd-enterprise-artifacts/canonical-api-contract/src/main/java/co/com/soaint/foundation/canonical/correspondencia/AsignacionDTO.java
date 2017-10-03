@@ -36,7 +36,6 @@ public class AsignacionDTO implements Serializable {
     private String codTipCausal;
     private String codTipProceso;
     private BigInteger ideAsigUltimo;
-    private String numRedirecciones;
     private Short nivLectura;
     private Short nivEscritura;
     private Date fechaVencimiento;
@@ -49,7 +48,7 @@ public class AsignacionDTO implements Serializable {
 
     public AsignacionDTO(BigInteger ideAsignacion, Date fecAsignacion, BigInteger ideFunci, String codDependencia,
                          String codTipAsignacion, String observaciones, String codTipCausal, String codTipProceso,
-                         BigInteger ideAsigUltimo, String numRedirecciones, Short nivLectura, Short nivEscritura,
+                         BigInteger ideAsigUltimo, Short nivLectura, Short nivEscritura,
                          Date fechaVencimiento, String idInstancia, BigInteger ideAgente, BigInteger ideDocumento,
                          String nroRadicado){
         this.ideAsignacion = ideAsignacion;
@@ -61,7 +60,6 @@ public class AsignacionDTO implements Serializable {
         this.codTipCausal = codTipCausal;
         this.codTipProceso = codTipProceso;
         this.ideAsigUltimo = ideAsigUltimo;
-        this.numRedirecciones = numRedirecciones;
         this.nivLectura = nivLectura;
         this.nivEscritura = nivEscritura;
         this.fechaVencimiento = fechaVencimiento;

@@ -29,7 +29,6 @@ public class DctAsigUltimoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private BigInteger ideAsigUltimo;
-    private String numRedirecciones;
     private Short nivLectura;
     private Short nivEscritura;
     private Date fechaVencimiento;
