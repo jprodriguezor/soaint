@@ -47,6 +47,7 @@ public class PlanAgenDTO implements Serializable {
     private String nroDocuIdentidad;
     private String nombre;
     private String razonSocial;
+    private ConstanteDTO tipologiaDocumental;
     private Long folios;
     private Long anexos;
 

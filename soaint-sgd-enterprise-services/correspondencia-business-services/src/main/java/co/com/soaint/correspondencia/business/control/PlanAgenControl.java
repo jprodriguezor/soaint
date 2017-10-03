@@ -67,6 +67,7 @@ public class PlanAgenControl {
                 planAgen.setRazonSocial(remitentes.get(0).getRazonSocial());
                 List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(planAgen.getIdeDocumento());
                 if (!ppdDocumentoDTOList.isEmpty()){
+                    planAgen.setTipologiaDocumental(constantesControl.consultarConstanteByCodigo(ppdDocumentoDTOList.get(0).getCodTipoDoc()));
                     planAgen.setFolios(ppdDocumentoDTOList.get(0).getNroFolios());
                     planAgen.setAnexos(ppdDocumentoDTOList.get(0).getNroAnexos());
                 }
