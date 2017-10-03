@@ -1,3 +1,5 @@
+import {ConstanteDTO} from "./constanteDTO";
+
 export interface PlanAgenDTO {
   idePlanAgen: number;
   estado: string;
@@ -10,6 +12,16 @@ export interface PlanAgenDTO {
   observaciones: string;
   codCauDevo: string;
   fecCarguePla: string;
+  usuario: string;
   ideAgente: number;
   ideDocumento: number;
+  nroRadicado: number;
+  tipoPersona: ConstanteDTO;
+  tipologiaDocumental: ConstanteDTO;
+  nit: string;
+  nroDocuIdentidad: string;
+  nombre: string;
+  razonSocial: string;
+  folios: number;
+  anexos: number;
 }

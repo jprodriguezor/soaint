@@ -6,14 +6,10 @@ import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
 
 export interface State {
   ids: number[];
-  entities: { [ideDocumento: number]: PlanillaDTO };
+  entities: { [ideAgente: number]: PlanAgenDTO };
   selectedId: number;
   data: any,
   filters: {
-    // fecha_ini: string;
-    // fecha_fin: string;
-    // cod_dependencia: string;
-    // cod_tipologia_documental: string;
     nro_planilla: string;
   }
 }
@@ -24,10 +20,6 @@ const initialState: State = {
   data: {},
   selectedId: null,
   filters: {
-    // fecha_ini: null,
-    // fecha_fin: null,
-    // cod_dependencia: null,
-    // cod_tipologia_documental: null,
     nro_planilla: null
   }
 };
@@ -52,11 +44,10 @@ export function reducer(state = initialState, action: Actions) {
           selectedId: null
         });
       }
-      // const newValues = values.filter(data => !state.entities[data.ideDocumento]);
-      const ids = values.map(data => data.ideDocumento);
-      const entities = values.reduce((entities: { [ideDocumento: number]: PlanAgenDTO }, value: PlanAgenDTO) => {
+      const ids = values.map(data => data.ideAgente);
+      const entities = values.reduce((entities: { [ideAgente: number]: PlanAgenDTO }, value: PlanAgenDTO) => {
         return Object.assign(entities, {
-          [value.ideDocumento]: value
+          [value.ideAgente]: value
         });
       }, {});
       return tassign(state, {
@@ -70,11 +61,7 @@ export function reducer(state = initialState, action: Actions) {
       const filters = action.payload;
       return tassign(state, {
         filters: {
-          // fecha_ini: filters.fecha_ini || null,
-          // fecha_fin: filters.fecha_fin || null,
-          // cod_dependencia: filters.cod_dependencia || null,
-          nro_planilla: filters.nro_planilla || null,
-          // cod_tipologia_documental: filters.cod_tipologia_documental || null
+          nro_planilla: filters.nro_planilla || null
         }
       });
     }

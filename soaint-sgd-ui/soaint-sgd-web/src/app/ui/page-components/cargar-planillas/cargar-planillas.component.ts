@@ -1,14 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
-import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
 import {AgentDTO} from "../../../domain/agentDTO";
 import {Observable} from "rxjs/Observable";
 import {getTipologiaDocumentalArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors";
-import {DocumentoDTO} from "../../../domain/documentoDTO";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {ComunicacionOficialDTO} from "../../../domain/comunicacionOficialDTO";
 import {FuncionarioDTO} from "../../../domain/funcionarioDTO";
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 import {Subscription} from "rxjs/Subscription";
@@ -30,26 +26,26 @@ import {
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as FuncionarioSandbox} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {
-  getArrayData as PlanillasArrayData,
-  getDataobj
-} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
+import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
 import {Sandbox as CargarPlanillasSandbox} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox";
+import {PlanillaDTO} from "../../../domain/PlanillaDTO";
+import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 
 @Component({
   selector: 'app-cargar-planillas',
   templateUrl: './cargar-planillas.component.html',
-  styleUrls: ['./cargar-planillas.component.css']
+  styleUrls: ['./cargar-planillas.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class CargarPlanillasComponent implements OnInit {
+export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
-  comunicaciones$: Observable<ComunicacionOficialDTO[]>;
+  comunicaciones: PlanAgenDTO[] = [];
 
-  data$: Observable<any>;
+  data: PlanillaDTO | any = {};
 
-  selectedComunications: ComunicacionOficialDTO[] = [];
+  selectedComunications: PlanAgenDTO[] = [];
 
   start_date: Date = new Date();
 
@@ -83,13 +79,7 @@ export class CargarPlanillasComponent implements OnInit {
 
   dependencias: DependenciaDTO[] = [];
 
-  @ViewChild('popupjustificaciones') popupjustificaciones;
-
-  @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
-
-  @ViewChild('popupReject') popupReject;
-
-  @ViewChild('detallesView') detallesView;
+  @ViewChild('popupEditar') popupEditar;
 
   constructor(private _store: Store<RootState>,
               private _cargarPlanillasApi: CargarPlanillasSandbox,
@@ -97,13 +87,14 @@ export class CargarPlanillasComponent implements OnInit {
               private _constSandbox: ConstanteSandbox,
               private _dependenciaSandbox: DependenciaSandbox,
               private _planillaService: PlanillasApiService,
+              private _changeDetectorRef: ChangeDetectorRef,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
       this.dependenciaSelected = result;
     });
-    this.comunicaciones$ = this._store.select(PlanillasArrayData);
-    this.data$ = this._store.select(getDataobj);
+    // this.comunicaciones$ = this._store.select(PlanillasArrayData);
+    // this.data$ = this._store.select(getDataobj);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
@@ -135,21 +126,6 @@ export class CargarPlanillasComponent implements OnInit {
     return radicacionEntradaDTV.getDatosRemitente();
   }
 
-  getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDestinatarios();
-  }
-
-  getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDestinatarioInmediate();
-  }
-
-  getDatosDocumentos(comunicacion): Observable<DocumentoDTO[]> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDocumento();
-  }
-
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
@@ -164,24 +140,15 @@ export class CargarPlanillasComponent implements OnInit {
     });
   }
 
+  getEstadoLabel(estado) {
+    return this.popupEditar.estadoEntregaSuggestions.find((element) => element.codigo == estado);
+  }
+
   listarDependencias() {
     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
       this.dependencias = results.dependencias;
       this.listarDistribuciones();
     });
-  }
-
-  convertDate(inputFormat) {
-    function pad(s) {
-      return (s < 10) ? '0' + s : s;
-    }
-
-    const d = new Date(inputFormat);
-    return [pad(d.getFullYear()), pad(d.getMonth() + 1), d.getDate()].join('-');
-  }
-
-  findTipoDoc(code): string {
-    return this.tipologiasDocumentales.find((element) => element.codigo == code).nombre;
   }
 
   findDependency(code): string {
@@ -195,59 +162,14 @@ export class CargarPlanillasComponent implements OnInit {
   }
 
   listarDistribuciones() {
-    this._cargarPlanillasApi.loadDispatch({
-      // fecha_ini: this.convertDate(this.start_date),
-      // fecha_fin: this.convertDate(this.end_date),
-      // cod_dependencia: this.form.get('dependencia').value ? this.form.get('dependencia').value.codigo : '',
-      // cod_tipologia_documental: this.form.get('tipologia').value ? this.form.get('tipologia').value.codigo : '',
+    this._cargarPlanillasApi.loadData({
       nro_planilla: this.form.get('numeroPlanilla').value ? this.form.get('numeroPlanilla').value : '',
+    }).subscribe((result) => {
+      this.data = result;
+      this.comunicaciones = [...result.pagentes.pagente];
+      this.refreshView();
     });
   }
-
-  generarDatosExportar(): PlanillaDTO {
-    let agensDTO: PlanAgenDTO[] = [];
-
-    this.selectedComunications.forEach((element) => {
-      console.log(element);
-      let agenDTO: PlanAgenDTO = {
-        idePlanAgen: null,
-        estado: null,
-        varPeso: null,
-        varValor: null,
-        varNumeroGuia: null,
-        fecObservacion: null,
-        codNuevaSede: null,
-        codNuevaDepen: null,
-        observaciones: null,
-        codCauDevo: null,
-        fecCarguePla: null,
-        ideAgente: this.getDatosDestinatarioInmediate(element)[0].ideAgente,
-        ideDocumento: element.correspondencia.ideDocumento,
-      };
-      agensDTO.push(agenDTO);
-    });
-
-    let agentes: PlanAgentesDTO = {
-      pagente: agensDTO
-    };
-
-    let planilla: PlanillaDTO = {
-      idePlanilla: null,
-      nroPlanilla: null,
-      fecGeneracion: null,
-      codTipoPlanilla: null,
-      codFuncGenera: this.funcionarioLog.id.toString(),
-      codSedeOrigen: this.dependenciaSelected.codSede,
-      codDependenciaOrigen: this.dependenciaSelected.codigo,
-      codSedeDestino: this.form.get("dependencia").value.codSede,
-      codDependenciaDestino: this.form.get("dependencia").value.codigo,
-      codClaseEnvio: null,
-      codModalidadEnvio: null,
-      pagentes: agentes,
-    };
-
-    return planilla;
-  };
 
   showEditarPlanillaDialog() {
     this.editarPlanillaDialogVisible = true;
@@ -257,8 +179,89 @@ export class CargarPlanillasComponent implements OnInit {
     this.editarPlanillaDialogVisible = false;
   }
 
-  editarPlanilla() {
+  createAgents(): PlanAgenDTO[] {
+    let agents: PlanAgenDTO[] = [];
+    this.selectedComunications.forEach((element) => {
+      let agent: PlanAgenDTO = {
+        idePlanAgen: element.idePlanAgen,
+        estado: this.popupEditar.form.get('estadoEntrega').value.codigo,
+        varPeso: element.varPeso,
+        varValor: element.varValor,
+        varNumeroGuia: element.varNumeroGuia,
+        fecObservacion: element.fecObservacion,
+        usuario: this.funcionarioLog.nombre,
+        codNuevaSede: this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codSede : null,
+        codNuevaDepen: this.popupEditar.form.get('dependenciaDestino').value ? this.popupEditar.form.get('dependenciaDestino').value.codigo : null,
+        observaciones: this.popupEditar.form.get('observaciones').value,
+        codCauDevo: element.codCauDevo,
+        fecCarguePla: this.popupEditar.form.get('fechaEntrega').value,
+        ideAgente: element.ideAgente,
+        ideDocumento: element.ideDocumento,
+        nroRadicado: element.nroRadicado,
+        tipoPersona: element.tipoPersona,
+        tipologiaDocumental: null,
+        nit: element.nit,
+        nroDocuIdentidad: element.nroDocuIdentidad,
+        nombre: element.nombre,
+        razonSocial: element.razonSocial,
+        folios: element.folios,
+        anexos: element.anexos,
+      };
+      agents.push(agent);
+    });
 
+    return agents;
+  }
+
+  editarPlanilla() {
+    let agents: PlanAgenDTO[] = this.createAgents();
+    let coms = [...this.comunicaciones];
+    agents.forEach((element) => {
+      const index = coms.findIndex((el) => el.ideAgente == element.ideAgente);
+      if (index > -1)
+        coms[index] = element;
+    });
+    this.comunicaciones = [...coms];
+    this.hideEditarPlanillaDialog();
+    this.refreshView();
+
+  }
+
+  actualizarPlanilla() {
+    this.comunicaciones.forEach((p) => {
+      delete p.usuario;
+      delete p['_$visited'];
+    });
+    let agentes: PlanAgentesDTO = {
+      pagente: this.comunicaciones
+    };
+    let planilla: PlanillaDTO = {
+      idePlanilla: null,
+      nroPlanilla: null,
+      fecGeneracion: null,
+      codTipoPlanilla: null,
+      codFuncGenera: null,
+      codSedeOrigen: null,
+      codDependenciaOrigen: null,
+      codSedeDestino: null,
+      codDependenciaDestino: null,
+      codClaseEnvio: null,
+      codModalidadEnvio: null,
+      pagentes: agentes
+    };
+
+    this._planillaService.cargarPlanillas(planilla).subscribe(() => {
+      this.listarDistribuciones();
+    });
+
+  }
+
+  canUpdatePlanilla(): boolean {
+    return this.comunicaciones.findIndex((e) => e.estado && e.estado != '') > -1;
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
   }
 
 }

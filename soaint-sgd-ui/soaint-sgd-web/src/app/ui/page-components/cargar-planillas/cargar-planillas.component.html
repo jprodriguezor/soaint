@@ -32,28 +32,45 @@
           <div class="ui-g-12">
             <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                          [(selection)]="selectedComunications"
-                         [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
               <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-              <p-column header="Número de radicado" [sortable]="true">
-                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(data$ | async).nroPlanilla}}
-                </ng-template>
-              </p-column>
+              <p-column field="nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
               <p-column header="Tipo de persona" [sortable]="true"></p-column>
               <p-column header="Número de identificación" [sortable]="true"></p-column>
               <p-column header="Nombre" [sortable]="true"></p-column>
-              <p-column header="Sede" [sortable]="true"></p-column>
-              <p-column header="Dependencia" [sortable]="true"></p-column>
-              <p-column header="Tipología documental" [sortable]="true"></p-column>
-              <p-column header="Folios" [sortable]="true"></p-column>
-              <p-column header="Anexos" [sortable]="true"></p-column>
-              <p-column field="estado" header="Estado de entrega" [sortable]="true"></p-column>
-              <p-column header="Fecha entrega" [sortable]="true"></p-column>
-              <p-column header="Usuario" [sortable]="true"></p-column>
-              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Sede" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findSede(data.codSedeDestino)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Dependencia" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findDependency(data.codDependenciaDestino)}}
+                </ng-template>
+              </p-column>
+
+              <p-column field="tipologiaDocumental.nombre" header="Tipología documental" [sortable]="true"></p-column>
+              <p-column field="folios" header="Folios" [sortable]="true"></p-column>
+              <p-column field="anexos" header="Anexos" [sortable]="true"></p-column>
+              <p-column field="estado" header="Estado de entrega" [sortable]="true">
+                <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                  {{getEstadoLabel(planAgente[col.field])?.nombre}}
+                </ng-template>
+              </p-column>
+              <p-column field="fecCarguePla" header="Fecha entrega" [sortable]="true">
+                <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                  {{planAgente[col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="usuario" header="Usuario" [sortable]="true"></p-column>
+              <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
             </p-dataTable>
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Actualizar planilla"
+                    [disabled]="!canUpdatePlanilla()" (click)="actualizarPlanilla()"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
             <button pButton type="button" label="Editar"
                     [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
@@ -70,7 +87,7 @@
   <p-header>
     Redireccionar
   </p-header>
-  <app-editar-planilla></app-editar-planilla>
+  <app-editar-planilla #popupEditar></app-editar-planilla>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">

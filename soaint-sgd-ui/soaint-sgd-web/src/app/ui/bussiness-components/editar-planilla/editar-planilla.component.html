@@ -1,5 +1,37 @@
-<form [formGroup]="form" name="formDefault">
+<form [formGroup]="form" name="formDefault" class="comunicacion-detalles">
   <div class="ui-g ui-fluid">
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="margin-bottom: 40px">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Sede destino</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">
+                {{findSede((planilla$ | async).codSedeDestino)}}
+              </label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="margin-bottom: 40px">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Dependencia destino</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">
+                  {{findDependency((planilla$ | async).codDependenciaDestino)}}
+              </label>
+          </span>
+        </div>
+      </div>
+    </div>
     <div class="ui-sm-12 ui-g-6 ui-lg-6">
       <div class="ui-g form-group">
         <div class="ui-g-12">
@@ -8,6 +40,7 @@
         <div class="ui-g-12 md-dropdownfield">
           <p-dropdown [options]="estadoEntregaSuggestions | dropdownItem"
                       id="estadoEntrega"
+                      (onChange)="estadoEntregaChange()"
                       formControlName="estadoEntrega"
                       placeholder="Seleccione"
                       [filter]="true"
@@ -35,6 +68,35 @@
         <div class="ui-g-12 md-inputfield">
           <textarea pInputTextarea [style.height]="'125px'" id="observaciones"
                     formControlName="observaciones"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="showDependencia">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <label>Dependencia destino</label>
+        </div>
+        <div class="ui-g-12">
+          <p-dropdown [options]="dependencias | dropdownItem" id="dependenciaDestino"
+                      placeholder="Seleccione"
+                      [autoWidth]="false" formControlName="dependenciaDestino">
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" padding-bottom *ngIf="showDependencia">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+              <span class="md-inputfield">
+                <label>Sede destino</label>
+              </span>
+        </div>
+        <div class="ui-g-12">
+              <span class="md-inputfield">
+                  <label style="color: inherit;padding-top: 16px">
+                    {{form.controls['dependenciaDestino'].value?.nomSede}}
+                  </label>
+              </span>
         </div>
       </div>
     </div>

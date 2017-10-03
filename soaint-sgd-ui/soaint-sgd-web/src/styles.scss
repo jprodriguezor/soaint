@@ -1,5 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
+
+.ui-dialog-content.ui-widget-content {
+  overflow: visible !important;
+}
+
 .ui-datatable-header {
   text-align: left !important;
   min-height: 35px;
