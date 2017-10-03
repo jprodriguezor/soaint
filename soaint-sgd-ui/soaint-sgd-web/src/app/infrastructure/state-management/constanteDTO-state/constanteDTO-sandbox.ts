@@ -95,20 +95,5 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadDatosRemitenteAction());
   }
 
-  getMock(): any {
-    return {
-      constantes: [
-        {ideConst: 1, nombre: 'Comunicacion Externa', codigo: 'EI'},
-        {ideConst: 2, nombre: 'Comunicacion Interna', codigo: 'CI'},
-        {ideConst: 10, nombre: 'Ventanilla', codigo: 10},
-        {ideConst: 4, nombre: 'Constante#4', codigo: 4},
-        {ideConst: 5, nombre: 'Persona Anonima', codigo: 'ANONIM'},
-        {ideConst: 6, nombre: 'Persona Juridica', codigo: 'PERS-JUR'},
-        {ideConst: 7, nombre: 'Persona Natural', codigo: 'PERS-NAT'},
-      ]
-    }
-  }
-
-
 }
 
