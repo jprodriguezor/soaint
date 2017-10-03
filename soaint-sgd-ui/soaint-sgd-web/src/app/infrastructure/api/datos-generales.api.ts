@@ -15,7 +15,7 @@ export class DatosGeneralesApiService {
     // const payload = RulesServer.requestPayload(tipologiaDocumental.codigo);
     // return this._api.list(end_point, { payload: JSON.stringify(payload)})
     //   .map(response => {
-    //     return RulesServer.extractFromResponse(response);
+    //     return RulesServer.extractFromResponse(response, 'co.com.soaint.sgd.model.MedioRecepcion');
     //   });
 
     return Observable.of({

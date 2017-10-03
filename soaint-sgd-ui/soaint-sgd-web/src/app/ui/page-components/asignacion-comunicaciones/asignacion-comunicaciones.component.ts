@@ -22,6 +22,8 @@ import {
   getJustificationDialogVisible, getRejectDialogVisible
 } from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {RedirectAction} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-actions';
+import {RedireccionDTO} from '../../../domain/redireccionDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -166,9 +168,19 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-    this._asignacionSandbox.redirectDispatch({
-      agentes: this.createAgentes(justificationValues)
-    });
+    const payload: RedireccionDTO = {
+      agentes: this.createAgentes(justificationValues),
+      traza: {
+        observacion: justificationValues.justificacion,
+        ideFunci: this.funcionarioLog.id,
+        codOrgaAdmin: this.dependenciaSelected.codigo,
+        codEstado: null,
+        ideTrazDocumento: null,
+        ideDocumento: null
+      }
+    };
+
+    this._asignacionSandbox.redirectDispatch(payload);
   }
 
   sendRedirect() {
