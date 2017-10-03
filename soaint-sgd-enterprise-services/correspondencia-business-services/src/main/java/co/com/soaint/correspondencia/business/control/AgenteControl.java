@@ -44,6 +44,9 @@ public class AgenteControl {
     @Autowired
     CorrespondenciaControl correspondenciaControl;
 
+    @Autowired
+    PpdTrazDocumentoControl ppdTrazDocumentoControl;
+
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
@@ -140,6 +143,7 @@ public class AgenteControl {
                     .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
                     .executeUpdate();
 
+
             if (agenteDTO.getCodEstado().equals(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())) {
                 CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agenteDTO.getIdeAgente());
                 correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
@@ -158,17 +162,34 @@ public class AgenteControl {
     }
 
     /**
-     * @param agentesDTO
+     *
+     * @param redireccion
      * @throws SystemException
      */
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
+    public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
         try {
-            for (AgenteDTO agenteDTO : agentesDTO.getAgentes())
+            for (AgenteDTO agente : redireccion.getAgentes()) {
+                CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agente.getIdeAgente());
+                String estadoAgente = reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo();
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
-                        .setParameter("COD_SEDE", agenteDTO.getCodSede())
-                        .setParameter("COD_DEPENDENCIA", agenteDTO.getCodDependencia())
-                        .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
+                        .setParameter("COD_SEDE", agente.getCodSede())
+                        .setParameter("COD_DEPENDENCIA", agente.getCodDependencia())
+                        .setParameter("IDE_AGENTE", agente.getIdeAgente())
+                        .setParameter("COD_ESTADO", estadoAgente)
                         .executeUpdate();
+
+                correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
+                correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
+
+                ppdTrazDocumentoControl.generarTrazaDocumento(PpdTrazDocumentoDTO.newInstance()
+                        .observacion(redireccion.getTraza().getObservacion())
+                        .ideFunci(redireccion.getTraza().getIdeFunci())
+                        .codEstado(redireccion.getTraza().getCodEstado())
+                        .ideDocumento(correspondencia.getIdeDocumento())
+                        .codOrgaAdmin(redireccion.getTraza().getCodOrgaAdmin())
+                        .build());
+
+            }
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

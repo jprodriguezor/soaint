@@ -2,7 +2,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +39,12 @@ public class GestionarAgenteWS {
     }
 
     /**
-     * @param agentesDTO
+     *
+     * @param redireccion
      * @throws SystemException
      */
     @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList") final AgentesDTO agentesDTO) throws SystemException {
-        boundary.redireccionarCorrespondencia(agentesDTO);
+    public void redireccionarCorrespondencia(@WebParam(name = "agenteList") final RedireccionDTO redireccion) throws SystemException {
+        boundary.redireccionarCorrespondencia(redireccion);
     }
 }

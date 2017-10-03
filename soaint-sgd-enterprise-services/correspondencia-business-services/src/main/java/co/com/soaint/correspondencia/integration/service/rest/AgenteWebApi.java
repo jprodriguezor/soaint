@@ -2,7 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import io.swagger.annotations.Api;
@@ -54,13 +54,14 @@ public class AgenteWebApi {
     }
 
     /**
-     * @param agentesDTO
+     *
+     * @param redireccion
      * @throws SystemException
      */
     @PUT
     @Path("/agente/redireccionar")
-    public void redireccionarCorrespondencia(AgentesDTO agentesDTO) throws SystemException {
+    public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
         log.info("processing rest request - redireccionar correspondencia");
-        boundary.redireccionarCorrespondencia(agentesDTO);
+        boundary.redireccionarCorrespondencia(redireccion);
     }
 }
