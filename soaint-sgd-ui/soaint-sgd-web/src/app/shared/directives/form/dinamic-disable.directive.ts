@@ -31,7 +31,6 @@ export class DynamicDisableDirective implements OnInit {
     if (!this.ctrl) {
       return;
     }
-
     if (s) {
       this.ctrl.reset();
       this.ctrl.disable();
