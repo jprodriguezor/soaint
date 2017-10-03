@@ -6,6 +6,7 @@ import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ItemReportPlanillaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -40,17 +41,38 @@ public class PlanAgenControl {
     @Autowired
     AgenteControl agenteControl;
 
+    @Autowired
+    ConstantesControl constantesControl;
+
+    @Autowired
+    PpdDocumentoControl ppdDocumentoControl;
+
     /**
-     *
      * @param idePlanilla
      * @return
      * @throws SystemException
      */
     public List<PlanAgenDTO> listarAgentesByIdePlanilla(BigInteger idePlanilla) throws SystemException {
         try {
-            return em.createNamedQuery("CorPlanAgen.findByIdePlanilla", PlanAgenDTO.class)
+            List<PlanAgenDTO> planAgenDTOList = em.createNamedQuery("CorPlanAgen.findByIdePlanilla", PlanAgenDTO.class)
                     .setParameter("IDE_PLANILLA", idePlanilla)
                     .getResultList();
+            for (PlanAgenDTO planAgen : planAgenDTOList) {
+                List<AgenteDTO> remitentes = agenteControl.listarRemitentesByIdeDocumento(planAgen.getIdeDocumento());
+                if (remitentes.get(0).getCodTipoPers() != null)
+                    planAgen.setTipoPersona(constantesControl.consultarConstanteByCodigo(remitentes.get(0).getCodTipoPers()));
+                planAgen.setNit(remitentes.get(0).getNit());
+                planAgen.setNroDocuIdentidad(remitentes.get(0).getNroDocuIdentidad());
+                planAgen.setNombre(remitentes.get(0).getNombre());
+                planAgen.setRazonSocial(remitentes.get(0).getRazonSocial());
+                List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(planAgen.getIdeDocumento());
+                if (!ppdDocumentoDTOList.isEmpty()){
+                    planAgen.setFolios(ppdDocumentoDTOList.get(0).getNroFolios());
+                    planAgen.setAnexos(ppdDocumentoDTOList.get(0).getNroAnexos());
+                }
+            }
+
+            return planAgenDTOList;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -61,11 +83,10 @@ public class PlanAgenControl {
     }
 
     /**
-     *
      * @param planAgen
      * @throws SystemException
      */
-    public void updateEstadoDistribucion(PlanAgenDTO planAgen)throws BusinessException, SystemException{
+    public void updateEstadoDistribucion(PlanAgenDTO planAgen) throws BusinessException, SystemException {
         try {
             em.createNamedQuery("CorPlanAgen.updateEstadoDistribucion")
                     .setParameter("IDE_PLAN_AGEN", planAgen.getIdePlanAgen())

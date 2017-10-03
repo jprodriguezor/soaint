@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.FormatoDocEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
@@ -91,12 +92,16 @@ public class PlanillasControl {
             corPlanillas.setFecGeneracion(new Date());
             corPlanillas.setNroPlanilla(generarNumeroPlanilla(corPlanillas.getCodSedeOrigen()));
             corPlanillas.setCorPlanAgenList(new ArrayList<>());
-            planilla.getAgentes().getAgente().stream().forEach(planAgenDTO -> {
+            for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 CorPlanAgen corPlanAgen = planAgenControl.corPlanAgenTransform(planAgenDTO);
                 corPlanAgen.setEstado(EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
                 corPlanAgen.setCorPlanillas(corPlanillas);
                 corPlanillas.getCorPlanAgenList().add(corPlanAgen);
-            });
+                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
+                        .ideAgente(planAgenDTO.getIdeAgente())
+                        .codEstado(EstadoAgenteEnum.EMPLANILLADO.getCodigo())
+                        .build());
+            }
             em.persist(corPlanillas);
             em.flush();
             return listarPlanillasByNroPlanilla(corPlanillas.getNroPlanilla());
@@ -115,7 +120,7 @@ public class PlanillasControl {
      */
     public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         try {
-            for (PlanAgenDTO planAgenDTO : planilla.getAgentes().getAgente()) {
+            for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 planAgenControl.updateEstadoDistribucion(planAgenDTO);
             }
         } catch (BusinessException e) {
@@ -140,8 +145,8 @@ public class PlanillasControl {
             PlanillaDTO planilla = em.createNamedQuery("CorPlanillas.findByNroPlanilla", PlanillaDTO.class)
                     .setParameter("NRO_PLANILLA", nroPlanilla)
                     .getSingleResult();
-            planilla.setAgentes(PlanAgentesDTO.newInstance()
-                    .agente(planAgenControl.listarAgentesByIdePlanilla(planilla.getIdePlanilla()))
+            planilla.setPAgentes(PlanAgentesDTO.newInstance()
+                    .pAgente(planAgenControl.listarAgentesByIdePlanilla(planilla.getIdePlanilla()))
                     .build());
             return planilla;
         } catch (NoResultException n) {
@@ -160,7 +165,6 @@ public class PlanillasControl {
     }
 
     /**
-     *
      * @param nroPlanilla
      * @param formato
      * @return
@@ -171,15 +175,14 @@ public class PlanillasControl {
             PlanillaDTO planilla = listarPlanillasByNroPlanilla(nroPlanilla);
             JasperReport report = JasperCompileManager.compileReport(reportsPath + planillaDistribucionReport);
             byte[] bytes;
-            if (FormatoDocEnum.PDF.getCodigo().equals(formato)){
+            if (FormatoDocEnum.PDF.getCodigo().equals(formato)) {
                 bytes = getPdfReport(report, planilla);
-            }
-            else
+            } else
                 bytes = getXlsReport(report, planilla);
             return ReportDTO.newInstance()
                     .base64EncodedFile(Base64.getEncoder().encodeToString(bytes))
-                            .formato(formato)
-                            .build();
+                    .formato(formato)
+                    .build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -227,7 +230,7 @@ public class PlanillasControl {
                     .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
-        }finally {
+        } finally {
             if (fileInputStream != null)
                 fileInputStream.close();
         }
@@ -244,13 +247,13 @@ public class PlanillasControl {
         parameters.put("nroPlanilla", planilla.getNroPlanilla());
         parameters.put("fecGeneracion", planilla.getFecGeneracion());
         parameters.put("funcGenera", funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera()))).getNombreCompleto());
-        parameters.put("logo", image );
+        parameters.put("logo", image);
         return parameters;
     }
 
     private JRBeanCollectionDataSource getReportDataSource(PlanillaDTO planilla) throws BusinessException, SystemException {
         ArrayList<ItemReportPlanillaDTO> itemPlanillaList = new ArrayList<>();
-        for (PlanAgenDTO planAgen : planilla.getAgentes().getAgente())
+        for (PlanAgenDTO planAgen : planilla.getPAgentes().getPAgente())
             itemPlanillaList.add(transformToItemReport(planAgen));
         ArrayList<ItemsReportPlanillaDTO> dataSource = new ArrayList();
         dataSource.add(ItemsReportPlanillaDTO.newInstance().itemsPlanilla(itemPlanillaList).build());
