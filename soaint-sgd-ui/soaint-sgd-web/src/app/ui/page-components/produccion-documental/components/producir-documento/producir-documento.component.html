@@ -11,11 +11,9 @@
                 <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <p-dropdown [options]="tipoComunicacionInput | dropdownItem"
-                            id="tipoComunicacion"
+                <p-dropdown id="tipoComunicacion"
                             formControlName="tipoComunicacion"
                             placeholder="Seleccione"
-                            [filter]="true"
                             [autoWidth]="false"
                 >
                 </p-dropdown>
@@ -30,11 +28,9 @@
               </div>
               <div class="ui-g-12 md-dropdownfield">
 
-                <p-dropdown [options]="tipoPlantillaInput | dropdownItem"
-                            id="tipoPlantilla"
+                <p-dropdown id="tipoPlantilla"
                             formControlName="tipoPlantilla"
                             placeholder="Seleccione"
-                            [filter]="true"
                             [autoWidth]="false"
                 >
                 </p-dropdown>

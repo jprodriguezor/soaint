@@ -16,15 +16,15 @@ export class PDProducirDocumentoComponent implements OnInit{
 
 
   initForm() {
-    this.form = this.formBuilder.group({
-      'tipoComunicacion': [{value: null}],
-      'tipoPlantilla': [{value: null}],
-      'elaborarDocumento': [null]
-    });
+      this.form = this.formBuilder.group({
+          'tipoComunicacion': [{value: null}],
+          'tipoPlantilla': [{value:null}],
+          'elaborarDocumento': [null]
+      });
   }
 
   ngOnInit(): void {
-    this.initForm();
+      this.initForm();
   }
 }
 
