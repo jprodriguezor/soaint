@@ -46,7 +46,6 @@ import {OptionalEmailValidatorDirective} from './shared/directives/form/optional
 import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
 import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
 
-
 @NgModule({
   imports: [
     BrowserModule,
@@ -127,7 +126,7 @@ import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/
     ...UI_COMPONENTS,
     ...PIPES,
     DistribucionFisicaComponent,
-    CargarPlanillasComponent,
+    CargarPlanillasComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
