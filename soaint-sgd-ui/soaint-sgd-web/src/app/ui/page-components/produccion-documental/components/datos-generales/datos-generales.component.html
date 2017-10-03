@@ -1,0 +1,72 @@
+<form [formGroup]="form">
+    
+  
+            <p-panel header="Datos Generales" [style]="{border: 'none'}">
+              
+                <div class="ui-g ui-fluid">
+  
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                            <div class="ui-g-12">
+                                <label for="usuarioResponsable">Usuario Responsable</label>
+                            </div>
+                            <div class="ui-g-12">
+                                <input type="text" pInputText id="usuarioResponsable" readonly formControlName="usuarioResponsable" />
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                      <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                          <label for="fechaCreacion">Fecha y Hora de creación</label>
+                        </div>
+                        <div class="ui-g-12">
+                          <input type="text" pInputText id="fechaCreacion" formControlName="fechaCreacion" />
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                      <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                          <label for="sedeAdministrativa">Sede</label>
+                        </div>
+                        <div class="ui-g-12 md-dropdownfield">
+                          <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
+                                      id="sedeAdministrativa"
+                                      formControlName="sedeAdministrativa"
+                                      placeholder="Seleccione"
+                                      [filter]="true"
+                                      [autoWidth]="false"
+                          >
+                          </p-dropdown>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                      <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                          <label for="dependenciaGrupo">Dependencia / Grupo</label>
+                        </div>
+                        <div class="ui-g-12 md-dropdownfield">
+          
+                          <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
+                                      id="dependenciaGrupo"
+                                      formControlName="dependenciaGrupo"
+                                      placeholder="Seleccione"
+                                      [filter]="true"
+                                      [autoWidth]="false"
+                          >
+                          </p-dropdown>
+                        </div>
+                      </div>
+                    </div>
+                  
+                </div>
+              
+            </p-panel>
+            
+        
+</form>

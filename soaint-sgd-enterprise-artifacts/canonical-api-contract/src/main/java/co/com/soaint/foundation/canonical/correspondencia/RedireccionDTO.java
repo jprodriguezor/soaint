@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * Soaint Generic Artifact
- * Created:2-Jun-2017
+ * Created:03-Oct-2017
  * Author: esanchez
  * Type: JAVA class Artifact
  * Purpose: DTO - Model Artifact
@@ -24,16 +23,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/dct-asig-ultimo/1.0.0")
-public class DctAsigUltimoDTO implements Serializable {
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/redireccion/1.0.0")
+public class RedireccionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private BigInteger ideAsigUltimo;
-    private Short nivLectura;
-    private Short nivEscritura;
-    private Date fechaVencimiento;
-    private String idInstancia;
-    private String codTipProceso;
-    private BigInteger ideAsignacion;
-
+    private List<AgenteDTO> agentes;
+    private PpdTrazDocumentoDTO traza;
 }
