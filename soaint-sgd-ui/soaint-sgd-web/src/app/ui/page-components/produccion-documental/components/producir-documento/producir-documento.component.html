@@ -1,0 +1,110 @@
+<form [formGroup]="form">
+
+
+      <p-panel header="Producir Documento" [style]="{border: 'none'}">
+
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+                <p-dropdown [options]="tipoComunicacionInput | dropdownItem"
+                            id="tipoComunicacion"
+                            formControlName="tipoComunicacion"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="tipoPlantilla">Tipo de plantilla</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+
+                <p-dropdown [options]="tipoPlantillaInput | dropdownItem"
+                            id="tipoPlantilla"
+                            formControlName="tipoPlantilla"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-4 ui-lg-4">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <button pButton type="button" label="Cargar"
+                        style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                ></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <br/>
+
+        <div class="ui-g ui-fluid">
+          <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <textarea id="elaborarDocumento"
+                          pInputTextarea
+                          title="Elaborar documento"
+                          formControlName="elaborarDocumento"
+                          class="prod-doc"
+                          placeholder="Elaborar documento"
+                          style="width:100%;resize:vertical"
+                ></textarea>
+              </div>
+              <div class="ui-g-12">
+                <button pButton type="button" label="Versionar"
+                        style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br/>
+
+        <div class="ui-g ui-fluid">
+          <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <p-dataTable selectionMode="single"
+                         [paginator]="true"
+                         [rows]="10"
+                         [responsive]="true"
+                         [value]="versionesDocumento"
+                         emptyMessage="No se encontraron resultados"
+            >
+              <p-header> Tabla versiones documento </p-header>
+              <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
+              <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+              <p-column field="size" header="Tamaño" [sortable]="true"></p-column>
+              <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+                <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                  <button type="button" icon="ui-icon-close" pButton
+                          class="ui-button ui-button-icon ui-button-danger"
+                          *ngIf="editable === true"
+                  ></button>
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+          </div>
+        </div>
+
+      </p-panel>
+
+</form>

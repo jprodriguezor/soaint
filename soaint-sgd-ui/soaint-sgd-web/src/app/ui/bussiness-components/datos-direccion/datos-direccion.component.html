@@ -224,7 +224,7 @@
                           formControlName="tipoVia"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          [dynamicDisable]="showDireccionForm"
+                          [dynamicDisable]="!showDireccionForm"
               >
               </p-dropdown>
             </div>
@@ -235,7 +235,7 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal" [dynamicDisable]="showDireccionForm">
+              <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal" [dynamicDisable]="!showDireccionForm">
               <label for="noViaPrincipal"><span class="text-danger">*</span> No. Via Principal</label>
               </span>
             </div>
@@ -300,7 +300,7 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <input type="text" pInputText id="noVia" formControlName="noVia" [dynamicDisable]="showDireccionForm">
+                <input type="text" pInputText id="noVia" formControlName="noVia" [dynamicDisable]="!showDireccionForm">
                 <label for="noVia"><span class="text-danger">*</span> No. Via</label>
               </span>
             </div>
@@ -329,7 +329,7 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
             <span class="md-inputfield">
-            <input type="text" pInputText id="placa" formControlName="placa" [dynamicDisable]="showDireccionForm">
+            <input type="text" pInputText id="placa" formControlName="placa" [dynamicDisable]="!showDireccionForm">
             <label for="placa"><span class="text-danger">*</span> # Placa</label>
             </span>
             </div>
@@ -401,7 +401,7 @@
     </div>
 
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
-      <button pButton type="button" class="ui-button-info"
+      <button pButton type="button" class="ui-button-info" [disabled]="form.pristine"
               label="Aceptar" (click)="save();"
               style="width: auto; margin-left: 12px; margin-bottom: 10px"
       ></button>
