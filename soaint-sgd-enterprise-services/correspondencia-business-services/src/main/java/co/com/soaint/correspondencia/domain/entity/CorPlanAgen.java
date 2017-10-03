@@ -28,7 +28,7 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name = "CorPlanAgen.findAll", query = "SELECT c FROM CorPlanAgen c"),
         @NamedQuery(name = "CorPlanAgen.findByIdePlanilla", query = "SELECT   NEW co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO " +
-                "(c.idePlanAgen, c.estado, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
+                "(c.idePlanAgen, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
                 "c.codNuevaDepen, c.observaciones, c.codCauDevo, c.fecCarguePla, a.ideAgente, co.ideDocumento, " +
                 "co.nroRadicado ) " +
                 "FROM CorPlanAgen c " +
