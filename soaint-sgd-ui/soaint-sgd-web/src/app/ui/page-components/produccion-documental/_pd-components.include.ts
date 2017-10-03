@@ -6,6 +6,10 @@ import {PDAnexosComponent} from "./components/anexos/anexos.component";
 import {PDGestionarProduccionComponent} from "./components/gestionar-produccion/gestionar-produccion.component";
 
 export const PRODUCCION_DOCUMENTAL_COMPONENTS = [
-  ProduccionDocumentalComponent,PDDatosGeneralesComponent,PDRadicadoAsociadoComponent,PDProducirDocumentoComponent,PDAnexosComponent,
+  ProduccionDocumentalComponent,
+  PDDatosGeneralesComponent,
+  PDRadicadoAsociadoComponent,
+  PDProducirDocumentoComponent,
+  PDAnexosComponent,
   PDGestionarProduccionComponent
 ];
