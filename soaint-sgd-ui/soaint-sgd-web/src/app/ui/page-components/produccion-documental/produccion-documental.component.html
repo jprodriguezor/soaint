@@ -3,13 +3,33 @@
 </div>
 
 <div class="ui-g ui-fluid">
+    <div class="ui-g-12" style="margin: 20px 0">
+        <button pButton type="button" label="Cerrar"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                ></button>
+        <button pButton type="button" label="Devolver"
+                [disabled]="step == 1"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                (click)="prevStep()"></button>
+        <button pButton type="button" label="Aprobar"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                ></button>
+        <button pButton type="button" label="Continuar"
+                [disabled]="step == 9"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                (click)="nextStep()"></button>
+    </div>
+</div>
+
+<div class="ui-g ui-fluid">
   <div class="ui-g-12">
     <div class="card card-w-title">
 
       <pd-datos-generales *ngIf="step == 1"></pd-datos-generales> <br/>
       <pd-radicado-asociado *ngIf="step == 1"></pd-radicado-asociado> <br/>
-      <pd-producir-documento *ngIf="step == 2"></pd-producir-documento> <br/>
-      <pd-anexos *ngIf="step == 3"></pd-anexos>
+      <pd-producir-documento *ngIf="step == 1"></pd-producir-documento> <br/>
+      <pd-anexos *ngIf="step == 2"></pd-anexos>
+      <pd-gestionar-produccion *ngIf="step == 3"></pd-gestionar-produccion>
 
     </div>
   </div>
