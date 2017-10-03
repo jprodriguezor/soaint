@@ -202,7 +202,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     let agensDTO: PlanAgenDTO[] = [];
 
     this.selectedComunications.forEach((element) => {
-      console.log(element);
       let agenDTO: PlanAgenDTO = {
         idePlanAgen: null,
         estado: null,
@@ -213,16 +212,26 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
         codNuevaSede: null,
         codNuevaDepen: null,
         observaciones: null,
+        usuario: null,
         codCauDevo: null,
         fecCarguePla: null,
         ideAgente: this.getDatosDestinatarioInmediate(element)[0].ideAgente,
         ideDocumento: element.correspondencia.ideDocumento,
+        nroRadicado: null,
+        tipoPersona: null,
+        tipologiaDocumental: null,
+        nit: null,
+        nroDocuIdentidad: null,
+        nombre: null,
+        razonSocial: null,
+        folios: null,
+        anexos: null
       };
       agensDTO.push(agenDTO);
     });
 
     let agentes: PlanAgentesDTO = {
-      agente: agensDTO
+      pagente: agensDTO
     };
 
     let planilla: PlanillaDTO = {
@@ -237,7 +246,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       codDependenciaDestino: this.form.get("dependencia").value.codigo,
       codClaseEnvio: null,
       codModalidadEnvio: null,
-      agentes: agentes,
+      pagentes: agentes,
     };
 
     return planilla;
@@ -245,7 +254,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   exportarPlanilla() {
     const planilla = this.generarDatosExportar();
-    console.log(planilla);
     this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
       alert(result.nroPlanilla);
       this.listarDistribuciones();

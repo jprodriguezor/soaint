@@ -141,4 +141,12 @@ public class CorrespondenciaClient {
                 .request()
                 .post(Entity.json(planilla));
     }
+
+    public Response cargarPlantilla(PlanillaDTO planilla) {
+        log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/planillas-web-api/planillas")
+                .request()
+                .put(Entity.json(planilla));
+    }
 }

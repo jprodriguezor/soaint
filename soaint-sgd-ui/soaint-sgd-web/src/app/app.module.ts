@@ -45,6 +45,8 @@ import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
 import {OptionalEmailValidatorDirective} from './shared/directives/form/optional-email-validator.directive';
 import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
 import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
+import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planilla/editar-planilla.component';
+
 
 @NgModule({
   imports: [
@@ -126,7 +128,8 @@ import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/
     ...UI_COMPONENTS,
     ...PIPES,
     DistribucionFisicaComponent,
-    CargarPlanillasComponent
+    CargarPlanillasComponent,
+    EditarPlanillaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -12,4 +12,8 @@ export class PlanillasApiService {
   exportarPlanillas(payload: PlanillaDTO) {
     return this._api.post(environment.exportarPlanilla_endpoint, payload);
   }
+
+  cargarPlanillas(payload: PlanillaDTO) {
+    return this._api.post(environment.cargarPlanilla_endpoint, payload);
+  }
 }
