@@ -52,11 +52,11 @@ public class PlanAgenControl {
      * @return
      * @throws SystemException
      */
-    public List<PlanAgenDTO> listarAgentesByIdePlanilla(BigInteger idePlanilla) throws SystemException {
+    public List<PlanAgenDTO> listarAgentesByIdePlanilla(BigInteger idePlanilla, String estado) throws SystemException {
         try {
             List<PlanAgenDTO> planAgenDTOList = em.createNamedQuery("CorPlanAgen.findByIdePlanillaAndEstado", PlanAgenDTO.class)
                     .setParameter("IDE_PLANILLA", idePlanilla)
-                    .setParameter("ESTADO", EstadoPlanillaEnum.DISTRIBUCION.getCodigo())
+                    .setParameter("ESTADO", estado)
                     .getResultList();
             for (PlanAgenDTO planAgen : planAgenDTOList) {
                 List<AgenteDTO> remitentes = agenteControl.listarRemitentesByIdeDocumento(planAgen.getIdeDocumento());
