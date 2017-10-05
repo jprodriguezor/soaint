@@ -448,7 +448,35 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   save(): Observable<any> {
-    return Observable.of(true).delay(5000);
+    const payload = {
+      destinatario: this.datosDestinatario.form.value,
+      generales: this.datosGenerales.form.value,
+      remitente: this.datosRemitente.form.value,
+      descripcionAnexos: this.datosGenerales.descripcionAnexos,
+      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      agentesDestinatario: this.datosDestinatario.agentesDestinatario,
+      datosContactos: this.datosRemitente.datosContactos,
+    };
+
+    return this._sandbox.quickSave(payload);
+  }
+
+  restore() {
+    const payload = 1;
+    this._sandbox.quickSave(payload).take(1).subscribe(results => {
+      // destinatario
+      this.datosDestinatario.form.patchValue(results.destinatario);
+      this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
+
+      // generales
+      this.datosGenerales.form.patchValue(results.generales);
+      this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
+      this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
+
+      // remitente
+      this.datosRemitente.form.patchValue(results.remitente);
+      this.datosRemitente.datosContactos = results.datosContactos;
+    });
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -22,6 +22,7 @@ import {MunicipioDTO} from '../../../domain/municipioDTO';
 import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
 
 enum FormContextEnum {
   SAVE,
@@ -32,7 +33,7 @@ enum FormContextEnum {
   selector: 'app-datos-direccion',
   templateUrl: './datos-direccion.component.html',
 })
-export class DatosDireccionComponent implements OnInit {
+export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   display = false;
@@ -54,9 +55,10 @@ export class DatosDireccionComponent implements OnInit {
   formContext: FormContextEnum;
   editIndexContext: number;
 
+  subscribers: Array<Subscription>;
+
 
   constructor(private _store: Store<State>,
-              private _constanteSandbox: ConstanteSandbox,
               private _paisSandbox: PaisSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
@@ -115,23 +117,23 @@ export class DatosDireccionComponent implements OnInit {
     const departamentoControl = this.form.get('departamento');
     const municipioControl = this.form.get('municipio');
 
-    paisControl.valueChanges.subscribe(value => {
+    this.subscribers.push(paisControl.valueChanges.subscribe(value => {
       if (this.editable && value) {
         departamentoControl.enable();
       } else {
         departamentoControl.reset();
         departamentoControl.disable();
       }
-    });
+    }));
 
-    departamentoControl.valueChanges.subscribe(value => {
+    this.subscribers.push(departamentoControl.valueChanges.subscribe(value => {
       if (this.editable && value) {
         municipioControl.enable();
       } else {
         municipioControl.reset();
         municipioControl.disable();
       }
-    });
+    }));
 
   }
 
@@ -321,6 +323,12 @@ export class DatosDireccionComponent implements OnInit {
 
   toggleDireccionVisibility() {
     this.showDireccionForm = !this.showDireccionForm;
+  }
+
+  ngOnDestroy() {
+    this.subscribers.forEach(subscriber => {
+      subscriber.unsubscribe();
+    });
   }
 
 }
