@@ -254,6 +254,9 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - Salvando Correspondencia Entrada");
         Response response = client.salvarCorrespondenciaEntrada(tarea);
         String responseObject = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
@@ -264,7 +267,7 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
         Response response = client.restablecerCorrespondenciaEntrada(idproceso, idtarea);
         String responseObject = response.readEntity(String.class);
-        if (response.getStatus() != HttpStatus.OK.value()) {
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
         return Response.status(response.getStatus()).entity(responseObject).build();
