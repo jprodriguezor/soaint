@@ -11,7 +11,7 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
               <div class="ui-g form-group">
                 <div class="ui-g-12">
-                  <label for="numeroPlanilla">Número de radicado</label>
+                  <label for="numeroPlanilla">Número de planilla</label>
                 </div>
                 <div class="ui-g-12">
                   <input type="text" pInputText id="numeroPlanilla" formControlName="numeroPlanilla">
@@ -26,19 +26,19 @@
           </div>
         </div>
       </p-panel>
-      <p-fileUpload id="doc-digitalize" #uploader
+      <p-fileUpload id="doc-digitalize" #uploader [style]="{'padding-bottom': '16px'}"
+                    *ngIf="canUpdatePlanilla()"
                     mode="advanced"
                     chooseLabel="Buscar"
-                    uploadLabel="Digitalizar"
+                    uploadLabel="Subir documento"
                     cancelLabel="Cancelar"
                     multiple="false"
                     accept="application/*"
                     maxFileSize="1000000"
                     customUpload="true"
                     (uploadHandler)="customUploader($event)"
-                    (onUpload)="onUpload($event)"
+                    (onUpload)="onDocUploaded($event)"
                     (onClear)="onClear($event)"
-                    (onSelect)="onSelect($event)"
 
       ></p-fileUpload>
 
