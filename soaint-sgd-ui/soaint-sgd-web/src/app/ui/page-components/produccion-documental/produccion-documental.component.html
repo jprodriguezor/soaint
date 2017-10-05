@@ -8,35 +8,46 @@
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                 ></button>
         <button pButton type="button" label="Devolver"
-                [disabled]="step == 1"
+                [disabled]="revisar != true"
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                (click)="prev()"></button>
+                ></button>
         <button pButton type="button" label="Aprobar"
                 [disabled]="aprobar != true"
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                 ></button>
         <button pButton type="button" label="Continuar"
-                [disabled]="step == 9"
+                [disabled]="!revisar && !aprobar"
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                (click)="next()"></button>
+                ></button>
     </div>
 </div>
 
-<div class="ui-g ui-fluid">
-  <div class="ui-g-12">
-    <div class="card card-w-title">
+<div class="ui-fluid">
 
-      <pd-datos-generales *ngIf="step == 1"></pd-datos-generales> <br/>
-      <pd-radicado-asociado *ngIf="step == 1"></pd-radicado-asociado> <br/>
-      <pd-producir-documento *ngIf="step == 1"></pd-producir-documento> <br/>
-      <pd-anexos *ngIf="step == 1"></pd-anexos>
+    <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+
+        <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+
+            <pd-datos-generales></pd-datos-generales> <br/>
+
+        </p-tabPanel>
 
 
+        <p-tabPanel header="Datos de contacto" leftIcon="ui-icon-assignment">
 
-      <pd-gestionar-produccion *ngIf="step == 3"></pd-gestionar-produccion>
+            <pd-datos-contacto></pd-datos-contacto>
 
-    </div>
-  </div>
+        </p-tabPanel>
+
+
+        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
+
+            <pd-gestionar-produccion></pd-gestionar-produccion>
+
+        </p-tabPanel>
+
+    </p-tabView>
+
 </div>
 
 
