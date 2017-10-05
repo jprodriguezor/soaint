@@ -1,0 +1,49 @@
+<form [formGroup]="form">
+
+  <p-panel header="Distribucion" [style]="{border: 'none'}">
+
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="fisica"
+                      label="Física"
+                      formControlName="fisica"
+                      id="fisica"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="electronica"
+                      label="Electrónica"
+                      formControlName="electronica"
+                      id="electronica"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="responseToRem"
+                      label="Responder a remitente"
+                      formControlName="responseToRem"
+                      id="responseToRem"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+
+    </div>
+
+  </p-panel>
+
+</form>
+
+<br/>
+
+<pd-destinatario></pd-destinatario>
+
+<app-datos-direccion></app-datos-direccion>
