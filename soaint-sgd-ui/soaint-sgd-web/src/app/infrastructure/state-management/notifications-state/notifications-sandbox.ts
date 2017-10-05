@@ -25,12 +25,12 @@ export class Sandbox {
       case 'error':
         return this.notify.error(notification.detail, notification.summary, notification.options);
       default:
-        return this.showContectionError(notification.summary)
+        return this.showConnectionError(notification.summary)
     }
 
   }
 
-  showContectionError(code) {
+  showConnectionError(code) {
     return this.notify.error('', this.getStatusMessage(code));
   }
 
