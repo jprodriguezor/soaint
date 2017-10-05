@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, Output, ViewChild, EventEmitter} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
@@ -24,6 +24,9 @@ export class GestionarComunicacionComponent implements OnInit {
 
   @Input()
   task: any;
+
+  @Output()
+  onDevolverTriggered = new EventEmitter<any>();
 
   procesoSeguir: number;
 
@@ -94,8 +97,10 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   sendReject() {
-    this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id == 1 ? 5 : 6;
+    this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id === 1 ? 5 : 6;
     this.completeTask();
+    this.onDevolverTriggered.emit();
+
   }
 
   completeTask() {

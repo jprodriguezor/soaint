@@ -1,7 +1,7 @@
 type tareaStatus = 'RESERVADO' | 'ENPROGRESO' | 'LISTO' | 'CANCELADO' | 'COMPLETADO';
 
 export interface TareaDTO {
-  idTarea: number;
+  idTarea: string;
   nombre: string;
   estado: tareaStatus;
   prioridad: number;

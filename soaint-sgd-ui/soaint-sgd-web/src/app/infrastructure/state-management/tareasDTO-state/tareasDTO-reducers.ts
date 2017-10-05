@@ -5,8 +5,8 @@ import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payl
 
 
 export interface State {
-  ids: number[];
-  entities: { [idTarea: number]: TareaDTO };
+  ids: string[];
+  entities: { [idTarea: string]: TareaDTO };
   activeTask: TareaDTO;
   nextTask: LoadNextTaskPayload,
 }

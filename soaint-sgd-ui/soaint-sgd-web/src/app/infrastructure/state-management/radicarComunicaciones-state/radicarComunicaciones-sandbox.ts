@@ -18,6 +18,15 @@ export class Sandbox {
     return this._api.post(environment.radicarComunicacion_endpoint, payload);
   }
 
+  quickSave(payload: any) {
+    return this._api.post(environment.salvarCorrespondenciaEntrada_endpoint, payload);
+  }
+
+  quickRestore(idproceso: string, idtarea: string) {
+    const endpoint = environment.restablecerCorrespondenciaEntrada_endpoint;
+    return this._api.list(`${endpoint}/${idproceso}/${idtarea}`);
+  }
+
   dispatchRadicarComunicacion(payload: ComunicacionOficialDTO) {
     this._store.dispatch(new actions.RadicarAction(payload));
   }
@@ -25,6 +34,8 @@ export class Sandbox {
   dispatchSedeDestinatarioEntradaFilter(payload?: any) {
     this._store.dispatch(new actions.TriggerExcludeSedeRemitenteFromDestinatarioAction(payload));
   }
+
+
 
 }
 
