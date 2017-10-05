@@ -102,6 +102,7 @@
                         placeholder="Seleccione"
                         [autoWidth]="false"
                         (onBlur)="listenForBlurEvents('tipoComunicacion')"
+                        (onChange)="tipoComunicacionChange($event)"
             >
             </p-dropdown>
           </div>
