@@ -81,7 +81,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
   editable = true;
 
-  task: any;
+  task: TareaDTO;
 
   printStyle: string = printStyles;
 
@@ -463,7 +463,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
   restore() {
     const payload = 1;
-    this._sandbox.quickSave(payload).take(1).subscribe(results => {
+    this._sandbox.quickRestore(this.task.idProceso, this.task.idTarea).take(1).subscribe(results => {
       // destinatario
       this.datosDestinatario.form.patchValue(results.destinatario);
       this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;

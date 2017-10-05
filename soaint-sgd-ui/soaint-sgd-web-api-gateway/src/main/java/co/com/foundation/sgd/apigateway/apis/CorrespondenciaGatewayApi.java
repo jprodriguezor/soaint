@@ -247,5 +247,28 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @POST
+    @Path("/salvar-correspondencia-entrada")
+    @JWTTokenSecurity
+    public Response salvarCorrespondenciaEntrada(TareaDTO tarea) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - Salvando Correspondencia Entrada");
+        Response response = client.salvarCorrespondenciaEntrada(tarea);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/restablecer_correspondencia_entrada/{proceso}/{tarea}")
+    @JWTTokenSecurity
+    public Response restablecerCorrespondenciaEntrada(@PathParam("proceso") final String idproceso, @PathParam("tarea") final String idtarea) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
+        Response response = client.restablecerCorrespondenciaEntrada(idproceso, idtarea);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
 
 }
