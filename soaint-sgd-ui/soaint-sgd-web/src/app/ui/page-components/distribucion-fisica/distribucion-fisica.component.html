@@ -142,6 +142,22 @@
   </div>
 </div>
 
+<p-dialog [visible]="numeroPlanillaDialogVisible" modal="modal" [responsive]="true" [positionTop]="'50%'"
+
+          (onHide)="hideNumeroPlanillaDialog()" [width]="200">
+  <p-header>
+    Numero de planilla
+  </p-header>
+  <div style="padding: 35px">
+    {{lastPlanillaNumber}}
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Aceptar" (click)="hideNumeroPlanillaDialog()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
 
 
 

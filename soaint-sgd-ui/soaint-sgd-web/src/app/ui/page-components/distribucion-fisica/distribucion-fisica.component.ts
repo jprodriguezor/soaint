@@ -53,15 +53,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   dependencia: any;
 
+  lastPlanillaNumber: number
+
+  numeroPlanillaDialogVisible: boolean = false;
+
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
-
-  justificationDialogVisible$: Observable<boolean>;
-
-  detailsDialogVisible$: Observable<boolean>;
-
-  agregarObservacionesDialogVisible$: Observable<boolean>;
-
-  rejectDialogVisible$: Observable<boolean>;
 
   dependenciaSelected$: Observable<DependenciaDTO>;
 
@@ -100,10 +96,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     });
     this.comunicaciones$ = this._store.select(DistribucionArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
-    this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
-    this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
-    this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
-    this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
     this.start_date.setHours(this.start_date.getHours() - 24);
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
@@ -256,9 +248,14 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   exportarPlanilla() {
     const planilla = this.generarDatosExportar();
     this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
-      alert(result.nroPlanilla);
+      this.lastPlanillaNumber = result.nroPlanilla;
+      this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
     });
+  }
+
+  hideNumeroPlanillaDialog() {
+    this.numeroPlanillaDialogVisible = false;
   }
 
 }
