@@ -5,10 +5,7 @@ import {ConstanteDTO} from "../../../../../domain/constanteDTO";
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {
-  getTipoAnexosArrayData,
-  getTipoComunicacionArrayData,
-} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
 import {VALIDATION_MESSAGES} from "../../../../../shared/validation-messages";
 
 @Component({
@@ -21,10 +18,14 @@ export class PDDatosGeneralesComponent implements OnInit{
   form: FormGroup;
   validations: any = {};
 
-  tipoComunicacionSuggestions$: Observable<any[]>;
-  tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
 
-  constructor(private _store: Store<State>, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder){}
+  tiposComunicacion$: Observable<ConstanteDTO[]>;
+  tiposAnexo$: Observable<ConstanteDTO[]>;
+
+  constructor(private _store: Store<State>,
+              private _produccionDocumentalApi : ProduccionDocumentalApiService,
+              private _constSandbox: ConstanteSandbox,
+              private formBuilder: FormBuilder){}
 
 
   initForm() {
@@ -32,15 +33,15 @@ export class PDDatosGeneralesComponent implements OnInit{
       //Datos generales
       'usuarioResponsable': [null],
       'fechaCreacion': [new Date()],
-      'sedeAdministrativa': [{value: null}],
-      'dependenciaGrupo': [{value: null}],
+      'sedeAdministrativa': [null],
+      'dependencia': [null],
 
       //Radicado asociado
       'fechaRadicacion': [new Date()],
       'noRadicado': [null],
 
       //Producir documento
-      'tipoComunicacion': [{value: null}],
+      'tipoComunicacion': [{value: null}, Validators.required],
       'tipoPlantilla': [{value:null}],
       'elaborarDocumento': [null],
 
@@ -56,10 +57,9 @@ export class PDDatosGeneralesComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
-    this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
+    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
+    this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
 
-    this._constSandbox.loadDatosGeneralesDispatch();
 
     this.initForm();
 
