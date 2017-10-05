@@ -1,72 +1,300 @@
 <form [formGroup]="form">
-    
-  
-            <p-panel header="Datos Generales" [style]="{border: 'none'}">
-              
-                <div class="ui-g ui-fluid">
-  
-                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                        <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                                <label for="usuarioResponsable">Usuario Responsable</label>
-                            </div>
-                            <div class="ui-g-12">
-                                <input type="text" pInputText id="usuarioResponsable" readonly formControlName="usuarioResponsable" />
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                      <div class="ui-g form-group">
-                        <div class="ui-g-12">
-                          <label for="fechaCreacion">Fecha y Hora de creación</label>
-                        </div>
-                        <div class="ui-g-12">
-                          <input type="text" pInputText id="fechaCreacion" formControlName="fechaCreacion" />
-                        </div>
-                      </div>
-                    </div>
-    
-                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                      <div class="ui-g form-group">
-                        <div class="ui-g-12">
-                          <label for="sedeAdministrativa">Sede</label>
-                        </div>
-                        <div class="ui-g-12 md-dropdownfield">
-                          <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
-                                      id="sedeAdministrativa"
-                                      formControlName="sedeAdministrativa"
-                                      placeholder="Seleccione"
-                                      [filter]="true"
-                                      [autoWidth]="false"
-                          >
-                          </p-dropdown>
-                        </div>
-                      </div>
-                    </div>
-    
-                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                      <div class="ui-g form-group">
-                        <div class="ui-g-12">
-                          <label for="dependenciaGrupo">Dependencia / Grupo</label>
-                        </div>
-                        <div class="ui-g-12 md-dropdownfield">
-          
-                          <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
-                                      id="dependenciaGrupo"
-                                      formControlName="dependenciaGrupo"
-                                      placeholder="Seleccione"
-                                      [filter]="true"
-                                      [autoWidth]="false"
-                          >
-                          </p-dropdown>
-                        </div>
-                      </div>
-                    </div>
-                  
-                </div>
-              
-            </p-panel>
-            
-        
+
+  <p-panel header="Datos Generales" [style]="{border: 'none'}">
+
+      <div class="ui-g ui-fluid">
+
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                      <label for="usuarioResponsable">Usuario Responsable</label>
+                  </div>
+                  <div class="ui-g-12">
+                      <input type="text" pInputText id="usuarioResponsable" readonly formControlName="usuarioResponsable" />
+                  </div>
+              </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="fechaCreacion">Fecha y Hora de creación</label>
+              </div>
+              <div class="ui-g-12">
+                <p-calendar formControlName="fechaCreacion" [showIcon]="true" dateFormat="dd/mm/yy"
+                            id="fechaCreacion"></p-calendar>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="sedeAdministrativa">Sede</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+                <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
+                            id="sedeAdministrativa"
+                            formControlName="sedeAdministrativa"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label for="dependenciaGrupo">Dependencia / Grupo</label>
+              </div>
+              <div class="ui-g-12 md-dropdownfield">
+
+                <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
+                            id="dependenciaGrupo"
+                            formControlName="dependenciaGrupo"
+                            placeholder="Seleccione"
+                            [filter]="true"
+                            [autoWidth]="false"
+                >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+      </div>
+
+  </p-panel>
+
+  <p-panel header="Radicado asociado" [style]="{border: 'none'}">
+
+    <div class="ui-g ui-fluid">
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="fechaRadicacion">Fecha y Hora de radicacion</label>
+          </div>
+          <div class="ui-g-12">
+            <p-calendar formControlName="fechaRadicacion" [showIcon]="true" dateFormat="dd/mm/yy"
+                        id="fechaRadicacion"></p-calendar>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="noRadicado">No. Radicado</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="noRadicado" readonly formControlName="noRadicado" />
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4"></div>
+
+    </div>
+
+  </p-panel>
+
+  <p-panel header="Producir Documento" [style]="{border: 'none'}">
+
+    <div class="ui-g ui-fluid">
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItem"
+                        id="tipoComunicacion"
+                        formControlName="tipoComunicacion"
+                        placeholder="Seleccione"
+                        [autoWidth]="false"
+                        (onBlur)="listenForBlurEvents('tipoComunicacion')"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoPlantilla">Tipo de plantilla</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+
+            <p-dropdown id="tipoPlantilla"
+                        formControlName="tipoPlantilla"
+                        placeholder="Seleccione"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <button pButton type="button" label="Cargar"
+                    style="width: auto; margin-bottom: 10px;margin-left: 12px"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <br/>
+
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+                <textarea id="elaborarDocumento"
+                          pInputTextarea
+                          title="Elaborar documento"
+                          formControlName="elaborarDocumento"
+                          class="prod-doc"
+                          placeholder="Elaborar documento"
+                          style="width:100%;resize:vertical"
+                ></textarea>
+          </div>
+          <div class="ui-g-12">
+            <button pButton type="button" label="Versionar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
+        <p-dataTable selectionMode="single"
+                     [paginator]="true"
+                     [rows]="10"
+                     [responsive]="true"
+                     [value]="versionesDocumento"
+                     emptyMessage="No se encontraron resultados"
+        >
+          <p-header> Tabla versiones documento </p-header>
+          <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
+          <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+          <p-column field="size" header="Tamaño" [sortable]="true"></p-column>
+          <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton
+                      class="ui-button ui-button-icon ui-button-danger"
+                      *ngIf="editable === true"
+              ></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+    </div>
+
+  </p-panel>
+
+  <p-panel header="Anexos" [style]="{border: 'none'}">
+
+    <div class="ui-g ui-fluid">
+
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label>Soporte</label>
+          </div>
+          <div class="ui-g-12">
+            <label class="md-check">
+              <input type="radio" value="fisico" name="soporte" formControlName="soporte"> Físico
+            </label>
+
+            <label class="md-check">
+              <input type="radio" value="electronico" name="soporte" formControlName="soporte"> Electrónico
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexo">Tipo de anexo</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoAnexosSuggestions$ | async | dropdownItem"
+                        id="tipoAnexo"
+                        formControlName="tipoAnexo"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="descripcion">Sede</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="descripcion" formControlName="descripcion" />
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12"></div>
+          <div class="ui-g-12">
+            <button pButton type="button" label="Adjuntar"
+                    style="width: auto; margin-bottom: 10px;margin-left: 2px"
+            ></button>
+            <button pButton type="button" label="Agregar"
+                    style="width: auto; margin-bottom: 10px;margin-left: 2px"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
+        <br/>
+        <p-dataTable selectionMode="single"
+                     [paginator]="true"
+                     [rows]="10"
+                     [responsive]="true"
+                     [value]="anexosDocumento"
+                     emptyMessage="No se encontraron resultados"
+        >
+          <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
+          <p-column field="tipo" header="Tipo de anexo" [sortable]="true"></p-column>
+          <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+          <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton
+                      class="ui-button ui-button-icon ui-button-danger"
+                      *ngIf="editable === true"
+              ></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+
+
+    </div>
+
+  </p-panel>
+
 </form>
