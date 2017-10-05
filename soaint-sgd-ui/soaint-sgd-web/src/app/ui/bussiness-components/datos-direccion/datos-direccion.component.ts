@@ -55,7 +55,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   formContext: FormContextEnum;
   editIndexContext: number;
 
-  subscribers: Array<Subscription>;
+  subscribers: Array<Subscription> = [];
 
 
   constructor(private _store: Store<State>,
