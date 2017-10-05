@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var produccion_documental_component_1 = require("./produccion-documental.component");
+var produccion_documental_component_1 = require("./produccion-documental.component.ts");
 var datos_generales_component_1 = require("./components/datos-generales/datos-generales.component");
 var radicado_asociado_component_1 = require("./components/radicado-asociado/radicado-asociado.component");
 var producir_documento_component_1 = require("./components/producir-documento/producir-documento.component");

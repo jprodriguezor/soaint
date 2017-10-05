@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'pd-radicado-asociado',
-  templateUrl: './radicado-asociado.component.html'
+  selector: 'pd-produccion-multiple',
+  templateUrl: './produccion-multiple.component.html'
 })
 
-export class PDRadicadoAsociadoComponent implements OnInit{
+export class PDProduccionMultipleComponent implements OnInit{
 
   form: FormGroup;
 
@@ -16,8 +16,7 @@ export class PDRadicadoAsociadoComponent implements OnInit{
 
   initForm() {
     this.form = this.formBuilder.group({
-      'fechaRadicacion': [null],
-      'noRadicado': [null],
+
     });
   }
 

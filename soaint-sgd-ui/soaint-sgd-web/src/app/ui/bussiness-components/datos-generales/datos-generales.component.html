@@ -339,9 +339,8 @@
       </div>
 
       <div class="ui-sm-12 ui-g-12 ui-g-12">
-
         <div class="form-group" style="display: flex; margin: 16px">
-              <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+              <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
                 <label for="descripcionAnexos">Descripción</label>
                  <textarea [rows]="3"  pInputTextarea
                            id="descripcionAnexos"
@@ -352,7 +351,7 @@
                        *ngIf="validations.tipoAnexosDescripcion">
                       {{ validations.tipoAnexosDescripcion }}
                   </div>
-              </span>
+              </div>
 
           <span style="float: right; margin-top: 30px">
                   <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"

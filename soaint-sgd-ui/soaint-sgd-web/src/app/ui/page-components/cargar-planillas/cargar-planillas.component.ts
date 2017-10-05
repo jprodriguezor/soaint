@@ -227,6 +227,10 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   }
 
+  onDocUploaded(event): void {
+    console.log(event);
+  }
+
   actualizarPlanilla() {
     this.comunicaciones.forEach((p) => {
       delete p.usuario;

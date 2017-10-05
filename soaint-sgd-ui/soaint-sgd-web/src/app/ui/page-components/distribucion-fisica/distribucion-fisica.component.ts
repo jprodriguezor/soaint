@@ -227,6 +227,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
         folios: null,
         anexos: null
       };
+      delete agenDTO.usuario;
       agensDTO.push(agenDTO);
     });
 

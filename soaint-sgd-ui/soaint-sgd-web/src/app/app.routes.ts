@@ -72,11 +72,7 @@ export const routes: Routes = [
     component: CargarPlanillasComponent,
     canActivate: [AuthenticatedGuard]
   },
-  {
-    path: ROUTES_PATH.produccionDocumental,
-    canActivate: [AuthenticatedGuard],
-    component: ProduccionDocumentalComponent
-  }
+  {path: ROUTES_PATH.produccionDocumental,component:ProduccionDocumentalComponent,canActivate:[AuthenticatedGuard]}
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

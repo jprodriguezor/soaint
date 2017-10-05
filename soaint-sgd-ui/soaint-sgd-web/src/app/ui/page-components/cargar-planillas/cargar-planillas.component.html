@@ -26,6 +26,21 @@
           </div>
         </div>
       </p-panel>
+      <p-fileUpload id="doc-digitalize" #uploader
+                    mode="advanced"
+                    chooseLabel="Buscar"
+                    uploadLabel="Digitalizar"
+                    cancelLabel="Cancelar"
+                    multiple="false"
+                    accept="application/*"
+                    maxFileSize="1000000"
+                    customUpload="true"
+                    (uploadHandler)="customUploader($event)"
+                    (onUpload)="onUpload($event)"
+                    (onClear)="onClear($event)"
+                    (onSelect)="onSelect($event)"
+
+      ></p-fileUpload>
 
       <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
         <div class="ui-g ui-fluid">
