@@ -1,14 +1,15 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
-import {ConstanteDTO} from "../../../../../domain/constanteDTO";
+import {ConstanteDTO} from "app/domain/constanteDTO";
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
-import {VALIDATION_MESSAGES} from "../../../../../shared/validation-messages";
-import {getAuthenticatedFuncionario} from "../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
-import {FuncionarioDTO} from "../../../../../domain/funcionarioDTO";
+import {VALIDATION_MESSAGES} from "app/shared/validation-messages";
+import {getAuthenticatedFuncionario} from "app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+import {FuncionarioDTO} from "app/domain/funcionarioDTO";
+import {PdMessageService} from "../../providers/PdMessageService";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -21,7 +22,6 @@ export class PDDatosGeneralesComponent implements OnInit{
   validations: any = {};
 
   funcionarioLog: FuncionarioDTO;
-  @Output() tipoComunicacionSelected = new EventEmitter<ConstanteDTO>();
 
   tiposComunicacion$: Observable<ConstanteDTO[]>;
   tiposAnexo$: Observable<ConstanteDTO[]>;
@@ -30,8 +30,8 @@ export class PDDatosGeneralesComponent implements OnInit{
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi : ProduccionDocumentalApiService,
-              private _constSandbox: ConstanteSandbox,
-              private formBuilder: FormBuilder){}
+              private formBuilder: FormBuilder,
+              private pdMessageService : PdMessageService){}
 
 
   initForm() {
@@ -60,16 +60,11 @@ export class PDDatosGeneralesComponent implements OnInit{
 
 
   tipoComunicacionChange(event) {
-    this.tipoComunicacionSelected.emit(event.value);
+    this.pdMessageService.sendMessage(event.value);
   }
 
 
 
-
-
-  listenForErrors() {
-    this.bindToValidationErrorsOf('tipoComunicacion');
-  }
 
   ngOnInit(): void {
     this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
@@ -87,6 +82,10 @@ export class PDDatosGeneralesComponent implements OnInit{
 
 
 
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('tipoComunicacion');
+  }
 
   listenForBlurEvents(control: string) {
     const ac = this.form.get(control);
