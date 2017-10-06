@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 //const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -66,7 +66,8 @@ export const environment = {
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
-  exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
+  exportarPlanilla_endpoint: `${host}/correspondencia-gateway-api/exportar-plantilla/`,
+  generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar_correspondencia_entrada`,
