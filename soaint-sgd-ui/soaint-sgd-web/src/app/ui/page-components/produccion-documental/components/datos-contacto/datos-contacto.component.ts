@@ -15,17 +15,16 @@ import {PdMessageService} from "../../providers/PdMessageService";
 export class PDDatosContactoComponent implements OnInit, OnDestroy{
 
   form: FormGroup;
-  tipoComunicacionSelected : any;
+  tipoComunicacionSelected : ConstanteDTO;
+  tipoPersonaSelected : ConstanteDTO;
   subscription : Subscription;
-
-  tipoComunicacion : number = 1; //1.Externa 2.Interna
-  tipoPersona : number = 2; //1.Natural 2.Juridica
 
   sedesAdministrativas$ : Observable<ConstanteDTO[]>;
   dependencias$ : Observable<ConstanteDTO[]>;
   tiposPersona$ : Observable<ConstanteDTO[]>;
   tiposDestinatario$ : Observable<ConstanteDTO[]>;
   actuanEnCalidad$ : Observable<ConstanteDTO[]>;
+  tiposDocumento$ : Observable<ConstanteDTO[]>;
 
 
 
@@ -33,6 +32,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy{
               private _produccionDocumentalApi : ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService){
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => { this.tipoComunicacionSelected = tipoComunicacion; });
+  }
+
+
+  tipoPersonaChange(event) {
+    this.tipoPersonaSelected = event.value;
   }
 
 
@@ -57,6 +61,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy{
         'dependencia': [{value: false}],
         'funcionario': [{value: false}]
       });
+
+
+
   }
 
   ngOnInit(): void {
@@ -65,8 +72,18 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy{
     this.tiposPersona$ = this._produccionDocumentalApi.getTiposPersona({});
     this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
     this.actuanEnCalidad$ = this._produccionDocumentalApi.getActuaEnCalidad({});
+    this.tiposDocumento$ = this._produccionDocumentalApi.getTiposDocumento({});
 
-      this.initForm();
+    this.initForm();
+
+    this.tiposPersona$.subscribe( (results) => {
+      if (results.length > 0) {
+        this.tipoPersonaSelected = results[0];
+        this.form.get('tipoPersona').setValue(results[0]);
+      }
+    });
+
+
   }
 
   ngOnDestroy() {
