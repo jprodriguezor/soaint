@@ -20,6 +20,10 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.tipoDestinatario_endpoint, payload).map(res => res.constantes);
   }
 
+  getTiposDocumento(payload: {}) {
+    return this._api.list(environment.tipoDocumento_endpoint, payload).map(res => res.constantes);
+  }
+
   getTiposPersona(payload: {}) {
     return this._api.list(environment.tipoPersona_endpoint, payload).map(res => res.constantes);
   }
