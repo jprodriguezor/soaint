@@ -131,8 +131,8 @@
             </p-dataTable>
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
-            <button pButton type="button" label="Exportar"
-                    [disabled]="selectedComunications.length == 0" (click)="exportarPlanilla()"
+            <button pButton type="button" label="Generar"
+                    [disabled]="selectedComunications.length == 0" (click)="generarPlanilla()"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
             </button>
           </div>
@@ -142,6 +142,25 @@
   </div>
 </div>
 
+<p-dialog [visible]="numeroPlanillaDialogVisible" modal="modal" [responsive]="true" [positionTop]="'50%'"
+
+          (onHide)="hideNumeroPlanillaDialog()" [width]="600">
+  <p-header>
+    Datos de planilla
+  </p-header>
+  <a id='dwnldLnk' style="display:none;" target="_blank"></a>
+  <app-planilla-generada [planilla]="planillaGenerada"></app-planilla-generada>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Exportar PDF" (click)="exportarPlanilla('PDF')"></button>
+      <button pButton type="button" class="ui-button-primary"
+              label="Exportar EXCELL" (click)="exportarPlanilla('XLS')"></button>
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideNumeroPlanillaDialog()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
 
 
 

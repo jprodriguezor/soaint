@@ -32,6 +32,7 @@ import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
 import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
+import {escape} from "querystring";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -53,15 +54,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   dependencia: any;
 
+  planillaGenerada: PlanillaDTO;
+
+  numeroPlanillaDialogVisible: boolean = false;
+
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
-
-  justificationDialogVisible$: Observable<boolean>;
-
-  detailsDialogVisible$: Observable<boolean>;
-
-  agregarObservacionesDialogVisible$: Observable<boolean>;
-
-  rejectDialogVisible$: Observable<boolean>;
 
   dependenciaSelected$: Observable<DependenciaDTO>;
 
@@ -100,10 +97,6 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     });
     this.comunicaciones$ = this._store.select(DistribucionArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
-    this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
-    this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
-    this.agregarObservacionesDialogVisible$ = this._store.select(getAgragarObservacionesDialogVisible);
-    this.rejectDialogVisible$ = this._store.select(getRejectDialogVisible);
     this.start_date.setHours(this.start_date.getHours() - 24);
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
@@ -253,12 +246,38 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return planilla;
   };
 
-  exportarPlanilla() {
+  generarPlanilla() {
+    // this.numeroPlanillaDialogVisible = true;
     const planilla = this.generarDatosExportar();
-    this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
-      alert(result.nroPlanilla);
+    this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this.planillaGenerada = result;
+      this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
     });
   }
+
+  exportarPlanilla(formato) {
+    //104000000000005
+    this._planillaService.exportarPlanilla({
+      nroPlanilla: this.planillaGenerada.nroPlanilla,
+      // nroPlanilla: '104000000000005',
+      formato: formato
+    }).subscribe((result) => {
+
+      let pdf = 'data:application/octet-stream;base64,' + result.base64EncodedFile;
+      let dlnk: any = document.getElementById('dwnldLnk');
+      dlnk.href = pdf;
+      dlnk.download = 'planilla.' + formato.toLowerCase();
+      dlnk.click();
+
+      // window.open('data:application/pdf;base64,' + atob(result.base64EncodedFile));
+    });
+  }
+
+  hideNumeroPlanillaDialog() {
+    this.numeroPlanillaDialogVisible = false;
+  }
+
+  downloadName: string;
 
 }

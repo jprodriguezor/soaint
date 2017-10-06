@@ -4,10 +4,7 @@ import co.com.soaint.bpm.services.integration.services.ITaskServices;
 import co.com.soaint.bpm.services.util.EngineConexion;
 import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.bpm.services.util.SystemParameters;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -260,12 +257,10 @@ public class TasksService implements ITaskServices {
     @Override
     public List<RespuestaTareaDTO> listarTareasEstados(EntradaProcesoDTO entrada) throws SystemException {
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
-        Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
-        List<Status> estadosActivos = estadosOperaciones.estadosActivos(estadosEnviados);
         try {
             log.info("iniciar - listar tareas estados: {}", entrada);
             taskService = engine.obtenerEngine(entrada).getTaskService();
-            List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
+            List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), formatoIdioma);
             for (TaskSummary task : tasks) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
@@ -458,6 +453,4 @@ public class TasksService implements ITaskServices {
             log.info("fin - listar tareas completadas por usuario ");
         }
     }
-
-
 }

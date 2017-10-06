@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {Observable} from "rxjs/Observable";
+import {ConstanteDTO} from "../../../../../domain/constanteDTO";
+import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -10,9 +13,13 @@ export class PDGestionarProduccionComponent implements OnInit{
 
   form: FormGroup;
   listaDocumentos: Array<{ sede: string, dependencia: string, rol: string, funcionario: string }> = [];
+  sedesAdministrativas$ : Observable<ConstanteDTO[]>;
+  dependencias$ : Observable<ConstanteDTO[]>;
+  roles$ : Observable<ConstanteDTO[]>;
+  funcionarios$ : Observable<ConstanteDTO[]>;
 
 
-  constructor(private formBuilder: FormBuilder){}
+  constructor(private _produccionDocumentalApi : ProduccionDocumentalApiService, private formBuilder: FormBuilder){}
 
 
   initForm() {
@@ -25,6 +32,10 @@ export class PDGestionarProduccionComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+    this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
+    this.funcionarios$ = this._produccionDocumentalApi.getFuncionarios({});
+
       this.initForm();
   }
 }

@@ -46,6 +46,7 @@ import {OptionalEmailValidatorDirective} from './shared/directives/form/optional
 import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
 import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
 import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planilla/editar-planilla.component';
+import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-generada/planilla-generada.component';
 
 
 @NgModule({
@@ -130,6 +131,7 @@ import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planil
     DistribucionFisicaComponent,
     CargarPlanillasComponent,
     EditarPlanillaComponent,
+    PlanillaGeneradaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

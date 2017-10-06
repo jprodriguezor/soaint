@@ -28,12 +28,12 @@
 
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
 
-            <pd-datos-generales></pd-datos-generales> <br/>
+            <pd-datos-generales (tipoComunicacionSelected)="updateTipoComunicacion($event)"></pd-datos-generales> <br/>
 
         </p-tabPanel>
 
 
-        <p-tabPanel header="Datos de contacto" leftIcon="ui-icon-assignment">
+        <p-tabPanel header="Datos de contacto" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
 
             <pd-datos-contacto></pd-datos-contacto>
 

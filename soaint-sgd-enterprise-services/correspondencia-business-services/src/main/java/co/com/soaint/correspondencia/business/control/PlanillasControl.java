@@ -104,7 +104,7 @@ public class PlanillasControl {
             }
             em.persist(corPlanillas);
             em.flush();
-            return listarPlanillasByNroPlanilla(corPlanillas.getNroPlanilla());
+            return listarPlanillasByNroPlanilla(corPlanillas.getNroPlanilla(), EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -140,13 +140,13 @@ public class PlanillasControl {
      * @throws BusinessException
      * @throws SystemException
      */
-    public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla) throws BusinessException, SystemException {
+    public PlanillaDTO listarPlanillasByNroPlanilla(String nroPlanilla, String estado) throws BusinessException, SystemException {
         try {
             PlanillaDTO planilla = em.createNamedQuery("CorPlanillas.findByNroPlanilla", PlanillaDTO.class)
                     .setParameter("NRO_PLANILLA", nroPlanilla)
                     .getSingleResult();
             planilla.setPAgentes(PlanAgentesDTO.newInstance()
-                    .pAgente(planAgenControl.listarAgentesByIdePlanilla(planilla.getIdePlanilla()))
+                    .pAgente(planAgenControl.listarAgentesByIdePlanilla(planilla.getIdePlanilla(), estado))
                     .build());
             return planilla;
         } catch (NoResultException n) {
@@ -172,7 +172,7 @@ public class PlanillasControl {
      */
     public ReportDTO exportarPlanilla(String nroPlanilla, String formato) throws SystemException {
         try {
-            PlanillaDTO planilla = listarPlanillasByNroPlanilla(nroPlanilla);
+            PlanillaDTO planilla = listarPlanillasByNroPlanilla(nroPlanilla, null);
             JasperReport report = JasperCompileManager.compileReport(reportsPath + planillaDistribucionReport);
             byte[] bytes;
             if (FormatoDocEnum.PDF.getCodigo().equals(formato)) {
