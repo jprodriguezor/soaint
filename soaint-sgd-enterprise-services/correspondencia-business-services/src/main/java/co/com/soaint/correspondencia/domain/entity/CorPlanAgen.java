@@ -44,7 +44,7 @@ import javax.persistence.*;
                 "INNER JOIN c.corCorrespondencia co " +
                 "INNER JOIN c.corAgente a " +
                 "INNER JOIN c.corPlanillas cp " +
-                "WHERE cp.idePlanilla = :IDE_PLANILLA AND (c.estado IS NULL OR c.estado = :ESTADO)"),
+                "WHERE cp.idePlanilla = :IDE_PLANILLA AND (:ESTADO IS NULL OR c.estado = :ESTADO)"),
         @NamedQuery(name = "CorPlanAgen.updateEstadoDistribucion", query = "UPDATE CorPlanAgen c " +
                 "SET c.estado = :ESTADO, c.varPeso = :VAR_PESO, c.varValor = :VAR_VALOR, c.varNumeroGuia = :VAR_NUMERO_GUIA, " +
                 "c.fecObservacion = :FEC_OBSERVACION, c.codNuevaSede = :COD_NUEVA_SEDE, c.codNuevaDepen = :COD_NUEVA_DEPEN, " +
