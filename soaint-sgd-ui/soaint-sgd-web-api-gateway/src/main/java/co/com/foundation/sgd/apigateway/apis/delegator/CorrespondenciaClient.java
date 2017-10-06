@@ -5,6 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -150,10 +151,18 @@ public class CorrespondenciaClient {
                 .put(Entity.json(planilla));
     }
 
+    public Response exportarPlanilla(String nroPlanilla, String formato) {
+        log.info("Correspondencia - [trafic] - exportar planilla: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/planillas-web-api/planillas/" + nroPlanilla + "/" + formato)
+                .request()
+                .get();
+    }
+
     public Response restablecerCorrespondenciaEntrada(String idproceso, String idtarea) {
         log.info("Correspondencia - [trafic] - Invocando Servicio Remoto SalvarCorrespondenciaEntrada: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/tarea-web-api/tarea/"+ idproceso + "/" + idtarea)
+        return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
     }
 

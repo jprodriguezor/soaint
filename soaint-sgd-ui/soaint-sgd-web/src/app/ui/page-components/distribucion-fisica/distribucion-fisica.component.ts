@@ -32,6 +32,7 @@ import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
 import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
+import {escape} from "querystring";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -53,7 +54,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   dependencia: any;
 
-  lastPlanillaNumber: number
+  planillaGenerada: PlanillaDTO;
 
   numeroPlanillaDialogVisible: boolean = false;
 
@@ -245,17 +246,38 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     return planilla;
   };
 
-  exportarPlanilla() {
+  generarPlanilla() {
+    // this.numeroPlanillaDialogVisible = true;
     const planilla = this.generarDatosExportar();
-    this._planillaService.exportarPlanillas(planilla).subscribe((result) => {
-      this.lastPlanillaNumber = result.nroPlanilla;
+    this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+      this.planillaGenerada = result;
       this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
+    });
+  }
+
+  exportarPlanilla(formato) {
+    //104000000000005
+    this._planillaService.exportarPlanilla({
+      nroPlanilla: this.planillaGenerada.nroPlanilla,
+      // nroPlanilla: '104000000000005',
+      formato: formato
+    }).subscribe((result) => {
+
+      let pdf = 'data:application/octet-stream;base64,' + result.base64EncodedFile;
+      let dlnk: any = document.getElementById('dwnldLnk');
+      dlnk.href = pdf;
+      dlnk.download = 'planilla.' + formato.toLowerCase();
+      dlnk.click();
+
+      // window.open('data:application/pdf;base64,' + atob(result.base64EncodedFile));
     });
   }
 
   hideNumeroPlanillaDialog() {
     this.numeroPlanillaDialogVisible = false;
   }
+
+  downloadName: string;
 
 }
