@@ -19,8 +19,6 @@ import {Store} from '@ngrx/store';
 import * as actions from './dependenciaGrupoDTO-actions';
 import {Sandbox} from './dependenciaGrupoDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {go} from '@ngrx/router-store';
-import {mapTo} from 'rxjs/operator/mapTo';
 
 function isLoaded() {
   return (source) =>

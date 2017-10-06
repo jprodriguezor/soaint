@@ -1,0 +1,65 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Número de planilla</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{planilla?.nroPlanilla}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Fecha de generación</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{planilla?.fecGeneracion | date:'dd/MM/yyyy hh:mm a'}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" padding-bottom>
+    <div class="ui-sm-12 ui-md-5 ui-g-5 ui-lg-5">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Sede</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label
+                style="color: inherit">{{planilla?.codSedeDestino}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <label>Dependencia</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+              <label style="color: inherit">{{planilla?.codDependenciaDestino}}</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

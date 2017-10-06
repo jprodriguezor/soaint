@@ -54,7 +54,6 @@ public class SecuridadGatewayApi {
         try {
             log.info("Authenticate the user using the credentials provided");
             AuthenticationResponseContext context = securityCardbridgeClient.verifyCredentials(user.getLogin(), user.getPassword());
-
             if (context.isSuccessful()) {
                 // Issue a token for the user
                 KeyManager km = KeyManager.getInstance();

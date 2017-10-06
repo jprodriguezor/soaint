@@ -50,4 +50,17 @@ public class DependenciaGrupoGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/all-dependencias")
+    @JWTTokenSecurity
+    public Response listarDendencias() {
+
+        log.info("DependenciaGrupoGatewayApi - [trafic] - listar Dependencias");
+        Response response = client.listarDependencias();
+        String responseContent = response.readEntity(String.class);
+        log.info("DependenciaGrupoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }

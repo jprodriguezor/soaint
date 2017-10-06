@@ -1,0 +1,131 @@
+<form [formGroup]="form">
+
+    <p-panel header="Gestionar producción" [style]="{border: 'none'}">
+
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-sm-12 ui-g-10 ui-lg-10">
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="sede">Sede</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+
+                  <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
+                              id="sede"
+                              formControlName="sede"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="dependencia">Dependencia</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+
+                  <p-dropdown [options]="dependencias$ | async | dropdownItem"
+                              id="dependencia"
+                              formControlName="dependencia"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="rol">Rol</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+
+                  <p-dropdown [options]="roles$ | async | dropdownItem"
+                              id="rol"
+                              formControlName="rol"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="funcionario">Funcionario</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+
+                  <p-dropdown [options]="funcionarios$ | async | dropdownItem"
+                              id="funcionario"
+                              formControlName="funcionario"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="ui-sm-12 ui-g-2 ui-lg-2">
+
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <div class="ui-g form-group">
+                <div class="ui-g-12"> <label></label> </div>
+                <div class="ui-g-12">
+                  <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right"
+                  ></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <br/>
+
+        <div class="ui-g ui-fluid">
+
+          <div class="ui-sm-12 ui-g-12 ui-lg-12">
+
+            <p-dataTable selectionMode="single"
+                         [paginator]="true"
+                         [rows]="10"
+                         [responsive]="true"
+                         [value]="listaDocumentos"
+                         emptyMessage="No se encontraron resultados"
+            >
+              <p-column field="sede" header="Sede Administrativa" [sortable]="true"></p-column>
+              <p-column field="dependencia" header="Dependencia" [sortable]="true"></p-column>
+              <p-column field="rol" header="Rol" [sortable]="true"></p-column>
+              <p-column field="funcionario" header="Funcionario" [sortable]="true"></p-column>
+              <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
+                <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                  <button type="button" icon="ui-icon-close" pButton
+                          class="ui-button ui-button-icon ui-button-danger"
+                  ></button>
+                </ng-template>
+              </p-column>
+            </p-dataTable>
+
+          </div>
+
+        </div>
+
+    </p-panel>
+
+</form>

@@ -48,4 +48,13 @@ public class GestionarDependencia {
     public DependenciasDTO listarDependenciasByCodigo(String[] codigos)throws SystemException{
         return control.listarDependenciasByCodigo(codigos);
     }
+
+    /**
+     *
+     * @return
+     * @throws SystemException
+     */
+    public DependenciasDTO listarDependencias() throws SystemException {
+        return control.listarDependencias();
+    }
 }

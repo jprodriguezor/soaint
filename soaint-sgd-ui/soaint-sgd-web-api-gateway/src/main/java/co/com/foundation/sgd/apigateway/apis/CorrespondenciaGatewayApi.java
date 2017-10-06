@@ -5,10 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.correspondencia.AgentesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -191,6 +188,98 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - obteniendo constantes por codigos: " + codigos);
         Response response = client.obtnerContantesPorCodigo(codigos);
         String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/listar-distribucion")
+    @JWTTokenSecurity
+    public Response listarDistribucion(@QueryParam("fecha_ini") final String fechaIni,
+                                       @QueryParam("fecha_fin") final String fechaFin,
+                                       @QueryParam("cod_dependencia") final String codDependencia,
+                                       @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                       @QueryParam("nro_radicado") final String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando distribucion");
+        Response response = client.listarDistribucion(fechaIni, fechaFin, codDependencia, codTipoDoc, nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/listar-planillas")
+    @JWTTokenSecurity
+    public Response listarPlanillas(@QueryParam("fecha_ini") final String fechaIni,
+                                    @QueryParam("fecha_fin") final String fechaFin,
+                                    @QueryParam("cod_dependencia") final String codDependencia,
+                                    @QueryParam("cod_tipologia_documental") final String codTipoDoc,
+                                    @QueryParam("nro_planilla") final String nroPlanilla) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - listando planillas");
+        Response response = client.listarPlanillas(nroPlanilla);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() != HttpStatus.OK.value()) {
+            PlanillaDTO emptyPlanilla = new PlanillaDTO();
+            PlanAgentesDTO planAgentesDTO = new PlanAgentesDTO();
+            planAgentesDTO.setPAgente(new ArrayList<>());
+            emptyPlanilla.setPAgentes(planAgentesDTO);
+            return Response.status(HttpStatus.OK.value()).entity(emptyPlanilla).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/generar-plantilla")
+    public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - generar planilla distribucion");
+        Response response = client.generarPlantilla(planilla);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/cargar-plantilla")
+    public Response cargarPlanilla(@RequestBody PlanillaDTO planilla) {
+        log.info("processing rest request - cargar planilla distribucion");
+        Response response = client.cargarPlantilla(planilla);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/exportar-plantilla/")
+    public Response exportarPlanilla(@QueryParam("nroPlanilla") final String nroPlanilla,
+                                     @QueryParam("formato") final String formato) {
+        log.info("processing rest request - exportar planilla distribucion");
+        Response response = client.exportarPlanilla(nroPlanilla, formato);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/salvar-correspondencia-entrada")
+    @JWTTokenSecurity
+    public Response salvarCorrespondenciaEntrada(TareaDTO tarea) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - Salvando Correspondencia Entrada");
+        Response response = client.salvarCorrespondenciaEntrada(tarea);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/restablecer_correspondencia_entrada/{proceso}/{tarea}")
+    @JWTTokenSecurity
+    public Response restablecerCorrespondenciaEntrada(@PathParam("proceso") final String idproceso, @PathParam("tarea") final String idtarea) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
+        Response response = client.restablecerCorrespondenciaEntrada(idproceso, idtarea);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 

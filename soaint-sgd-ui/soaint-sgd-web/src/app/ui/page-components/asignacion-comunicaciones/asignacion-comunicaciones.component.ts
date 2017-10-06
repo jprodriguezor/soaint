@@ -22,6 +22,17 @@ import {
   getJustificationDialogVisible, getRejectDialogVisible
 } from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {RedireccionDTO} from '../../../domain/redireccionDTO';
+import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
+import {PushNotificationAction} from 'app/infrastructure/state-management/notifications-state/notifications-actions';
+import {
+  FAIL_DEVOLUTION,
+  FAIL_REDIRECTION,
+  SUCCESS_DEVOLUTION,
+  SUCCESS_REDIRECTION,
+  WARN_DEVOLUTION,
+  WARN_REDIRECTION
+} from 'app/shared/lang/es';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -71,6 +82,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
+  redireccionesFallidas: Array<RedireccionDTO>;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
@@ -83,6 +96,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
               private _funcionarioSandbox: Sandbox,
+              private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -166,9 +180,54 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-    this._asignacionSandbox.redirectDispatch({
-      agentes: this.createAgentes(justificationValues)
-    });
+
+    const checks = this.checkRedirectionsAgentes('numRedirecciones', justificationValues);
+
+    if (checks.failChecks.length > 0) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: WARN_REDIRECTION
+      }));
+
+    } else {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'success',
+        summary: SUCCESS_REDIRECTION
+      }));
+
+      checks.successChecks.forEach(payload => {
+        this._asignacionSandbox.redirectDispatch(payload);
+      });
+    }
+
+    this.redireccionesFallidas = checks.failChecks;
+
+  }
+
+  devolverComunicaciones(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
+
+    const checks = this.checkRedirectionsAgentes('numDevoluciones', justificationValues);
+
+    if (checks.failChecks.length > 0) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: WARN_REDIRECTION
+      }));
+
+    } else {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'success',
+        summary: SUCCESS_REDIRECTION
+      }));
+
+      alert('Aún no se ha definido como se debe proceder');
+      // checks.successChecks.forEach(payload => {
+      //   // this._asignacionSandbox.redirectDispatch(payload);
+      //
+      // });
+    }
+
+    this.redireccionesFallidas = checks.failChecks;
   }
 
   sendRedirect() {
@@ -242,7 +301,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         codTipCausal: null,
         codTipProceso: null,
         ideAsigUltimo: null,
-        numRedirecciones: null,
         nivLectura: null,
         nivEscritura: null,
         fechaVencimiento: null,
@@ -272,7 +330,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         codTipCausal: null,
         codTipProceso: null,
         ideAsigUltimo: null,
-        numRedirecciones: null,
         nivLectura: null,
         nivEscritura: null,
         fechaVencimiento: null,
@@ -297,6 +354,44 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     });
     return agentes;
   }
+
+  checkRedirectionsAgentes(key, justification) {
+    const failChecks = [];
+    const successChecks = [];
+    this.selectedComunications.forEach((value) => {
+      const agente = value.agenteList[0];
+      agente.codSede = justification.sedeAdministrativa.codigo;
+      agente.codDependencia = justification.dependenciaGrupo.codigo;
+      delete agente['_$visited'];
+
+      if (this.ruleCheckRedirectionNumber.check(agente[key])) {
+        failChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
+      } else {
+        successChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
+      }
+    });
+
+    return {failChecks: failChecks, successChecks: successChecks};
+  }
+
+  createRecursiveRedirectsPayload(agente, justification): RedireccionDTO {
+    return {
+      agentes: [agente],
+      traza: {
+        observacion: justification.justificacion,
+        ideFunci: this.funcionarioLog.id,
+        codOrgaAdmin: this.dependenciaSelected.codigo,
+        codEstado: null,
+        ideTrazDocumento: null,
+        ideDocumento: null
+      }
+    };
+  }
+
+  hideAndCleanDevolucionesFallidasDialog() {
+    this.redireccionesFallidas = null;
+  }
+
 
   listarComunicaciones() {
     this._comunicacionOficialApi.loadDispatch({

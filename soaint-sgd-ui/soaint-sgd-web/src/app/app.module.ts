@@ -43,6 +43,10 @@ import {ClearValidatorsDirective} from './shared/directives/form/clear-validator
 import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
 import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
 import {OptionalEmailValidatorDirective} from './shared/directives/form/optional-email-validator.directive';
+import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
+import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
+import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planilla/editar-planilla.component';
+import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-generada/planilla-generada.component';
 
 
 @NgModule({
@@ -124,6 +128,10 @@ import {OptionalEmailValidatorDirective} from './shared/directives/form/optional
     PdfViewerComponent,
     ...UI_COMPONENTS,
     ...PIPES,
+    DistribucionFisicaComponent,
+    CargarPlanillasComponent,
+    EditarPlanillaComponent,
+    PlanillaGeneradaComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

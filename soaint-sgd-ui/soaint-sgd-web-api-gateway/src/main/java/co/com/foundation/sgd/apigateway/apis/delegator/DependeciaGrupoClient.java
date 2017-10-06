@@ -37,4 +37,12 @@ public class DependeciaGrupoClient {
                 .get();
     }
 
+    public Response listarDependencias() {
+        log.info("DependeciaGrupo - [trafic] - listing Dependecias with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/dependencia-web-api/dependencias")
+                .request()
+                .get();
+    }
+
 }

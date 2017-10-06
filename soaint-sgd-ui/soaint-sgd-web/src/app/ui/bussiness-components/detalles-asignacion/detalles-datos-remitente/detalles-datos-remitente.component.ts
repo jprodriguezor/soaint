@@ -1,5 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {ComunicacionOficialDTO} from '../../../../domain/comunicacionOficialDTO';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
 import {AgentDTO} from '../../../../domain/agentDTO';
 import {ContactoDTO} from '../../../../domain/contactoDTO';
@@ -22,6 +21,7 @@ export class DetallesDatosRemitenteComponent {
   contactos: ContactoDTO[];
 
 
-  constructor() {}
+  constructor() {
+  }
 
 }

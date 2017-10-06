@@ -30,26 +30,26 @@ import java.util.List;
         @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
-                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, c.numRedirecciones, c.numDevoluciones) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
-                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, c.numRedirecciones, c.numDevoluciones) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
-                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, c.numRedirecciones, c.numDevoluciones) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE (:COD_ESTADO IS NULL OR c.codEstado = :COD_ESTADO) AND c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
-                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, c.numRedirecciones, c.numDevoluciones) " +
                 "FROM CorAgente c INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
@@ -60,10 +60,14 @@ import java.util.List;
                 "SET c.fecAsignacion = :FECHA_ASIGNACION, c.codEstado = :COD_ESTADO " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
-                "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA " +
+                "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA, c.numRedirecciones = c.numRedirecciones + 1, " +
+                "c.codEstado = :COD_ESTADO " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.updateEstado", query = "UPDATE CorAgente c " +
                 "SET c.codEstado = :COD_ESTADO " +
+                "WHERE c.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "CorAgente.updateNumDevoluciones", query = "UPDATE CorAgente c " +
+                "SET c.numDevoluciones = c.numDevoluciones + 1 " +
                 "WHERE c.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)
@@ -106,6 +110,10 @@ public class CorAgente implements Serializable {
     private String codTipAgent;
     @Column(name = "IND_ORIGINAL")
     private String indOriginal;
+    @Column(name = "NUM_REDIRECCIONES")
+    private Long numRedirecciones;
+    @Column(name = "NUM_DEVOLUCIONES")
+    private Long numDevoluciones;
     @Column(name = "FEC_CREACION", insertable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecCreacion;

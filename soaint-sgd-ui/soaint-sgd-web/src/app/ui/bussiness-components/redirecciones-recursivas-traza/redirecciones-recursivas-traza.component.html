@@ -1,0 +1,27 @@
+
+<div class="ui-g-12">
+  <p> Se ha excedido el número máximo de [redirecciones / devoluciones] de las siguientes correspndencias: </p>
+
+  <p-dataTable selectionMode="single"
+               [paginator]="true" [rows]="10"
+               [responsive]="true"
+               [value]="redireccionesFallidas"
+               inmutable="false"
+               emptyMessage="No tiene más acciones disponibles"
+  >
+
+    <p-header> Redirecciones / Devoluciones Fallidas  </p-header>
+
+    <!--Body-->
+    <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+    <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
+      <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+        <button type="button" label="Continuar" pButton (click)="ejecutarRedireccionOrigen(i)"
+                class="ui-button ui-button-icon ui-button-danger"
+
+        ></button>
+      </ng-template>
+    </p-column>
+    <!--End Body-->
+  </p-dataTable>
+</div>

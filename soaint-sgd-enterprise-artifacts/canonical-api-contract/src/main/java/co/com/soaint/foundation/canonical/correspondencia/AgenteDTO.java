@@ -44,5 +44,7 @@ public class AgenteDTO implements Serializable {
     private Date fecAsignacion;
     private String codTipAgent;
     private String indOriginal;
+    private Long numRedirecciones;
+    private Long numDevoluciones;
 
 }

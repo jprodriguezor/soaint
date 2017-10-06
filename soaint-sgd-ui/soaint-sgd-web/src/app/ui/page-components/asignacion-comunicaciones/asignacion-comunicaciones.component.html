@@ -155,7 +155,7 @@
           </div>
           <div class="ui-g-12" style="padding-top: 20px">
             <button pButton type="button" label="Redireccionar"
-                    [disabled]="selectedComunications.length === 0  || form.get('estadoCorrespondencia').value === 'AS' || asignationType === 'auto'"
+                    [disabled]="selectedComunications.length === 0  || form.get('estadoCorrespondencia').value === 'AS'"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
                     (click)="showRedirectDialog()"></button>
             <button pButton type="button" label="Tramitar"
@@ -227,8 +227,27 @@
         <button pButton type="button" class="ui-button-primary"
                 label="Cerrar" (click)="hideRejectDialog()"></button>
         <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
-                label="Devolver" (click)="sendReject()"></button>
+                label="Devolver" (click)="devolverComunicaciones()"></button>
       </div>
+    </p-footer>
+  </p-dialog>
+
+
+  <p-dialog [visible]="redireccionesFallidas" modal="modal" [responsive]="true"
+            [contentStyle]="{'overflow':'visible'}"
+            (onHide)="hideAndCleanDevolucionesFallidasDialog()" [width]="800">
+    <p-header>
+      Devoluciones / Redirecciones - Fallidas
+    </p-header>
+    <app-redirecciones-recursivas-traza [redireccionesFallidas]="" (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida"></app-redirecciones-recursivas-traza>
+
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" class="ui-button-danger"
+                label="Cerrar" (click)="hideAndCleanDevolucionesFallidasDialog()"></button>
+      </div>
+
     </p-footer>
   </p-dialog>
 </div>

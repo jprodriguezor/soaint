@@ -1,4 +1,4 @@
-const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 
 export const environment = {
   production: true,

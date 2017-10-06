@@ -28,13 +28,23 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name = "CorPlanAgen.findAll", query = "SELECT c FROM CorPlanAgen c"),
         @NamedQuery(name = "CorPlanAgen.findByIdePlanilla", query = "SELECT   NEW co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO " +
-                "(c.idePlanAgen, c.estado, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
-                "c.codNuevaDepen, c.observaciones, c.codCauDevo, c.fecCarguePla, a.ideAgente, co.ideDocumento) " +
+                "(c.idePlanAgen, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
+                "c.codNuevaDepen, c.observaciones, c.codCauDevo, c.fecCarguePla, a.ideAgente, co.ideDocumento, " +
+                "co.nroRadicado ) " +
                 "FROM CorPlanAgen c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "INNER JOIN c.corAgente a " +
                 "INNER JOIN c.corPlanillas cp " +
                 "WHERE cp.idePlanilla = :IDE_PLANILLA"),
+        @NamedQuery(name = "CorPlanAgen.findByIdePlanillaAndEstado", query = "SELECT   NEW co.com.soaint.foundation.canonical.correspondencia.PlanAgenDTO " +
+                "(c.idePlanAgen, c.varPeso, c.varValor, c.varNumeroGuia, c.fecObservacion, c.codNuevaSede, " +
+                "c.codNuevaDepen, c.observaciones, c.codCauDevo, c.fecCarguePla, a.ideAgente, co.ideDocumento, " +
+                "co.nroRadicado ) " +
+                "FROM CorPlanAgen c " +
+                "INNER JOIN c.corCorrespondencia co " +
+                "INNER JOIN c.corAgente a " +
+                "INNER JOIN c.corPlanillas cp " +
+                "WHERE cp.idePlanilla = :IDE_PLANILLA AND (:ESTADO IS NULL OR c.estado = :ESTADO)"),
         @NamedQuery(name = "CorPlanAgen.updateEstadoDistribucion", query = "UPDATE CorPlanAgen c " +
                 "SET c.estado = :ESTADO, c.varPeso = :VAR_PESO, c.varValor = :VAR_VALOR, c.varNumeroGuia = :VAR_NUMERO_GUIA, " +
                 "c.fecObservacion = :FEC_OBSERVACION, c.codNuevaSede = :COD_NUEVA_SEDE, c.codNuevaDepen = :COD_NUEVA_DEPEN, " +

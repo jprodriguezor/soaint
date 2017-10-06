@@ -1,0 +1,115 @@
+<div class="page-title">
+  <h2>Cargar plantillas </h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Busqueda de tareas" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="numeroPlanilla">Número de planilla</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText id="numeroPlanilla" formControlName="numeroPlanilla">
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-12" [style.padding-top]="'40px'">
+              <button pButton type="button" label="Buscar"
+                      style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right"
+                      (click)="listarDistribuciones()"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+      <p-fileUpload id="doc-digitalize" #uploader [style]="{'padding-bottom': '16px'}"
+                    *ngIf="canUpdatePlanilla()"
+                    mode="advanced"
+                    chooseLabel="Buscar"
+                    uploadLabel="Subir documento"
+                    cancelLabel="Cancelar"
+                    multiple="false"
+                    accept="application/*"
+                    maxFileSize="1000000"
+                    customUpload="true"
+                    (uploadHandler)="customUploader($event)"
+                    (onUpload)="onDocUploaded($event)"
+                    (onClear)="onClear($event)"
+
+      ></p-fileUpload>
+
+      <p-panel header="Resultados búsqueda" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [(selection)]="selectedComunications"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column field="nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+              <p-column header="Tipo de persona" [sortable]="true"></p-column>
+              <p-column header="Número de identificación" [sortable]="true"></p-column>
+              <p-column header="Nombre" [sortable]="true"></p-column>
+              <p-column header="Sede" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findSede(data.codSedeDestino)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Dependencia" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{findDependency(data.codDependenciaDestino)}}
+                </ng-template>
+              </p-column>
+
+              <p-column field="tipologiaDocumental.nombre" header="Tipología documental" [sortable]="true"></p-column>
+              <p-column field="folios" header="Folios" [sortable]="true"></p-column>
+              <p-column field="anexos" header="Anexos" [sortable]="true"></p-column>
+              <p-column field="estado" header="Estado de entrega" [sortable]="true">
+                <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                  {{getEstadoLabel(planAgente[col.field])?.nombre}}
+                </ng-template>
+              </p-column>
+              <p-column field="fecCarguePla" header="Fecha entrega" [sortable]="true">
+                <ng-template let-col let-planAgente="rowData" pTemplate="body">
+                  {{planAgente[col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column field="usuario" header="Usuario" [sortable]="true"></p-column>
+              <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Actualizar planilla"
+                    [disabled]="!canUpdatePlanilla()" (click)="actualizarPlanilla()"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+            <button pButton type="button" label="Editar"
+                    [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</div>
+<p-dialog [visible]="editarPlanillaDialogVisible" modal="modal" [responsive]="true" positionTop="20"
+          [contentStyle]="{'overflow':'scroll'}"
+          (onHide)="hideEditarPlanillaDialog()" [width]="800">
+  <p-header>
+    Redireccionar
+  </p-header>
+  <app-editar-planilla #popupEditar></app-editar-planilla>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideEditarPlanillaDialog()"></button>
+      <button pButton type="button" class="ui-button-primary" [disabled]="!form.valid"
+              label="Aceptar" (click)="editarPlanilla()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
