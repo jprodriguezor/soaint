@@ -46,7 +46,7 @@ public class FuncionarioDTO  implements Serializable {
 
     public FuncionarioDTO(BigInteger ideFunci, String codTipDocIdent, String nroIdentificacion, String nomFuncionario,
                           String valApellido1, String valApellido2, String corrElectronico,
-                          String loginName, String estado){
+                          String loginName, String estado) {
         this.ideFunci = ideFunci;
         this.codTipDocIdent = codTipDocIdent;
         this.nroIdentificacion = nroIdentificacion;

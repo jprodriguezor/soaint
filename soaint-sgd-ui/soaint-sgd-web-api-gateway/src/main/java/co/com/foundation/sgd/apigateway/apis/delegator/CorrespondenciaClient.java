@@ -149,4 +149,19 @@ public class CorrespondenciaClient {
                 .request()
                 .put(Entity.json(planilla));
     }
+
+    public Response restablecerCorrespondenciaEntrada(String idproceso, String idtarea) {
+        log.info("Correspondencia - [trafic] - Invocando Servicio Remoto SalvarCorrespondenciaEntrada: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/tarea-web-api/tarea/"+ idproceso + "/" + idtarea)
+                .request().get();
+    }
+
+    public Response salvarCorrespondenciaEntrada(TareaDTO tarea) {
+        log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/planillas-web-api/planillas")
+                .request()
+                .post(Entity.json(tarea));
+    }
 }

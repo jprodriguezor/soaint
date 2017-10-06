@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
@@ -14,7 +14,6 @@ export class ProduccionDocumentalComponent implements OnInit{
   revisar: boolean = false;
   aprobar: boolean = false;
   tabIndex = 0;
-
 
 
   updateTabIndex(event) {

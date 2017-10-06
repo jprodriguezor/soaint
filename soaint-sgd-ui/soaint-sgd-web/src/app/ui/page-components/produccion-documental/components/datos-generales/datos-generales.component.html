@@ -33,14 +33,7 @@
                 <label for="sedeAdministrativa">Sede</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <p-dropdown [options]="sedeAdministrativaInput | dropdownItem"
-                            id="sedeAdministrativa"
-                            formControlName="sedeAdministrativa"
-                            placeholder="Seleccione"
-                            [filter]="true"
-                            [autoWidth]="false"
-                >
-                </p-dropdown>
+                <input type="text" pInputText id="sedeAdministrativa" formControlName="sedeAdministrativa" />
               </div>
             </div>
           </div>
@@ -48,18 +41,10 @@
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="dependenciaGrupo">Dependencia / Grupo</label>
+                <label for="dependenciaGrupo">Dependencia</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-
-                <p-dropdown [options]="dependenciaGrupoInput | dropdownItem"
-                            id="dependenciaGrupo"
-                            formControlName="dependenciaGrupo"
-                            placeholder="Seleccione"
-                            [filter]="true"
-                            [autoWidth]="false"
-                >
-                </p-dropdown>
+                <input type="text" pInputText id="dependencia" formControlName="dependencia" />
               </div>
             </div>
           </div>
@@ -111,12 +96,13 @@
             <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="tiposComunicacion$ | async | dropdownItem"
                         id="tipoComunicacion"
                         formControlName="tipoComunicacion"
                         placeholder="Seleccione"
                         [autoWidth]="false"
                         (onBlur)="listenForBlurEvents('tipoComunicacion')"
+                        (onChange)="tipoComunicacionChange($event)"
             >
             </p-dropdown>
           </div>
@@ -232,11 +218,10 @@
             <label for="tipoAnexo">Tipo de anexo</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tipoAnexosSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="tiposAnexo$ | async | dropdownItem"
                         id="tipoAnexo"
                         formControlName="tipoAnexo"
                         placeholder="Seleccione"
-                        [filter]="true"
                         [autoWidth]="false"
             >
             </p-dropdown>
@@ -247,7 +232,7 @@
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12">
-            <label for="descripcion">Sede</label>
+            <label for="descripcion">Descripcion</label>
           </div>
           <div class="ui-g-12">
             <input type="text" pInputText id="descripcion" formControlName="descripcion" />

@@ -30,6 +30,9 @@ import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-
 import {Sandbox as CargarPlanillasSandbox} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox";
 import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
+import {environment} from "../../../../environments/environment";
+import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
+import {ApiBase} from "../../../infrastructure/api/api-base";
 
 @Component({
   selector: 'app-cargar-planillas',
@@ -81,6 +84,8 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   @ViewChild('popupEditar') popupEditar;
 
+  uploadUrl: string;
+
   constructor(private _store: Store<RootState>,
               private _cargarPlanillasApi: CargarPlanillasSandbox,
               private _funcionarioSandbox: FuncionarioSandbox,
@@ -88,6 +93,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
               private _dependenciaSandbox: DependenciaSandbox,
               private _planillaService: PlanillasApiService,
               private _changeDetectorRef: ChangeDetectorRef,
+              private _api: ApiBase,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -111,6 +117,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
     this.tipologiaDocumentalSuggestions$.subscribe((results) => {
       this.tipologiasDocumentales = results;
@@ -222,6 +229,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
         coms[index] = element;
     });
     this.comunicaciones = [...coms];
+    this.selectedComunications = [];
     this.hideEditarPlanillaDialog();
     this.refreshView();
 
@@ -229,6 +237,21 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   onDocUploaded(event): void {
     console.log(event);
+  }
+
+  onClear(event) {
+    console.log(event);
+  }
+
+  customUploader(event) {
+    const formData = new FormData();
+    formData.append('file[]', event.files[0], event.files[0].name);
+    this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
+      this._api.sendFile(this.uploadUrl, formData, ['1', '2']).subscribe(response => {
+        console.log(response);
+      });
+    });
+
   }
 
   actualizarPlanilla() {
@@ -261,7 +284,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   canUpdatePlanilla(): boolean {
-    return this.comunicaciones.findIndex((e) => e.estado && e.estado != '') > -1;
+    return this.comunicaciones.length > 0 && this.comunicaciones.every((e) => e.estado && e.estado != '');
   }
 
   refreshView() {

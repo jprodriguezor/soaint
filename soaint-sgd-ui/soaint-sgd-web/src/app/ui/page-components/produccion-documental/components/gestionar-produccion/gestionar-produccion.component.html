@@ -13,11 +13,10 @@
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
 
-                  <p-dropdown [options]="sedeInput | dropdownItem"
+                  <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
                               id="sede"
                               formControlName="sede"
                               placeholder="Seleccione"
-                              [filter]="true"
                               [autoWidth]="false"
                   >
                   </p-dropdown>
@@ -32,11 +31,10 @@
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
 
-                  <p-dropdown [options]="dependenciaInput | dropdownItem"
+                  <p-dropdown [options]="dependencias$ | async | dropdownItem"
                               id="dependencia"
                               formControlName="dependencia"
                               placeholder="Seleccione"
-                              [filter]="true"
                               [autoWidth]="false"
                   >
                   </p-dropdown>
@@ -51,11 +49,10 @@
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
 
-                  <p-dropdown [options]="rolInput | dropdownItem"
+                  <p-dropdown [options]="roles$ | async | dropdownItem"
                               id="rol"
                               formControlName="rol"
                               placeholder="Seleccione"
-                              [filter]="true"
                               [autoWidth]="false"
                   >
                   </p-dropdown>
@@ -70,11 +67,10 @@
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
 
-                  <p-dropdown [options]="funcionarioInput | dropdownItem"
+                  <p-dropdown [options]="funcionarios$ | async | dropdownItem"
                               id="funcionario"
                               formControlName="funcionario"
                               placeholder="Seleccione"
-                              [filter]="true"
                               [autoWidth]="false"
                   >
                   </p-dropdown>
