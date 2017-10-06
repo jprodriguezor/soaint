@@ -247,6 +247,16 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/exportar-plantilla/")
+    public Response exportarPlanilla(@QueryParam("nroPlanilla") final String nroPlanilla,
+                                     @QueryParam("formato") final String formato) {
+        log.info("processing rest request - exportar planilla distribucion");
+        Response response = client.exportarPlanilla(nroPlanilla, formato);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @POST
     @Path("/salvar-correspondencia-entrada")
     @JWTTokenSecurity

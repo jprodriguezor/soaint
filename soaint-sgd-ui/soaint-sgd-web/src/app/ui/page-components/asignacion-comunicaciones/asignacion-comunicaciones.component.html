@@ -70,21 +70,18 @@
       </p-panel>
       <p-panel header="Datos funcionarios a asignar" [style]="{border: 'none'}" *ngIf="asignationType === 'auto'">
         <div class="ui-g ui-fluid">
-          <div class="ui-g-12">
-            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                         [(selection)]="selectedFuncionarios"
-                         [responsive]="true"
-                         styleClass="short-table"
-                         [value]="(funcionariosSuggestions$ | async)">
-              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-              <p-column header="Nombre funcionario" [sortable]="true">
-                <ng-template let-funcionario="rowData" let-i="rowIndex" pTemplate="item">
-                  <span>
-                    {{funcionario.nombre + ' ' + funcionario.valApellido1 + ' ' + funcionario.valApellido2}}
-                  </span>
-                </ng-template>
-              </p-column>
-            </p-dataTable>
+          <div class="ui-g-6" style="padding-top: 30px;padding-bottom: 5px">
+            <p-multiSelect maxSelectedLabels="4" [options]="(funcionariosSuggestions$ | async) | dropdownItemFullName"
+                           [(ngModel)]="selectedFuncionarios" [panelStyle]="{minWidth:'12em'}"
+                           defaultLabel="Seleccione los funcionarios"
+                           selectedItemsLabel="{0} funcionarios seleccionados">
+            </p-multiSelect>
+            <div *ngIf="selectedFuncionarios.length > 4">
+              <p *ngFor="let item of selectedFuncionarios">
+                {{item.nombre + ' ' + (item.valApellido1 ? item.valApellido1 : "") + ' ' + (item.valApellido2 ?
+                item.valApellido2 : "")}}
+              </p>
+            </div>
           </div>
         </div>
       </p-panel>
@@ -141,7 +138,8 @@
               <p-column header="Ver detalles" [style]="{'text-align':'center','width':'130px'}">
                 <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Ver detalles"
-                          style="width: auto;" (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
+                          style="width: auto;"
+                          (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
               <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
@@ -184,7 +182,7 @@
             [contentStyle]="{'overflow':'auto','max-height':'90%'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
 
-      <app-detalles-asignacion #detallesView></app-detalles-asignacion>
+    <app-detalles-asignacion #detallesView></app-detalles-asignacion>
   </p-dialog>
 
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
@@ -239,7 +237,8 @@
     <p-header>
       Devoluciones / Redirecciones - Fallidas
     </p-header>
-    <app-redirecciones-recursivas-traza [redireccionesFallidas]="" (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida"></app-redirecciones-recursivas-traza>
+    <app-redirecciones-recursivas-traza [redireccionesFallidas]=""
+                                        (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida"></app-redirecciones-recursivas-traza>
 
 
     <p-footer>

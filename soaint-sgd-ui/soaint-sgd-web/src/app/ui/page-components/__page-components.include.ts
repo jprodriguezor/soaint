@@ -16,6 +16,7 @@ import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fi
 import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
 import {EditarPlanillaComponent} from "../bussiness-components/editar-planilla/editar-planilla.component";
 import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
+import {PlanillaGeneradaComponent} from "../bussiness-components/planilla-generada/planilla-generada.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -45,6 +46,7 @@ export const PAGE_COMPONENTS = [
   DistribucionFisicaComponent,
   CargarPlanillasComponent,
   EditarPlanillaComponent,
+  PlanillaGeneradaComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];

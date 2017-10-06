@@ -9,8 +9,12 @@ export class PlanillasApiService {
   constructor(private _api: ApiBase) {
   }
 
-  exportarPlanillas(payload: PlanillaDTO) {
-    return this._api.post(environment.exportarPlanilla_endpoint, payload);
+  generarPlanillas(payload: PlanillaDTO) {
+    return this._api.post(environment.generarPlanilla_endpoint, payload);
+  }
+
+  exportarPlanilla(payload: { nroPlanilla: string, formato: string }) {
+    return this._api.list(environment.exportarPlanilla_endpoint, payload);
   }
 
   cargarPlanillas(payload: PlanillaDTO) {
