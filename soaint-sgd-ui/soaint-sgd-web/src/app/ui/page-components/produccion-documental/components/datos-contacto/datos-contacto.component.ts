@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {ConstanteDTO} from "../../../../../domain/constanteDTO";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -9,6 +10,8 @@ import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 export class PDDatosContactoComponent implements OnInit{
 
   form: FormGroup;
+
+  @Input() tipoComunicacion : ConstanteDTO;
 
 
   constructor(private formBuilder: FormBuilder){}

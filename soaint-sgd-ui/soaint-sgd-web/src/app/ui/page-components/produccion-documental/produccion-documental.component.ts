@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
@@ -11,11 +11,17 @@ export class ProduccionDocumentalComponent implements OnInit{
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
+
+
   revisar: boolean = false;
   aprobar: boolean = false;
   tabIndex = 0;
 
 
+  updateTipoComunicacion(event) {
+    console.log("Event tipo comunicacion selected")
+    console.log(event);
+  }
 
   updateTabIndex(event) {
     this.tabIndex = event.index;

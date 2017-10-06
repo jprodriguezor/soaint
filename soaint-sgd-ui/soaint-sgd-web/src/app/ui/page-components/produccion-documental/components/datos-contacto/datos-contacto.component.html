@@ -46,4 +46,4 @@
 
 <pd-destinatario></pd-destinatario>
 
-<app-datos-direccion></app-datos-direccion>
+<app-datos-direccion *ngIf="tipoComunicacion && tipoComunicacion.codigo == 'TP-CMCOI'"></app-datos-direccion>
