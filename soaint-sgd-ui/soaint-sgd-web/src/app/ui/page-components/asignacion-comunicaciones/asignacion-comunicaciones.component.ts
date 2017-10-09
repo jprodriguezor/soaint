@@ -33,6 +33,7 @@ import {
   WARN_DEVOLUTION,
   WARN_REDIRECTION
 } from 'app/shared/lang/es';
+import 'rxjs/add/operator/toArray';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -181,53 +182,53 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
 
-    const checks = this.checkRedirectionsAgentes('numRedirecciones', justificationValues);
+    this.checkRedirectionsAgentes('numRedirecciones', justificationValues).then(checks => {
+      if (checks.failChecks.length > 0) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
 
-    if (checks.failChecks.length > 0) {
-      this._store.dispatch(new PushNotificationAction({
-        severity: 'warn',
-        summary: WARN_REDIRECTION
-      }));
+      } else {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'success',
+          summary: SUCCESS_REDIRECTION
+        }));
 
-    } else {
-      this._store.dispatch(new PushNotificationAction({
-        severity: 'success',
-        summary: SUCCESS_REDIRECTION
-      }));
+        checks.successChecks.forEach(payload => {
+          this._asignacionSandbox.redirectDispatch(payload);
+        });
+      }
 
-      checks.successChecks.forEach(payload => {
-        this._asignacionSandbox.redirectDispatch(payload);
-      });
-    }
-
-    this.redireccionesFallidas = checks.failChecks;
+      this.redireccionesFallidas = checks.failChecks;
+    });
 
   }
 
   devolverComunicaciones(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
 
-    const checks = this.checkRedirectionsAgentes('numDevoluciones', justificationValues);
+    // const checks = this.checkRedirectionsAgentes('numDevoluciones', justificationValues);
 
-    if (checks.failChecks.length > 0) {
-      this._store.dispatch(new PushNotificationAction({
-        severity: 'warn',
-        summary: WARN_REDIRECTION
-      }));
-
-    } else {
-      this._store.dispatch(new PushNotificationAction({
-        severity: 'success',
-        summary: SUCCESS_REDIRECTION
-      }));
-
-      alert('Aún no se ha definido como se debe proceder');
-      // checks.successChecks.forEach(payload => {
-      //   // this._asignacionSandbox.redirectDispatch(payload);
-      //
-      // });
-    }
-
-    this.redireccionesFallidas = checks.failChecks;
+    // if (checks.failChecks.length > 0) {
+    //   this._store.dispatch(new PushNotificationAction({
+    //     severity: 'warn',
+    //     summary: WARN_REDIRECTION
+    //   }));
+    //
+    // } else {
+    //   this._store.dispatch(new PushNotificationAction({
+    //     severity: 'success',
+    //     summary: SUCCESS_REDIRECTION
+    //   }));
+    //
+    //   alert('Aún no se ha definido como se debe proceder');
+    //   // checks.successChecks.forEach(payload => {
+    //   //   // this._asignacionSandbox.redirectDispatch(payload);
+    //   //
+    //   // });
+    // }
+    //
+    // this.redireccionesFallidas = checks.failChecks;
   }
 
   sendRedirect() {
@@ -355,23 +356,36 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     return agentes;
   }
 
-  checkRedirectionsAgentes(key, justification) {
-    const failChecks = [];
-    const successChecks = [];
-    this.selectedComunications.forEach((value) => {
-      const agente = value.agenteList[0];
-      agente.codSede = justification.sedeAdministrativa.codigo;
-      agente.codDependencia = justification.dependenciaGrupo.codigo;
-      delete agente['_$visited'];
+  checkRedirectionsAgentes(key, justification): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const failChecks = [];
+      const successChecks = [];
 
-      if (this.ruleCheckRedirectionNumber.check(agente[key])) {
-        failChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
-      } else {
-        successChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
-      }
+      this.selectedComunications.forEach((value) => {
+        const agente = value.agenteList[0];
+        agente.codSede = justification.sedeAdministrativa.codigo;
+        agente.codDependencia = justification.dependenciaGrupo.codigo;
+        delete agente['_$visited'];
+        this.ruleCheckRedirectionNumber.check(agente[key]).toPromise().then(res => {
+          debugger;
+          console.log(res);
+
+          if (!res) {
+            failChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
+          } else {
+            successChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
+          }
+
+        }, (err) => {
+          reject(err);
+        });
+        // console.log(res);
+
+      });
+
+      resolve({failChecks: failChecks, successChecks: successChecks});
     });
 
-    return {failChecks: failChecks, successChecks: successChecks};
   }
 
   createRecursiveRedirectsPayload(agente, justification): RedireccionDTO {

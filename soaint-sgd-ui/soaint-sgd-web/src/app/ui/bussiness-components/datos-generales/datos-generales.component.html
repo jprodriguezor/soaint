@@ -341,9 +341,9 @@
       <div class="ui-sm-12 ui-g-12 ui-g-12">
         <div class="form-group" style="display: flex; margin: 16px">
               <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
-                <label for="descripcionAnexos">Descripción</label>
                  <textarea [rows]="3"  pInputTextarea
                            id="descripcionAnexos"
+                           placeholder="Descripción"
                            autoResize="false"
                            formControlName="tipoAnexosDescripcion"
                  ></textarea>
@@ -360,7 +360,6 @@
                           [disabled]="!form.get('tipoAnexos').value"
                   ></button>
               </span>
-
         </div>
       </div>
 
