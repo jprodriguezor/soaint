@@ -70,7 +70,7 @@ export const environment = {
   generarPlanilla_endpoint: `${host}/correspondencia-gateway-api/generar-plantilla`,
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
-  salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar_correspondencia_entrada`,
+  salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
 };
