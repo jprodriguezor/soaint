@@ -283,5 +283,15 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/verificar-redirecciones")
+    @JWTTokenSecurity
+    public Response verificarRedirecciones(@QueryParam("payload") String payload) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - verificar cantidad de redirecciones");
+        Response response = client.verificarRedireccionesDrools(payload);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
 
 }

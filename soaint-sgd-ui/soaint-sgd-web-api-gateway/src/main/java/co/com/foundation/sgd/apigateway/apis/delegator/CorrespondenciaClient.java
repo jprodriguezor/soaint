@@ -89,7 +89,20 @@ public class CorrespondenciaClient {
         log.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
-        return wt.request()
+        return wt.path("/regla")
+                .request()
+                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("X-KIE-ContentType", "json")
+                .header("Content-Type", "application/json")
+                .post(Entity.json(payload));
+    }
+
+    public Response verificarRedireccionesDrools(String payload) {
+        log.info("Correspondencia - [trafic] - verificar redirecciones Regla: " + droolsEndpoint);
+
+        WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
+        return wt.path("/redireccion")
+                .request()
                 .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
