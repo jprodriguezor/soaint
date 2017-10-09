@@ -12,11 +12,14 @@ export class DroolsRedireccionarCorrespondenciaApi {
   }
 
   check(redireccionesNumero) {
-    const end_point = environment.metricasTiempoRadicacion_rule_endpoint;
+    const end_point = environment.verificarRedirecciones_rule_endpoint;
     const payload = this.payload(redireccionesNumero);
     return this._api.list(end_point, { payload: JSON.stringify(payload)})
       .map(response => {
-        return RulesServer.extractFromResponse(response, 'co.com.soaint.sgd.model.Redireccion').respuestaRedireccion;
+        debugger;
+        const result = RulesServer.extractFromResponse(response, 'co.com.soaint.sgd.model.Redireccion').respuestaRedireccion;
+        console.log(result);
+        return result;
       });
 
     // return Observable.of({

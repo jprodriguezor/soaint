@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 //const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.103:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.103:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -47,6 +47,7 @@ export const environment = {
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
+  verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
   carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
