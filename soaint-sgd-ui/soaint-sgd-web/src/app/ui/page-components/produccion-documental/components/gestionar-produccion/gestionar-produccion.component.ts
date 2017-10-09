@@ -34,7 +34,6 @@ export class PDGestionarProduccionComponent implements OnInit{
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
     this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
-    this.funcionarios$ = this._produccionDocumentalApi.getFuncionarios({});
 
       this.initForm();
   }

@@ -82,10 +82,12 @@
             </div>
             <div class="ui-g-12 md-dropdownfield">
 
-              <p-dropdown id="tipoPlantilla"
+              <p-dropdown [options]="tiposPlantilla | dropdownItem"
+                          id="tipoPlantilla"
                           formControlName="tipoPlantilla"
                           placeholder="Seleccione"
                           [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('tipoPlantilla')"
               >
               </p-dropdown>
             </div>

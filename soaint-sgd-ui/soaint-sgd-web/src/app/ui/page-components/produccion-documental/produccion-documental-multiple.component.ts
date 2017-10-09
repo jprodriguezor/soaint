@@ -1,9 +1,16 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {Store} from "@ngrx/store";
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
 import {Observable} from "rxjs/Observable";
 import {ConstanteDTO} from "app/domain/constanteDTO";
-import {VALIDATION_MESSAGES} from "../../../shared/validation-messages";
+import {
+  getArrayData as getFuncionarioArrayData
+} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {VALIDATION_MESSAGES} from "app/shared/validation-messages";
+import {FuncionarioDTO} from "app/domain/funcionarioDTO";
+import {Sandbox} from "app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
 
 @Component({
   selector: 'produccion-documental-multiple',
@@ -14,7 +21,9 @@ import {VALIDATION_MESSAGES} from "../../../shared/validation-messages";
 export class ProduccionDocumentalMultipleComponent implements OnInit{
 
 
-  constructor(private _produccionDocumentalApi : ProduccionDocumentalApiService,
+  constructor(private _store: Store<RootState>,
+              private _produccionDocumentalApi : ProduccionDocumentalApiService,
+              private _funcionarioSandbox: Sandbox,
               private formBuilder: FormBuilder) {  }
 
   form: FormGroup;
@@ -22,7 +31,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
 
   sedesAdministrativas$ : Observable<ConstanteDTO[]>;
   dependencias$ : Observable<ConstanteDTO[]>;
-  funcionarios$ : Observable<ConstanteDTO[]>;
+  funcionarios$ : Observable<FuncionarioDTO[]>;
+
+  tiposPlantilla : ConstanteDTO[];
 
 
 
@@ -39,7 +50,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
     this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
-    this.funcionarios$ = this._produccionDocumentalApi.getFuncionarios({});
+    this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
+    this.funcionarios$ = this._store.select(getFuncionarioArrayData);
+    this._funcionarioSandbox.loadAllFuncionariosDispatch();
 
     this.initForm();
   }
