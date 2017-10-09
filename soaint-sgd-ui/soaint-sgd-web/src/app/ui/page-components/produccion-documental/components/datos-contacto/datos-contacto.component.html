@@ -48,11 +48,8 @@
           <div class="ui-g-12">
             <label>Tipo destinatario</label>
           </div>
-          <div class="ui-g-12" *ngIf="tipoComunicacion == 1">
-            <input type="text" pInputText id="tipoDestinatarioText" formControlName="tipoDestinatarioText" />
-          </div>
 
-          <div class="ui-g-12" *ngIf="tipoComunicacion == 2">
+          <div class="ui-g-12" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
             <p-dropdown [options]="tiposDestinatario$ | async | dropdownItem"
                         id="tipoDestinatarioList"
                         formControlName="tipoDestinatarioList"
@@ -61,10 +58,14 @@
             >
             </p-dropdown>
           </div>
+
+          <div class="ui-g-12" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+            <input type="text" pInputText id="tipoDestinatarioText" formControlName="tipoDestinatarioText" />
+          </div>
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="tipoPersona">Tipo persona</label>
@@ -75,13 +76,14 @@
                         formControlName="tipoPersona"
                         placeholder="Seleccione"
                         [autoWidth]="false"
+                        (onChange)="tipoPersonaChange($event)"
             >
             </p-dropdown>
           </div>
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Nombre y apellidos</label>
@@ -92,13 +94,14 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Tipo documento</label>
           </div>
-          <div class="ui-g-12" *ngIf="tipoPersona == 1">
-            <p-dropdown id="tipoDocumentoList"
+          <div class="ui-g-12" *ngIf="tipoPersonaSelected  && 'TP-PERPN' == tipoPersonaSelected.codigo">
+            <p-dropdown [options]="tiposDocumento$ | async | dropdownItem"
+                        id="tipoDocumentoList"
                         formControlName="tipoDocumentoList"
                         placeholder="Seleccione"
                         [autoWidth]="false"
@@ -106,17 +109,17 @@
             </p-dropdown>
           </div>
 
-          <div class="ui-g-12" *ngIf="tipoPersona == 2">
+          <div class="ui-g-12" *ngIf="tipoPersonaSelected  && 'TP-PERPJ' == tipoPersonaSelected.codigo">
             <input type="text" pInputText id="tipoDocumentoText" formControlName="tipoDocumentoText" />
           </div>
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
-            <label *ngIf="tipoPersona == 2">NIT</label>
-            <label *ngIf="tipoPersona == 1">No. Documento de identidada</label>
+            <label *ngIf="tipoPersonaSelected && 'TP-PERPN' == tipoPersonaSelected.codigo">No. Documento de identidada</label>
+            <label *ngIf="tipoPersonaSelected && 'TP-PERPJ' == tipoPersonaSelected.codigo">NIT</label>
           </div>
           <div class="ui-g-12">
             <input type="text" pInputText id="nit" formControlName="nit" />
@@ -124,7 +127,7 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1 && tipoPersona == 2">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Razón social</label>
@@ -135,7 +138,7 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 1 && tipoPersona == 2">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="actuaCalidad">Actua en calidad</label>
@@ -153,7 +156,7 @@
       </div>
 
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 2">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="sedeAdministrativa">Sede</label>
@@ -171,7 +174,7 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 2">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="dependencia">Dependencia</label>
@@ -190,7 +193,7 @@
         </div>
       </div>
 
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacion == 2">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="funcionario">Funcionario</label>
@@ -214,4 +217,4 @@
 
 </form>
 
-<app-datos-direccion *ngIf="tipoComunicacionSelected"></app-datos-direccion>
+<app-datos-direccion *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo"></app-datos-direccion>

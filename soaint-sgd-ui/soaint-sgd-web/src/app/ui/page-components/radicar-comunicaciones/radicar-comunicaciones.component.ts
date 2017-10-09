@@ -153,12 +153,18 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
     this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigitInmediata').valueChanges
       .subscribe(value => {
-        const payload: LoadNextTaskPayload = {
-          idProceso: this.task.idProceso,
-          idInstanciaProceso: this.task.idInstanciaProceso,
-          idDespliegue: this.task.idDespliegue
-        };
-        this._store.dispatch(new ScheduleNextTaskAction(payload));
+        // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
+        if (value) {
+          const payload: LoadNextTaskPayload = {
+            idProceso: this.task.idProceso,
+            idInstanciaProceso: this.task.idInstanciaProceso,
+            idDespliegue: this.task.idDespliegue
+          };
+          this._store.dispatch(new ScheduleNextTaskAction(payload));
+        } else {
+          this._store.dispatch(new ScheduleNextTaskAction(null));
+        }
+
       });
   }
 

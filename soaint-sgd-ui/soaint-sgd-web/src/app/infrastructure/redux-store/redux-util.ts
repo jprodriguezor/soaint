@@ -1,4 +1,3 @@
-
 /**
  * This function coerces a string into a string literal type.
  * Using tagged union types in TypeScript 2.0, this enables
@@ -8,6 +7,8 @@
  * is a good place to ensure all of our action labels
  * are unique.
  */
+
+import {tassign} from 'tassign';
 
 const typeCache: { [label: string]: boolean } = {};
 export function type<T>(label: T | ''): T {
@@ -20,21 +21,27 @@ export function type<T>(label: T | ''): T {
   return <T>label;
 }
 
-// export const shouldLoad = (entity: string, key: string): Saga<any> => {
-//   return saga$ => saga$.filter(saga$ => {
-//     return !saga$.state.entities[entity][saga$.action[key]];
-//   });
-// };
+interface State {
+  ids: string[] | number[];
+  entities: any;
+};
 
-import { Store } from '@ngrx/store';
+interface Action {
+  payload: any
+}
 
-// import 'rxjs/add/operator/take';
-// import * as fromRoot from './reducers';
-//
-// export function getState(store: Store<fromRoot.State>): fromRoot.State {
-//     let state: fromRoot.State;
-//
-//     store.take(1).subscribe(s => state = s);
-//
-//     return state;
-// }
+export function loadDataReducer(action, state, values, idKey) {
+
+  const valuesIds = values.map(value => value[idKey]);
+  const valuesEntities = values.reduce((entities: { [key: number]: any }, value: any) => {
+    return Object.assign(entities, {
+      [value[idKey]]: value
+    });
+  }, {});
+
+  return tassign(state, {
+    ids: [...valuesIds],
+    entities: valuesEntities
+  });
+}
+

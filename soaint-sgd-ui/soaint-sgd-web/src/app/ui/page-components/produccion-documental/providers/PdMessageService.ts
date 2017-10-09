@@ -6,8 +6,8 @@ import { Subject } from 'rxjs/Subject';
 export class PdMessageService {
   private subject = new Subject<any>();
 
-  sendMessage(message: string) {
-    this.subject.next({ text: message });
+  sendMessage(message: any) {
+    this.subject.next(message);
   }
 
   clearMessage() {

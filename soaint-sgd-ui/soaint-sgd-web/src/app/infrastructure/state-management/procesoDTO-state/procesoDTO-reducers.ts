@@ -1,6 +1,7 @@
 import {ActionTypes as Autocomplete, Actions} from './procesoDTO-actions';
 import {tassign} from 'tassign';
 import {ProcesoDTO} from 'app/domain/procesoDTO';
+import {loadDataReducer} from '../../redux-store/redux-util';
 
 
 export interface State {
@@ -28,22 +29,25 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
-      const values = action.payload.data;
-      const newValues = values.filter(data => !state.entities[data.codigoProceso]);
 
-      const newValuesIds = newValues.map(data => data.codigoProceso);
-      const newValuesEntities = newValues.reduce((entities: { [codigoProceso: number]: ProcesoDTO }, value: ProcesoDTO) => {
-        return Object.assign(entities, {
-          [value.codigoProceso]: value
-        });
-      }, {});
+      return loadDataReducer(action, state, action.payload.data, 'codigoProceso');
 
-      return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities),
-        selectedId: state.selectedId
-      });
+      // console.log(action.payload);
+      // const values = ;
+      // const newValues = values.filter(data => !state.entities[data.codigoProceso]);
+      //
+      // const newValuesIds = newValues.map(data => data.codigoProceso);
+      // const newValuesEntities = newValues.reduce((entities: { [codigoProceso: number]: ProcesoDTO }, value: ProcesoDTO) => {
+      //   return Object.assign(entities, {
+      //     [value.codigoProceso]: value
+      //   });
+      // }, {});
+      //
+      // return tassign(state, {
+      //   ids: [...state.ids, ...newValuesIds],
+      //   entities: tassign(state.entities, newValuesEntities),
+      //   selectedId: state.selectedId
+      // });
 
     }
 

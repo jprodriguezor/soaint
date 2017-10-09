@@ -1,5 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Params} from "@angular/router";
+import {PdMessageService} from "./providers/PdMessageService";
+import {Subscription} from "rxjs/Subscription";
+import {ConstanteDTO} from "../../../domain/constanteDTO";
 
 @Component({
   selector: 'produccion-documental',
@@ -9,7 +12,13 @@ import {ActivatedRoute, Params} from "@angular/router";
 
 export class ProduccionDocumentalComponent implements OnInit{
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  tipoComunicacionSelected : ConstanteDTO;
+  subscription : Subscription;
+
+  constructor(private activatedRoute: ActivatedRoute,
+              private pdMessageService: PdMessageService) {
+    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => { this.tipoComunicacionSelected = tipoComunicacion; });
+  }
 
   revisar: boolean = false;
   aprobar: boolean = false;
