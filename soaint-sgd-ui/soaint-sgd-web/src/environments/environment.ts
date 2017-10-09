@@ -47,11 +47,12 @@ export const environment = {
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
+  verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
-  carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
-  carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
-  carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
+  carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/massiveloaderapi/listadocargamasiva`,
+  carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/massiveloaderapi/estadocargamasiva`,
+  carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/massiveloaderapi/cargar-fichero`,
 
   // Asignacion Enpoints
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
