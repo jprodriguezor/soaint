@@ -1,0 +1,113 @@
+<div class="page-title">
+  <h2>Producción Documental</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" style="margin: 20px 0">
+    <button pButton type="button" label="Cerrar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+    ></button>
+    <button pButton type="button" label="Asignar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+    ></button>
+  </div>
+</div>
+
+<div class="ui-fluid">
+
+  <form [formGroup]="form">
+
+    <p-panel header="Gestionar producción múltiple" leftIcon="ui-icon-assignment">
+
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="sede">Sede</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
+                          id="sede"
+                          formControlName="sede"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('sede')"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="dependencia">Dependencia</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="dependencias$ | async | dropdownItem"
+                          id="dependencia"
+                          formControlName="dependencia"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('dependencia')"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="funcionario">Funcionario que proyecta</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="funcionarios$ | async | dropdownItem"
+                          id="funcionario"
+                          formControlName="funcionario"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="listenForBlurEvents('funcionario')"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoPlantilla">Tipo de plantilla</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+
+              <p-dropdown id="tipoPlantilla"
+                          formControlName="tipoPlantilla"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+          <div class="ui-g form-group">
+            <div class="ui-g-12" style="float:right">
+              <button pButton type="button" label="Agregar"
+                      style="width: auto; margin-bottom: 10px;margin-left: 12px"
+              ></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </p-panel>
+
+  </form>
+
+</div>
+
+
