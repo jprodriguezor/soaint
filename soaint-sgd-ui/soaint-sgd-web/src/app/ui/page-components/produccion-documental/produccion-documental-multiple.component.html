@@ -125,8 +125,8 @@
     <p-column field="funcionario.nombre" header="Funcionario"></p-column>
     <p-column field="tipoPlantilla.nombre" header="Tipo de plantilla"></p-column>
     <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
-      <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-        <button type="button" icon="ui-icon-close" pButton label="Eliminar"
+      <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+        <button type="button" pButton label="Eliminar" (click)="eliminarProyector(rindex)"
                 class="ui-button ui-button-icon ui-button-danger"
         ></button>
       </ng-template>

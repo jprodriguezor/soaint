@@ -54,6 +54,14 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
     this.refreshView();
   }
 
+  eliminarProyector(index) {
+    if (index > -1) {
+      let proyectores = this.listaProyectores;
+      proyectores.splice(index,1);
+
+      this.listaProyectores = [...proyectores];
+    }
+  }
 
   initForm() {
     this.form = this.formBuilder.group({
