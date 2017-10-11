@@ -96,6 +96,19 @@ public class ProcesoGatewayApi {
     }
 
     @POST
+    @Path("/tareas/reservar")
+    @JWTTokenSecurity
+    public Response reservarTarea(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - reserve Task");
+        Response response = procesoClient.reservarTarea(entrada);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
     @Path("/tareas/completar")
     @JWTTokenSecurity
     public Response completarTarea(EntradaProcesoDTO entrada) {
