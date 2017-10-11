@@ -25,7 +25,12 @@ export class WorkspaceComponent implements OnInit {
   }
 
   iniciarTarea(task) {
-    this._taskSandbox.startTaskDispatch(task);
+    if (task.estado === 'LISTO') {
+      this._taskSandbox.reserveTaskDispatch(task);
+    } else {
+      this._taskSandbox.startTaskDispatch(task);
+    }
+
   }
 
 }

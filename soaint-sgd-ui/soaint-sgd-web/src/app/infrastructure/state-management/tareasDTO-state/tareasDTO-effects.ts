@@ -49,12 +49,25 @@ export class Effects {
     );
 
   @Effect()
-  takeReservedTask: Observable<Action> = this.actions$
+  startTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_TASK)
     .map(toPayload)
     .switchMap(
       (payload) => this._sandbox.getTaskVariables(payload)
         .mergeMap((taskVariables) => this._sandbox.startTask(payload)
+          .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
+          ))
+        .map((response: any) => new actions.StartTaskSuccessAction(response))
+        .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
+    );
+
+  @Effect()
+  reserveTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.RESERVE_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.getTaskVariables(payload)
+        .mergeMap((taskVariables) => this._sandbox.reserveTask(payload)
           .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
           ))
         .map((response: any) => new actions.StartTaskSuccessAction(response))
