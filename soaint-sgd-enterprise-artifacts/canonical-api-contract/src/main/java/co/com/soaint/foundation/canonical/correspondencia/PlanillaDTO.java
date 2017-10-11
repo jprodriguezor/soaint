@@ -40,11 +40,12 @@ public class PlanillaDTO implements Serializable {
     private String codDependenciaDestino;
     private String codClaseEnvio;
     private String codModalidadEnvio;
+    private String ideEcm;
     private PlanAgentesDTO pAgentes;
 
     public PlanillaDTO(BigInteger idePlanilla, String nroPlanilla, Date fecGeneracion, String codTipoPlanilla,
                        String codFuncGenera, String codSedeOrigen, String codDependenciaOrigen, String codSedeDestino,
-                       String codDependenciaDestino, String codClaseEnvio, String codModalidadEnvio){
+                       String codDependenciaDestino, String codClaseEnvio, String codModalidadEnvio, String ideEcm){
         this.idePlanilla = idePlanilla;
         this.nroPlanilla = nroPlanilla;
         this.fecGeneracion = fecGeneracion;
@@ -56,6 +57,7 @@ public class PlanillaDTO implements Serializable {
         this.codDependenciaDestino = codDependenciaDestino;
         this.codClaseEnvio = codClaseEnvio;
         this.codModalidadEnvio = codModalidadEnvio;
+        this.ideEcm = ideEcm;
 
     }
 }
