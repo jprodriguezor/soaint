@@ -30,12 +30,16 @@ import javax.persistence.*;
     @NamedQuery(name = "CorPlanillas.findAll", query = "SELECT c FROM CorPlanillas c"),
         @NamedQuery(name = "CorPlanillas.findByNroPlanilla", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO " +
                 "(c.idePlanilla, c.nroPlanilla, c.fecGeneracion, c.codTipoPlanilla, c.codFuncGenera, c.codSedeOrigen, " +
-                "c.codDependenciaOrigen, c.codSedeDestino, c.codDependenciaDestino, c.codClaseEnvio, c.codModalidadEnvio) " +
+                "c.codDependenciaOrigen, c.codSedeDestino, c.codDependenciaDestino, c.codClaseEnvio, c.codModalidadEnvio, " +
+                "c.ideEcm) " +
                 "FROM CorPlanillas c " +
                 "WHERE c.nroPlanilla = :NRO_PLANILLA"),
         @NamedQuery(name = "CorPlanillas.findMaxNroPlanillaByCodSede", query = "SELECT MAX(c.nroPlanilla) " +
                 "FROM CorPlanillas c " +
-                "WHERE c.codSedeOrigen = :COD_SEDE")})
+                "WHERE c.codSedeOrigen = :COD_SEDE"),
+        @NamedQuery(name = "CorPlanillas.updateReferenciaEcm", query = "UPDATE CorPlanillas c " +
+                "SET c.ideEcm = :IDE_ECM " +
+                "WHERE c.idePlanilla = :IDE_PLANILLA")})
 @javax.persistence.TableGenerator(name = "COR_PLANILLAS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_PLANILLAS_SEQ", allocationSize = 1)
 public class CorPlanillas implements Serializable {
@@ -77,6 +81,8 @@ public class CorPlanillas implements Serializable {
     private Date fechaModif;
     @Column(name = "COD_USUARIO_MODIF")
     private String codUsuarioModif;
+    @Column(name = "IDE_ECM")
+    private String ideEcm;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corPlanillas")
     private List<CorPlanAgen> corPlanAgenList;
 

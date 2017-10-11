@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {ApiBase} from "./api-base";
 import {environment} from '../../../environments/environment';
+import {Observable} from "rxjs/Observable";
+import {ConstanteDTO} from "../../domain/constanteDTO";
 
 @Injectable()
 export class ProduccionDocumentalApiService {
@@ -40,8 +42,15 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
   }
 
-  getFuncionarios(payload: {}) {
-    return this._api.list(environment.listarFuncionarios_endpoint, payload).map(res => res.constantes);
+  getTiposPlantilla(payload: {}) : ConstanteDTO[] {
+    let tiposPlantilla : ConstanteDTO[] = JSON.parse(`[
+      {"codigo":"TL-DOCOF","nombre":"Oficio","codPadre":"TL-DOC","id":49},
+      {"codigo":"TL-DOCA","nombre":"Acta","codPadre":"TL-DOC","id":59},
+      {"codigo":"TL-DOCC","nombre":"Circular","codPadre":"TL-DOC","id":60},
+      {"codigo":"TL-DOCM","nombre":"Memorando","codPadre":"TL-DOC","id":61}
+    ]`);
+
+    return tiposPlantilla;
   }
 
 }

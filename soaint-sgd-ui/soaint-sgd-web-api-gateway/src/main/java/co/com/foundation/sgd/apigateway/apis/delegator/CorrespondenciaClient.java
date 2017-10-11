@@ -182,7 +182,7 @@ public class CorrespondenciaClient {
     public Response salvarCorrespondenciaEntrada(TareaDTO tarea) {
         log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/planillas-web-api/planillas")
+        return wt.path("/tarea-web-api/tarea")
                 .request()
                 .post(Entity.json(tarea));
     }
