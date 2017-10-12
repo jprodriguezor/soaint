@@ -185,7 +185,6 @@ public class TasksService implements ITaskServices {
             }
             return RespuestaTareaDTO.newInstance()
                     .idTarea(entrada.getIdTarea())
-                    .nombre(entrada.getParametros().get("nombreTarea").toString())
                     .estado(estado)
                     .idProceso(entrada.getIdProceso())
                     .idDespliegue(entrada.getIdDespliegue())
