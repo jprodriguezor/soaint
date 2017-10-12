@@ -33,6 +33,7 @@ import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 import {environment} from "../../../../environments/environment";
 import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 import {ApiBase} from "../../../infrastructure/api/api-base";
+import {getActiveTask} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
 
 @Component({
   selector: 'app-cargar-planillas',
@@ -82,9 +83,15 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   dependencias: DependenciaDTO[] = [];
 
+  activeTaskUnsubscriber: Subscription;
+
   @ViewChild('popupEditar') popupEditar;
 
   uploadUrl: string;
+
+  task: any;
+
+  nroPlanilla: string;
 
   constructor(private _store: Store<RootState>,
               private _cargarPlanillasApi: CargarPlanillasSandbox,
@@ -99,8 +106,6 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     this.dependenciaSelected$.subscribe((result) => {
       this.dependenciaSelected = result;
     });
-    // this.comunicaciones$ = this._store.select(PlanillasArrayData);
-    // this.data$ = this._store.select(getDataobj);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
     this.detailsDialogVisible$ = this._store.select(getDetailsDialogVisible);
@@ -113,6 +118,13 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     this.comunicacionesSubcription = this._store.select(PlanillasArrayData).subscribe((result) => {
       this.selectedComunications = [];
     });
+
+    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
+      this.task = activeTask;
+      if (this.task)
+        this.nroPlanilla = this.task.variables.numPlanilla;
+    });
+
     this.initForm();
   }
 
@@ -136,14 +148,12 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
+    this.activeTaskUnsubscriber.unsubscribe();
   }
 
   initForm() {
     this.form = this.formBuilder.group({
-      'funcionario': [null],
-      'dependencia': [null],
-      'numeroPlanilla': [null],
-      'tipologia': [null],
+      'numeroPlanilla': [null]
     });
   }
 
@@ -170,7 +180,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   listarDistribuciones() {
     this._cargarPlanillasApi.loadData({
-      nro_planilla: this.form.get('numeroPlanilla').value ? this.form.get('numeroPlanilla').value : '',
+      nro_planilla: this.nroPlanilla,
     }).subscribe((result) => {
       this.data = result;
       this.comunicaciones = [...result.pagentes.pagente];
@@ -274,7 +284,8 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
       codDependenciaDestino: null,
       codClaseEnvio: null,
       codModalidadEnvio: null,
-      pagentes: agentes
+      pagentes: agentes,
+      ideEcm: null
     };
 
     this._planillaService.cargarPlanillas(planilla).subscribe(() => {

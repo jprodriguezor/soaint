@@ -12,7 +12,7 @@ import {
   getSelectedDependencyGroupFuncionario
 } from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as DistribucionArrayData} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-selectors';
-import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {Sandbox as FuncionarioSandBox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {AgentDTO} from '../../../domain/agentDTO';
@@ -33,6 +33,7 @@ import {PlanillaDTO} from "../../../domain/PlanillaDTO";
 import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
 import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
 import {escape} from "querystring";
+import {Sandbox as ProcessSandbox} from "../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -86,10 +87,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   constructor(private _store: Store<RootState>,
               private _distribucionFisicaApi: DistribucionFisicaSandbox,
-              private _funcionarioSandbox: Sandbox,
+              private _funcionarioSandbox: FuncionarioSandBox,
               private _constSandbox: ConstanteSandbox,
               private _dependenciaSandbox: DependenciaSandbox,
               private _planillaService: PlanillasApiService,
+              private _processSandbox: ProcessSandbox,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
@@ -241,13 +243,13 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       codClaseEnvio: null,
       codModalidadEnvio: null,
       pagentes: agentes,
+      ideEcm: null
     };
 
     return planilla;
   };
 
   generarPlanilla() {
-    // this.numeroPlanillaDialogVisible = true;
     const planilla = this.generarDatosExportar();
     this._planillaService.generarPlanillas(planilla).subscribe((result) => {
       this.planillaGenerada = result;

@@ -77,12 +77,12 @@ public class CorrespondenciaClient {
                 .post(Entity.json(asignacionesDTO));
     }
 
-    public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
+    public Response redireccionarComunicaciones(RedireccionDTO redireccionDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/agente-web-api/agente/redireccionar")
                 .request()
-                .put(Entity.json(agentesDTO));
+                .put(Entity.json(redireccionDTO));
     }
 
     public Response metricasTiempoDrools(String payload) {
