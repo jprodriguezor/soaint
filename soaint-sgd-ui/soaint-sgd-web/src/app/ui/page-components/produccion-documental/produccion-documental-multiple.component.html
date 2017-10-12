@@ -97,7 +97,7 @@
         <div class="ui-sm-12 ui-g-12 ui-lg-12">
           <div class="ui-g form-group">
             <div class="ui-g-12" style="float:right">
-              <button pButton type="button" label="Agregar"
+              <button pButton type="button" label="Agregar" (click)="agregarProyector()"
                       style="width: auto; margin-bottom: 10px;margin-left: 12px"
               ></button>
             </div>
@@ -112,4 +112,24 @@
 
 </div>
 
-
+<div class="ui-fluid">
+  <p-dataTable selectionMode="single"
+               [paginator]="true"
+               [rows]="10"
+               [responsive]="true"
+               [value]="listaProyectores"
+               emptyMessage="No se han agregado proyectores aún"
+  >
+    <p-column field="sede.nombre" header="Sede Administrativa"></p-column>
+    <p-column field="dependencia.nombre" header="Dependencia"></p-column>
+    <p-column field="funcionario.nombre" header="Funcionario"></p-column>
+    <p-column field="tipoPlantilla.nombre" header="Tipo de plantilla"></p-column>
+    <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
+      <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+        <button type="button" pButton label="Eliminar" (click)="eliminarProyector(rindex)"
+                class="ui-button ui-button-icon ui-button-danger"
+        ></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</div>

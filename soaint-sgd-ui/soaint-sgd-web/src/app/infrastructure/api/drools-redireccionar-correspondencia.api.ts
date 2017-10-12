@@ -16,7 +16,6 @@ export class DroolsRedireccionarCorrespondenciaApi {
     const payload = this.payload(redireccionesNumero);
     return this._api.list(end_point, { payload: JSON.stringify(payload)})
       .map(response => {
-        debugger;
         const result = RulesServer.extractFromResponse(response, 'co.com.soaint.sgd.model.Redireccion').respuestaRedireccion;
         console.log(result);
         return result;

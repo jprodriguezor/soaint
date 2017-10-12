@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
@@ -11,6 +11,7 @@ import {
 import {VALIDATION_MESSAGES} from "app/shared/validation-messages";
 import {FuncionarioDTO} from "app/domain/funcionarioDTO";
 import {Sandbox} from "app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
+import {ProyeccionDocumentoDTO} from "../../../domain/ProyeccionDocumentoDTO";
 
 @Component({
   selector: 'produccion-documental-multiple',
@@ -24,10 +25,12 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
   constructor(private _store: Store<RootState>,
               private _produccionDocumentalApi : ProduccionDocumentalApiService,
               private _funcionarioSandbox: Sandbox,
+              private _changeDetectorRef: ChangeDetectorRef,
               private formBuilder: FormBuilder) {  }
 
   form: FormGroup;
   validations: any = {};
+  listaProyectores : ProyeccionDocumentoDTO[] = [];
 
   sedesAdministrativas$ : Observable<ConstanteDTO[]>;
   dependencias$ : Observable<ConstanteDTO[]>;
@@ -36,6 +39,29 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
   tiposPlantilla : ConstanteDTO[];
 
 
+
+  agregarProyector() {
+    let proyectores = this.listaProyectores;
+    let proyector : ProyeccionDocumentoDTO = {
+      sede: this.form.get('sede').value,
+      dependencia: this.form.get('dependencia').value,
+      funcionario: this.form.get('funcionario').value,
+      tipoPlantilla: this.form.get('tipoPlantilla').value
+    };
+    proyectores.push(proyector);
+    this.listaProyectores = [...proyectores];
+    console.log(this.listaProyectores);
+    this.refreshView();
+  }
+
+  eliminarProyector(index) {
+    if (index > -1) {
+      let proyectores = this.listaProyectores;
+      proyectores.splice(index,1);
+
+      this.listaProyectores = [...proyectores];
+    }
+  }
 
   initForm() {
     this.form = this.formBuilder.group({
@@ -56,8 +82,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
 
     this.initForm();
   }
-
-
 
   listenForErrors() {
     this.bindToValidationErrorsOf('tipoComunicacion');
@@ -83,5 +107,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit{
         delete this.validations[control];
       }
     });
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
   }
 }

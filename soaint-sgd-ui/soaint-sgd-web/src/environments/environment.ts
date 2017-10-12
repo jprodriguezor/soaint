@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 //const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.103:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.103:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -34,6 +34,7 @@ export const environment = {
   tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`,
   tasksForStatus_endpoint: `${host}/proceso-gateway-api/tareas/listar/estados`,
   tasksStartProcess: `${host}/proceso-gateway-api/tareas/iniciar/`,
+  tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
   bis_endpoint: `${host}/bis-gateway-api`,
   tipoComplemento_endpoint: `${host}/tipo-complemento-gateway-api`,

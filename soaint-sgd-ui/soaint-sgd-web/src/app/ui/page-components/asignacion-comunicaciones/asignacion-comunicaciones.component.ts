@@ -34,6 +34,9 @@ import {
   WARN_REDIRECTION
 } from 'app/shared/lang/es';
 import 'rxjs/add/operator/toArray';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/observable/forkJoin';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -182,25 +185,30 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
 
-    this.checkRedirectionsAgentes('numRedirecciones', justificationValues).then(checks => {
-      if (checks.failChecks.length > 0) {
-        this._store.dispatch(new PushNotificationAction({
-          severity: 'warn',
-          summary: WARN_REDIRECTION
-        }));
+    this.checkRedirectionsAgentes('numRedirecciones', justificationValues).subscribe(checks => {
 
-      } else {
-        this._store.dispatch(new PushNotificationAction({
-          severity: 'success',
-          summary: SUCCESS_REDIRECTION
-        }));
+      const failChecks = [];
+      const agentesSuccess = [];
 
-        checks.successChecks.forEach(payload => {
-          this._asignacionSandbox.redirectDispatch(payload);
-        });
-      }
+      checks.forEach(value => {
+        if (!value.success) {
+          failChecks.push(value.agente);
+        } else {
+          agentesSuccess.push(value.agente);
+        }
+      });
 
-      this.redireccionesFallidas = checks.failChecks;
+      if (failChecks.length > 0) {
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'warn',
+            summary: WARN_REDIRECTION
+          }));
+
+        this.redireccionesFallidas = failChecks;
+
+        } else {
+          this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
+        }
     });
 
   }
@@ -356,47 +364,36 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     return agentes;
   }
 
-  checkRedirectionsAgentes(key, justification): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const failChecks = [];
-      const successChecks = [];
+  checkRedirectionsAgentes(key, justification): Observable<any[]> {
 
-      this.selectedComunications.forEach((value) => {
+    const failChecks = [];
+    const successChecks = [];
+
+    return Observable.from(this.selectedComunications)
+      .flatMap(value => {
         const agente = value.agenteList[0];
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
         delete agente['_$visited'];
-        this.ruleCheckRedirectionNumber.check(agente[key]).toPromise().then(res => {
-          debugger;
-          console.log(res);
-
-          if (!res) {
-            failChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
-          } else {
-            successChecks.push(this.createRecursiveRedirectsPayload(agente, justification));
-          }
-
-        }, (err) => {
-          reject(err);
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            agente: agente
+          };
         });
-        // console.log(res);
-
-      });
-
-      resolve({failChecks: failChecks, successChecks: successChecks});
-    });
-
+      }).toArray();
   }
 
-  createRecursiveRedirectsPayload(agente, justification): RedireccionDTO {
+  createRecursiveRedirectsPayload(agentes, justification): RedireccionDTO {
     return {
-      agentes: [agente],
+      agentes: [...agentes],
       traza: {
+        id: null,
         observacion: justification.justificacion,
         ideFunci: this.funcionarioLog.id,
-        codOrgaAdmin: this.dependenciaSelected.codigo,
-        codEstado: null,
-        ideTrazDocumento: null,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
         ideDocumento: null
       }
     };

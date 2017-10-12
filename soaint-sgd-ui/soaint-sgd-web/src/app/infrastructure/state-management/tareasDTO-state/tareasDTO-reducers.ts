@@ -55,15 +55,16 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case ActionTypes.START_TASK_SUCCESS: {
-      const task = action.payload;
-      const cloneEntities = tassign({}, state.entities);
-      cloneEntities[task.idTarea] = task;
-
-      return tassign(state, {
-        ids: [task.idTarea, ...state.ids],
-        entities: cloneEntities,
-        activeTask: task
-      });
+      // const task = action.payload;
+      // const cloneEntities = tassign({}, state.entities);
+      // cloneEntities[task.idTarea] = task;
+      //
+      // return tassign(state, {
+      //   ids: [task.idTarea, ...state.ids],
+      //   entities: cloneEntities,
+      //   activeTask: task
+      // });
+      return state;
     }
 
     case ActionTypes.COMPLETE_TASK_SUCCESS: {
