@@ -120,6 +120,10 @@ public class PlanillasControl {
      */
     public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
         try {
+            em.createNamedQuery("CorPlanillas.updateReferenciaEcm")
+                    .setParameter("IDE_ECM", planilla.getIdeEcm())
+                    .setParameter("IDE_PLANILLA", planilla.getIdePlanilla())
+                    .executeUpdate();
             for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 planAgenControl.updateEstadoDistribucion(planAgenDTO);
             }
@@ -295,6 +299,7 @@ public class PlanillasControl {
                 .codDependenciaDestino(planilla.getCodDependenciaDestino())
                 .codClaseEnvio(planilla.getCodClaseEnvio())
                 .codModalidadEnvio(planilla.getCodModalidadEnvio())
+                .ideEcm(planilla.getIdeEcm())
                 .build();
     }
 

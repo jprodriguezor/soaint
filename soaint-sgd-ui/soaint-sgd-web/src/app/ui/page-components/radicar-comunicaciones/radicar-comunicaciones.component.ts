@@ -464,12 +464,20 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       datosContactos: this.datosRemitente.datosContactos,
     };
 
-    return this._sandbox.quickSave(payload);
+    const tareaDto: any = {
+      idTareaProceso: this.task.idTarea,
+      idInstanciaProceso: this.task.idInstanciaProceso,
+      payload: payload
+    };
+
+    return this._sandbox.quickSave(tareaDto);
   }
 
   restore() {
     const payload = 1;
-    this._sandbox.quickRestore(this.task.idProceso, this.task.idTarea).take(1).subscribe(results => {
+    this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
+      const results = response.payload;
+      console.log(results);
       // destinatario
       this.datosDestinatario.form.patchValue(results.destinatario);
       this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;

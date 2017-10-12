@@ -1,8 +1,9 @@
 export interface PpdTrazDocumentoDTO {
-  ideTrazDocumento: number;
+  id: number;
+  fecha: string;
   observacion: string;
   ideFunci: number;
-  codEstado: string;
+  estado: string;
   ideDocumento: number;
-  codOrgaAdmin: string;
+  codDependencia: string;
 }
