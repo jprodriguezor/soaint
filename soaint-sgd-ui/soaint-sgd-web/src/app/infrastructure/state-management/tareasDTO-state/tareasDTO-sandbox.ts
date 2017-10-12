@@ -113,9 +113,7 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
-    this._store.select(getActiveTask).subscribe(activeTask => {
-      console.log(activeTask);
-    });
+
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));

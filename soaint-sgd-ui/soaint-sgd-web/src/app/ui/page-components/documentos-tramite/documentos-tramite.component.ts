@@ -20,6 +20,14 @@ import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacion
 import {environment} from '../../../../environments/environment';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {RedireccionDTO} from '../../../domain/redireccionDTO';
+import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
+import {WARN_REDIRECTION} from '../../../shared/lang/es';
+import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {RedirectAction} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-actions';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+
 
 @Component({
   selector: 'app-documentos-tramite',
@@ -61,10 +69,13 @@ export class DocumentosTramiteComponent implements OnInit {
 
   task: any;
 
+  redireccionFallida$: BehaviorSubject<any> = new BehaviorSubject(false);
+
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
   constructor(private _store: Store<RootState>,
               private _changeDetectorRef: ChangeDetectorRef,
+              private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private _asiganacionSandbox: AsiganacionDTOSandbox) {
     this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
@@ -129,6 +140,76 @@ export class DocumentosTramiteComponent implements OnInit {
 
     });
   }
+
+  cleanRedirecionFallida() {
+    this.redireccionFallida$.next(false);
+  }
+
+  forceRedireccion() {
+    const payload = this.redireccionFallida$.getValue();
+
+    this._asiganacionSandbox.redirectComunications(payload.redirectPayload).toPromise().the(() => {
+      this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+    });
+  }
+
+  redireccionar(payload: { justificationValues: any, taskToCompletePayload: any}) {
+    const justificationValues = payload.justificationValues;
+
+    this.checkRedirectionAgente('numRedirecciones', justificationValues).subscribe(checks => {
+
+      if (!checks.success) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
+
+        this.redireccionFallida$.next(this.redirectPayload(checks.agente, justificationValues));
+      } else {
+        this._asiganacionSandbox.redirectComunications({
+            redirectPayload: this.redirectPayload(checks.agente, justificationValues),
+            taskToCompletePayload: payload.taskToCompletePayload
+        }).toPromise()
+          .then(() => {
+              this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+          });
+      }
+    });
+
+  }
+
+  checkRedirectionAgente(key, justification): Observable<any> {
+
+    return Observable.of(this.comunicacion)
+      .switchMap(value => {
+        const agente = value.agenteList[0];
+        agente.codSede = justification.sedeAdministrativa.codigo;
+        agente.codDependencia = justification.dependenciaGrupo.codigo;
+        delete agente['_$visited'];
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            agente: agente
+          };
+        });
+      });
+  }
+
+  redirectPayload(agente, justification): RedireccionDTO {
+    return {
+      agentes: [agente],
+      traza: {
+        id: null,
+        observacion: justification.justificacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
+  }
+
 
   getConstantsCodes() {
     let result = '';
