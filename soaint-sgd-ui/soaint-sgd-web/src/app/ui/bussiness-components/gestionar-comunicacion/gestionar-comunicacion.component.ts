@@ -93,6 +93,7 @@ export class GestionarComunicacionComponent implements OnInit {
         break;
       }
       case 5 : {
+        this.procesoSeguir = 0;
         this.justificationDialogVisible = true;
         break;
       }

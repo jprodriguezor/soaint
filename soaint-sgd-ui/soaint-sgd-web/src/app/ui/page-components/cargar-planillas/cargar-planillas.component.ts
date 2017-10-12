@@ -34,6 +34,7 @@ import {environment} from "../../../../environments/environment";
 import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 import {ApiBase} from "../../../infrastructure/api/api-base";
 import {getActiveTask} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
+import {CompleteTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 
 @Component({
   selector: 'app-cargar-planillas',
@@ -121,6 +122,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
+      console.log(activeTask);
       if (this.task)
         this.nroPlanilla = this.task.variables.numPlanilla;
     });
@@ -289,9 +291,18 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     };
 
     this._planillaService.cargarPlanillas(planilla).subscribe(() => {
+      this._store.dispatch(new CompleteTaskAction(this.getTaskToCompletePayload()));
       this.listarDistribuciones();
     });
 
+  }
+
+  getTaskToCompletePayload() {
+    return {
+      idProceso: this.task.idProceso,
+      idDespliegue: this.task.idDespliegue,
+      idTarea: this.task.idTarea
+    }
   }
 
   canUpdatePlanilla(): boolean {

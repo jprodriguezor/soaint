@@ -119,6 +119,7 @@ public class CorrespondenciaGatewayApi {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
+            entradaProceso.setUsuario(asignacionDTO.getLoginName());
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
             entradaProceso.setParametros(parametros);

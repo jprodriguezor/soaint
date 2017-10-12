@@ -148,30 +148,28 @@ export class DocumentosTramiteComponent implements OnInit {
   forceRedireccion() {
     const payload = this.redireccionFallida$.getValue();
 
-    this._asiganacionSandbox.redirectComunications(payload.redirectPayload).toPromise().the(() => {
+    this._asiganacionSandbox.redirectComunications(payload.redirectPayload).toPromise().then(() => {
       this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
     });
   }
 
-  redireccionar(payload: { justificationValues: any, taskToCompletePayload: any}) {
+  redireccionar(payload: { justificationValues: any, taskToCompletePayload: any }) {
     const justificationValues = payload.justificationValues;
-
     this.checkRedirectionAgente('numRedirecciones', justificationValues).subscribe(checks => {
-
       if (!checks.success) {
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: WARN_REDIRECTION
         }));
 
-        this.redireccionFallida$.next(this.redirectPayload(checks.agente, justificationValues));
+        this.redireccionFallida$.next({
+          redirectPayload: this.redirectPayload(checks.agente, justificationValues),
+          taskToCompletePayload: payload.taskToCompletePayload
+        });
       } else {
-        this._asiganacionSandbox.redirectComunications({
-            redirectPayload: this.redirectPayload(checks.agente, justificationValues),
-            taskToCompletePayload: payload.taskToCompletePayload
-        }).toPromise()
+        this._asiganacionSandbox.redirectComunications(this.redirectPayload(checks.agente, justificationValues)).toPromise()
           .then(() => {
-              this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+            this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
           });
       }
     });
