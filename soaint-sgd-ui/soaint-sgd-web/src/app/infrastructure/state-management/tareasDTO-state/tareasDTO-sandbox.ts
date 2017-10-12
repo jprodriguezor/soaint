@@ -16,6 +16,7 @@ import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
+import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
@@ -112,7 +113,9 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
-    debugger;
+    this._store.select(getActiveTask).subscribe(activeTask => {
+      console.log(activeTask);
+    });
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
