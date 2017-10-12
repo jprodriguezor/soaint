@@ -19,6 +19,7 @@ import {Sandbox} from './tareasDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 
 import {LoadTasksInsideProcessAction} from '../procesoDTO-state/procesoDTO-actions';
+import {tassign} from 'tassign';
 
 
 function isLoaded() {
@@ -70,7 +71,7 @@ export class Effects {
         .mergeMap((taskVariables) => this._sandbox.reserveTask(payload)
           .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
           ))
-        .map((response: any) => new actions.StartTaskSuccessAction(response))
+        .map((response: any) => new actions.StartTaskSuccessAction(tassign(payload, {estado: response.estado})))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );
 
