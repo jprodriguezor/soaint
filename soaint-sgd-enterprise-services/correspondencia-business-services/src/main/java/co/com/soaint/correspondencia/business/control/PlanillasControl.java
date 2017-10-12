@@ -80,6 +80,9 @@ public class PlanillasControl {
     @Value("${radicado.planilla.distribucion.report}")
     private String planillaDistribucionReport;
 
+    @Value("${radicado.tipo.persona.juridica}")
+    private String tipoPersonaJuridica;
+
     /**
      * @param planilla
      * @return
@@ -269,12 +272,20 @@ public class PlanillasControl {
         PpdDocumentoDTO documento = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO remitente = agenteControl.listarRemitentesByIdeDocumento(correspondencia.getIdeDocumento()).get(0);
         AgenteDTO destinatario = agenteControl.consultarAgenteByIdeAgente(planAgen.getIdeAgente());
+        String nombreRemitente = "";
+        String nroDocumento = "";
+
+        if (TipoRemitenteEnum.EXTERNO.getCodigo().equals(remitente.getCodTipoRemite())) {
+            nroDocumento = tipoPersonaJuridica.equals(remitente.getCodTipoPers()) ? remitente.getNit() : remitente.getNroDocuIdentidad();
+            nombreRemitente = tipoPersonaJuridica.equals(remitente.getCodTipoPers()) ? remitente.getRazonSocial() : remitente.getNombre();
+        }
+
         return ItemReportPlanillaDTO.newInstance()
                 .nroRadicado(correspondencia.getNroRadicado())
                 .fecRadicado(correspondencia.getFecRadicado())
                 .indOriginal(constantesControl.consultarConstanteByCodigo(destinatario.getIndOriginal()).getNombre())
-                .nroDocumento(remitente.getNroDocuIdentidad())
-                .nombreRemitente(remitente.getNombre())
+                .nroDocumento(nroDocumento)
+                .nombreRemitente(nombreRemitente)
                 .dependenciaOrigen(TipoRemitenteEnum.INTERNO.getCodigo().equals(remitente.getCodTipoRemite()) ? dependenciaControl.listarDependenciaByCodigo(remitente.getCodDependencia()).getNomDependencia() : null)
                 .asunto(documento.getAsunto())
                 .nroFolios(String.valueOf(documento.getNroFolios()))
