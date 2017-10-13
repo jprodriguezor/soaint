@@ -24,7 +24,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
     form: FormGroup;
     validations: any = {};
     listaProyectores: ProyeccionDocumentoDTO[] = [];
-
     sedesAdministrativas$: Observable<ConstanteDTO[]>;
     dependencias$: Observable<ConstanteDTO[]>;
     funcionarios$: Observable<FuncionarioDTO[]>;
@@ -54,6 +53,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
 
         if (this.checkProyeccion(proyector)) {
             console.log('Ya existe la proyección');
+            return false;
         }
 
         proyectores.push(proyector);
@@ -74,7 +74,17 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
     }
 
     checkProyeccion(newProyector: ProyeccionDocumentoDTO) {
-        return this.listaProyectores.forEach((current: ProyeccionDocumentoDTO, index) => true);
+        let exists = false;
+        this.listaProyectores.forEach((current: ProyeccionDocumentoDTO, index) => {
+            if (current.sede.id === newProyector.sede.id &&
+                current.dependencia.id === newProyector.dependencia.id &&
+                current.funcionario.id === newProyector.funcionario.id &&
+                current.tipoPlantilla.id === newProyector.tipoPlantilla.id) {
+                exists = true;
+            }
+        });
+
+        return exists;
     }
 
     initForm() {

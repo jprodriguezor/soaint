@@ -42,8 +42,8 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
   }
 
-  getTiposPlantilla(payload: {}) : ConstanteDTO[] {
-    let tiposPlantilla : ConstanteDTO[] = JSON.parse(`[
+  getTiposPlantilla(payload: {}): ConstanteDTO[] {
+    const tiposPlantilla: ConstanteDTO[] = JSON.parse(`[
       {"codigo":"TL-DOCOF","nombre":"Oficio","codPadre":"TL-DOC","id":49},
       {"codigo":"TL-DOCA","nombre":"Acta","codPadre":"TL-DOC","id":59},
       {"codigo":"TL-DOCC","nombre":"Circular","codPadre":"TL-DOC","id":60},
