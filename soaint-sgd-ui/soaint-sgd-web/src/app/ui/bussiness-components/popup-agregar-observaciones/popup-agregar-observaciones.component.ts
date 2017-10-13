@@ -78,24 +78,26 @@ export class PopupAgregarObservacionesComponent implements OnInit {
   }
 
   addObservation() {
-    let observacion: ObservacionDTO = {
-      observacion: this.form.get('observacion').value,
-      ideFunci: this.idFuncionario,
-      ideDocumento: this.idDocumento,
-      codDependencia: this.codOrgaAdmin,
-      nomFuncionario: null,
-      nomDependencia: null,
-      valApellido1: null,
-      valApellido2: null,
-      corrElectronico: null,
-      loginName: null,
-      id: null,
-      fecha: null,
-      estado: null,
-    };
-    this._asignacionSandbox.registrarObservacion(observacion).subscribe(() => {
-      this.form.get('observacion').setValue(null);
-      this.loadObservations();
-    });
+    if (this.form.valid) {
+      let observacion: ObservacionDTO = {
+        observacion: this.form.get('observacion').value,
+        ideFunci: this.idFuncionario,
+        ideDocumento: this.idDocumento,
+        codDependencia: this.codOrgaAdmin,
+        nomFuncionario: null,
+        nomDependencia: null,
+        valApellido1: null,
+        valApellido2: null,
+        corrElectronico: null,
+        loginName: null,
+        id: null,
+        fecha: null,
+        estado: null,
+      };
+      this._asignacionSandbox.registrarObservacion(observacion).subscribe(() => {
+        this.form.get('observacion').reset();
+        this.loadObservations();
+      });
+    }
   }
 }

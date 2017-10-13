@@ -25,10 +25,32 @@
             <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
           </p-tabPanel>
           <p-tabPanel header="Gestionar" leftIcon="ui-icon-assignment">
-            <app-gestionar-comunicacion [remitente]="remitente$ | async" [task]="task"></app-gestionar-comunicacion>
+            <app-gestionar-comunicacion [remitente]="remitente$ | async" [task]="task" (onRedireccionarTriggered)="redireccionar($event)"></app-gestionar-comunicacion>
           </p-tabPanel>
         </p-tabView>
       </div>
     </div>
   </app-task-container>
 </div>
+
+<p-dialog [visible]="redireccionFallida$ | async" modal="modal" [responsive]="true"
+          [contentStyle]="{'overflow':'visible'}"
+          (onHide)="cleanRedirecionFallida()" [width]="800">
+  <p-header>
+    Devoluciones / Redirección - Fallida
+  </p-header>
+
+  <h3>Número máximo de redirecciones alcanzado</h3>
+  <p>Si desea forzar la redirección, (click) en continuar.</p>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-danger"
+              label="Cerrar" (click)="cleanRedirecionFallida()"></button>
+
+      <button pButton type="button" class="ui-button-danger"
+              label="Continuar" (click)="forceRedireccion()"></button>
+    </div>
+
+  </p-footer>
+</p-dialog>

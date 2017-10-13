@@ -75,6 +75,8 @@ public class Funcionarios implements Serializable {
     private String loginName;
     @Embedded
     private AuditColumns auditColumns;
+    @Column(name = "CREDENCIALES")
+    private String credenciales;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "funcionarios")
     private List<TvsOrgaAdminXFunciPk> tvsOrgaAdminXFunciPkList;
 

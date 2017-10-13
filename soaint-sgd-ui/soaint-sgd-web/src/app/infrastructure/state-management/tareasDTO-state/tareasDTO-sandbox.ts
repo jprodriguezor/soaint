@@ -9,6 +9,7 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {
+  TASK_CARGAR_PLANILLA_ENTRADA,
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_RADICACION_ENTRADA
 } from './task-properties';
@@ -16,6 +17,7 @@ import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
+import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
@@ -112,7 +114,7 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
-    debugger;
+
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
@@ -123,7 +125,7 @@ export class Sandbox {
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
         break;
-      case TASK_GENERAR_PLANILLA_ENTRADA:
+      case TASK_CARGAR_PLANILLA_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.cargarPlanillas, task]));
         break;
       default:
@@ -152,7 +154,7 @@ export class Sandbox {
   }
 
   reserveTaskDispatch(task?: TareaDTO) {
-      this._store.dispatch(new actions.ReserveTaskAction(task));
+    this._store.dispatch(new actions.ReserveTaskAction(task));
   }
 
   loadDispatch(payload?) {

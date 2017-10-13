@@ -25,7 +25,7 @@
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="hideDialog()">
       </button>
-      <button pButton type="button" label="Agregar"
+      <button pButton type="button" label="Agregar" [disabled]="!form.valid"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px" (click)="addObservation()">
       </button>
     </div>

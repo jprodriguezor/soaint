@@ -28,6 +28,9 @@ export class GestionarComunicacionComponent implements OnInit {
   @Output()
   onDevolverTriggered = new EventEmitter<any>();
 
+  @Output()
+  onRedireccionarTriggered = new EventEmitter<any>();
+
   procesoSeguir: number;
 
   rejectDialogVisible: boolean = false;
@@ -90,6 +93,7 @@ export class GestionarComunicacionComponent implements OnInit {
         break;
       }
       case 5 : {
+        this.procesoSeguir = 0;
         this.justificationDialogVisible = true;
         break;
       }
@@ -104,24 +108,26 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   completeTask() {
-    this._tareaSandbox.completeTaskDispatch({
+    this._tareaSandbox.completeTaskDispatch(this.getTaskToCompletePayload());
+  }
+
+  getTaskToCompletePayload() {
+    return {
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
       parametros: {
         procesoSeguir: this.procesoSeguir
       }
-    });
+    }
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-    this._asignacionSandbox.redirectComunications({
-      agentes: this.createAgentes(justificationValues)
-    }).subscribe(() => {
-      this.procesoSeguir = 0;
-      this.completeTask();
-      this.justificationDialogVisible = false;
+    this.onRedireccionarTriggered.emit({
+      justificationValues: justificationValues,
+      taskToCompletePayload: this.getTaskToCompletePayload()
     });
+    this.justificationDialogVisible = false;
   }
 
   onChange() {
