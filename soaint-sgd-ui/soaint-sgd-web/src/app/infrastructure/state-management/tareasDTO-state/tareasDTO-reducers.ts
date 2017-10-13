@@ -60,10 +60,10 @@ export function reducer(state = initialState, action: Actions) {
       cloneEntities[task.idTarea] = task;
 
       return tassign(state, {
-        ids: [task.idTarea, ...state.ids],
         entities: cloneEntities,
         activeTask: task
       });
+
     }
 
     case ActionTypes.COMPLETE_TASK_SUCCESS: {

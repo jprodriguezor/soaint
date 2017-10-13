@@ -80,6 +80,14 @@ public class ProcesoClient {
                 .post(Entity.json(entrada));
     }
 
+    public Response reservarTarea(EntradaProcesoDTO entrada) {
+        log.info("Task - [trafic] - reserve Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/tareas/reservar")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
     public Response completarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - complete Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

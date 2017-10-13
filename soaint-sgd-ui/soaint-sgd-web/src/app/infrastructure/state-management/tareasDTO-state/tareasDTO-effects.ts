@@ -19,6 +19,7 @@ import {Sandbox} from './tareasDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 
 import {LoadTasksInsideProcessAction} from '../procesoDTO-state/procesoDTO-actions';
+import {tassign} from 'tassign';
 
 
 function isLoaded() {
@@ -49,7 +50,7 @@ export class Effects {
     );
 
   @Effect()
-  takeReservedTask: Observable<Action> = this.actions$
+  startTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_TASK)
     .map(toPayload)
     .switchMap(
@@ -58,6 +59,19 @@ export class Effects {
           .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
           ))
         .map((response: any) => new actions.StartTaskSuccessAction(response))
+        .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
+    );
+
+  @Effect()
+  reserveTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.RESERVE_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.getTaskVariables(payload)
+        .mergeMap((taskVariables) => this._sandbox.reserveTask(payload)
+          .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
+          ))
+        .map((response: any) => new actions.StartTaskSuccessAction(tassign(payload, {estado: response.estado})))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );
 

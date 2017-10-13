@@ -178,7 +178,7 @@ public class TasksService implements ITaskServices {
                 String estadoResp = respuestaJson.getString("status");
 
                 if ("SUCCESS".equals(estadoResp)) {
-                    estado = String.valueOf(EstadosEnum.RESERVADO);
+                    estado = String.valueOf(EstadosEnum.ENPROGRESO);
                 } else {
                     estado = String.valueOf(EstadosEnum.ERROR);
                 }

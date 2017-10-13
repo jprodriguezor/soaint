@@ -83,7 +83,6 @@ public class CorrespondenciaGatewayApi {
 
         List<EstadosEnum> estados = new ArrayList();
         estados.add(EstadosEnum.LISTO);
-//        estados.add(EstadosEnum.RESERVADO);
 
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
@@ -119,6 +118,7 @@ public class CorrespondenciaGatewayApi {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
+            entradaProceso.setUsuario(asignacionDTO.getLoginName());
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
             entradaProceso.setParametros(parametros);
@@ -134,9 +134,9 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/redireccionar")
     @JWTTokenSecurity
-    public Response redireccionarComunicaciones(AgentesDTO agentesDTO) {
+    public Response redireccionarComunicaciones(RedireccionDTO redireccionDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
-        Response response = client.redireccionarComunicaciones(agentesDTO);
+        Response response = client.redireccionarComunicaciones(redireccionDTO);
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
@@ -234,7 +234,16 @@ public class CorrespondenciaGatewayApi {
     public Response generarPlanilla(@RequestBody PlanillaDTO planilla) {
         log.info("processing rest request - generar planilla distribucion");
         Response response = client.generarPlantilla(planilla);
-        String responseObject = response.readEntity(String.class);
+        PlanillaDTO responseObject = response.readEntity(PlanillaDTO.class);
+
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestion-planillas");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestion-planillas:1.0.0-SNAPSHOT");
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        entradaProceso.setParametros(parametros);
+        this.procesoClient.iniciarTercero(entradaProceso);
+
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
@@ -277,7 +286,7 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
         Response response = client.restablecerCorrespondenciaEntrada(idproceso, idtarea);
         String responseObject = response.readEntity(String.class);
-        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value() || response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
         return Response.status(response.getStatus()).entity(responseObject).build();

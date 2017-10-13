@@ -54,7 +54,7 @@ export class Effects {
   reassign: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.REASSIGN)
     .map(toPayload)
-    .switchMap(
+    .flatMap(
       (payload) => {
         return this._sandbox.reassignComunications(payload)
           .mergeMap((response) => [new actions.ReassignSuccessAction(response), new ReloadComunicacionesAction()])
@@ -66,7 +66,7 @@ export class Effects {
   redirect: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.REDIRECT)
     .map(toPayload)
-    .switchMap(
+    .flatMap(
       (payload) => {
         return this._sandbox.redirectComunications(payload)
           .mergeMap((response) => [new actions.RedirectSuccessAction(response), new ReloadComunicacionesAction(), new SetJustificationDialogVisibleAction(false)])

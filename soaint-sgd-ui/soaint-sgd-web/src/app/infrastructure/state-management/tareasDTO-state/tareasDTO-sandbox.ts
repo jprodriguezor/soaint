@@ -8,11 +8,16 @@ import {tassign} from 'tassign';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
-import {TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_RADICACION_ENTRADA} from './task-properties';
+import {
+  TASK_CARGAR_PLANILLA_ENTRADA,
+  TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
+  TASK_RADICACION_ENTRADA
+} from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
+import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
@@ -67,6 +72,12 @@ export class Sandbox {
       Object.assign({}, overPayload, this.authPayload));
   }
 
+  reserveTask(payload: any) {
+    const overPayload = this.extractInitTaskPayload(payload);
+    return this._api.post(environment.tasksReserveProcess,
+      Object.assign({}, overPayload, this.authPayload));
+  }
+
   extractProcessVariablesPayload(payload) {
     let task = payload;
     if (isArray(payload) && payload.length > 0) {
@@ -103,7 +114,7 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
-    // debugger;
+
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
@@ -113,6 +124,9 @@ export class Sandbox {
         break;
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
+        break;
+      case TASK_CARGAR_PLANILLA_ENTRADA:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.cargarPlanillas, task]));
         break;
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
@@ -137,6 +151,10 @@ export class Sandbox {
     } else if (task.estado === 'RESERVADO') {
       this._store.dispatch(new actions.StartTaskAction(task));
     }
+  }
+
+  reserveTaskDispatch(task?: TareaDTO) {
+    this._store.dispatch(new actions.ReserveTaskAction(task));
   }
 
   loadDispatch(payload?) {
