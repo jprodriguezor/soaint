@@ -25,15 +25,15 @@ import {
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
-import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
+import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacionEntradaDTV';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {DocumentoDTO} from "../../../domain/documentoDTO";
-import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
-import {PlanillaDTO} from "../../../domain/PlanillaDTO";
-import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
-import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
-import {escape} from "querystring";
-import {Sandbox as ProcessSandbox} from "../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox";
+import {DocumentoDTO} from '../../../domain/documentoDTO';
+import {PlanillasApiService} from '../../../infrastructure/api/planillas.api';
+import {PlanillaDTO} from '../../../domain/PlanillaDTO';
+import {PlanAgentesDTO} from '../../../domain/PlanAgentesDTO';
+import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
+import {escape} from 'querystring';
+import {Sandbox as ProcessSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -238,8 +238,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       codFuncGenera: this.funcionarioLog.id.toString(),
       codSedeOrigen: this.dependenciaSelected.codSede,
       codDependenciaOrigen: this.dependenciaSelected.codigo,
-      codSedeDestino: this.form.get("dependencia").value.codSede,
-      codDependenciaDestino: this.form.get("dependencia").value.codigo,
+      codSedeDestino: this.form.get('dependencia').value.codSede,
+      codDependenciaDestino: this.form.get('dependencia').value.codigo,
       codClaseEnvio: null,
       codModalidadEnvio: null,
       pagentes: agentes,

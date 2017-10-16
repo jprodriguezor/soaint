@@ -145,14 +145,6 @@ export class DocumentosTramiteComponent implements OnInit {
     this.redireccionFallida$.next(false);
   }
 
-  forceRedireccion() {
-    const payload = this.redireccionFallida$.getValue();
-
-    this._asiganacionSandbox.redirectComunications(payload.redirectPayload).toPromise().then(() => {
-      this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
-    });
-  }
-
   redireccionar(payload: { justificationValues: any, taskToCompletePayload: any }) {
     const justificationValues = payload.justificationValues;
     this.checkRedirectionAgente('numRedirecciones', justificationValues).subscribe(checks => {
@@ -162,10 +154,7 @@ export class DocumentosTramiteComponent implements OnInit {
           summary: WARN_REDIRECTION
         }));
 
-        this.redireccionFallida$.next({
-          redirectPayload: this.redirectPayload(checks.agente, justificationValues),
-          taskToCompletePayload: payload.taskToCompletePayload
-        });
+        this.redireccionFallida$.next(true);
       } else {
         this._asiganacionSandbox.redirectComunications(this.redirectPayload(checks.agente, justificationValues)).toPromise()
           .then(() => {

@@ -2,7 +2,7 @@ import {ComunicacionOficialDTO} from '../../domain/comunicacionOficialDTO';
 import {Observable} from 'rxjs/Observable';
 import {AgentDTO} from '../../domain/agentDTO';
 import {ContactoDTO} from '../../domain/contactoDTO';
-import {DocumentoDTO} from "../../domain/documentoDTO";
+import {DocumentoDTO} from '../../domain/documentoDTO';
 
 export class RadicacionEntradaDTV {
 
