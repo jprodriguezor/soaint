@@ -2,10 +2,10 @@
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
-//const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://192.168.1.103:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.103:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -51,9 +51,9 @@ export const environment = {
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
-  carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/massiveloaderapi/listadocargamasiva`,
-  carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/massiveloaderapi/estadocargamasiva`,
-  carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/massiveloaderapi/cargar-fichero`,
+  carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
+  carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
+  carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
 
   // Asignacion Enpoints
   asignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/asignar`,
