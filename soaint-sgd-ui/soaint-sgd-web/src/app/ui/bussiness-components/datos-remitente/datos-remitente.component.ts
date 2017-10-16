@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -25,7 +25,7 @@ import {Subscription} from 'rxjs/Subscription';
   selector: 'app-datos-remitente',
   templateUrl: './datos-remitente.component.html',
 })
-export class DatosRemitenteComponent implements OnInit {
+export class DatosRemitenteComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   validations: any = {};
@@ -43,6 +43,8 @@ export class DatosRemitenteComponent implements OnInit {
   dependenciasGrupoList: Array<any> = [];
 
   subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
+
+  subscribers: Array<Subscription> = [];
 
   @ViewChild('datosContactos') datosContactos;
   @Input() editable = true;
@@ -86,7 +88,7 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   listenForChanges() {
-    this.form.get('sedeAdministrativa').valueChanges.distinctUntilChanged().subscribe((sede) => {
+    this.subscribers.push(this.form.get('sedeAdministrativa').valueChanges.distinctUntilChanged().subscribe((sede) => {
       if (this.editable && sede) {
         this.form.get('dependenciaGrupo').reset();
         const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
@@ -94,14 +96,13 @@ export class DatosRemitenteComponent implements OnInit {
           depedenciaSubscription.unsubscribe();
         });
       }
-    });
+    }));
 
-    // const persona = this.form.get('tipoPersona');
-    // persona.valueChanges.subscribe((value) => {
-    //   if (this.editable && !persona.disabled && value) {
-    //     this.onSelectTipoPersona(value);
-    //   }
-    // });
+    this.subscribers.push(this.form.get('tipoPersona').valueChanges.distinctUntilChanged().subscribe(value => {
+      if (value !== null) {
+        this.onSelectTipoPersona(value);
+      }
+    }));
 
   }
 
@@ -111,8 +112,8 @@ export class DatosRemitenteComponent implements OnInit {
     this.bindToValidationErrorsOf('tipoPersona');
   }
 
-  onSelectTipoPersona(event) {
-    const value = event.value;
+  onSelectTipoPersona(value) {
+    // const value = event.value;
     if (!this.visibility.tipoPersona) {
       return;
     } else {
@@ -161,7 +162,6 @@ export class DatosRemitenteComponent implements OnInit {
         this.visibility['sedeAdministrativa'] = true;
         this.visibility['dependenciaGrupo'] = true;
         this.initLoadTipoComunicacionInterna();
-
       } else {
         this.visibility['tipoPersona'] = true;
         this.initLoadTipoComunicacionExterna();
@@ -188,6 +188,12 @@ export class DatosRemitenteComponent implements OnInit {
       } else {
         delete this.validations[control];
       }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscribers.forEach(subscriber => {
+      subscriber.unsubscribe();
     });
   }
 

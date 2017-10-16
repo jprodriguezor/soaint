@@ -42,6 +42,7 @@ import {
 import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
 import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
+import 'rxjs/add/operator/skipWhile';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -454,15 +455,20 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   save(): Observable<any> {
-    const payload = {
+    const payload: any = {
       destinatario: this.datosDestinatario.form.value,
       generales: this.datosGenerales.form.value,
       remitente: this.datosRemitente.form.value,
       descripcionAnexos: this.datosGenerales.descripcionAnexos,
       radicadosReferidos: this.datosGenerales.radicadosReferidos,
-      agentesDestinatario: this.datosDestinatario.agentesDestinatario,
-      datosContactos: this.datosRemitente.datosContactos,
+      agentesDestinatario: this.datosDestinatario.agentesDestinatario
     };
+
+    if (this.datosRemitente.datosContactos) {
+      payload.datosContactos = this.datosRemitente.datosContactos.contacts;
+      // payload.contactInProgress = this.datosRemitente.datosContactos.form.value
+    }
+
 
     const tareaDto: any = {
       idTareaProceso: this.task.idTarea,
@@ -478,9 +484,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
       const results = response.payload;
       console.log(results);
-      // destinatario
-      this.datosDestinatario.form.patchValue(results.destinatario);
-      this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
 
       // generales
       this.datosGenerales.form.patchValue(results.generales);
@@ -489,7 +492,29 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
       // remitente
       this.datosRemitente.form.patchValue(results.remitente);
-      this.datosRemitente.datosContactos = results.datosContactos;
+
+      // destinatario
+      this.datosDestinatario.form.patchValue(results.destinatario);
+      this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
+
+      if (results.datosContactos) {
+        const retry = setInterval(() => {
+          if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+            this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
+            clearInterval(retry);
+          }
+        }, 400);
+      }
+
+      // if (results.contactInProgress) {
+      //   const retry = setInterval(() => {
+      //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+      //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
+      //       clearInterval(retry);
+      //     }
+      //   }, 400)
+      // }
+
     });
   }
 
