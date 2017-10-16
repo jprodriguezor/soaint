@@ -54,7 +54,7 @@ export class CargaMasivaService {
   // Obtener detalles de un registro de carga masiva específico
   getRecord(id: any): Observable<CargaMasivaDTO> {
 
-      if (id == 'last' || isNaN(id)) {
+      if (id === 'last' || isNaN(id)) {
           return this.getLastRecord();
       }
 
@@ -62,7 +62,7 @@ export class CargaMasivaService {
   }
 
 
-  getRecordById(id: any) : Observable<CargaMasivaDTO> {
+  getRecordById(id: any): Observable<CargaMasivaDTO> {
 
       return this._api.list(`${environment.carga_masiva_endpoint_estado}/${id}`).map(res => res.correspondencia);
   }

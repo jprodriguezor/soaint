@@ -1,7 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.CargaMasivaClient;
-import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class CargaMasivaGatewayApi {
 
     @GET
     @Path("/listadocargamasiva")
-    @JWTTokenSecurity
+//    @JWTTokenSecurity
     public Response listCargaMasiva() {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Carga Masiva");
         Response response = client.listCargaMasiva ();
@@ -39,7 +38,7 @@ public class CargaMasivaGatewayApi {
 
     @GET
     @Path("/estadocargamasiva")
-    @JWTTokenSecurity
+//    @JWTTokenSecurity
     public Response listEstadoCargaMasiva() {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Estado Carga Masiva");
         Response response = client.listEstadoCargaMasiva ();
@@ -51,7 +50,7 @@ public class CargaMasivaGatewayApi {
 
     @GET
     @Path("/estadocargamasiva/{id}")
-    @JWTTokenSecurity
+//    @JWTTokenSecurity
     public Response listEstadoCargaMasivaDadoId(@PathParam("id") String id) {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Estado Carga Masiva dado Id");
         Response response = client.listEstadoCargaMasivaDadoId (id);
@@ -79,7 +78,7 @@ public class CargaMasivaGatewayApi {
 
             });
         });
-log.info (responseContent[0] );
+        log.info (responseContent[0] );
         log.info (estadoRespuesta[0] );
         log.info(CONTENT + responseContent[0]);
 
