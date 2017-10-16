@@ -5,11 +5,11 @@ import {Router} from '@angular/router';
 import {ResultUploadDTO} from '../domain/ResultUploadDTO';
 import {CargaMasivaDTO} from '../domain/CargaMasivaDTO';
 import {Observable} from 'rxjs/Observable';
-import {CargaMasivaList} from "../domain/CargaMasivaList";
-import {ApiBase} from "../../../../infrastructure/api/api-base";
-import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
+import {CargaMasivaList} from '../domain/CargaMasivaList';
+import {ApiBase} from 'app/infrastructure/api/api-base';
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
-import {environment} from "../../../../../environments/environment";
+import {environment} from 'environments/environment';
 
 @Injectable()
 export class CargaMasivaService {
