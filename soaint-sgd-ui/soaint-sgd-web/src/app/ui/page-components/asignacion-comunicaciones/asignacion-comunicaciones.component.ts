@@ -5,6 +5,8 @@ import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {createSelector} from 'reselect';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {
   getArrayData as getFuncionarioArrayData,
   getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario
@@ -37,6 +39,7 @@ import 'rxjs/add/operator/toArray';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/forkJoin';
+import {tassign} from 'tassign';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -96,6 +99,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   @ViewChild('detallesView') detallesView;
 
+  authPayload: { usuario: string, pass: string } | {};
+  authPayloadUnsubscriber: Subscription;
+
   constructor(private _store: Store<RootState>,
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
@@ -119,6 +125,13 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.comunicacionesSubcription = this._store.select(ComunicacionesArrayData).subscribe(() => {
       this.selectedComunications = [];
     });
+
+    this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+      return profile ? {usuario: profile.username, pass: profile.password} : {};
+    })).subscribe((value) => {
+      this.authPayload = value;
+    });
+
     this.initForm();
   }
 
@@ -178,9 +191,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   reassignComunications() {
-    this._asignacionSandbox.reassignDispatch({
-      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
-    });
+    this._asignacionSandbox.reassignDispatch(tassign({
+      asignaciones: {
+        asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
+      }
+    }, this.authPayload));
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
@@ -199,16 +214,16 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       });
 
       if (failChecks.length > 0) {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'warn',
-            summary: WARN_REDIRECTION
-          }));
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
 
         this.redireccionesFallidas = failChecks;
 
-        } else {
-          this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
-        }
+      } else {
+        this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
+      }
     });
 
   }
@@ -293,7 +308,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._asignacionSandbox.setVisibleRejectDialogDispatch(false);
   }
 
-  createAsignacionesAuto(): AsignacionDTO[] {
+  createAsignacionesAuto(): any {
     const asignaciones: AsignacionDTO[] = [];
     let funcIndex = 0;
     this.selectedComunications.forEach((value, index) => {
@@ -322,7 +337,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       });
       funcIndex++;
     });
-    return asignaciones;
+    return asignaciones
   }
 
   createAsignaciones(idFuncionario?, loginNameFuncionario?): AsignacionDTO[] {

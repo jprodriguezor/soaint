@@ -5,7 +5,9 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.ui.ReasignarComunicacionDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -110,25 +113,41 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/reasignar")
     @JWTTokenSecurity
-    public Response reasignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+    public Response reasignarComunicaciones(ReasignarComunicacionDTO reasignarComunicacionDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
-        Response response = client.asignarComunicaciones(asignacionesDTO);
-        AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
-        responseObject.getAsignaciones().forEach(asignacionDTO -> {
+
+        Response response = client.asignarComunicaciones(reasignarComunicacionDTO.getAsignaciones());
+
+        AsignacionesDTO asignacionDTOResponse = response.readEntity(AsignacionesDTO.class);
+
+        asignacionDTOResponse.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
-            entradaProceso.setUsuario(asignacionDTO.getLoginName());
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
-            entradaProceso.setParametros(parametros);
-            this.procesoClient.reasignarTarea(entradaProceso);
+            FuncAsigDTO asigDTO = client.obtenerFuncionarInfoParaReasignar(asignacionDTO.getIdeAgente()).readEntity(FuncAsigDTO.class);
+            EntradaProcesoDTO entradaParaTarea = new EntradaProcesoDTO();
+            entradaParaTarea.setUsuario(reasignarComunicacionDTO.getUsuario());
+            entradaParaTarea.setPass(reasignarComunicacionDTO.getPass());
+            entradaParaTarea.setIdProceso(asigDTO.getAsignacion().getIdInstancia());
+            List<RespuestaTareaDTO> tareas = procesoClient.listarPorIdProceso(entradaParaTarea).readEntity(new GenericType<ArrayList<RespuestaTareaDTO>>() {
+            });
+            entradaProceso.setPass(asigDTO.getCredenciales());
+            if (tareas != null && !tareas.isEmpty()) {
+                entradaProceso.setIdTarea(tareas.get(0).getIdTarea());
+                Map<String, Object> parametros = new HashMap<>();
+                parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
+                entradaProceso.setParametros(parametros);
+                this.procesoClient.reasignarTarea(entradaProceso);
+            }
         });
-        log.info(CONTENT + responseObject);
+
+        log.info(CONTENT + asignacionDTOResponse);
+
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
-        return Response.status(response.getStatus()).entity(responseObject).build();
+
+        return Response.status(response.getStatus()).entity(asignacionDTOResponse).build();
     }
 
     @POST

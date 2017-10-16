@@ -77,6 +77,14 @@ public class CorrespondenciaClient {
                 .post(Entity.json(asignacionesDTO));
     }
 
+    public Response obtenerFuncionarInfoParaReasignar(BigInteger idAgente) {
+        log.info("Asignacion - [trafic] - obtener Hash del Funcionario with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/asignacion-web-api/asignacion/re-asignacion/" + idAgente)
+                .request()
+                .get();
+    }
+
     public Response redireccionarComunicaciones(RedireccionDTO redireccionDTO) {
         log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
