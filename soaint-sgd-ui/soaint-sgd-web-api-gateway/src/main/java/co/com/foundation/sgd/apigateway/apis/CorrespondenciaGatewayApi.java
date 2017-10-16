@@ -83,7 +83,6 @@ public class CorrespondenciaGatewayApi {
 
         List<EstadosEnum> estados = new ArrayList();
         estados.add(EstadosEnum.LISTO);
-//        estados.add(EstadosEnum.RESERVADO);
 
         responseObject.getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();

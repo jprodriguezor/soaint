@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,16 @@ public class GestionarAsignacionWS {
     @WebMethod(action = "listarAsignacionesByFuncionarioAndNroRadicado", operationName = "listarAsignacionesByFuncionarioAndNroRadicado")
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(@WebParam(name = "ide_funcionario") final BigInteger ideFunci, @WebParam(name = "nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         return boundary.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "consultarAsignacionReasignarByIdeAgente", operationName = "consultarAsignacionReasignarByIdeAgente")
+    public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(@WebParam(name = "ide_agente")final BigInteger ideAgente) throws SystemException {
+        return boundary.consultarAsignacionReasignarByIdeAgente(ideAgente);
     }
 }

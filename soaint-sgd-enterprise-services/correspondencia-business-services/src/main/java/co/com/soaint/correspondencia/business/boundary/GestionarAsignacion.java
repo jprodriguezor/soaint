@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.business.boundary;
 import co.com.soaint.correspondencia.business.control.AsignacionControl;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -69,8 +70,17 @@ public class GestionarAsignacion {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public AsignacionesDTO listarAsignacionesByFuncionarioAndNroRadicado(BigInteger ideFunci, String nroRadicado) throws BusinessException, SystemException {
        return control.listarAsignacionesByFuncionarioAndNroRadicado(ideFunci, nroRadicado);
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @return
+     * @throws SystemException
+     */
+    public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(BigInteger ideAgente) throws SystemException {
+        return control.consultarAsignacionReasignarByIdeAgente(ideAgente);
     }
 }

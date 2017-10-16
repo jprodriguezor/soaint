@@ -14,7 +14,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -81,7 +80,6 @@ public class ProcessService implements IProcessServices {
     private String protocolo = "";
     HttpClient httpClient;
     HttpGet getRequest;
-    HttpPost postRequest;
     HttpResponse response;
     @PersistenceContext
     private EntityManager em;

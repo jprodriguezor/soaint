@@ -6,6 +6,7 @@ import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -55,6 +56,9 @@ public class AsignacionControl {
 
     @Autowired
     CorrespondenciaControl correspondenciaControl;
+
+    @Autowired
+    FuncionariosControl funcionariosControl;
 
     @Value("${radicado.cant.horas.para.activar.alerta.vencimiento}")
     private int cantHorasParaActivarAlertaVencimiento;
@@ -204,25 +208,6 @@ public class AsignacionControl {
     }
 
     /**
-     * @param numRedirecciones
-     * @param ideAsigUltimo
-     */
-    public void actualizarNumRedirecciones(String numRedirecciones, BigInteger ideAsigUltimo) throws SystemException {
-        try {
-            em.createNamedQuery("DctAsigUltimo.updateNumRedirecciones")
-                    .setParameter("NUM_REDIRECCIONES", numRedirecciones)
-                    .setParameter("IDE_ASIG_ULTIMO", ideAsigUltimo)
-                    .executeUpdate();
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
      *
      * @param asignacion
      * @throws SystemException
@@ -246,12 +231,16 @@ public class AsignacionControl {
      * @param ideAgente
      * @return
      */
-    public AsignacionDTO consultarAsignacionByIdeAgente(BigInteger ideAgente) throws SystemException {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(BigInteger ideAgente) throws SystemException {
         try {
-            List<AsignacionDTO> asignacionDTOList = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
+            AsignacionDTO asignacion = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
                     .setParameter("IDE_AGENTE", ideAgente)
-                    .getResultList();
-            return asignacionDTOList.isEmpty() ? null : asignacionDTOList.get(0);
+                    .getSingleResult();
+            return FuncAsigDTO.newInstance()
+                    .asignacion(asignacion)
+                    .credenciales(funcionariosControl.consultarCredencialesByIdeFunci(asignacion.getIdeFunci()))
+                    .build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

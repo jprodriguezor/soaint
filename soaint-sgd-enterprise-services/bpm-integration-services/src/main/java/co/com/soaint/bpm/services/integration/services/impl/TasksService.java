@@ -66,6 +66,7 @@ public class TasksService implements ITaskServices {
     private HttpClient httpClient;
     private HttpPost postRequest;
     private HttpResponse response;
+    private String estado = "";
     @PersistenceContext
     private EntityManager em;
     EngineConexion engine = EngineConexion.getInstance();
@@ -158,7 +159,6 @@ public class TasksService implements ITaskServices {
     @Override
     public RespuestaTareaDTO reservarTarea(EntradaProcesoDTO entrada) throws SystemException {
         String encoding = java.util.Base64.getEncoder().encodeToString(new String(entrada.getUsuario() + ":" + entrada.getPass()).getBytes());
-        String estado = "";
         log.info("iniciar - reservar tarea: {}", entrada);
         try {
             URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)))
@@ -219,22 +219,34 @@ public class TasksService implements ITaskServices {
     public RespuestaTareaDTO reasignarTarea(EntradaProcesoDTO entrada) throws SystemException {
         try {
             log.info("iniciar - reasignar tarea: {}", entrada);
-            taskService = engine.obtenerEngine(entrada).getTaskService();
-            taskService.delegate(entrada.getIdTarea(), entrada.getUsuario(), entrada.getParametros().get("usuarioReasignar").toString());
-            Task task = taskService.getTaskById(entrada.getIdTarea());
+            URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)))
+                    .setPath("/jbpm-console/rest/task/" + entrada.getIdTarea() + "/delegate")
+                    .addParameter("targetEntityId", entrada.getParametros().get("usuarioReasignar").toString())
+                    .build();
+            httpClient = HttpClientBuilder.create().build();
+            postRequest = new HttpPost(uri);
+            postRequest.addHeader(headerAuthorization, valueAuthorization + " " + entrada.getPass());
+            postRequest.addHeader(headerAccept, valueApplicationType);
+            response = httpClient.execute(postRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            } else {
+                String estadoResp = respuestaJson.getString("status");
+
+                if ("SUCCESS".equals(estadoResp)) {
+                    estado = String.valueOf(EstadosEnum.RESERVADO);
+                } else {
+                    estado = String.valueOf(EstadosEnum.ERROR);
+                }
+            }
             return RespuestaTareaDTO.newInstance()
                     .idTarea(entrada.getIdTarea())
-                    .estado(String.valueOf(EstadosEnum.RESERVADO))
-                    .nombre(task.getName())
+                    .estado(estado)
                     .idProceso(entrada.getIdProceso())
                     .idDespliegue(entrada.getIdDespliegue())
-                    .idParent(task.getTaskData().getParentId())
-                    .idResponsable(task.getTaskData().getActualOwner().getId())
-                    .idInstanciaProceso(task.getTaskData().getProcessInstanceId())
-                    .tiempoExpiracion(task.getTaskData().getExpirationTime())
-                    .tiempoActivacion(task.getTaskData().getActivationTime())
-                    .fechaCreada(task.getTaskData().getCreatedOn())
-                    .prioridad(task.getPriority())
                     .build();
         } catch (Exception e) {
             log.error(errorSistema);

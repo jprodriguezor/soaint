@@ -15,7 +15,7 @@
 
 <div class="ui-fluid">
 
-  <form [formGroup]="form">
+  <form [formGroup]="form" novalidate>
 
     <p-panel header="Gestionar producción múltiple" leftIcon="ui-icon-assignment">
 
@@ -24,7 +24,7 @@
         <div class="ui-sm-12 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="sede">Sede</label>
+              <label for="sede"><span class="text-danger">*</span>Sede</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
@@ -35,6 +35,10 @@
                           (onBlur)="listenForBlurEvents('sede')"
               >
               </p-dropdown>
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.sede">
+                {{ validations.sede }}
+              </div>
             </div>
           </div>
         </div>
@@ -42,7 +46,7 @@
         <div class="ui-sm-12 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="dependencia">Dependencia</label>
+              <label for="dependencia"><span class="text-danger">*</span>Dependencia</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="dependencias$ | async | dropdownItem"
@@ -53,6 +57,10 @@
                           (onBlur)="listenForBlurEvents('dependencia')"
               >
               </p-dropdown>
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.dependencia">
+                {{ validations.dependencia }}
+              </div>
             </div>
           </div>
         </div>
@@ -60,7 +68,7 @@
         <div class="ui-sm-12 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="funcionario">Funcionario que proyecta</label>
+              <label for="funcionario"><span class="text-danger">*</span>Funcionario que proyecta</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="funcionarios$ | async | dropdownItem"
@@ -71,6 +79,10 @@
                           (onBlur)="listenForBlurEvents('funcionario')"
               >
               </p-dropdown>
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.funcionario">
+                {{ validations.funcionario }}
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +90,7 @@
         <div class="ui-sm-12 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="tipoPlantilla">Tipo de plantilla</label>
+              <label for="tipoPlantilla"><span class="text-danger">*</span>Tipo de plantilla</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
 
@@ -90,6 +102,10 @@
                           (onBlur)="listenForBlurEvents('tipoPlantilla')"
               >
               </p-dropdown>
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.tipoPlantilla">
+                {{ validations.tipoPlantilla }}
+              </div>
             </div>
           </div>
         </div>

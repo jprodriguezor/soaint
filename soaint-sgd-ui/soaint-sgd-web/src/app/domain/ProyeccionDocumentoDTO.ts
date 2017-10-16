@@ -1,9 +1,10 @@
-import {DependenciaDTO} from "./dependenciaDTO";
-import {FuncionarioDTO} from "./funcionarioDTO";
+import {DependenciaDTO} from './dependenciaDTO';
+import {FuncionarioDTO} from './funcionarioDTO';
+import {ConstanteDTO} from './constanteDTO';
 
 export interface ProyeccionDocumentoDTO {
-  sede: string;
+  sede: ConstanteDTO;
   dependencia: DependenciaDTO;
   funcionario: FuncionarioDTO;
-  tipoPlantilla: string;
+  tipoPlantilla: ConstanteDTO;
 }
