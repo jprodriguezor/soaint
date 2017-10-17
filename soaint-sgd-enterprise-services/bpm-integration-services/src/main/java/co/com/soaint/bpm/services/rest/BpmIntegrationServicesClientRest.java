@@ -2,10 +2,7 @@ package co.com.soaint.bpm.services.rest;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
 import co.com.soaint.bpm.services.integration.services.ITaskServices;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
-import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
+import co.com.soaint.foundation.canonical.bpm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
@@ -286,7 +283,7 @@ public class BpmIntegrationServicesClientRest {
      * @throws MalformedURLException
      */
     @POST
-    @Path("/tareas/listar/estados-instancia/")
+    @Path("/tareas/listar/instancia/")
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entradaTarea) throws SystemException {
         log.info("processing rest request - listar tareas por instancias de procesos");
         return tarea.listarTareasPorInstanciaProceso(entradaTarea);

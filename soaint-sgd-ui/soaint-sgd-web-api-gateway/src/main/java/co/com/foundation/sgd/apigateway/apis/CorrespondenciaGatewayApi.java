@@ -98,6 +98,8 @@ public class CorrespondenciaGatewayApi {
             parametros.put("usuario", asignacionDTO.getLoginName());
             parametros.put("idDocumento", asignacionDTO.getIdeDocumento().toString());
             parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
+            parametros.put("fechaRadicacion", asignacionDTO.getFecRadicado());
+            parametros.put("codDependencia", asignacionDTO.getCodDependencia());
             if (asignacionDTO.getAlertaVencimiento() != null)
                 parametros.put("fechaVencimiento", asignacionDTO.getAlertaVencimiento());
             entradaProceso.setParametros(parametros);
@@ -116,11 +118,7 @@ public class CorrespondenciaGatewayApi {
     public Response reasignarComunicaciones(ReasignarComunicacionDTO reasignarComunicacionDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
 
-        Response response = client.asignarComunicaciones(reasignarComunicacionDTO.getAsignaciones());
-
-        AsignacionesDTO asignacionDTOResponse = response.readEntity(AsignacionesDTO.class);
-
-        asignacionDTOResponse.getAsignaciones().forEach(asignacionDTO -> {
+        reasignarComunicacionDTO.getAsignaciones().getAsignaciones().forEach(asignacionDTO -> {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
@@ -128,18 +126,35 @@ public class CorrespondenciaGatewayApi {
             EntradaProcesoDTO entradaParaTarea = new EntradaProcesoDTO();
             entradaParaTarea.setUsuario(reasignarComunicacionDTO.getUsuario());
             entradaParaTarea.setPass(reasignarComunicacionDTO.getPass());
-            entradaParaTarea.setIdProceso(asigDTO.getAsignacion().getIdInstancia());
-            List<RespuestaTareaDTO> tareas = procesoClient.listarPorIdProceso(entradaParaTarea).readEntity(new GenericType<ArrayList<RespuestaTareaDTO>>() {
+            entradaParaTarea.setInstanciaProceso(Long.parseLong(asigDTO.getAsignacion().getIdInstancia()));
+
+            List<EstadosEnum> estados = new ArrayList<>();
+            estados.add(EstadosEnum.LISTO);
+            estados.add(EstadosEnum.ENPROGRESO);
+            estados.add(EstadosEnum.COMPLETADO);
+            estados.add(EstadosEnum.RESERVADO);
+
+            entradaParaTarea.setEstados(estados);
+
+            log.info("CorrespondenciaGatewayApi - [trafic] - buscando tareas por proceso");
+            Response responseTasks = procesoClient.listarPorIdProceso(entradaParaTarea);
+            List<RespuestaTareaDTO> responseTareas = responseTasks.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
             });
             entradaProceso.setPass(asigDTO.getCredenciales());
-            if (tareas != null && !tareas.isEmpty()) {
-                entradaProceso.setIdTarea(tareas.get(0).getIdTarea());
+            log.info(responseTareas);
+
+            if (responseTareas != null && !responseTareas.isEmpty()) {
+                entradaProceso.setIdTarea(responseTareas.get(0).getIdTarea());
                 Map<String, Object> parametros = new HashMap<>();
                 parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
                 entradaProceso.setParametros(parametros);
                 this.procesoClient.reasignarTarea(entradaProceso);
             }
         });
+
+        Response response = client.asignarComunicaciones(reasignarComunicacionDTO.getAsignaciones());
+
+        AsignacionesDTO asignacionDTOResponse = response.readEntity(AsignacionesDTO.class);
 
         log.info(CONTENT + asignacionDTOResponse);
 

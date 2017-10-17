@@ -42,7 +42,7 @@ import java.util.Date;
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
                 "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
-                "c.ideDocumento, c.nroRadicado) " +
+                "c.ideDocumento, c.nroRadicado, c.fecRadicado) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "INNER JOIN d.corCorrespondencia c " +
@@ -52,7 +52,7 @@ import java.util.Date;
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
                 "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
-                "c.ideDocumento, c.nroRadicado) " +
+                "c.ideDocumento, c.nroRadicado, c.fecRadicado) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "INNER JOIN d.corCorrespondencia c " +
@@ -62,7 +62,7 @@ import java.util.Date;
                 "(a.ideAsignacion, a.fecAsignacion, a.ideFunci, a.codDependencia, a.codTipAsignacion, a.observaciones, a.codTipCausal, a.codTipProceso, " +
                 "d.ideAsigUltimo, d.nivLectura, d.nivEscritura, d.fechaVencimiento, d.idInstancia, " +
                 "g.ideAgente, " +
-                "c.ideDocumento, c.nroRadicado) " +
+                "c.ideDocumento, c.nroRadicado, c.fecRadicado) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "INNER JOIN d.corCorrespondencia c " +

@@ -12,8 +12,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 @ApiDelegator
 @Log4j2
@@ -49,19 +52,23 @@ public class CargaMasivaClient {
                 .get();
     }
 
-    public Response cargarDocumento(InputPart file, String codigoSede, String codigoDependencia) {
-        log.info("Carga Masiva - [trafic] - listing Cargar Documento with endpoint: " + endpoint);
+    public Response cargarDocumento(InputPart part, String codigoSede, String codigoDependencia) {
+        log.info("Carga Masiva - [trafic] - Subiendo fichero de carga masiva: " .concat(endpoint) );
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
+
         InputStream inputStream = null;
         try {
-            inputStream = file.getBody(InputStream.class, null);
+            inputStream = part.getBody(InputStream.class, null);
+            String result = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines().collect(Collectors.joining("\n"));
+            log.info("Obteniendo documento....\r\n".concat(result));
         } catch (IOException e) {
             log.error("Se ha generado un error del tipo IO:", e);
         }
-        multipart.addFormData ("codigoSede", codigoSede,MediaType.TEXT_PLAIN_TYPE);
-        multipart.addFormData ("codigoDependencia", codigoDependencia,MediaType.TEXT_PLAIN_TYPE);
-        multipart.addFormData("file", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
+        multipart.addFormData("file", inputStream, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {
         };
 
