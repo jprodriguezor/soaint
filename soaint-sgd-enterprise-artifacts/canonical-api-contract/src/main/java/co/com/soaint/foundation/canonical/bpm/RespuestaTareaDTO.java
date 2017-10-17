@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +17,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/respuestatarea/1.0.0")
-public class RespuestaTareaDTO {
+public class RespuestaTareaDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Long idTarea;
     private String nombre;
@@ -24,7 +26,7 @@ public class RespuestaTareaDTO {
     private Integer prioridad;
     private String idResponsable;
     private String idCreador;
-    private  Date fechaCreada;
+    private Date fechaCreada;
     private Date tiempoActivacion;
     private Date tiempoExpiracion;
     private String idProceso;
