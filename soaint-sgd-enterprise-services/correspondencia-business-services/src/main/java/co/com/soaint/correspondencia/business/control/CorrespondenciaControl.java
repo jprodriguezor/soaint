@@ -123,14 +123,6 @@ public class CorrespondenciaControl {
             cal.setTime(comunicacionOficialDTO.getCorrespondencia().getFecRadicado());
             int anno = cal.get(Calendar.YEAR);
 
-            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
-                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
-
-            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(procesarNroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado(),
-                    comunicacionOficialDTO.getCorrespondencia().getCodSede(),
-                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(),
-                    String.valueOf(anno), consecutivo));
-
             CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
@@ -162,6 +154,14 @@ public class CorrespondenciaControl {
                     corReferido.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
+
+            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
+                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
+
+            correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
+                    correspondencia.getCodSede(),
+                    correspondencia.getCodTipoCmc(),
+                    String.valueOf(anno), consecutivo));
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
