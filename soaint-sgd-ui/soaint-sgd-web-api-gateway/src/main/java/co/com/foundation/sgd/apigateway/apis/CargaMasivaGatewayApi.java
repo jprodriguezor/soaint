@@ -66,10 +66,11 @@ public class CargaMasivaGatewayApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
 //    @JWTTokenSecurity
-    public Response cargarDocumento( @PathParam("codigoSede") String codigoSede, @PathParam("codigoDependencia") String codigoDependencia, MultipartFormDataInput file) {
+    public Response cargarDocumento(@PathParam("codigoSede") String codigoSede, @PathParam("codigoDependencia") String codigoDependencia, MultipartFormDataInput file) {
         final String[] responseContent = {""};
         final int[] estadoRespuesta = {0};
         log.info("CargaMasivaGatewayApi - [trafic] - carga masiva");
+        log.info("sede: ".concat(codigoSede).concat(" -|- dependencia: ").concat(codigoDependencia));
         file.getFormDataMap().forEach((key, parts) -> {
             parts.forEach((part) -> {
                 Response response = client.cargarDocumento (part, codigoSede, codigoDependencia);
@@ -78,8 +79,8 @@ public class CargaMasivaGatewayApi {
 
             });
         });
-        log.info (responseContent[0] );
-        log.info (estadoRespuesta[0] );
+        log.info ("Response: ".concat(responseContent[0]));
+        log.info ("Estado: ".concat(String.valueOf(estadoRespuesta[0])));
         log.info(CONTENT + responseContent[0]);
 
         return Response.status( estadoRespuesta[0]).entity(responseContent[0]).build();
