@@ -45,12 +45,13 @@ public class AsignacionDTO implements Serializable {
     private String nroRadicado;
     private String loginName;
     private String alertaVencimiento;
+    private Date fecRadicado;
 
     public AsignacionDTO(BigInteger ideAsignacion, Date fecAsignacion, BigInteger ideFunci, String codDependencia,
                          String codTipAsignacion, String observaciones, String codTipCausal, String codTipProceso,
                          BigInteger ideAsigUltimo, Short nivLectura, Short nivEscritura,
                          Date fechaVencimiento, String idInstancia, BigInteger ideAgente, BigInteger ideDocumento,
-                         String nroRadicado){
+                         String nroRadicado, Date fecRadicado){
         this.ideAsignacion = ideAsignacion;
         this.fecAsignacion = fecAsignacion;
         this.ideFunci = ideFunci;
@@ -67,6 +68,7 @@ public class AsignacionDTO implements Serializable {
         this.ideAgente = ideAgente;
         this.ideDocumento = ideDocumento;
         this.nroRadicado = nroRadicado;
+        this.fecRadicado = fecRadicado;
     }
 
 }
