@@ -2,15 +2,11 @@ import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angul
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
-import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {State as RootState, State} from 'app/infrastructure/redux-store/redux-reducers';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {createSelector} from 'reselect';
-import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {
-  getArrayData as getFuncionarioArrayData,
-  getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario
-} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
 import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
@@ -19,22 +15,12 @@ import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {AgentDTO} from '../../../domain/agentDTO';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
-import {
-  getAgragarObservacionesDialogVisible, getDetailsDialogVisible,
-  getJustificationDialogVisible, getRejectDialogVisible
-} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
+import {getAgragarObservacionesDialogVisible, getDetailsDialogVisible, getJustificationDialogVisible, getRejectDialogVisible} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {RedireccionDTO} from '../../../domain/redireccionDTO';
 import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
 import {PushNotificationAction} from 'app/infrastructure/state-management/notifications-state/notifications-actions';
-import {
-  FAIL_DEVOLUTION,
-  FAIL_REDIRECTION,
-  SUCCESS_DEVOLUTION,
-  SUCCESS_REDIRECTION,
-  WARN_DEVOLUTION,
-  WARN_REDIRECTION
-} from 'app/shared/lang/es';
+import {WARN_REDIRECTION} from 'app/shared/lang/es';
 import 'rxjs/add/operator/toArray';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
@@ -53,7 +39,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicaciones$: Observable<ComunicacionOficialDTO[]>;
 
-  estadosCorrespondencia: [{ label: string, value: string }];
+  estadosCorrespondencia: Array<{ label: string, value: string }>;
 
   selectedComunications: ComunicacionOficialDTO[] = [];
 
