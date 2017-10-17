@@ -333,6 +333,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         ideAgente: value.agenteList[0].ideAgente,
         ideDocumento: value.correspondencia.ideDocumento,
         nroRadicado: value.correspondencia.nroRadicado,
+        fecRadicado: value.correspondencia.fecRadicado,
         loginName: this.selectedFuncionarios[funcIndex].loginName
       });
       funcIndex++;
@@ -361,6 +362,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         ideAgente: value.agenteList[0].ideAgente,
         ideDocumento: value.correspondencia.ideDocumento,
         nroRadicado: value.correspondencia.nroRadicado,
+        fecRadicado: value.correspondencia.fecRadicado,
         loginName: loginNameFuncionario || this.funcionarioSelected.loginName
       })
     });
