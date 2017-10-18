@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
@@ -7,11 +7,14 @@ import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {
   getArrayData as getFuncionarioArrayData
-} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {Sandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
-import {ProyeccionDocumentoDTO} from '../../../domain/ProyeccionDocumentoDTO';
+import {ProyeccionDocumentoDTO} from 'app/domain/ProyeccionDocumentoDTO';
+import {TaskForm} from 'app/shared/interfaces/task-form.interface';
+import {TareaDTO} from 'app/domain/tareaDTO';
+import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -19,7 +22,9 @@ import {ProyeccionDocumentoDTO} from '../../../domain/ProyeccionDocumentoDTO';
     styleUrls: ['produccion-documental.component.css'],
 })
 
-export class ProduccionDocumentalMultipleComponent implements OnInit {
+export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy, TaskForm {
+    task: TareaDTO;
+    type = TaskTypes.TASK_FORM;
 
     form: FormGroup;
     validations: any = {};
@@ -141,5 +146,12 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
 
     refreshView() {
         this._changeDetectorRef.detectChanges();
+    }
+
+    ngOnDestroy(): void {
+    }
+
+    save(): Observable<any> {
+        return undefined;
     }
 }
