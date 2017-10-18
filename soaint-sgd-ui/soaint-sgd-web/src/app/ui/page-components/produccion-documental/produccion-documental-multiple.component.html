@@ -12,7 +12,12 @@
 <div class="ui-fluid produccion-documental-multiple">
 
     <app-task-container>
-        <div customActions></div>
+        <div customActions>
+
+            <button pButton type="button" label="Asignar" style="width:auto;margin-bottom:10px;float:right;"
+                    (click)="save()"></button>
+
+        </div>
 
         <div taskBody>
 
@@ -126,6 +131,8 @@
                 </p-panel>
 
             </form>
+
+            <br/>
 
             <div class="ui-fluid">
                 <p-dataTable selectionMode="single"
