@@ -2,47 +2,48 @@ import {
   ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
   AfterContentInit
 } from '@angular/core';
-import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from 'app/domain/agentDTO';
-import {DocumentoDTO} from 'app/domain/documentoDTO';
-import {AnexoDTO} from 'app/domain/anexoDTO';
-import {ReferidoDTO} from 'app/domain/referidoDTO';
-import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
-import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import {ContactoDTO} from 'app/domain/contactoDTO';
-import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
+import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
+import { AgentDTO } from 'app/domain/agentDTO';
+import { DocumentoDTO } from 'app/domain/documentoDTO';
+import { AnexoDTO } from 'app/domain/anexoDTO';
+import { ReferidoDTO } from 'app/domain/referidoDTO';
+import { ComunicacionOficialDTO } from 'app/domain/comunicacionOficialDTO';
+import { Sandbox as RadicarComunicacionesSandBox } from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
+import { ContactoDTO } from 'app/domain/contactoDTO';
+import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
-import {Observable} from 'rxjs/Observable';
-import {ConstanteDTO} from '../../../domain/constanteDTO';
+import { Observable } from 'rxjs/Observable';
+import { ConstanteDTO } from '../../../domain/constanteDTO';
 import {
   COMUNICACION_INTERNA, DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, TIPO_AGENTE_DESTINATARIO,
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
 } from '../../../shared/bussiness-properties/radicacion-properties';
-import {Store} from '@ngrx/store';
-import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import { Store } from '@ngrx/store';
+import { State as RootState } from '../../../infrastructure/redux-store/redux-reducers';
 import {
   sedeDestinatarioEntradaSelector,
   tipoDestinatarioEntradaSelector
 } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
-import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import { getArrayData as DependenciaGrupoSelector } from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
-import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
-import {Subscription} from 'rxjs/Subscription';
-import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
-import {TareaDTO} from '../../../domain/tareaDTO';
-import {TaskForm} from '../../../shared/interfaces/task-form.interface';
-import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
-import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
+import { getActiveTask } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import { Subscription } from 'rxjs/Subscription';
+import { ScheduleNextTaskAction } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import { TareaDTO } from '../../../domain/tareaDTO';
+import { TaskForm } from '../../../shared/interfaces/task-form.interface';
+import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import { TaskTypes } from '../../../shared/type-cheking-clasess/class-types';
 import {
   getMediosRecepcionVentanillaData
 } from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
-import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
-import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
-import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
+import { LoadNextTaskPayload } from '../../../shared/interfaces/start-process-payload,interface';
+import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import { RadicarSuccessAction } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 import 'rxjs/add/operator/skipWhile';
+import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -175,25 +176,24 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.valueDestinatario = this.datosDestinatario.form.value;
     this.valueGeneral = this.datosGenerales.form.value;
 
-    const agentesList = [];
-    const isRemitenteInterno = this.valueGeneral.tipoComunicacion.codigo === COMUNICACION_INTERNA;
+    const radicacionEntradaFormPayload: any = {
+      destinatario: this.datosDestinatario.form.value,
+      generales: this.datosGenerales.form.value,
+      remitente: this.datosRemitente.form.value,
+      descripcionAnexos: this.datosGenerales.descripcionAnexos,
+      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      agentesDestinatario: this.datosDestinatario.agentesDestinatario,
+      task: this.task
+    };
 
-    if (isRemitenteInterno) {
-      agentesList.push(this.getTipoAgenteRemitenteInterno());
-    } else {
-      agentesList.push(this.getTipoAgenteRemitenteExterno());
+    if (this.datosRemitente.datosContactos) {
+      radicacionEntradaFormPayload.datosContactos = this.datosRemitente.datosContactos.contacts;
     }
 
-    agentesList.push(...this.getAgentesDestinatario());
+    const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);
+    this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
 
-    this.radicacion = {
-      correspondencia: this.getCorrespondencia(),
-      agenteList: agentesList,
-      ppdDocumentoList: [this.getDocumento()],
-      anexoList: this.getListaAnexos(),
-      referidoList: this.getListaReferidos(),
-      datosContactoList: this.getDatosContactos()
-    };
+    console.log(this.radicacion);
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
@@ -210,7 +210,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         destinatarioSede: this.valueDestinatario.destinatarioPrincipal.sedeAdministrativa.nombre,
         destinatarioGrupo: this.valueDestinatario.destinatarioPrincipal.dependenciaGrupo.nombre
       };
-      if (isRemitenteInterno) {
+      if (comunicacionOficialDTV.isRemitenteInterno()) {
         ticketRadicado['remitenteSede'] = this.valueRemitente.sedeAdministrativa.nombre;
         ticketRadicado['remitenteGrupo'] = this.valueRemitente.dependenciaGrupo.nombre;
       } else {
@@ -526,4 +526,3 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
 }
-
