@@ -83,6 +83,19 @@ public class ProcesoGatewayApi {
     }
 
     @POST
+    @Path("/tareas/listar/completadas")
+    @JWTTokenSecurity
+    public Response listTareasCompletadas(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
+        Response response = procesoClient.listarTareasCompletadas(entrada);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
     @Path("/tareas/iniciar")
     @JWTTokenSecurity
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
