@@ -60,6 +60,7 @@
                                       formControlName="dependencia"
                                       placeholder="Seleccione"
                                       [autoWidth]="false"
+                                      (onChange)="dependenciaChange($event)"
                                       (onBlur)="listenForBlurEvents('dependencia')"
                           >
                           </p-dropdown>
