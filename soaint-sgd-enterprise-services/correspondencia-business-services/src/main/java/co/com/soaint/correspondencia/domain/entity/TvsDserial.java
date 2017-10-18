@@ -5,33 +5,43 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
  * @author jrodriguez
  */
+@Builder(builderMethodName = "newInstance")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "TVS_DSERIAL")
 @NamedQueries({
-    @NamedQuery(name = "TvsDserial.findAll", query = "SELECT t FROM TvsDserial t")})
+    @NamedQuery(name = "TvsDserial.findAll", query = "SELECT t FROM TvsDserial t"),
+        @NamedQuery(name = "TvsDserial.consultarConsecutivoRadicado", query = "SELECT MAX(t.valConsecutivoRad) " +
+                "FROM TvsDserial t " +
+                "WHERE t.codSede = :COD_SEDE AND t.codCmc = :COD_CMC AND t.valAno = :ANNO AND NOT t.valConsecutivoRad BETWEEN :RESERVADO_I AND :RESERVADO_F " +
+                "GROUP BY t.codSede, t.codCmc, t.valAno")
+})
+@javax.persistence.TableGenerator(name = "TVS_DSERIAL_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_DSERIAL_SEQ", allocationSize = 1)
 public class TvsDserial implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "TVS_DSERIAL_GENERATOR")
     @Column(name = "IDE_SERIAL")
-    private Long ideSerial;
+    private BigInteger ideSerial;
     @Basic(optional = false)
     @Column(name = "COD_SEDE")
     private String codSede;
@@ -61,155 +71,5 @@ public class TvsDserial implements Serializable {
     private String valSerialRad;
     @Column(name = "VAL_SERIAL_PL")
     private String valSerialPl;
-
-    public TvsDserial() {
-    }
-
-    public TvsDserial(Long ideSerial) {
-        this.ideSerial = ideSerial;
-    }
-
-    public TvsDserial(Long ideSerial, String codSede, String valAno) {
-        this.ideSerial = ideSerial;
-        this.codSede = codSede;
-        this.valAno = valAno;
-    }
-
-    public Long getIdeSerial() {
-        return ideSerial;
-    }
-
-    public void setIdeSerial(Long ideSerial) {
-        this.ideSerial = ideSerial;
-    }
-
-    public String getCodSede() {
-        return codSede;
-    }
-
-    public void setCodSede(String codSede) {
-        this.codSede = codSede;
-    }
-
-    public String getCodGrupo() {
-        return codGrupo;
-    }
-
-    public void setCodGrupo(String codGrupo) {
-        this.codGrupo = codGrupo;
-    }
-
-    public String getCodDependencia() {
-        return codDependencia;
-    }
-
-    public void setCodDependencia(String codDependencia) {
-        this.codDependencia = codDependencia;
-    }
-
-    public String getCodCmc() {
-        return codCmc;
-    }
-
-    public void setCodCmc(String codCmc) {
-        this.codCmc = codCmc;
-    }
-
-    public String getValAno() {
-        return valAno;
-    }
-
-    public void setValAno(String valAno) {
-        this.valAno = valAno;
-    }
-
-    public String getCodFuncRadica() {
-        return codFuncRadica;
-    }
-
-    public void setCodFuncRadica(String codFuncRadica) {
-        this.codFuncRadica = codFuncRadica;
-    }
-
-    public Date getFecCrea() {
-        return fecCrea;
-    }
-
-    public void setFecCrea(Date fecCrea) {
-        this.fecCrea = fecCrea;
-    }
-
-    public String getIndTipoSerial() {
-        return indTipoSerial;
-    }
-
-    public void setIndTipoSerial(String indTipoSerial) {
-        this.indTipoSerial = indTipoSerial;
-    }
-
-    public String getValConsecutivoRad() {
-        return valConsecutivoRad;
-    }
-
-    public void setValConsecutivoRad(String valConsecutivoRad) {
-        this.valConsecutivoRad = valConsecutivoRad;
-    }
-
-    public String getValConsecutivoPl() {
-        return valConsecutivoPl;
-    }
-
-    public void setValConsecutivoPl(String valConsecutivoPl) {
-        this.valConsecutivoPl = valConsecutivoPl;
-    }
-
-    public String getCodTipConsecutivo() {
-        return codTipConsecutivo;
-    }
-
-    public void setCodTipConsecutivo(String codTipConsecutivo) {
-        this.codTipConsecutivo = codTipConsecutivo;
-    }
-
-    public String getValSerialRad() {
-        return valSerialRad;
-    }
-
-    public void setValSerialRad(String valSerialRad) {
-        this.valSerialRad = valSerialRad;
-    }
-
-    public String getValSerialPl() {
-        return valSerialPl;
-    }
-
-    public void setValSerialPl(String valSerialPl) {
-        this.valSerialPl = valSerialPl;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (ideSerial != null ? ideSerial.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TvsDserial)) {
-            return false;
-        }
-        TvsDserial other = (TvsDserial) object;
-        if ((this.ideSerial == null && other.ideSerial != null) || (this.ideSerial != null && !this.ideSerial.equals(other.ideSerial))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "co.com.soaint.correspondencia.domain.entity.TvsDserial[ ideSerial=" + ideSerial + " ]";
-    }
     
 }

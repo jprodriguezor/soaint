@@ -47,6 +47,7 @@
     "rxjs": "^5.2.0",
     "tassign": "^1.0.0",
     "ts-helpers": "^1.1.2",
+    "tslint": "^5.7.0",
     "zone.js": "^0.8.11"
   },
   "devDependencies": {
@@ -66,7 +67,6 @@
     "ngrx-store-freeze": "^0.1.9",
     "protractor": "~5.1.0",
     "ts-node": "~3.0.4",
-    "tslint": "~5.2.0",
     "typescript": "~2.3.2"
   }
 }

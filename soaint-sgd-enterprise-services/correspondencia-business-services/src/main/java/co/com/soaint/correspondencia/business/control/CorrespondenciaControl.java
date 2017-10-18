@@ -61,6 +61,9 @@ public class CorrespondenciaControl {
     @Autowired
     ReferidoControl referidoControl;
 
+    @Autowired
+    DserialControl dserialControl;
+
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
 
@@ -84,13 +87,15 @@ public class CorrespondenciaControl {
 
     // ----------------------
 
-    private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc) throws BusinessException, SystemException {
+    private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc, String anno, String consecutivo) throws BusinessException, SystemException {
         String nRadicado = nroRadicado;
         try {
             if (nroRadicado == null)
-                nRadicado = generarNumeroRadicado(codSede, codTipoCmc);
-
-            if (verificarByNroRadicado(nRadicado))
+                nRadicado = codSede
+                        .concat(codTipoCmc)
+                        .concat(anno)
+                        .concat(consecutivo);
+            else if (verificarByNroRadicado(nRadicado))
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("correspondencia.correspondencia_duplicated_nroRadicado")
                         .buildBusinessException();
@@ -111,12 +116,12 @@ public class CorrespondenciaControl {
     public ComunicacionOficialDTO radicarCorrespondencia(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
-            comunicacionOficialDTO.getCorrespondencia().setNroRadicado(procesarNroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado(),
-                    comunicacionOficialDTO.getCorrespondencia().getCodSede(),
-                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc()));
-
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(comunicacionOficialDTO.getCorrespondencia().getFecRadicado());
+            int anno = cal.get(Calendar.YEAR);
 
             CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
@@ -150,6 +155,16 @@ public class CorrespondenciaControl {
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
 
+            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
+                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
+
+            correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
+                    correspondencia.getCodSede(),
+                    correspondencia.getCodTipoCmc(),
+                    String.valueOf(anno), consecutivo));
+
+            dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
+                    correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
             em.flush();
             log.info("Correspondencia - radicacion exitosa nro-radicado -> " + correspondencia.getNroRadicado());
@@ -443,64 +458,6 @@ public class CorrespondenciaControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
-    }
-
-    private String generarNumeroRadicado(String codSede, String codTipoCmc) throws SystemException {
-        try {
-            int rangoI = Integer.parseInt(this.rangoReservado[0]);
-            int rangoF = Integer.parseInt(this.rangoReservado[1]);
-            String reservadoIni = this.formarNroRadicado(codSede, codTipoCmc,
-                    String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoI);
-            String reservadoFin = this.formarNroRadicado(codSede, codTipoCmc,
-                    String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), rangoF);
-
-            String nroR = em.createNamedQuery("CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC", String.class)
-                    .setParameter("COD_SEDE", codSede)
-                    .setParameter("COD_TIPO_CMC", codTipoCmc)
-                    .setParameter("RESERVADO_INI", reservadoIni)
-                    .setParameter("RESERVADO_FIN", reservadoFin)
-                    .getSingleResult();
-
-            int consecRadicado = 0;
-
-            if (nroR != null) {
-                CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroR);
-                Calendar calendar = Calendar.getInstance();
-                int anno = calendar.get(Calendar.YEAR);
-                calendar.setTime(correspondenciaDTO.getFecRadicado());
-                if (anno == calendar.get(Calendar.YEAR)) {
-                    consecRadicado = Integer.parseInt(nroR.substring(nroR.length() - 6));
-                }
-            }
-            consecRadicado++;
-
-            if (consecRadicado >= rangoI && consecRadicado <= rangoF) {
-                consecRadicado = rangoF + 1;
-            }
-
-            return this.formarNroRadicado(codSede, codTipoCmc,
-                    String.valueOf(Calendar.getInstance().get(Calendar.YEAR)), consecRadicado);
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
-     * @param codSede
-     * @param codTipoCmc
-     * @param anno
-     * @param consecutivo
-     * @return
-     */
-    public String formarNroRadicado(String codSede, String codTipoCmc, String anno, int consecutivo) {
-        return codSede
-                .concat(codTipoCmc)
-                .concat(anno)
-                .concat(String.format("%06d", consecutivo));
     }
 
     /**

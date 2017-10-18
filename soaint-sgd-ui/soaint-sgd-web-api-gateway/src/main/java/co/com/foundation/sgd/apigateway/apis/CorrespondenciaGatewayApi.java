@@ -5,7 +5,6 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
-import co.com.soaint.foundation.canonical.bpm.RespuestaListadoTareasDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.ui.ReasignarComunicacionDTO;
@@ -99,6 +98,8 @@ public class CorrespondenciaGatewayApi {
             parametros.put("usuario", asignacionDTO.getLoginName());
             parametros.put("idDocumento", asignacionDTO.getIdeDocumento().toString());
             parametros.put("numeroRadicado", asignacionDTO.getNroRadicado());
+            parametros.put("fechaRadicacion", asignacionDTO.getFecRadicado());
+            parametros.put("codDependencia", asignacionDTO.getCodDependencia());
             if (asignacionDTO.getAlertaVencimiento() != null)
                 parametros.put("fechaVencimiento", asignacionDTO.getAlertaVencimiento());
             entradaProceso.setParametros(parametros);
@@ -127,7 +128,7 @@ public class CorrespondenciaGatewayApi {
             entradaParaTarea.setPass(reasignarComunicacionDTO.getPass());
             entradaParaTarea.setInstanciaProceso(Long.parseLong(asigDTO.getAsignacion().getIdInstancia()));
 
-            List<EstadosEnum> estados = new ArrayList();
+            List<EstadosEnum> estados = new ArrayList<>();
             estados.add(EstadosEnum.LISTO);
             estados.add(EstadosEnum.ENPROGRESO);
             estados.add(EstadosEnum.COMPLETADO);
@@ -137,7 +138,8 @@ public class CorrespondenciaGatewayApi {
 
             log.info("CorrespondenciaGatewayApi - [trafic] - buscando tareas por proceso");
             Response responseTasks = procesoClient.listarPorIdProceso(entradaParaTarea);
-            List<RespuestaTareaDTO> responseTareas = responseTasks.readEntity(new GenericType<List<RespuestaTareaDTO>>(){});
+            List<RespuestaTareaDTO> responseTareas = responseTasks.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
+            });
             entradaProceso.setPass(asigDTO.getCredenciales());
             log.info(responseTareas);
 
