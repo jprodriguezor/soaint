@@ -156,7 +156,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
-        console.log('Probando el finalizar');
+        console.log(this.listaProyectores);
         return undefined;
     }
 }
