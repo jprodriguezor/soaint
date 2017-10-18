@@ -25,6 +25,7 @@
                 </div>
                 <div class="ui-g-12">
                   <p-calendar [(ngModel)]="start_date" [showIcon]="true" dateFormat="dd/mm/yy"
+                              [maxDate]="end_date"
                               id="startDate"></p-calendar>
                 </div>
               </div>
@@ -35,7 +36,8 @@
                   <label for="endDate">Fecha final</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy" id="endDate"></p-calendar>
+                  <p-calendar [(ngModel)]="end_date" [showIcon]="true" dateFormat="dd/mm/yy" id="endDate"
+                              [minDate]="start_date"></p-calendar>
                 </div>
               </div>
             </div>

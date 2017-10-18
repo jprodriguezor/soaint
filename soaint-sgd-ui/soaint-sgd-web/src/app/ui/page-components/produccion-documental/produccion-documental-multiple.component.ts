@@ -15,6 +15,7 @@ import {ProyeccionDocumentoDTO} from 'app/domain/ProyeccionDocumentoDTO';
 import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -108,6 +109,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
         this.funcionarios$ = this._store.select(getFuncionarioArrayData);
         this._funcionarioSandbox.loadAllFuncionariosDispatch();
+        this._store.select(getActiveTask).take(1).subscribe(activeTask => {
+            this.task = activeTask;
+        });
 
         this.initForm();
         this.form.reset();
@@ -152,6 +156,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
+        console.log(this.listaProyectores);
         return undefined;
     }
 }
