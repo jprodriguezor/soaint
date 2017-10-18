@@ -103,6 +103,7 @@ public class TasksService implements ITaskServices {
                     .tiempoActivacion(task.getTaskData().getActivationTime())
                     .fechaCreada(task.getTaskData().getCreatedOn())
                     .prioridad(task.getPriority())
+                    .descripcion(task.getDescription())
                     .build();
 
         } catch (Exception e) {
@@ -285,6 +286,7 @@ public class TasksService implements ITaskServices {
                         .fechaCreada(task.getCreatedOn())
                         .tiempoActivacion(task.getActivationTime())
                         .tiempoExpiracion(task.getExpirationTime())
+                        .descripcion(task.getDescription())
                         .build();
                 tareas.add(respuestaTarea);
             }
@@ -329,6 +331,7 @@ public class TasksService implements ITaskServices {
                             .fechaCreada(task.getCreatedOn())
                             .tiempoActivacion(task.getActivationTime())
                             .tiempoExpiracion(task.getExpirationTime())
+                            .descripcion(task.getDescription())
                             .build();
                     tareas.add(respuestaTarea);
                 }
@@ -375,6 +378,7 @@ public class TasksService implements ITaskServices {
                         .fechaCreada(task.getCreatedOn())
                         .tiempoActivacion(task.getActivationTime())
                         .tiempoExpiracion(task.getExpirationTime())
+                        .descripcion(task.getDescription())
                         .build();
                 tareas.add(respuestaTarea);
 
@@ -420,6 +424,7 @@ public class TasksService implements ITaskServices {
                         .fechaCreada(task.getCreatedOn())
                         .tiempoActivacion(task.getActivationTime())
                         .tiempoExpiracion(task.getExpirationTime())
+                        .descripcion(task.getDescription())
                         .build();
                 tareas.add(respuestaTarea);
 
