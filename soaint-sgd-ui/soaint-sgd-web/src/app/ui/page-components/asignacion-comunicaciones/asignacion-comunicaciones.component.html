@@ -72,7 +72,7 @@
         <div class="ui-g ui-fluid">
           <div class="ui-g-6" style="padding-top: 30px;padding-bottom: 5px">
             <p-multiSelect maxSelectedLabels="4" [options]="(funcionariosSuggestions$ | async) | dropdownItemFullName"
-                           [(ngModel)]="selectedFuncionarios" panelStyle="{minWidth:'12em'}"
+                           [(ngModel)]="selectedFuncionarios" [panelStyle]="{minWidth:'12em'}"
                            defaultLabel="Seleccione los funcionarios"
                            selectedItemsLabel="{0} funcionarios seleccionados">
             </p-multiSelect>
