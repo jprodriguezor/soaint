@@ -3,13 +3,18 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/proceso-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -89,10 +94,19 @@ public class ProcesoGatewayApi {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
         Response response = procesoClient.listarTareasCompletadas(entrada);
-        String responseContent = response.readEntity(String.class);
-        log.info(CONTENT + responseContent);
+        List<RespuestaTareaBamDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaBamDTO>>() {
+        });
+        List<RespuestaTareaDTO> responseTasks = new ArrayList<>();
+        responseContent.forEach((tarea) -> {
+            RespuestaTareaDTO res = new RespuestaTareaDTO();
+            res.setEstado(tarea.getStatus());
+            res.setNombre(tarea.getTaskname());
+            res.setIdTarea(new Long(tarea.getTaskid()));
+            responseTasks.add(res);
+        });
+        log.info(CONTENT + responseTasks);
 
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        return Response.status(response.getStatus()).entity(responseTasks).build();
     }
 
     @POST
