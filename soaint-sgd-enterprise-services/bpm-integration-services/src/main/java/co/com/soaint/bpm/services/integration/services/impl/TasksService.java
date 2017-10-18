@@ -457,7 +457,7 @@ public class TasksService implements ITaskServices {
 
             return em.createNamedQuery("BamTaskSummary.findTaskComplete", RespuestaTareaBamDTO.class)
                     .setParameter("ESTADO", Status.Completed.name())
-                    .setParameter("USUARIO", entrada.getParametros().get("usuario").toString())
+                    .setParameter("USUARIO", entrada.getUsuario())
                     .getResultList();
 
         } catch (Exception e) {
