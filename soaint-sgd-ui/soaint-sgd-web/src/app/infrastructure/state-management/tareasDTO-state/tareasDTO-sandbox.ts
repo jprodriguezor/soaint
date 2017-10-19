@@ -11,14 +11,13 @@ import {ApiBase} from '../../api/api-base';
 import {
     TASK_CARGAR_PLANILLA_ENTRADA,
     TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
-    TASK_GESTION_PRODUCCION_MULTIPLE,
+    TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
     TASK_RADICACION_ENTRADA
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
-import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
@@ -131,6 +130,9 @@ export class Sandbox {
                 break;
             case TASK_GESTION_PRODUCCION_MULTIPLE:
                 this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumentalMultiple, task]));
+                break;
+            case TASK_PRODUCIR_DOCUMENTO:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
                 break;
             default:
                 this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));

@@ -15,5 +15,5 @@ export const ROUTES_PATH = {
   distribucionFisica: 'distribucion-fisica',
   cargarPlanillas: 'cargar-planillas',
   produccionDocumentalMultiple: 'produccion-documental-multiple',
-  produccionDocumental: 'produccion-documental/:action',
+  produccionDocumental: 'producir-documento',
 };

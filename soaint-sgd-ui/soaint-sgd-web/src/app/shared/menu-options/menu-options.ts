@@ -8,7 +8,7 @@ export const MENU_OPTIONS = [
   {label: 'Radicacion salida (Prueba)', icon: 'subject', routerLink: ['/' + ROUTES_PATH.radicarCofSalida]},
   {label: 'Carga masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
-  {label: 'Producción Documental', icon: 'subject', routerLink: ['/' + ROUTES_PATH.produccionDocumentalMultiple]},
+  {label: 'Producción Documental', icon: 'subject', routerLink: ['/task/' + ROUTES_PATH.produccionDocumentalMultiple]},
 ];
 
 

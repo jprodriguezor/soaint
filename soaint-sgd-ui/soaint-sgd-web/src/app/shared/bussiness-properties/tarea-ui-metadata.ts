@@ -7,6 +7,5 @@ export const taskProcessBussinessName = {
 };
 
 export const taskRouteName = {
-  'Radicar COF Entrada': 'radicar-comunicaciones',
-  'Gestion Produccion Multiples Documentos': ''
+  'Radicar COF Entrada': 'radicar-comunicaciones'
 };
