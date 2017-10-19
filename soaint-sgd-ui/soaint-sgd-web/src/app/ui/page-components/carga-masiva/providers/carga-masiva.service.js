@@ -12,7 +12,7 @@ var CargaMasivaService = (function () {
     function CargaMasivaService(router, http) {
         this.router = router;
         this.http = http;
-        this.host = 'http://192.168.1.81:28080/Massive-Loader';
+        this.host = 'http://localhost:28080/Massive-Loader/massiveloaderapi';
     }
     // Subir documento para carga masiva
     CargaMasivaService.prototype.uploadFile = function (files, postData) {

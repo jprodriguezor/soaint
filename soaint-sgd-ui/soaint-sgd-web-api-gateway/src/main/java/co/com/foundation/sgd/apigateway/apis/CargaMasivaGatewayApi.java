@@ -8,6 +8,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 @Path("/carga-masiva-gateway-api")
@@ -29,11 +30,11 @@ public class CargaMasivaGatewayApi {
 //    @JWTTokenSecurity
     public Response listCargaMasiva() {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Carga Masiva");
-        Response response = client.listCargaMasiva ();
+        Response response = client.listCargaMasiva();
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
-        return Response.status( response.getStatus() ).entity(responseContent).build();
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
     @GET
@@ -41,11 +42,11 @@ public class CargaMasivaGatewayApi {
 //    @JWTTokenSecurity
     public Response listEstadoCargaMasiva() {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Estado Carga Masiva");
-        Response response = client.listEstadoCargaMasiva ();
+        Response response = client.listEstadoCargaMasiva();
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
-        return Response.status( response.getStatus() ).entity(responseContent).build();
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
     @GET
@@ -53,11 +54,11 @@ public class CargaMasivaGatewayApi {
 //    @JWTTokenSecurity
     public Response listEstadoCargaMasivaDadoId(@PathParam("id") String id) {
         log.info("CargaMasivaGatewayApi - [trafic] - listing Estado Carga Masiva dado Id");
-        Response response = client.listEstadoCargaMasivaDadoId (id);
+        Response response = client.listEstadoCargaMasivaDadoId(id);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
-        return Response.status( response.getStatus() ).entity(responseContent).build();
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 
@@ -71,19 +72,38 @@ public class CargaMasivaGatewayApi {
         final int[] estadoRespuesta = {0};
         log.info("CargaMasivaGatewayApi - [trafic] - carga masiva");
         log.info("sede: ".concat(codigoSede).concat(" -|- dependencia: ").concat(codigoDependencia));
+
+
         file.getFormDataMap().forEach((key, parts) -> {
+            log.info("Valor key: =====> " + key + "   Valor part: =====> " + parts);
             parts.forEach((part) -> {
-                Response response = client.cargarDocumento (part, codigoSede, codigoDependencia);
+                MultivaluedMap<String, String> headers = part.getHeaders();
+                String fileName = parseFileName(headers);
+                log.info("Valor fileName: ===> " + fileName);
+                Response response = client.cargarDocumento(part, codigoSede, codigoDependencia, fileName);
                 responseContent[0] = response.readEntity(String.class);
-                estadoRespuesta[0] =response.getStatus ();
+                estadoRespuesta[0] = response.getStatus();
 
             });
         });
-        log.info ("Response: ".concat(responseContent[0]));
-        log.info ("Estado: ".concat(String.valueOf(estadoRespuesta[0])));
+        log.info("Response: ".concat(responseContent[0]));
+        log.info("Estado: ".concat(String.valueOf(estadoRespuesta[0])));
         log.info(CONTENT + responseContent[0]);
 
-        return Response.status( estadoRespuesta[0]).entity(responseContent[0]).build();
+        return Response.status(estadoRespuesta[0]).entity(responseContent[0]).build();
+    }
+
+    // Parse Content-Disposition header to get the original file name
+    private String parseFileName(MultivaluedMap<String, String> headers) {
+        String[] contentDispositionHeader = headers.getFirst("Content-Disposition").split(";");
+        for (String name : contentDispositionHeader) {
+            if ((name.trim().startsWith("filename"))) {
+                String[] tmp = name.split("=");
+                String fileName = tmp[1].trim().replaceAll("\"", "");
+                return fileName;
+            }
+        }
+        return "randomName";
     }
 
 }

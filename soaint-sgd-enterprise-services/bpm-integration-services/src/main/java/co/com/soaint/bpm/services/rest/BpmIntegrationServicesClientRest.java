@@ -289,4 +289,19 @@ public class BpmIntegrationServicesClientRest {
         return tarea.listarTareasPorInstanciaProceso(entradaTarea);
     }
 
+    /**
+     * Listar tareas por usuario
+     *
+     * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
+    @POST
+    @Path("/tareas/listar/usuario/")
+    public List<RespuestaTareaBamDTO> listarTareasPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException {
+        log.info("processing rest request - listar tareas por instancias de procesos");
+        return tarea.listarTareasPorUsuario(entradaTarea);
+    }
+
+
 }

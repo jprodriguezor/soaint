@@ -5,6 +5,7 @@
     <persistence-unit name="bmp_ds">
 
         <class>co.com.soaint.bpm.services.domain.entity.BamtasksummaryEntity</class>
+        <class>co.com.soaint.bpm.services.domain.entity.TaskEventEntity</class>
         <properties>
 
             <property name="hibernate.show_sql" value="true"/>

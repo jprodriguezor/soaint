@@ -14,8 +14,6 @@ import {environment} from 'environments/environment';
 @Injectable()
 export class CargaMasivaService {
 
-  private host = 'http://192.168.1.81:28080/Massive-Loader';
-
   constructor(private router: Router, private http: Http, private _api: ApiBase, private _store: Store<RootState>) {
   }
 
@@ -33,7 +31,7 @@ export class CargaMasivaService {
           }
       }
 
-      return this.http.post(this.host + '/cargar-fichero', formData, {headers: headers})
+      return this.http.post(environment.carga_masiva_endpoint_upload, formData, {headers: headers})
           .toPromise().then(res => res.json() as ResultUploadDTO)
           .catch(this.handleError);
 
@@ -42,13 +40,13 @@ export class CargaMasivaService {
   // Obtener todos los registros de cargas masivas realizadas
   getRecords(): Observable<CargaMasivaList[]> {
 
-      return this._api.list(`${environment.carga_masiva_endpoint_listar}`).map(res => res.cargaMasiva);
+      return this._api.list(environment.carga_masiva_endpoint_listar).map(res => res.cargaMasiva);
   }
 
   // Obtener el ultimo registro de carga masiva
   getLastRecord(): Observable<CargaMasivaDTO> {
 
-      return this._api.list(`${environment.carga_masiva_endpoint_estado}`).map(res => res.correspondencia);
+      return this._api.list(environment.carga_masiva_endpoint_estado).map(res => res.correspondencia);
   }
 
   // Obtener detalles de un registro de carga masiva específico
