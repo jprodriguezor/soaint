@@ -14,7 +14,7 @@ import {environment} from 'environments/environment';
 @Injectable()
 export class CargaMasivaService {
 
-  private host = 'http://192.168.1.81:28080/Massive-Loader';
+  private host = 'http://localhost:28080/Massive-Loader/massiveloaderapi';
 
   constructor(private router: Router, private http: Http, private _api: ApiBase, private _store: Store<RootState>) {
   }
