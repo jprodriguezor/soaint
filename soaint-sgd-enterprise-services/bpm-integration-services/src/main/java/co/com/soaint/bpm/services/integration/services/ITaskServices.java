@@ -22,6 +22,8 @@ public interface ITaskServices {
 
     List<RespuestaTareaBamDTO> listarTareasCompletadas(EntradaProcesoDTO entradaTarea) throws SystemException;
 
+    List<RespuestaTareaBamDTO> listarTareasPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException;
+
     RespuestaTareaDTO completarTarea(EntradaProcesoDTO entradaTarea) throws SystemException;
 
     RespuestaTareaDTO iniciarTarea(EntradaProcesoDTO entradaTarea) throws SystemException;
