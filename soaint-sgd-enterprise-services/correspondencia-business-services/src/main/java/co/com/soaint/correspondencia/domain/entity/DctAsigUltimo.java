@@ -93,7 +93,7 @@ public class DctAsigUltimo implements Serializable {
     private Date fecCreo;
     @Basic(optional = false)
     @Column(name = "IDE_USUARIO_CAMBIO")
-    private long ideUsuarioCambio;
+    private BigInteger ideUsuarioCambio;
     @Basic(optional = false)
     @Column(name = "FEC_CAMBIO")
     @Temporal(TemporalType.TIMESTAMP)

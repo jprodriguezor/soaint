@@ -83,4 +83,14 @@ public class GestionarAsignacion {
     public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(BigInteger ideAgente) throws SystemException {
         return control.consultarAsignacionReasignarByIdeAgente(ideAgente);
     }
+
+    /**
+     *
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void asignarDocumentoByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        control.asignarDocumentoByNroRadicado(nroRadicado);
+    }
 }

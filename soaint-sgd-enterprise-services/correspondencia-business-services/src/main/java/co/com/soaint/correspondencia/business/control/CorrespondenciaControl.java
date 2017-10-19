@@ -64,6 +64,9 @@ public class CorrespondenciaControl {
     @Autowired
     DserialControl dserialControl;
 
+    @Autowired
+    AsignacionControl asignacionControl;
+
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
 
@@ -167,8 +170,11 @@ public class CorrespondenciaControl {
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
             em.flush();
+
             log.info("Correspondencia - radicacion exitosa nro-radicado -> " + correspondencia.getNroRadicado());
-            return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
+            return ComunicacionOficialDTO.newInstance()
+                    .correspondencia(consultarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado()))
+                    .build();
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;

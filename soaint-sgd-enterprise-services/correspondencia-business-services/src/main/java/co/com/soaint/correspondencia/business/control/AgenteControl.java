@@ -104,6 +104,27 @@ public class AgenteControl {
     }
 
     /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param ideAgente
      * @return
      * @throws BusinessException
@@ -167,7 +188,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param redireccion
      * @throws SystemException
      */
@@ -205,12 +225,11 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param ideAgente
      * @throws BusinessException
      * @throws SystemException
      */
-    public void actualizarNumDevoluciones(BigInteger ideAgente)throws BusinessException, SystemException{
+    public void actualizarNumDevoluciones(BigInteger ideAgente) throws BusinessException, SystemException {
         try {
             if (!verificarByIdeAgente(ideAgente))
                 throw ExceptionBuilder.newBuilder()

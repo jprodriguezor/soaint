@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -81,5 +82,10 @@ public class GestionarAsignacionWS {
     @WebMethod(action = "consultarAsignacionReasignarByIdeAgente", operationName = "consultarAsignacionReasignarByIdeAgente")
     public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(@WebParam(name = "ide_agente")final BigInteger ideAgente) throws SystemException {
         return boundary.consultarAsignacionReasignarByIdeAgente(ideAgente);
+    }
+
+    @WebMethod(action = "asignarDocumentoByNroRadicado", operationName = "asignarDocumentoByNroRadicado")
+    public void asignarDocumentoByNroRadicado(@WebParam(name = "correspondencia")final CorrespondenciaDTO correspondencia) throws BusinessException, SystemException {
+        boundary.asignarDocumentoByNroRadicado(correspondencia.getNroRadicado());
     }
 }
