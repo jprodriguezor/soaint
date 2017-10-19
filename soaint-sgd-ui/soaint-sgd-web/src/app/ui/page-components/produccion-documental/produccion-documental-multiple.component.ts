@@ -16,6 +16,7 @@ import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {ActivatedRoute, Params} from '@angular/router';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -30,6 +31,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     form: FormGroup;
     validations: any = {};
 
+    radicadoAsociado = null;
+
     dependenciaSelected: ConstanteDTO;
 
     listaProyectores: ProyeccionDocumentoDTO[] = [];
@@ -40,9 +43,10 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     tiposPlantilla: ConstanteDTO[];
 
     constructor(private _store: Store<RootState>,
-              private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private _changeDetectorRef: ChangeDetectorRef,
-              private formBuilder: FormBuilder) {  }
+                private activatedRoute: ActivatedRoute,
+                private _produccionDocumentalApi: ProduccionDocumentalApiService,
+                private _changeDetectorRef: ChangeDetectorRef,
+                private formBuilder: FormBuilder) {  }
 
 
 
@@ -104,21 +108,28 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     initForm() {
         this.form = this.formBuilder.group({
           // Datos generales
-          'sede': [{value: null}, Validators.required],
-          'dependencia': [{value: null}, Validators.required],
-          'funcionario': [{value: null}, Validators.required],
-          'tipoPlantilla': [{value: null}, Validators.required],
+            'sede': [{value: null}, Validators.required],
+            'dependencia': [{value: null}, Validators.required],
+            'funcionario': [{value: null}, Validators.required],
+            'tipoPlantilla': [{value: null}, Validators.required],
         });
     }
 
     ngOnInit(): void {
+        this.activatedRoute.params.subscribe((params: Params) => {
+            this.radicadoAsociado = params.hasOwnProperty('idTarea') ? {numero: 'RAD123456789'} : null;
+            if (params.hasOwnProperty('variables')) {
+                const obj = params['variables'];
+                console.log('Obj: ' + typeof obj);
+            }
+        });
+
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
         this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
         this._store.select(getActiveTask).take(1).subscribe(activeTask => {
             this.task = activeTask;
         });
-
         this.initForm();
         this.form.reset();
 
