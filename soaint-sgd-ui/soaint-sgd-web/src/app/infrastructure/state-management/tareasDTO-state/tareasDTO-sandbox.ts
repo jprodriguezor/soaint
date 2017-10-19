@@ -9,157 +9,163 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {
-  TASK_CARGAR_PLANILLA_ENTRADA,
-  TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
-  TASK_RADICACION_ENTRADA
+    TASK_CARGAR_PLANILLA_ENTRADA,
+    TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
+    TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
+    TASK_RADICACION_ENTRADA
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
-import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
 
-  routingStartState = false;
+    routingStartState = false;
 
-  authPayload: { usuario: string, pass: string } | {};
-  authPayloadUnsubscriber: Subscription;
+    authPayload: { usuario: string, pass: string } | {};
+    authPayloadUnsubscriber: Subscription;
 
-  constructor(private _store: Store<State>,
-              private _api: ApiBase) {
-    this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
-      return profile ? {usuario: profile.username, pass: profile.password} : {};
-    })).subscribe((value) => {
-      this.authPayload = value;
-    });
-  }
-
-  loadData(payload: any) {
-    const clonePayload = tassign(payload, {
-      estados: [
-        'RESERVADO',
-        'ENPROGRESO',
-        'LISTO'
-      ]
-    });
-    return this._api.post(environment.tasksForStatus_endpoint,
-      Object.assign({}, clonePayload, this.authPayload));
-  }
-
-  getTaskVariables(payload: any) {
-    const overPayload = this.extractProcessVariablesPayload(payload);
-    return this._api.post(environment.obtenerVariablesTarea,
-      Object.assign({}, overPayload, this.authPayload));
-  }
-
-  isTaskRoutingStarted() {
-    return this.routingStartState;
-  }
-
-  taskRoutingStart() {
-    this.routingStartState = true;
-  }
-
-  taskRoutingEnd() {
-    this.routingStartState = false;
-  }
-
-  startTask(payload: any) {
-    const overPayload = this.extractInitTaskPayload(payload);
-    return this._api.post(environment.tasksStartProcess,
-      Object.assign({}, overPayload, this.authPayload));
-  }
-
-  reserveTask(payload: any) {
-    const overPayload = this.extractInitTaskPayload(payload);
-    return this._api.post(environment.tasksReserveProcess,
-      Object.assign({}, overPayload, this.authPayload));
-  }
-
-  extractProcessVariablesPayload(payload) {
-    let task = payload;
-    if (isArray(payload) && payload.length > 0) {
-      task = payload[0];
+    constructor(private _store: Store<State>,
+                private _api: ApiBase) {
+        this.authPayloadUnsubscriber = this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
+            return profile ? {usuario: profile.username, pass: profile.password} : {};
+        })).subscribe((value) => {
+            this.authPayload = value;
+        });
     }
 
-    return {
-      'idProceso': task.idProceso,
-      'idDespliegue': task.idDespliegue,
-      'instanciaProceso': task.idInstanciaProceso
+    loadData(payload: any) {
+        const clonePayload = tassign(payload, {
+            estados: [
+                'RESERVADO',
+                'ENPROGRESO',
+                'LISTO'
+            ]
+        });
+        return this._api.post(environment.tasksForStatus_endpoint,
+            Object.assign({}, clonePayload, this.authPayload));
     }
-  }
 
-  extractInitTaskPayload(payload) {
-    let task = payload;
-    if (isArray(payload) && payload.length > 0) {
-      task = payload[0];
+    getTaskVariables(payload: any) {
+        const overPayload = this.extractProcessVariablesPayload(payload);
+        return this._api.post(environment.obtenerVariablesTarea,
+            Object.assign({}, overPayload, this.authPayload));
     }
 
-    return {
-      'idProceso': task.idProceso,
-      'idDespliegue': task.idDespliegue,
-      'idTarea': task.idTarea
+    isTaskRoutingStarted() {
+        return this.routingStartState;
     }
-  }
 
-  completeTask(payload: any) {
-    return this._api.post(environment.tasksCompleteProcess,
-      Object.assign({}, payload, this.authPayload));
-  }
-
-  filterDispatch(query) {
-    this._store.dispatch(new actions.FilterAction(query));
-  }
-
-  initTaskDispatch(task: TareaDTO): any {
-
-    switch (task.nombre) {
-      case TASK_RADICACION_ENTRADA:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
-        break;
-      case TASK_DIGITALIZAR_DOCUMENTO:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
-        break;
-      case TASK_DOCUMENTOS_TRAMITES:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
-        break;
-      case TASK_CARGAR_PLANILLA_ENTRADA:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.cargarPlanillas, task]));
-        break;
-      default:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
+    taskRoutingStart() {
+        this.routingStartState = true;
     }
-  }
 
-  completeTaskDispatch(payload: any) {
-    this._store.dispatch(new actions.CompleteTaskAction(payload));
-  }
-
-  dispatchNextTask(payload) {
-    this._store.dispatch(new StartProcessAction(payload))
-  }
-
-  navigateToWorkspace() {
-    this._store.dispatch(back());
-  }
-
-  startTaskDispatch(task?: TareaDTO) {
-    if (task.estado === 'ENPROGRESO') {
-      this._store.dispatch(new actions.StartInProgressTaskAction(task));
-    } else if (task.estado === 'RESERVADO') {
-      this._store.dispatch(new actions.StartTaskAction(task));
+    taskRoutingEnd() {
+        this.routingStartState = false;
     }
-  }
 
-  reserveTaskDispatch(task?: TareaDTO) {
-    this._store.dispatch(new actions.ReserveTaskAction(task));
-  }
+    startTask(payload: any) {
+        const overPayload = this.extractInitTaskPayload(payload);
+        return this._api.post(environment.tasksStartProcess,
+            Object.assign({}, overPayload, this.authPayload));
+    }
 
-  loadDispatch(payload?) {
-    this._store.dispatch(new actions.LoadAction(payload));
-  }
+    reserveTask(payload: any) {
+        const overPayload = this.extractInitTaskPayload(payload);
+        return this._api.post(environment.tasksReserveProcess,
+            Object.assign({}, overPayload, this.authPayload));
+    }
+
+    extractProcessVariablesPayload(payload) {
+        let task = payload;
+        if (isArray(payload) && payload.length > 0) {
+            task = payload[0];
+        }
+
+        return {
+            'idProceso': task.idProceso,
+            'idDespliegue': task.idDespliegue,
+            'instanciaProceso': task.idInstanciaProceso
+        }
+    }
+
+    extractInitTaskPayload(payload) {
+        let task = payload;
+        if (isArray(payload) && payload.length > 0) {
+            task = payload[0];
+        }
+
+        return {
+            'idProceso': task.idProceso,
+            'idDespliegue': task.idDespliegue,
+            'idTarea': task.idTarea
+        }
+    }
+
+    completeTask(payload: any) {
+        return this._api.post(environment.tasksCompleteProcess,
+            Object.assign({}, payload, this.authPayload));
+    }
+
+    filterDispatch(query) {
+        this._store.dispatch(new actions.FilterAction(query));
+    }
+
+    initTaskDispatch(task: TareaDTO): any {
+
+        switch (task.nombre) {
+            case TASK_RADICACION_ENTRADA:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
+                break;
+            case TASK_DIGITALIZAR_DOCUMENTO:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
+                break;
+            case TASK_DOCUMENTOS_TRAMITES:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
+                break;
+            case TASK_CARGAR_PLANILLA_ENTRADA:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.cargarPlanillas, task]));
+                break;
+            case TASK_GESTION_PRODUCCION_MULTIPLE:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumentalMultiple, task]));
+                break;
+            case TASK_PRODUCIR_DOCUMENTO:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
+                break;
+            default:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
+        }
+    }
+
+    completeTaskDispatch(payload: any) {
+        this._store.dispatch(new actions.CompleteTaskAction(payload));
+    }
+
+    dispatchNextTask(payload) {
+        this._store.dispatch(new StartProcessAction(payload))
+    }
+
+    navigateToWorkspace() {
+        this._store.dispatch(back());
+    }
+
+    startTaskDispatch(task?: TareaDTO) {
+        if (task.estado === 'ENPROGRESO') {
+            this._store.dispatch(new actions.StartInProgressTaskAction(task));
+        } else if (task.estado === 'RESERVADO') {
+            this._store.dispatch(new actions.StartTaskAction(task));
+        }
+    }
+
+    reserveTaskDispatch(task?: TareaDTO) {
+        this._store.dispatch(new actions.ReserveTaskAction(task));
+    }
+
+    loadDispatch(payload?) {
+        this._store.dispatch(new actions.LoadAction(payload));
+    }
 
 
 }

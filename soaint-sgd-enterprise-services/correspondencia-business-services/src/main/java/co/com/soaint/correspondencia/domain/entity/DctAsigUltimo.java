@@ -120,8 +120,8 @@ public class DctAsigUltimo implements Serializable {
     private DctAsignacion dctAsignacion;
 
     /**
+     *
      * @param ideAsigUltimo
-     * @param numRedirecciones
      * @param ideUsuarioCreo
      * @param fecCreo
      * @param nivLectura

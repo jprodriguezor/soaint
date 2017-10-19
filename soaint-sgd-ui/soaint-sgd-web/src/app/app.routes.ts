@@ -20,61 +20,73 @@ import {ProduccionDocumentalComponent} from './ui/page-components/produccion-doc
 import {ProduccionDocumentalMultipleComponent} from './ui/page-components/produccion-documental/produccion-documental-multiple.component';
 
 export const routes: Routes = [
-  {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
-  {path: ROUTES_PATH.login, component: LoginComponent},
-  {path: ROUTES_PATH.dashboard, component: HomeComponent, canActivate: [AuthenticatedGuard]},
-  {
-    path: ROUTES_PATH.task,
-    canActivate: [AuthenticatedGuard],
-    children: [
-      {path: ROUTES_PATH.radicarCofEntrada, component: RadicarComunicacionesComponent, canDeactivate: [TareaDtoGuard]},
-      {
-        path: ROUTES_PATH.digitalizarDocumento,
-        component: DigitalizarDocumentoComponent,
+    {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
+    {path: ROUTES_PATH.login, component: LoginComponent},
+    {path: ROUTES_PATH.dashboard, component: HomeComponent, canActivate: [AuthenticatedGuard]},
+    {
+        path: ROUTES_PATH.task,
         canActivate: [AuthenticatedGuard],
-        canDeactivate: [TareaDtoGuard]
-      },
-      {
-        path: ROUTES_PATH.documentosTramite,
-        component: DocumentosTramiteComponent,
+        children: [
+            {
+                path: ROUTES_PATH.radicarCofEntrada,
+                component: RadicarComunicacionesComponent,
+                canDeactivate: [TareaDtoGuard]
+            },
+            {
+                path: ROUTES_PATH.digitalizarDocumento,
+                component: DigitalizarDocumentoComponent,
+                canActivate: [AuthenticatedGuard],
+                canDeactivate: [TareaDtoGuard]
+            },
+            {
+                path: ROUTES_PATH.documentosTramite,
+                component: DocumentosTramiteComponent,
+                canActivate: [AuthenticatedGuard]
+            },
+            {
+                path: ROUTES_PATH.cargarPlanillas,
+                component: CargarPlanillasComponent,
+                canActivate: [AuthenticatedGuard]
+            },
+            {
+                path: ROUTES_PATH.produccionDocumentalMultiple,
+                component: ProduccionDocumentalMultipleComponent,
+                canActivate: [AuthenticatedGuard]
+            },
+            {
+                path: ROUTES_PATH.produccionDocumental,
+                component: ProduccionDocumentalComponent,
+                canActivate: [AuthenticatedGuard]
+            },
+        ]
+    },
+    {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
+    {path: ROUTES_PATH.processList, component: ProcessComponent, canActivate: [AuthenticatedGuard]},
+    {
+        path: ROUTES_PATH.asignacionComunicaciones,
+        component: AsignarComunicacionesComponent,
         canActivate: [AuthenticatedGuard]
-      },
-      {
-        path: ROUTES_PATH.cargarPlanillas,
-        component: CargarPlanillasComponent,
+    },
+    {
+        path: ROUTES_PATH.radicarCofSalida,
+        component: RadicarSalidaComponent,
         canActivate: [AuthenticatedGuard]
-      },
-    ]
-  },
-  {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
-  {path: ROUTES_PATH.processList, component: ProcessComponent, canActivate: [AuthenticatedGuard]},
-  {
-    path: ROUTES_PATH.asignacionComunicaciones,
-    component: AsignarComunicacionesComponent,
-    canActivate: [AuthenticatedGuard]
-  },
-  {
-    path: ROUTES_PATH.radicarCofSalida,
-    component: RadicarSalidaComponent,
-    canActivate: [AuthenticatedGuard]
-  },
-  {
-    path: ROUTES_PATH.cargaMasiva,
-    canActivate: [AuthenticatedGuard],
-    component: CargaMasivaComponent
-  },
-  {
-    path: ROUTES_PATH.cargaMasivaDetails,
-    component: CargaMasivaDetailsComponent,
-    canActivate: [AuthenticatedGuard]
-  },
-  {
-    path: ROUTES_PATH.distribucionFisica,
-    component: DistribucionFisicaComponent,
-    canActivate: [AuthenticatedGuard]
-  },
-  {path: ROUTES_PATH.produccionDocumentalMultiple, component: ProduccionDocumentalMultipleComponent, canActivate: [AuthenticatedGuard]},
-  {path: ROUTES_PATH.produccionDocumental, component: ProduccionDocumentalComponent, canActivate: [AuthenticatedGuard]}
+    },
+    {
+        path: ROUTES_PATH.cargaMasiva,
+        canActivate: [AuthenticatedGuard],
+        component: CargaMasivaComponent
+    },
+    {
+        path: ROUTES_PATH.cargaMasivaDetails,
+        component: CargaMasivaDetailsComponent,
+        canActivate: [AuthenticatedGuard]
+    },
+    {
+        path: ROUTES_PATH.distribucionFisica,
+        component: DistribucionFisicaComponent,
+        canActivate: [AuthenticatedGuard]
+    }
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

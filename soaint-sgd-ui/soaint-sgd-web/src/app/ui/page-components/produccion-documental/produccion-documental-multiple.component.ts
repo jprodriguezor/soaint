@@ -15,6 +15,7 @@ import {ProyeccionDocumentoDTO} from 'app/domain/ProyeccionDocumentoDTO';
 import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -28,6 +29,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
 
     form: FormGroup;
     validations: any = {};
+
+    dependenciaSelected: ConstanteDTO;
+
     listaProyectores: ProyeccionDocumentoDTO[] = [];
     sedesAdministrativas$: Observable<ConstanteDTO[]>;
     dependencias$: Observable<ConstanteDTO[]>;
@@ -37,7 +41,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
 
     constructor(private _store: Store<RootState>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private _funcionarioSandbox: Sandbox,
               private _changeDetectorRef: ChangeDetectorRef,
               private formBuilder: FormBuilder) {  }
 
@@ -64,6 +67,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         proyectores.push(proyector);
         this.listaProyectores = [...proyectores];
         this.form.reset();
+        this.funcionarios$ = Observable.of([]);
         this.refreshView();
 
         return true;
@@ -92,6 +96,11 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         return exists;
     }
 
+    dependenciaChange(event) {
+        this.dependenciaSelected = event.value;
+        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol(this.dependenciaSelected.codigo, {} );
+    }
+
     initForm() {
         this.form = this.formBuilder.group({
           // Datos generales
@@ -106,8 +115,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
         this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
-        this.funcionarios$ = this._store.select(getFuncionarioArrayData);
-        this._funcionarioSandbox.loadAllFuncionariosDispatch();
+        this._store.select(getActiveTask).take(1).subscribe(activeTask => {
+            this.task = activeTask;
+        });
 
         this.initForm();
         this.form.reset();
@@ -152,6 +162,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
+        console.log(this.listaProyectores);
         return undefined;
     }
 }
