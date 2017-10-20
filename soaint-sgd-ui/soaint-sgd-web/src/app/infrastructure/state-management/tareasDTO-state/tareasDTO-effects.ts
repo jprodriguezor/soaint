@@ -50,6 +50,15 @@ export class Effects {
     );
 
   @Effect()
+  getStats: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.GET_TASK_STATS)
+    .switchMap(
+      () => this._sandbox.getTaskStats()
+        .map((response) => new actions.GetTaskStatsSuccessAction(response))
+        .catch((error) => Observable.of(new actions.LoadFailAction({error})))
+    );
+
+  @Effect()
   startTask: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_TASK)
     .map(toPayload)

@@ -21,7 +21,9 @@ export const ActionTypes = {
   LOCK_ACTIVE_TASK: type('[TareaDTO] LockActiveTaskAction'),
   UNLOCK_ACTIVE_TASK: type('[TareaDTO] UnlockActiveTaskAction'),
   SCHEDULE_NEXT_TASK: type('[TareaDTO] ScheduleNextTaskAction'),
-  CONTINUE_WITH_NEXT_TASK: type('[TareaDTO] ContinueWithNextTaskAction')
+  CONTINUE_WITH_NEXT_TASK: type('[TareaDTO] ContinueWithNextTaskAction'),
+  GET_TASK_STATS: type('[TareaDTO] GetTaskStatsAction'),
+  GET_TASK_STATS_SUCCESS: type('[TareaDTO] GetTaskStatsSuccessAction'),
 };
 
 export class FilterAction implements Action {
@@ -157,6 +159,20 @@ export class ScheduleNextTaskAction implements Action {
   }
 }
 
+export class GetTaskStatsAction implements Action {
+  type = ActionTypes.GET_TASK_STATS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class GetTaskStatsSuccessAction implements Action {
+  type = ActionTypes.GET_TASK_STATS_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
 export type Actions =
   FilterAction |
   LoadAction |
@@ -173,7 +189,9 @@ export type Actions =
   CancelTaskFailAction |
   UnlockActiveTaskAction |
   ContinueWithNextTaskAction |
-  ScheduleNextTaskAction
+  ScheduleNextTaskAction |
+  GetTaskStatsAction |
+  GetTaskStatsSuccessAction
   ;
 
 
