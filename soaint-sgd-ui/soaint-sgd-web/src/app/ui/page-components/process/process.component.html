@@ -4,7 +4,11 @@
                [paginator]="true" [rows]="10" [responsive]="true" emptyMessage="No se encontraron resultados">
     <p-header></p-header>
     <!--<p-column field="codigoProceso" header="Código" [sortable]="true"></p-column>-->
-    <p-column field="nombreProceso" header="Nombre del proceso" [sortable]="true"></p-column>
+    <p-column field="nombreProceso" header="Nombre del proceso" [sortable]="true">
+      <ng-template let-process="rowData" pTemplate="item">
+        {{getProcessDisplayName(process)}}
+      </ng-template>
+    </p-column>
     <!--<p-column field="idDespliegue" header="Id de despliegue" [sortable]="true"></p-column>-->
     <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
       <ng-template let-process="rowData" pTemplate="item">

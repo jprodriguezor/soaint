@@ -32,5 +32,10 @@ export class ProcessComponent implements OnInit {
     this._processSandbox.initProcessDispatch(process);
   }
 
+  getProcessDisplayName(proceso) {
+    console.log(proceso);
+    return process_info[proceso.codigoProceso] ? process_info[proceso.codigoProceso].displayValue : proceso.nombreProceso
+  }
+
 }
 
