@@ -56,7 +56,7 @@ export class Effects {
     .switchMap(
       (payload) => this._sandbox.getTaskVariables(payload)
         .mergeMap((taskVariables) => this._sandbox.startTask(payload)
-          .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
+          .map((res) => Object.assign({}, res, {variables: taskVariables.variables})
           ))
         .map((response: any) => new actions.StartTaskSuccessAction(response))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
@@ -69,9 +69,12 @@ export class Effects {
     .switchMap(
       (payload) => this._sandbox.getTaskVariables(payload)
         .mergeMap((taskVariables) => this._sandbox.reserveTask(payload)
-          .map((res) =>  Object.assign({}, res, {variables: taskVariables.variables})
+          .map((res) => Object.assign({}, res, {variables: taskVariables.variables})
           ))
-        .map((response: any) => new actions.StartTaskSuccessAction(tassign(payload, {estado: response.estado})))
+        .map((response: any) => new actions.StartTaskSuccessAction(tassign(payload, {
+          estado: response.estado,
+          variables: response.variables
+        })))
         .catch((error) => Observable.of(new actions.StartTaskFailAction({error})))
     );
 
