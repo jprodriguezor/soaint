@@ -2,33 +2,33 @@ import {
   ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
   AfterContentInit
 } from '@angular/core';
+import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
+import { AgentDTO } from 'app/domain/agentDTO';
+import { DocumentoDTO } from 'app/domain/documentoDTO';
+import { AnexoDTO } from 'app/domain/anexoDTO';
+import { ReferidoDTO } from 'app/domain/referidoDTO';
 import { ComunicacionOficialDTO } from 'app/domain/comunicacionOficialDTO';
 import { Sandbox as RadicarComunicacionesSandBox } from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-
+import { ContactoDTO } from 'app/domain/contactoDTO';
 import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
-import { ConstanteDTO } from '../../../domain/constanteDTO';
-import { Store } from '@ngrx/store';
-import { State as RootState } from '../../../infrastructure/redux-store/redux-reducers';
-import {
-  sedeDestinatarioEntradaSelector,
-  tipoDestinatarioEntradaSelector
-} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
-import { getArrayData as DependenciaGrupoSelector } from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import { getActiveTask } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
-import { Subscription } from 'rxjs/Subscription';
-import { ScheduleNextTaskAction } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
-import { TareaDTO } from '../../../domain/tareaDTO';
-import { TaskForm } from '../../../shared/interfaces/task-form.interface';
-import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
-import { TaskTypes } from '../../../shared/type-cheking-clasess/class-types';
-import {
-  getMediosRecepcionVentanillaData
-} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
-import { LoadNextTaskPayload } from '../../../shared/interfaces/start-process-payload,interface';
-import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
-import { RadicarSuccessAction } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {Store} from '@ngrx/store';
+import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import {sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
+import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {TareaDTO} from '../../../domain/tareaDTO';
+import {TaskForm} from '../../../shared/interfaces/task-form.interface';
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
+import {getMediosRecepcionVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 import 'rxjs/add/operator/skipWhile';
 import {ComunicacionOficialEntradaDTV} from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
 
@@ -111,6 +111,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       this.task = activeTask;
       this.restore();
     });
+
   }
 
   ngAfterContentInit() {
@@ -292,44 +293,45 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   restore() {
-    const payload = 1;
-    this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
-      const results = response.payload;
-      if(!results) {
-        return;
-      }
+    if (this.task) {
+      this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
+        const results = response.payload;
+        if (!results) {
+          return;
+        }
 
-      // generales
-      this.datosGenerales.form.patchValue(results.generales);
-      this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
-      this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
+        // generales
+        this.datosGenerales.form.patchValue(results.generales);
+        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
+        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
 
-      // remitente
-      this.datosRemitente.form.patchValue(results.remitente);
+        // remitente
+        this.datosRemitente.form.patchValue(results.remitente);
 
-      // destinatario
-      this.datosDestinatario.form.patchValue(results.destinatario);
-      this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
+        // destinatario
+        this.datosDestinatario.form.patchValue(results.destinatario);
+        this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
 
-      if (results.datosContactos) {
-        const retry = setInterval(() => {
-          if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-            this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
-            clearInterval(retry);
-          }
-        }, 400);
-      }
+        if (results.datosContactos) {
+          const retry = setInterval(() => {
+            if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+              this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
+              clearInterval(retry);
+            }
+          }, 400);
+        }
 
-      // if (results.contactInProgress) {
-      //   const retry = setInterval(() => {
-      //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-      //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-      //       clearInterval(retry);
-      //     }
-      //   }, 400)
-      // }
+        // if (results.contactInProgress) {
+        //   const retry = setInterval(() => {
+        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
+        //       clearInterval(retry);
+        //     }
+        //   }, 400)
+        // }
 
-    });
+      });
+    }
   }
 
   ngOnDestroy() {

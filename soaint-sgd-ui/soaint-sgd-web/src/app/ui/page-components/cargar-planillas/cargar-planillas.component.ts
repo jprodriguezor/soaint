@@ -1,40 +1,40 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
-import {RadicacionEntradaDTV} from "../../../shared/data-transformers/radicacionEntradaDTV";
-import {AgentDTO} from "../../../domain/agentDTO";
-import {Observable} from "rxjs/Observable";
-import {getTipologiaDocumentalArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {FuncionarioDTO} from "../../../domain/funcionarioDTO";
-import {DependenciaDTO} from "../../../domain/dependenciaDTO";
-import {Subscription} from "rxjs/Subscription";
-import {ConstanteDTO} from "../../../domain/constanteDTO";
-import {Store} from "@ngrx/store";
-import {PlanillasApiService} from "../../../infrastructure/api/planillas.api";
+import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
+import {RadicacionEntradaDTV} from '../../../shared/data-transformers/radicacionEntradaDTV';
+import {AgentDTO} from '../../../domain/agentDTO';
+import {Observable} from 'rxjs/Observable';
+import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
+import {Subscription} from 'rxjs/Subscription';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {Store} from '@ngrx/store';
+import {PlanillasApiService} from '../../../infrastructure/api/planillas.api';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {
   getArrayData as getFuncionarioArrayData,
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
-} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {
   getAgragarObservacionesDialogVisible,
   getDetailsDialogVisible,
   getJustificationDialogVisible,
   getRejectDialogVisible
-} from "../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors";
+} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-import {Sandbox as FuncionarioSandbox} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox";
+import {Sandbox as FuncionarioSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {getArrayData as PlanillasArrayData} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
-import {Sandbox as CargarPlanillasSandbox} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox";
-import {PlanillaDTO} from "../../../domain/PlanillaDTO";
-import {PlanAgentesDTO} from "../../../domain/PlanAgentesDTO";
-import {environment} from "../../../../environments/environment";
-import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
-import {ApiBase} from "../../../infrastructure/api/api-base";
-import {getActiveTask} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
-import {CompleteTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
+import {Sandbox as CargarPlanillasSandbox} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-sandbox';
+import {PlanillaDTO} from '../../../domain/PlanillaDTO';
+import {PlanAgentesDTO} from '../../../domain/PlanAgentesDTO';
+import {environment} from '../../../../environments/environment';
+import {correspondenciaEntrada} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {ApiBase} from '../../../infrastructure/api/api-base';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 
 @Component({
   selector: 'app-cargar-planillas',
@@ -54,7 +54,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   start_date: Date = new Date();
 
-  editarPlanillaDialogVisible: boolean = false;
+  editarPlanillaDialogVisible = false;
 
   dependencia: any;
 
@@ -122,9 +122,9 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
-      console.log(activeTask);
-      if (this.task)
+      if (this.task && this.task.variables) {
         this.nroPlanilla = this.task.variables.numPlanilla;
+      }
     });
 
     this.initForm();
@@ -160,7 +160,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   getEstadoLabel(estado) {
-    return this.popupEditar.estadoEntregaSuggestions.find((element) => element.codigo == estado);
+    return this.popupEditar.estadoEntregaSuggestions.find((element) => element.codigo === estado);
   }
 
   listarDependencias() {
@@ -171,12 +171,12 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   findDependency(code): string {
-    const result = this.dependencias.find((element) => element.codigo == code);
+    const result = this.dependencias.find((element) => element.codigo === code);
     return result ? result.nombre : '';
   }
 
   findSede(code): string {
-    const result = this.dependencias.find((element) => element.codSede == code);
+    const result = this.dependencias.find((element) => element.codSede === code);
     return result ? result.nomSede : '';
   }
 
@@ -199,9 +199,9 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   createAgents(): PlanAgenDTO[] {
-    let agents: PlanAgenDTO[] = [];
+    const agents: PlanAgenDTO[] = [];
     this.selectedComunications.forEach((element) => {
-      let agent: PlanAgenDTO = {
+      const agent: PlanAgenDTO = {
         idePlanAgen: element.idePlanAgen,
         estado: this.popupEditar.form.get('estadoEntrega').value.codigo,
         varPeso: element.varPeso,
@@ -233,12 +233,13 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   editarPlanilla() {
-    let agents: PlanAgenDTO[] = this.createAgents();
-    let coms = [...this.comunicaciones];
+    const agents: PlanAgenDTO[] = this.createAgents();
+    const coms = [...this.comunicaciones];
     agents.forEach((element) => {
-      const index = coms.findIndex((el) => el.ideAgente == element.ideAgente);
-      if (index > -1)
+      const index = coms.findIndex((el) => el.ideAgente === element.ideAgente);
+      if (index > -1) {
         coms[index] = element;
+      }
     });
     this.comunicaciones = [...coms];
     this.selectedComunications = [];
@@ -271,10 +272,10 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
       delete p.usuario;
       delete p['_$visited'];
     });
-    let agentes: PlanAgentesDTO = {
+    const agentes: PlanAgentesDTO = {
       pagente: this.comunicaciones
     };
-    let planilla: PlanillaDTO = {
+    const planilla: PlanillaDTO = {
       idePlanilla: null,
       nroPlanilla: null,
       fecGeneracion: null,
@@ -306,7 +307,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   canUpdatePlanilla(): boolean {
-    return this.comunicaciones.length > 0 && this.comunicaciones.every((e) => e.estado && e.estado != '');
+    return this.comunicaciones.length > 0 && this.comunicaciones.every((e) => e.estado && e.estado !== '');
   }
 
   refreshView() {
