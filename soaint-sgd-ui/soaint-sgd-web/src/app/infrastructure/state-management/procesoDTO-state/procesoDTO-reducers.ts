@@ -2,7 +2,6 @@ import {ActionTypes as Autocomplete, Actions} from './procesoDTO-actions';
 import {tassign} from 'tassign';
 import {ProcesoDTO} from 'app/domain/procesoDTO';
 import {loadDataReducer} from '../../redux-store/redux-util';
-import {process} from '../../../../environments/environment';
 
 
 export interface State {
@@ -17,7 +16,7 @@ const initialState: State = {
   entities: {},
   menuOptions: [],
   selectedId: null
-};
+}
 
 /**
  * The reducer function.
@@ -30,10 +29,8 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
-      const procesos = action.payload.data.filter((proceso) => {
-        return process[proceso.codigoProceso];
-      });
-      return loadDataReducer(action, state, procesos, 'codigoProceso');
+
+      return loadDataReducer(action, state, action.payload.data, 'codigoProceso');
 
       // console.log(action.payload);
       // const values = ;
