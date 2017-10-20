@@ -21,21 +21,24 @@ export const getActiveTask = (state: rootStore.State) => state.tareas.activeTask
 
 export const getNextTask = (state: rootStore.State) => state.tareas.nextTask;
 
+export const taskStats = (state: rootStore.State) => state.tareas.stats;
+
+
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);
 });
 
-export const getTasksStadistics = createSelector(getEntities, (entities) => {
+export const getTasksStadistics = createSelector(getEntities, taskStats,(entities, otherStats) => {
   let stadistics = [];
   let reserved = 0;
-  let completed = 0;
+  let ready = 0;
   let canceled = 0;
   let inProgress = 0;
   for (const key in entities) {
     if (entities[key].estado === 'RESERVADO') {
       reserved = reserved + 1;
     } else if (entities[key].estado === 'LISTO') {
-      completed = completed + 1;
+      ready = ready + 1;
     } else if (entities[key].estado === 'CANCELADO') {
       canceled = canceled + 1;
     } else if (entities[key].estado === 'ENPROGRESO') {
@@ -43,10 +46,11 @@ export const getTasksStadistics = createSelector(getEntities, (entities) => {
     }
   }
 
-  stadistics.push({name: 'Reservadas', value: reserved});
-  stadistics.push({name: 'En Proceso', value: inProgress});
-  stadistics.push({name: 'Listas', value: completed});
-  stadistics.push({name: 'Canceladas', value: canceled});
+  stadistics.push({name: 'RESERVADO', value: reserved});
+  stadistics.push({name: 'ENPROGRESO', value: inProgress});
+  stadistics.push({name: 'LISTO', value: ready});
+  stadistics.push({name: 'CANCELADO', value: canceled});
+  stadistics = stadistics.concat(otherStats);
   return stadistics;
 });
 

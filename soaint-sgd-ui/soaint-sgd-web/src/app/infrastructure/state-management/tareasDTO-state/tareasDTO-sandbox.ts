@@ -24,7 +24,7 @@ export class Sandbox {
 
     routingStartState = false;
 
-    authPayload: { usuario: string, pass: string } | {};
+    authPayload: { usuario: string, pass: string } | any;
     authPayloadUnsubscriber: Subscription;
 
     constructor(private _store: Store<State>,
@@ -49,8 +49,14 @@ export class Sandbox {
     }
 
   getTaskStats() {
+    const payload = {
+      parametros: {
+        usuario: this.authPayload.usuario
+      }
+    };
+
     return this._api.post(environment.tasksStats_endpoint,
-      Object.assign({}, this.authPayload));
+      Object.assign({}, payload, this.authPayload));
   }
 
 
