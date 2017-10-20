@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {getArrayData as ProcesoDtoArrayData} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-selectors';
 import {ProcesoDTO} from '../../../domain/procesoDTO';
 import {Sandbox as ProcessDtoSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
+import {process} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-workspace',
@@ -17,7 +18,11 @@ export class ProcessComponent implements OnInit {
   selectedProcess: ProcesoDTO;
 
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox) {
-    this.procesos$ = this._store.select(ProcesoDtoArrayData);
+    this.procesos$ = this._store.select(ProcesoDtoArrayData).map((procesos) => {
+      return procesos.filter((proceso) => {
+        return process[proceso.codigoProceso];
+      });
+    });
   }
 
   ngOnInit() {
