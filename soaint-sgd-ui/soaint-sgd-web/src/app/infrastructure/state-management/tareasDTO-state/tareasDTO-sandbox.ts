@@ -48,11 +48,17 @@ export class Sandbox {
             Object.assign({}, clonePayload, this.authPayload));
     }
 
-    getTaskVariables(payload: any) {
-        const overPayload = this.extractProcessVariablesPayload(payload);
-        return this._api.post(environment.obtenerVariablesTarea,
-            Object.assign({}, overPayload, this.authPayload));
-    }
+  getTaskStats() {
+    return this._api.post(environment.tasksStats_endpoint,
+      Object.assign({}, this.authPayload));
+  }
+
+
+  getTaskVariables(payload: any) {
+    const overPayload = this.extractProcessVariablesPayload(payload);
+    return this._api.post(environment.obtenerVariablesTarea,
+      Object.assign({}, overPayload, this.authPayload));
+  }
 
     isTaskRoutingStarted() {
         return this.routingStartState;

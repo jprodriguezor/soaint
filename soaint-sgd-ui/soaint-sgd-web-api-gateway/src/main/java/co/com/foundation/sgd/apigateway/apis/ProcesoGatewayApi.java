@@ -109,6 +109,20 @@ public class ProcesoGatewayApi {
         return Response.status(response.getStatus()).entity(responseTasks).build();
     }
 
+
+    @POST
+    @Path("/tareas/listar/usuario")
+    @JWTTokenSecurity
+    public Response listEstadisticasTareas(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - stadistics not in use tasks");
+        Response response = procesoClient.listarEstadisticasTareas(entrada);
+        List<RespuestaTareaBamDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaBamDTO>>() {
+        });
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
     @POST
     @Path("/tareas/iniciar")
     @JWTTokenSecurity

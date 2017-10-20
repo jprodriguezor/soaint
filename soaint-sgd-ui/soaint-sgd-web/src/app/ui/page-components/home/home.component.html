@@ -11,53 +11,53 @@
   </div>
 
 
-  <div class="ui-g-12 ui-md-6 ui-lg-3">
-    <div class="ui-g card colorbox colorbox-2">
-      <div class="ui-g-4">
-        <i class="fa ui-icon-assignment-ind"></i>
-      </div>
-      <div class="ui-g-8">
-        <span class="colorbox-name">Reservadas</span>
-        <span class="colorbox-count">{{ (reservedTasks$ | async).length }}</span>
-      </div>
-    </div>
-  </div>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4">-->
+    <!--<div class="ui-g card colorbox colorbox-2">-->
+      <!--<div class="ui-g-4">-->
+        <!--<i class="fa ui-icon-assignment-ind"></i>-->
+      <!--</div>-->
+      <!--<div class="ui-g-8">-->
+        <!--<span class="colorbox-name">Reservadas</span>-->
+        <!--<span class="colorbox-count">{{ (reservedTasks$ | async)?.length }}</span>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <div class="ui-g-12 ui-md-6 ui-lg-3">
-    <div class="ui-g card colorbox colorbox-3">
-      <div class="ui-g-4">
-        <i class="fa ui-icon-assignment"></i>
-      </div>
-      <div class="ui-g-8">
-        <span class="colorbox-name">En proceso</span>
-        <span class="colorbox-count">{{ (inProgressTasks$ | async).length }}</span>
-      </div>
-    </div>
-  </div>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4">-->
+    <!--<div class="ui-g card colorbox colorbox-3">-->
+      <!--<div class="ui-g-4">-->
+        <!--<i class="fa ui-icon-assignment"></i>-->
+      <!--</div>-->
+      <!--<div class="ui-g-8">-->
+        <!--<span class="colorbox-name">En proceso</span>-->
+        <!--<span class="colorbox-count">{{ (inProgressTasks$ | async)?.length }}</span>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <div class="ui-g-12 ui-md-6 ui-lg-3">
-    <div class="ui-g card colorbox colorbox-1">
-      <div class="ui-g-4">
-        <i class="fa ui-icon-assignment-turned-in"></i>
-      </div>
-      <div class="ui-g-8">
-        <span class="colorbox-name">Completadas</span>
-        <span class="colorbox-count">{{ (completedTasks$ | async).length }}</span>
-      </div>
-    </div>
-  </div>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4">-->
+    <!--<div class="ui-g card colorbox colorbox-1">-->
+      <!--<div class="ui-g-4">-->
+        <!--<i class="fa ui-icon-assignment-turned-in"></i>-->
+      <!--</div>-->
+      <!--<div class="ui-g-8">-->
+        <!--<span class="colorbox-name">Completadas</span>-->
+        <!--<span class="colorbox-count">{{ (completedTasks$ | async)?.length }}</span>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <div class="ui-g-12 ui-md-6 ui-lg-3">
-    <div class="ui-g card colorbox colorbox-4">
-      <div class="ui-g-4">
-        <i class="fa ui-icon-assignment-late"></i>
-      </div>
-      <div class="ui-g-8">
-        <span class="colorbox-name">Canceladas</span>
-        <span class="colorbox-count">{{ (canceledTasks$ | async).length }}</span>
-      </div>
-    </div>
-  </div>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-3">-->
+    <!--<div class="ui-g card colorbox colorbox-4">-->
+      <!--<div class="ui-g-4">-->
+        <!--<i class="fa ui-icon-assignment-late"></i>-->
+      <!--</div>-->
+      <!--<div class="ui-g-8">-->
+        <!--<span class="colorbox-name">Canceladas</span>-->
+        <!--<span class="colorbox-count">{{ (canceledTasks$ | async).length }}</span>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
   <div class="ui-g-12 ui-md-4">
     <div class="card overview">
@@ -97,44 +97,44 @@
   </div>
 
 
-  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
-    <p-panel header="Tareas reservadas">
-      <ul>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
+    <!--<p-panel header="Tareas reservadas">-->
+      <!--<ul>-->
 
-        <li *ngFor="let task of (reservedTasks$ | async)">
-          <span class="task-name">{{ task.nombre }}</span>
-          <i class="fa ui-icon-assignment-ind"></i>
-        </li>
+        <!--<li *ngFor="let task of (reservedTasks$ | async)">-->
+          <!--<span class="task-name">{{ task.nombre }}</span>-->
+          <!--<i class="fa ui-icon-assignment-ind"></i>-->
+        <!--</li>-->
 
-      </ul>
-    </p-panel>
-  </div>
+      <!--</ul>-->
+    <!--</p-panel>-->
+  <!--</div>-->
 
-  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
-    <p-panel header="Tareas en progreso">
-      <ul>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
+    <!--<p-panel header="Tareas en progreso">-->
+      <!--<ul>-->
 
-        <li *ngFor="let task of (inProgressTasks$ | async)">
-          <span class="task-name">{{ task.nombre }}</span>
-          <i class="fa ui-icon-assignment"></i>
-        </li>
+        <!--<li *ngFor="let task of (inProgressTasks$ | async)">-->
+          <!--<span class="task-name">{{ task.nombre }}</span>-->
+          <!--<i class="fa ui-icon-assignment"></i>-->
+        <!--</li>-->
 
-      </ul>
-    </p-panel>
-  </div>
+      <!--</ul>-->
+    <!--</p-panel>-->
+  <!--</div>-->
 
-  <div class="ui-g-12 ui-md-6 ui-lg-4 task-list">
-    <p-panel header="Tareas completadas">
-      <ul>
+  <!--<div class="ui-g-12 ui-md-6 ui-lg-4 task-list">-->
+    <!--<p-panel header="Tareas completadas">-->
+      <!--<ul>-->
 
-        <li *ngFor="let task of (completedTasks$ | async)">
-          <span class="task-name">{{ task.nombre }}</span>
-          <i class="fa ui-icon-assignment-turned-in"></i>
-        </li>
+        <!--<li *ngFor="let task of (completedTasks$ | async)">-->
+          <!--<span class="task-name">{{ task.nombre }}</span>-->
+          <!--<i class="fa ui-icon-assignment-turned-in"></i>-->
+        <!--</li>-->
 
-      </ul>
-    </p-panel>
-  </div>
+      <!--</ul>-->
+    <!--</p-panel>-->
+  <!--</div>-->
 
 
 </div>

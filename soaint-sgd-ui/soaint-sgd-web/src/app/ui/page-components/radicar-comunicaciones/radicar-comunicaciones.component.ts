@@ -2,22 +2,13 @@ import {
   ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
   AfterContentInit
 } from '@angular/core';
-import { CorrespondenciaDTO } from '../../../domain/correspondenciaDTO';
-import { AgentDTO } from 'app/domain/agentDTO';
-import { DocumentoDTO } from 'app/domain/documentoDTO';
-import { AnexoDTO } from 'app/domain/anexoDTO';
-import { ReferidoDTO } from 'app/domain/referidoDTO';
 import { ComunicacionOficialDTO } from 'app/domain/comunicacionOficialDTO';
 import { Sandbox as RadicarComunicacionesSandBox } from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import { ContactoDTO } from 'app/domain/contactoDTO';
+
 import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { ConstanteDTO } from '../../../domain/constanteDTO';
-import {
-  COMUNICACION_INTERNA, DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, TIPO_AGENTE_DESTINATARIO,
-  TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
-} from '../../../shared/bussiness-properties/radicacion-properties';
 import { Store } from '@ngrx/store';
 import { State as RootState } from '../../../infrastructure/redux-store/redux-reducers';
 import {
@@ -25,10 +16,6 @@ import {
   tipoDestinatarioEntradaSelector
 } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import { getArrayData as DependenciaGrupoSelector } from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import {
-  getAuthenticatedFuncionario,
-  getSelectedDependencyGroupFuncionario
-} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import { getActiveTask } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { Subscription } from 'rxjs/Subscription';
 import { ScheduleNextTaskAction } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
@@ -124,7 +111,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       this.task = activeTask;
       this.restore();
     });
-
   }
 
   ngAfterContentInit() {

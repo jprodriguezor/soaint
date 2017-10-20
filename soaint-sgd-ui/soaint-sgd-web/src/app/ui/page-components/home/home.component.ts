@@ -7,12 +7,12 @@ import {Store} from '@ngrx/store';
 import {getArrayData as ProcessArrayData} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-selectors';
 import {
   getArrayData,
-  getCompletedTasksArrayData as CompletedTasksArrayData,
   getInProgressTasksArrayData as InProgressTasksArrayData,
   getReservedTasksArrayData as ReservedTasksArrayData,
   getCanceledTasksArrayData as CanceledTasksArrayData, getTasksStadistics
 } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from 'app/domain/tareaDTO';
+import 'rxjs/add/operator/withLatestFrom';
 
 @Component({
   selector: 'app-home',
@@ -24,13 +24,7 @@ export class HomeComponent implements OnInit {
 
   allTasks$: Observable<TareaDTO[]>;
 
-  tasksStadistics$: Observable<TareaDTO[]>;
-
-  completedTasks$: Observable<TareaDTO[]>;
-
-  canceledTasks$: Observable<TareaDTO[]>;
-
-  reservedTasks$: Observable<TareaDTO[]>;
+  tasksStadistics$: Observable<any[]>;
 
   inProgressTasks$: Observable<TareaDTO[]>;
 
@@ -40,15 +34,29 @@ export class HomeComponent implements OnInit {
 
     this.allTasks$ = this._store.select(getArrayData);
     this.staticProcess$ = this._store.select(ProcessArrayData);
-    this.completedTasks$ = this._store.select(CompletedTasksArrayData);
-    this.reservedTasks$ = this._store.select(ReservedTasksArrayData);
-    this.inProgressTasks$ = this._store.select(InProgressTasksArrayData);
-    this.canceledTasks$ = this._store.select(CanceledTasksArrayData);
-    this.tasksStadistics$ = this._store.select(getTasksStadistics);
 
-    // this.tasksStadistics$.subscribe((data) => {
-    //   console.log(data);
+    this.inProgressTasks$ = this._store.select(InProgressTasksArrayData);
+    Observable.combineLatest(
+      this._store.select(getTasksStadistics),
+      this._taskSandbox.getTaskStats()
+    ).switchMap(([stats, unresolve]) => {
+        debugger;
+        console.log(stats, unresolve);
+        return Observable.of(stats);
+      }).subscribe(res => {
+        console.log(res);
+    });
+
+
+    this.tasksStadistics$ = this._store.select(getTasksStadistics);
+    // this.tasksStadistics$ = Observable.combineLatest(
+    //   this._store.select(getTasksStadistics),
+    //   this.completedTasks$
+    // ).switchMap(([stats, completed]) => {
+    //   const res = [...stats, {name: 'Completadas', value: completed.length}];
+    //   return Observable.of(res);
     // });
+
 
   }
 

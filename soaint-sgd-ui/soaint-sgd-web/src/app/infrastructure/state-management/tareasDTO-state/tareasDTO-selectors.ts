@@ -1,4 +1,3 @@
-import {State} from './tareasDTO-reducers';
 import 'rxjs/add/operator/reduce';
 import {createSelector} from 'reselect';
 import * as rootStore from 'app/infrastructure/redux-store/redux-reducers';
@@ -46,7 +45,7 @@ export const getTasksStadistics = createSelector(getEntities, (entities) => {
 
   stadistics.push({name: 'Reservadas', value: reserved});
   stadistics.push({name: 'En Proceso', value: inProgress});
-  stadistics.push({name: 'Completadas', value: completed});
+  stadistics.push({name: 'Listas', value: completed});
   stadistics.push({name: 'Canceladas', value: canceled});
   return stadistics;
 });
@@ -56,7 +55,7 @@ export const getReservedTasksArrayData = createSelector(getEntities, getGrupoIds
   return ids.map(id => entities[id]).filter(data => data.estado === 'RESERVADO');
 });
 
-export const getCompletedTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
+export const getReadyTasksArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]).filter(data => data.estado === 'LISTO');
 });
 
