@@ -9,6 +9,7 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {go} from '@ngrx/router-store';
 import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {ROUTES_PATH} from '../../../app.route-names';
+import {process_info} from '../../../../environments/environment';
 
 
 @Component({
@@ -32,13 +33,13 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.infoUnsubscriber = Observable.combineLatest (
+    this.infoUnsubscriber = Observable.combineLatest(
       this._store.select(getActiveTask),
       this._store.select(getProcessEntities)
     ).take(1).subscribe(([activeTask, procesos]) => {
       if (activeTask) {
         this.task = activeTask;
-        this.processName = procesos[activeTask.idProceso].nombreProceso || '';
+        this.processName = (process_info[procesos[activeTask.idProceso].codigoProceso]) ? process_info[procesos[activeTask.idProceso].codigoProceso].displayValue : '';
         this._changeDetector.detectChanges();
       }
     });
