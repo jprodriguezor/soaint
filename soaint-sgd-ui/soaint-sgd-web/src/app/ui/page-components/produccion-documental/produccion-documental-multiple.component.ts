@@ -5,17 +5,14 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
-import {
-  getArrayData as getFuncionarioArrayData
-} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
-import {Sandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {ProyeccionDocumentoDTO} from 'app/domain/ProyeccionDocumentoDTO';
 import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
-import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {ActivatedRoute, Params} from '@angular/router';
 
 @Component({
@@ -46,6 +43,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
                 private activatedRoute: ActivatedRoute,
                 private _produccionDocumentalApi: ProduccionDocumentalApiService,
                 private _changeDetectorRef: ChangeDetectorRef,
+                private _taskSandBox: TaskSandBox,
                 private formBuilder: FormBuilder) {  }
 
 
@@ -134,6 +132,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         this.form.reset();
 
         this.listenForErrors();
+        const v = this._taskSandBox.getTaskVariables(this.task);
+        console.log(v);
     }
 
     listenForErrors() {
