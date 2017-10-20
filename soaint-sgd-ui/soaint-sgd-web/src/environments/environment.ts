@@ -77,3 +77,30 @@ export const environment = {
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
 };
+
+export const process_info = {
+  'proceso.correspondencia-entrada': {
+    displayValue: 'Correspondencia de entrada',
+    show: true
+  },
+  'proceso.gestion-planillas': {
+    displayValue: 'Gestion de planillas',
+    show: false
+  },
+  'proceso.gestor-devoluciones': {
+    displayValue: 'Gestor de devoluciones',
+    show: false
+  },
+  'proceso.produccion-documental': {
+    displayValue: 'Producción documental',
+    show: false
+  },
+  'proceso.produccion-multiples-documentos': {
+    displayValue: 'Producción de multiples documentos',
+    show: false
+  },
+  'proceso.recibir-gestionar-doc': {
+    displayValue: 'Recibir y gestionar documento',
+    show: false
+  },
+};
