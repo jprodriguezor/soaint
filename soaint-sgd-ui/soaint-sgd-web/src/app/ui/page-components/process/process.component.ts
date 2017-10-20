@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {getArrayData as ProcesoDtoArrayData} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-selectors';
 import {ProcesoDTO} from '../../../domain/procesoDTO';
 import {Sandbox as ProcessDtoSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
-import {process} from '../../../../environments/environment';
+import {process_info} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-workspace',
@@ -20,7 +20,7 @@ export class ProcessComponent implements OnInit {
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox) {
     this.procesos$ = this._store.select(ProcesoDtoArrayData).map((procesos) => {
       return procesos.filter((proceso) => {
-        return process[proceso.codigoProceso];
+        return process_info[proceso.codigoProceso] && process_info[proceso.codigoProceso].show;
       });
     });
   }
