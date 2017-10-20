@@ -50,13 +50,28 @@ public class Estados {
      * @throws MalformedURLException
      */
     public String estadoRespuesta(String estado) {
-
-        for (Status enumEstado : Status.values()) {
-            if (enumEstado.name().equals(estado)) {
-                return EstadosEnum.obtenerClave(estado).toString();
-            }
-        }
-        return estado;
+        String estadoRespuesta =  "";
+                switch (estado){
+                    case "DELEGATED":
+                        estadoRespuesta = "DELEGADO";
+                        break;
+                    case "RELEASED":
+                        estadoRespuesta = "LIBERADO";
+                        break;
+                    case "CLAIMED":
+                        estadoRespuesta = "RECLAMADO";
+                        break;
+                    case "STARTED":
+                        estadoRespuesta = "INICIADO";
+                        break;
+                    default :
+                        for (Status enumEstado : Status.values()) {
+                            if (enumEstado.name().equalsIgnoreCase(estado)) {
+                                return EstadosEnum.obtenerClave(estado).toString();
+                            }
+                         }
+                }
+           return estadoRespuesta;
     }
 
     /**
