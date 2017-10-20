@@ -18,7 +18,7 @@ public enum EstadosEnum {
     public static EstadosEnum obtenerClave(String nombre){
 
         for (EstadosEnum valor : EstadosEnum.values()) {
-            if (valor.getNombre().equals(nombre)) {
+            if (valor.getNombre().equalsIgnoreCase(nombre)) {
                 return valor;
             }
         }
