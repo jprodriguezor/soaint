@@ -7,6 +7,7 @@ import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -130,6 +131,10 @@ public class ProcesoGatewayApi {
         log.info("ProcesoGatewayApi - [trafic] - reserve Task");
         Response response = procesoClient.reservarTarea(entrada);
         String responseContent = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.OK.value()) {
+            response = procesoClient.iniciarTarea(entrada);
+            responseContent = response.readEntity(String.class);
+        }
         log.info(CONTENT + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
