@@ -23,8 +23,8 @@ export class ProcessComponent implements OnInit {
   ngOnInit() {
   }
 
-  iniciarProceso(process) {
-    this._processSandbox.initProcessDispatch(process);
+  iniciarProceso(proceso) {
+    this._processSandbox.initProcessDispatch(proceso);
   }
 
 }

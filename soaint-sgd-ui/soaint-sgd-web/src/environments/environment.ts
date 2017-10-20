@@ -76,3 +76,7 @@ export const environment = {
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
 };
+
+export const process = {
+  'proceso.correspondencia-entrada': true
+};
