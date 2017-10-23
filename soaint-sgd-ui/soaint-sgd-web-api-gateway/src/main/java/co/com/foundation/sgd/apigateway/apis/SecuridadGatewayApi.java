@@ -1,8 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.SecurityClient;
-import co.com.foundation.sgd.apigateway.webservice.client.SecurityCardbridgeClient;
-import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
 import co.com.foundation.sgd.dto.AccountDTO;
 import co.com.foundation.sgd.infrastructure.KeyManager;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
