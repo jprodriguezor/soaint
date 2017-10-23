@@ -33,11 +33,11 @@ export class GestionarComunicacionComponent implements OnInit {
 
   procesoSeguir: number;
 
-  rejectDialogVisible: boolean = false;
+  rejectDialogVisible = false;
 
-  justificationDialogVisible: boolean = false;
+  justificationDialogVisible = false;
 
-  hideCheckBox: boolean = true;
+  hideCheckBox = true;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -51,10 +51,10 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.procesosSuggestions = [{
+    this.procesosSuggestions = [/*{
       nombre: 'Archivar documento',
       id: 1
-    }, {
+    },*/ {
       nombre: 'Devolver',
       id: 2
     }, {
