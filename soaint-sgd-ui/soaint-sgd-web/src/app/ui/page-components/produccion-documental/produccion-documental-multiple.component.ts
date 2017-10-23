@@ -14,6 +14,9 @@ import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {ActivatedRoute, Params} from '@angular/router';
+import {Subscription} from 'rxjs/Subscription';
+import {createSelector} from 'reselect';
+import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -38,12 +41,22 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     funcionarios$: Observable<FuncionarioDTO[]>;
     tiposPlantilla: ConstanteDTO[];
 
+    authPayload: { usuario: string, pass: string } |  {};
+    authPayloadUnsubscriber: Subscription;
+
     constructor(private _store: Store<RootState>,
                 private activatedRoute: ActivatedRoute,
                 private _produccionDocumentalApi: ProduccionDocumentalApiService,
                 private _changeDetectorRef: ChangeDetectorRef,
                 private _taskSandBox: TaskSandBox,
-                private formBuilder: FormBuilder) {  }
+                private formBuilder: FormBuilder) {
+
+        this.authPayloadUnsubscriber = this._store.select(createSelector((s: RootState) => s.auth.profile, (profile) => {
+            return profile ? {usuario: profile.username, pass: profile.password} : {};
+        })).subscribe((value) => {
+            this.authPayload = value;
+        });
+    }
 
     agregarProyector() {
         if (!this.form.valid) {
@@ -97,7 +110,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
 
     dependenciaChange(event) {
         this.dependenciaSelected = event.value;
-        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol(this.dependenciaSelected.codigo, {} );
+        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol({codDependencia: this.dependenciaSelected.codigo} );
     }
 
     initForm() {
@@ -170,16 +183,19 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
-        const payload: any = {
-            proyectores : this.listaProyectores
+        const entradaProceso: any = {
+            idDespliegue: this.task.idDespliegue,
+            idProceso: this.task.idProceso,
+            idTarea: Number.parseInt(this.task.idTarea),
+            instanciaProceso: Number.parseInt(this.task.idInstanciaProceso),
+            estados: ['LISTO'],
+            parametros: {
+                proyectores : this.listaProyectores,
+            }
         };
 
-        const tareaDTO: any = {
-            idTareaProceso: this.task.idTarea,
-            idInstanciaProceso: this.task.idInstanciaProceso,
-            payload: payload
-        };
+        const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
 
-        return this._produccionDocumentalApi.ejecutarProyeccionMultiple(tareaDTO);
+        return this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload);
     }
 }
