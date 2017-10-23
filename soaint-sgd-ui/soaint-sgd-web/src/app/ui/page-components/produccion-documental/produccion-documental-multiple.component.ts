@@ -7,7 +7,7 @@ import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
-import {ProyeccionDocumentoDTO} from 'app/domain/ProyeccionDocumentoDTO';
+import {ProyectorDTO} from 'app/domain/ProyectorDTO';
 import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
@@ -32,11 +32,10 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
 
     dependenciaSelected: ConstanteDTO;
 
-    listaProyectores: ProyeccionDocumentoDTO[] = [];
+    listaProyectores: ProyectorDTO[] = [];
     sedesAdministrativas$: Observable<ConstanteDTO[]>;
     dependencias$: Observable<ConstanteDTO[]>;
     funcionarios$: Observable<FuncionarioDTO[]>;
-
     tiposPlantilla: ConstanteDTO[];
 
     constructor(private _store: Store<RootState>,
@@ -46,15 +45,13 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
                 private _taskSandBox: TaskSandBox,
                 private formBuilder: FormBuilder) {  }
 
-
-
     agregarProyector() {
         if (!this.form.valid) {
             return false;
         }
 
         const proyectores = this.listaProyectores;
-        const proyector: ProyeccionDocumentoDTO = {
+        const proyector: ProyectorDTO = {
             sede: this.form.get('sede').value,
             dependencia: this.form.get('dependencia').value,
             funcionario: this.form.get('funcionario').value,
@@ -84,9 +81,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
         }
     }
 
-    checkProyeccion(newProyector: ProyeccionDocumentoDTO) {
+    checkProyeccion(newProyector: ProyectorDTO) {
         let exists = false;
-        this.listaProyectores.forEach((current: ProyeccionDocumentoDTO, index) => {
+        this.listaProyectores.forEach((current: ProyectorDTO, index) => {
             if (current.sede.id === newProyector.sede.id &&
                 current.dependencia.id === newProyector.dependencia.id &&
                 current.funcionario.id === newProyector.funcionario.id &&
@@ -173,7 +170,16 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
-        console.log(this.listaProyectores);
-        return undefined;
+        const payload: any = {
+            proyectores : this.listaProyectores
+        };
+
+        const tareaDTO: any = {
+            idTareaProceso: this.task.idTarea,
+            idInstanciaProceso: this.task.idInstanciaProceso,
+            payload: payload
+        };
+
+        return this._produccionDocumentalApi.ejecutarProyeccionMultiple(tareaDTO);
     }
 }
