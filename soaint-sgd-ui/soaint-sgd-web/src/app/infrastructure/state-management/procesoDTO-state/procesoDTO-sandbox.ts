@@ -80,6 +80,5 @@ export class Sandbox implements OnDestroy {
   ngOnDestroy() {
     this.authPayloadUnsubscriber.unsubscribe();
   }
-
 }
 

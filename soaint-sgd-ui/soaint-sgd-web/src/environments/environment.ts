@@ -33,6 +33,7 @@ export const environment = {
   instancesProcess_endpoint: `${host}/proceso-gateway-api/listar-instancias`,
   tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`,
   tasksForStatus_endpoint: `${host}/proceso-gateway-api/tareas/listar/estados`,
+  tasksStats_endpoint: `${host}/proceso-gateway-api/tareas/listar/usuario`,
   tasksStartProcess: `${host}/proceso-gateway-api/tareas/iniciar/`,
   tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
