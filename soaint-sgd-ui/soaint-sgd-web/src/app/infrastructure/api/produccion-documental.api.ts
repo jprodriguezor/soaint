@@ -10,6 +10,10 @@ export class ProduccionDocumentalApiService {
     constructor(private _api: ApiBase) {
     }
 
+    ejecutarProyeccionMultiple(payload: {}) {
+        return this._api.post(environment.pd_ejecutar_proyeccion_multiple, payload).map(response => response);
+    }
+
     getTiposComunicacion(payload: {}) {
       return this._api.list(environment.tipoComunicacion_endpoint, payload).map(res => res.constantes);
     }
