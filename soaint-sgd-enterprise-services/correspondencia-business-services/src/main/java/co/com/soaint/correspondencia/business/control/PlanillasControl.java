@@ -246,6 +246,9 @@ public class PlanillasControl {
     private Map<String, Object> getReportParameters(PlanillaDTO planilla) throws BusinessException, SystemException, IOException {
         DependenciaDTO dependenciaOrigen = dependenciaControl.listarDependenciaByCodigo(planilla.getCodDependenciaOrigen());
         BufferedImage image = ImageIO.read(new FileImageInputStream(new File(reportsPath + reportsLogo)));
+        //TODO: puede ser que el primer o segundo apellido venga vacio, revisar como proceder.
+        FuncionarioDTO funcionario = funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera())));
+        String nombreCompleto = funcionario.getNomFuncionario() + " " + funcionario.getValApellido1() + " " + funcionario.getValApellido2();
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("lugarAdministrativo", dependenciaOrigen.getNomSede());
@@ -253,7 +256,7 @@ public class PlanillasControl {
         parameters.put("responsable", dependenciaOrigen.getNomDependencia());
         parameters.put("nroPlanilla", planilla.getNroPlanilla());
         parameters.put("fecGeneracion", planilla.getFecGeneracion());
-        parameters.put("funcGenera", funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera()))).getNombreCompleto());
+        parameters.put("funcGenera", nombreCompleto);
         parameters.put("logo", image);
         return parameters;
     }
