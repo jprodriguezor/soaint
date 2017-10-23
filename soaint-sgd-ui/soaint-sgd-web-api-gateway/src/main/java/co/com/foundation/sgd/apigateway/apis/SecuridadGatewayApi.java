@@ -1,12 +1,16 @@
 package co.com.foundation.sgd.apigateway.apis;
 
+import co.com.foundation.sgd.apigateway.apis.delegator.SecurityClient;
 import co.com.foundation.sgd.apigateway.webservice.client.SecurityCardbridgeClient;
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.AuthenticationResponseContext;
 import co.com.foundation.sgd.dto.AccountDTO;
 import co.com.foundation.sgd.infrastructure.KeyManager;
+import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.seguridad.UsuarioDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.Consumes;
@@ -31,7 +35,7 @@ public class SecuridadGatewayApi {
     private UriInfo uriInfo;
 
     @Autowired
-    private SecurityCardbridgeClient securityCardbridgeClient;
+    private SecurityClient securityClient;
 
     /**
      * Constructor
@@ -53,13 +57,13 @@ public class SecuridadGatewayApi {
 
         try {
             log.info("Authenticate the user using the credentials provided");
-            AuthenticationResponseContext context = securityCardbridgeClient.verifyCredentials(user.getLogin(), user.getPassword());
-            if (context.isSuccessful()) {
+            Response context = securityClient.verificarCredenciales(new CredencialesDTO(user.getLogin(), user.getPassword()));
+            if (context.getStatus() == HttpStatus.OK.value()) {
                 // Issue a token for the user
                 KeyManager km = KeyManager.getInstance();
                 String token = km.issueToken(user.getLogin(), uriInfo.getAbsolutePath().toString());
                 // Return the token on the response
-                AccountDTO account = new AccountDTO(token, context.getPrincipalContext());
+                AccountDTO account = new AccountDTO(token, context.readEntity(FuncionarioDTO.class));
                 return Response.ok(account).header(AUTHORIZATION, "Bearer " + token).build();
             } else {
                 return Response.status(UNAUTHORIZED).build();

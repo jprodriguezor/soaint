@@ -9,6 +9,8 @@ import 'rxjs/add/operator/mergeMap';
 import * as login from './login-actions';
 import {LoginSandbox} from './login-sandbox';
 import {go} from '@ngrx/router-store'
+import {LoadSuccessAction as FuncionarioAutenticatedAction } from '../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
+import {tassign} from 'tassign';
 
 @Injectable()
 export class LoginEffects {
@@ -24,7 +26,8 @@ export class LoginEffects {
     .switchMap(
       (payload) => this.loginSandbox.login({login: payload.username, password: payload.password})
         .mergeMap((response: any) => [
-          new login.LoginSuccessAction(response),
+          new login.LoginSuccessAction(tassign(response, { credentials: payload})),
+          new FuncionarioAutenticatedAction(response.profile),
           go('/home')
         ])
         .catch(error => Observable.of(new login.LoginFailAction({error: error})))
