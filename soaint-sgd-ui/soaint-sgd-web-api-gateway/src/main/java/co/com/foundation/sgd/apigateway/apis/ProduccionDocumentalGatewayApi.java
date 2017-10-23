@@ -9,6 +9,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @Path("/produccion-documental-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -27,9 +29,12 @@ public class ProduccionDocumentalGatewayApi {
     @Path("/ejecutar-proyeccion-multiple")
     //@JWTTokenSecurity
     public void ejecutarProyeccionMultiple(TareaDTO tarea) {
-
+        ArrayList<LinkedHashMap> proyectores = (ArrayList<LinkedHashMap>)((LinkedHashMap)tarea.getPayload()).get("proyectores");
         log.info("ProduccionDocumentalGatewayApi - [trafic] - get task variables");
-        log.info(tarea);
+        for (LinkedHashMap proyector: proyectores) {
+            log.info("PROYECTOR DATA");
+            log.info(proyector);
+        }
         log.info("ENDED");
     }
 }

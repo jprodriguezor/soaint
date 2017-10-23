@@ -97,7 +97,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
 
     dependenciaChange(event) {
         this.dependenciaSelected = event.value;
-        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol(this.dependenciaSelected.codigo, {} );
+        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol({codDependencia: this.dependenciaSelected.codigo} );
     }
 
     initForm() {
