@@ -44,7 +44,6 @@ export class GestionarComunicacionComponent implements OnInit {
   @ViewChild('popupReject') popupReject;
 
   constructor(private formBuilder: FormBuilder,
-              private _asignacionSandbox: AsignacionSandbox,
               private _tareaSandbox: TaskSandbox) {
     this.initForm();
     this.listenForErrors();
@@ -141,8 +140,8 @@ export class GestionarComunicacionComponent implements OnInit {
 
 
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
-    let agentes: AgentDTO[] = [];
-    let agente = this.remitente;
+    const agentes: AgentDTO[] = [];
+    const agente = this.remitente;
     console.log(this.remitente);
     agente.ideAgente = this.task.variables.idAgente;
     agente.codSede = justificationValues.sedeAdministrativa.codigo;
