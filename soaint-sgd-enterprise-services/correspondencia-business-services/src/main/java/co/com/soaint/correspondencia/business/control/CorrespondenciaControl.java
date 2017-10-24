@@ -135,7 +135,6 @@ public class CorrespondenciaControl {
 
                 DctAsignacion dctAsignacion = DctAsignacion.newInstance()
                         .corCorrespondencia(correspondencia)
-                        .ideFunci(new BigInteger(correspondencia.getCodFuncRadica()))
                         .ideUsuarioCreo(correspondencia.getCodFuncRadica())
                         .codDependencia(corAgente.getCodDependencia())
                         .codTipAsignacion("CTA")
@@ -191,13 +190,15 @@ public class CorrespondenciaControl {
                 DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance()
                         .corAgente(dctAsignacion.getCorAgente())
                         .corCorrespondencia(dctAsignacion.getCorCorrespondencia())
+                        .numRedirecciones(new Long(0))
+                        .numDevoluciones(new Long(0))
                         .ideUsuarioCreo(dctAsignacion.getCorCorrespondencia().getCodFuncRadica())
                         .ideUsuarioCambio(new BigInteger(dctAsignacion.getCorCorrespondencia().getCodFuncRadica()))
                         .dctAsignacion(dctAsignacion)
                         .build();
                 em.persist(dctAsigUltimo);
             });
-            
+
             //----------------------------------
 
             em.flush();
