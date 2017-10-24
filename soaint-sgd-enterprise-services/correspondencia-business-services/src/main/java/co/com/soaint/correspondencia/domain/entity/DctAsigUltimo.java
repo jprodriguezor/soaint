@@ -109,6 +109,10 @@ public class DctAsigUltimo implements Serializable {
     private String idInstancia;
     @Column(name = "COD_TIP_PROCESO")
     private String codTipProceso;
+    @Column(name = "NUM_REDIRECCIONES")
+    private Long numRedirecciones;
+    @Column(name = "NUM_DEVOLUCIONES")
+    private Long numDevoluciones;
     @JoinColumn(name = "IDE_AGENTE", referencedColumnName = "IDE_AGENTE")
     @ManyToOne(optional = false)
     private CorAgente corAgente;
