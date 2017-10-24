@@ -203,6 +203,13 @@ public class AgenteControl {
                         .setParameter("COD_ESTADO", estadoAgente)
                         .executeUpdate();
 
+                //-----------------Asignacion--------------------------
+
+                asignacionControl.actualizarAsignacion(agente.getIdeAgente(), correspondencia.getIdeDocumento(),
+                        agente.getCodDependencia(), redireccion.getTraza().getIdeFunci());
+
+                //-----------------------------------------------------
+
                 correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
 
@@ -215,33 +222,6 @@ public class AgenteControl {
                         .build());
 
             }
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
-     * @param ideAgente
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    public void actualizarNumDevoluciones(BigInteger ideAgente) throws BusinessException, SystemException {
-        try {
-            if (!verificarByIdeAgente(ideAgente))
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("agente.agente_not_exist_by_ideAgente")
-                        .buildBusinessException();
-
-            em.createNamedQuery("CorAgente.updateNumDevoluciones")
-                    .setParameter("IDE_AGENTE", ideAgente)
-                    .executeUpdate();
-        } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred", e);
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

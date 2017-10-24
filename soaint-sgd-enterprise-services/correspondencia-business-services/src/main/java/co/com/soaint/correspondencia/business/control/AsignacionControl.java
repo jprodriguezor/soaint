@@ -1,6 +1,9 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.correspondencia.domain.entity.CorAgente;
+import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
+import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -272,5 +275,55 @@ public class AsignacionControl {
         asignarCorrespondencia(AsignacionTramiteDTO.newInstance()
                 .asignaciones(asignaciones)
                 .build());
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @param ideDocumento
+     * @param codDependencia
+     * @param ideFunci
+     * @throws SystemException
+     */
+    public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci)throws SystemException{
+        try{
+            DctAsigUltimo asignacionUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getSingleResult();
+
+            CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
+                    .ideDocumento(ideDocumento)
+                    .build();
+
+            CorAgente agente = CorAgente.newInstance()
+                    .ideAgente(ideAgente)
+                    .build();
+
+            DctAsignacion asignacion = DctAsignacion.newInstance()
+                    .corCorrespondencia(correspondencia)
+                    .ideUsuarioCreo(String.valueOf(ideFunci))
+                    .codDependencia(codDependencia)
+                    .codTipAsignacion("CTA")
+                    .fecAsignacion(new Date())
+                    .corAgente(agente)
+                    .build();
+
+            asignacionUltimo.setNumRedirecciones(asignacionUltimo.getNumRedirecciones() + 1);
+            asignacionUltimo.setIdeUsuarioCambio(ideFunci);
+            asignacionUltimo.setFecCambio(new Date());
+            asignacionUltimo.setDctAsignacion(asignacion);
+            asignacionUltimo.setCorCorrespondencia(correspondencia);
+            asignacionUltimo.setCorAgente(agente);
+
+            em.persist(asignacion);
+            em.merge(asignacionUltimo);
+
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }

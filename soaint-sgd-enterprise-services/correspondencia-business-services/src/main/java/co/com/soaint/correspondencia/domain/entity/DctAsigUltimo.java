@@ -28,13 +28,15 @@ import java.util.Date;
         @NamedQuery(name = "DctAsigUltimo.findAll", query = "SELECT d FROM DctAsigUltimo d"),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAgente", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
                 "(d.ideAsigUltimo, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
-                "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
+                "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso, " +
+                "d.numRedirecciones, d.numDevoluciones) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.corAgente c " +
                 "WHERE c.ideAgente = :IDE_AGENTE "),
         @NamedQuery(name = "DctAsigUltimo.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsigUltimo " +
                 "(d.ideAsigUltimo, d.ideUsuarioCreo, d.fecCreo, d.nivLectura, " +
-                "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso) " +
+                "d.nivEscritura, d.fechaVencimiento, d.idInstancia, d.codTipProceso, " +
+                "d.numRedirecciones, d.numDevoluciones) " +
                 "FROM DctAsigUltimo d " +
                 "INNER JOIN d.dctAsignacion a " +
                 "WHERE a.ideAsignacion = :IDE_ASIGNACION "),
@@ -73,6 +75,12 @@ import java.util.Date;
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
         @NamedQuery(name = "DctAsigUltimo.updateTipoProceso", query = "UPDATE DctAsigUltimo d " +
                 "SET d.codTipProceso = :COD_TIPO_PROCESO " +
+                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
+        @NamedQuery(name = "DctAsigUltimo.updateNumRedirecciones", query = "UPDATE DctAsigUltimo d " +
+                "SET d.numRedirecciones = d.numRedirecciones + 1 " +
+                "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
+        @NamedQuery(name = "DctAsigUltimo.updateNumDevoluciones", query = "UPDATE DctAsigUltimo d " +
+                "SET d.numDevoluciones = d.numDevoluciones + 1 " +
                 "WHERE d.ideAsigUltimo = :IDE_ASIG_ULTIMO")})
 @javax.persistence.TableGenerator(name = "DCT_ASIG_ULTIMO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIG_ULTIMO_SEQ", allocationSize = 1)
@@ -133,9 +141,12 @@ public class DctAsigUltimo implements Serializable {
      * @param fechaVencimiento
      * @param idInstancia
      * @param codTipProceso
+     * @param numRedirecciones
+     * @param numDevoluciones
      */
     public DctAsigUltimo(BigInteger ideAsigUltimo, String ideUsuarioCreo, Date fecCreo, Short nivLectura,
-                         Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso) {
+                         Short nivEscritura, Date fechaVencimiento, String idInstancia, String codTipProceso,
+                         Long numRedirecciones, Long numDevoluciones) {
         this.ideAsigUltimo = ideAsigUltimo;
         this.ideUsuarioCreo = ideUsuarioCreo;
         this.fecCreo = fecCreo;
@@ -144,6 +155,8 @@ public class DctAsigUltimo implements Serializable {
         this.fechaVencimiento = fechaVencimiento;
         this.idInstancia = idInstancia;
         this.codTipProceso = codTipProceso;
+        this.numRedirecciones = numRedirecciones;
+        this.numDevoluciones = numDevoluciones;
 
     }
 
