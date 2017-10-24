@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.AsignacionControl;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AsignacionTramiteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
@@ -35,12 +36,13 @@ public class GestionarAsignacion {
 
     /**
      *
-     * @param asignacionesDTO
+     * @param asignacionTramite
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
-        return control.asignarCorrespondencia(asignacionesDTO);
+    public AsignacionesDTO asignarCorrespondencia(AsignacionTramiteDTO asignacionTramite) throws BusinessException, SystemException {
+        return control.asignarCorrespondencia(asignacionTramite);
     }
 
     /**

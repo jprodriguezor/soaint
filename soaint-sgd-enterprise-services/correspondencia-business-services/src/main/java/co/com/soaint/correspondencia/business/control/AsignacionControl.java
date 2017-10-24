@@ -1,9 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.domain.entity.CorAgente;
-import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
-import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -66,64 +63,35 @@ public class AsignacionControl {
     // ----------------------
 
     /**
-     * @param asignacionesDTO
+     * @param asignacionTramite
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionTramiteDTO asignacionTramite) throws BusinessException, SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
         try {
-            for (AsignacionDTO asignacionDTO : asignacionesDTO.getAsignaciones()) {
-                CorAgente corAgente = CorAgente.newInstance()
-                        .ideAgente(asignacionDTO.getIdeAgente())
-                        .build();
-                CorCorrespondencia corCorrespondencia = CorCorrespondencia.newInstance()
-                        .ideDocumento(asignacionDTO.getIdeDocumento())
-                        .build();
-
+            for (AsignacionDTO asignacionDTO : asignacionTramite.getAsignaciones().getAsignaciones()) {
                 Date fecha = new Date();
-                String usuarioCreo = String.valueOf(asignacionDTO.getIdeFunci());
-                BigInteger usuarioCambio = asignacionDTO.getIdeFunci();
 
-                DctAsignacion dctAsignacion = dctAsignacionControl.dctAsignacionTransform(asignacionDTO);
-                DctAsigUltimo dctAsigUltimo;
-
-                List<DctAsigUltimo> dctAsigUltimoList = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                DctAsignacionDTO dctAsignacion = em.createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class)
                         .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
-                        .getResultList();
+                        .getSingleResult();
 
-                if (!dctAsigUltimoList.isEmpty()) {
-                    dctAsigUltimo = dctAsigUltimoList.get(0);
-                } else {
-                    dctAsigUltimo = DctAsigUltimo.newInstance()
-                            .ideUsuarioCreo(usuarioCreo)
-                            .build();
-                }
-
-                dctAsigUltimo.setDctAsignacion(dctAsignacion);
-                dctAsigUltimo.setCorAgente(corAgente);
-                dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
-                dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
-
-                dctAsignacion.setFecAsignacion(fecha);
-                dctAsignacion.setCorAgente(corAgente);
-                dctAsignacion.setCorCorrespondencia(corCorrespondencia);
-                dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
-
-                em.persist(dctAsignacion);
-                em.merge(dctAsigUltimo);
-                em.flush();
-
-                em.createNamedQuery("CorAgente.updateAsignacion")
-                        .setParameter("FECHA_ASIGNACION", fecha)
-                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
-                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                em.createNamedQuery("DctAsignacion.asignarToFuncionario")
+                        .setParameter("IDE_FUNCI", asignacionDTO.getIdeFunci())
+                        .setParameter("IDE_ASIGNACION", dctAsignacion.getIdeAsignacion())
                         .executeUpdate();
 
+                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
+                        .ideAgente(asignacionDTO.getIdeAgente())
+                        .codEstado(EstadoAgenteEnum.ASIGNADO.getCodigo())
+                        .build());
+
                 AsignacionDTO asignacionDTOResult = em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)
-                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                        .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
                         .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
@@ -292,7 +260,6 @@ public class AsignacionControl {
     }
 
     /**
-     *
      * @param nroRadicado
      * @throws BusinessException
      * @throws SystemException
@@ -302,6 +269,8 @@ public class AsignacionControl {
         List<AgenteDTO> destinatarios = agenteControl.listarDestinatariosByIdeDocumento(correspondencia.getIdeDocumento());
         AsignacionesDTO asignaciones = conformarAsignaciones(destinatarios, correspondencia.getIdeDocumento(), "CTA",
                 BigInteger.valueOf(Long.parseLong(correspondencia.getCodFuncRadica())));
-        asignarCorrespondencia(asignaciones);
+        asignarCorrespondencia(AsignacionTramiteDTO.newInstance()
+                .asignaciones(asignaciones)
+                .build());
     }
 }
