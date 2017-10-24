@@ -132,7 +132,6 @@ public class CorrespondenciaControl {
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 //----------------------asignacion--------------
-
                 DctAsignacion dctAsignacion = DctAsignacion.newInstance()
                         .corCorrespondencia(correspondencia)
                         .ideUsuarioCreo(correspondencia.getCodFuncRadica())
@@ -144,7 +143,6 @@ public class CorrespondenciaControl {
 
                 correspondencia.setDctAsignacionList(new ArrayList<>());
                 correspondencia.getDctAsignacionList().add(dctAsignacion);
-
                 //------------------------------------
 
                 correspondencia.getCorAgenteList().add(corAgente);
