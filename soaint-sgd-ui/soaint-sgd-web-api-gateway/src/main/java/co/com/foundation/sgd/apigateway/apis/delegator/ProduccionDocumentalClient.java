@@ -35,12 +35,14 @@ public class ProduccionDocumentalClient {
         nuevaEntrada.setIdDespliegue(entrada.getParametros().get("idDespliegue").toString());
         nuevaEntrada.setIdProceso(entrada.getParametros().get("idProceso").toString());
         nuevaEntrada.setUsuario(entrada.getUsuario());
+        nuevaEntrada.setPass(entrada.getPass());
         nuevaEntrada.setParametros(new HashMap<>());
 
         for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
             nuevaEntrada.getParametros().clear();
             LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
             nuevaEntrada.getParametros().put("usuarioProyector", funcionario.getOrDefault("loginName","").toString());
+            log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
             procesoClient.iniciar(nuevaEntrada);
         }
 
