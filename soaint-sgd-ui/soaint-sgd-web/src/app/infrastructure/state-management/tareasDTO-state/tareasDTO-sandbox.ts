@@ -11,21 +11,20 @@ import {ApiBase} from '../../api/api-base';
 import {
     TASK_CARGAR_PLANILLA_ENTRADA,
     TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
-    TASK_GESTION_PRODUCCION_MULTIPLE,
+    TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
     TASK_RADICACION_ENTRADA
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
-import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
 
     routingStartState = false;
 
-    authPayload: { usuario: string, pass: string } | {};
+    authPayload: { usuario: string, pass: string } | any;
     authPayloadUnsubscriber: Subscription;
 
     constructor(private _store: Store<State>,
@@ -49,11 +48,23 @@ export class Sandbox {
             Object.assign({}, clonePayload, this.authPayload));
     }
 
-    getTaskVariables(payload: any) {
-        const overPayload = this.extractProcessVariablesPayload(payload);
-        return this._api.post(environment.obtenerVariablesTarea,
-            Object.assign({}, overPayload, this.authPayload));
-    }
+  getTaskStats() {
+    const payload = {
+      parametros: {
+        usuario: this.authPayload.usuario
+      }
+    };
+
+    return this._api.post(environment.tasksStats_endpoint,
+      Object.assign({}, payload, this.authPayload));
+  }
+
+
+  getTaskVariables(payload: any) {
+    const overPayload = this.extractProcessVariablesPayload(payload);
+    return this._api.post(environment.obtenerVariablesTarea,
+      Object.assign({}, overPayload, this.authPayload));
+  }
 
     isTaskRoutingStarted() {
         return this.routingStartState;
@@ -131,6 +142,9 @@ export class Sandbox {
                 break;
             case TASK_GESTION_PRODUCCION_MULTIPLE:
                 this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumentalMultiple, task]));
+                break;
+            case TASK_PRODUCIR_DOCUMENTO:
+                this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
                 break;
             default:
                 this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));

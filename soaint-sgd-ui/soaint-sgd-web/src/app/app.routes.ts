@@ -53,6 +53,11 @@ export const routes: Routes = [
                 component: ProduccionDocumentalMultipleComponent,
                 canActivate: [AuthenticatedGuard]
             },
+            {
+                path: ROUTES_PATH.produccionDocumental,
+                component: ProduccionDocumentalComponent,
+                canActivate: [AuthenticatedGuard]
+            },
         ]
     },
     {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
@@ -80,12 +85,6 @@ export const routes: Routes = [
     {
         path: ROUTES_PATH.distribucionFisica,
         component: DistribucionFisicaComponent,
-        canActivate: [AuthenticatedGuard]
-    },
-
-    {
-        path: ROUTES_PATH.produccionDocumental,
-        component: ProduccionDocumentalComponent,
         canActivate: [AuthenticatedGuard]
     }
 ];

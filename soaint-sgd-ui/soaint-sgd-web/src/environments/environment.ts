@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 // const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -33,6 +33,7 @@ export const environment = {
   instancesProcess_endpoint: `${host}/proceso-gateway-api/listar-instancias`,
   tasksInsideProcess_endpoint: `${host}/proceso-gateway-api/listar/estados-instancia`,
   tasksForStatus_endpoint: `${host}/proceso-gateway-api/tareas/listar/estados`,
+  tasksStats_endpoint: `${host}/proceso-gateway-api/tareas/listar/usuario`,
   tasksStartProcess: `${host}/proceso-gateway-api/tareas/iniciar/`,
   tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
@@ -75,4 +76,34 @@ export const environment = {
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
+    // Produccion Documental
+    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+
+};
+
+export const process_info = {
+  'proceso.correspondencia-entrada': {
+    displayValue: 'Correspondencia de entrada',
+    show: true
+  },
+  'proceso.gestion-planillas': {
+    displayValue: 'Gestion de planillas',
+    show: false
+  },
+  'proceso.gestor-devoluciones': {
+    displayValue: 'Gestor de devoluciones',
+    show: false
+  },
+  'proceso.produccion-documental': {
+    displayValue: 'Producción documental',
+    show: false
+  },
+  'proceso.produccion-multiples-documentos': {
+    displayValue: 'Producción de multiples documentos',
+    show: false
+  },
+  'proceso.recibir-gestionar-doc': {
+    displayValue: 'Recibir y gestionar documento',
+    show: false
+  },
 };

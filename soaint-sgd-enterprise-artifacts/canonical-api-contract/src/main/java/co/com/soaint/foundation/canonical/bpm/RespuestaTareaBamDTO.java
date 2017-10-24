@@ -30,4 +30,28 @@ public class RespuestaTareaBamDTO {
     private String taskname;
     private String userid;
     private int optlock;
+    private Long cantidad;
+
+
+    public RespuestaTareaBamDTO(String status, Long cantidad) {
+        this.status = status;
+        this.cantidad = cantidad;
+    }
+
+    public RespuestaTareaBamDTO(int pk, Date eddate, int duration, Date enddate, int processinstanceid, Date startdate, String status, int taskid, String taskname, String userid, int optlock) {
+        this.pk = pk;
+        this.eddate = eddate;
+        this.duration = duration;
+        this.enddate = enddate;
+        this.processinstanceid = processinstanceid;
+        this.startdate = startdate;
+        this.status = status;
+        this.taskid = taskid;
+        this.taskname = taskname;
+        this.userid = userid;
+        this.optlock = optlock;
+    }
 }
+
+
+

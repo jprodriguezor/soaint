@@ -2,6 +2,7 @@ package co.com.soaint.bpm.services.rest;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
 import co.com.soaint.bpm.services.integration.services.ITaskServices;
+import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.foundation.canonical.bpm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -17,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -35,6 +36,7 @@ public class BpmIntegrationServicesClientRest {
     private IProcessServices proceso;
     @Autowired
     private ITaskServices tarea;
+    Estados estadosOperaciones = new Estados();
 
     /**
      * Contructor de la clase
@@ -288,5 +290,29 @@ public class BpmIntegrationServicesClientRest {
         log.info("processing rest request - listar tareas por instancias de procesos");
         return tarea.listarTareasPorInstanciaProceso(entradaTarea);
     }
+
+    /**
+     * Listar tareas por usuario
+     *
+     * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
+    @POST
+    @Path("/tareas/listar/usuario/")
+    public List<RespuestaTareaBamDTO> listarTareasPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException {
+        log.info("processing rest request - listar tareas por usuario");
+        List<RespuestaTareaBamDTO> tareas =  new ArrayList<>();
+        List<RespuestaTareaBamDTO> tareasPorUsuario = tarea.listarTareasPorUsuario(entradaTarea);
+        for (RespuestaTareaBamDTO tareaBam:tareasPorUsuario){
+            RespuestaTareaBamDTO respuestaTarea = RespuestaTareaBamDTO.newInstance()
+                    .status(estadosOperaciones.estadoRespuesta(tareaBam.getStatus()))
+                    .cantidad(tareaBam.getCantidad())
+                    .build();
+            tareas.add(respuestaTarea);
+        }
+        return tareas;
+    }
+
 
 }

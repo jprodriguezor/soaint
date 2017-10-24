@@ -457,7 +457,7 @@ public class TasksService implements ITaskServices {
 
             return em.createNamedQuery("BamTaskSummary.findTaskComplete", RespuestaTareaBamDTO.class)
                     .setParameter("ESTADO", Status.Completed.name())
-                    .setParameter("USUARIO", entrada.getParametros().get("usuario").toString())
+                    .setParameter("USUARIO", entrada.getUsuario())
                     .getResultList();
 
         } catch (Exception e) {
@@ -470,4 +470,33 @@ public class TasksService implements ITaskServices {
             log.info("fin - listar tareas completadas por usuario ");
         }
     }
+
+    /**
+     * Permite listar las tareas por usuario
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas que cumplen con los filtros de estado solicitdos
+     * @throws MalformedURLException
+     */
+    @Override
+    public List<RespuestaTareaBamDTO> listarTareasPorUsuario(EntradaProcesoDTO entrada) throws SystemException {
+
+        try {
+            log.info("iniciar - listar tareas  por usuario: {}", entrada);
+
+            return em.createNamedQuery("TaskEventEntity.findTaskByUser", RespuestaTareaBamDTO.class)
+                    .setParameter("USUARIO", entrada.getParametros().get("usuario").toString())
+                    .getResultList();
+
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - listar tareas  por usuario ");
+        }
+    }
 }
+

@@ -12,38 +12,26 @@ import { Sandbox as RadicarComunicacionesSandBox } from 'app/infrastructure/stat
 import { ContactoDTO } from 'app/domain/contactoDTO';
 import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
-import { ConstanteDTO } from '../../../domain/constanteDTO';
-import {
-  COMUNICACION_INTERNA, DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, TIPO_AGENTE_DESTINATARIO,
-  TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
-} from '../../../shared/bussiness-properties/radicacion-properties';
-import { Store } from '@ngrx/store';
-import { State as RootState } from '../../../infrastructure/redux-store/redux-reducers';
-import {
-  sedeDestinatarioEntradaSelector,
-  tipoDestinatarioEntradaSelector
-} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
-import { getArrayData as DependenciaGrupoSelector } from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import {
-  getAuthenticatedFuncionario,
-  getSelectedDependencyGroupFuncionario
-} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
-import { getActiveTask } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
-import { Subscription } from 'rxjs/Subscription';
-import { ScheduleNextTaskAction } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
-import { TareaDTO } from '../../../domain/tareaDTO';
-import { TaskForm } from '../../../shared/interfaces/task-form.interface';
-import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
-import { TaskTypes } from '../../../shared/type-cheking-clasess/class-types';
-import {
-  getMediosRecepcionVentanillaData
-} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
-import { LoadNextTaskPayload } from '../../../shared/interfaces/start-process-payload,interface';
-import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
-import { RadicarSuccessAction } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {Store} from '@ngrx/store';
+import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import {sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
+import {ScheduleNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {TareaDTO} from '../../../domain/tareaDTO';
+import {TaskForm} from '../../../shared/interfaces/task-form.interface';
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
+import {getMediosRecepcionVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
+import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
+import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 import 'rxjs/add/operator/skipWhile';
-import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+import {ComunicacionOficialEntradaDTV} from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+
 
 declare const require: any;
 const printStyles = require('app/ui/bussiness-components/ticket-radicado/ticket-radicado.component.css');
@@ -121,7 +109,9 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
+      this.restore();
     });
+
   }
 
   ngAfterContentInit() {
@@ -239,183 +229,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
     });
   }
 
-  getTipoAgenteRemitenteInterno(): AgentDTO {
-
-    const tipoAgente: AgentDTO = {
-      ideAgente: null,
-      codTipoRemite: TIPO_REMITENTE_INTERNO,
-      codTipoPers: null,
-      nombre: null,
-      razonSocial: null,
-      nit: null,
-      codCortesia: null,
-      codEnCalidad: null,
-      codTipDocIdent: null,
-      nroDocuIdentidad: null,
-      codSede: this.valueRemitente.sedeAdministrativa ? this.valueRemitente.sedeAdministrativa.codigo : null,
-      codDependencia: this.valueRemitente.dependenciaGrupo ? this.valueRemitente.dependenciaGrupo.codigo : null,
-      fecAsignacion: null,
-      codTipAgent: TIPO_AGENTE_REMITENTE,
-      codEstado: null,
-      indOriginal: this.valueRemitente.tipoDestinatario ? this.valueRemitente.tipoDestinatario.codigo : null,
-    };
-    return tipoAgente;
-  }
-
-  getTipoAgenteRemitenteExterno() {
-    const tipoAgente: AgentDTO = {
-      ideAgente: null,
-      codTipoRemite: TIPO_REMITENTE_EXTERNO,
-      codTipoPers: this.valueRemitente.tipoPersona ? this.valueRemitente.tipoPersona.codigo : null,
-      nombre: this.valueRemitente.nombreApellidos || null,
-      razonSocial: this.valueRemitente.razonSocial || null,
-      nit: this.valueRemitente.nit || null,
-      codCortesia: this.valueRemitente.codCortesia || null,
-      codEnCalidad: this.valueRemitente.actuaCalidad ? this.valueRemitente.actuaCalidad.codigo : null,
-      codTipDocIdent: this.valueRemitente.tipoDocumento ? this.valueRemitente.tipoDocumento.codigo : null,
-      nroDocuIdentidad: this.valueRemitente.nroDocumentoIdentidad,
-      codSede: null,
-      codDependencia: null,
-      fecAsignacion: null,
-      codTipAgent: TIPO_AGENTE_REMITENTE,
-      indOriginal: null,
-      codEstado: null
-    };
-    return tipoAgente;
-  }
-
-
-  getAgentesDestinatario(): Array<AgentDTO> {
-    const agentes = [];
-    this.datosDestinatario.agentesDestinatario.forEach(agenteInt => {
-      const tipoAgente: AgentDTO = {
-        ideAgente: null,
-        codTipoRemite: null,
-        codTipoPers: null,
-        nombre: null,
-        razonSocial: null,
-        nit: null,
-        codCortesia: null,
-        codEnCalidad: null,
-        codTipDocIdent: null,
-        nroDocuIdentidad: null,
-        codSede: agenteInt.sedeAdministrativa ? agenteInt.sedeAdministrativa.codigo : null,
-        codDependencia: agenteInt.dependenciaGrupo ? agenteInt.dependenciaGrupo.codigo : null,
-        fecAsignacion: null,
-        codTipAgent: TIPO_AGENTE_DESTINATARIO,
-        codEstado: null,
-        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
-      };
-      agentes.push(tipoAgente);
-    });
-
-    return agentes;
-  }
-
-  getListaAnexos(): Array<AnexoDTO> {
-    const anexoList = [];
-    this.datosGenerales.descripcionAnexos.forEach((anexo) => {
-      anexoList.push({
-        ideAnexo: null,
-        codAnexo: anexo.tipoAnexo ? anexo.tipoAnexo.codigo : null,
-        descripcion: anexo.descripcion
-      });
-    });
-    return anexoList;
-  }
-
-  getListaReferidos(): Array<ReferidoDTO> {
-    const referidosList = [];
-    this.datosGenerales.radicadosReferidos.forEach(referido => {
-      referidosList.push({
-        ideReferido: null,
-        nroRadRef: referido.nombre
-      });
-    });
-    return referidosList;
-  }
-
-  getDocumento(): DocumentoDTO {
-    const documento: DocumentoDTO = {
-      idePpdDocumento: null,
-      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
-      fecDocumento: this.date.toISOString(),
-      asunto: this.valueGeneral.asunto,
-      nroFolios: this.valueGeneral.numeroFolio, // 'Numero Folio',
-      nroAnexos: this.datosGenerales.descripcionAnexos.length, // 'Numero anexos',
-      codEstDoc: null,
-      ideEcm: null
-    };
-    return documento;
-  }
-
-
-  getCorrespondencia(): CorrespondenciaDTO {
-    const correspondenciaDto: CorrespondenciaDTO = {
-      ideDocumento: null,
-      descripcion: this.valueGeneral.asunto,
-      tiempoRespuesta: this.valueGeneral.tiempoRespuesta,
-      codUnidadTiempo: this.valueGeneral.unidadTiempo ? this.valueGeneral.unidadTiempo.codigo : null,
-      codMedioRecepcion: this.valueGeneral.medioRecepcion ? this.valueGeneral.medioRecepcion.codigo : null,
-      fecRadicado: this.date.toISOString(),
-      fecDocumento: this.date.toISOString(),
-      nroRadicado: null,
-      codTipoDoc: this.valueGeneral.tipologiaDocumental ? this.valueGeneral.tipologiaDocumental.codigo : null,
-      codTipoCmc: this.valueGeneral.tipoComunicacion ? this.valueGeneral.tipoComunicacion.codigo : null,
-      ideInstancia: this.task.idInstanciaProceso,
-      reqDistFisica: this.valueGeneral.reqDistFisica ? '1' : '0',
-      codFuncRadica: null,
-      codSede: null,
-      codDependencia: null,
-      reqDigita: this.valueGeneral.reqDigit ? '1' : '0',
-      codEmpMsj: this.datosGenerales.form.get('empresaMensajeria').value,
-      nroGuia: this.datosGenerales.form.get('numeroGuia').value,
-      fecVenGestion: null,
-      codEstado: null,
-      inicioConteo: this.valueGeneral.inicioConteo || ''
-    };
-
-    this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
-      correspondenciaDto.codFuncRadica = funcionario.id;
-    }).unsubscribe();
-
-    this._store.select(getSelectedDependencyGroupFuncionario).subscribe(dependencia => {
-      correspondenciaDto.codSede = dependencia.codSede;
-      correspondenciaDto.codDependencia = dependencia.codigo;
-    }).unsubscribe();
-
-    return correspondenciaDto;
-  }
-
-  getDatosContactos(): Array<ContactoDTO> {
-    const contactos = [];
-    if (this.datosRemitente.visibility.datosContacto) {
-      const contactsRemitente = (this.datosRemitente.datosContactos) ? this.datosRemitente.datosContactos.contacts : [];
-      contactsRemitente.forEach(contact => {
-        contactos.push({
-          ideContacto: null,
-          nroViaGeneradora: contact.noViaPrincipal || null,
-          nroPlaca: contact.nroPlaca || null,
-          codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
-          codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
-          codPostal: null,
-          direccion: contact.direccion || null,
-          celular: contact.celular || null,
-          telFijo: contact.numeroTel || null,
-          extension: null,
-          corrElectronico: contact.correoEle || null,
-          codPais: contact.pais ? contact.pais.codigo : null,
-          codDepartamento: contact.departamento ? contact.departamento.codigo : null,
-          codMunicipio: contact.municipio ? contact.municipio.codigo : null,
-          provEstado: null,
-          principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
-        });
-      });
-    }
-
-    return contactos;
-  }
-
   setTipoComunicacion(event) {
     if (this.editable) {
       this.datosRemitente.setTipoComunicacion(event);
@@ -480,42 +293,45 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   restore() {
-    const payload = 1;
-    this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
-      const results = response.payload;
-      console.log(results);
+    if (this.task) {
+      this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
+        const results = response.payload;
+        if (!results) {
+          return;
+        }
 
-      // generales
-      this.datosGenerales.form.patchValue(results.generales);
-      this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
-      this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
+        // generales
+        this.datosGenerales.form.patchValue(results.generales);
+        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
+        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
 
-      // remitente
-      this.datosRemitente.form.patchValue(results.remitente);
+        // remitente
+        this.datosRemitente.form.patchValue(results.remitente);
 
-      // destinatario
-      this.datosDestinatario.form.patchValue(results.destinatario);
-      this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
+        // destinatario
+        this.datosDestinatario.form.patchValue(results.destinatario);
+        this.datosDestinatario.agentesDestinatario = results.agentesDestinatario;
 
-      if (results.datosContactos) {
-        const retry = setInterval(() => {
-          if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-            this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
-            clearInterval(retry);
-          }
-        }, 400);
-      }
+        if (results.datosContactos) {
+          const retry = setInterval(() => {
+            if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+              this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
+              clearInterval(retry);
+            }
+          }, 400);
+        }
 
-      // if (results.contactInProgress) {
-      //   const retry = setInterval(() => {
-      //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-      //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-      //       clearInterval(retry);
-      //     }
-      //   }, 400)
-      // }
+        // if (results.contactInProgress) {
+        //   const retry = setInterval(() => {
+        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
+        //       clearInterval(retry);
+        //     }
+        //   }, 400)
+        // }
 
-    });
+      });
+    }
   }
 
   ngOnDestroy() {

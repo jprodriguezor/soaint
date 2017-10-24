@@ -2,7 +2,7 @@ import {DependenciaDTO} from './dependenciaDTO';
 import {FuncionarioDTO} from './funcionarioDTO';
 import {ConstanteDTO} from './constanteDTO';
 
-export interface ProyeccionDocumentoDTO {
+export interface ProyectorDTO {
   sede: ConstanteDTO;
   dependencia: DependenciaDTO;
   funcionario: FuncionarioDTO;

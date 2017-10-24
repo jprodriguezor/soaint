@@ -72,6 +72,22 @@ public class ProcesoClient {
                 .post(Entity.json(entrada));
     }
 
+    public Response listarTareasCompletadas(EntradaProcesoDTO entrada) {
+        log.info("Task - [trafic] - listing Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/tareas/listar/completadas")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
+    public Response listarEstadisticasTareas(EntradaProcesoDTO entrada) {
+        log.info("Listando Estadisticas de Tareas " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/tareas/listar/usuario")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - start Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

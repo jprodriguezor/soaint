@@ -3,13 +3,19 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaBamDTO;
+import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/proceso-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,7 +34,7 @@ public class ProcesoGatewayApi {
 
     @GET
     @Path("/")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response list() {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Procesos");
@@ -45,7 +51,7 @@ public class ProcesoGatewayApi {
      */
     @POST
     @Path("/iniciar")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - starting Process");
@@ -58,7 +64,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/listar/estados-instancia")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response listTareasIdProceso(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Precess");
@@ -71,7 +77,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/listar/estados")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response listTareas(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
@@ -83,8 +89,44 @@ public class ProcesoGatewayApi {
     }
 
     @POST
-    @Path("/tareas/iniciar")
+    @Path("/tareas/listar/completadas")
+    //@JWTTokenSecurity
+    public Response listTareasCompletadas(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
+        Response response = procesoClient.listarTareasCompletadas(entrada);
+        List<RespuestaTareaBamDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaBamDTO>>() {
+        });
+        List<RespuestaTareaDTO> responseTasks = new ArrayList<>();
+        responseContent.forEach((tarea) -> {
+            RespuestaTareaDTO res = new RespuestaTareaDTO();
+            res.setEstado(tarea.getStatus());
+            res.setNombre(tarea.getTaskname());
+            res.setIdTarea(new Long(tarea.getTaskid()));
+            responseTasks.add(res);
+        });
+        log.info(CONTENT + responseTasks);
+
+        return Response.status(response.getStatus()).entity(responseTasks).build();
+    }
+
+
+    @POST
+    @Path("/tareas/listar/usuario")
     @JWTTokenSecurity
+    public Response listEstadisticasTareas(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - stadistics not in use tasks");
+        Response response = procesoClient.listarEstadisticasTareas(entrada);
+        List<RespuestaTareaBamDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaBamDTO>>() {
+        });
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/tareas/iniciar")
+    //@JWTTokenSecurity
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - start Task");
@@ -97,12 +139,16 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/reservar")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response reservarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - reserve Task");
         Response response = procesoClient.reservarTarea(entrada);
         String responseContent = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.OK.value()) {
+            response = procesoClient.iniciarTarea(entrada);
+            responseContent = response.readEntity(String.class);
+        }
         log.info(CONTENT + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
@@ -110,7 +156,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/completar")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response completarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - start Task");
@@ -136,7 +182,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/obtener-variables")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response obtenerVaraiblesTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - get task variables");

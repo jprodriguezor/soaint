@@ -13,17 +13,9 @@ export class Sandbox {
               private _api: ApiBase) {
   }
 
-  loadAuthenticatedFuncionario(payload?: any) {
-    return this._api.list(`${environment.obtenerFuncionario_endpoint}/${payload.username}`, payload.payload);
-  }
-
   loadAllFuncionarios(payload?: any) {
     const endpoint = `${environment.listarFuncionarios_endpoint}/${payload}`;
     return this._api.list(endpoint);
-  }
-
-  loadDispatch(payload?) {
-    this._store.dispatch(new actions.LoadAction(payload));
   }
 
   loadAllFuncionariosDispatch(payload?) {
