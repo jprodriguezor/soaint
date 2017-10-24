@@ -190,8 +190,6 @@ public class CorrespondenciaControl {
                 DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance()
                         .corAgente(dctAsignacion.getCorAgente())
                         .corCorrespondencia(dctAsignacion.getCorCorrespondencia())
-                        .numRedirecciones(new Long(0))
-                        .numDevoluciones(new Long(0))
                         .ideUsuarioCreo(dctAsignacion.getCorCorrespondencia().getCodFuncRadica())
                         .ideUsuarioCambio(new BigInteger(dctAsignacion.getCorCorrespondencia().getCodFuncRadica()))
                         .dctAsignacion(dctAsignacion)

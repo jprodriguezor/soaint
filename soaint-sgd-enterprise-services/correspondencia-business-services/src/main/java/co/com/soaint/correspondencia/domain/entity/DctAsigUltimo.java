@@ -151,6 +151,8 @@ public class DctAsigUltimo implements Serializable {
     protected void onCreate() {
         fecCreo = new Date();
         fecCambio = fecCreo;
+        numRedirecciones = new Long(0);
+        numDevoluciones = new Long(0);
     }
 
     @PreUpdate
