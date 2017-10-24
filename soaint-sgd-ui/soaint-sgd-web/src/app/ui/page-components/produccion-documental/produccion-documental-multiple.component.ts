@@ -17,6 +17,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
+import {PROCESS_DATA} from './providers/ProcessData';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -190,7 +191,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
             instanciaProceso: Number.parseInt(this.task.idInstanciaProceso),
             estados: ['LISTO'],
             parametros: {
-                proyectores : this.listaProyectores,
+                proyectores :   this.listaProyectores,
+                idDespliegue:   PROCESS_DATA.produccion_documental.idDespliegue,
+                idProceso:      PROCESS_DATA.produccion_documental.idProceso
             }
         };
 
