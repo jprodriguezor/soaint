@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class ProduccionDocumentalClient {
             log.info(proyector);
         }
         log.info("PROYECTOR ENDED");
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        log.info("Correspondencia - [trafic] - generar planilla: " + endpoint);
         return Response.ok().build();
     }
 

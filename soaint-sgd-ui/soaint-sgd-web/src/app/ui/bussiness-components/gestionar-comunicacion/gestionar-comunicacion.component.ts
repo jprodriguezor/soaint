@@ -33,28 +33,27 @@ export class GestionarComunicacionComponent implements OnInit {
 
   procesoSeguir: number;
 
-  rejectDialogVisible: boolean = false;
+  rejectDialogVisible = false;
 
-  justificationDialogVisible: boolean = false;
+  justificationDialogVisible = false;
 
-  hideCheckBox: boolean = true;
+  hideCheckBox = true;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupReject') popupReject;
 
   constructor(private formBuilder: FormBuilder,
-              private _asignacionSandbox: AsignacionSandbox,
               private _tareaSandbox: TaskSandbox) {
     this.initForm();
     this.listenForErrors();
   }
 
   ngOnInit() {
-    this.procesosSuggestions = [{
+    this.procesosSuggestions = [/*{
       nombre: 'Archivar documento',
       id: 1
-    }, {
+    },*/ {
       nombre: 'Devolver',
       id: 2
     }, {
@@ -141,8 +140,8 @@ export class GestionarComunicacionComponent implements OnInit {
 
 
   createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
-    let agentes: AgentDTO[] = [];
-    let agente = this.remitente;
+    const agentes: AgentDTO[] = [];
+    const agente = this.remitente;
     console.log(this.remitente);
     agente.ideAgente = this.task.variables.idAgente;
     agente.codSede = justificationValues.sedeAdministrativa.codigo;
