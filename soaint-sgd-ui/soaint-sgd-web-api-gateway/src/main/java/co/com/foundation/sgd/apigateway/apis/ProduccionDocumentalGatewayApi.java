@@ -35,7 +35,7 @@ public class ProduccionDocumentalGatewayApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-   /* @POST
+    @POST
     @Path("/ejecutar-proyeccion-multiple")
     //@JWTTokenSecurity
     public Response ejecutarProyeccionMultiple(EntradaProcesoDTO entrada) {
@@ -47,5 +47,5 @@ public class ProduccionDocumentalGatewayApi {
         }
         log.info("ENDED");
         return Response.status(response.getStatus()).entity(responseObject).build();
-    }*/
+    }
 }
