@@ -170,7 +170,8 @@ export class DocumentosTramiteComponent implements OnInit {
     return Observable.of(this.comunicacion)
       .switchMap(value => {
         console.log(this.task);
-        const agente = value.agenteList.find(agent => agent.ideAgente === this.task.variables.idAgente);
+        console.log(value.agenteList);
+        const agente = value.agenteList.find(agent => agent.ideAgente == this.task.variables.idAgente);
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
         delete agente['_$visited'];
