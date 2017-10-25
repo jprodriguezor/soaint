@@ -1,7 +1,4 @@
-import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild,
-  ViewEncapsulation
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
@@ -9,10 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {AgentDTO} from '../../../domain/agentDTO';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {Subscription} from 'rxjs/Subscription';
-import {
-  getAuthenticatedFuncionario,
-  getSelectedDependencyGroupFuncionario
-} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as AsiganacionDTOSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
@@ -24,7 +18,6 @@ import {RedireccionDTO} from '../../../domain/redireccionDTO';
 import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
 import {WARN_REDIRECTION} from '../../../shared/lang/es';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {RedirectAction} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-actions';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 
@@ -86,8 +79,9 @@ export class DocumentosTramiteComponent implements OnInit {
     });
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
-      if (this.task)
+      if (this.task) {
         this.nroRadicado = this.task.variables.numeroRadicado;
+      }
     });
   }
 
@@ -115,7 +109,7 @@ export class DocumentosTramiteComponent implements OnInit {
 
   preview(file) {
     const self = this;
-    let myblob = new Blob([file], {
+    const myblob = new Blob([file], {
       type: 'application/pdf'
     });
     const reader = new FileReader();
@@ -169,9 +163,7 @@ export class DocumentosTramiteComponent implements OnInit {
 
     return Observable.of(this.comunicacion)
       .switchMap(value => {
-        console.log(this.task);
-        console.log(value.agenteList);
-        const agente = value.agenteList.find(agent => agent.ideAgente == this.task.variables.idAgente);
+        const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
         delete agente['_$visited'];
