@@ -63,7 +63,7 @@ public class AgenteControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findRemitentesByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -84,13 +84,34 @@ public class AgenteControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AgenteDTO> listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
                                                                                          String codDependencia,
                                                                                          String codEstado) throws SystemException {
         try {
             return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -167,7 +188,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param redireccion
      * @throws SystemException
      */
@@ -183,6 +203,13 @@ public class AgenteControl {
                         .setParameter("COD_ESTADO", estadoAgente)
                         .executeUpdate();
 
+                //-----------------Asignacion--------------------------
+
+                asignacionControl.actualizarAsignacion(agente.getIdeAgente(), correspondencia.getIdeDocumento(),
+                        agente.getCodDependencia(), redireccion.getTraza().getIdeFunci());
+
+                //-----------------------------------------------------
+
                 correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
 
@@ -195,34 +222,6 @@ public class AgenteControl {
                         .build());
 
             }
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
-     *
-     * @param ideAgente
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    public void actualizarNumDevoluciones(BigInteger ideAgente)throws BusinessException, SystemException{
-        try {
-            if (!verificarByIdeAgente(ideAgente))
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("agente.agente_not_exist_by_ideAgente")
-                        .buildBusinessException();
-
-            em.createNamedQuery("CorAgente.updateNumDevoluciones")
-                    .setParameter("IDE_AGENTE", ideAgente)
-                    .executeUpdate();
-        } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred", e);
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -275,7 +274,6 @@ public class AgenteControl {
      * @return
      */
     public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) {
-        long valorInicialRedirecciones = Long.parseLong("0");
         List<CorAgente> corAgentes = new ArrayList<>();
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
@@ -285,8 +283,6 @@ public class AgenteControl {
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
                 corAgente.setCodEstado(reqDistFisica.equals(rDistFisica) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
-                corAgente.setNumRedirecciones(valorInicialRedirecciones);
-                corAgente.setNumDevoluciones(valorInicialRedirecciones);
             }
 
             corAgentes.add(corAgente);
@@ -316,8 +312,6 @@ public class AgenteControl {
                 .fecAsignacion(agenteDTO.getFecAsignacion())
                 .codTipAgent(agenteDTO.getCodTipAgent())
                 .indOriginal(agenteDTO.getIndOriginal())
-                .numRedirecciones(agenteDTO.getNumRedirecciones())
-                .numDevoluciones(agenteDTO.getNumDevoluciones())
                 .tvsDatosContactoList(new ArrayList<>())
                 .build();
     }
