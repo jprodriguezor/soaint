@@ -274,7 +274,6 @@ public class AgenteControl {
      * @return
      */
     public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) {
-        long valorInicialRedirecciones = Long.parseLong("0");
         List<CorAgente> corAgentes = new ArrayList<>();
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
@@ -284,8 +283,6 @@ public class AgenteControl {
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
                 corAgente.setCodEstado(reqDistFisica.equals(rDistFisica) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
-                corAgente.setNumRedirecciones(valorInicialRedirecciones);
-                corAgente.setNumDevoluciones(valorInicialRedirecciones);
             }
 
             corAgentes.add(corAgente);
@@ -315,8 +312,6 @@ public class AgenteControl {
                 .fecAsignacion(agenteDTO.getFecAsignacion())
                 .codTipAgent(agenteDTO.getCodTipAgent())
                 .indOriginal(agenteDTO.getIndOriginal())
-                .numRedirecciones(agenteDTO.getNumRedirecciones())
-                .numDevoluciones(agenteDTO.getNumDevoluciones())
                 .tvsDatosContactoList(new ArrayList<>())
                 .build();
     }
