@@ -169,9 +169,11 @@ export class DocumentosTramiteComponent implements OnInit {
 
     return Observable.of(this.comunicacion)
       .switchMap(value => {
+        console.log(this.task);
         const agente = value.agenteList[0];
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
+        agente.ideAgente = this.task.variables.idAgente;
         delete agente['_$visited'];
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {
@@ -200,7 +202,6 @@ export class DocumentosTramiteComponent implements OnInit {
 
   getConstantsCodes() {
     let result = '';
-    console.log(this.comunicacion);
     this.comunicacion.agenteList.forEach((item) => {
       result += item.codTipAgent + ',';
       result += item.codEnCalidad + ',';
