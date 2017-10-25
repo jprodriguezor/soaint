@@ -1,9 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.domain.entity.CorAnexo;
-import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
-import co.com.soaint.correspondencia.domain.entity.CorReferido;
-import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
+import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
@@ -63,6 +60,9 @@ public class CorrespondenciaControl {
 
     @Autowired
     DserialControl dserialControl;
+
+    @Autowired
+    AsignacionControl asignacionControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -130,6 +130,21 @@ public class CorrespondenciaControl {
             agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica())
                     .stream().forEach(corAgente -> {
                 corAgente.setCorCorrespondencia(correspondencia);
+
+                //----------------------asignacion--------------
+                DctAsignacion dctAsignacion = DctAsignacion.newInstance()
+                        .corCorrespondencia(correspondencia)
+                        .ideUsuarioCreo(correspondencia.getCodFuncRadica())
+                        .codDependencia(corAgente.getCodDependencia())
+                        .codTipAsignacion("CTA")
+                        .fecAsignacion(new Date())
+                        .corAgente(corAgente)
+                        .build();
+
+                correspondencia.setDctAsignacionList(new ArrayList<>());
+                correspondencia.getDctAsignacionList().add(dctAsignacion);
+                //------------------------------------
+
                 correspondencia.getCorAgenteList().add(corAgente);
             });
 
@@ -166,9 +181,28 @@ public class CorrespondenciaControl {
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
+
+            //---------Asignacion-------------
+
+            correspondencia.getDctAsignacionList().stream().forEach(dctAsignacion -> {
+                DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance()
+                        .corAgente(dctAsignacion.getCorAgente())
+                        .corCorrespondencia(dctAsignacion.getCorCorrespondencia())
+                        .ideUsuarioCreo(dctAsignacion.getCorCorrespondencia().getCodFuncRadica())
+                        .ideUsuarioCambio(new BigInteger(dctAsignacion.getCorCorrespondencia().getCodFuncRadica()))
+                        .dctAsignacion(dctAsignacion)
+                        .build();
+                em.persist(dctAsigUltimo);
+            });
+
+            //----------------------------------
+
             em.flush();
+
             log.info("Correspondencia - radicacion exitosa nro-radicado -> " + correspondencia.getNroRadicado());
-            return listarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado());
+            return ComunicacionOficialDTO.newInstance()
+                    .correspondencia(consultarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado()))
+                    .build();
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;
@@ -301,7 +335,7 @@ public class CorrespondenciaControl {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
+                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
                         codDependencia,
                         codEstado);
                 ComunicacionOficialDTO comunicacionOficialDTO = ComunicacionOficialDTO.newInstance()
@@ -360,7 +394,7 @@ public class CorrespondenciaControl {
             List<ComunicacionOficialDTO> comunicacionOficialDTOList = new ArrayList<>();
 
             for (CorrespondenciaDTO correspondenciaDTO : correspondenciaDTOList) {
-                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
+                List<AgenteDTO> agenteDTOList = agenteControl.listarDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado(correspondenciaDTO.getIdeDocumento(),
                         codDependencia,
                         null);
                 agenteControl.listarRemitentesByIdeDocumento(correspondenciaDTO.getIdeDocumento()).stream().forEach(agenteDTOList::add);
