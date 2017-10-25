@@ -63,7 +63,7 @@ public class AgenteControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findRemitenteByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
