@@ -88,7 +88,7 @@ public class AgenteControl {
                                                                                          String codDependencia,
                                                                                          String codEstado) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
@@ -111,7 +111,7 @@ public class AgenteControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -261,10 +261,11 @@ public class AgenteControl {
      * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) {
-        return em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
-                .setParameter("IDE_DOCUMENTO", idDocumento)
-                .getResultList();
+    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento)throws SystemException{
+        List<AgenteDTO> agenteDTOList = new ArrayList<>();
+        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        return agenteDTOList;
     }
 
     /**
