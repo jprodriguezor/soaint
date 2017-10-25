@@ -6,11 +6,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @ApiDelegator
 @Log4j2
@@ -37,15 +36,17 @@ public class ProduccionDocumentalClient {
         nuevaEntrada.setPass(entrada.getPass());
         nuevaEntrada.setParametros(new HashMap<>());
 
-        for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
-            nuevaEntrada.getParametros().clear();
-            LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
-            nuevaEntrada.getParametros().put("usuarioProyector", funcionario.getOrDefault("loginName","").toString());
-            log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
-            procesoClient.iniciar(nuevaEntrada);
-        }
+//        for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
+//            nuevaEntrada.getParametros().clear();
+//            LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
+//            nuevaEntrada.getParametros().put("usuarioProyector", funcionario.getOrDefault("loginName","").toString());
+//            log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
+//            procesoClient.iniciar(nuevaEntrada);
+//        }
 
-        return procesoClient.completarTarea(entrada);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/tarea-web-api/tarea/" + entrada.getIdProceso() + "/" + entrada.getIdTarea())
+                .request().get();
     }
 
 }
