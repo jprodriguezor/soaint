@@ -271,7 +271,7 @@ public class AsignacionControl {
         CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByNroRadicado(nroRadicado);
         List<AgenteDTO> destinatarios = agenteControl.listarDestinatariosByIdeDocumento(correspondencia.getIdeDocumento());
         AsignacionesDTO asignaciones = conformarAsignaciones(destinatarios, correspondencia.getIdeDocumento(), "CTA",
-                BigInteger.valueOf(Long.parseLong(correspondencia.getCodFuncRadica())));
+                new BigInteger(correspondencia.getCodFuncRadica()));
         asignarCorrespondencia(AsignacionTramiteDTO.newInstance()
                 .asignaciones(asignaciones)
                 .build());
