@@ -15,6 +15,9 @@ export const ActionTypes = {
   COMPLETE_TASK: type('[TareaDTO] CompleteTaskAction'),
   COMPLETE_TASK_SUCCESS: type('[TareaDTO] CompleteTaskSuccessAction'),
   COMPLETE_TASK_FAIL: type('[TareaDTO] CompleteTaskFailAction'),
+  ABORT_TASK: type('[TareaDTO] AbortTaskAction'),
+  ABORT_TASK_SUCCESS: type('[TareaDTO] AbortTaskSuccessAction'),
+  ABORT_TASK_FAIL: type('[TareaDTO] AbortTaskFailAction'),
   CANCEL_TASK: type('[TareaDTO] CancelTaskAction'),
   CANCEL_TASK_SUCCESS: type('[TareaDTO] CancelTaskSuccessAction'),
   CANCEL_TASK_FAIL: type('[TareaDTO] CancelTaskFailAction'),
@@ -110,6 +113,27 @@ export class CompleteTaskFailAction implements Action {
   }
 }
 
+export class AbortTaskAction implements Action {
+  type = ActionTypes.ABORT_TASK;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class AbortTaskSuccessAction implements Action {
+  type = ActionTypes.ABORT_TASK_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class AbortTaskFailAction implements Action {
+  type = ActionTypes.ABORT_TASK_FAIL;
+
+  constructor(public payload?: any) {
+  }
+}
+
 export class CancelTaskAction implements Action {
   type = ActionTypes.CANCEL_TASK;
 
@@ -184,6 +208,9 @@ export type Actions =
   CompleteTaskAction |
   CompleteTaskSuccessAction |
   CompleteTaskFailAction |
+  AbortTaskAction |
+  AbortTaskSuccessAction |
+  AbortTaskFailAction |
   CancelTaskAction |
   CancelTaskSuccessAction |
   CancelTaskFailAction |

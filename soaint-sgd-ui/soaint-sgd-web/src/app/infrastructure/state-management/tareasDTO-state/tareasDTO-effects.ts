@@ -20,6 +20,8 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 
 import {LoadTasksInsideProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {tassign} from 'tassign';
+import {ROUTES_PATH} from '../../../app.route-names';
+import {go} from '@ngrx/router-store';
 
 
 function isLoaded() {
@@ -130,6 +132,16 @@ export class Effects {
   // .withLatestFrom(this._store$.select(s => s.tareas.nextTask))
   // .filter(([action, nextTask]) => nextTask !== null )
   // .map(([action, nextTask]) => new actions.ContinueWithNextTaskAction(nextTask))
+
+  @Effect()
+  abortTask: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.ABORT_TASK)
+    .map(toPayload)
+    .switchMap(
+      (payload) => this._sandbox.abortTask(payload)
+        .mergeMap((response: any) => [new actions.AbortTaskSuccessAction(response), go(['/' + ROUTES_PATH.workspace])])
+        .catch((error) => Observable.of(new actions.AbortTaskFailAction({error})))
+    );
 
 
 }
