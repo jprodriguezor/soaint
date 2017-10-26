@@ -1,25 +1,26 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
 import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
+import {TareaDTO} from '../../../../../domain/tareaDTO';
 
 @Component({
   selector: 'pd-datos-generales',
   templateUrl: './datos-generales.component.html'
 })
 
-export class PDDatosGeneralesComponent implements OnInit{
+export class PDDatosGeneralesComponent implements OnInit {
 
   form: FormGroup;
   validations: any = {};
+  @Input() taskData: TareaDTO;
 
   funcionarioLog: FuncionarioDTO;
 
@@ -37,14 +38,14 @@ export class PDDatosGeneralesComponent implements OnInit{
   initForm() {
     this.form = this.formBuilder.group({
       // Datos generales
-      'usuarioResponsable': [this.usuarioResponsableFullname()],
+      'usuarioResponsable': [this.taskData.variables.usuarioProyector],
       'fechaCreacion': [new Date()],
-      'sedeAdministrativa': [null],
-      'dependencia': [null],
+      'sedeAdministrativa': [this.taskData.variables.codigoSede],
+      'dependencia': [this.taskData.variables.codigoDependencia],
 
       // Radicado asociado
       'fechaRadicacion': [new Date()],
-      'noRadicado': [null],
+      'noRadicado': [this.taskData.variables.numeroRadicado],
 
       // Producir documento
       'tipoComunicacion': [{value: null}, Validators.required],
@@ -78,6 +79,8 @@ export class PDDatosGeneralesComponent implements OnInit{
     this.initForm();
 
     this.listenForErrors();
+
+    console.log(this.taskData);
   }
 
 

@@ -13,10 +13,10 @@ import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
-import {ActivatedRoute, Params} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
+import {PROCESS_DATA} from './providers/ProcessData';
 
 @Component({
     selector: 'produccion-documental-multiple',
@@ -31,7 +31,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     form: FormGroup;
     validations: any = {};
 
-    radicadoAsociado = null;
+    numeroRadicado = null;
 
     dependenciaSelected: ConstanteDTO;
 
@@ -45,7 +45,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     authPayloadUnsubscriber: Subscription;
 
     constructor(private _store: Store<RootState>,
-                private activatedRoute: ActivatedRoute,
                 private _produccionDocumentalApi: ProduccionDocumentalApiService,
                 private _changeDetectorRef: ChangeDetectorRef,
                 private _taskSandBox: TaskSandBox,
@@ -55,6 +54,35 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
             return profile ? {usuario: profile.username, pass: profile.password} : {};
         })).subscribe((value) => {
             this.authPayload = value;
+        });
+    }
+
+    proyectar() {
+        const entradaProceso: any = {
+            idDespliegue: this.task.idDespliegue,
+            idProceso: this.task.idProceso,
+            idTarea: Number.parseInt(this.task.idTarea),
+            instanciaProceso: Number.parseInt(this.task.idInstanciaProceso),
+            estados: ['LISTO'],
+            parametros: {
+                numeroRadicado: this.numeroRadicado,
+                proyectores:    this.listaProyectores,
+                idDespliegue:   PROCESS_DATA.produccion_documental.idDespliegue,
+                idProceso:      PROCESS_DATA.produccion_documental.idProceso
+            }
+        };
+
+        const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
+
+        this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(() => {
+            this.form.disable();
+
+            this._taskSandBox.completeTaskDispatch({
+                idProceso: this.task.idProceso,
+                idDespliegue: this.task.idDespliegue,
+                idTarea: this.task.idTarea,
+                parametros: {}
+            });
         });
     }
 
@@ -124,26 +152,23 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe((params: Params) => {
-            this.radicadoAsociado = params.hasOwnProperty('idTarea') ? {numero: 'RAD123456789'} : null;
-            if (params.hasOwnProperty('variables')) {
-                const obj = params['variables'];
-                console.log('Obj: ' + typeof obj);
-            }
-        });
-
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
         this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
         this._store.select(getActiveTask).take(1).subscribe(activeTask => {
             this.task = activeTask;
+            if (this.task && this.task.variables.numeroRadicado) {
+                this.numeroRadicado = this.task.variables.numeroRadicado;
+            }
+
         });
         this.initForm();
         this.form.reset();
 
         this.listenForErrors();
-        const v = this._taskSandBox.getTaskVariables(this.task);
-        console.log(v);
+        // this._taskSandBox.getTaskVariables(this.task).subscribe((variables) => {
+        //     console.log(variables);
+        // });
     }
 
     listenForErrors() {
@@ -183,19 +208,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     }
 
     save(): Observable<any> {
-        const entradaProceso: any = {
-            idDespliegue: this.task.idDespliegue,
-            idProceso: this.task.idProceso,
-            idTarea: Number.parseInt(this.task.idTarea),
-            instanciaProceso: Number.parseInt(this.task.idInstanciaProceso),
-            estados: ['LISTO'],
-            parametros: {
-                proyectores : this.listaProyectores,
-            }
-        };
-
-        const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
-
-        return this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload);
+       return Observable.of(true).delay(5000);
     }
 }

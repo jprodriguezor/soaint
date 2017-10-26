@@ -1,10 +1,10 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {ConstanteDTO} from "app/domain/constanteDTO";
-import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
-import {PdMessageService} from "../../providers/PdMessageService";
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
+import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
+import {PdMessageService} from '../../providers/PdMessageService';
 
 
 @Component({
@@ -12,25 +12,24 @@ import {PdMessageService} from "../../providers/PdMessageService";
   templateUrl: 'datos-contacto.component.html'
 })
 
-export class PDDatosContactoComponent implements OnInit, OnDestroy{
-
+export class PDDatosContactoComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  tipoComunicacionSelected : ConstanteDTO;
-  tipoPersonaSelected : ConstanteDTO;
-  subscription : Subscription;
+  tipoComunicacionSelected: ConstanteDTO;
+  tipoPersonaSelected: ConstanteDTO;
+  subscription: Subscription;
 
-  sedesAdministrativas$ : Observable<ConstanteDTO[]>;
-  dependencias$ : Observable<ConstanteDTO[]>;
-  tiposPersona$ : Observable<ConstanteDTO[]>;
-  tiposDestinatario$ : Observable<ConstanteDTO[]>;
-  actuanEnCalidad$ : Observable<ConstanteDTO[]>;
-  tiposDocumento$ : Observable<ConstanteDTO[]>;
+  sedesAdministrativas$: Observable<ConstanteDTO[]>;
+  dependencias$: Observable<ConstanteDTO[]>;
+  tiposPersona$: Observable<ConstanteDTO[]>;
+  tiposDestinatario$: Observable<ConstanteDTO[]>;
+  actuanEnCalidad$: Observable<ConstanteDTO[]>;
+  tiposDocumento$: Observable<ConstanteDTO[]>;
 
 
 
   constructor(private formBuilder: FormBuilder,
-              private _produccionDocumentalApi : ProduccionDocumentalApiService,
-              private pdMessageService: PdMessageService){
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
+              private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => { this.tipoComunicacionSelected = tipoComunicacion; });
   }
 
@@ -42,21 +41,21 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy{
 
   initForm() {
       this.form = this.formBuilder.group({
-        //Distribucion
+        // Distribucion
         'fisica': [{value: false}, Validators.required],
         'electronica': [{value: false}, Validators.required],
         'responseToRem': [{value: false}, Validators.required],
 
-        //Datos destinatario
+        // Datos destinatario
         'tipoDestinatarioText': [null],
-        'tipoDestinatarioList': [{value:null}],
+        'tipoDestinatarioList': [{value: null}],
         'tipoDocumentoText': [null],
-        'tipoDocumentoList': [{value:null}],
-        'tipoPersona': [{value:null}],
+        'tipoDocumentoList': [{value: null}],
+        'tipoPersona': [{value: null}],
         'nombreApellidos': [null],
         'nit': [null],
         'razonSocial': [null],
-        'actuaCalidad': [{value:null}],
+        'actuaCalidad': [{value: null}],
         'sedeAdministrativa': [{value: false}],
         'dependencia': [{value: false}],
         'funcionario': [{value: false}]

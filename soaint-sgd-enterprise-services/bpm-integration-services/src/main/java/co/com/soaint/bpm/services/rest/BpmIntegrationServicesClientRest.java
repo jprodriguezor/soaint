@@ -133,6 +133,23 @@ public class BpmIntegrationServicesClientRest {
         return proceso.iniciarProceso(entradaProceso);
     }
 
+
+    /**
+     * Permite abortar un proceso
+     *
+     * @param entradaProceso Objeto que contiene los parametros de entrada para un proceso
+     * @return parametros del proceso abortado
+     * @throws SystemException
+     * @throws BusinessException
+     * @throws MalformedURLException
+     */
+    @POST
+    @Path("/proceso/abortar/")
+    public RespuestaProcesoDTO abortarProceso(EntradaProcesoDTO entradaProceso) throws SystemException {
+        log.info("processing rest request - iniciar proceso");
+        return proceso.abortarProceso(entradaProceso);
+    }
+
     /**
      * Permite iniciar un proceso y asignar una tarea de manera auntomatica a un usuario
      *

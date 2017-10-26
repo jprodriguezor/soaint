@@ -30,6 +30,15 @@ import java.util.List;
         @NamedQuery(name = "DctAsignacion.findByIdeAsignacion", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DctAsignacionDTO " +
                 "(d.ideAsignacion, d.fecAsignacion, d.ideFunci, d.codDependencia, d.codTipAsignacion, d.observaciones, d.codTipCausal, d.codTipProceso)" +
                 "FROM DctAsignacion d " +
+                "WHERE d.ideAsignacion = :IDE_ASIGNACION"),
+        @NamedQuery(name = "DctAsignacion.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DctAsignacionDTO " +
+                "(d.ideAsignacion, d.fecAsignacion, d.ideFunci, d.codDependencia, d.codTipAsignacion, d.observaciones, d.codTipCausal, d.codTipProceso)" +
+                "FROM DctAsignacion d " +
+                "INNER JOIN d.corAgente ca " +
+                "INNER JOIN d.dctAsigUltimoList dau " +
+                "WHERE ca.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "DctAsignacion.asignarToFuncionario", query = "UPDATE DctAsignacion d " +
+                "SET d.ideFunci = :IDE_FUNCI " +
                 "WHERE d.ideAsignacion = :IDE_ASIGNACION")})
 @javax.persistence.TableGenerator(name = "DCT_ASIGNACION_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "DCT_ASIGNACION_SEQ", allocationSize = 1)

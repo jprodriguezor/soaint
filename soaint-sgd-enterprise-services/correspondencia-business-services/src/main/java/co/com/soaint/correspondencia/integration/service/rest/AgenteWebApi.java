@@ -62,17 +62,4 @@ public class AgenteWebApi {
         log.info("processing rest request - redireccionar correspondencia");
         boundary.redireccionarCorrespondencia(redireccion);
     }
-
-    /**
-     *
-     * @param ideAgente
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    @PUT
-    @Path("/agente/actualizar-num-devoluciones/{ide_agente}")
-    public void actualizarNumDevoluciones(@PathParam("ide_agente")final BigInteger ideAgente)throws BusinessException, SystemException{
-        log.info("processing rest request - actualizar control de devoluciones");
-        boundary.actualizarNumDevoluciones(ideAgente);
-    }
 }

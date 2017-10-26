@@ -1,9 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +29,15 @@ public class GestionarAsignacionWS {
     }
 
     /**
-     * @param asignacionesDTO
+     *
+     * @param asignacionTramite
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
     @WebMethod(action = "asignarCorrespondencia", operationName = "asignarCorrespondencia")
-    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacionList") final AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
-        return boundary.asignarCorrespondencia(asignacionesDTO);
+    public AsignacionesDTO asignarCorrespondencia(@WebParam(name = "asignacion_tramite") final AsignacionTramiteDTO asignacionTramite) throws BusinessException, SystemException {
+        return boundary.asignarCorrespondencia(asignacionTramite);
     }
 
     /**
@@ -81,5 +81,10 @@ public class GestionarAsignacionWS {
     @WebMethod(action = "consultarAsignacionReasignarByIdeAgente", operationName = "consultarAsignacionReasignarByIdeAgente")
     public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(@WebParam(name = "ide_agente")final BigInteger ideAgente) throws SystemException {
         return boundary.consultarAsignacionReasignarByIdeAgente(ideAgente);
+    }
+
+    @WebMethod(action = "asignarDocumentoByNroRadicado", operationName = "asignarDocumentoByNroRadicado")
+    public void asignarDocumentoByNroRadicado(@WebParam(name = "correspondencia")final CorrespondenciaDTO correspondencia) throws BusinessException, SystemException {
+        boundary.asignarDocumentoByNroRadicado(correspondencia.getNroRadicado());
     }
 }

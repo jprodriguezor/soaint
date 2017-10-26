@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 // const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
@@ -37,6 +37,7 @@ export const environment = {
   tasksStartProcess: `${host}/proceso-gateway-api/tareas/iniciar/`,
   tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
+  tasksAbortProcess: `${host}/proceso-gateway-api/tareas/abortar/`,
   bis_endpoint: `${host}/bis-gateway-api`,
   tipoComplemento_endpoint: `${host}/tipo-complemento-gateway-api`,
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
@@ -100,7 +101,7 @@ export const process_info = {
   },
   'proceso.produccion-multiples-documentos': {
     displayValue: 'Producción de multiples documentos',
-    show: false
+    show: true
   },
   'proceso.recibir-gestionar-doc': {
     displayValue: 'Recibir y gestionar documento',

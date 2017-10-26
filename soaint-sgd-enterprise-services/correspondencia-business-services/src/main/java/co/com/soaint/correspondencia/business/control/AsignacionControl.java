@@ -4,9 +4,7 @@ import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
 import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -26,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -60,76 +57,50 @@ public class AsignacionControl {
     @Autowired
     FuncionariosControl funcionariosControl;
 
+    @Autowired
+    AgenteControl agenteControl;
+
     @Value("${radicado.cant.horas.para.activar.alerta.vencimiento}")
     private int cantHorasParaActivarAlertaVencimiento;
 
     // ----------------------
 
     /**
-     * @param asignacionesDTO
+     * @param asignacionTramite
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
+    public AsignacionesDTO asignarCorrespondencia(AsignacionTramiteDTO asignacionTramite) throws BusinessException, SystemException {
         AsignacionesDTO asignacionesDTOResult = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
         try {
-            for (AsignacionDTO asignacionDTO : asignacionesDTO.getAsignaciones()) {
-                CorAgente corAgente = CorAgente.newInstance()
-                        .ideAgente(asignacionDTO.getIdeAgente())
-                        .build();
-                CorCorrespondencia corCorrespondencia = CorCorrespondencia.newInstance()
-                        .ideDocumento(asignacionDTO.getIdeDocumento())
-                        .build();
-
+            for (AsignacionDTO asignacionDTO : asignacionTramite.getAsignaciones().getAsignaciones()) {
                 Date fecha = new Date();
-                String usuarioCreo = "0"; //TODO
-                Long usuarioCambio = Long.parseLong("0"); //TODO
 
-                DctAsignacion dctAsignacion = dctAsignacionControl.dctAsignacionTransform(asignacionDTO);
-                DctAsigUltimo dctAsigUltimo;
-
-                List<DctAsigUltimo> dctAsigUltimoList = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                DctAsignacionDTO dctAsignacion = em.createNamedQuery("DctAsignacion.findByIdeAgente", DctAsignacionDTO.class)
                         .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
-                        .getResultList();
+                        .getSingleResult();
 
-                if (!dctAsigUltimoList.isEmpty()) {
-                    dctAsigUltimo = dctAsigUltimoList.get(0);
-                } else {
-                    dctAsigUltimo = DctAsigUltimo.newInstance()
-                            .ideUsuarioCreo(usuarioCreo)
-                            .build();
-                }
-
-                dctAsigUltimo.setDctAsignacion(dctAsignacion);
-                dctAsigUltimo.setCorAgente(corAgente);
-                dctAsigUltimo.setCorCorrespondencia(corCorrespondencia);
-                dctAsigUltimo.setIdeUsuarioCambio(usuarioCambio);
-
-                dctAsignacion.setFecAsignacion(fecha);
-                dctAsignacion.setCorAgente(corAgente);
-                dctAsignacion.setCorCorrespondencia(corCorrespondencia);
-                dctAsignacion.setIdeUsuarioCreo(usuarioCreo);
-
-                em.persist(dctAsignacion);
-                em.merge(dctAsigUltimo);
-                em.flush();
-
-                em.createNamedQuery("CorAgente.updateAsignacion")
-                        .setParameter("FECHA_ASIGNACION", fecha)
-                        .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
-                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                em.createNamedQuery("DctAsignacion.asignarToFuncionario")
+                        .setParameter("IDE_FUNCI", asignacionDTO.getIdeFunci())
+                        .setParameter("IDE_ASIGNACION", dctAsignacion.getIdeAsignacion())
                         .executeUpdate();
 
+                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
+                        .ideAgente(asignacionDTO.getIdeAgente())
+                        .codEstado(EstadoAgenteEnum.ASIGNADO.getCodigo())
+                        .build());
+
                 AsignacionDTO asignacionDTOResult = em.createNamedQuery("DctAsigUltimo.findByIdeAgenteAndCodEstado", AsignacionDTO.class)
-                        .setParameter("IDE_AGENTE", corAgente.getIdeAgente())
+                        .setParameter("IDE_AGENTE", asignacionDTO.getIdeAgente())
                         .setParameter("COD_ESTADO", EstadoAgenteEnum.ASIGNADO.getCodigo())
                         .getSingleResult();
                 asignacionDTOResult.setLoginName(asignacionDTO.getLoginName());
                 asignacionDTOResult.setAlertaVencimiento(calcularAlertaVencimiento(
-                        correspondenciaControl.consultarFechaVencimientoByIdeDocumento(asignacionDTO.getIdeDocumento()),
-                        fecha)
+                                correspondenciaControl.consultarFechaVencimientoByIdeDocumento(asignacionDTO.getIdeDocumento()),
+                                fecha)
                 );
                 asignacionesDTOResult.getAsignaciones().add(asignacionDTOResult);
             }
@@ -208,7 +179,6 @@ public class AsignacionControl {
     }
 
     /**
-     *
      * @param asignacion
      * @throws SystemException
      */
@@ -250,15 +220,110 @@ public class AsignacionControl {
         }
     }
 
-    private String calcularAlertaVencimiento(Date fechaVencimientoTramite, Date fechaAsignacion){
+    private String calcularAlertaVencimiento(Date fechaVencimientoTramite, Date fechaAsignacion) {
         int diferenciaMinutos = (int) ChronoUnit.MINUTES.between(convertToLocalDateTime(fechaAsignacion), convertToLocalDateTime(fechaVencimientoTramite));
 
-        diferenciaMinutos -=  (cantHorasParaActivarAlertaVencimiento * 60);
+        diferenciaMinutos -= (cantHorasParaActivarAlertaVencimiento * 60);
 
-        return  diferenciaMinutos > 0 ? String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m") : "0h0m";
+        return diferenciaMinutos > 0 ? String.valueOf(diferenciaMinutos / 60).concat("h").concat(String.valueOf(diferenciaMinutos % 60)).concat("m") : "0h0m";
     }
 
-    private LocalDateTime convertToLocalDateTime(Date fecha){
+    private LocalDateTime convertToLocalDateTime(Date fecha) {
         return LocalDateTime.ofInstant(fecha.toInstant(), ZoneId.systemDefault());
+    }
+
+    /**
+     * @param agentes
+     * @param ideDocumento
+     * @param codTipoAsignacion
+     * @param ideFuncionario
+     * @return
+     * @throws SystemException
+     * @throws BusinessException
+     */
+    public AsignacionesDTO conformarAsignaciones(List<AgenteDTO> agentes, BigInteger ideDocumento, String codTipoAsignacion,
+                                                 BigInteger ideFuncionario) throws SystemException, BusinessException {
+        AsignacionesDTO asignaciones = AsignacionesDTO.newInstance()
+                .asignaciones(new ArrayList<>())
+                .build();
+        agentes.stream().forEach(agente ->
+                        asignaciones.getAsignaciones().add(transfromAgenteToAsignacion(agente, ideDocumento, codTipoAsignacion, ideFuncionario))
+        );
+        return asignaciones;
+    }
+
+    private AsignacionDTO transfromAgenteToAsignacion(AgenteDTO agente, BigInteger ideDocumento, String codTipoAsignacion, BigInteger ideFuncionario) {
+        return AsignacionDTO.newInstance()
+                .ideAgente(agente.getIdeAgente())
+                .codDependencia(agente.getCodDependencia())
+                .ideDocumento(ideDocumento)
+                .codTipAsignacion(codTipoAsignacion)
+                .ideFunci(ideFuncionario)
+                .build();
+    }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void asignarDocumentoByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByNroRadicado(nroRadicado);
+        List<AgenteDTO> destinatarios = agenteControl.listarDestinatariosByIdeDocumento(correspondencia.getIdeDocumento());
+        AsignacionesDTO asignaciones = conformarAsignaciones(destinatarios, correspondencia.getIdeDocumento(), "CTA",
+                new BigInteger(correspondencia.getCodFuncRadica()));
+        asignarCorrespondencia(AsignacionTramiteDTO.newInstance()
+                .asignaciones(asignaciones)
+                .build());
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @param ideDocumento
+     * @param codDependencia
+     * @param ideFunci
+     * @throws SystemException
+     */
+    public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci)throws SystemException{
+        try{
+            DctAsigUltimo asignacionUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getSingleResult();
+
+            CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
+                    .ideDocumento(ideDocumento)
+                    .build();
+
+            CorAgente agente = CorAgente.newInstance()
+                    .ideAgente(ideAgente)
+                    .build();
+
+            DctAsignacion asignacion = DctAsignacion.newInstance()
+                    .corCorrespondencia(correspondencia)
+                    .ideUsuarioCreo(String.valueOf(ideFunci))
+                    .codDependencia(codDependencia)
+                    .codTipAsignacion("CTA")
+                    .fecAsignacion(new Date())
+                    .corAgente(agente)
+                    .build();
+
+            asignacionUltimo.setNumRedirecciones(asignacionUltimo.getNumRedirecciones() + 1);
+            asignacionUltimo.setIdeUsuarioCambio(ideFunci);
+            asignacionUltimo.setFecCambio(new Date());
+            asignacionUltimo.setDctAsignacion(asignacion);
+            asignacionUltimo.setCorCorrespondencia(correspondencia);
+            asignacionUltimo.setCorAgente(agente);
+
+            em.persist(asignacion);
+            em.merge(asignacionUltimo);
+
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }

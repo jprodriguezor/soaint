@@ -5,6 +5,7 @@ import co.com.soaint.bpm.services.util.EngineConexion;
 import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.bpm.services.util.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.bpm.EstadosEnum;
 import co.com.soaint.foundation.canonical.bpm.RespuestaProcesoDTO;
 import co.com.soaint.foundation.canonical.bpm.RespuestaTareaDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -234,6 +235,40 @@ public class ProcessService implements IProcessServices {
             log.info("fin - listar instancias de usarios de proceso ");
         }
 
+
+    }
+
+    /**
+     * Permite abortar un proceso
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return Los datos del proceso que fue abortdado codigoProceso,nombreProceso,estado y idDespliegue
+     * @throws SystemException
+     */
+    @Override
+    public RespuestaProcesoDTO abortarProceso(EntradaProcesoDTO entrada) throws SystemException {
+        try {
+            log.info("abortar - proceso : {}", entrada);
+            entrada.setUsuario(usuarioAdmin);
+            entrada.setPass(passAdmin);
+            ksession = engine.obtenerEngine(entrada).getKieSession();
+            ksession.abortProcessInstance(entrada.getInstanciaProceso());
+            return RespuestaProcesoDTO.newInstance()
+                    .codigoProceso(String.valueOf(entrada.getInstanciaProceso()))
+                    .nombreProceso(entrada.getIdProceso())
+                    .estado(String.valueOf(EstadosEnum.SALIDO))
+                    .idDespliegue(entrada.getIdDespliegue())
+                    .build();
+
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - abortar - proceso ");
+        }
 
     }
 

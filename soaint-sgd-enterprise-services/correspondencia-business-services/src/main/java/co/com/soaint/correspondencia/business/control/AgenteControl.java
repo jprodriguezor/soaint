@@ -3,10 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -63,7 +60,7 @@ public class AgenteControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AgenteDTO> listarRemitentesByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findRemitentesByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -84,13 +81,52 @@ public class AgenteControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AgenteDTO> listarDestinatarioByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
-                                                                                         String codDependencia,
-                                                                                         String codEstado) throws SystemException {
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
+                                                                                          String codDependencia,
+                                                                                          String codEstado) throws SystemException {
         try {
-            return em.createNamedQuery("CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
                     .setParameter("COD_ESTADO", codEstado)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoAndCodDependencia(BigInteger ideDocumento,
+                                                                              String codDependencia) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodDependencia", AgenteDTO.class)
+                    .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
@@ -167,7 +203,6 @@ public class AgenteControl {
     }
 
     /**
-     *
      * @param redireccion
      * @throws SystemException
      */
@@ -175,13 +210,22 @@ public class AgenteControl {
         try {
             for (AgenteDTO agente : redireccion.getAgentes()) {
                 CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agente.getIdeAgente());
-                String estadoAgente = reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo();
+                String estadoDistribucionFisica = reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null;
+
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
                         .setParameter("COD_SEDE", agente.getCodSede())
                         .setParameter("COD_DEPENDENCIA", agente.getCodDependencia())
                         .setParameter("IDE_AGENTE", agente.getIdeAgente())
-                        .setParameter("COD_ESTADO", estadoAgente)
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())
+                        .setParameter("ESTADO_DISTRIBUCION", estadoDistribucionFisica)
                         .executeUpdate();
+
+                //-----------------Asignacion--------------------------
+
+                asignacionControl.actualizarAsignacion(agente.getIdeAgente(), correspondencia.getIdeDocumento(),
+                        agente.getCodDependencia(), redireccion.getTraza().getIdeFunci());
+
+                //-----------------------------------------------------
 
                 correspondencia.setCodEstado(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo());
                 correspondenciaControl.actualizarEstadoCorrespondencia(correspondencia);
@@ -195,34 +239,6 @@ public class AgenteControl {
                         .build());
 
             }
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
-    }
-
-    /**
-     *
-     * @param ideAgente
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    public void actualizarNumDevoluciones(BigInteger ideAgente)throws BusinessException, SystemException{
-        try {
-            if (!verificarByIdeAgente(ideAgente))
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("agente.agente_not_exist_by_ideAgente")
-                        .buildBusinessException();
-
-            em.createNamedQuery("CorAgente.updateNumDevoluciones")
-                    .setParameter("IDE_AGENTE", ideAgente)
-                    .executeUpdate();
-        } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred", e);
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -262,10 +278,11 @@ public class AgenteControl {
      * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) {
-        return em.createNamedQuery("CorAgente.findByIdeDocumento", AgenteDTO.class)
-                .setParameter("IDE_DOCUMENTO", idDocumento)
-                .getResultList();
+    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) throws SystemException {
+        List<AgenteDTO> agenteDTOList = new ArrayList<>();
+        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        return agenteDTOList;
     }
 
     /**
@@ -275,7 +292,6 @@ public class AgenteControl {
      * @return
      */
     public List<CorAgente> conformarAgentes(List<AgenteDTO> agentes, List<DatosContactoDTO> datosContactoList, String rDistFisica) {
-        long valorInicialRedirecciones = Long.parseLong("0");
         List<CorAgente> corAgentes = new ArrayList<>();
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
@@ -284,14 +300,34 @@ public class AgenteControl {
                 AgenteControl.asignarDatosContacto(corAgente, datosContactoList);
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
-                corAgente.setCodEstado(reqDistFisica.equals(rDistFisica) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
-                corAgente.setNumRedirecciones(valorInicialRedirecciones);
-                corAgente.setNumDevoluciones(valorInicialRedirecciones);
+                corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
+                corAgente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
             }
 
             corAgentes.add(corAgente);
         }
         return corAgentes;
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @param estadoDistribucion
+     * @throws SystemException
+     */
+    public void actualizarEstadoDistribucion(BigInteger ideAgente, String estadoDistribucion)throws SystemException{
+        try {
+            em.createNamedQuery("CorAgente.updateEstadoDistribucion")
+                    .setParameter("ESTADO_DISTRIBUCION", estadoDistribucion)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .executeUpdate();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     /**
@@ -316,8 +352,6 @@ public class AgenteControl {
                 .fecAsignacion(agenteDTO.getFecAsignacion())
                 .codTipAgent(agenteDTO.getCodTipAgent())
                 .indOriginal(agenteDTO.getIndOriginal())
-                .numRedirecciones(agenteDTO.getNumRedirecciones())
-                .numDevoluciones(agenteDTO.getNumDevoluciones())
                 .tvsDatosContactoList(new ArrayList<>())
                 .build();
     }

@@ -1,6 +1,5 @@
 package co.com.foundation.sgd.apigateway.apis;
 
-import co.com.foundation.sgd.apigateway.apis.delegator.ProcesoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import lombok.extern.log4j.Log4j2;
@@ -23,29 +22,25 @@ import java.util.ArrayList;
 public class ProduccionDocumentalGatewayApi {
 
     private static final String CONTENT = "ProduccionDocumentalGatewayApi - [content] : ";
+
     @Autowired
     private ProduccionDocumentalClient client;
-
-
-    @Autowired
-    private ProcesoClient procesoClient;
 
     public ProduccionDocumentalGatewayApi() {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-   /* @POST
+    @POST
     @Path("/ejecutar-proyeccion-multiple")
     //@JWTTokenSecurity
     public Response ejecutarProyeccionMultiple(EntradaProcesoDTO entrada) {
-        log.info("ProduccionDocumentalGatewayApi - [trafic] - get task variables");
         Response response = client.ejecutarProyeccionMultiple(entrada);
         String responseObject = response.readEntity(String.class);
         if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
-        log.info("ENDED");
+        log.info("\n\rENDED");
         return Response.status(response.getStatus()).entity(responseObject).build();
-    }*/
+    }
 }

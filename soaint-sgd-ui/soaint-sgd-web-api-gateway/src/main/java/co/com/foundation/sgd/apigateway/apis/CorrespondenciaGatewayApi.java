@@ -78,9 +78,9 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/asignar")
     @JWTTokenSecurity
-    public Response asignarComunicaciones(AsignacionesDTO asignacionesDTO) {
+    public Response asignarComunicaciones(AsignacionTramiteDTO asignacionTramiteDTO) {
         log.info("CorrespondenciaGatewayApi - [trafic] - assinging Comunicaciones");
-        Response response = client.asignarComunicaciones(asignacionesDTO);
+        Response response = client.asignarComunicaciones(asignacionTramiteDTO);
         AsignacionesDTO responseObject = response.readEntity(AsignacionesDTO.class);
 
 
@@ -152,7 +152,7 @@ public class CorrespondenciaGatewayApi {
             }
         });
 
-        Response response = client.asignarComunicaciones(reasignarComunicacionDTO.getAsignaciones());
+        Response response = client.asignarComunicaciones(AsignacionTramiteDTO.newInstance().asignaciones(reasignarComunicacionDTO.getAsignaciones()).traza(PpdTrazDocumentoDTO.newInstance().ideFunci(reasignarComunicacionDTO.getIdFunc()).build()).build());
 
         AsignacionesDTO asignacionDTOResponse = response.readEntity(AsignacionesDTO.class);
 
