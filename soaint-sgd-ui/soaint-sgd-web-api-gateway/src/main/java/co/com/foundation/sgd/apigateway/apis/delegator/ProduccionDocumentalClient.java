@@ -44,9 +44,9 @@ public class ProduccionDocumentalClient {
                 {
                     put("usuarioProyector",funcionario.getOrDefault("loginName",""));
                     put("numeroRadicado",entrada.getParametros().getOrDefault("numeroRadicado",null));
-                    put("codigoSede",proyector.getOrDefault("sede",sedeAdministrativa.getOrDefault("codigo",null)));
-                    put("codigoDependencia",proyector.getOrDefault("dependencia",dependencia.getOrDefault("codigo",null)));
-                    put("codigoTipoPlantilla",proyector.getOrDefault("tipoPlantilla",tipoPlantilla.getOrDefault("codigo",null)));
+                    put("codigoSede",sedeAdministrativa.getOrDefault("codigo",null));
+                    put("codigoDependencia",dependencia.getOrDefault("codigo",null));
+                    put("codigoTipoPlantilla",tipoPlantilla.getOrDefault("codigo",null));
                 }
             });
             log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
