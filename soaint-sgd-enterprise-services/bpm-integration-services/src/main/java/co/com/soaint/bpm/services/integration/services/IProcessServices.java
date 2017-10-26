@@ -20,6 +20,8 @@ public interface IProcessServices {
 
     RespuestaProcesoDTO iniciarProceso(EntradaProcesoDTO entradaProceso) throws SystemException;
 
+    RespuestaProcesoDTO abortarProceso(EntradaProcesoDTO entradaProceso) throws SystemException;
+
     RespuestaProcesoDTO iniciarProcesoPorTercero(EntradaProcesoDTO entradaProceso) throws SystemException;
 
     RespuestaProcesoDTO iniciarProcesoManual(EntradaProcesoDTO entradaProceso) throws SystemException;
