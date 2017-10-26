@@ -48,15 +48,4 @@ public class GestionarAgenteWS {
     public void redireccionarCorrespondencia(@WebParam(name = "agenteList") final RedireccionDTO redireccion) throws SystemException {
         boundary.redireccionarCorrespondencia(redireccion);
     }
-
-    /**
-     *
-     * @param ideAgente
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    @WebMethod(action = "actualizarNumDevoluciones", operationName = "actualizarNumDevoluciones")
-    public void actualizarNumDevoluciones(@WebParam(name = "ide_agente")final BigInteger ideAgente)throws BusinessException, SystemException{
-        boundary.actualizarNumDevoluciones(ideAgente);
-    }
 }

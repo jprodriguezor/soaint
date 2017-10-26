@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 
 
 @Data
@@ -21,4 +22,6 @@ public class ReasignarComunicacionDTO implements Serializable {
     private String usuario;
 
     private String pass;
+
+    private BigInteger idFunc;
 }

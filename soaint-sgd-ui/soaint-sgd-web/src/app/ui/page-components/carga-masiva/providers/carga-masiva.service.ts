@@ -31,7 +31,9 @@ export class CargaMasivaService {
           }
       }
 
-      return this.http.post(environment.carga_masiva_endpoint_upload, formData, {headers: headers})
+      const endpoint_cargar_fichero = `${environment.carga_masiva_endpoint_upload}/${postData.codigoSede}/${postData.codigoDependencia}`;
+
+      return this.http.post(endpoint_cargar_fichero, formData, {headers: headers})
           .toPromise().then(res => res.json() as ResultUploadDTO)
           .catch(this.handleError);
 

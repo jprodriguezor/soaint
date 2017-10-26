@@ -60,7 +60,7 @@ public class PlanillasWebApi {
      */
     @PUT
     @Path("/planillas")
-    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+    public void cargarPlanilla(PlanillaDTO planilla) throws SystemException {
         log.info("processing rest request - cargar planilla distribucion");
         boundary.cargarPlanilla(planilla);
     }

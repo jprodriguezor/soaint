@@ -26,6 +26,7 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/forkJoin';
 import {tassign} from 'tassign';
+import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -172,7 +173,12 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   assignComunications() {
     this._asignacionSandbox.assignDispatch({
-      asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
+      asignaciones: {
+        asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
+      },
+      traza: {
+        ideFunci: this.funcionarioLog.id
+      }
     });
   }
 
@@ -180,7 +186,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._asignacionSandbox.reassignDispatch(tassign({
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
-      }
+      },
+      idFunc: this.funcionarioLog.id
     }, this.authPayload));
   }
 
@@ -246,7 +253,12 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   processComunications() {
     this._asignacionSandbox.assignDispatch({
-      asignaciones: this.createAsignaciones(this.funcionarioLog.id, this.funcionarioLog.loginName)
+      asignaciones: {
+        asignaciones: this.createAsignaciones(this.funcionarioLog.id, this.funcionarioLog.loginName),
+      },
+      traza: {
+        ideFunci: this.funcionarioLog.id
+      }
     });
   }
 

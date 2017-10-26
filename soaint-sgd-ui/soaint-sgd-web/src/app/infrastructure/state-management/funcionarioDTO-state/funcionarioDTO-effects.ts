@@ -27,20 +27,6 @@ export class Effects {
               private _sandbox: Sandbox) {
   }
 
-  @Effect()
-  load_authenticated: Observable<Action> = this.actions$
-    .ofType(actions.ActionTypes.LOAD)
-    .map(toPayload)
-    .withLatestFrom(this._store$.select((s) => s.auth.profile))
-    .switchMap(
-      ([payload, profile]) => this._sandbox.loadAuthenticatedFuncionario({payload: payload, username: profile.username})
-        .mergeMap((response) => [
-            new actions.LoadSuccessAction(response),
-            new actions.SelectDependencyGroupAction()
-            ]
-          )
-          .catch((error) => Observable.of(new actions.LoadFailAction({error})))
-        );
 
   @Effect()
   loadAll: Observable<Action> = this.actions$

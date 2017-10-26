@@ -1,5 +1,4 @@
 import {Actions, ActionTypes} from './funcionarioDTO-actions';
-import {mockState} from './funcionarioDTO-mockState';
 import {tassign} from 'tassign';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
@@ -30,7 +29,10 @@ export function reducer(state = initialState, action: Actions) {
 
     case ActionTypes.LOAD_SUCCESS: {
       const funcionario = action.payload;
-      return tassign(state, {authenticatedFuncionario: funcionario});
+      return tassign(state, {
+        authenticatedFuncionario: funcionario,
+        selectedDependencyGroup: Array.isArray(funcionario.dependencias)? funcionario.dependencias[0]: null
+      });
     }
 
     case ActionTypes.LOAD_ALL_SUCCESS: {

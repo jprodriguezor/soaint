@@ -15,9 +15,7 @@ import * as processActions from 'app/infrastructure/state-management/procesoDTO-
 import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 import {layoutWidth} from 'app/ui/layout-components/container/admin-layout/redux-state/admin-layout-selectors';
-import {ConstanteDTO} from '../../../../../domain/constanteDTO';
 import {SelectDependencyGroupAction} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
-import {OrganigramaDTO} from '../../../../../domain/organigramaDTO';
 import {
   getSelectedDependencyGroupFuncionario,
   getSuggestionsDependencyGroupFuncionarioArray
@@ -36,8 +34,8 @@ export class AdminLayoutSandbox {
   }
 
   selectorUsername(): Observable<string> {
-    return this._store.select(createSelector((s: State) => s.auth.profile, (profile) => {
-      return profile ? profile.firstName + ' ' + profile.lastName : '';
+    return this._store.select(createSelector((s: State) => s.funcionario.authenticatedFuncionario, (profile) => {
+      return profile ? profile.nombre + ' ' + profile.valApellido1 + ' ' + profile.valApellido2 : '';
     }));
   }
 

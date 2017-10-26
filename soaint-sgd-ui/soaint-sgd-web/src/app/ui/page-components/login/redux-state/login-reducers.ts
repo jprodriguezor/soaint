@@ -28,9 +28,10 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case ActionTypes.LOGIN_SUCCESS:
+
       return tassign(state, {
         token: action.payload.token,
-        profile: action.payload.profile,
+        profile: action.payload.credentials,
         isLoading: false,
         error: null,
         isAuthenticated: true

@@ -27,6 +27,4 @@ public class EntradaProcesoDTO {
     private String pass;
     private Map<String, Object> parametros;
     private List<EstadosEnum> estados;
-
-
 }

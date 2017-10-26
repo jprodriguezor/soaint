@@ -24,7 +24,7 @@ export class Sandbox {
 
     routingStartState = false;
 
-    authPayload: { usuario: string, pass: string } | {};
+    authPayload: { usuario: string, pass: string } | any;
     authPayloadUnsubscriber: Subscription;
 
     constructor(private _store: Store<State>,
@@ -48,11 +48,23 @@ export class Sandbox {
             Object.assign({}, clonePayload, this.authPayload));
     }
 
-    getTaskVariables(payload: any) {
-        const overPayload = this.extractProcessVariablesPayload(payload);
-        return this._api.post(environment.obtenerVariablesTarea,
-            Object.assign({}, overPayload, this.authPayload));
-    }
+  getTaskStats() {
+    const payload = {
+      parametros: {
+        usuario: this.authPayload.usuario
+      }
+    };
+
+    return this._api.post(environment.tasksStats_endpoint,
+      Object.assign({}, payload, this.authPayload));
+  }
+
+
+  getTaskVariables(payload: any) {
+    const overPayload = this.extractProcessVariablesPayload(payload);
+    return this._api.post(environment.obtenerVariablesTarea,
+      Object.assign({}, overPayload, this.authPayload));
+  }
 
     isTaskRoutingStarted() {
         return this.routingStartState;

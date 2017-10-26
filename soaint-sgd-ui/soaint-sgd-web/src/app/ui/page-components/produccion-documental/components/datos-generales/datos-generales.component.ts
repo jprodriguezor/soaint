@@ -1,15 +1,15 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
-import {ConstanteDTO} from "app/domain/constanteDTO";
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
-import {VALIDATION_MESSAGES} from "app/shared/validation-messages";
-import {getAuthenticatedFuncionario} from "app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
-import {FuncionarioDTO} from "app/domain/funcionarioDTO";
-import {PdMessageService} from "../../providers/PdMessageService";
+import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
+import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
+import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
+import {PdMessageService} from '../../providers/PdMessageService';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -29,30 +29,30 @@ export class PDDatosGeneralesComponent implements OnInit{
 
 
   constructor(private _store: Store<State>,
-              private _produccionDocumentalApi : ProduccionDocumentalApiService,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private formBuilder: FormBuilder,
-              private pdMessageService : PdMessageService){}
+              private pdMessageService: PdMessageService) {}
 
 
   initForm() {
     this.form = this.formBuilder.group({
-      //Datos generales
+      // Datos generales
       'usuarioResponsable': [this.usuarioResponsableFullname()],
       'fechaCreacion': [new Date()],
       'sedeAdministrativa': [null],
       'dependencia': [null],
 
-      //Radicado asociado
+      // Radicado asociado
       'fechaRadicacion': [new Date()],
       'noRadicado': [null],
 
-      //Producir documento
+      // Producir documento
       'tipoComunicacion': [{value: null}, Validators.required],
-      'tipoPlantilla': [{value:null}],
+      'tipoPlantilla': [{value: null}],
       'elaborarDocumento': [null],
 
-      //Anexos
-      'soporte':"electronico",
+      // Anexos
+      'soporte': 'electronico',
       'tipoAnexo': [{value: null}],
       'descripcion': [null],
     });
@@ -110,7 +110,7 @@ export class PDDatosGeneralesComponent implements OnInit{
   }
 
   usuarioResponsableFullname () {
-    return (this.funcionarioLog.nombre + " " + this.funcionarioLog.valApellido1 + " " + this.funcionarioLog.valApellido2).trim();
+    return (this.funcionarioLog.nombre + ' ' + this.funcionarioLog.valApellido1 + ' ' + this.funcionarioLog.valApellido2).trim();
   }
 }
 

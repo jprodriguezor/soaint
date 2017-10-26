@@ -58,8 +58,9 @@ public class FuncionarioDTO  implements Serializable {
         this.estado = estado;
 
     }
-
+    /*
     public String getNombreCompleto(){
         return this.getNomFuncionario() + " " + this.getValApellido1() + " " + this.getValApellido2();
     }
+    */
 }

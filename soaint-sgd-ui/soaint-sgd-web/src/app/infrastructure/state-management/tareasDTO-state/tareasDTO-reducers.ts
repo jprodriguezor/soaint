@@ -8,6 +8,7 @@ import {loadDataReducer} from '../../redux-store/redux-util';
 export interface State {
   ids: string[];
   entities: { [idTarea: string]: TareaDTO };
+  stats: {name: string, value: number }[];
   activeTask: TareaDTO;
   nextTask: LoadNextTaskPayload,
 }
@@ -15,6 +16,7 @@ export interface State {
 const initialState: State = {
   ids: [],
   entities: {},
+  stats: [],
   activeTask: null,
   nextTask: null,
 };
@@ -64,6 +66,21 @@ export function reducer(state = initialState, action: Actions) {
         activeTask: task
       });
 
+    }
+
+    case ActionTypes.GET_TASK_STATS_SUCCESS: {
+      const payload = action.payload;
+      if(!Array.isArray(payload)) {
+        return state;
+      }
+      let stats = [];
+      payload.forEach(stat => {
+        stats.push({ name: stat.status, value: stat.cantidad});
+      });
+
+      return tassign(state, {
+        stats: stats
+      });
     }
 
     case ActionTypes.COMPLETE_TASK_SUCCESS: {

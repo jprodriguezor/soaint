@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Created by esanchez on 8/8/2017.
+ * Created by esanchez on 10/26/2017.
  */
 @Getter
 @AllArgsConstructor
-public enum EstadoAgenteEnum {
-    SIN_ASIGNAR("SA", "SIN ASIGNAR"),
-    ASIGNADO("AS", "ASIGNADO"),
-    TRAMITADO("TD", "TRAMITADO");
+public enum EstadoDistribucionFisicaEnum {
+
+    SIN_DISTRIBUIR("SD", "SIN DISTRIBUIR"),
+    EMPLANILLADO("EM", "EMPLANILLADO");
 
     private final String codigo;
     private final String nombre;
