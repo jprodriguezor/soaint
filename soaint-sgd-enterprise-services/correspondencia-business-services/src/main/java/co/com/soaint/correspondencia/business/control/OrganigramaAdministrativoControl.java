@@ -182,7 +182,7 @@ public class OrganigramaAdministrativoControl {
 
         while (!esPadreSegundoNivel) {
             OrganigramaItemDTO padre = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
-                    .setParameter("IDE_ORGA_ADMIN", BigInteger.valueOf(Long.parseLong(organigramaItem.getIdOrgaAdminPadre())))
+                    .setParameter("IDE_ORGA_ADMIN", new BigInteger(organigramaItem.getIdOrgaAdminPadre()))
                     .setHint("org.hibernate.cacheable", true)
                     .getSingleResult();
             if (padre.getIdOrgaAdminPadre() == null) {
