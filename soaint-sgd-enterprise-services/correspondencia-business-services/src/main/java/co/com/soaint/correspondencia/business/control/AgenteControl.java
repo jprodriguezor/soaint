@@ -3,10 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -213,12 +210,14 @@ public class AgenteControl {
         try {
             for (AgenteDTO agente : redireccion.getAgentes()) {
                 CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(agente.getIdeAgente());
-                String estadoAgente = reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo();
+                String estadoDistribucionFisica = reqDistFisica.equals(correspondencia.getReqDistFisica()) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null;
+
                 em.createNamedQuery("CorAgente.redireccionarCorrespondencia")
                         .setParameter("COD_SEDE", agente.getCodSede())
                         .setParameter("COD_DEPENDENCIA", agente.getCodDependencia())
                         .setParameter("IDE_AGENTE", agente.getIdeAgente())
-                        .setParameter("COD_ESTADO", estadoAgente)
+                        .setParameter("COD_ESTADO", EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())
+                        .setParameter("ESTADO_DISTRIBUCION", estadoDistribucionFisica)
                         .executeUpdate();
 
                 //-----------------Asignacion--------------------------
@@ -302,11 +301,33 @@ public class AgenteControl {
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
                 corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
+                corAgente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
             }
 
             corAgentes.add(corAgente);
         }
         return corAgentes;
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @param estadoDistribucion
+     * @throws SystemException
+     */
+    public void actualizarEstadoDistribucion(BigInteger ideAgente, String estadoDistribucion)throws SystemException{
+        try {
+            em.createNamedQuery("CorAgente.updateEstadoDistribucion")
+                    .setParameter("ESTADO_DISTRIBUCION", estadoDistribucion)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .executeUpdate();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 
     /**

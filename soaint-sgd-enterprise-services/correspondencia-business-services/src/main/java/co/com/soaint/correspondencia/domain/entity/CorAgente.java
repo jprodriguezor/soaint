@@ -92,10 +92,13 @@ import java.util.List;
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.redireccionarCorrespondencia", query = "UPDATE CorAgente c " +
                 "SET c.codSede = :COD_SEDE, c.codDependencia = :COD_DEPENDENCIA, " +
-                "c.codEstado = :COD_ESTADO " +
+                "c.codEstado = :COD_ESTADO, c.estadoDistribucion = :ESTADO_DISTRIBUCION " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.updateEstado", query = "UPDATE CorAgente c " +
                 "SET c.codEstado = :COD_ESTADO " +
+                "WHERE c.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "CorAgente.updateEstadoDistribucion", query = "UPDATE CorAgente c " +
+                "SET c.estadoDistribucion = :ESTADO_DISTRIBUCION " +
                 "WHERE c.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "COR_AGENTE_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_AGENTE_SEQ", allocationSize = 1)

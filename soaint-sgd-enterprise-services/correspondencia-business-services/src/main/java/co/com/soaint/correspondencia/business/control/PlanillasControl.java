@@ -3,10 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.FormatoDocEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -100,6 +97,7 @@ public class PlanillasControl {
                 corPlanAgen.setEstado(EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
                 corPlanAgen.setCorPlanillas(corPlanillas);
                 corPlanillas.getCorPlanAgenList().add(corPlanAgen);
+                agenteControl.actualizarEstadoDistribucion(planAgenDTO.getIdeAgente(), EstadoDistribucionFisicaEnum.EMPLANILLADO.getCodigo());
             }
             em.persist(corPlanillas);
             em.flush();
