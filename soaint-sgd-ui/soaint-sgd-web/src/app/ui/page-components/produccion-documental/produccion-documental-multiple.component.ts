@@ -13,7 +13,6 @@ import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
-import {ActivatedRoute, Params} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
@@ -66,7 +65,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
             instanciaProceso: Number.parseInt(this.task.idInstanciaProceso),
             estados: ['LISTO'],
             parametros: {
-                proyectores :   this.listaProyectores,
+                numeroRadicado: this.numeroRadicado,
+                proyectores:    this.listaProyectores,
                 idDespliegue:   PROCESS_DATA.produccion_documental.idDespliegue,
                 idProceso:      PROCESS_DATA.produccion_documental.idProceso
             }

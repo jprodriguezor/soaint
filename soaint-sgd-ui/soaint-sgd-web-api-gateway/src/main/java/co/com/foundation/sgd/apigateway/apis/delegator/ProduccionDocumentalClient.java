@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @ApiDelegator
 @Log4j2
@@ -40,7 +37,18 @@ public class ProduccionDocumentalClient {
         for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
             nuevaEntrada.getParametros().clear();
             LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
-            nuevaEntrada.getParametros().put("usuarioProyector", funcionario.getOrDefault("loginName","").toString());
+            LinkedHashMap sedeAdministrativa = (LinkedHashMap)proyector.get("sede");
+            LinkedHashMap dependencia = (LinkedHashMap)proyector.get("dependencia");
+            LinkedHashMap tipoPlantilla = (LinkedHashMap)proyector.get("tipoPlantilla");
+            nuevaEntrada.getParametros().putAll(new HashMap<String,Object>(){
+                {
+                    put("usuarioProyector",funcionario.getOrDefault("loginName",""));
+                    put("numeroRadicado",entrada.getParametros().getOrDefault("numeroRadicado",null));
+                    put("codigoSede",proyector.getOrDefault("sede",sedeAdministrativa.getOrDefault("codigo",null)));
+                    put("codigoDependencia",proyector.getOrDefault("sede",dependencia.getOrDefault("codigo",null)));
+                    put("codigoTipoPlantilla",proyector.getOrDefault("sede",tipoPlantilla.getOrDefault("codigo",null)));
+                }
+            });
             log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
             procesoClient.iniciar(nuevaEntrada);
         }
