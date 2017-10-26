@@ -1,6 +1,5 @@
-import { Action } from '@ngrx/store';
-import { type } from 'app/infrastructure/redux-store/redux-util';
-import {UserCredentials} from '../models/user-credentials.model';
+import {Action} from '@ngrx/store';
+import {type} from 'app/infrastructure/redux-store/redux-util';
 
 export const ActionTypes = {
   LOGIN: type('[Login] Login Dispatch'),

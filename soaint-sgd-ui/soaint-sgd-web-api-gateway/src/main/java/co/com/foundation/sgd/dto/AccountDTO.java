@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.dto;
 
 import co.com.foundation.sgd.apigateway.webservice.proxy.securitycardbridge.PrincipalContext;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,5 @@ public class AccountDTO {
 
     private String token;
 
-    private PrincipalContext profile;
+    private FuncionarioDTO profile;
 }

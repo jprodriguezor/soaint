@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 // const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
 export const environment = {
   production: false,
