@@ -2,6 +2,9 @@
   <app-task-container>
     <div customActions>
 
+            <button pButton type="button" label="Abortar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
+              (click)="abort()"></button>
+
             <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
               (click)="save().subscribe()"></button>
 

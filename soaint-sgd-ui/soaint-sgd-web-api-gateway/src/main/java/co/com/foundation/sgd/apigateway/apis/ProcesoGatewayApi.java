@@ -34,7 +34,7 @@ public class ProcesoGatewayApi {
 
     @GET
     @Path("/")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response list() {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Procesos");
@@ -51,7 +51,7 @@ public class ProcesoGatewayApi {
      */
     @POST
     @Path("/iniciar")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response iniciarProceso(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - starting Process");
@@ -64,7 +64,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/listar/estados-instancia")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response listTareasIdProceso(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Precess");
@@ -77,7 +77,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/listar/estados")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response listTareas(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
@@ -90,7 +90,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/listar/completadas")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response listTareasCompletadas(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
@@ -126,7 +126,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/iniciar")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response iniciarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - start Task");
@@ -139,7 +139,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/reservar")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response reservarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - reserve Task");
@@ -156,11 +156,24 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/completar")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response completarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - start Task");
         Response response = procesoClient.completarTarea(entrada);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/tareas/abortar")
+    @JWTTokenSecurity
+    public Response abortarTarea(EntradaProcesoDTO entrada) {
+
+        log.info("ProcesoGatewayApi - [trafic] - start Task");
+        Response response = procesoClient.abortarTarea(entrada);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
@@ -182,7 +195,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/obtener-variables")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response obtenerVaraiblesTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - get task variables");

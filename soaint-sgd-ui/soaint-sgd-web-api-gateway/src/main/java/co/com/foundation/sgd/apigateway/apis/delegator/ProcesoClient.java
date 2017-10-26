@@ -112,6 +112,14 @@ public class ProcesoClient {
                 .post(Entity.json(entrada));
     }
 
+    public Response abortarTarea(EntradaProcesoDTO entrada) {
+        log.info("Task - [trafic] - abort Task with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/bpm/proceso/abortar")
+                .request()
+                .post(Entity.json(entrada));
+    }
+
     public Response reasignarTarea(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - reasign Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
