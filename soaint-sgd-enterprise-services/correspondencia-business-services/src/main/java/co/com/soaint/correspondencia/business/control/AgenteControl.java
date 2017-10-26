@@ -85,11 +85,29 @@ public class AgenteControl {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<AgenteDTO> listarDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado(BigInteger ideDocumento,
-                                                                                         String codDependencia,
-                                                                                         String codEstado) throws SystemException {
+                                                                                          String codDependencia,
+                                                                                          String codEstado) throws SystemException {
         try {
             return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado", AgenteDTO.class)
                     .setParameter("COD_ESTADO", codEstado)
+                    .setParameter("COD_DEPENDENCIA", codDependencia)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoAndCodDependencia(BigInteger ideDocumento,
+                                                                              String codDependencia) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodDependencia", AgenteDTO.class)
                     .setParameter("COD_DEPENDENCIA", codDependencia)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
@@ -261,7 +279,7 @@ public class AgenteControl {
      * @return
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento)throws SystemException{
+    public List<AgenteDTO> consltarAgentesByCorrespondencia(BigInteger idDocumento) throws SystemException {
         List<AgenteDTO> agenteDTOList = new ArrayList<>();
         listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
         listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
@@ -283,7 +301,7 @@ public class AgenteControl {
                 AgenteControl.asignarDatosContacto(corAgente, datosContactoList);
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
-                corAgente.setCodEstado(reqDistFisica.equals(rDistFisica) ? EstadoAgenteEnum.DISTRIBUCION.getCodigo() : EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
+                corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
             }
 
             corAgentes.add(corAgente);

@@ -100,10 +100,6 @@ public class PlanillasControl {
                 corPlanAgen.setEstado(EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
                 corPlanAgen.setCorPlanillas(corPlanillas);
                 corPlanillas.getCorPlanAgenList().add(corPlanAgen);
-                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
-                        .ideAgente(planAgenDTO.getIdeAgente())
-                        .codEstado(EstadoAgenteEnum.EMPLANILLADO.getCodigo())
-                        .build());
             }
             em.persist(corPlanillas);
             em.flush();
@@ -121,7 +117,7 @@ public class PlanillasControl {
      * @param planilla
      * @throws SystemException
      */
-    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+    public void cargarPlanilla(PlanillaDTO planilla) throws SystemException {
         try {
             em.createNamedQuery("CorPlanillas.updateReferenciaEcm")
                     .setParameter("IDE_ECM", planilla.getIdeEcm())
@@ -130,8 +126,6 @@ public class PlanillasControl {
             for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 planAgenControl.updateEstadoDistribucion(planAgenDTO);
             }
-        } catch (BusinessException e) {
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
