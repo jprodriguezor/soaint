@@ -21,6 +21,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     task: TareaDTO;
     type = TaskTypes.TASK_FORM;
 
+    @ViewChild('datosGenerales') datosGenerales;
+    @ViewChild('datosContacto') datosContacto;
+    @ViewChild('gestionarProduccion') gestionarProduccion;
+
     tipoComunicacionSelected: ConstanteDTO;
     subscription: Subscription;
 

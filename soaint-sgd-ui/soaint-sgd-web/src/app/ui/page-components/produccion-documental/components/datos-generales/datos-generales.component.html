@@ -21,7 +21,7 @@
                 <label for="fechaCreacion">Fecha y Hora de creación</label>
               </div>
               <div class="ui-g-12">
-                <p-calendar formControlName="fechaCreacion" [showIcon]="true" dateFormat="dd/mm/yy"
+                <p-calendar formControlName="fechaCreacion" [showIcon]="true" readonly dateFormat="dd/mm/yy"
                             id="fechaCreacion"></p-calendar>
               </div>
             </div>
@@ -33,7 +33,7 @@
                 <label for="sedeAdministrativa">Sede</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <input type="text" pInputText id="sedeAdministrativa" formControlName="sedeAdministrativa" />
+                <input type="text" pInputText id="sedeAdministrativa" readonly formControlName="sedeAdministrativa" />
               </div>
             </div>
           </div>
@@ -41,10 +41,10 @@
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="dependenciaGrupo">Dependencia</label>
+                <label for="dependencia">Dependencia</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <input type="text" pInputText id="dependencia" formControlName="dependencia" />
+                <input type="text" pInputText id="dependencia" readonly formControlName="dependencia" />
               </div>
             </div>
           </div>
