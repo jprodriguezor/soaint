@@ -342,7 +342,14 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <!-- Se incluye el plugin para realizar el despliegue en wildfly de este modulo-->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
