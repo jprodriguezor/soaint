@@ -50,13 +50,13 @@ export class ProduccionDocumentalApiService {
       return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
     }
 
-    getTiposPlantilla(payload: {}): ConstanteDTO[] {
-        return JSON.parse(`[
+    getTiposPlantilla(payload: {}): Observable<ConstanteDTO[]> {
+        return Observable.of(JSON.parse(`[
           {"codigo":"TL-DOCOF","nombre":"Oficio","codPadre":"TL-DOC","id":49},
           {"codigo":"TL-DOCA","nombre":"Acta","codPadre":"TL-DOC","id":59},
           {"codigo":"TL-DOCC","nombre":"Circular","codPadre":"TL-DOC","id":60},
           {"codigo":"TL-DOCM","nombre":"Memorando","codPadre":"TL-DOC","id":61}
-        ]`);
+        ]`));
     }
 
 }
