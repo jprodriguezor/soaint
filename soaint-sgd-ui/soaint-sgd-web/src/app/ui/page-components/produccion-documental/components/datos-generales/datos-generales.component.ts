@@ -1,86 +1,123 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
-import {ConstanteDTO} from "app/domain/constanteDTO";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Observable} from 'rxjs/Observable';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {ProduccionDocumentalApiService} from "app/infrastructure/api/produccion-documental.api";
-import {VALIDATION_MESSAGES} from "app/shared/validation-messages";
-import {getAuthenticatedFuncionario} from "app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
-import {FuncionarioDTO} from "app/domain/funcionarioDTO";
-import {PdMessageService} from "../../providers/PdMessageService";
+import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
+import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
+import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
+import {PdMessageService} from '../../providers/PdMessageService';
+import {TareaDTO} from 'app/domain/tareaDTO';
+import {VersionDocumentoDTO} from '../../models/VersionDocumentoDTO';
 
 @Component({
   selector: 'pd-datos-generales',
   templateUrl: './datos-generales.component.html'
 })
 
-export class PDDatosGeneralesComponent implements OnInit{
+export class PDDatosGeneralesComponent implements OnInit {
 
-  form: FormGroup;
-  validations: any = {};
+    form: FormGroup;
 
-  funcionarioLog: FuncionarioDTO;
+    validations: any = {};
+    @Input() taskData: TareaDTO;
 
-  tiposComunicacion$: Observable<ConstanteDTO[]>;
-  tiposAnexo$: Observable<ConstanteDTO[]>;
+    funcionarioLog: FuncionarioDTO;
 
+    tiposComunicacion$: Observable<ConstanteDTO[]>;
+    tiposAnexo$: Observable<ConstanteDTO[]>;
+    tiposPlantilla$: Observable<ConstanteDTO[]>;
 
+    confirmadaGenerarVersion = false;
+    versionesDocumentoVisible = false;
+    nombreVersionDocumento: string;
 
-  constructor(private _store: Store<State>,
-              private _produccionDocumentalApi : ProduccionDocumentalApiService,
+    tipoPlantillaSelected: ConstanteDTO[];
+
+    listaVersionesDocumento: VersionDocumentoDTO[];
+
+    constructor(private _store: Store<State>,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private formBuilder: FormBuilder,
-              private pdMessageService : PdMessageService){}
+              private pdMessageService: PdMessageService) {}
 
 
-  initForm() {
-    this.form = this.formBuilder.group({
-      //Datos generales
-      'usuarioResponsable': [this.usuarioResponsableFullname()],
-      'fechaCreacion': [new Date()],
-      'sedeAdministrativa': [null],
-      'dependencia': [null],
+    initForm() {
+        this.form = this.formBuilder.group({
+            // Datos generales
+            'usuarioResponsable': [this.taskData.variables.usuarioProyector],
+            'fechaCreacion': [new Date()],
+            'sedeAdministrativa': [this.taskData.variables.codigoSede],
+            'dependencia': [this.taskData.variables.codigoDependencia],
 
-      //Radicado asociado
-      'fechaRadicacion': [new Date()],
-      'noRadicado': [null],
+            // Radicado asociado
+            'fechaRadicacion': [new Date()],
+            'noRadicado': [this.taskData.variables.numeroRadicado],
 
-      //Producir documento
-      'tipoComunicacion': [{value: null}, Validators.required],
-      'tipoPlantilla': [{value:null}],
-      'elaborarDocumento': [null],
+            // Producir documento
+            'tipoComunicacion': [{value: null}, Validators.required],
+            'tipoPlantilla': [{value: null}],
+            'elaborarDocumento': [null],
 
-      //Anexos
-      'soporte':"electronico",
-      'tipoAnexo': [{value: null}],
-      'descripcion': [null],
-    });
-  }
-
-
-  tipoComunicacionChange(event) {
-    this.pdMessageService.sendMessage(event.value);
-  }
+            // Anexos
+            'soporte': 'electronico',
+            'tipoAnexo': [{value: null}],
+            'descripcion': [null],
+        });
+    }
 
 
+    tipoComunicacionChange(event) {
+        this.pdMessageService.sendMessage(event.value);
+    }
+
+    tipoPlanillaChange(event) {
+        this.tipoPlantillaSelected = event.value;
+        this.nombreVersionDocumento = event.value.nombre + '_';
+    }
+
+    hideVersionesDocumentoDialog() {
+        this.versionesDocumentoVisible = false;
+        this.confirmadaGenerarVersion = false;
+    }
+
+    showVersionesDocumentoDialog() {
+        this.versionesDocumentoVisible = true;
+    }
+
+    confirmarGenerarVersion() {
+        this.confirmadaGenerarVersion = true;
+    }
+
+    agregarVersion() {
+        const versiones = this.listaVersionesDocumento;
+        versiones.push({
+            tipo: 'PDF',
+            nombre: this.nombreVersionDocumento,
+            size: (Math.random() * (100000 - 1) + 1)
+        });
+        this.listaVersionesDocumento = [...versiones];
+    }
 
 
-  ngOnInit(): void {
-    this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
+    ngOnInit(): void {
+        this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+            this.funcionarioLog = funcionario;
+        });
 
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
-    this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
-
-
-    this.initForm();
-
-    this.listenForErrors();
-  }
+        this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
+        this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
+        this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
 
 
+        this.initForm();
+
+        this.listenForErrors();
+
+        console.log(this.taskData);
+    }
 
 
   listenForErrors() {
@@ -107,10 +144,6 @@ export class PDDatosGeneralesComponent implements OnInit{
         delete this.validations[control];
       }
     });
-  }
-
-  usuarioResponsableFullname () {
-    return (this.funcionarioLog.nombre + " " + this.funcionarioLog.valApellido1 + " " + this.funcionarioLog.valApellido2).trim();
   }
 }
 

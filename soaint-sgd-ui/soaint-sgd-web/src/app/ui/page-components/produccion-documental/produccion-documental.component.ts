@@ -1,8 +1,15 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {createSelector} from 'reselect';
+import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {PdMessageService} from './providers/PdMessageService';
 import {Subscription} from 'rxjs/Subscription';
-import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {TaskForm} from 'app/shared/interfaces/task-form.interface';
+import {Observable} from 'rxjs/Observable';
+import {TareaDTO} from 'app/domain/tareaDTO';
+import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 
 @Component({
   selector: 'produccion-documental',
@@ -10,7 +17,13 @@ import {ConstanteDTO} from '../../../domain/constanteDTO';
   styleUrls: ['produccion-documental.component.css'],
 })
 
-export class ProduccionDocumentalComponent implements OnInit{
+export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskForm {
+    task: TareaDTO;
+    type = TaskTypes.TASK_FORM;
+
+    @ViewChild('datosGenerales') datosGenerales;
+    @ViewChild('datosContacto') datosContacto;
+    @ViewChild('gestionarProduccion') gestionarProduccion;
 
     tipoComunicacionSelected: ConstanteDTO;
     subscription: Subscription;
@@ -19,9 +32,17 @@ export class ProduccionDocumentalComponent implements OnInit{
     aprobar = false;
     tabIndex = 0;
 
-    constructor(private activatedRoute: ActivatedRoute,
+    authPayload: { usuario: string, pass: string } |  {};
+    authPayloadUnsubscriber: Subscription;
+
+    constructor(private _store: Store<RootState>,
                 private pdMessageService: PdMessageService) {
         this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => { this.tipoComunicacionSelected = tipoComunicacion; });
+        this.authPayloadUnsubscriber = this._store.select(createSelector((s: RootState) => s.auth.profile, (profile) => {
+            return profile ? {usuario: profile.username, pass: profile.password} : {};
+        })).subscribe((value) => {
+            this.authPayload = value;
+        });
     }
 
 
@@ -30,11 +51,15 @@ export class ProduccionDocumentalComponent implements OnInit{
     }
 
     ngOnInit(): void {
-
-        this.activatedRoute.params.subscribe((params: Params) => {
-            const action = params.hasOwnProperty('action') ? params['action '] : '';
-            this.revisar = (action === 'revisar');
-            this.aprobar = (action === 'aprobar');
+        this._store.select(getActiveTask).take(1).subscribe(activeTask => {
+            this.task = activeTask;
         });
+    }
+
+    ngOnDestroy(): void {
+    }
+
+    save(): Observable<any> {
+        return Observable.of(true).delay(5000);
     }
 }

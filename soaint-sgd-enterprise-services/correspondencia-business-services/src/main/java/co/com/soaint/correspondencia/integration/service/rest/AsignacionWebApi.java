@@ -1,9 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.FuncAsigDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import io.swagger.annotations.Api;
@@ -46,10 +44,10 @@ public class AsignacionWebApi {
      * @throws SystemException
      */
     @POST
-    @Path("/asignacion")
-    public AsignacionesDTO asignarCorrespondencia(AsignacionesDTO asignacionesDTO) throws BusinessException, SystemException {
-        log.info("processing rest request - asignar correspondencia");
-        return boundary.asignarCorrespondencia(asignacionesDTO);
+    @Path("/asignacion/asignar-funcionario")
+    public AsignacionesDTO asignarCorrespondencia(AsignacionTramiteDTO asignacionTramite) throws BusinessException, SystemException {
+        log.info("processing rest request - asignar tramite a funcionario");
+        return boundary.asignarCorrespondencia(asignacionTramite);
     }
 
     /**
@@ -100,6 +98,20 @@ public class AsignacionWebApi {
     @GET
     @Path("/asignacion/re-asignacion/{ide_agente}")
     public FuncAsigDTO consultarAsignacionReasignarByIdeAgente(@PathParam("ide_agente")final BigInteger ideAgente) throws SystemException {
+        log.info("processing rest request - re asignar tramite");
         return boundary.consultarAsignacionReasignarByIdeAgente(ideAgente);
+    }
+
+    /**
+     *
+     * @param correspondencia
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @POST
+    @Path("/asignacion/asignar-documento")
+    public void asignarDocumentoByNroRadicado(CorrespondenciaDTO correspondencia) throws BusinessException, SystemException {
+        log.info("processing rest request - asignar correspondencia by nroRadicado");
+        boundary.asignarDocumentoByNroRadicado(correspondencia.getNroRadicado());
     }
 }

@@ -21,7 +21,7 @@
                 <label for="fechaCreacion">Fecha y Hora de creación</label>
               </div>
               <div class="ui-g-12">
-                <p-calendar formControlName="fechaCreacion" [showIcon]="true" dateFormat="dd/mm/yy"
+                <p-calendar formControlName="fechaCreacion" [showIcon]="true" readonly dateFormat="dd/mm/yy"
                             id="fechaCreacion"></p-calendar>
               </div>
             </div>
@@ -33,7 +33,7 @@
                 <label for="sedeAdministrativa">Sede</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <input type="text" pInputText id="sedeAdministrativa" formControlName="sedeAdministrativa" />
+                <input type="text" pInputText id="sedeAdministrativa" readonly formControlName="sedeAdministrativa" />
               </div>
             </div>
           </div>
@@ -41,10 +41,10 @@
           <div class="ui-sm-12 ui-g-3 ui-lg-3">
             <div class="ui-g form-group">
               <div class="ui-g-12">
-                <label for="dependenciaGrupo">Dependencia</label>
+                <label for="dependencia">Dependencia</label>
               </div>
               <div class="ui-g-12 md-dropdownfield">
-                <input type="text" pInputText id="dependencia" formControlName="dependencia" />
+                <input type="text" pInputText id="dependencia" readonly formControlName="dependencia" />
               </div>
             </div>
           </div>
@@ -116,10 +116,13 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
 
-            <p-dropdown id="tipoPlantilla"
+            <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem"
+                        id="tipoPlantilla"
                         formControlName="tipoPlantilla"
                         placeholder="Seleccione"
                         [autoWidth]="false"
+                        (onBlur)="listenForBlurEvents('tipoPlantilla')"
+                        (onChange)="tipoPlanillaChange($event)"
             >
             </p-dropdown>
           </div>
@@ -156,6 +159,8 @@
           <div class="ui-g-12">
             <button pButton type="button" label="Versionar"
                     style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    [disabled]="!tipoPlantillaSelected"
+                    (click)="showVersionesDocumentoDialog()"
             ></button>
           </div>
         </div>
@@ -283,3 +288,39 @@
   </p-panel>
 
 </form>
+
+<p-dialog [visible]="versionesDocumentoVisible" modal="modal" [responsive]="true" positionTop="20"
+          [contentStyle]="{'overflow':'auto','max-height':'90%'}"
+          (onHide)="hideVersionesDocumentoDialog()" [width]="1000">
+
+    <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <h4 style="text-align:center;">¿Está seguro de generar versión del documento?</h4>
+        </div>
+        <div class="ui-sm-12 ui-g-12 ui-lg-12 text-right">
+            <button pButton type="button" label="Si"
+                    style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    [disabled]="confirmadaGenerarVersion"
+                    (click)="confirmarGenerarVersion()"
+            ></button>
+            <button pButton type="button" label="No"
+                    style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    (click)="hideVersionesDocumentoDialog()"
+            ></button>
+        </div>
+    </div>
+    <br/><br/>
+    <div class="ui-g ui-fluid" *ngIf="confirmadaGenerarVersion">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <input type="text" pInputText [ngModel]="nombreVersionDocumento" />
+        </div>
+        <br/>
+        <div class="ui-sm-12 ui-g-12 ui-lg-12 text-right">
+          <button pButton type="button" label="Guardar"
+                  style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                  (click)="agregarVersion()"
+          ></button>
+        </div>
+    </div>
+
+</p-dialog>

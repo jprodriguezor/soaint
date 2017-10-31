@@ -3,10 +3,7 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.FormatoDocEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -100,10 +97,7 @@ public class PlanillasControl {
                 corPlanAgen.setEstado(EstadoPlanillaEnum.DISTRIBUCION.getCodigo());
                 corPlanAgen.setCorPlanillas(corPlanillas);
                 corPlanillas.getCorPlanAgenList().add(corPlanAgen);
-                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
-                        .ideAgente(planAgenDTO.getIdeAgente())
-                        .codEstado(EstadoAgenteEnum.EMPLANILLADO.getCodigo())
-                        .build());
+                agenteControl.actualizarEstadoDistribucion(planAgenDTO.getIdeAgente(), EstadoDistribucionFisicaEnum.EMPLANILLADO.getCodigo());
             }
             em.persist(corPlanillas);
             em.flush();
@@ -121,7 +115,7 @@ public class PlanillasControl {
      * @param planilla
      * @throws SystemException
      */
-    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+    public void cargarPlanilla(PlanillaDTO planilla) throws SystemException {
         try {
             em.createNamedQuery("CorPlanillas.updateReferenciaEcm")
                     .setParameter("IDE_ECM", planilla.getIdeEcm())
@@ -130,8 +124,6 @@ public class PlanillasControl {
             for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 planAgenControl.updateEstadoDistribucion(planAgenDTO);
             }
-        } catch (BusinessException e) {
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -247,7 +239,7 @@ public class PlanillasControl {
         DependenciaDTO dependenciaOrigen = dependenciaControl.listarDependenciaByCodigo(planilla.getCodDependenciaOrigen());
         BufferedImage image = ImageIO.read(new FileImageInputStream(new File(reportsPath + reportsLogo)));
         //TODO: puede ser que el primer o segundo apellido venga vacio, revisar como proceder.
-        FuncionarioDTO funcionario = funcionariosControl.consultarFuncionarioByIdeFunci(BigInteger.valueOf(Long.parseLong(planilla.getCodFuncGenera())));
+        FuncionarioDTO funcionario = funcionariosControl.consultarFuncionarioByIdeFunci(new BigInteger(planilla.getCodFuncGenera()));
         String nombreCompleto = funcionario.getNomFuncionario() + " " + funcionario.getValApellido1() + " " + funcionario.getValApellido2();
 
         Map<String, Object> parameters = new HashMap<>();

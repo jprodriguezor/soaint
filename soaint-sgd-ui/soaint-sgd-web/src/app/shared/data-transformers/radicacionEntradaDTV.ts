@@ -16,23 +16,23 @@ export class RadicacionEntradaDTV {
 
   }
 
-  getDatosRemitente():Observable<AgentDTO> {
+  getDatosRemitente(): Observable<AgentDTO> {
     return Observable.of(this.source.agenteList.find(value => value.codTipAgent === 'TP-AGEE'));
   }
 
-  getDatosContactos():Observable<ContactoDTO[]> {
+  getDatosContactos(): Observable<ContactoDTO[]> {
     return Observable.of(this.source.datosContactoList);
   }
 
-  getDatosDocumento():Observable<DocumentoDTO[]> {
+  getDatosDocumento(): Observable<DocumentoDTO[]> {
     return Observable.of(this.source.ppdDocumentoList);
   }
 
-  getDatosDestinatarios():Observable<AgentDTO[]> {
+  getDatosDestinatarios(): Observable<AgentDTO[]> {
     return Observable.of(this.source.agenteList.filter(value => value.codTipAgent === 'TP-AGEI'));
   }
 
-  getDatosDestinatarioInmediate():AgentDTO[] {
+  getDatosDestinatarioInmediate(): AgentDTO[] {
     return this.source.agenteList.filter(value => value.codTipAgent === 'TP-AGEI');
   }
 
@@ -69,28 +69,28 @@ export class RadicacionEntradaDTV {
   }
 
   getDatosContactoFormList() {
-    let contactos = [];
+    const contactos = [];
     this.source.datosContactoList.forEach(contacto => {
-        contactos.push({
-          tipoVia: { codigo: contacto.codTipoVia} ,
-          noViaPrincipal: contacto.nroViaGeneradora,
-          prefijoCuadrante: {codigo: contacto.codPrefijoCuadrant},
-          bis: null,
-          orientacion: null ,
-          noVia: contacto.codTipoVia,
-          prefijoCuadrante_se:null,
-          placa: contacto.nroPlaca,
-          orientacion_se: null,
-          complementoTipo: null,
-          complementoAdicional:null,
-          celular: contacto.celular,
-          numeroTel: contacto.telFijo,
-          correoEle: contacto.corrElectronico,
-          pais: { codigo: contacto.codPais },
-          departamento: { codigo: contacto.codDepartamento},
-          municipio:{ codigo: contacto.codMunicipio},
-          principal: contacto.principal === DATOS_CONTACTO_PRINCIPAL ? true : false,
-        });
+      contactos.push({
+        tipoVia: {codigo: contacto.codTipoVia},
+        noViaPrincipal: contacto.nroViaGeneradora,
+        prefijoCuadrante: {codigo: contacto.codPrefijoCuadrant},
+        bis: null,
+        orientacion: null,
+        noVia: contacto.codTipoVia,
+        prefijoCuadrante_se: null,
+        placa: contacto.nroPlaca,
+        orientacion_se: null,
+        complementoTipo: null,
+        complementoAdicional: null,
+        celular: contacto.celular,
+        numeroTel: contacto.telFijo,
+        correoEle: contacto.corrElectronico,
+        pais: {codigo: contacto.codPais},
+        departamento: {codigo: contacto.codDepartamento},
+        municipio: {codigo: contacto.codMunicipio},
+        principal: contacto.principal === DATOS_CONTACTO_PRINCIPAL ? true : false,
+      });
     });
 
     return contactos;
@@ -99,7 +99,7 @@ export class RadicacionEntradaDTV {
   getRadicadosReferidosFormList() {
     const referidos = [];
     this.source.referidoList.forEach(referido => {
-        referidos.push({nombre: referido.nroRadRef});
+      referidos.push({nombre: referido.nroRadRef});
     });
 
     return referidos;
@@ -107,7 +107,7 @@ export class RadicacionEntradaDTV {
 
   getAnexosFormList() {
     const anexos = [];
-    this.source.anexoList.forEach((anexo: AnexoDTO)  => {
+    this.source.anexoList.forEach((anexo: AnexoDTO) => {
       anexos.push({
         tipoAnexo: {codigo: anexo.codAnexo},
         descripcion: anexo.descripcion
@@ -126,23 +126,23 @@ export class RadicacionEntradaDTV {
       razonSocial: null,
       nombreApellidos: null,
       nroDocumentoIdentidad: null,
-      sedeAdministrativa: { codigo: remitente.codSede },
-      dependenciaGrupo: { codigo: remitente.codDependencia}
+      sedeAdministrativa: {codigo: remitente.codSede},
+      dependenciaGrupo: {codigo: remitente.codDependencia}
     }
   }
 
   getRemitenteExternoForm(remitente: AgentDTO) {
-      return {
-        tipoPersona: { codigo: remitente.codTipoPers },
-        nit: remitente.nit,
-        actuaCalidad: { codigo: remitente.codEnCalidad },
-        tipoDocumento: { codigo: remitente.codTipDocIdent },
-        razonSocial: remitente.razonSocial,
-        nombreApellidos: remitente.nombre,
-        nroDocumentoIdentidad: remitente.nroDocuIdentidad,
-        sedeAdministrativa: null,
-        dependenciaGrupo: null
-      }
+    return {
+      tipoPersona: {codigo: remitente.codTipoPers},
+      nit: remitente.nit,
+      actuaCalidad: {codigo: remitente.codEnCalidad},
+      tipoDocumento: {codigo: remitente.codTipDocIdent},
+      razonSocial: remitente.razonSocial,
+      nombreApellidos: remitente.nombre,
+      nroDocumentoIdentidad: remitente.nroDocuIdentidad,
+      sedeAdministrativa: null,
+      dependenciaGrupo: null
+    }
   }
 
   getRemitenteForm() {
@@ -160,9 +160,9 @@ export class RadicacionEntradaDTV {
     const destinatarios = [];
     this.source.agenteList.filter((agente: AgentDTO) => agente.codTipAgent === TIPO_AGENTE_DESTINATARIO).forEach((destinatario: AgentDTO) => {
       destinatarios.push({
-        tipoDestinatario: { codigo: destinatario.indOriginal },
-        sedeAdministrativa:  { codigo: destinatario.codSede },
-        dependenciaGrupo:  { codigo: destinatario.codDependencia}
+        tipoDestinatario: {codigo: destinatario.indOriginal},
+        sedeAdministrativa: {codigo: destinatario.codSede},
+        dependenciaGrupo: {codigo: destinatario.codDependencia}
       });
     });
     return destinatarios;

@@ -6,22 +6,12 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {
-  getArrayData as getFuncionarioArrayData,
-  getAuthenticatedFuncionario,
-  getSelectedDependencyGroupFuncionario
-} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as DistribucionArrayData} from '../../../infrastructure/state-management/distrubucionFisicaDTO-state/distrubucionFisicaDTO-selectors';
 import {Sandbox as FuncionarioSandBox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {AgentDTO} from '../../../domain/agentDTO';
-import {
-  getAgragarObservacionesDialogVisible,
-  getDetailsDialogVisible,
-  getJustificationDialogVisible,
-  getRejectDialogVisible
-} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-selectors';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {getTipologiaDocumentalArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipologia-documental-selectors';
@@ -32,7 +22,6 @@ import {PlanillasApiService} from '../../../infrastructure/api/planillas.api';
 import {PlanillaDTO} from '../../../domain/PlanillaDTO';
 import {PlanAgentesDTO} from '../../../domain/PlanAgentesDTO';
 import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
-import {escape} from 'querystring';
 import {Sandbox as ProcessSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
 
 @Component({
@@ -84,6 +73,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   @ViewChild('popupReject') popupReject;
 
   @ViewChild('detallesView') detallesView;
+
+  downloadName: string;
 
   constructor(private _store: Store<RootState>,
               private _distribucionFisicaApi: DistribucionFisicaSandbox,
@@ -194,10 +185,10 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   generarDatosExportar(): PlanillaDTO {
-    let agensDTO: PlanAgenDTO[] = [];
+    const agensDTO: PlanAgenDTO[] = [];
 
     this.selectedComunications.forEach((element) => {
-      let agenDTO: PlanAgenDTO = {
+      const agenDTO: PlanAgenDTO = {
         idePlanAgen: null,
         estado: null,
         varPeso: null,
@@ -226,11 +217,11 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       agensDTO.push(agenDTO);
     });
 
-    let agentes: PlanAgentesDTO = {
+    const agentes: PlanAgentesDTO = {
       pagente: agensDTO
     };
 
-    let planilla: PlanillaDTO = {
+    const planilla: PlanillaDTO = {
       idePlanilla: null,
       nroPlanilla: null,
       fecGeneracion: null,
@@ -259,15 +250,14 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   exportarPlanilla(formato) {
-    //104000000000005
     this._planillaService.exportarPlanilla({
       nroPlanilla: this.planillaGenerada.nroPlanilla,
       // nroPlanilla: '104000000000005',
       formato: formato
     }).subscribe((result) => {
 
-      let pdf = 'data:application/octet-stream;base64,' + result.base64EncodedFile;
-      let dlnk: any = document.getElementById('dwnldLnk');
+      const pdf = 'data:application/octet-stream;base64,' + result.base64EncodedFile;
+      const dlnk: any = document.getElementById('dwnldLnk');
       dlnk.href = pdf;
       dlnk.download = 'planilla.' + formato.toLowerCase();
       dlnk.click();
@@ -279,7 +269,5 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   hideNumeroPlanillaDialog() {
     this.numeroPlanillaDialogVisible = false;
   }
-
-  downloadName: string;
 
 }

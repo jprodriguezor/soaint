@@ -47,7 +47,7 @@ public class GestionarPlanillas {
      * @throws BusinessException
      * @throws SystemException
      */
-    public void cargarPlanilla(PlanillaDTO planilla) throws BusinessException, SystemException {
+    public void cargarPlanilla(PlanillaDTO planilla) throws SystemException {
         control.cargarPlanilla(planilla);
     }
 

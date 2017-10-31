@@ -56,7 +56,7 @@ public class GestionarOrganigramaAdministrativoWS {
      */
     @WebMethod(action = "listarElementosDeNivelInferior", operationName = "listarElementosDeNivelInferior")
     public OrganigramaAdministrativoDTO listarElementosDeNivelInferior(@WebParam(name = "id_padre") final String idPadre) throws SystemException {
-        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(BigInteger.valueOf(Long.parseLong(idPadre)))).build();
+        return OrganigramaAdministrativoDTO.newInstance().organigrama(boundary.listarElementosDeNivelInferior(new BigInteger(idPadre))).build();
     }
 
     /**
@@ -67,6 +67,6 @@ public class GestionarOrganigramaAdministrativoWS {
      */
     @WebMethod(action = "consultarPadreDeSegundoNivel", operationName = "consultarPadreDeSegundoNivel")
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(@WebParam(name = "id_hijo") final String idHijo) throws BusinessException, SystemException {
-        return boundary.consultarPadreDeSegundoNivel(BigInteger.valueOf(Long.parseLong(idHijo)));
+        return boundary.consultarPadreDeSegundoNivel(new BigInteger(idHijo));
     }
 }

@@ -14,4 +14,5 @@ export interface TareaDTO {
   idInstanciaProceso: string;
   idDespliegue: string;
   idParent: number;
+  variables: any
 }

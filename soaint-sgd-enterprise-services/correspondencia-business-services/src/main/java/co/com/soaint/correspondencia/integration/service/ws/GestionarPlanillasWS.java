@@ -47,7 +47,7 @@ public class GestionarPlanillasWS {
      * @throws SystemException
      */
     @WebMethod(action = "cargarPlanilla", operationName = "cargarPlanilla")
-    public void cargarPlanilla(@WebParam(name = "planilla")final PlanillaDTO planilla) throws BusinessException, SystemException {
+    public void cargarPlanilla(@WebParam(name = "planilla")final PlanillaDTO planilla) throws SystemException {
         boundary.cargarPlanilla(planilla);
     }
 

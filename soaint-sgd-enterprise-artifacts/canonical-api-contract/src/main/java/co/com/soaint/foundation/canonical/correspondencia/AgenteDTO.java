@@ -47,4 +47,45 @@ public class AgenteDTO implements Serializable {
     private Long numRedirecciones;
     private Long numDevoluciones;
 
+    /**
+     *
+     * @param ideAgente
+     * @param codTipoRemite
+     * @param codTipoPers
+     * @param nombre
+     * @param razonSocial
+     * @param nit
+     * @param codCortesia
+     * @param codEnCalidad
+     * @param codTipDocIdent
+     * @param nroDocuIdentidad
+     * @param codSede
+     * @param codDependencia
+     * @param codEstado
+     * @param fecAsignacion
+     * @param codTipAgent
+     * @param indOriginal
+     */
+    public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
+                     String nit, String codCortesia, String codEnCalidad, String codTipDocIdent, String nroDocuIdentidad,
+                     String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
+                     String indOriginal){
+        this.ideAgente = ideAgente;
+        this.codTipoRemite = codTipoRemite;
+        this.codTipoPers = codTipoPers;
+        this.nombre = nombre;
+        this.razonSocial = razonSocial;
+        this.nit = nit;
+        this.codCortesia = codCortesia;
+        this.codEnCalidad = codEnCalidad;
+        this.codTipDocIdent = codTipDocIdent;
+        this.nroDocuIdentidad = nroDocuIdentidad;
+        this.codSede = codSede;
+        this.codDependencia = codDependencia;
+        this.codEstado = codEstado;
+        this.fecAsignacion = fecAsignacion;
+        this.codTipAgent = codTipAgent;
+        this.indOriginal = indOriginal;
+    }
+
 }

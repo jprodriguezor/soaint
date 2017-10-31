@@ -88,7 +88,7 @@ public class PlanAgenControl {
      * @param planAgen
      * @throws SystemException
      */
-    public void updateEstadoDistribucion(PlanAgenDTO planAgen) throws BusinessException, SystemException {
+    public void updateEstadoDistribucion(PlanAgenDTO planAgen) throws SystemException {
         try {
             em.createNamedQuery("CorPlanAgen.updateEstadoDistribucion")
                     .setParameter("IDE_PLAN_AGEN", planAgen.getIdePlanAgen())
@@ -103,13 +103,6 @@ public class PlanAgenControl {
                     .setParameter("COD_CAU_DEVO", planAgen.getCodCauDevo())
                     .setParameter("FEC_CARGUE_PLA", planAgen.getFecCarguePla())
                     .executeUpdate();
-            if (EstadoPlanillaEnum.ENTREGADO.getCodigo().equals(planAgen.getEstado()))
-                agenteControl.actualizarEstadoAgente(AgenteDTO.newInstance()
-                        .ideAgente(planAgen.getIdeAgente())
-                        .codEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo())
-                        .build());
-        } catch (BusinessException e) {
-            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
