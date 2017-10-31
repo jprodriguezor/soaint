@@ -1,3 +1,5 @@
 export interface RolDTO {
-  rol: string
+    id?: number,
+    rol: string
+    nombre?: string
 }

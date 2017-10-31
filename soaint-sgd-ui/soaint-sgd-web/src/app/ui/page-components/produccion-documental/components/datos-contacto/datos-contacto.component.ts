@@ -18,6 +18,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tipoPersonaSelected: ConstanteDTO;
   subscription: Subscription;
 
+  responseToRem = true;
+  distFisica = false;
+  distElectronica = false;
+
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
   dependencias$: Observable<ConstanteDTO[]>;
   tiposPersona$: Observable<ConstanteDTO[]>;
@@ -41,11 +45,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   initForm() {
       this.form = this.formBuilder.group({
-        // Distribucion
-        'fisica': [{value: false}, Validators.required],
-        'electronica': [{value: false}, Validators.required],
-        'responseToRem': [{value: false}, Validators.required],
-
         // Datos destinatario
         'tipoDestinatarioText': [null],
         'tipoDestinatarioList': [{value: null}],
