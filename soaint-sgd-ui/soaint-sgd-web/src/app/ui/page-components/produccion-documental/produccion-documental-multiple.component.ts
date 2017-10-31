@@ -39,7 +39,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     sedesAdministrativas$: Observable<ConstanteDTO[]>;
     dependencias$: Observable<ConstanteDTO[]>;
     funcionarios$: Observable<FuncionarioDTO[]>;
-    tiposPlantilla: ConstanteDTO[];
+    tiposPlantilla$: Observable<ConstanteDTO[]>;
 
     authPayload: { usuario: string, pass: string } |  {};
     authPayloadUnsubscriber: Subscription;
@@ -154,7 +154,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     ngOnInit(): void {
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
-        this.tiposPlantilla = this._produccionDocumentalApi.getTiposPlantilla({});
+        this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
         this._store.select(getActiveTask).take(1).subscribe(activeTask => {
             this.task = activeTask;
             if (this.task && this.task.variables.numeroRadicado) {
