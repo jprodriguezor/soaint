@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {createSelector} from 'reselect';
@@ -20,6 +20,7 @@ import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
 export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskForm {
     task: TareaDTO;
     type = TaskTypes.TASK_FORM;
+    requiereRevision = true;
 
     @ViewChild('datosGenerales') datosGenerales;
     @ViewChild('datosContacto') datosContacto;
