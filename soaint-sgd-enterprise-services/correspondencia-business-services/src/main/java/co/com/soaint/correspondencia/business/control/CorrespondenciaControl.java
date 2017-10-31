@@ -132,17 +132,18 @@ public class CorrespondenciaControl {
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 //----------------------asignacion--------------
-                DctAsignacion dctAsignacion = DctAsignacion.newInstance()
-                        .corCorrespondencia(correspondencia)
-                        .ideUsuarioCreo(correspondencia.getCodFuncRadica())
-                        .codDependencia(corAgente.getCodDependencia())
-                        .codTipAsignacion("CTA")
-                        .fecAsignacion(new Date())
-                        .corAgente(corAgente)
-                        .build();
+                if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(corAgente.getCodTipAgent())) {
+                    DctAsignacion dctAsignacion = DctAsignacion.newInstance()
+                            .corCorrespondencia(correspondencia)
+                            .ideUsuarioCreo(correspondencia.getCodFuncRadica())
+                            .codDependencia(corAgente.getCodDependencia())
+                            .codTipAsignacion("CTA")
+                            .fecAsignacion(new Date())
+                            .corAgente(corAgente)
+                            .build();
 
-                correspondencia.setDctAsignacionList(new ArrayList<>());
-                correspondencia.getDctAsignacionList().add(dctAsignacion);
+                    correspondencia.getDctAsignacionList().add(dctAsignacion);
+                }
                 //------------------------------------
 
                 correspondencia.getCorAgenteList().add(corAgente);
@@ -469,6 +470,8 @@ public class CorrespondenciaControl {
                 .fecVenGestion(correspondenciaDTO.getFecVenGestion())
                 .codEstado(correspondenciaDTO.getCodEstado())
                 .corAgenteList(new ArrayList<>())
+                .dctAsignacionList(new ArrayList<>())
+                .dctAsigUltimoList(new ArrayList<>())
                 .ppdDocumentoList(new ArrayList<>())
                 .corReferidoList(new ArrayList<>())
                 .build();

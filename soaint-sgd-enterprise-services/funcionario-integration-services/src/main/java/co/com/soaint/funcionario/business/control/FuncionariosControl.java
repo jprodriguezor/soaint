@@ -3,6 +3,7 @@ package co.com.soaint.funcionario.business.control;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RolDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +37,6 @@ public class FuncionariosControl {
     SecurityApiClient securityApiClient;
 
     /**
-     * 
      * @param credenciales
      * @return
      * @throws BusinessException
@@ -68,33 +69,31 @@ public class FuncionariosControl {
      * @throws SystemException
      */
     public FuncionariosDTO listarFuncionariosByDependenciaAndRolAndEstado(String codDependencia, String rol, String codEstado) throws BusinessException, SystemException {
-        FuncionariosDTO funcionariosDTO = FuncionariosDTO
-                .newInstance()
-                .funcionarios(new ArrayList<>())
-                .build();
-        try {
-            List<FuncionarioDTO> usuariosRol = listarUsuariosByRol(rol);
-
-            List<FuncionarioDTO> funcionariosDepenendencia = listarFuncionariosByCodDependenciaAndEstado(codDependencia, codEstado);
-
-            funcionariosDepenendencia.stream().forEach(funcionario -> {
-                FuncionarioDTO usuarioRol = usuariosRol.stream().filter(x -> x.getLoginName().equals(funcionario.getLoginName())).findFirst().get();
-                if (usuarioRol != null) {
-                    funcionario.setRoles(usuarioRol.getRoles());
-                    funcionariosDTO.getFuncionarios().add(funcionario);
+        List<FuncionarioDTO> usuariosRol = listarUsuariosByRol(rol);
+        List<FuncionarioDTO> funcionariosDependencia = listarFuncionariosByCodDependenciaAndEstado(codDependencia, codEstado);
+        List<FuncionarioDTO> resultado = new ArrayList<>();
+        if (!usuariosRol.isEmpty() && !funcionariosDependencia.isEmpty()) {
+            funcionariosDependencia.stream().forEach(funcionarioDTO -> {
+                List<RolDTO> roles = obtenerRolesFromList(usuariosRol, funcionarioDTO.getLoginName());
+                if (roles != null) {
+                    funcionarioDTO.setRoles(roles);
+                    resultado.add(funcionarioDTO);
                 }
             });
-            return funcionariosDTO;
-        } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred", e);
-            throw e;
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
         }
+        return FuncionariosDTO
+                .newInstance()
+                .funcionarios(resultado)
+                .build();
+
+    }
+
+    private List<RolDTO> obtenerRolesFromList(List<FuncionarioDTO> funcionarios, String loginName) {
+        List<RolDTO> roles = null;
+        FuncionarioDTO funcionario = funcionarios.stream().filter(x -> x.getLoginName().equals(loginName)).findFirst().orElse(null);
+        if (funcionario != null)
+            roles = funcionario.getRoles();
+        return roles;
     }
 
     /**
@@ -125,7 +124,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param rol
      * @return
      * @throws BusinessException
