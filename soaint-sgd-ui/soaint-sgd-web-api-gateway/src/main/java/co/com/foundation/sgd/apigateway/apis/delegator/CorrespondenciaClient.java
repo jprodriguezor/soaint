@@ -28,6 +28,9 @@ public class CorrespondenciaClient {
     @Value("${backapi.drools.service.endpoint.url}")
     private String droolsEndpoint = "";
 
+    @Value("${backapi.drools.service.token}")
+    private String droolsAuthToken = "";
+
     public CorrespondenciaClient() {
         super();
     }
@@ -99,7 +102,7 @@ public class CorrespondenciaClient {
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/regla")
                 .request()
-                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("Authorization", droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
@@ -111,7 +114,7 @@ public class CorrespondenciaClient {
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/redireccion")
                 .request()
-                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("Authorization", droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
