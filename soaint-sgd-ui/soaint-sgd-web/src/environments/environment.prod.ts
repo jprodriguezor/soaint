@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 // const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-=======
-// The file contents for the current environment will overwrite these during build.
-// The build system defaults to the dev environment which uses `environment.ts`, but if you do
-// `ng build --env=prod` then `environment.prod.ts` will be used instead.
-// The list of which env maps to which file can be found in `.angular-cli.json`.
-// const host = 'http://localhost:29090/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://localhost:29090/ecm-integration-services/apis/ecm';
->>>>>>> 57b8c2bd762e8b755ad58d9f2684e30f4cc671e6
+
 const host = 'http://localhost:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://localhost:28080/ecm-integration-services/apis/ecm';
 export const environment = {
