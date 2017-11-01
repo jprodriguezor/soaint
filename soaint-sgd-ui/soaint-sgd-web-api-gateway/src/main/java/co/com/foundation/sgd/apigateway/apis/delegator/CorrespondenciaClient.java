@@ -146,7 +146,6 @@ public class CorrespondenciaClient {
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("cod_tipologia_documental", codTipoDoc)
                 .queryParam("nro_radicado", nroRadicado);
-
         return target.request().get();
     }
 
