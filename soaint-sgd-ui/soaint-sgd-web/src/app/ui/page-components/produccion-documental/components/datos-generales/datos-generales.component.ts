@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -11,6 +11,7 @@ import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {VersionDocumentoDTO} from '../../models/VersionDocumentoDTO';
+import {AnexoDTO} from '../../models/AnexoDTO';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -36,12 +37,14 @@ export class PDDatosGeneralesComponent implements OnInit {
 
     tipoPlantillaSelected: ConstanteDTO[];
 
-    listaVersionesDocumento: VersionDocumentoDTO[];
+    listaVersionesDocumento: VersionDocumentoDTO[] = [];
+    listaAnexos: AnexoDTO[] = [];
 
     constructor(private _store: Store<State>,
-              private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private formBuilder: FormBuilder,
-              private pdMessageService: PdMessageService) {}
+                private _produccionDocumentalApi: ProduccionDocumentalApiService,
+                private formBuilder: FormBuilder,
+                private _changeDetectorRef: ChangeDetectorRef,
+                private pdMessageService: PdMessageService) {}
 
 
     initForm() {
@@ -96,9 +99,23 @@ export class PDDatosGeneralesComponent implements OnInit {
         versiones.push({
             tipo: 'PDF',
             nombre: this.nombreVersionDocumento,
-            size: (Math.random() * (100000 - 1) + 1)
+            size: Math.floor(Math.random() * (100000 - 1) + 1)
         });
         this.listaVersionesDocumento = [...versiones];
+        this.hideVersionesDocumentoDialog();
+        this.refreshView();
+    }
+
+    agregarAnexo() {
+        const anexos = this.listaAnexos;
+        const anexo: AnexoDTO = {
+            soporte: this.form.get('soporte').value,
+            tipo: this.form.get('tipoAnexo').value,
+            descripcion: this.form.get('descripcion').value
+        };
+        anexos.push(anexo);
+        this.listaAnexos = [...anexos];
+        this.refreshView();
     }
 
 
@@ -120,30 +137,34 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
 
-  listenForErrors() {
-    this.bindToValidationErrorsOf('tipoComunicacion');
-  }
-
-  listenForBlurEvents(control: string) {
-    const ac = this.form.get(control);
-    if (ac.touched && ac.invalid) {
-      const error_keys = Object.keys(ac.errors);
-      const last_error_key = error_keys[error_keys.length - 1];
-      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+    listenForErrors() {
+        this.bindToValidationErrorsOf('tipoComunicacion');
     }
-  }
 
-  bindToValidationErrorsOf(control: string) {
-    const ac = this.form.get(control);
-    ac.valueChanges.subscribe(value => {
-      if ((ac.touched || ac.dirty) && ac.errors) {
-        const error_keys = Object.keys(ac.errors);
-        const last_error_key = error_keys[error_keys.length - 1];
-        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-      } else {
-        delete this.validations[control];
-      }
-    });
-  }
+    listenForBlurEvents(control: string) {
+        const ac = this.form.get(control);
+        if (ac.touched && ac.invalid) {
+          const error_keys = Object.keys(ac.errors);
+          const last_error_key = error_keys[error_keys.length - 1];
+          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+        }
+    }
+
+    bindToValidationErrorsOf(control: string) {
+        const ac = this.form.get(control);
+        ac.valueChanges.subscribe(value => {
+          if ((ac.touched || ac.dirty) && ac.errors) {
+            const error_keys = Object.keys(ac.errors);
+            const last_error_key = error_keys[error_keys.length - 1];
+            this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+          } else {
+            delete this.validations[control];
+          }
+        });
+    }
+
+    refreshView() {
+        this._changeDetectorRef.detectChanges();
+    }
 }
 
