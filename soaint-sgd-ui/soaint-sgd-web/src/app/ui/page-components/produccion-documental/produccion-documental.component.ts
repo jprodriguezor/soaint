@@ -49,7 +49,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         });
     }
 
-    enviarParaRevision() {
+    completarTarea() {
 
         this.datosGenerales.form.disable();
         this.datosContacto.form.disable();
@@ -59,7 +59,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
             idProceso: this.task.idProceso,
             idDespliegue: this.task.idDespliegue,
             idTarea: this.task.idTarea,
-            parametros: {}
+            parametros: {
+                usuarioRevisor: this.task.variables.usuarioProyector,
+                requiereRevision: 1,
+                usuarioAprobador: this.task.variables.usuarioProyector,
+                datosPD: JSON.stringify({
+                    codSede: 123,
+                    codDep: 456,
+                    numRad: 'RAD1234'
+                })
+            }
         });
     }
 
