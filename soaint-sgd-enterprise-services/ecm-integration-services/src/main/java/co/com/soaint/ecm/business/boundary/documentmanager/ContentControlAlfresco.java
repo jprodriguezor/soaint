@@ -5,6 +5,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.uti.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
@@ -75,11 +76,11 @@ public class ContentControlAlfresco implements ContentControl {
             Map <String, String> parameter = new HashMap <> ( );
 
             // Credenciales del usuario
-            parameter.put (SessionParameter.USER, configuracion.getPropiedad ("ALFRESCO_USER"));
-            parameter.put (SessionParameter.PASSWORD, configuracion.getPropiedad ("ALFRESCO_PASS"));
+            parameter.put (SessionParameter.USER, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_USER));
+            parameter.put (SessionParameter.PASSWORD, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_PASS));
 
             // configuracion de conexion
-            parameter.put (SessionParameter.ATOMPUB_URL, configuracion.getPropiedad ("ALFRESCO_ATOMPUB_URL"));
+            parameter.put (SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
             parameter.put (SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value ( ));
             parameter.put (SessionParameter.REPOSITORY_ID, configuracion.getPropiedad ("REPOSITORY_ID"));
 
