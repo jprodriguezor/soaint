@@ -156,7 +156,7 @@ public class ProcesoGatewayApi {
 
     @POST
     @Path("/tareas/completar")
-    @JWTTokenSecurity
+    //@JWTTokenSecurity
     public Response completarTarea(EntradaProcesoDTO entrada) {
 
         log.info("ProcesoGatewayApi - [trafic] - start Task");

@@ -31,7 +31,8 @@ import { storeLogger } from 'ngrx-store-logger';
 import { combineReducers } from '@ngrx/store';
 import { State, reducers } from './redux-reducers';
 
-export const developmentReducer: ActionReducer<State> = compose(storeLogger(), combineReducers)(reducers);
+// export const developmentReducer: ActionReducer<State> = compose(storeLogger(), combineReducers)(reducers);
+export const developmentReducer: ActionReducer<State> = compose(combineReducers)(reducers);
 export const productionReducer: ActionReducer<State> = combineReducers(reducers);
 
 export function ReduxStore(state: any, action: any) {

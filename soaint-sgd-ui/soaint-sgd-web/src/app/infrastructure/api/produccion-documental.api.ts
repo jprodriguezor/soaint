@@ -3,6 +3,7 @@ import {ApiBase} from './api-base';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../domain/constanteDTO';
+import {RolDTO} from '../../domain/rolesDTO';
 
 @Injectable()
 export class ProduccionDocumentalApiService {
@@ -50,13 +51,22 @@ export class ProduccionDocumentalApiService {
       return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
     }
 
-    getTiposPlantilla(payload: {}): ConstanteDTO[] {
-        return JSON.parse(`[
+    getTiposPlantilla(payload: {}): Observable<ConstanteDTO[]> {
+        return Observable.of(JSON.parse(`[
           {"codigo":"TL-DOCOF","nombre":"Oficio","codPadre":"TL-DOC","id":49},
           {"codigo":"TL-DOCA","nombre":"Acta","codPadre":"TL-DOC","id":59},
           {"codigo":"TL-DOCC","nombre":"Circular","codPadre":"TL-DOC","id":60},
           {"codigo":"TL-DOCM","nombre":"Memorando","codPadre":"TL-DOC","id":61}
-        ]`);
+        ]`));
+    }
+
+    getRoles(payload: {}): Observable<RolDTO[]> {
+        return Observable.of(JSON.parse(`[
+          {"id":1,"rol":"administrador","nombre":"Administrador"},
+          {"id":2,"rol":"proyector","nombre":"Proyector"},
+          {"id":3,"rol":"revisor","nombre":"Revisor"},
+          {"id":4,"rol":"aprobador","nombre":"Aprobador"}
+        ]`));
     }
 
 }

@@ -69,7 +69,7 @@ export class RadicacionEntradaDTV {
   }
 
   getDatosContactoFormList() {
-    let contactos = [];
+    const contactos = [];
     this.source.datosContactoList.forEach(contacto => {
       contactos.push({
         tipoVia: {codigo: contacto.codTipoVia},

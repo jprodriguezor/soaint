@@ -8,9 +8,6 @@
             <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
               (click)="save().subscribe()"></button>
 
-            <button pButton type="button" label="Restaurar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="restore()"></button>
-
             <button pButton type="button" label="Radicar" style="width: auto; margin-bottom: 10px"
                     [disabled]="!datosGenerales.form.valid || !datosRemitente.form.valid || !datosDestinatario.form.valid"
                     (click)="radicarComunicacion()"></button>
