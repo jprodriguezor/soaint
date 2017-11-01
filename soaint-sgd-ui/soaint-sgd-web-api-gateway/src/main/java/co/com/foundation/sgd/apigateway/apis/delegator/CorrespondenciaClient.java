@@ -110,6 +110,7 @@ public class CorrespondenciaClient {
 
     public Response verificarRedireccionesDrools(String payload) {
         log.info("Correspondencia - [trafic] - verificar redirecciones Regla: " + droolsEndpoint);
+        log.error("DROOLS TOKEN: " + droolsAuthToken);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/redireccion")
