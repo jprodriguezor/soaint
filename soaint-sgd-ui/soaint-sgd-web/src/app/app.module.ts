@@ -1,16 +1,16 @@
-import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
-import {AppRoutes} from './app.routes';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { AppRoutes } from './app.routes';
 import 'rxjs/add/operator/toPromise';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {NgxBarcodeModule} from 'ngx-barcode';
-import {ToastrModule} from 'ngx-toastr';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxBarcodeModule } from 'ngx-barcode';
+import { ToastrModule } from 'ngx-toastr';
 // APP COMPONENTS
-import {AppComponent} from './app.component';
+import { AppComponent } from './app.component';
 import {
   BUSSINESS_COMPONENTS_PROVIDERS,
   LAYOUT_COMPONENTS_PROVIDERS,
@@ -18,35 +18,24 @@ import {
   UI_COMPONENTS
 } from 'app/ui/__ui.include';
 // APP MODULES
-// import { PAGE_MODULES } from './ui/page-components/__page-components.include';
-// third party libs | components | modules
-import {
-  ConfirmationService,
-  DynamicDisableDirective,
-  PIPES,
-  PRIMENG_MODULES,
-  PrintDirective
-} from './shared/__shared.include';
-import {EmailValidator} from './shared/validators/email.validator';
+import { ConfirmationService, PIPES, PRIMENG_MODULES, } from './shared/__shared.include';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
-import {LocalStorageModule} from 'angular-2-local-storage';
+import { LocalStorageModule } from 'angular-2-local-storage';
 // APP SERVICES
-import {API_SERVICES, EFFECTS_MODULES, INFRASTRUCTURE_SERVICES} from './infrastructure/__infrastructure.include';
+import { API_SERVICES, EFFECTS_MODULES, INFRASTRUCTURE_SERVICES } from './infrastructure/__infrastructure.include';
 // Redux Store and Colaterals
-import {StoreModule} from '@ngrx/store';
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {ReduxStore} from './infrastructure/redux-store/__redux-config';
-import {RouterStoreModule} from '@ngrx/router-store';
-import {PdfViewerComponent} from 'ng2-pdf-viewer';
-import {ClearValidatorsDirective} from './shared/directives/form/clear-validators.directive';
-import {PhoneInputDirective} from './shared/directives/form/phone-input.directive';
-import {CountryPhonePipe} from './shared/pipes/phone-input.pipe';
-import {OptionalEmailValidatorDirective} from './shared/directives/form/optional-email-validator.directive';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { ReduxStore } from './infrastructure/redux-store/__redux-config';
+import { RouterStoreModule } from '@ngrx/router-store';
+import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
 import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
 import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planilla/editar-planilla.component';
 import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-generada/planilla-generada.component';
+import { DIRECTIVES } from './shared/directives/__directives.include';
+import { PIPES_AS_PROVIDERS } from './shared/pipes/__pipes.include';
 
 
 @NgModule({
@@ -120,12 +109,8 @@ import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-ge
   ],
   declarations: [
     AppComponent,
-    PrintDirective,
-    DynamicDisableDirective,
-    ClearValidatorsDirective,
-    PhoneInputDirective,
-    OptionalEmailValidatorDirective,
     PdfViewerComponent,
+    ...DIRECTIVES,
     ...UI_COMPONENTS,
     ...PIPES,
     DistribucionFisicaComponent,
@@ -140,8 +125,8 @@ import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-ge
     ...PAGE_COMPONENTS_PROVIDERS,
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
-    ConfirmationService,
-    CountryPhonePipe
+    ...PIPES_AS_PROVIDERS,
+    ConfirmationService
   ],
   bootstrap: [AppComponent]
 })

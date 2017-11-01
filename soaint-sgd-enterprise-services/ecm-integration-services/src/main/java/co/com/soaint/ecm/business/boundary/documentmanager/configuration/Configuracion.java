@@ -33,14 +33,9 @@ public class Configuracion {
     private String ametadatoCodUnidadAdminParent;
     @Value("${ecm}")
     private String aecm;
-    @Value("${ALFRESCO_ATOMPUB_URL}")
-    private String aAlfrescoAtompubUrl;
     @Value("${REPOSITORY_ID}")
     private String aRepositoryId;
-    @Value("${ALFRESCO_USER}")
-    private String aAlfrescoUser;
-    @Value("${ALFRESCO_PASS}")
-    private String aAlfrescoPass;
+
 
     private Configuracion(){
         /*
@@ -86,14 +81,8 @@ public class Configuracion {
 
             case "metadatoCodUnidadAdminParent":
                 return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
-            case "ALFRESCO_ATOMPUB_URL":
-                return aAlfrescoAtompubUrl != null ? aAlfrescoAtompubUrl : "";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
-            case "ALFRESCO_USER":
-                return aAlfrescoUser != null ? aAlfrescoUser : "admin";
-            case "ALFRESCO_PASS":
-                return aAlfrescoPass != null ? aAlfrescoPass : "admin";
             default:
                 return "";
         }

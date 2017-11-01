@@ -28,6 +28,9 @@ public class CorrespondenciaClient {
     @Value("${backapi.drools.service.endpoint.url}")
     private String droolsEndpoint = "";
 
+    @Value("${backapi.drools.service.token}")
+    private String droolsAuthToken = "";
+
     public CorrespondenciaClient() {
         super();
     }
@@ -99,7 +102,7 @@ public class CorrespondenciaClient {
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/regla")
                 .request()
-                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("Authorization", droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
@@ -107,11 +110,12 @@ public class CorrespondenciaClient {
 
     public Response verificarRedireccionesDrools(String payload) {
         log.info("Correspondencia - [trafic] - verificar redirecciones Regla: " + droolsEndpoint);
+        log.error("DROOLS TOKEN: " + droolsAuthToken);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/redireccion")
                 .request()
-                .header("Authorization", "Basic a3Jpc3Y6a3Jpc3Y=")
+                .header("Authorization", droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
@@ -143,7 +147,6 @@ public class CorrespondenciaClient {
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("cod_tipologia_documental", codTipoDoc)
                 .queryParam("nro_radicado", nroRadicado);
-
         return target.request().get();
     }
 
