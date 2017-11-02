@@ -130,7 +130,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._funcionarioSandbox.loadAllFuncionariosDispatch();
+    this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
+      rol: 'RECEPTOR'
+    });
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
   }

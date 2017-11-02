@@ -35,7 +35,11 @@ export class AdminLayoutSandbox {
 
   selectorUsername(): Observable<string> {
     return this._store.select(createSelector((s: State) => s.funcionario.authenticatedFuncionario, (profile) => {
-      return profile ? profile.nombre + ' ' + profile.valApellido1 + ' ' + profile.valApellido2 : '';
+      let profileName = '';
+      if (profile) {
+        profileName = profile.nombre + ((profile.valApellido1) ? ' ' + profile.valApellido1 : '') + ((profile.valApellido2) ? ' ' + profile.valApellido2 : '')
+      }
+      return profileName;
     }));
   }
 

@@ -50,4 +50,18 @@ public class FuncionarioGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/funcionarios/{cod_dependencia}/{rol}")
+    @JWTTokenSecurity
+    public Response listarFuncionariosByRol(@PathParam("cod_dependencia") final String codDependencia,
+                                            @PathParam("rol") final String rol) {
+
+        log.info("FuncionarioGatewayApi - [trafic] - listing Funcionario By Rol");
+        Response response = client.listarFuncionariosPorRol(codDependencia, rol);
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }

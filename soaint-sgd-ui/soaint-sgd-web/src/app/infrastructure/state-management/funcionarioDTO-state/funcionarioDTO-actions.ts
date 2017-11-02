@@ -4,6 +4,7 @@ import {type} from 'app/infrastructure/redux-store/redux-util';
 export const ActionTypes = {
   LOAD_SUCCESS: type('[FuncionarioDTO] LoadSuccessAction'),
   LOAD_ALL: type('[FuncionarioDTO] LoadAllAction'),
+  LOAD_ALL_BY_ROL: type('[FuncionarioDTO] LoadAllByRolAction'),
   LOAD_ALL_SUCCESS: type('[FuncionarioDTO] LoadAllSuccessAction'),
   LOAD_ALL_FAIL: type('[FuncionarioDTO] LoadAllFailAction'),
 
@@ -20,6 +21,13 @@ export class LoadSuccessAction implements Action {
 
 export class LoadAllAction implements Action {
   type = ActionTypes.LOAD_ALL;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class LoadAllByRolAction implements Action {
+  type = ActionTypes.LOAD_ALL_BY_ROL;
 
   constructor(public payload?: any) {
   }
@@ -52,6 +60,7 @@ export type Actions =
   LoadAllAction |
   LoadAllFailAction |
   LoadAllSuccessAction |
+  LoadAllByRolAction |
   SelectDependencyGroupAction
   ;
 

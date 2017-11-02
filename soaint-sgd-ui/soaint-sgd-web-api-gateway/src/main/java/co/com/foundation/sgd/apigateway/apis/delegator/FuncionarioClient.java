@@ -13,9 +13,11 @@ import javax.ws.rs.core.Response;
 public class FuncionarioClient {
 
 
-
     @Value("${backapi.endpoint.url}")
     private String endpoint = "";
+
+    @Value("${backapi.funcionario.service.endpoint.url}")
+    private String funcionarioEndpoint = "";
 
     public FuncionarioClient() {
         super();
@@ -33,6 +35,14 @@ public class FuncionarioClient {
         log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/funcionarios-web-api/funcionarios/dependencia/" + codigoDependencia + "/A")
+                .request()
+                .get();
+    }
+
+    public Response listarFuncionariosPorRol(String codigoDependencia, String rol) {
+        log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/" + codigoDependencia + "/" + rol + "/A")
                 .request()
                 .get();
     }

@@ -72,11 +72,10 @@ export class HttpHandler {
 
   handleResponse(request$: Observable<Response>, token): Observable<Response> {
     return request$.map((res: Response) => {
-      console.log(res.headers.get('Content-Type'));
-      if ('application/json' === res.headers.get('Content-Type'))
-        return res.json()
-      else
-        return res;
+      if ('application/json' === res.headers.get('Content-Type')) {
+        return res.json();
+      }
+      return res;
     }).catch(res => {
       if (res.status === 401) {
         if (token !== null) {

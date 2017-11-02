@@ -43,4 +43,23 @@ export class Effects {
     );
 
 
+  @Effect()
+  loadAllByRol: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.LOAD_ALL_BY_ROL)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
+    .distinctUntilChanged()
+    .switchMap(
+      ([action, state]) => {
+        console.log(action);
+        return this._sandbox.loadAllFuncionariosByRol({
+          codDependencia: state.codigo,
+          rol: action.payload.rol
+        })
+          .map((response) => new actions.LoadAllSuccessAction(response))
+          .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
+          )
+      }
+    );
+
+
 }
