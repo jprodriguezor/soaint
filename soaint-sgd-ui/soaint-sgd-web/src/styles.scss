@@ -1,5 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 
+.ui-progress-spinner {
+  position: absolute;
+  top: calc(50% - 100px);
+  left: calc(50% - 50px);
+  width: 100px;
+  height: 100px;
+  display: block;
+  z-index: 1002;
+
+  .ui-progress-spinner-svg .ui-progress-spinner-circle {
+    fill: transparent;
+  }
+}
+
+
 .ui-dialog {
   overflow: scroll;
 }

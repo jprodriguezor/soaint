@@ -1,3 +1,5 @@
+import {LoadingService} from './utils/loading.service';
+
 export * from './__api.include';
 
 import {STATE_MANAGEMENT_PROVIDERS} from './state-management/__state-providers.include';
@@ -15,5 +17,6 @@ export const INFRASTRUCTURE_SERVICES = [
   ...STATE_MANAGEMENT_PROVIDERS,
   EventsService,
   SessionService,
-  HttpHandler
+  HttpHandler,
+  LoadingService
 ];
