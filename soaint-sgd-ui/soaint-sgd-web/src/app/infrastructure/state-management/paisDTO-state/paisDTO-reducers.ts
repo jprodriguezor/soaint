@@ -28,7 +28,7 @@ export function reducer(state = initialState, action: Actions) {
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
 
-      return loadDataReducer(action, state, action.payload.data, 'paises');
+      return loadDataReducer(action, state, action.payload.paises, 'id');
 
     }
 
