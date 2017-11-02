@@ -11,7 +11,7 @@ export function interceptableFactory(backend: XHRBackend,
     backend,
     defaultOptions,
     [
-      new PendingRequestInterceptor()
+      new PendingRequestInterceptor(injector)
     ]
   );
 }
@@ -26,4 +26,4 @@ export function customHttpProvider() {
       Injector
     ]
   };
-};
+}

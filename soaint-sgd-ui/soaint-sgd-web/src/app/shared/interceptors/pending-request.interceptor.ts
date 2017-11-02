@@ -2,6 +2,7 @@ import {Observable} from 'rxjs/Observable';
 import {RequestOptionsArgs, Response} from '@angular/http';
 import {HttpInterceptor} from './http.interceptor';
 import {Injector} from '@angular/core';
+import {LoadingService} from '../../infrastructure/utils/loading.service';
 
 export class PendingRequestInterceptor extends HttpInterceptor {
 
@@ -37,10 +38,14 @@ export class PendingRequestInterceptor extends HttpInterceptor {
       if (!shouldBypass) {
         this.pendingRequests--;
         if (0 === this.pendingRequests) {
-          this.loadingService.dissmisLoading();
+          this.loadingService.dismissLoading();
         }
       }
       return response;
-    });
+    }).catch(error => {
+      this.pendingRequests = 0;
+      this.loadingService.dismissLoading();
+      return Observable.throw(error);
+    })
   }
 }
