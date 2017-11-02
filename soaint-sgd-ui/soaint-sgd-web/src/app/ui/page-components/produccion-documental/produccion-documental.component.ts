@@ -11,7 +11,6 @@ import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {Observable} from 'rxjs/Observable';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {TaskTypes} from 'app/shared/type-cheking-clasess/class-types';
-import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
 
 @Component({
   selector: 'produccion-documental',
@@ -22,7 +21,7 @@ import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
 export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskForm {
     task: TareaDTO;
     type = TaskTypes.TASK_FORM;
-    requiereRevision = true;
+    variablesTarea: any;
 
     @ViewChild('datosGenerales') datosGenerales;
     @ViewChild('datosContacto') datosContacto;
@@ -49,7 +48,35 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         });
     }
 
-    enviarParaRevision() {
+    getDatosProduccionDocumental() {
+        return {
+            datosGenerales: {
+                tipoComunicacion: this.datosGenerales.form.get('tipoComunicacion').value,
+                tipoPlantilla: this.datosGenerales.form.get('tipoPlantilla').value,
+                listaVersionesDocumento: this.datosGenerales.listaVersionesDocumento,
+                listaAnexos: this.datosGenerales.listaAnexos
+            },
+            datosContacto: {
+                tipoDestinatarioText: this.datosContacto.form.get('tipoDestinatarioText').value,
+                tipoDestinatarioList: this.datosContacto.form.get('tipoDestinatarioList').value,
+                tipoDocumentoText: this.datosContacto.form.get('tipoDocumentoText').value,
+                tipoDocumentoList: this.datosContacto.form.get('tipoDocumentoList').value,
+                tipoPersona: this.datosContacto.form.get('tipoPersona').value,
+                nombreApellidos: this.datosContacto.form.get('nombreApellidos').value,
+                nit: this.datosContacto.form.get('nit').value,
+                razonSocial: this.datosContacto.form.get('razonSocial').value,
+                actuaCalidad: this.datosContacto.form.get('actuaCalidad').value,
+                sedeAdministrativa: this.datosContacto.form.get('sedeAdministrativa').value,
+                dependencia: this.datosContacto.form.get('dependencia').value,
+                funcionario: this.datosContacto.form.get('funcionario').value,
+            },
+            gestionarProduccion: {
+                listaDocumentos: this.gestionarProduccion.listaDocumentos
+            }
+        };
+    }
+
+    completarTarea() {
 
         this.datosGenerales.form.disable();
         this.datosContacto.form.disable();
@@ -59,8 +86,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
             idProceso: this.task.idProceso,
             idDespliegue: this.task.idDespliegue,
             idTarea: this.task.idTarea,
-            parametros: {}
+            parametros: Object.assign(this.variablesTarea, {
+                datosPD: JSON.stringify(this.getDatosProduccionDocumental())
+            })
         });
+    }
+
+    fillData() {
+        const data = JSON.parse(this.task.variables.datosPD);
+        this.datosGenerales.form.get('tipoComunicacion').setValue(data.tipoComunicacion);
+        this.datosGenerales.form.get('tipoPlantilla').setValue(data.tipoPlantilla);
     }
 
     updateTabIndex(event) {
@@ -71,6 +106,19 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this._store.select(getActiveTask).take(1).subscribe(activeTask => {
             this.task = activeTask;
         });
+
+        this.variablesTarea = {
+            requiereRevision: 1,
+            requiereAjustes: 1,
+            aprobado: 1,
+            usuarioRevisor: this.task.variables.usuarioProyector,
+            usuarioAprobador: this.task.variables.usuarioProyector
+        };
+
+        if (this.task.variables.hasOwnProperty('datosPD')) {
+            console.log(this.task.variables.datosPD);
+            this.fillData();
+        }
     }
 
     ngOnDestroy(): void {

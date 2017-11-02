@@ -9,10 +9,11 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {
-  TASK_CARGAR_PLANILLA_ENTRADA,
-  TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
-  TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
-  TASK_RADICACION_ENTRADA
+    TASK_APROBAR_DOCUMENTO,
+    TASK_CARGAR_PLANILLA_ENTRADA,
+    TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
+    TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
+    TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -149,6 +150,8 @@ export class Sandbox {
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumentalMultiple, task]));
         break;
       case TASK_PRODUCIR_DOCUMENTO:
+      case TASK_REVISAR_DOCUMENTO:
+      case TASK_APROBAR_DOCUMENTO:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
         break;
       default:

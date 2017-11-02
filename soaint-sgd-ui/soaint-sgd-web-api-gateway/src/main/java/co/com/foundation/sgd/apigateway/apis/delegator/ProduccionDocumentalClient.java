@@ -34,6 +34,8 @@ public class ProduccionDocumentalClient {
         nuevaEntrada.setPass(entrada.getPass());
         nuevaEntrada.setParametros(new HashMap<>());
 
+        String numeroRadicado = entrada.getParametros().getOrDefault("numeroRadicado","").toString();
+
         for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
             nuevaEntrada.getParametros().clear();
             LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
@@ -43,7 +45,7 @@ public class ProduccionDocumentalClient {
             nuevaEntrada.getParametros().putAll(new HashMap<String,Object>(){
                 {
                     put("usuarioProyector",funcionario.getOrDefault("loginName",""));
-                    put("numeroRadicado",entrada.getParametros().getOrDefault("numeroRadicado",null));
+                    put("numeroRadicado",numeroRadicado);
                     put("codigoSede",sedeAdministrativa.getOrDefault("codigo",null));
                     put("codigoDependencia",dependencia.getOrDefault("codigo",null));
                     put("codigoTipoPlantilla",tipoPlantilla.getOrDefault("codigo",null));

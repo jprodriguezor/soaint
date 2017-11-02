@@ -1,53 +1,49 @@
-<div class="page-title">
-  <h2>Producción Documental</h2>
-</div>
+<div class="ui-fluid produccion-documental">
 
-<div class="ui-g ui-fluid">
-    <div class="ui-g-12" style="margin: 20px 0">
-        <button pButton type="button" label="Cerrar"
-                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                ></button>
-        <button pButton type="button" label="Devolver"
-                [disabled]="revisar != true"
-                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                ></button>
-        <button pButton type="button" label="Aprobar"
-                [disabled]="aprobar != true"
-                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                ></button>
-        <button pButton type="button" label="Continuar"
-                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                (click)="enviarParaRevision()"
-                ></button>
-    </div>
-</div>
+    <app-task-container>
 
-<div class="ui-fluid">
+        <div customActions>
 
-    <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+            <button pButton type="button" label="Aprobar"
+                    [disabled]="aprobar != true"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            ></button>
+            <button pButton type="button" label="Continuar"
+                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                    (click)="completarTarea()"
+            ></button>
 
-        <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+        </div>
 
-            <pd-datos-generales #datosGenerales [taskData]="task" (tipoComunicacionSelected)="updateTipoComunicacion($event)"></pd-datos-generales> <br/>
+        <div taskBody>
 
-        </p-tabPanel>
+            <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+
+                <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+
+                    <pd-datos-generales #datosGenerales [taskData]="task" (tipoComunicacionSelected)="updateTipoComunicacion($event)"></pd-datos-generales> <br/>
+
+                </p-tabPanel>
 
 
-        <p-tabPanel header="Datos de contacto" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
+                <p-tabPanel header="Datos de contacto" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
 
-            <pd-datos-contacto #datosContacto ></pd-datos-contacto>
+                    <pd-datos-contacto #datosContacto ></pd-datos-contacto>
 
-        </p-tabPanel>
+                </p-tabPanel>
 
 
-        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
+                <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
 
-            <pd-gestionar-produccion #gestionarProduccion ></pd-gestionar-produccion>
+                    <pd-gestionar-produccion #gestionarProduccion ></pd-gestionar-produccion>
 
-        </p-tabPanel>
+                </p-tabPanel>
 
-    </p-tabView>
+            </p-tabView>
 
+        </div>
+
+    </app-task-container>
 </div>
 
 
