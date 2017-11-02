@@ -14,7 +14,7 @@ import javax.ws.rs.*;
  * Created by esanchez on 5/24/2017.
  */
 @Path("/constantes-web-api")
-@Produces({"application/json", "application/xml"})
+@Produces({"application/json;charset=UTF-8", "application/xml"})
 @Log4j2
 @Api(value = "ConstantesWebApi", description = "")
 public class ConstantesWebApi {
