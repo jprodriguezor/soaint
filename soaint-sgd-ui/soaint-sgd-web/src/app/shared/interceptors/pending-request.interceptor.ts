@@ -43,9 +43,13 @@ export class PendingRequestInterceptor extends HttpInterceptor {
       }
       return response;
     }).catch(error => {
-      this.pendingRequests = 0;
-      this.loadingService.dismissLoading();
-      return Observable.throw(error);
-    })
+        const shouldBypass = this.shouldBypass(url.url || url);
+        if (!shouldBypass) {
+          this.pendingRequests = 0;
+          this.loadingService.dismissLoading();
+        }
+        return Observable.throw(error);
+      }
+    )
   }
 }
