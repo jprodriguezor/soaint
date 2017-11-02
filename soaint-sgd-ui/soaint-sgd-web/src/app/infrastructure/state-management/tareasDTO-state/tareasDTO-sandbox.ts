@@ -9,6 +9,7 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {
+    TASK_APROBAR_DOCUMENTO,
     TASK_CARGAR_PLANILLA_ENTRADA,
     TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
     TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
@@ -150,6 +151,7 @@ export class Sandbox {
         break;
       case TASK_PRODUCIR_DOCUMENTO:
       case TASK_REVISAR_DOCUMENTO:
+      case TASK_APROBAR_DOCUMENTO:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
         break;
       default:

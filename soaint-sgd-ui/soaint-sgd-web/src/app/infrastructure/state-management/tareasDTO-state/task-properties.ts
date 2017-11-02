@@ -5,4 +5,5 @@ export const TASK_GENERAR_PLANILLA_ENTRADA = 'Generar Planilla de Entrada';
 export const TASK_CARGAR_PLANILLA_ENTRADA = 'Cargar Planilla de Entrada';
 export const TASK_PRODUCIR_DOCUMENTO = 'Producir Documento';
 export const TASK_REVISAR_DOCUMENTO = 'Revisar Documento';
+export const TASK_APROBAR_DOCUMENTO = 'Aprobar Documento';
 export const TASK_GESTION_PRODUCCION_MULTIPLE = 'Gestión Producción Múltiples Documentos';
