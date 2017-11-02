@@ -5,7 +5,6 @@ import {
   ButtonModule,
   CalendarModule,
   CarouselModule,
-  ChartModule,
   CheckboxModule,
   ChipsModule,
   CodeHighlighterModule,
@@ -21,17 +20,13 @@ import {
   EditorModule,
   FieldsetModule,
   FileUploadModule,
-  GalleriaModule,
   GMapModule,
-  GrowlModule,
   InputMaskModule,
   InputSwitchModule,
   InputTextareaModule,
   InputTextModule,
   LightboxModule,
   ListboxModule,
-  MegaMenuModule,
-  MenubarModule,
   MenuModule,
   MessagesModule,
   MultiSelectModule,
@@ -60,8 +55,8 @@ import {
   ToggleButtonModule,
   ToolbarModule,
   TooltipModule,
-  TreeModule,
-  TreeTableModule
+  BlockUIModule,
+  ProgressSpinnerModule
 } from 'primeng/primeng';
 
 export const PRIMENG_MODULES = [
@@ -87,7 +82,6 @@ export const PRIMENG_MODULES = [
   FieldsetModule,
   FileUploadModule,
   GMapModule,
-  GrowlModule,
   InputMaskModule,
   InputSwitchModule,
   InputTextareaModule,
@@ -121,7 +115,10 @@ export const PRIMENG_MODULES = [
   TieredMenuModule,
   ToggleButtonModule,
   ToolbarModule,
-  TooltipModule
+  TooltipModule,
+  BlockUIModule,
+  ProgressSpinnerModule
+
 ];
 
 export {ConfirmationService} from 'primeng/primeng';

@@ -31,7 +31,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy,
     form: FormGroup;
     validations: any = {};
 
-    numeroRadicado = null;
+    numeroRadicado = "";
 
     dependenciaSelected: ConstanteDTO;
 
