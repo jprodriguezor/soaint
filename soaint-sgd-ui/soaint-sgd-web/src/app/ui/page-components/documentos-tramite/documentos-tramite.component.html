@@ -25,7 +25,9 @@
             <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
           </p-tabPanel>
           <p-tabPanel header="Gestionar" leftIcon="ui-icon-assignment">
-            <app-gestionar-comunicacion [remitente]="remitente$ | async" [task]="task" (onRedireccionarTriggered)="redireccionar($event)"></app-gestionar-comunicacion>
+            <app-gestionar-comunicacion [remitente]="remitente$ | async" [task]="task"
+                                        (onRedireccionarTriggered)="redireccionar($event)"
+                                        (onDevolverTriggered)="devolver($event)"></app-gestionar-comunicacion>
           </p-tabPanel>
         </p-tabView>
       </div>
