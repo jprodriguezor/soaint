@@ -37,6 +37,13 @@ import java.util.List;
                 "INNER JOIN d.corAgente ca " +
                 "INNER JOIN d.dctAsigUltimoList dau " +
                 "WHERE ca.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "DctAsignacion.findByIdeAsigUltimo", query = "SELECT NEW co.com.soaint.correspondencia.domain.entity.DctAsignacion " +
+                "(d.ideAsignacion, d.fecAsignacion, d.ideFunci, d.codDependencia, d.codTipAsignacion, d.observaciones, " +
+                "d.codTipCausal, d.ideUsuarioCreo, d.fecCreo, d.codTipProceso)" +
+                "FROM DctAsignacion d " +
+                "INNER JOIN d.corAgente ca " +
+                "INNER JOIN d.dctAsigUltimoList dau " +
+                "WHERE dau.ideAsigUltimo = :IDE_ASIG_ULTIMO"),
         @NamedQuery(name = "DctAsignacion.asignarToFuncionario", query = "UPDATE DctAsignacion d " +
                 "SET d.ideFunci = :IDE_FUNCI " +
                 "WHERE d.ideAsignacion = :IDE_ASIGNACION")})
@@ -82,6 +89,21 @@ public class DctAsignacion implements Serializable {
     private CorCorrespondencia corCorrespondencia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dctAsignacion")
     private List<DctAsigUltimo> dctAsigUltimoList;
+
+    public DctAsignacion(BigInteger ideAsignacion, Date fecAsignacion, BigInteger ideFunci, String codDependencia,
+                         String codTipAsignacion, String observaciones, String codTipCausal, String ideUsuarioCreo,
+                         Date fecCreo, String codTipProceso){
+        this.ideAsignacion = ideAsignacion;
+        this.fecAsignacion = fecAsignacion;
+        this.ideFunci = ideFunci;
+        this.codDependencia = codDependencia;
+        this.codTipAsignacion = codTipAsignacion;
+        this.observaciones = observaciones;
+        this.codTipCausal = codTipCausal;
+        this.ideUsuarioCreo = ideUsuarioCreo;
+        this.fecCreo = fecCreo;
+        this.codTipProceso = codTipProceso;
+    }
 
     @PrePersist
     protected void onCreate() {

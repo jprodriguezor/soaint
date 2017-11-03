@@ -278,18 +278,15 @@ public class AsignacionControl {
     }
 
     /**
-     *
      * @param ideAgente
      * @param ideDocumento
      * @param codDependencia
      * @param ideFunci
      * @throws SystemException
      */
-    public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci)throws SystemException{
-        try{
-            DctAsigUltimo asignacionUltimo = em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
-                    .setParameter("IDE_AGENTE", ideAgente)
-                    .getSingleResult();
+    public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci) throws SystemException {
+        try {
+            DctAsigUltimo asignacionUltimo = getAsignacionUltimoByIdeAgente(ideAgente);
 
             CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
                     .ideDocumento(ideDocumento)
@@ -317,7 +314,79 @@ public class AsignacionControl {
 
             em.persist(asignacion);
             em.merge(asignacionUltimo);
+            em.flush();
 
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param ideAgente
+     * @param ideDocumento
+     * @param ideFunci
+     * @param causalDevolucion
+     * @param observaciones
+     * @throws SystemException
+     */
+    public void actualizarAsignacionFromDevolucion(BigInteger ideAgente, BigInteger ideDocumento, BigInteger ideFunci,
+                                                   String causalDevolucion, String observaciones) throws SystemException {
+        try {
+            DctAsigUltimo asignacionUltimo = getAsignacionUltimoByIdeAgente(ideAgente);
+            CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
+                    .ideDocumento(ideDocumento)
+                    .build();
+
+            CorAgente agente = CorAgente.newInstance()
+                    .ideAgente(ideAgente)
+                    .build();
+
+            DctAsignacion asignacion = em.createNamedQuery("DctAsignacion.findByIdeAsigUltimo", DctAsignacion.class)
+                    .setParameter("IDE_ASIG_ULTIMO", asignacionUltimo.getIdeAsigUltimo())
+                    .getSingleResult();
+
+            asignacion.setCorAgente(agente);
+            asignacion.setCorCorrespondencia(correspondencia);
+            asignacion.setCodTipCausal(causalDevolucion);
+            asignacion.setObservaciones(observaciones);
+
+            asignacionUltimo.setNumDevoluciones(asignacionUltimo.getNumDevoluciones() + 1);
+            asignacionUltimo.setIdeUsuarioCambio(ideFunci);
+            asignacionUltimo.setFecCambio(new Date());
+            asignacionUltimo.setDctAsignacion(asignacion);
+            asignacionUltimo.setCorCorrespondencia(correspondencia);
+            asignacionUltimo.setCorAgente(agente);
+
+            em.merge(asignacion);
+            em.merge(asignacionUltimo);
+            em.flush();
+
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    private DctAsigUltimo getAsignacionUltimoByIdeAgente(BigInteger ideAgente) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
+                    .setParameter("IDE_AGENTE", ideAgente)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("asignacion.asignacion_not_exist_by_ideAgente")
+                    .withRootException(n)
+                    .buildBusinessException();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

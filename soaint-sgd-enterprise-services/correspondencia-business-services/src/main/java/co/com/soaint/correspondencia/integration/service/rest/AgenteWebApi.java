@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -52,7 +53,6 @@ public class AgenteWebApi {
     }
 
     /**
-     *
      * @param redireccion
      * @throws SystemException
      */
@@ -61,5 +61,17 @@ public class AgenteWebApi {
     public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
         log.info("processing rest request - redireccionar correspondencia");
         boundary.redireccionarCorrespondencia(redireccion);
+    }
+
+    /**
+     *
+     * @param devolucion
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/agente/devolver")
+    public void devolverCorrespondencia(DevolucionDTO devolucion) throws SystemException {
+        log.info("processing rest request - devolver correspondencia");
+        boundary.devolverCorrespondencia(devolucion);
     }
 }

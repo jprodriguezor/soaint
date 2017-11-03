@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.AgenteControl;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -28,7 +29,6 @@ public class GestionarAgente {
     // ----------------------
 
     /**
-     *
      * @param agenteDTO
      * @throws BusinessException
      * @throws SystemException
@@ -38,11 +38,18 @@ public class GestionarAgente {
     }
 
     /**
-     *
      * @param redireccion
      * @throws SystemException
      */
     public void redireccionarCorrespondencia(RedireccionDTO redireccion) throws SystemException {
         control.redireccionarCorrespondencia(redireccion);
+    }
+
+    /**
+     * @param devolucion
+     * @throws SystemException
+     */
+    public void devolverCorrespondencia(DevolucionDTO devolucion) throws SystemException {
+        control.devolverCorrespondencia(devolucion);
     }
 }
