@@ -1,6 +1,7 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
 import co.com.soaint.bpm.services.integration.services.IProcessServices;
+import co.com.soaint.bpm.services.integration.services.ITaskServices;
 import co.com.soaint.bpm.services.util.EngineConexion;
 import co.com.soaint.bpm.services.util.Estados;
 import co.com.soaint.bpm.services.util.SystemParameters;
@@ -85,7 +86,7 @@ public class ProcessService implements IProcessServices {
     @PersistenceContext
     private EntityManager em;
     @Autowired
-    TasksService tareaOperaciones;
+    ITaskServices tareaOperaciones;
     EngineConexion engine = EngineConexion.getInstance();
     Estados estadosOperaciones = new Estados();
 
