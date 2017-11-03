@@ -280,6 +280,7 @@ public class TasksService implements ITaskServices {
             List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), formatoIdioma);
             for (TaskSummary task : tasks) {
                 entrada.setInstanciaProceso(task.getProcessInstanceId());
+                entrada.setIdDespliegue(task.getDeploymentId());
                 JSONObject respuestaJson = new JSONObject(procesoOperaciones.listarVariablesProcesos(entrada));
                 JSONObject valor = respuestaJson.getJSONObject("variables");
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
@@ -411,6 +412,7 @@ public class TasksService implements ITaskServices {
      * @throws MalformedURLException
      */
     @Override
+
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws SystemException {
 
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
