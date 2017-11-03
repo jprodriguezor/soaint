@@ -34,6 +34,7 @@ public class RespuestaTareaDTO implements Serializable {
     private String idDespliegue;
     private Long idParent;
     private String descripcion;
+    private String codigoDependencia;
 
     public RespuestaTareaDTO(Long idTarea, String nombre, String estado, String idResponsable, Date fechaCreada, Date tiempoActivacion, Date tiempoExpiracion, Long idInstanciaProceso) {
         this.idTarea = idTarea;
