@@ -1,10 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {environment} from 'environments/environment';
-import {HttpHandler} from 'app/infrastructure/utils/http-handler';
-import {Usuario} from 'app/domain/usuario';
-import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as selectors from './admin-layout-selectors';
@@ -16,10 +11,7 @@ import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/pro
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 import {layoutWidth} from 'app/ui/layout-components/container/admin-layout/redux-state/admin-layout-selectors';
 import {SelectDependencyGroupAction} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
-import {
-  getSelectedDependencyGroupFuncionario,
-  getSuggestionsDependencyGroupFuncionarioArray
-} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getSelectedDependencyGroupFuncionario, getSuggestionsDependencyGroupFuncionarioArray} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {createSelector} from 'reselect';
 
 

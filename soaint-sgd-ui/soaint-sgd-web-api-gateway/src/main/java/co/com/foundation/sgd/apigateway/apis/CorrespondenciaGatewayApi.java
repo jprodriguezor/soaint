@@ -175,6 +175,16 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @POST
+    @Path("/devolver")
+    @JWTTokenSecurity
+    public Response devolverComunicaciones(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
+        Response response = client.devolverComunicaciones(devolucion);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @GET
     @Path("/metricasTiempo")
     @JWTTokenSecurity
