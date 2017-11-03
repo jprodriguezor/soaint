@@ -96,6 +96,14 @@ public class CorrespondenciaClient {
                 .put(Entity.json(redireccionDTO));
     }
 
+    public Response devolverComunicaciones(DevolucionDTO devolucionDTO) {
+        log.info("Correspondencia - [trafic] - redireccionar Comunicaciones with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/agente-web-api/agente/devolver")
+                .request()
+                .put(Entity.json(devolucionDTO));
+    }
+
     public Response metricasTiempoDrools(String payload) {
         log.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 

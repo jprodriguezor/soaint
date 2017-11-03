@@ -249,6 +249,38 @@ public class AgenteControl {
     }
 
     /**
+     *
+     * @param devolucion
+     * @throws SystemException
+     */
+    public void  devolverCorrespondencia(DevolucionDTO devolucion)throws SystemException{
+        try {
+            for (ItemDevolucionDTO itemDevolucion : devolucion.getItemsDevolucion()) {
+                CorrespondenciaDTO correspondencia = correspondenciaControl.consultarCorrespondenciaByIdeAgente(itemDevolucion.getAgente().getIdeAgente());
+                actualizarEstadoAgente(AgenteDTO.newInstance()
+                        .ideAgente(itemDevolucion.getAgente().getIdeAgente())
+                        .codEstado(EstadoAgenteEnum.DEVUELTO.getCodigo())
+                        .build());
+
+                //-----------------Asignacion--------------------------
+
+                asignacionControl.actualizarAsignacionFromDevolucion(itemDevolucion.getAgente().getIdeAgente(),
+                        correspondencia.getIdeDocumento(), devolucion.getTraza().getIdeFunci(), itemDevolucion.getCausalDevolucion(),
+                        devolucion.getTraza().getObservacion());
+
+                //-----------------------------------------------------
+            }
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+
+    }
+
+    /**
      * @param ideAgente
      * @return
      */
