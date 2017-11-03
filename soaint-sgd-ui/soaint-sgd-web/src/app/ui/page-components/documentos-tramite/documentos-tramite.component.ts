@@ -20,6 +20,7 @@ import {WARN_REDIRECTION} from '../../../shared/lang/es';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {DevolverDTO} from '../../../domain/devolverDTO';
 
 
 @Component({
@@ -156,16 +157,46 @@ export class DocumentosTramiteComponent implements OnInit {
           });
       }
     });
+  }
 
+  devolver(payload) {
+    this.checkRejectAgente('numDevoluciones').subscribe(checks => {
+      if (!checks.success) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
+        this.redireccionFallida$.next(true);
+      } else {
+        this._asiganacionSandbox.rejectComunications(this.rejectPayload(checks.agente, payload)).toPromise()
+          .then(() => {
+            this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+          });
+      }
+    });
   }
 
   checkRedirectionAgente(key, justification): Observable<any> {
-
     return Observable.of(this.comunicacion)
       .switchMap(value => {
         const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
+        delete agente['_$visited'];
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            agente: agente
+          };
+        });
+      });
+  }
+
+  checkRejectAgente(key): Observable<any> {
+    return Observable.of(this.comunicacion)
+      .switchMap(value => {
+        const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
+        console.log(agente);
         delete agente['_$visited'];
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {
@@ -182,6 +213,26 @@ export class DocumentosTramiteComponent implements OnInit {
       traza: {
         id: null,
         observacion: justification.justificacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
+  }
+
+  rejectPayload(agente, payload): DevolverDTO {
+    return {
+      itemsDevolucion: [
+        {
+          agente: agente,
+          causalDevolucion: payload.causalDevolucion
+        }
+      ],
+      traza: {
+        id: null,
+        observacion: payload.observacion,
         ideFunci: this.funcionarioLog.id,
         codDependencia: this.dependenciaSelected.codigo,
         estado: null,

@@ -223,30 +223,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   }
 
-  devolverComunicaciones(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-
-    // const checks = this.checkRedirectionsAgentes('numDevoluciones', justificationValues);
-
-    // if (checks.failChecks.length > 0) {
-    //   this._store.dispatch(new PushNotificationAction({
-    //     severity: 'warn',
-    //     summary: WARN_REDIRECTION
-    //   }));
-    //
-    // } else {
-    //   this._store.dispatch(new PushNotificationAction({
-    //     severity: 'success',
-    //     summary: SUCCESS_REDIRECTION
-    //   }));
-    //
-    //   alert('Aún no se ha definido como se debe proceder');
-    //   // checks.successChecks.forEach(payload => {
-    //   //   // this._asignacionSandbox.redirectDispatch(payload);
-    //   //
-    //   // });
-    // }
-    //
-    // this.redireccionesFallidas = checks.failChecks;
+  devolverComunicaciones() {
+    this.popupReject.devolverComunicaciones()
   }
 
   sendRedirect() {

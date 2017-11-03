@@ -53,6 +53,10 @@ export class Sandbox {
     return this._api.post(environment.redireccionarComunicaciones_endpoint, payload);
   }
 
+  rejectComunications(payload: any) {
+    return this._api.post(environment.devolverComunicaciones_endpoint, payload);
+  }
+
   assignDispatch(payload) {
     this._store.dispatch(new actions.AssignAction(payload));
   }

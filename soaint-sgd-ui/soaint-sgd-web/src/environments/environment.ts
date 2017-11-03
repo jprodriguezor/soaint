@@ -2,8 +2,8 @@
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
-const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.99.100:8080/soaint-sgd-web-api-gateway/apis';
@@ -48,6 +48,7 @@ export const environment = {
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
+  devolverComunicaciones_endpoint: `${host}/correspondencia-gateway-api/devolver`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
