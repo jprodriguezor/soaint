@@ -1,4 +1,12 @@
-import {AfterContentInit, AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
+  AfterContentInit
+} from '@angular/core';
+import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
+import {AgentDTO} from 'app/domain/agentDTO';
+import {DocumentoDTO} from 'app/domain/documentoDTO';
+import {AnexoDTO} from 'app/domain/anexoDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
@@ -22,6 +30,7 @@ import {getDestinatarioPrincial} from '../../../infrastructure/state-management/
 import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 import 'rxjs/add/operator/skipWhile';
 import {ComunicacionOficialEntradaDTV} from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+import {Sandbox as ComunicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 
 
 declare const require: any;
@@ -85,6 +94,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
+              private _coSandbox: ComunicacionOficialSandbox,
               private _store: Store<RootState>,
               private _taskSandBox: TaskSandBox) {
   }
@@ -173,6 +183,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
     const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);
     this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+
+    console.log(this.radicacion);
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
@@ -329,6 +341,12 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
       });
     }
+  }
+
+  testEditRadicado() {
+    this._coSandbox.loadData({
+
+    });
   }
 
   ngOnDestroy() {
