@@ -123,7 +123,10 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   rejectComunications($event) {
-    this.onDevolverTriggered.emit($event);
+    this.onDevolverTriggered.emit({
+      payload: $event,
+      taskToCompletePayload: this.getTaskToCompletePayload()
+    });
     this.justificationDialogVisible = false;
 
     /*
@@ -188,6 +191,7 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   sendReject() {
+    this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id === 1 ? 5 : 6;
     this.popupReject.devolverComunicaciones();
   }
 

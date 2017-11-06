@@ -1,13 +1,12 @@
 import {
-  AfterContentInit,
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation
+  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
+  AfterContentInit
 } from '@angular/core';
+import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
+import {AgentDTO} from 'app/domain/agentDTO';
+import {DocumentoDTO} from 'app/domain/documentoDTO';
+import {AnexoDTO} from 'app/domain/anexoDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
@@ -16,10 +15,7 @@ import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
-import {
-  sedeDestinatarioEntradaSelector,
-  tipoDestinatarioEntradaSelector
-} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';

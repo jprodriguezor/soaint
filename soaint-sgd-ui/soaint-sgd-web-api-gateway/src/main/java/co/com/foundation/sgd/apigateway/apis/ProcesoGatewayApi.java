@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/proceso-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -82,10 +83,17 @@ public class ProcesoGatewayApi {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
         Response response = procesoClient.listarTareas(entrada);
-        String responseContent = response.readEntity(String.class);
+        List<RespuestaTareaDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
+        });
+
+        List<RespuestaTareaDTO> result = responseContent
+                .stream()
+                .filter((tarea) -> tarea.getCodigoDependencia().equals(entrada.getParametros().get("codDependencia")))
+                .collect(Collectors.toList());
+
         log.info(CONTENT + responseContent);
 
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        return Response.status(response.getStatus()).entity(result).build();
     }
 
     @POST
