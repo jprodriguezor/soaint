@@ -37,7 +37,7 @@ import {PlanillaGeneradaComponent} from './ui/bussiness-components/planilla-gene
 import {DIRECTIVES} from './shared/directives/__directives.include';
 import {PIPES_AS_PROVIDERS} from './shared/pipes/__pipes.include';
 import {customHttpProvider} from './shared/interceptors/http.provider';
-
+import { OrderModule } from 'ngx-order-pipe';
 
 @NgModule({
   imports: [
@@ -49,6 +49,7 @@ import {customHttpProvider} from './shared/interceptors/http.provider';
     BrowserAnimationsModule,
     NgxChartsModule,
     NgxBarcodeModule,
+    OrderModule,
     ToastrModule.forRoot({
       closeButton: true, // show close button
       timeOut: 3000, // time to live

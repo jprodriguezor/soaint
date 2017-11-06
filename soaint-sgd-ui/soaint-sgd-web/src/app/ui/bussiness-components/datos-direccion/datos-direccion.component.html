@@ -313,7 +313,7 @@
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | orderBy:'nombre' | dropdownItem"
                           id="prefijoCuadrante_se"
                           formControlName="prefijoCuadrante_se"
                           placeholder="Seleccione"
