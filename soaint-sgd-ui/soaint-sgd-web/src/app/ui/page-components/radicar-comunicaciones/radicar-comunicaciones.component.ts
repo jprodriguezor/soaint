@@ -1,15 +1,6 @@
-import {
-  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
-  AfterContentInit
-} from '@angular/core';
-import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from 'app/domain/agentDTO';
-import {DocumentoDTO} from 'app/domain/documentoDTO';
-import {AnexoDTO} from 'app/domain/anexoDTO';
-import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {AfterContentInit, AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
-import {ContactoDTO} from 'app/domain/contactoDTO';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import * as moment from 'moment';
 import {Observable} from 'rxjs/Observable';
@@ -31,8 +22,6 @@ import {getDestinatarioPrincial} from '../../../infrastructure/state-management/
 import {RadicarSuccessAction} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions';
 import 'rxjs/add/operator/skipWhile';
 import {ComunicacionOficialEntradaDTV} from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
-import {ROUTES_PATH} from '../../../app.route-names';
-import {go} from '@ngrx/router-store';
 
 
 declare const require: any;
@@ -184,8 +173,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
     const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);
     this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
-
-    console.log(this.radicacion);
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
