@@ -16,20 +16,11 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import * as actions from './tareasDTO-actions';
 import {Sandbox} from './tareasDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
-
 import {LoadTasksInsideProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {tassign} from 'tassign';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
-
-
-function isLoaded() {
-  return (source) =>
-    source.filter(values => {
-      console.log(values);
-      return true
-    })
-}
+import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/funcionarioDTO-selectors';
 
 @Injectable()
 export class Effects {
@@ -44,8 +35,9 @@ export class Effects {
     .ofType(actions.ActionTypes.LOAD)
     .distinctUntilChanged()
     .map(toPayload)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .switchMap(
-      (payload) => this._sandbox.loadData(payload)
+      ([payload, dependency]) => this._sandbox.loadData(payload, dependency)
         .map((response) => new actions.LoadSuccessAction(response))
         .catch((error) => Observable.of(new actions.LoadFailAction({error})))
     );

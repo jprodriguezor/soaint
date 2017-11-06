@@ -19,6 +19,8 @@ import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
+import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/funcionarioDTO-selectors';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class Sandbox {
@@ -37,16 +39,18 @@ export class Sandbox {
     });
   }
 
-  loadData(payload: any) {
+  loadData(payload: any, dependency?: any) {
     const clonePayload = tassign(payload, {
       estados: [
         'RESERVADO',
         'ENPROGRESO',
         'LISTO'
-      ]
+      ],
+      parametros: {
+        codDependencia: (dependency)? dependency.codigo: null
+      }
     });
-    return this._api.post(environment.tasksForStatus_endpoint,
-      Object.assign({}, clonePayload, this.authPayload));
+    return this._api.post(environment.tasksForStatus_endpoint, Object.assign({}, clonePayload, this.authPayload));
   }
 
   getTaskStats() {
