@@ -174,6 +174,7 @@ export class DocumentosTramiteComponent implements OnInit {
         this._asiganacionSandbox.rejectComunications(this.rejectPayload(checks.agente, payload.payload)).toPromise()
           .then(() => {
             payload.taskToCompletePayload.parametros.causalDevolucion = payload.payload.causalDevolucion.codigo;
+            payload.taskToCompletePayload.parametros.codDependenciaCo = this.comunicacion.correspondencia.codDependencia;
             this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
           });
       }
