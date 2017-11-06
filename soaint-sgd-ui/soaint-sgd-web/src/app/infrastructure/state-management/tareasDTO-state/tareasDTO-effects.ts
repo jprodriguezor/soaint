@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Effect, Actions, toPayload} from '@ngrx/effects';
-import {Action} from '@ngrx/store';
+import {Actions, Effect, toPayload} from '@ngrx/effects';
+import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -13,7 +13,6 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/distinctUntilChanged';
-import {Store} from '@ngrx/store';
 import * as actions from './tareasDTO-actions';
 import {Sandbox} from './tareasDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
