@@ -9,7 +9,6 @@ import 'rxjs/add/operator/toPromise';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {NgxBarcodeModule} from 'ngx-barcode';
 import {ToastrModule} from 'ngx-toastr';
-import { OrderModule } from 'ngx-order-pipe';
 // APP COMPONENTS
 import {AppComponent} from './app.component';
 import {
