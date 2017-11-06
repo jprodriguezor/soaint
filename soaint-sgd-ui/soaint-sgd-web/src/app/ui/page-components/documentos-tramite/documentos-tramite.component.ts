@@ -168,8 +168,9 @@ export class DocumentosTramiteComponent implements OnInit {
         }));
         this.redireccionFallida$.next(true);
       } else {
-        this._asiganacionSandbox.rejectComunications(this.rejectPayload(checks.agente, payload)).toPromise()
+        this._asiganacionSandbox.rejectComunications(this.rejectPayload(checks.agente, payload.payload)).toPromise()
           .then(() => {
+            payload.taskToCompletePayload.parametros.causalDevolucion = payload.payload.causalDevolucion.codigo;
             this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
           });
       }
@@ -196,7 +197,6 @@ export class DocumentosTramiteComponent implements OnInit {
     return Observable.of(this.comunicacion)
       .switchMap(value => {
         const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
-        console.log(agente);
         delete agente['_$visited'];
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {
