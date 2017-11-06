@@ -128,11 +128,6 @@ export class GestionarComunicacionComponent implements OnInit {
       taskToCompletePayload: this.getTaskToCompletePayload()
     });
     this.justificationDialogVisible = false;
-
-    /*
-    *
-    * this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id === 1 ? 5 : 6;
-    this.completeTask();*/
   }
 
   onChange() {

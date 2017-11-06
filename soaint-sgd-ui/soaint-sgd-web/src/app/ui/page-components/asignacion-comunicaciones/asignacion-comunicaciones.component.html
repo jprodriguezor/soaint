@@ -219,7 +219,7 @@
     <p-header>
       Devolver
     </p-header>
-    <app-popup-reject #popupReject></app-popup-reject>
+    <app-popup-reject #popupReject (onRejectComunication)="rejectComunications($event)"></app-popup-reject>
 
 
     <p-footer>
@@ -227,7 +227,7 @@
         <button pButton type="button" class="ui-button-primary"
                 label="Cerrar" (click)="hideRejectDialog()"></button>
         <button pButton type="button" class="ui-button-primary" [disabled]="!popupReject.form.valid"
-                label="Devolver" (click)="devolverComunicaciones()"></button>
+                label="Devolver" (click)="sendReject()"></button>
       </div>
     </p-footer>
   </p-dialog>

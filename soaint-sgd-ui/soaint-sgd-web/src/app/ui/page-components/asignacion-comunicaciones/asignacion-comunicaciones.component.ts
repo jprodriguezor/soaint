@@ -27,6 +27,7 @@ import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/forkJoin';
 import {tassign} from 'tassign';
 import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
+import {DevolverDTO} from '../../../domain/devolverDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -223,10 +224,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   }
 
-  devolverComunicaciones() {
-    this.popupReject.devolverComunicaciones()
-  }
-
   sendRedirect() {
     this.popupjustificaciones.redirectComunications();
   }
@@ -379,6 +376,24 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       }).toArray();
   }
 
+  checkDevolucionesAgentes(key): Observable<any[]> {
+
+    const failChecks = [];
+    const successChecks = [];
+
+    return Observable.from(this.selectedComunications)
+      .flatMap(value => {
+        const agente = value.agenteList[0];
+        delete agente['_$visited'];
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            agente: agente
+          };
+        });
+      }).toArray();
+  }
+
   createRecursiveRedirectsPayload(agentes, justification): RedireccionDTO {
     return {
       agentes: [...agentes],
@@ -406,6 +421,66 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       cod_estado: this.form.get('estadoCorrespondencia').value,
       nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
     });
+  }
+
+
+  rejectComunications($event) {
+    console.log($event);
+    this.checkDevolucionesAgentes('numDevoluciones').subscribe(checks => {
+
+      const failChecks = [];
+      const agentesSuccess = [];
+
+      checks.forEach(value => {
+        if (!value.success) {
+          failChecks.push(value.agente);
+        } else {
+          agentesSuccess.push(value.agente);
+        }
+      });
+
+      if (failChecks.length > 0) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
+
+        this.redireccionesFallidas = failChecks;
+
+      } else {
+        this._asignacionSandbox.rejectComunications(this.rejectPayload(agentesSuccess, $event.payload));
+      }
+    });
+  }
+
+  rejectPayload(agentes, payload): DevolverDTO {
+    return {
+      itemsDevolucion: this.getItemsDevolucion(agentes, payload),
+      traza: {
+        id: null,
+        observacion: payload.observacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
+  }
+
+  getItemsDevolucion(agentes: any[], payload): any[] {
+    const items = [];
+    agentes.forEach(ag => {
+      items.push({
+        agente: ag,
+        causalDevolucion: payload.causalDevolucion.codigo
+      });
+    });
+    return items;
+  }
+
+  sendReject() {
+    this.popupReject.devolverComunicaciones();
   }
 }
 

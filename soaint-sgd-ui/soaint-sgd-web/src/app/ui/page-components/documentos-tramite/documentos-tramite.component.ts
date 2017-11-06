@@ -61,6 +61,8 @@ export class DocumentosTramiteComponent implements OnInit {
 
   docSrc: any;
 
+  ideEcm: string;
+
   task: any;
 
   redireccionFallida$: BehaviorSubject<any> = new BehaviorSubject(false);
@@ -105,7 +107,8 @@ export class DocumentosTramiteComponent implements OnInit {
   }
 
   loadDocumento() {
-    this.docSrc = environment.obtenerDocumento + this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.ideEcm = this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.docSrc = environment.obtenerDocumento + this.ideEcm;
   }
 
   preview(file) {
