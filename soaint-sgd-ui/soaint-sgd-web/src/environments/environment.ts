@@ -49,6 +49,7 @@ export const environment = {
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   devolverComunicaciones_endpoint: `${host}/correspondencia-gateway-api/devolver`,
+  devolverComunicacionesAsigancion_endpoint: `${host}/correspondencia-gateway-api/devolver/asignacion`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,

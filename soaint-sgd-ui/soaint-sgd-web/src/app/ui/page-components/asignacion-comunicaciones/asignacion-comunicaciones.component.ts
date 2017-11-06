@@ -377,10 +377,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   checkDevolucionesAgentes(key): Observable<any[]> {
-
-    const failChecks = [];
-    const successChecks = [];
-
     return Observable.from(this.selectedComunications)
       .flatMap(value => {
         const agente = value.agenteList[0];
@@ -388,6 +384,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {
             success: ruleCheck,
+            radicacion: value,
             agente: agente
           };
         });
@@ -448,7 +445,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         this.redireccionesFallidas = failChecks;
 
       } else {
-        this._asignacionSandbox.rejectComunications(this.rejectPayload(agentesSuccess, $event.payload));
+        this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(this.selectedComunications, $event)).subscribe();
       }
     });
   }
@@ -471,8 +468,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   getItemsDevolucion(agentes: any[], payload): any[] {
     const items = [];
     agentes.forEach(ag => {
+      const a = ag.agenteList[0];
+      a.nroDocuIdentidad = ag.correspondencia.nroRadicado;
+      a.codDependencia = this.dependenciaSelected.codigo;
       items.push({
-        agente: ag,
+        agente: a,
         causalDevolucion: payload.causalDevolucion.codigo
       });
     });

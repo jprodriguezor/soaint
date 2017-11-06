@@ -185,6 +185,31 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @POST
+    @Path("/devolver/asignacion")
+    @JWTTokenSecurity
+    public Response devolverComunicacionesAsignacion(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
+
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso-gestor-devoluciones");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+
+        devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("numeroRadicado", itemDevolucion.getAgente().getNroDocuIdentidad());
+            parametros.put("causalDevolucion", itemDevolucion.getCausalDevolucion());
+            parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
+            parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
+            parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
+            this.procesoClient.iniciarTercero(entradaProceso);
+        }));
+
+        Response response = client.devolverComunicaciones(devolucion);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @GET
     @Path("/metricasTiempo")
     @JWTTokenSecurity
