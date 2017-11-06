@@ -133,10 +133,10 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText
-                         id="numeroGuia"
-                         formControlName="numeroGuia"
-                         [dynamicDisable]="!visibility.numeroGuia"
-                         (blur)="listenForBlurEvents('numeroGuia')"
+                     id="numeroGuia"
+                     formControlName="numeroGuia"
+                     [dynamicDisable]="!visibility.numeroGuia"
+                     (blur)="listenForBlurEvents('numeroGuia')"
               >
               <label for="empresaMensajeria"><span class="text-danger">*</span>Número guía</label>
 
@@ -154,7 +154,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta"
+                    <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta" [disabled]="true"
                                [ngModel]="tiempoRespuestaMetricaTipologia$ | async"></p-spinner>
                     <label>Tiempo de respuesta</label>
                   </span>
@@ -172,6 +172,7 @@
               <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItem"
                           [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
                           id="unidadTiempo"
+                          [disabled]="true"
                           formControlName="unidadTiempo"
                           placeholder="Seleccione"
                           [autoWidth]="false"
@@ -191,7 +192,7 @@
                 <!--(blur)="listenForBlurEvents('numeroFolio')"-->
                 <!--&gt;-->
                 <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio"
-                           (OnBlur)="listenForBlurEvents('numeroFolio')"></p-spinner>
+                           (OnBlur)="listenForBlurEvents('numeroFolio')" [min]="0"></p-spinner>
               <label><span class="text-danger">*</span>No. de folio</label>
                <div class="ui-message ui-messages-error"
                     *ngIf="validations.numeroFolio">
@@ -248,7 +249,7 @@
         <!-- Radicados Referidos -->
         <div class="ui-g-12" *ngIf="editable === true" style="margin-top: 8px">
 
-            <div class="form-group" style="display: flex; margin: 16px">
+          <div class="form-group" style="display: flex; margin: 16px">
               <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
                   <input type="text" pInputText
                          id="radicadoReferido"
@@ -257,7 +258,7 @@
                   <label>Radicados Referidos</label>
               </span>
 
-              <span style="float: right">
+            <span style="float: right">
                  <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
                          (click)="addRadicadosReferidos()" *ngIf="editable === true"
                          [disabled]="!form.get('radicadoReferido').value">
@@ -265,7 +266,7 @@
                 </button>
               </span>
 
-            </div>
+          </div>
         </div>
 
         <div class="ui-g-12 ui-lg-12 padding-12">
@@ -278,7 +279,7 @@
                        emptyMessage="No se encontraron resultados"
           >
             <!--Header-->
-            <p-header> Radicados referidos </p-header>
+            <p-header> Radicados referidos</p-header>
             <!--End Header-->
 
             <!--Body-->
@@ -340,18 +341,18 @@
 
       <div class="ui-sm-12 ui-g-12 ui-g-12">
         <div class="form-group" style="display: flex; margin: 16px">
-              <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
-                 <textarea [rows]="3"  pInputTextarea
+          <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                 <textarea [rows]="3" pInputTextarea
                            id="descripcionAnexos"
                            placeholder="Descripción"
                            autoResize="false"
                            formControlName="tipoAnexosDescripcion"
                  ></textarea>
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.tipoAnexosDescripcion">
-                      {{ validations.tipoAnexosDescripcion }}
-                  </div>
-              </div>
+            <div class="ui-message ui-messages-error"
+                 *ngIf="validations.tipoAnexosDescripcion">
+              {{ validations.tipoAnexosDescripcion }}
+            </div>
+          </div>
 
           <span style="float: right; margin-top: 30px">
                   <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
@@ -372,7 +373,7 @@
                      emptyMessage="No se encontraron resultados"
         >
 
-          <p-header> Listado de anexos </p-header>
+          <p-header> Listado de anexos</p-header>
 
           <!--Body-->
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>

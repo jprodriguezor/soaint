@@ -38,6 +38,8 @@ export class DetallesAsignacionComponent implements OnInit {
 
   docSrc: any;
 
+  ideEcm: string;
+
   constructor(private _changeDetectorRef: ChangeDetectorRef, private _asiganacionSandbox: AsiganacionDTOSandbox) {
   }
 
@@ -50,12 +52,13 @@ export class DetallesAsignacionComponent implements OnInit {
   }
 
   loadDocumento() {
-    this.docSrc = environment.obtenerDocumento + this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.ideEcm = this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.docSrc = environment.obtenerDocumento + this.ideEcm;
   }
 
   preview(file) {
     const self = this;
-    let myblob = new Blob([file], {
+    const myblob = new Blob([file], {
       type: 'application/pdf'
     });
     const reader = new FileReader();

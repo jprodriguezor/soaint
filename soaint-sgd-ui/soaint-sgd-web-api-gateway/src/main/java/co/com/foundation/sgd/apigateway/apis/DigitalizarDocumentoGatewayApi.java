@@ -5,6 +5,7 @@ import co.com.soaint.foundation.canonical.ui.DigitalizarDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -37,14 +38,18 @@ public class DigitalizarDocumentoGatewayApi {
         file.getFormDataMap().forEach((key, parts) -> {
             parts.forEach((part) -> {
                 Response response = digitalizarDocumentoClient.digitalizar(part, fileName, tipoComunicacion);
-                ecmIds.add(response.readEntity(String.class));
+                if (response.getStatus() == HttpStatus.OK.value())
+                    ecmIds.add(response.readEntity(String.class));
             });
         });
         log.info("DigitalizarDocumentoGatewayApi - [content] : " + ecmIds);
+        if (!ecmIds.isEmpty()) {
+            DigitalizarDocumentoDTO docs = new DigitalizarDocumentoDTO(ecmIds);
 
-        DigitalizarDocumentoDTO docs = new DigitalizarDocumentoDTO(ecmIds);
+            return Response.status(Response.Status.OK).entity(docs).build();
+        }
 
-        return Response.status(Response.Status.OK).entity(docs).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
 

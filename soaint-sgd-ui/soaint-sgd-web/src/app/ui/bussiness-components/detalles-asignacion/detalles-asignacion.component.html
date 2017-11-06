@@ -15,7 +15,7 @@
       </p-tabPanel>
 
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding>
-        <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
+        <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc && ideEcm">
           <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
         </div>
       </p-tabPanel>
