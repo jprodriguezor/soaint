@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,18 +19,11 @@ import java.util.List;
 @Log4j2
 public class CorrespondenciaClient {
 
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    @Value("${backapi.endpoint.url}")
-    private String endpoint = "";
+    private String droolsEndpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL);
 
-    @Value("${backapi.ecm.service.endpoint.url}")
-    private String ecmEndpoint = "";
-
-    @Value("${backapi.drools.service.endpoint.url}")
-    private String droolsEndpoint = "";
-
-    @Value("${backapi.drools.service.token}")
-    private String droolsAuthToken = "";
+    private String droolsAuthToken = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN);
 
     public CorrespondenciaClient() {
         super();
@@ -110,7 +104,7 @@ public class CorrespondenciaClient {
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/regla")
                 .request()
-                .header("Authorization", droolsAuthToken)
+                .header("Authorization", "Basic " + droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));
@@ -118,12 +112,12 @@ public class CorrespondenciaClient {
 
     public Response verificarRedireccionesDrools(String payload) {
         log.info("Correspondencia - [trafic] - verificar redirecciones Regla: " + droolsEndpoint);
-        log.error("DROOLS TOKEN: " + droolsAuthToken);
+        log.error("DROOLS TOKEN: Basic " + droolsAuthToken);
 
         WebTarget wt = ClientBuilder.newClient().target(droolsEndpoint);
         return wt.path("/redireccion")
                 .request()
-                .header("Authorization", droolsAuthToken)
+                .header("Authorization", "Basic " + droolsAuthToken)
                 .header("X-KIE-ContentType", "json")
                 .header("Content-Type", "application/json")
                 .post(Entity.json(payload));

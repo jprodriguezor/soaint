@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,8 +20,7 @@ import javax.ws.rs.core.Response;
 @NoArgsConstructor
 public class ProcesoClient {
 
-    @Value("${backapi.enterprise.service.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL);
 
     public Response list() {
         log.info("Proccess - [trafic] - listing Proccess with endpoint: " + endpoint);

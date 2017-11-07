@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,9 +16,7 @@ import javax.ws.rs.core.Response;
 @Log4j2
 public class TipoComplementoClient {
 
-
-    @Value("${backapi.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
     @Value("${contants.tipocomplemento.value}")
     private String tipoComplementoValue = "";

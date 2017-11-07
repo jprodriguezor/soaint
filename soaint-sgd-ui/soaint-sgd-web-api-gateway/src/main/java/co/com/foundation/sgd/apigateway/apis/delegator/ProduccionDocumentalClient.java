@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,6 @@ import java.util.*;
 @ApiDelegator
 @Log4j2
 public class ProduccionDocumentalClient {
-
-    @Value("${backapi.endpoint.url}")
-    private String endpoint = "";
 
     @Autowired
     private ProcesoClient procesoClient;
@@ -34,24 +32,24 @@ public class ProduccionDocumentalClient {
         nuevaEntrada.setPass(entrada.getPass());
         nuevaEntrada.setParametros(new HashMap<>());
 
-        String numeroRadicado = entrada.getParametros().getOrDefault("numeroRadicado","").toString();
+        String numeroRadicado = entrada.getParametros().getOrDefault("numeroRadicado", "").toString();
 
-        for (Map proyector: (ArrayList<Map>)entrada.getParametros().get("proyectores")) {
+        for (Map proyector : (ArrayList<Map>) entrada.getParametros().get("proyectores")) {
             nuevaEntrada.getParametros().clear();
-            LinkedHashMap funcionario = (LinkedHashMap)proyector.get("funcionario");
-            LinkedHashMap sedeAdministrativa = (LinkedHashMap)proyector.get("sede");
-            LinkedHashMap dependencia = (LinkedHashMap)proyector.get("dependencia");
-            LinkedHashMap tipoPlantilla = (LinkedHashMap)proyector.get("tipoPlantilla");
-            nuevaEntrada.getParametros().putAll(new HashMap<String,Object>(){
+            LinkedHashMap funcionario = (LinkedHashMap) proyector.get("funcionario");
+            LinkedHashMap sedeAdministrativa = (LinkedHashMap) proyector.get("sede");
+            LinkedHashMap dependencia = (LinkedHashMap) proyector.get("dependencia");
+            LinkedHashMap tipoPlantilla = (LinkedHashMap) proyector.get("tipoPlantilla");
+            nuevaEntrada.getParametros().putAll(new HashMap<String, Object>() {
                 {
-                    put("usuarioProyector",funcionario.getOrDefault("loginName",""));
-                    put("numeroRadicado",numeroRadicado);
-                    put("codigoSede",sedeAdministrativa.getOrDefault("codigo",null));
-                    put("codigoDependencia",dependencia.getOrDefault("codigo",null));
-                    put("codigoTipoPlantilla",tipoPlantilla.getOrDefault("codigo",null));
+                    put("usuarioProyector", funcionario.getOrDefault("loginName", ""));
+                    put("numeroRadicado", numeroRadicado);
+                    put("codigoSede", sedeAdministrativa.getOrDefault("codigo", null));
+                    put("codDependencia", dependencia.getOrDefault("codigo", null));
+                    put("codigoTipoPlantilla", tipoPlantilla.getOrDefault("codigo", null));
                 }
             });
-            log.info("\n\r== Nueva entrada: "+nuevaEntrada.toString()+" ==\n\r");
+            log.info("\n\r== Nueva entrada: " + nuevaEntrada.toString() + " ==\n\r");
             procesoClient.iniciar(nuevaEntrada);
         }
 

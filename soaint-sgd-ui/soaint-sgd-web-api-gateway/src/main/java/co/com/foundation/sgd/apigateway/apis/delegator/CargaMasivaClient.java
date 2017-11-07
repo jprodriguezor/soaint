@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
@@ -18,8 +19,8 @@ import java.io.InputStream;
 @ApiDelegator
 @Log4j2
 public class CargaMasivaClient {
-    @Value("${backapi.cargamasiva.endpoint.url}")
-    private String endpoint = "";
+
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
 
     public CargaMasivaClient() {
         super();

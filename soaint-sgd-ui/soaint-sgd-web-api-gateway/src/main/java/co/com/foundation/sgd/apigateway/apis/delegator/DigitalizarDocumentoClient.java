@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
@@ -19,20 +20,15 @@ import java.io.InputStream;
 @Log4j2
 public class DigitalizarDocumentoClient {
 
-
-    @Value("${ecm.service.endpoint.url}")
-    private String endpointEcm = "";
-
-    @Value("${backapi.ecm.service.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
 
     public DigitalizarDocumentoClient() {
         super();
     }
 
     public Response digitalizar(InputPart part, String fileName, String tipoComunicacion) {
-        log.info("Municipios - [trafic] - listing Municipios with endpointEcm: " + endpointEcm);
-        WebTarget wt = ClientBuilder.newClient().target(endpointEcm);
+        log.info("Municipios - [trafic] - listing Municipios with endpointEcm: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
 
@@ -48,7 +44,7 @@ public class DigitalizarDocumentoClient {
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {
         };
 
-        return wt.path("/ecm/subirDocumentoECM/" + fileName + "/" + tipoComunicacion)
+        return wt.path("/subirDocumentoECM/" + fileName + "/" + tipoComunicacion)
                 .request()
                 .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
