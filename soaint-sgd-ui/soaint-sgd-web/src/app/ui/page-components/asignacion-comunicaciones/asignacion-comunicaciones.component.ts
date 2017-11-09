@@ -26,7 +26,6 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/forkJoin';
 import {tassign} from 'tassign';
-import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
 import {DevolverDTO} from '../../../domain/devolverDTO';
 
 @Component({

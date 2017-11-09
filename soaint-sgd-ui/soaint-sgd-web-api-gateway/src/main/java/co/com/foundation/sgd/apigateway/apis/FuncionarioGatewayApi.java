@@ -4,11 +4,13 @@ import co.com.foundation.sgd.apigateway.apis.delegator.FuncionarioClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 
 @Path("/funcionario-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +63,11 @@ public class FuncionarioGatewayApi {
         String responseContent = response.readEntity(String.class);
         log.info("FuncionarioGatewayApi - [content] : " + responseContent);
 
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        if (response.getStatus() == HttpStatus.OK.value()) {
+            return Response.status(response.getStatus()).entity(responseContent).build();
+        }
+
+        return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
     }
 
 }

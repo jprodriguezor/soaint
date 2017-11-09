@@ -1,168 +1,168 @@
 <div class="ui-fluid produccion-documental-multiple">
+  <app-task-container>
+    <div customActions>
+      <button pButton type="button" label="Asignar" style="width:auto;margin-bottom:10px;"
+              [disabled]="listaProyectores.length === 0 || !task"
+              (click)="proyectar()"></button>
+    </div>
 
-    <app-task-container>
-        <div customActions>
-
-            <button pButton type="button" label="Asignar" style="width:auto;margin-bottom:10px;"
-                    [disabled]="listaProyectores.length === 0 || !task"
-                    (click)="proyectar()"></button>
-
+    <div taskBody>
+      <p-panel header="Gestionar producción múltiple" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid" *ngIf="numeroRadicado">
+          <div class="ui-sm-12 ui-g-3 ui-lg-3" style="margin: 20px 0">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label>Número radicado</label>
+              </div>
+              <div class="ui-g-12">
+                <label
+                  style="color: inherit">{{numeroRadicado}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3" style="margin: 20px 0">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label>Fecha de radicación</label>
+              </div>
+              <div class="ui-g-12">
+                <label
+                  style="color: inherit">{{task.variables.fechaRadicacion | date:'dd/MM/yyyy hh:mm a'}}</label>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div taskBody>
+        <form [formGroup]="form" novalidate>
+          <div class="ui-g ui-fluid">
 
-            <p-panel header="Gestionar producción múltiple" leftIcon="ui-icon-assignment">
-
-                <div class="ui-g ui-fluid" *ngIf="numeroRadicado">
-                    <div class="ui-sm-12 ui-g-3 ui-lg-3" style="margin: 20px 0">
-                        <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                                <label>Número radicado</label>
-                            </div>
-                            <div class="ui-g-12">
-                                <input type="text" pInputText [(ngModel)]="numeroRadicado" readonly/>
-                            </div>
-                        </div>
-                    </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="sede"><span class="text-danger">*</span>Sede</label>
                 </div>
-
-                <form [formGroup]="form" novalidate>
-                    <div class="ui-g ui-fluid">
-
-                        <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                          <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                              <label for="sede"><span class="text-danger">*</span>Sede</label>
-                            </div>
-                            <div class="ui-g-12 md-dropdownfield">
-                              <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
-                                          id="sede"
-                                          formControlName="sede"
-                                          placeholder="Seleccione"
-                                          [autoWidth]="false"
-                                          (onBlur)="listenForBlurEvents('sede')"
-                              >
-                              </p-dropdown>
-                              <div class="ui-message ui-messages-error"
-                                   *ngIf="validations.sede">
-                                {{ validations.sede }}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                          <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                              <label for="dependencia"><span class="text-danger">*</span>Dependencia</label>
-                            </div>
-                            <div class="ui-g-12 md-dropdownfield">
-                              <p-dropdown [options]="dependencias$ | async | dropdownItem"
-                                          id="dependencia"
-                                          formControlName="dependencia"
-                                          placeholder="Seleccione"
-                                          [autoWidth]="false"
-                                          (onChange)="dependenciaChange($event)"
-                                          (onBlur)="listenForBlurEvents('dependencia')"
-                              >
-                              </p-dropdown>
-                              <div class="ui-message ui-messages-error"
-                                   *ngIf="validations.dependencia">
-                                {{ validations.dependencia }}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                          <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                              <label for="funcionario"><span class="text-danger">*</span>Funcionario que proyecta</label>
-                            </div>
-                            <div class="ui-g-12 md-dropdownfield">
-                              <p-dropdown [options]="funcionarios$ | async | dropdownItem"
-                                          id="funcionario"
-                                          formControlName="funcionario"
-                                          placeholder="Seleccione"
-                                          [autoWidth]="false"
-                                          (onBlur)="listenForBlurEvents('funcionario')"
-                              >
-                              </p-dropdown>
-                              <div class="ui-message ui-messages-error"
-                                   *ngIf="validations.funcionario">
-                                {{ validations.funcionario }}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                          <div class="ui-g form-group">
-                            <div class="ui-g-12">
-                              <label for="tipoPlantilla"><span class="text-danger">*</span>Tipo de plantilla</label>
-                            </div>
-                            <div class="ui-g-12 md-dropdownfield">
-
-                              <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem"
-                                          id="tipoPlantilla"
-                                          formControlName="tipoPlantilla"
-                                          placeholder="Seleccione"
-                                          [autoWidth]="false"
-                                          (onBlur)="listenForBlurEvents('tipoPlantilla')"
-                              >
-                              </p-dropdown>
-                              <div class="ui-message ui-messages-error"
-                                   *ngIf="validations.tipoPlantilla">
-                                {{ validations.tipoPlantilla }}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="ui-sm-12 ui-g-12 ui-lg-12">
-                          <div class="ui-g form-group">
-                            <div class="ui-g-12" style="float:right">
-                              <button pButton type="button" label="Agregar" (click)="agregarProyector()"
-                                      style="width: auto; margin-bottom: 10px;margin-left: 12px"
-                              ></button>
-                            </div>
-                          </div>
-                        </div>
-
-                    </div>
-                </form>
-
-             </p-panel>
-
-
-
-            <br/>
-
-            <div class="ui-fluid">
-                <p-dataTable selectionMode="single"
-                             [paginator]="true"
-                             [rows]="10"
-                             [responsive]="true"
-                             [value]="listaProyectores"
-                             emptyMessage="No se han agregado proyectores aún"
-                >
-                    <p-column field="sede.nombre" header="Sede Administrativa"></p-column>
-                    <p-column field="dependencia.nombre" header="Dependencia"></p-column>
-                    <p-column field="funcionario.nombre" header="Funcionario"></p-column>
-                    <p-column field="tipoPlantilla.nombre" header="Tipo de plantilla"></p-column>
-                    <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
-                        <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Eliminar" (click)="eliminarProyector(rindex)"
-                                    class="ui-button ui-button-icon ui-button-danger"
-                            ></button>
-                        </ng-template>
-                    </p-column>
-                </p-dataTable>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
+                              id="sede"
+                              formControlName="sede"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="listenForBlurEvents('sede')"
+                  >
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                       *ngIf="validations.sede">
+                    {{ validations.sede }}
+                  </div>
+                </div>
+              </div>
             </div>
 
-        </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="dependencia"><span class="text-danger">*</span>Dependencia</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="dependencias | dropdownItem"
+                              id="dependencia"
+                              formControlName="dependencia"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onChange)="dependenciaChange()"
+                              (onBlur)="listenForBlurEvents('dependencia')">
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                       *ngIf="validations.dependencia">
+                    {{ validations.dependencia }}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    </app-task-container>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="funcionario"><span class="text-danger">*</span>Funcionario que proyecta</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="(funcionarios$ | async) | dropdownItemFullName"
+                              id="funcionario"
+                              formControlName="funcionario"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="listenForBlurEvents('funcionario')"
+                  >
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                       *ngIf="validations.funcionario">
+                    {{ validations.funcionario }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="tipoPlantilla"><span class="text-danger">*</span>Tipo de plantilla</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+
+                  <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem"
+                              id="tipoPlantilla"
+                              formControlName="tipoPlantilla"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="listenForBlurEvents('tipoPlantilla')">
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                       *ngIf="validations.tipoPlantilla">
+                    {{ validations.tipoPlantilla }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <button pButton type="button" label="Agregar" (click)="agregarProyector()"
+                          style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </p-panel>
+
+
+      <br/>
+
+      <div class="ui-fluid">
+        <p-dataTable selectionMode="single"
+                     [paginator]="true"
+                     [rows]="10"
+                     [responsive]="true"
+                     [value]="listaProyectores"
+                     emptyMessage="No se han agregado proyectores aún">
+          <p-column field="sede.nombre" header="Sede Administrativa"></p-column>
+          <p-column field="dependencia.nombre" header="Dependencia"></p-column>
+          <p-column field="funcionario.nombre" header="Funcionario"></p-column>
+          <p-column field="tipoPlantilla.nombre" header="Tipo de plantilla"></p-column>
+          <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
+            <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+              <button type="button" pButton label="Eliminar" (click)="eliminarProyector(rindex)"
+                      class="ui-button ui-button-icon ui-button-danger"
+              ></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+    </div>
+
+  </app-task-container>
 
 </div>
 

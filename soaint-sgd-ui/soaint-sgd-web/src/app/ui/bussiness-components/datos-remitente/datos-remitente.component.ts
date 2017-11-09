@@ -103,7 +103,6 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
         this.onSelectTipoPersona(value);
       }
     }));
-
   }
 
   listenForErrors() {

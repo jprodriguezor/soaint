@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, AfterViewInit,
-  AfterContentInit
-} from '@angular/core';
-import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
-import {AgentDTO} from 'app/domain/agentDTO';
-import {DocumentoDTO} from 'app/domain/documentoDTO';
-import {AnexoDTO} from 'app/domain/anexoDTO';
-import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {AfterContentInit, AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
