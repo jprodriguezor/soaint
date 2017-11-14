@@ -192,7 +192,7 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
 
         EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
-        entradaProceso.setIdProceso("proceso-gestor-devoluciones");
+        entradaProceso.setIdProceso("proceso.gestor-devoluciones");
         entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
 
         devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
@@ -202,6 +202,7 @@ public class CorrespondenciaGatewayApi {
             parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
             parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
             parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
+            entradaProceso.setParametros(parametros);
             this.procesoClient.iniciarTercero(entradaProceso);
         }));
 
