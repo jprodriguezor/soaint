@@ -421,9 +421,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
 
   rejectComunications($event) {
-    console.log($event);
     this.checkDevolucionesAgentes('numDevoluciones').subscribe(checks => {
-
       const failChecks = [];
       const agentesSuccess = [];
 
@@ -444,7 +442,10 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         this.redireccionesFallidas = failChecks;
 
       } else {
-        this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(this.selectedComunications, $event)).subscribe();
+        this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(this.selectedComunications, $event)).subscribe(result => {
+          this.listarComunicaciones();
+          this.hideRejectDialog();
+        });
       }
     });
   }

@@ -127,7 +127,7 @@ export class GestionarComunicacionComponent implements OnInit {
       payload: $event,
       taskToCompletePayload: this.getTaskToCompletePayload()
     });
-    this.justificationDialogVisible = false;
+    this.hideRejectDialog();
   }
 
   onChange() {
