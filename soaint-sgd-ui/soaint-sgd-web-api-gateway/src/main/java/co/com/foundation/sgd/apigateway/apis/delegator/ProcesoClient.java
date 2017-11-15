@@ -3,6 +3,8 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ItemDevolucionDTO;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +13,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Cliente para servicios relacionados a los procesos del bpm
@@ -45,6 +49,17 @@ public class ProcesoClient {
         return wt.path("/bpm/proceso/iniciar-tercero")
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
+    }
+
+    public Response iniciarProcesoGestorDevoluciones(ItemDevolucionDTO itemDevolucion, EntradaProcesoDTO entradaProceso) {
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("numeroRadicado", itemDevolucion.getAgente().getNroDocuIdentidad());
+        parametros.put("causalDevolucion", itemDevolucion.getCausalDevolucion());
+        parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
+        parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
+        parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
+        entradaProceso.setParametros(parametros);
+        return this.iniciarTercero(entradaProceso);
     }
 
     public Response iniciarManual(EntradaProcesoDTO entradaProcesoDTO) {

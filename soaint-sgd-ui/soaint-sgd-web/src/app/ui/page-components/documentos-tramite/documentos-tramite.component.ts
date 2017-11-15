@@ -151,7 +151,12 @@ export class DocumentosTramiteComponent implements OnInit {
           severity: 'warn',
           summary: WARN_REDIRECTION
         }));
-
+        const agente = checks.agente;
+        agente.nroDocuIdentidad = this.comunicacion.correspondencia.nroRadicado;
+        this.devolverAction({
+          payload: {},
+          taskToCompletePayload: payload.taskToCompletePayload
+        }, checks.agente, 'NR', 'Ha vencido el numero maximo de redirecciones');
         this.redireccionFallida$.next(true);
       } else {
         this._asiganacionSandbox.redirectComunications(this.redirectPayload(checks.agente, justificationValues)).toPromise()
@@ -171,14 +176,38 @@ export class DocumentosTramiteComponent implements OnInit {
         }));
         this.redireccionFallida$.next(true);
       } else {
-        this._asiganacionSandbox.rejectComunications(this.rejectPayload(checks.agente, payload.payload)).toPromise()
-          .then(() => {
-            payload.taskToCompletePayload.parametros.causalDevolucion = payload.payload.causalDevolucion.codigo;
-            payload.taskToCompletePayload.parametros.codDependenciaCo = this.comunicacion.correspondencia.codDependencia;
-            this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
-          });
+        this.devolverAction(payload, checks.agente);
       }
     });
+  }
+
+  devolverAction(payload: any, agente, cause?: string, observation?: string) {
+    this._asiganacionSandbox.rejectComunications(this.rejectPayload(agente, payload.payload, cause, observation)).toPromise()
+      .then(() => {
+        payload.taskToCompletePayload.parametros.causalDevolucion = cause || payload.payload.causalDevolucion.codigo;
+        payload.taskToCompletePayload.parametros.codDependenciaCo = this.comunicacion.correspondencia.codDependencia;
+        this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+      });
+  }
+
+  rejectPayload(agente, payload, cause?: string, observation?: string): DevolverDTO {
+    return {
+      itemsDevolucion: [
+        {
+          agente: agente,
+          causalDevolucion: cause || payload.causalDevolucion.codigo
+        }
+      ],
+      traza: {
+        id: null,
+        observacion: observation || payload.observacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
   }
 
   checkRedirectionAgente(key, justification): Observable<any> {
@@ -225,27 +254,6 @@ export class DocumentosTramiteComponent implements OnInit {
       }
     };
   }
-
-  rejectPayload(agente, payload): DevolverDTO {
-    return {
-      itemsDevolucion: [
-        {
-          agente: agente,
-          causalDevolucion: payload.causalDevolucion.codigo
-        }
-      ],
-      traza: {
-        id: null,
-        observacion: payload.observacion,
-        ideFunci: this.funcionarioLog.id,
-        codDependencia: this.dependenciaSelected.codigo,
-        estado: null,
-        fecha: null,
-        ideDocumento: null
-      }
-    };
-  }
-
 
   getConstantsCodes() {
     let result = '';
