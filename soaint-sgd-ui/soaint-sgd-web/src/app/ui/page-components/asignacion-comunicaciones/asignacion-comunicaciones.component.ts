@@ -215,7 +215,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         }));
 
         this.redireccionesFallidas = failChecks;
-        console.log(this.redireccionesFallidas);
 
         const selectedComunications = this.selectedComunications.filter((com) => {
           const index = this.redireccionesFallidas.findIndex((red) => red.ideAgente === com.agenteList[0].ideAgente);
