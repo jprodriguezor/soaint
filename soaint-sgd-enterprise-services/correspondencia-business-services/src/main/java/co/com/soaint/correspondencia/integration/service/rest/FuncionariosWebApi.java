@@ -10,10 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,6 +77,18 @@ public class FuncionariosWebApi {
     public FuncionarioDTO listarFuncionarioByLoginName(@PathParam("login_name") final String loginName) throws BusinessException, SystemException {
         log.info("processing rest request - listar funcionarios por login_name");
         return boundary.listarFuncionarioByLoginName(loginName);
+    }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @throws SystemException
+     */
+    @POST
+    @Path("/funcionarios")
+    public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        log.info("processing rest request - crear funcionario");
+        boundary.crearFuncionario(funcionarioDTO);
     }
 
 }

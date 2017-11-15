@@ -1,5 +1,10 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.correspondencia.domain.entity.AuditColumns;
+import co.com.soaint.correspondencia.domain.entity.Funcionarios;
+import co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk;
+import co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPkPk;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -175,5 +180,46 @@ public class FuncionariosControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        try {
+            Funcionarios funcionario = funcionarioTransform(funcionarioDTO);
+            funcionario.setTvsOrgaAdminXFunciPkList(new ArrayList<>());
+            for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()){
+                TvsOrgaAdminXFunciPkPk tvsOrgaAdminXFunciPkPk = new TvsOrgaAdminXFunciPkPk();
+                tvsOrgaAdminXFunciPkPk.setCodOrgaAdmi(dependenciaDTO.getCodDependencia());
+                funcionario.getTvsOrgaAdminXFunciPkList().add(TvsOrgaAdminXFunciPk.newInstance()
+                        .tvsOrgaAdminXFunciPkPk(new TvsOrgaAdminXFunciPkPk())
+                        .build());
+            }
+            em.persist(funcionario);
+            em.flush();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public Funcionarios funcionarioTransform(FuncionarioDTO funcionarioDTO){
+        return Funcionarios.newInstance()
+                .codTipDocIdent(funcionarioDTO.getCodTipDocIdent())
+                .nroIdentificacion(funcionarioDTO.getNroIdentificacion())
+                .nomFuncionario(funcionarioDTO.getNomFuncionario())
+                .valApellido1(funcionarioDTO.getValApellido1())
+                .valApellido2(funcionarioDTO.getValApellido2())
+                .corrElectronico(funcionarioDTO.getCorrElectronico())
+                .loginName(funcionarioDTO.getLoginName())
+                .auditColumns(new AuditColumns())
+                .credenciales(java.util.Base64.getEncoder().encodeToString((funcionarioDTO.getLoginName() + ":" + funcionarioDTO.getPassword()).getBytes()))
+                .build();
     }
 }
