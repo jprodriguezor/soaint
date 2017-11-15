@@ -194,8 +194,9 @@ public class FuncionariosControl {
             for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()){
                 TvsOrgaAdminXFunciPkPk tvsOrgaAdminXFunciPkPk = new TvsOrgaAdminXFunciPkPk();
                 tvsOrgaAdminXFunciPkPk.setCodOrgaAdmi(dependenciaDTO.getCodDependencia());
+                tvsOrgaAdminXFunciPkPk.setFuncionario(funcionario);
                 funcionario.getTvsOrgaAdminXFunciPkList().add(TvsOrgaAdminXFunciPk.newInstance()
-                        .tvsOrgaAdminXFunciPkPk(new TvsOrgaAdminXFunciPkPk())
+                        .tvsOrgaAdminXFunciPkPk(tvsOrgaAdminXFunciPkPk)
                         .build());
             }
             em.persist(funcionario);
@@ -210,6 +211,8 @@ public class FuncionariosControl {
     }
 
     public Funcionarios funcionarioTransform(FuncionarioDTO funcionarioDTO){
+        AuditColumns auditColumns = new AuditColumns();
+        auditColumns.setEstado(funcionarioDTO.getEstado());
         return Funcionarios.newInstance()
                 .codTipDocIdent(funcionarioDTO.getCodTipDocIdent())
                 .nroIdentificacion(funcionarioDTO.getNroIdentificacion())
@@ -218,7 +221,7 @@ public class FuncionariosControl {
                 .valApellido2(funcionarioDTO.getValApellido2())
                 .corrElectronico(funcionarioDTO.getCorrElectronico())
                 .loginName(funcionarioDTO.getLoginName())
-                .auditColumns(new AuditColumns())
+                .auditColumns(auditColumns)
                 .credenciales(java.util.Base64.getEncoder().encodeToString((funcionarioDTO.getLoginName() + ":" + funcionarioDTO.getPassword()).getBytes()))
                 .build();
     }
