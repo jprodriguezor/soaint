@@ -76,7 +76,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
-  redireccionesFallidas: Array<RedireccionDTO>;
+  redireccionesFallidas: Array<AgentDTO>;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -215,6 +215,14 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         }));
 
         this.redireccionesFallidas = failChecks;
+        console.log(this.redireccionesFallidas);
+
+        const selectedComunications = this.selectedComunications.filter((com) => {
+          const index = this.redireccionesFallidas.findIndex((red) => red.ideAgente === com.agenteList[0].ideAgente);
+          return index >= 0;
+        });
+
+        this.rejectComunicationsAction(selectedComunications, null, 'NR', 'Ha vencido el numero maximo de redirecciones');
 
       } else {
         this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
@@ -442,20 +450,25 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         this.redireccionesFallidas = failChecks;
 
       } else {
-        this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(this.selectedComunications, $event)).subscribe(result => {
-          this.listarComunicaciones();
-          this.hideRejectDialog();
-        });
+        this.rejectComunicationsAction(this.selectedComunications, $event);
       }
     });
   }
 
-  rejectPayload(agentes, payload): DevolverDTO {
+  rejectComunicationsAction(selectedComunications, payload, cause?: string, observation?: string) {
+    this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(selectedComunications, payload, cause, observation)).subscribe(result => {
+      this.listarComunicaciones();
+      this.hideRejectDialog();
+      this.hideJustificationPopup();
+    });
+  }
+
+  rejectPayload(agentes, payload, cause?: string, observation?: string): DevolverDTO {
     return {
-      itemsDevolucion: this.getItemsDevolucion(agentes, payload),
+      itemsDevolucion: this.getItemsDevolucion(agentes, payload, cause),
       traza: {
         id: null,
-        observacion: payload.observacion,
+        observacion: observation || payload.observacion,
         ideFunci: this.funcionarioLog.id,
         codDependencia: this.dependenciaSelected.codigo,
         estado: null,
@@ -465,7 +478,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     };
   }
 
-  getItemsDevolucion(agentes: any[], payload): any[] {
+  getItemsDevolucion(agentes: any[], payload, cause?: string): any[] {
     const items = [];
     agentes.forEach(ag => {
       const a = ag.agenteList[0];
@@ -473,7 +486,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       a.codDependencia = this.dependenciaSelected.codigo;
       items.push({
         agente: a,
-        causalDevolucion: payload.causalDevolucion.codigo
+        causalDevolucion: cause || payload.causalDevolucion.codigo
       });
     });
     return items;

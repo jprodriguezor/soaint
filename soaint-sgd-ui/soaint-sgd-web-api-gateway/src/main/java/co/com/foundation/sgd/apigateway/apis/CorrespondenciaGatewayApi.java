@@ -181,6 +181,14 @@ public class CorrespondenciaGatewayApi {
     public Response devolverComunicaciones(DevolucionDTO devolucion) {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
         Response response = client.devolverComunicaciones(devolucion);
+        devolucion.getItemsDevolucion().forEach(item -> {
+            if (item.getCausalDevolucion().equals("NR")) {
+                EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+                entradaProceso.setIdProceso("proceso.gestor-devoluciones");
+                entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+                devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
+            }
+        });
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
@@ -195,16 +203,7 @@ public class CorrespondenciaGatewayApi {
         entradaProceso.setIdProceso("proceso.gestor-devoluciones");
         entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
 
-        devolucion.getItemsDevolucion().forEach((itemDevolucion -> {
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("numeroRadicado", itemDevolucion.getAgente().getNroDocuIdentidad());
-            parametros.put("causalDevolucion", itemDevolucion.getCausalDevolucion());
-            parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
-            parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
-            parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
-            entradaProceso.setParametros(parametros);
-            this.procesoClient.iniciarTercero(entradaProceso);
-        }));
+        devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
 
         Response response = client.devolverComunicaciones(devolucion);
         String responseObject = response.readEntity(String.class);
