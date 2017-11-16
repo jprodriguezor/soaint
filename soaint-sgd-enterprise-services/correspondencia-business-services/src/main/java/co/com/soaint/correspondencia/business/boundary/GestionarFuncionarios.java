@@ -60,4 +60,13 @@ public class GestionarFuncionarios {
     public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws BusinessException, SystemException {
         return control.listarFuncionarioByLoginName(loginName);
     }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        control.crearFuncionario(funcionarioDTO);
+    }
 }

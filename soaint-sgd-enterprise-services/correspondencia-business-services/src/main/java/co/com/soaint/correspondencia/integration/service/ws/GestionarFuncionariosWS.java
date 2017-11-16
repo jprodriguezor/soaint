@@ -62,4 +62,9 @@ public class GestionarFuncionariosWS {
     public FuncionarioDTO listarFuncionarioByLoginName(@WebParam(name = "login-name")final String loginName)throws BusinessException, SystemException{
         return boundary.listarFuncionarioByLoginName(loginName);
     }
+
+    @WebMethod(action = "crearFuncionario", operationName = "crearFuncionario")
+    public void crearFuncionario(@WebParam(name = "funcionario")final FuncionarioDTO funcionarioDTO)throws SystemException{
+        boundary.crearFuncionario(funcionarioDTO);
+    }
 }

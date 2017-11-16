@@ -50,11 +50,14 @@ import java.util.List;
                 "FROM Funcionarios f " +
                 "INNER JOIN f.tvsOrgaAdminXFunciPkList o " +
                 "WHERE TRIM(f.auditColumns.estado) = TRIM(:ESTADO) AND o.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORGA_ADMI")})
+@javax.persistence.TableGenerator(name = "FUNCIONARIOS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "FUNCIONARIOS_SEQ", allocationSize = 1)
 public class Funcionarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "FUNCIONARIOS_GENERATOR")
     @Column(name = "IDE_FUNCI")
     private BigInteger ideFunci;
     @Basic(optional = false)

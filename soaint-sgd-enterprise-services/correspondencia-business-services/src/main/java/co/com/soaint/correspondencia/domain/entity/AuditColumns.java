@@ -1,5 +1,7 @@
 package co.com.soaint.correspondencia.domain.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
  * Created by esanchez on 8/15/2017.
  */
 @Embeddable
+@Data
 public class AuditColumns implements Serializable {
 
     private static final long serialVersionUID = 1L;
