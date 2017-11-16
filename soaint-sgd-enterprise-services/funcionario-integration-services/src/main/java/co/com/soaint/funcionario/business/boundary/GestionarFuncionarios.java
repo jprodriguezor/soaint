@@ -49,4 +49,13 @@ public class GestionarFuncionarios {
     public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
         return control.verificarCredenciales(credenciales);
     }
+
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        control.crearFuncionario(funcionario);
+    }
 }

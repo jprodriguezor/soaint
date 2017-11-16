@@ -149,6 +149,11 @@ public class FuncionariosControl {
         }
     }
 
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
     public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         try {
             securityApiClient.crearFuncionario(funcionario);

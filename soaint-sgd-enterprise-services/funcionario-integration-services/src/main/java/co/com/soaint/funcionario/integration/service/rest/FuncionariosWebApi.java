@@ -68,4 +68,11 @@ public class FuncionariosWebApi {
         log.info("processing rest request - verificar credenciales");
         return boundary.verificarCredenciales(credenciales);
     }
+
+    @POST
+    @Path("/funcionarios")
+    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        log.info("processing rest request - crear funcionario");
+        boundary.crearFuncionario(funcionario);
+    }
 }
