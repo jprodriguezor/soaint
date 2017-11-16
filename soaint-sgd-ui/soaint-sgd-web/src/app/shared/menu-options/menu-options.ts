@@ -6,7 +6,8 @@ export const MENU_OPTIONS = [
   {label: 'Procesos', icon: 'work', routerLink: ['/' + ROUTES_PATH.processList]},
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Carga masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
-  {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]}
+  {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
+  {label: 'Seleccionar UD', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarUnidadDocumental]},
 ];
 
 

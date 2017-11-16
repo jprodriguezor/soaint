@@ -1,12 +1,10 @@
-import {Component, Input, OnInit, EventEmitter, ViewChild, Inject, forwardRef, Output, OnDestroy} from '@angular/core';
-import {trigger, state, style, transition, animate} from '@angular/animations';
+import {Component, EventEmitter, forwardRef, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {MenuItem} from 'primeng/primeng';
 import {AdminLayoutComponent} from '../../container/admin-layout/admin-layout.component';
-import {ConstanteDTO} from '../../../../domain/constanteDTO';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Subscribable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
 @Component({
