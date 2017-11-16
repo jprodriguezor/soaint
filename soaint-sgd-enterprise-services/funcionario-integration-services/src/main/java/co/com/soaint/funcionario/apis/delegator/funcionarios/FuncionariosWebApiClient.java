@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -33,7 +34,7 @@ public class FuncionariosWebApiClient {
     public FuncionariosDTO listarFuncionariosByDependenciaAndEstado(String codDependencia, String codEstado) throws SystemException {
         log.info("Funcionarios - [trafic] - listing Funcionarios with endpoint: " + endpoint);
         try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/dependencia/" + codDependencia + "/" + codEstado)
                     .request()
                     .get();
@@ -56,9 +57,15 @@ public class FuncionariosWebApiClient {
         }
     }
 
+    /**
+     *
+     * @param loginName
+     * @return
+     * @throws SystemException
+     */
     public FuncionarioDTO listarFuncionarioByLoginName(String loginName)throws SystemException {
         try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/" + loginName)
                     .request()
                     .get();
@@ -79,5 +86,29 @@ public class FuncionariosWebApiClient {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        try {
+            WebTarget wt = getWebTarget();
+            wt.path("/funcionarios-web-api/funcionarios")
+                    .request()
+                    .post(Entity.json(funcionario));
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    private WebTarget getWebTarget(){
+        return ClientBuilder.newClient().target(endpoint);
     }
 }

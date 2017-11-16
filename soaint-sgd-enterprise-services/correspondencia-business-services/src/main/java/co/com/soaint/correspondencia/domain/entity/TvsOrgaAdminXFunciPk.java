@@ -21,7 +21,7 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci", query = "SELECT  t.tvsOrgaAdminXFunciPkPk.codOrgaAdmi " +
                 "FROM TvsOrgaAdminXFunciPk t " +
-                "WHERE t.tvsOrgaAdminXFunciPkPk.ideFunci = :IDE_FUNCI")})
+                "WHERE t.tvsOrgaAdminXFunciPkPk.funcionario.ideFunci = :IDE_FUNCI")})
 public class TvsOrgaAdminXFunciPk implements Serializable {
 
     private static final long serialVersionUID = 1L;

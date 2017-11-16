@@ -46,4 +46,9 @@ public class GestionarFuncionariosWS {
     public FuncionarioDTO verificarCredenciales(@WebParam(name = "credenciales")final CredencialesDTO credenciales) throws BusinessException, SystemException {
         return boundary.verificarCredenciales(credenciales);
     }
+
+    @WebMethod(action = "crearFuncionario", operationName = "crearFuncionario")
+    public void crearFuncionario(@WebParam(name = "funcionario")final FuncionarioDTO funcionario)throws SystemException{
+        boundary.crearFuncionario(funcionario);
+    }
 }
