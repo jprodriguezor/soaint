@@ -181,14 +181,14 @@
   </div>
 
   <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
+            [style]="{'position':'absolute'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
 
     <app-detalles-asignacion #detallesView></app-detalles-asignacion>
   </p-dialog>
 
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'scroll'}"
+            [style]="{'position':'absolute'}"
             (onHide)="hideJustificationPopup()" [width]="800">
     <p-header>
       Redireccionar
@@ -206,6 +206,7 @@
     </p-footer>
   </p-dialog>
   <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [style]="{'position':'absolute'}"
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
       Agregar observaciones
@@ -214,7 +215,7 @@
 
   </p-dialog>
   <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+            [style]="{'position':'absolute'}" [contentStyle]="{'height':'auto'}"
             (onHide)="hideRejectDialog()" [width]="800">
     <p-header>
       Devolver
