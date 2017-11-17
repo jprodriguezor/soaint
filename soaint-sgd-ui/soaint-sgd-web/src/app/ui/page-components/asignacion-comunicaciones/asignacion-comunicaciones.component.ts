@@ -76,6 +76,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
+  globalDependencySubcription: Subscription;
+
   redireccionesFallidas: Array<AgentDTO>;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
@@ -96,9 +98,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
               private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-    this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-    });
+
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -120,6 +120,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     });
 
     this.initForm();
+
+    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+      this.listarComunicaciones();
+    });
   }
 
   getCodEstadoLabel(codEstado: string): string {
@@ -140,6 +145,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
+    this.globalDependencySubcription.unsubscribe();
   }
 
   initForm() {
