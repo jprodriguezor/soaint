@@ -3,6 +3,8 @@ import {RequestOptionsArgs, Response} from '@angular/http';
 import {HttpInterceptor} from './http.interceptor';
 import {Injector} from '@angular/core';
 import {LoadingService} from '../../infrastructure/utils/loading.service';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw';
 
 export class PendingRequestInterceptor extends HttpInterceptor {
 

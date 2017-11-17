@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Actions, Effect, toPayload} from '@ngrx/effects';
+import {Actions, Effect} from '@ngrx/effects';
 import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -21,12 +21,6 @@ import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors'
 
 @Injectable()
 export class Effects {
-
-  constructor(private actions$: Actions,
-              private _store$: Store<RootState>,
-              private _sandbox: Sandbox) {
-  }
-
 
   @Effect()
   loadAll: Observable<Action> = this.actions$
@@ -50,7 +44,6 @@ export class Effects {
     .distinctUntilChanged()
     .switchMap(
       ([action, state]) => {
-        console.log(action);
         return this._sandbox.loadAllFuncionariosByRol({
           codDependencia: state.codigo,
           rol: action.payload.rol
@@ -61,5 +54,8 @@ export class Effects {
       }
     );
 
-
+  constructor(private actions$: Actions,
+              private _store$: Store<RootState>,
+              private _sandbox: Sandbox) {
+  }
 }

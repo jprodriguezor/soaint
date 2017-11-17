@@ -76,22 +76,6 @@ export class HttpHandler {
         return res.json();
       }
       return res;
-    }).catch(res => {
-      if (res.status === 401) {
-        if (token !== null) {
-          this._store.dispatch(new LogoutAction());
-        } else {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'info',
-            summary: BAD_AUTHENTICATION
-          }));
-        }
-      } else {
-        this._store.dispatch(new PushNotificationAction({
-          summary: res.status
-        }));
-        return Observable.create(observer => observer.error(res));
-      }
     });
   }
 
