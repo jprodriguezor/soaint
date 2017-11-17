@@ -7,13 +7,12 @@
   width: 100px;
   height: 100px;
   display: block;
-  z-index: 1002;
+  z-index: 999999999;
 
   .ui-progress-spinner-svg .ui-progress-spinner-circle {
     fill: transparent;
   }
 }
-
 
 .ui-dialog {
   //overflow: scroll;
