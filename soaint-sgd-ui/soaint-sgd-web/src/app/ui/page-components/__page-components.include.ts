@@ -18,6 +18,7 @@ import {EditarPlanillaComponent} from '../bussiness-components/editar-planilla/e
 import {PRODUCCION_DOCUMENTAL_COMPONENTS} from './produccion-documental/_pd-components.include';
 import {PlanillaGeneradaComponent} from '../bussiness-components/planilla-generada/planilla-generada.component';
 import {SeleccionarUnidadDocumentalComponent} from './archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
+import {SeleccionarDocumentosComponent} from './archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -49,6 +50,7 @@ export const PAGE_COMPONENTS = [
   EditarPlanillaComponent,
   PlanillaGeneradaComponent,
   SeleccionarUnidadDocumentalComponent,
+  SeleccionarDocumentosComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];

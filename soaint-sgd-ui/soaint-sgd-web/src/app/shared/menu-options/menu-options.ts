@@ -8,6 +8,7 @@ export const MENU_OPTIONS = [
   {label: 'Carga masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
   {label: 'Seleccionar UD', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarUnidadDocumental]},
+  {label: 'Seleccionar Documentos', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarDocumentos]},
 ];
 
 

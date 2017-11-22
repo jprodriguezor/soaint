@@ -19,6 +19,7 @@ import {CargarPlanillasComponent} from './ui/page-components/cargar-planillas/ca
 import {ProduccionDocumentalComponent} from './ui/page-components/produccion-documental/produccion-documental.component';
 import {ProduccionDocumentalMultipleComponent} from './ui/page-components/produccion-documental/produccion-documental-multiple.component';
 import {SeleccionarUnidadDocumentalComponent} from './ui/page-components/archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
+import {SeleccionarDocumentosComponent} from './ui/page-components/archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -91,6 +92,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.seleccionarUnidadDocumental,
     component: SeleccionarUnidadDocumentalComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.seleccionarDocumentos,
+    component: SeleccionarDocumentosComponent,
     canActivate: [AuthenticatedGuard]
   }
 ];

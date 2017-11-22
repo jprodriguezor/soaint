@@ -17,4 +17,5 @@ export const ROUTES_PATH = {
   produccionDocumentalMultiple: 'produccion-documental-multiple',
   produccionDocumental: 'producir-documento',
   seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
+  seleccionarDocumentos: 'seleccionar-documentos',
 };
