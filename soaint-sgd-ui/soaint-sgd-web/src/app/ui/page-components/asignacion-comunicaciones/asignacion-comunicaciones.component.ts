@@ -500,5 +500,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   sendReject() {
     this.popupReject.devolverComunicaciones();
   }
+
+  devolverOrigenRedireccionFallida() {
+    
+  }
 }
 

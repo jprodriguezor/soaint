@@ -26,8 +26,8 @@ export class HomeComponent implements OnInit {
 
   inProgressTasks$: Observable<TareaDTO[]>;
 
-  completedTasks = 0;
-  reservedTasks = 0;
+  completedTasks: any = 0;
+  reservedTasks: any = 0;
   readyTasks = 0;
 
   visibleRadicadoTicket = false;

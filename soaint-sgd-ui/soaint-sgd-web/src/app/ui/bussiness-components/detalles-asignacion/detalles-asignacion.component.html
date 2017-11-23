@@ -1,6 +1,6 @@
 <div class="ui-fluid">
   <div class="comunicacion-detalles">
-    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange($event)">
+    <p-tabView [activeIndex]="tabIndex" [lazy]="true" (onChange)="onTabChange()">
       <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
         <app-detalles-datos-generales [comunicacion]="comunicacion"
                                       [constantesList]="constantes"></app-detalles-datos-generales>

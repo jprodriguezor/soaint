@@ -18,6 +18,8 @@ export class PieChartComponent {
   single: any[];
   multi: any[];
 
+  gradient: any;
+
   view: any[] = [700, 400];
 
   colorScheme = {
@@ -37,58 +39,58 @@ export class PieChartComponent {
 
 const single = [
   {
-    "name": "Germany",
-    "value": 8940000
+    'name': 'Germany',
+    'value': 8940000
   },
   {
-    "name": "USA",
-    "value": 5000000
+    'name': 'USA',
+    'value': 5000000
   },
   {
-    "name": "France",
-    "value": 7200000
+    'name': 'France',
+    'value': 7200000
   }
 ];
 
 const multi = [
   {
-    "name": "Germany",
-    "series": [
+    'name': 'Germany',
+    'series': [
       {
-        "name": "2010",
-        "value": 7300000
+        'name': '2010',
+        'value': 7300000
       },
       {
-        "name": "2011",
-        "value": 8940000
+        'name': '2011',
+        'value': 8940000
       }
     ]
   },
 
   {
-    "name": "USA",
-    "series": [
+    'name': 'USA',
+    'series': [
       {
-        "name": "2010",
-        "value": 7870000
+        'name': '2010',
+        'value': 7870000
       },
       {
-        "name": "2011",
-        "value": 8270000
+        'name': '2011',
+        'value': 8270000
       }
     ]
   },
 
   {
-    "name": "France",
-    "series": [
+    'name': 'France',
+    'series': [
       {
-        "name": "2010",
-        "value": 5000002
+        'name': '2010',
+        'value': 5000002
       },
       {
-        "name": "2011",
-        "value": 5800000
+        'name': '2011',
+        'value': 5800000
       }
     ]
   }

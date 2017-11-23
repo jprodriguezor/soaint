@@ -1,5 +1,5 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
 import {Observable} from 'rxjs/Observable';
@@ -18,6 +18,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tipoPersonaSelected: ConstanteDTO;
   subscription: Subscription;
 
+  tipoPersona: any;
+
   responseToRem = true;
   distFisica = false;
   distElectronica = false;
@@ -30,11 +32,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tiposDocumento$: Observable<ConstanteDTO[]>;
 
 
-
   constructor(private formBuilder: FormBuilder,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService) {
-    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => { this.tipoComunicacionSelected = tipoComunicacion; });
+    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
+      this.tipoComunicacionSelected = tipoComunicacion;
+    });
   }
 
 
@@ -44,22 +47,21 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   initForm() {
-      this.form = this.formBuilder.group({
-        // Datos destinatario
-        'tipoDestinatarioText': [null],
-        'tipoDestinatarioList': [{value: null}],
-        'tipoDocumentoText': [null],
-        'tipoDocumentoList': [{value: null}],
-        'tipoPersona': [{value: null}],
-        'nombreApellidos': [null],
-        'nit': [null],
-        'razonSocial': [null],
-        'actuaCalidad': [{value: null}],
-        'sedeAdministrativa': [{value: false}],
-        'dependencia': [{value: false}],
-        'funcionario': [{value: false}]
-      });
-
+    this.form = this.formBuilder.group({
+      // Datos destinatario
+      'tipoDestinatarioText': [null],
+      'tipoDestinatarioList': [{value: null}],
+      'tipoDocumentoText': [null],
+      'tipoDocumentoList': [{value: null}],
+      'tipoPersona': [{value: null}],
+      'nombreApellidos': [null],
+      'nit': [null],
+      'razonSocial': [null],
+      'actuaCalidad': [{value: null}],
+      'sedeAdministrativa': [{value: false}],
+      'dependencia': [{value: false}],
+      'funcionario': [{value: false}]
+    });
 
 
   }
@@ -74,7 +76,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     this.initForm();
 
-    this.tiposPersona$.subscribe( (results) => {
+    this.tiposPersona$.subscribe((results) => {
       if (results.length > 0) {
         this.tipoPersonaSelected = results[0];
         this.form.get('tipoPersona').setValue(results[0]);

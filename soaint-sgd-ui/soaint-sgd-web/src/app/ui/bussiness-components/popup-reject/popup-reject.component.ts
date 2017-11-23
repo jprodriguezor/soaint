@@ -9,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {getCausalDevolucionArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/causal-devolucion-selectors';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Sandbox as ConstanteSandbox} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
-import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 
 @Component({
@@ -20,7 +19,7 @@ export class PopupRejectComponent implements OnInit {
 
   form: FormGroup;
 
-  validations = {};
+  validations: any = {};
 
   causalesDevolicion$: Observable<ConstanteDTO[]>;
 

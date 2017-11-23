@@ -7,24 +7,28 @@ import {Observable} from 'rxjs/Observable';
 export class InterceptableHttp extends Http {
   private firstInterceptor: HttpInterceptor;
 
-  constructor(backend: ConnectionBackend,
-              defaultOptions: RequestOptions,
-              interceptors: HttpInterceptor[]) {
-    super(backend, defaultOptions);
+  private interceptors: HttpInterceptor[];
 
+  constructor(backend: ConnectionBackend,
+              defaultOptions: RequestOptions) {
+    super(backend, defaultOptions);
+  }
+
+  setInterceptors(interceptors: HttpInterceptor[]) {
+    this.interceptors = interceptors;
     /**
      * building a responsibility chain of http interceptors, so when processXXXInterception is called on first interceptor,
      * all http interceptors are called in a row
      * Note: the array of interceptors are wired in customHttpProvider of the generated Jhipster app in file `http.provider.ts`
      *
      */
-    if (interceptors && interceptors.length > 0) {
-      interceptors.reduce((chain, current) => {
+    if (this.interceptors && this.interceptors.length > 0) {
+      this.interceptors.reduce((chain, current) => {
         chain.successor = current;
         return current;
       });
 
-      this.firstInterceptor = interceptors[0];
+      this.firstInterceptor = this.interceptors[0];
     }
   }
 

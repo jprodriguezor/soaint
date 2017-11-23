@@ -35,6 +35,8 @@ export class DocumentosTramiteComponent implements OnInit {
 
   nroRadicado: string;
 
+  tabIndex = 0;
+
   comunicacion: ComunicacionOficialDTO = {};
 
   constantes: ConstanteDTO[];

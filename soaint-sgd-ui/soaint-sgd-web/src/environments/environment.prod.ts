@@ -3,7 +3,7 @@
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
 export const environment = {
-  production: false,
+  production: true,
   security_endpoint: `${host}/securidad-gateway-api`,
   product_endpoint: `${host}/productos-gateway-api`,
   tipoDestinatario_endpoint: `${host}/tipo-destinatario-gateway-api`,
@@ -43,6 +43,8 @@ export const environment = {
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
+  devolverComunicaciones_endpoint: `${host}/correspondencia-gateway-api/devolver`,
+  devolverComunicacionesAsigancion_endpoint: `${host}/correspondencia-gateway-api/devolver/asignacion`,
   digitalizar_doc_upload_endpoint: `${host}/digitalizar-documento-gateway-api`,
   metricasTiempoRadicacion_rule_endpoint: `${host}/correspondencia-gateway-api/metricasTiempo`,
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
