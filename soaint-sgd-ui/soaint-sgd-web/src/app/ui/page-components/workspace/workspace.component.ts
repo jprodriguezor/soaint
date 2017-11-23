@@ -13,7 +13,7 @@ import {DependenciaDTO} from '../../../domain/dependenciaDTO';
   selector: 'app-workspace',
   templateUrl: './workspace.component.html'
 })
-export class WorkspaceComponent implements OnDestroy {
+export class WorkspaceComponent implements OnInit, OnDestroy {
 
   tasks$: Observable<TareaDTO[]>;
 
@@ -25,9 +25,10 @@ export class WorkspaceComponent implements OnDestroy {
 
   constructor(private _store: Store<RootState>, private _taskSandbox: TaskDtoSandbox) {
     this.tasks$ = this._store.select(getArrayData);
-
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+  }
 
+  ngOnInit() {
     this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
       this._taskSandbox.loadDispatch();
     });

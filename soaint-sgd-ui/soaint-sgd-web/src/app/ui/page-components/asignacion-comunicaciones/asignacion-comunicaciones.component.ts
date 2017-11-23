@@ -120,11 +120,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     });
 
     this.initForm();
-
-    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-      this.listarComunicaciones();
-    });
   }
 
   getCodEstadoLabel(codEstado: string): string {
@@ -135,6 +130,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+      this.listarComunicaciones();
+    });
+
     this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
       rol: 'RECEPTOR'
     });
@@ -502,7 +502,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   devolverOrigenRedireccionFallida() {
-    
+
   }
 }
 
