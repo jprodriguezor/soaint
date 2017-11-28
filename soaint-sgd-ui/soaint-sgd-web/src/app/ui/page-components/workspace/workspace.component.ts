@@ -44,7 +44,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     } else {
       this._taskSandbox.startTaskDispatch(task);
     }
-
   }
 
 }
