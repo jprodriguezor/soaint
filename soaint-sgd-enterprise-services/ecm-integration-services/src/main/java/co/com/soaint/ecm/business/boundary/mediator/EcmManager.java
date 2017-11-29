@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 public class EcmManager {
 
-    private static final Logger logger = LogManager.getLogger (EcmManager.class.getName ( ));
+    private static final Logger logger = LogManager.getLogger(EcmManager.class.getName());
 
     @Autowired
     private
@@ -34,16 +35,16 @@ public class EcmManager {
      * @return Mensaje de respuesta(codigo y mensaje)
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta crearEstructuraECM(List <EstructuraTrdDTO> structure) {
-        logger.info ("### Creando estructura content..------");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+    public MensajeRespuesta crearEstructuraECM(List<EstructuraTrdDTO> structure) {
+        logger.info("### Creando estructura content..------");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.crearEstructuraContent (structure);
+            response = contentManager.crearEstructuraContent(structure);
 
         } catch (Exception e) {
-            response.setCodMensaje ("000005");
-            response.setMensaje ("Error al crear estructura");
-            logger.error ("### Error Creando estructura content..------", e);
+            response.setCodMensaje("000005");
+            response.setMensaje("Error al crear estructura");
+            logger.error("### Error Creando estructura content..------", e);
         }
 
         return response;
@@ -58,13 +59,14 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) {
-        logger.info ("### Subiendo documento al content..");
+    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
+        logger.info("### Subiendo documento al content..");
         String idDocumento = "";
         try {
-            idDocumento = contentManager.subirDocumentoContent (nombreDocumento, documento, tipoComunicacion);
+            idDocumento = contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
-            logger.error ("### Error..------", e);
+            logger.error("### Error..------", e);
+            throw e;
         }
 
         return idDocumento;
@@ -80,16 +82,16 @@ public class EcmManager {
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
     public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) {
-        logger.info ("### Moviendo documento dentro del content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Moviendo documento dentro del content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
 
-            response = contentManager.moverDocumento (documento, carpetaFuente, carpetaDestino);
+            response = contentManager.moverDocumento(documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
-            response.setCodMensaje ("000002");
-            response.setMensaje ("Error al mover documento");
-            logger.error ("### Error..------", e);
+            response.setCodMensaje("000002");
+            response.setMensaje("Error al mover documento");
+            logger.error("### Error..------", e);
         }
 
         return response;
@@ -102,15 +104,15 @@ public class EcmManager {
      * @return Documento
      */
     public Response descargarDocumento(String idDoc) {
-        logger.info ("### Descargando documento del content..");
-        ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl ( );
+        logger.info("### Descargando documento del content..");
+        ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl();
         try {
-            return contentManager.descargarDocumentoContent (idDoc);
+            return contentManager.descargarDocumentoContent(idDoc);
         } catch (Exception e) {
-            logger.error ("Error descargando documento", e);
+            logger.error("Error descargando documento", e);
         }
-        logger.info ("### Se devuelve el documento del content..");
-        return response.build ( );
+        logger.info("### Se devuelve el documento del content..");
+        return response.build();
     }
 
     /**
@@ -120,17 +122,17 @@ public class EcmManager {
      * @return True en exito false en error
      */
     public boolean eliminarDocumentoECM(String idDoc) {
-        logger.info ("### Eliminando documento del content..");
+        logger.info("### Eliminando documento del content..");
         try {
-            if (contentManager.eliminarDocumento (idDoc)) {
-                logger.info ("### Se elimina el documento del content..");
+            if (contentManager.eliminarDocumento(idDoc)) {
+                logger.info("### Se elimina el documento del content..");
                 return Boolean.TRUE;
             } else {
-                logger.error ("No se pudo eliminar el documento");
+                logger.error("No se pudo eliminar el documento");
                 return Boolean.FALSE;
             }
         } catch (Exception e) {
-            logger.error ("Error eliminando documento", e);
+            logger.error("Error eliminando documento", e);
             return Boolean.FALSE;
         }
     }

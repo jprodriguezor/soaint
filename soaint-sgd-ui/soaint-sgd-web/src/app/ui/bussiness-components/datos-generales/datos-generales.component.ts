@@ -87,7 +87,7 @@ export class DatosGeneralesComponent implements OnInit {
       'radicadoReferido': [{value: null, disabled: !this.editable}],
       'tipoAnexos': [{value: null, disabled: !this.editable}],
       'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
-      'hasAnexos': [{value: null, disabled: !this.editable}, Validators.required]
+      'hasAnexos': [{value: null, disabled: !this.editable}]
     });
   }
 

@@ -2,7 +2,7 @@
   <app-task-container>
     <div customActions>
 
-      <button pButton type="button" label="Abortar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
+      <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
               (click)="abort()"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
@@ -61,7 +61,7 @@
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                    [inlineStyles]="printStyle" label="Imprimir ticket"></button>
+                    [inlineStyles]="printStyle" label="Imprimir"></button>
           </div>
         </p-footer>
 
