@@ -2,7 +2,8 @@
   <app-task-container>
     <div customActions>
       <button pButton type="button" label="Asignar" style="width:auto;margin-bottom:10px;"
-              [disabled]="listaProyectores.length === 0 || !task"
+              [disabled]="listaProyectores.length === 0"
+              *ngIf="task"
               (click)="proyectar()"></button>
     </div>
 
