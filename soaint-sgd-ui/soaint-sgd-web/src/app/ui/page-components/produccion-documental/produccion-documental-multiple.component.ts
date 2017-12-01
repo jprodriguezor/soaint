@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
@@ -25,7 +25,7 @@ import {Sandbox as FuncionarioSandbox} from '../../../infrastructure/state-manag
   encapsulation: ViewEncapsulation.None,
 })
 
-export class ProduccionDocumentalMultipleComponent implements OnInit {
+export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy {
 
   task: TareaDTO;
 
@@ -34,7 +34,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
 
   numeroRadicado: string;
   fechaRadicacion: string;
-
   listaProyectores: ProyectorDTO[] = [];
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
   dependencias: Array<any> = [];
@@ -42,7 +41,6 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
   subscribers: Array<Subscription> = [];
-
   authPayload: { usuario: string, pass: string } | {};
   authPayloadUnsubscriber: Subscription;
 
@@ -51,6 +49,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
               private _funcionarioSandBox: FuncionarioSandbox,
               private _taskSandBox: TaskSandBox,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private _changeDetector: ChangeDetectorRef,
               private formBuilder: FormBuilder) {
 
     this.authPayloadUnsubscriber = this._store.select(createSelector((s: RootState) => s.auth.profile, (profile) => {
@@ -96,15 +95,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
     }
 
     const proyectores = this.listaProyectores;
-    const proyector: ProyectorDTO = {
-      sede: this.form.get('sede').value,
-      dependencia: this.form.get('dependencia').value,
-      funcionario: this.form.get('funcionario').value,
-      tipoPlantilla: this.form.get('tipoPlantilla').value
-    };
+    const proyector: ProyectorDTO = this.form.value;
 
-    if (this.checkProyeccion(proyector)) {
-      console.log('Ya existe la proyección');
+    if (proyectores.filter(val => this.checkProyeccion(proyector, val)).length > 0) {
       return false;
     }
 
@@ -125,18 +118,11 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
     }
   }
 
-  checkProyeccion(newProyector: ProyectorDTO) {
-    let exists = false;
-    this.listaProyectores.forEach((current: ProyectorDTO, index) => {
-      if (current.sede.id === newProyector.sede.id &&
-        current.dependencia.id === newProyector.dependencia.id &&
-        current.funcionario.id === newProyector.funcionario.id &&
-        current.tipoPlantilla.id === newProyector.tipoPlantilla.id) {
-        exists = true;
-      }
-    });
-
-    return exists;
+  checkProyeccion(p: ProyectorDTO, check: ProyectorDTO) {
+      return p.funcionario.id === check.funcionario.id &&
+             p.dependencia.id === check.dependencia.id &&
+             p.sede.id === check.sede.id &&
+             p.tipoPlantilla.id === check.tipoPlantilla.id;
   }
 
   dependenciaChange() {
@@ -157,15 +143,14 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-    this._store.select(getActiveTask).take(1).subscribe(activeTask => {
+    this.subscribers.push(this._store.select(getActiveTask).subscribe(activeTask => {
+      this._changeDetector.markForCheck();
       this.task = activeTask;
       if (this.task && this.task.variables.numeroRadicado) {
         this.numeroRadicado = this.task.variables.numeroRadicado;
-        console.log(this.task);
         this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
-
-    });
+    }));
     this.initForm();
     this.listenForErrors();
     this.listenForChanges();
@@ -214,5 +199,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
 
   save(): Observable<any> {
     return Observable.of(true).delay(5000);
+  }
+
+  ngOnDestroy() {
+    this.subscribers.forEach(subsc => subsc.unsubscribe());
   }
 }

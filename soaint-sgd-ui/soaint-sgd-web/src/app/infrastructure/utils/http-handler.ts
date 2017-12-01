@@ -6,9 +6,6 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
-import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
-import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
-import {BAD_AUTHENTICATION} from '../../shared/lang/es';
 
 
 @Injectable()
