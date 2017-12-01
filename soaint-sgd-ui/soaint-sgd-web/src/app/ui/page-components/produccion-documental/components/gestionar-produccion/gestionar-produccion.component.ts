@@ -13,127 +13,127 @@ import {VALIDATION_MESSAGES} from '../../../../../shared/validation-messages';
 
 export class PDGestionarProduccionComponent implements OnInit {
 
-    form: FormGroup;
-    validations: any = {};
+  form: FormGroup;
+  validations: any = {};
 
-    dependenciaSelected: ConstanteDTO;
+  dependenciaSelected: ConstanteDTO;
 
-    listaDocumentos: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
+  listaDocumentos: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
 
-    sedesAdministrativas$: Observable<ConstanteDTO[]>;
-    dependencias$: Observable<ConstanteDTO[]>;
-    roles$: Observable<RolDTO[]>;
-    funcionarios$: Observable<ConstanteDTO[]>;
+  sedesAdministrativas$: Observable<ConstanteDTO[]>;
+  dependencias$: Observable<ConstanteDTO[]>;
+  roles$: Observable<RolDTO[]>;
+  funcionarios$: Observable<ConstanteDTO[]>;
 
 
-    constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
+  constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
-              private formBuilder: FormBuilder) {}
+              private formBuilder: FormBuilder) {
+    this.initForm();
+  }
 
-    dependenciaChange(event) {
-        this.dependenciaSelected = event.value;
-        this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol({codDependencia: this.dependenciaSelected.codigo} );
+  dependenciaChange(event) {
+    this.dependenciaSelected = event.value;
+    this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol({codDependencia: this.dependenciaSelected.codigo});
+  }
+
+  eliminarDocumento(index) {
+    if (index > -1) {
+      const documentos = this.listaDocumentos;
+      documentos.splice(index, 1);
+
+      this.listaDocumentos = [...documentos];
+      this.refreshView();
+    }
+  }
+
+  agregarDocumento() {
+    if (!this.form.valid) {
+      return false;
     }
 
-    eliminarDocumento(index) {
-        if (index > -1) {
-            const documentos = this.listaDocumentos;
-            documentos.splice( index, 1 );
+    const documentos = this.listaDocumentos;
+    const documento = {
+      sede: this.form.get('sede').value,
+      dependencia: this.form.get('dependencia').value,
+      funcionario: this.form.get('funcionario').value,
+      rol: this.form.get('rol').value
+    };
 
-            this.listaDocumentos = [...documentos];
-            this.refreshView();
-        }
+    if (this.checkDocumento(documento)) {
+      console.log('Ya existe el documento');
+      return false;
     }
 
-    agregarDocumento() {
-        if (!this.form.valid) {
-            return false;
-        }
+    documentos.push(documento);
+    this.listaDocumentos = [...documentos];
+    this.form.reset();
+    this.funcionarios$ = Observable.of([]);
+    this.refreshView();
 
-        const documentos = this.listaDocumentos;
-        const documento = {
-            sede: this.form.get('sede').value,
-            dependencia: this.form.get('dependencia').value,
-            funcionario: this.form.get('funcionario').value,
-            rol: this.form.get('rol').value
-        };
+    return true;
+  }
 
-        if (this.checkDocumento(documento)) {
-            console.log('Ya existe el documento');
-            return false;
-        }
+  checkDocumento(newDocumento: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }) {
+    let exists = false;
+    this.listaDocumentos.forEach((current: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }, index) => {
+      if (current.sede.id === newDocumento.sede.id &&
+        current.dependencia.id === newDocumento.dependencia.id &&
+        current.funcionario.id === newDocumento.funcionario.id &&
+        current.rol.id === newDocumento.rol.id) {
+        exists = true;
+      }
+    });
 
-        documentos.push(documento);
-        this.listaDocumentos = [...documentos];
-        this.form.reset();
-        this.funcionarios$ = Observable.of([]);
-        this.refreshView();
+    return exists;
+  }
 
-        return true;
+  initForm() {
+    this.form = this.formBuilder.group({
+      'sede': [{value: null}, Validators.required],
+      'dependencia': [{value: null}, Validators.required],
+      'rol': [{value: null}, Validators.required],
+      'funcionario': [{value: null}, Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+    this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
+    this.roles$ = this._produccionDocumentalApi.getRoles({});
+  }
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('sede');
+    this.bindToValidationErrorsOf('dependencia');
+    this.bindToValidationErrorsOf('rol');
+    this.bindToValidationErrorsOf('funcionario');
+  }
+
+  listenForBlurEvents(control: string) {
+    const ac = this.form.get(control);
+    if (ac.touched && ac.invalid) {
+      const error_keys = Object.keys(ac.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
+  }
 
-    checkDocumento(newDocumento: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }) {
-        let exists = false;
-        this.listaDocumentos.forEach((current: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }, index) => {
-            if (current.sede.id === newDocumento.sede.id &&
-                current.dependencia.id === newDocumento.dependencia.id &&
-                current.funcionario.id === newDocumento.funcionario.id &&
-                current.rol.id === newDocumento.rol.id) {
-                exists = true;
-            }
-        });
+  bindToValidationErrorsOf(control: string) {
+    const ac = this.form.get(control);
+    ac.valueChanges.subscribe(value => {
+      if ((ac.touched || ac.dirty) && ac.errors) {
+        const error_keys = Object.keys(ac.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+        delete this.validations[control];
+      }
+    });
+  }
 
-        return exists;
-    }
-
-    initForm() {
-      this.form = this.formBuilder.group({
-          'sede': [{value: null}, Validators.required],
-          'dependencia': [{value: null}, Validators.required],
-          'rol': [{value: null}, Validators.required],
-          'funcionario': [{value: null}, Validators.required]
-      });
-    }
-
-    ngOnInit(): void {
-        this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-        this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
-        this.roles$ = this._produccionDocumentalApi.getRoles({});
-
-        this.initForm();
-    }
-
-    listenForErrors() {
-        this.bindToValidationErrorsOf('sede');
-        this.bindToValidationErrorsOf('dependencia');
-        this.bindToValidationErrorsOf('rol');
-        this.bindToValidationErrorsOf('funcionario');
-    }
-
-    listenForBlurEvents(control: string) {
-        const ac = this.form.get(control);
-        if (ac.touched && ac.invalid) {
-            const error_keys = Object.keys(ac.errors);
-            const last_error_key = error_keys[error_keys.length - 1];
-            this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-        }
-    }
-
-    bindToValidationErrorsOf(control: string) {
-        const ac = this.form.get(control);
-        ac.valueChanges.subscribe(value => {
-            if ((ac.touched || ac.dirty) && ac.errors) {
-                const error_keys = Object.keys(ac.errors);
-                const last_error_key = error_keys[error_keys.length - 1];
-                this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-            } else {
-                delete this.validations[control];
-            }
-        });
-    }
-
-    refreshView() {
-        this._changeDetectorRef.detectChanges();
-    }
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
+  }
 }
 

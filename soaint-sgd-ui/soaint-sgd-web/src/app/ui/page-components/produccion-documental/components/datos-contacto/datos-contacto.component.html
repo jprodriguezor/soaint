@@ -1,71 +1,58 @@
-<p-panel header="Distribucion" [style]="{border: 'none'}">
-
-  <div class="ui-g ui-fluid">
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
-      <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="fisica"
-                    label="Física"
-                    [(ngModel)]="distFisica"
-                    id="fisica"
-                    binary="true">
-        </p-checkbox>
-      </div>
-    </div>
-
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
-      <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="electronica"
-                    label="Electrónica"
-                    [(ngModel)]="distElectronica"
-                    id="electronica"
-                    binary="true">
-        </p-checkbox>
-      </div>
-    </div>
-
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4"  >
-      <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="responseToRem"
-                    label="Responder a remitente"
-                    [(ngModel)]="responseToRem"
-                    id="responseToRem"
-                    binary="true">
-        </p-checkbox>
-      </div>
-    </div>
-
-  </div>
-
-</p-panel>
-
 <form [formGroup]="form">
-
+  <p-panel header="Distribucion" [style]="{border: 'none'}">
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="fisica"
+                      label="Física"
+                      formControlName="fisica"
+                      id="fisica"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="electronica"
+                      label="Electrónica"
+                      formControlName="electronica"
+                      id="electronica"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
+        <div style="padding: 20px 0 0 10px">
+          <p-checkbox name="responseToRem"
+                      label="Responder a remitente"
+                      *ngIf="taskData.variables.numeroRadicado"
+                      formControlName="responderRemitente"
+                      id="responseToRem"
+                      binary="true">
+          </p-checkbox>
+        </div>
+      </div>
+    </div>
+  </p-panel>
   <p-panel header="Datos destinatario" [style]="{border: 'none'}">
     <div class="ui-g ui-fluid">
-
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Tipo destinatario</label>
           </div>
-
-          <div class="ui-g-12" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+          <div class="ui-g-12" *ngIf="tipoComunicacionSelected">
             <p-dropdown [options]="tiposDestinatario$ | async | dropdownItem"
-                        id="tipoDestinatarioList"
-                        formControlName="tipoDestinatarioList"
+                        id="tipoDestinatario"
+                        formControlName="tipoDestinatario"
                         placeholder="Seleccione"
-                        [autoWidth]="false"
-            >
+                        [autoWidth]="false">
             </p-dropdown>
-          </div>
-
-          <div class="ui-g-12" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
-            <input type="text" pInputText id="tipoDestinatarioText" formControlName="tipoDestinatarioText" />
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="tipoPersona">Tipo persona</label>
@@ -76,25 +63,24 @@
                         formControlName="tipoPersona"
                         placeholder="Seleccione"
                         [autoWidth]="false"
-                        (onChange)="tipoPersonaChange($event)"
-            >
+                        (onChange)="tipoPersonaChange($event)">
             </p-dropdown>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Nombre y apellidos</label>
           </div>
           <div class="ui-g-12">
-            <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos" />
+            <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos"/>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Tipo documento</label>
@@ -104,41 +90,40 @@
                         id="tipoDocumentoList"
                         formControlName="tipoDocumentoList"
                         placeholder="Seleccione"
-                        [autoWidth]="false"
-            >
+                        [autoWidth]="false">
             </p-dropdown>
           </div>
-
           <div class="ui-g-12" *ngIf="tipoPersonaSelected  && 'TP-PERPJ' == tipoPersonaSelected.codigo">
-            <input type="text" pInputText id="tipoDocumentoText" formControlName="tipoDocumentoText" />
+            <input type="text" pInputText id="tipoDocumentoText" formControlName="tipoDocumentoText"/>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
-            <label *ngIf="tipoPersonaSelected && 'TP-PERPN' == tipoPersonaSelected.codigo">No. Documento de identidad</label>
+            <label *ngIf="tipoPersonaSelected && 'TP-PERPN' == tipoPersonaSelected.codigo">No. Documento de
+              identidad</label>
             <label *ngIf="tipoPersonaSelected && 'TP-PERPJ' == tipoPersonaSelected.codigo">NIT</label>
           </div>
           <div class="ui-g-12">
-            <input type="text" pInputText id="nit" formControlName="nit" />
+            <input type="text" pInputText id="nit" formControlName="nit"/>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Razón social</label>
           </div>
           <div class="ui-g-12">
-            <input type="text" pInputText id="razonSocial" formControlName="razonSocial" />
+            <input type="text" pInputText id="razonSocial" formControlName="razonSocial"/>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="actuaCalidad">Actua en calidad</label>
@@ -148,15 +133,13 @@
                         id="actuaCalidad"
                         formControlName="actuaCalidad"
                         placeholder="Seleccione"
-                        [autoWidth]="false"
-            >
+                        [autoWidth]="false">
             </p-dropdown>
           </div>
         </div>
       </div>
-
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="sedeAdministrativa">Sede</label>
@@ -166,55 +149,73 @@
                         id="sedeAdministrativa"
                         formControlName="sedeAdministrativa"
                         placeholder="Seleccione"
+                        (onBlur)="listenForBlurEvents('sedeAdministrativa')"
                         [filter]="true"
-                        [autoWidth]="false"
-            >
+                        [autoWidth]="false">
             </p-dropdown>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="dependencia">Dependencia</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-
             <p-dropdown [options]="dependencias$ | async | dropdownItem"
                         id="dependencia"
                         formControlName="dependencia"
                         placeholder="Seleccione"
                         [filter]="true"
-                        [autoWidth]="false"
-            >
+                        (onBlur)="listenForBlurEvents('dependencia')"
+                        [autoWidth]="false">
             </p-dropdown>
           </div>
         </div>
       </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3" *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3"
+           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="funcionario">Funcionario</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-
             <p-dropdown [options]="funcionarios$ | async | dropdownItem"
                         id="funcionario"
                         formControlName="funcionario"
                         placeholder="Seleccione"
                         [filter]="true"
-                        [autoWidth]="false"
-            >
+                        (onBlur)="listenForBlurEvents('funcionario')"
+                        [autoWidth]="false">
             </p-dropdown>
           </div>
         </div>
       </div>
 
+      <div class="ui-g-12" style="padding-top: 20px">
+        <button pButton type="button" label="Agregar"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                (click)="adicionarDestinatario()"></button>
+      </div>
     </div>
   </p-panel>
-
 </form>
 
-<app-datos-direccion *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo && responseToRem"></app-datos-direccion>
+<p-panel header="Destinatarios" [style]="{border: 'none'}"
+         *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <p-dataTable emptyMessage="Inserte destinatarios" selectionMode="multiple"
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
+        <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+        <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+        <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true"></p-column>
+      </p-dataTable>
+    </div>
+  </div>
+</p-panel>
+
+<app-datos-direccion
+  *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo && responseToRem">
+</app-datos-direccion>

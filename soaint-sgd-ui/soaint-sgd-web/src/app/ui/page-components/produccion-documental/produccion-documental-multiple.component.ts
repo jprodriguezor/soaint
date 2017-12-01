@@ -32,7 +32,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
   form: FormGroup;
   validations: any = {};
 
-  numeroRadicado = '';
+  numeroRadicado: string;
+  fechaRadicacion: string;
 
   listaProyectores: ProyectorDTO[] = [];
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
@@ -68,6 +69,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
       estados: ['LISTO'],
       parametros: {
         numeroRadicado: this.numeroRadicado,
+        fechaRadicacion: this.fechaRadicacion,
         proyectores: this.listaProyectores,
         idDespliegue: PROCESS_DATA.produccion_documental.idDespliegue,
         idProceso: PROCESS_DATA.produccion_documental.idProceso
@@ -159,6 +161,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit {
       this.task = activeTask;
       if (this.task && this.task.variables.numeroRadicado) {
         this.numeroRadicado = this.task.variables.numeroRadicado;
+        console.log(this.task);
+        this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
 
     });
