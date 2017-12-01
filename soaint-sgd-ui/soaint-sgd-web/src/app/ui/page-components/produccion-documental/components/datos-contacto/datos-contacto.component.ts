@@ -18,6 +18,7 @@ import {Store} from '@ngrx/store';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 import {Sandbox as FuncionariosSandbox} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {ConfirmationService} from 'primeng/components/common/api';
 
 
 @Component({
@@ -46,12 +47,16 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tiposDocumento$: Observable<ConstanteDTO[]>;
   funcionarios$: Observable<FuncionarioDTO[]>;
 
+  destinatarios: any[] = [];
+
   @Output()
   onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
+  canInsert = false;
 
   constructor(private formBuilder: FormBuilder,
               private _store: Store<State>,
+              private confirmationService: ConfirmationService,
               private _funcionarioSandbox: FuncionariosSandbox,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
@@ -65,6 +70,20 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.initForm();
     this.listenForChanges();
     this.listenForErrors();
+
+    Observable.combineLatest(
+      this.form.get('tipoDestinatario').valueChanges,
+      this.form.get('sedeAdministrativa').valueChanges,
+      this.form.get('dependencia').valueChanges,
+      this.form.get('funcionario').valueChanges
+    ).do(() => this.canInsert = false)
+      .filter(([tipo, sede, grupo, func]) => tipo && sede && grupo && func)
+      .zip(([tipo, sede, grupo, func]) => {
+        return {tipo: tipo, sede: sede, grupo: grupo, funcionario: func}
+      })
+      .subscribe(value => {
+        this.canInsert = true
+      });
   }
 
 
@@ -113,12 +132,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       'nit': [null],
       'razonSocial': [null],
       'actuaCalidad': [{value: null}],
-      'sedeAdministrativa': [{value: false}],
-      'dependencia': [{value: false}],
-      'funcionario': [{value: false}],
+      'sedeAdministrativa': [null, Validators.required],
+      'dependencia': [null, Validators.required],
+      'funcionario': [null, Validators.required],
       'responderRemitente': [null],
       'electronica': [null],
       'fisica': [null],
+      'destinatarioPrincipal': [{value: null, disabled: false}, Validators.required],
     });
   }
 
@@ -175,8 +195,84 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  adicionarDestinatario() {
+  confirmSubstitucionDestinatarioPrincipal() {
+    this.confirmationService.confirm({
+      message: '<p style="text-align: center"> Está seguro desea substituir el destinatario principal?</p>',
+      accept: () => {
+        this.substitudeAgenteDestinatario();
+      }
+    });
+  }
 
+  substitudeAgenteDestinatario() {
+
+    const tipo = this.form.get('tipoDestinatario');
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependencia');
+    const func = this.form.get('funcionario');
+
+    const insertVal = [
+      {
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value,
+        funcionario: func.value
+      }
+    ];
+
+    this.destinatarios = [
+      ...insertVal,
+      ...this.destinatarios.filter(
+        value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL
+      )
+    ];
+
+    tipo.reset();
+    sede.reset();
+    grupo.reset();
+    func.reset();
+  }
+
+  adicionarDestinatario() {
+    const tipo = this.form.get('tipoDestinatario');
+
+    if (tipo.value.codigo === DESTINATARIO_PRINCIPAL && this.destinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+      return this.confirmSubstitucionDestinatarioPrincipal();
+    }
+
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependencia');
+    const func = this.form.get('funcionario');
+
+    const insertVal = [
+      {
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value,
+        funcionario: func.value
+      }
+    ];
+
+    if (tipo.value.codigo === DESTINATARIO_PRINCIPAL) {
+      this.form.get('destinatarioPrincipal').setValue({
+        tipoDestinatario: tipo.value,
+        sedeAdministrativa: sede.value,
+        dependenciaGrupo: grupo.value,
+        funcionario: func.value
+      });
+    }
+
+    this.destinatarios = [
+      ...insertVal,
+      ...this.destinatarios.filter(
+        value => value.sedeAdministrativa !== sede.value || value.dependenciaGrupo !== grupo.value
+      )
+    ];
+
+    tipo.reset();
+    sede.reset();
+    grupo.reset();
+    func.reset();
   }
 }
 
