@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author jrodriguez
@@ -25,13 +26,19 @@ import java.math.BigInteger;
 @Table(name = "TVS_DEPARTAMENTO")
 @NamedQueries({
         @NamedQuery(name = "TvsDepartamento.findAll", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
-                "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) " +
+                "(t.ideDepar, t.nombreDepar, t.codDepar) " +
                 "FROM TvsDepartamento t " +
                 "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsDepartamento.findAllByCodPaisAndEstado", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
-                "(t.ideDepar, t.nombreDepar, t.codDepar, t.codPais) " +
+                "(t.ideDepar, t.nombreDepar, t.codDepar) " +
                 "FROM TvsDepartamento t " +
-                "WHERE TRIM(t.codPais) = TRIM(:COD_PAIS) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)")})
+                "INNER JOIN t.pais p " +
+                "WHERE TRIM(p.codPais) = TRIM(:COD_PAIS) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsDepartamento.findByCodMunic", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
+                "(t.ideDepar, t.nombreDepar, t.codDepar) " +
+                "FROM TvsDepartamento t " +
+                "INNER JOIN t.tvsMunicipioList m " +
+                "WHERE TRIM(m.codMunic) = TRIM(:COD_MUNIC)")})
 public class TvsDepartamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,8 +50,11 @@ public class TvsDepartamento implements Serializable {
     private String nombreDepar;
     @Column(name = "COD_DEPAR")
     private String codDepar;
-    @Column(name = "COD_PAIS")
-    private String codPais;
+    @JoinColumn(name = "COD_PAIS", referencedColumnName = "COD_PAIS")
+    @ManyToOne
+    private TvsPais pais;
+    @OneToMany(mappedBy = "departamento")
+    private List<TvsMunicipio> tvsMunicipioList;
     @Embedded
     private AuditColumns auditColumns;
 
