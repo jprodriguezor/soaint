@@ -28,8 +28,8 @@ export class Effects {
     .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .distinctUntilChanged()
     .switchMap(
-      ([payload, state]) => {
-        return this._sandbox.loadAllFuncionarios(state.codigo)
+      ([action, state]) => {
+        return this._sandbox.loadAllFuncionarios(action.payload.codDependencia || state.codigo)
           .map((response) => new actions.LoadAllSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
           )
@@ -45,7 +45,7 @@ export class Effects {
     .switchMap(
       ([action, state]) => {
         return this._sandbox.loadAllFuncionariosByRol({
-          codDependencia: state.codigo,
+          codDependencia: action.payload.codDependencia || state.codigo,
           rol: action.payload.rol
         })
           .map((response) => new actions.LoadAllSuccessAction(response))

@@ -26,9 +26,9 @@
                              [(selection)]="selectedComunications"
                              [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
                   <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-                  <p-column field="nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+                  <p-column field="nroRadicado" header="Nro radicado" [sortable]="true"></p-column>
                   <p-column header="Tipo de persona" [sortable]="true"></p-column>
-                  <p-column header="Número de identificación" [sortable]="true"></p-column>
+                  <p-column header="Nro identificación" [sortable]="true"></p-column>
                   <p-column header="Nombre" [sortable]="true"></p-column>
                   <p-column header="Sede" [sortable]="true">
                     <ng-template let-col let-correspondencia="rowData" pTemplate="body">
@@ -64,6 +64,7 @@
                         [disabled]="!canUpdatePlanilla()" (click)="actualizarPlanilla()"
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
                 </button>
+                <!--@todo-->
                 <button pButton type="button" label="Editar"
                         [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">

@@ -33,6 +33,7 @@ public class ProduccionDocumentalClient {
         nuevaEntrada.setParametros(new HashMap<>());
 
         String numeroRadicado = entrada.getParametros().getOrDefault("numeroRadicado", "").toString();
+        String fechaRadicacion = entrada.getParametros().getOrDefault("fechaRadicacion", "").toString();
 
         for (Map proyector : (ArrayList<Map>) entrada.getParametros().get("proyectores")) {
             nuevaEntrada.getParametros().clear();
@@ -44,6 +45,7 @@ public class ProduccionDocumentalClient {
                 {
                     put("usuarioProyector", funcionario.getOrDefault("loginName", ""));
                     put("numeroRadicado", numeroRadicado);
+                    put("fechaRadicacion", fechaRadicacion);
                     put("codigoSede", sedeAdministrativa.getOrDefault("codigo", null));
                     put("codDependencia", dependencia.getOrDefault("codigo", null));
                     put("codigoTipoPlantilla", tipoPlantilla.getOrDefault("codigo", null));

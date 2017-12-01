@@ -82,14 +82,14 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.form = this.formBuilder.group({
-      'tipoVia': [{value: null, disabled: true}, Validators.required],
-      'noViaPrincipal': [{value: null, disabled: true}, Validators.required],
+      'tipoVia': [null],
+      'noViaPrincipal': [null],
       'prefijoCuadrante': [null],
       'bis': [null],
       'orientacion': [null],
-      'noVia': [{value: null, disabled: true}, Validators.required],
+      'noVia': [null],
       'prefijoCuadrante_se': [null],
-      'placa': [{value: null, disabled: true}, Validators.required],
+      'placa': [null],
       'orientacion_se': [null],
       'complementoTipo': [null],
       'complementoAdicional': [null],
@@ -276,7 +276,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       direccion += ' ' + complementoAdicional.value;
       complementoAdicional.reset();
     }
-    value['direccion'] = direccion;
+
+    value['direccion'] = direccion === ''? null: direccion;
 
     return value;
   }

@@ -8,7 +8,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {createSelector} from 'reselect';
 import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
-import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {AsignacionDTO} from '../../../domain/AsignacionDTO';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
@@ -94,7 +94,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<RootState>,
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
-              private _funcionarioSandbox: Sandbox,
+              private _funcionarioSandbox: FuncionariosSandbox,
               private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
@@ -138,6 +138,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
       rol: 'RECEPTOR'
     });
+
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
   }
