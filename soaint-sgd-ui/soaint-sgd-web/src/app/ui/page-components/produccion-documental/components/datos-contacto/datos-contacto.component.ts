@@ -54,6 +54,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   canInsert = false;
 
+  responseToRem = false;
+
   constructor(private formBuilder: FormBuilder,
               private _store: Store<State>,
               private confirmationService: ConfirmationService,
