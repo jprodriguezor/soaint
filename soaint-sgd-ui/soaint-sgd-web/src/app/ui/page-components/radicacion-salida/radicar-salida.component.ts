@@ -74,4 +74,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this.activeTaskUnsubscriber.unsubscribe();
   }
 
+  radicarComunicacion() {
+  }
+
 }

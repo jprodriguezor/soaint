@@ -37,7 +37,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   form: FormGroup;
   display = false;
   @Input() editable = true;
-  validations = {};
+  validations: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;
   departamentoSuggestions$: Observable<DepartamentoDTO[]>;
@@ -82,14 +82,14 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.form = this.formBuilder.group({
-      'tipoVia': [{value: null, disabled: true}, Validators.required],
-      'noViaPrincipal': [{value: null, disabled: true}, Validators.required],
+      'tipoVia': [null],
+      'noViaPrincipal': [null],
       'prefijoCuadrante': [null],
       'bis': [null],
       'orientacion': [null],
-      'noVia': [{value: null, disabled: true}, Validators.required],
+      'noVia': [null],
       'prefijoCuadrante_se': [null],
-      'placa': [{value: null, disabled: true}, Validators.required],
+      'placa': [null],
       'orientacion_se': [null],
       'complementoTipo': [null],
       'complementoAdicional': [null],
@@ -178,33 +178,33 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   saveAndRetriveContact(): any {
 
-      const pais = this.form.get('pais');
-      const departamento = this.form.get('departamento');
-      const municipio = this.form.get('municipio');
-      const numeroTel = this.form.get('numeroTel');
-      const celular = this.form.get('celular');
-      const email = this.form.get('correoEle');
+    const pais = this.form.get('pais');
+    const departamento = this.form.get('departamento');
+    const municipio = this.form.get('municipio');
+    const numeroTel = this.form.get('numeroTel');
+    const celular = this.form.get('celular');
+    const email = this.form.get('correoEle');
 
-      const toSave = tassign({
-        pais: pais.value,
-        departamento: departamento.value,
-        municipio: municipio.value,
-        numeroTel: numeroTel.value,
-        celular: celular.value,
-        correoEle: email.value
-      }, this.saveDireccionData());
+    const toSave = tassign({
+      pais: pais.value,
+      departamento: departamento.value,
+      municipio: municipio.value,
+      numeroTel: numeroTel.value,
+      celular: celular.value,
+      correoEle: email.value
+    }, this.saveDireccionData());
 
-      pais.reset();
-      departamento.reset();
-      municipio.reset();
-      numeroTel.reset();
-      celular.reset();
-      email.reset();
+    pais.reset();
+    departamento.reset();
+    municipio.reset();
+    numeroTel.reset();
+    celular.reset();
+    email.reset();
 
-      this.showContactForm = false;
-      this.showDireccionForm = false;
+    this.showContactForm = false;
+    this.showDireccionForm = false;
 
-      return toSave;
+    return toSave;
 
   }
 
@@ -276,7 +276,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       direccion += ' ' + complementoAdicional.value;
       complementoAdicional.reset();
     }
-    value['direccion'] = direccion;
+
+    value['direccion'] = direccion === ''? null: direccion;
 
     return value;
   }

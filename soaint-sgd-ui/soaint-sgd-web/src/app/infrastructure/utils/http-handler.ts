@@ -6,9 +6,6 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
-import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
-import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
-import {BAD_AUTHENTICATION} from '../../shared/lang/es';
 
 
 @Injectable()
@@ -76,22 +73,6 @@ export class HttpHandler {
         return res.json();
       }
       return res;
-    }).catch(res => {
-      if (res.status === 401) {
-        if (token !== null) {
-          this._store.dispatch(new LogoutAction());
-        } else {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'info',
-            summary: BAD_AUTHENTICATION
-          }));
-        }
-      } else {
-        this._store.dispatch(new PushNotificationAction({
-          summary: res.status
-        }));
-        return Observable.create(observer => observer.error(res));
-      }
     });
   }
 

@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AACE,kDAAqB;EACnB,UAAU,EAAE,eAAe;AAE7B,sCAAS;EACP,gBAAgB,EAAE,eAAe;AAGnC,yCAAY;EACV,QAAQ,EAAE,kBAAkB;AAG9B,sGAAyE;EACvE,gBAAgB,EAAE,kBAAkB;EACpC,KAAK,EAAE,OAAO;AAGhB,qGAAwE;EACtE,gBAAgB,EAAE,kBAAkB;EACpC,KAAK,EAAE,OAAO;AAGhB,sCAAS;EACP,gBAAgB,EAAE,kBAAkB;AAEtC,0CAAa;EACX,KAAK,EAAE,GAAG;;AAId,mBAAoB;EAClB,UAAU,EAAE,GAAG",
-"sources": ["asignacion-comunicaciones.component.scss"],
-"names": [],
-"file": "asignacion-comunicaciones.component.css"
-}

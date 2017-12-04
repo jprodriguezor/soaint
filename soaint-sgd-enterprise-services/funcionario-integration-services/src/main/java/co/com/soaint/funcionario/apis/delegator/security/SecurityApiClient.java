@@ -7,13 +7,14 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.infrastructure.ApiDelegator;
-import com.soaint.services.security_cartridge._1_0.AuthenticationResponseContext;
-import com.soaint.services.security_cartridge._1_0.OperationPrincipalContextListStatus;
-import com.soaint.services.security_cartridge._1_0.SecurityAPIService;
+import com.soaint.services.security_cartridge._1_0.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class SecurityApiClient {
     public List<FuncionarioDTO> listarUsusriosByRol(String rol) throws SystemException {
         List<FuncionarioDTO> funcionarios = new ArrayList<>();
         try {
-            SecurityAPIService securityApiService = new SecurityAPIService(new URL(endpoint));
+            SecurityAPIService securityApiService = getSecutrityApiService();
             OperationPrincipalContextListStatus respuesta = securityApiService.getSecurityAPIPort().obtenerUsuariosporRol(rol);
             if (respuesta.isSuccessful())
                 respuesta.getUsuarios().getUsuario().stream().forEach(usuario -> {
@@ -68,7 +69,7 @@ public class SecurityApiClient {
     public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
         FuncionarioDTO funcionario;
         try {
-            SecurityAPIService securityApiService = new SecurityAPIService(new URL(endpoint));
+            SecurityAPIService securityApiService = getSecutrityApiService();
             AuthenticationResponseContext respuesta = securityApiService.getSecurityAPIPort().verifyCredentials(credenciales.getLoginName(), credenciales.getPassword());
             if (respuesta.isSuccessful()) {
                 funcionario = FuncionarioDTO.newInstance()
@@ -93,5 +94,52 @@ public class SecurityApiClient {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionario)throws BusinessException, SystemException{
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+            OperationPrincipalStatusContext respuesta = securityApiService.getSecurityAPIPort().crearUsuario(transformToPrincipalContext(funcionario));
+            if (!respuesta.isSuccessful())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.creation_failed")
+                        .buildBusinessException();
+        } catch (BusinessException e) {
+            log.error("Api Delegator - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    private SecurityAPIService getSecutrityApiService()throws MalformedURLException{
+        return new SecurityAPIService(new URL(endpoint));
+    }
+
+    private PrincipalContext transformToPrincipalContext(FuncionarioDTO funcionario){
+        PrincipalContext usuario = new PrincipalContext();
+        usuario.setUsername(funcionario.getLoginName());
+        usuario.setFirstName(funcionario.getNomFuncionario());
+        usuario.setLastName(StringUtils.defaultString(funcionario.getValApellido1(), "") + " " + StringUtils.defaultString(funcionario.getValApellido2(), ""));
+        usuario.setEmail(funcionario.getCorrElectronico());
+        usuario.setPassword(funcionario.getPassword());
+        Roles roles = new Roles();
+        for(RolDTO rolDTO : funcionario.getRoles()){
+            Rol rol = new Rol();
+            rol.setName(rolDTO.getRol());
+            roles.getRol().add(rol);
+        }
+        usuario.setRoles(roles);
+        return usuario;
     }
 }

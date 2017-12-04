@@ -17,7 +17,7 @@ export class GestionarComunicacionComponent implements OnInit {
 
   form: FormGroup;
 
-  validations = {};
+  validations: any = {};
 
   @Input()
   remitente: AgentDTO;

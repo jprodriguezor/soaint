@@ -35,5 +35,17 @@ public class MunicipioDTO implements Serializable {
     private String nombreMunic;
     @JsonProperty("codigo")
     private String codMunic;
-    private String codDepar;
+    private DepartamentoDTO departamento;
+
+    /**
+     *
+     * @param ideMunic
+     * @param nombreMunic
+     * @param codMunic
+     */
+    public MunicipioDTO(BigInteger ideMunic, String nombreMunic, String codMunic){
+        this.ideMunic = ideMunic;
+        this.nombreMunic = nombreMunic;
+        this.codMunic = codMunic;
+    }
 }

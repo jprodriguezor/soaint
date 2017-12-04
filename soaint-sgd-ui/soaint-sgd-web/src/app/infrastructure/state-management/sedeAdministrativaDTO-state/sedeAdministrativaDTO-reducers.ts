@@ -1,6 +1,5 @@
-import {ActionTypes as Autocomplete, Actions} from './sedeAdministrativaDTO-actions';
+import {Actions, ActionTypes as Autocomplete} from './sedeAdministrativaDTO-actions';
 import {tassign} from 'tassign';
-import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {OrganigramaDTO} from 'app/domain/organigramaDTO';
 
 
@@ -26,7 +25,6 @@ export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
       const values = action.payload.organigrama;
       const newValues = values.filter(data => !state.entities[data.id]);
 

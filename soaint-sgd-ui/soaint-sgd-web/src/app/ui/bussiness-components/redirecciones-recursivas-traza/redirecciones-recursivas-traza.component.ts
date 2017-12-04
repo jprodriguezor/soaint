@@ -10,7 +10,10 @@ export class RedireccionesRecursivasTrazaComponent {
   @Input() redireccionesFallidas: Array<RedireccionDTO>;
   @Output() onEjecutarRedireccionOrigen = new EventEmitter<RedireccionDTO>();
 
-  constructor() { }
+  editable: boolean;
+
+  constructor() {
+  }
 
   ejecutarRedireccionOrigen(index) {
     this.onEjecutarRedireccionOrigen.emit(this.redireccionesFallidas[index]);

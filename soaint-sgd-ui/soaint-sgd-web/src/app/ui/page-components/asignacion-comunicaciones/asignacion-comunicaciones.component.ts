@@ -8,7 +8,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {createSelector} from 'reselect';
 import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
-import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {AsignacionDTO} from '../../../domain/AsignacionDTO';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
@@ -76,6 +76,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
+  globalDependencySubcription: Subscription;
+
   redireccionesFallidas: Array<AgentDTO>;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
@@ -92,13 +94,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<RootState>,
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
-              private _funcionarioSandbox: Sandbox,
+              private _funcionarioSandbox: FuncionariosSandbox,
               private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-    this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-    });
+
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -130,9 +130,15 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+      this.listarComunicaciones();
+    });
+
     this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
       rol: 'RECEPTOR'
     });
+
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
   }
@@ -140,6 +146,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
+    this.globalDependencySubcription.unsubscribe();
   }
 
   initForm() {
@@ -493,6 +500,10 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   sendReject() {
     this.popupReject.devolverComunicaciones();
+  }
+
+  devolverOrigenRedireccionFallida() {
+
   }
 }
 

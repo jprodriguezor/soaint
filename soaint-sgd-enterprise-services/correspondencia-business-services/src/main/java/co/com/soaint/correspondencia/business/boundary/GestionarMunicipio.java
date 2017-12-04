@@ -38,7 +38,6 @@ public class GestionarMunicipio {
      * @return
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByCodDeparAndEstado(String codDepar, String estado) throws SystemException {
         return control.listarMunicipiosByCodDeparAndEstado(codDepar, estado);
     }
@@ -49,8 +48,17 @@ public class GestionarMunicipio {
      * @return
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<MunicipioDTO> listarMunicipiosByEstado(String estado) throws SystemException {
         return control.listarMunicipiosByEstado(estado);
+    }
+
+    /**
+     *
+     * @param codigos
+     * @return
+     * @throws SystemException
+     */
+    public List<MunicipioDTO> listarMunicipiosByCodidos(String[] codigos) throws SystemException {
+        return control.listarMunicipiosByCodidos(codigos);
     }
 }

@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
-import {ObservacionDTO} from "../../../domain/observacionDTO";
+import {ObservacionDTO} from '../../../domain/observacionDTO';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class PopupAgregarObservacionesComponent implements OnInit {
 
   form: FormGroup;
 
-  validations = {};
+  validations: any = {};
 
   observaciones: ObservacionDTO[];
 

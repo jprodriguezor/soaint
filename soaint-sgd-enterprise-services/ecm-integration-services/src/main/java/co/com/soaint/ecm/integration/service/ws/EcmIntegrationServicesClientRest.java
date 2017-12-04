@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,13 +31,13 @@ public class EcmIntegrationServicesClientRest {
     private
     EcmManager fEcmManager;
 
-    private static final Logger logger = LogManager.getLogger (EcmIntegrationServicesClientRest.class.getName ( ));
+    private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
 
     /**
      * Constructor de la clase
      */
     public EcmIntegrationServicesClientRest() {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
 
@@ -47,12 +49,12 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/crearEstructuraContent/")
-    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) {
-        logger.info ("processing rest request - Crear Estructura ECM");
+    public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) {
+        logger.info("processing rest request - Crear Estructura ECM");
         try {
-            return fEcmManager.crearEstructuraECM (structure);
+            return fEcmManager.crearEstructuraECM(structure);
         } catch (RuntimeException e) {
-            logger.error ("Error servicio creando estructura ", e);
+            logger.error("Error servicio creando estructura ", e);
             throw e;
         }
     }
@@ -70,15 +72,17 @@ public class EcmIntegrationServicesClientRest {
     @Consumes("multipart/form-data")
     public String subirDocumentoECM(@PathParam("nombreDocumento") String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
-                                    @PathParam("tipoComunicacion") String tipoComunicacion) {
-        logger.info ("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
+                                    @PathParam("tipoComunicacion") String tipoComunicacion) throws IOException {
+        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
         try {
-
-            return fEcmManager.subirDocumento (nombreDocumento, documento, tipoComunicacion);
+            return fEcmManager.subirDocumento(nombreDocumento, documento, tipoComunicacion);
         } catch (RuntimeException e) {
-            logger.error ("Error en operacion - Subir Documento ECM ", e);
+            logger.error("Error en operacion - Subir Documento ECM ", e);
             throw e;
 
+        } catch (IOException e) {
+            logger.error("Error en operacion - Subir Documento ECM ", e);
+            throw e;
         }
 
     }
@@ -97,11 +101,11 @@ public class EcmIntegrationServicesClientRest {
                                               @QueryParam("carpetaFuente") final String carpetaFuente,
                                               @QueryParam("carpetaDestino") final String carpetaDestino) {
 
-        logger.info ("processing rest request - Mover Documento ECM");
+        logger.info("processing rest request - Mover Documento ECM");
         try {
-            return fEcmManager.moverDocumento (moverDocumento, carpetaFuente, carpetaDestino);
+            return fEcmManager.moverDocumento(moverDocumento, carpetaFuente, carpetaDestino);
         } catch (RuntimeException e) {
-            logger.error ("Error servicio moviendo documento ", e);
+            logger.error("Error servicio moviendo documento ", e);
             throw e;
         }
     }
@@ -117,11 +121,11 @@ public class EcmIntegrationServicesClientRest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response descargarDocumentoECM(@QueryParam("identificadorDoc") final String identificadorDoc) {
 
-        logger.info ("processing rest request - Descargar Documento ECM");
+        logger.info("processing rest request - Descargar Documento ECM");
         try {
-            return fEcmManager.descargarDocumento (identificadorDoc);
+            return fEcmManager.descargarDocumento(identificadorDoc);
         } catch (RuntimeException e) {
-            logger.error ("Error servicio descargando documento ", e);
+            logger.error("Error servicio descargando documento ", e);
             throw e;
         }
     }
@@ -136,17 +140,17 @@ public class EcmIntegrationServicesClientRest {
     @Path("/eliminarDocumentoECM/")
     public boolean eliminarDocumentoECM(@QueryParam("idDocumento") final String idDocumento) {
 
-        logger.info ("processing rest request - Eliminar Documento ECM");
+        logger.info("processing rest request - Eliminar Documento ECM");
         try {
             boolean respuesta;
-            respuesta = fEcmManager.eliminarDocumentoECM (idDocumento);
+            respuesta = fEcmManager.eliminarDocumentoECM(idDocumento);
             if (respuesta)
-                logger.info ("Documento eliminado con exito");
+                logger.info("Documento eliminado con exito");
             else
-                logger.info ("No se pudo eliminar el documento");
+                logger.info("No se pudo eliminar el documento");
             return respuesta;
         } catch (RuntimeException e) {
-            logger.error ("Error servicio eliminando documento ", e);
+            logger.error("Error servicio eliminando documento ", e);
             throw e;
         }
     }

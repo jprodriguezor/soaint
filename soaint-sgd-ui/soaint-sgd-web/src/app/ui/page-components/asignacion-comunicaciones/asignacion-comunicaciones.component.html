@@ -15,7 +15,7 @@
           </div>
         </div>
       </p-panel>-->
-      <p-panel header="Busqueda de tareas" [style]="{border: 'none'}">
+      <p-panel header="Búsqueda de tareas" [style]="{ border: 'none'}">
         <div class="ui-g ui-fluid">
           <div class="ui-g-12">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
@@ -118,7 +118,7 @@
                          [(selection)]="selectedComunications"
                          [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
               <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-              <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
+              <p-column field="correspondencia.nroRadicado" header="Nro radicado" [sortable]="true"></p-column>
               <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
                   {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
@@ -144,7 +144,7 @@
                           (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
-              <p-column header="Agregar obseravación" [style]="{'text-align':'center','width':'200px'}">
+              <p-column header="Agregar observación" [style]="{'text-align':'center','width':'200px'}">
                 <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
                   <button pButton type="button" label="Agregar observaciones"
                           style="width: auto;"
@@ -181,14 +181,14 @@
   </div>
 
   <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'auto','max-height':'90%'}"
+            [style]="{'position':'absolute'}"
             (onHide)="hideDetailsDialog()" [width]="1000">
 
     <app-detalles-asignacion #detallesView></app-detalles-asignacion>
   </p-dialog>
 
   <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [contentStyle]="{'overflow':'scroll'}"
+            [style]="{'position':'absolute'}"
             (onHide)="hideJustificationPopup()" [width]="800">
     <p-header>
       Redireccionar
@@ -206,6 +206,7 @@
     </p-footer>
   </p-dialog>
   <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+            [style]="{'position':'absolute'}"
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
       Agregar observaciones
@@ -214,7 +215,7 @@
 
   </p-dialog>
   <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
-            [contentStyle]="{'overflow':'visible'}"
+            [style]="{'position':'absolute'}" [contentStyle]="{'height':'auto'}"
             (onHide)="hideRejectDialog()" [width]="800">
     <p-header>
       Devolver
@@ -240,7 +241,7 @@
       Devoluciones / Redirecciones - Fallidas
     </p-header>
     <app-redirecciones-recursivas-traza [redireccionesFallidas]=""
-                                        (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida"></app-redirecciones-recursivas-traza>
+                                        (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida()"></app-redirecciones-recursivas-traza>
 
 
     <p-footer>

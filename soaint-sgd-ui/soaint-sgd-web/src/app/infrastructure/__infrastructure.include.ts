@@ -6,6 +6,7 @@ import {STATE_MANAGEMENT_PROVIDERS} from './state-management/__state-providers.i
 import {EventsService} from './utils/events.service';
 import {SessionService} from './utils/session.service';
 import {HttpHandler} from './utils/http-handler';
+import {ErrorHandlerService} from './utils/error-handler.service';
 
 export * from './security/auth-guard';
 export * from './security/authentication.service';
@@ -18,5 +19,6 @@ export const INFRASTRUCTURE_SERVICES = [
   EventsService,
   SessionService,
   HttpHandler,
-  LoadingService
+  LoadingService,
+  ErrorHandlerService
 ];

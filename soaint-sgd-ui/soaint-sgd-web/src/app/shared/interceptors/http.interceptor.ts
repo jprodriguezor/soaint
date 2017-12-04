@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs/Observable';
 import {RequestOptionsArgs, Response, Request} from '@angular/http';
+import {Injectable} from '@angular/core';
 
 /**
  * A HTTP interceptor responsibility chain member is a class, which may react on request and response of all requests

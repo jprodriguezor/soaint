@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -78,7 +79,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) {
+    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
 
         logger.info ("### Subiendo documento al content..");
@@ -104,7 +105,7 @@ public class ContentManager {
             logger.error ("Error subiendo documento", e);
             response.setCodMensaje ("00005");
             response.setMensaje ("Error al crear el documento");
-
+            throw e;
         }
         return idDocumento;
 
