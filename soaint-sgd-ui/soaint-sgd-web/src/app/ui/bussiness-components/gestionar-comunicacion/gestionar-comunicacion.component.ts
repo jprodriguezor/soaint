@@ -39,6 +39,8 @@ export class GestionarComunicacionComponent implements OnInit {
 
   hideCheckBox = true;
 
+  responseToRem = false;
+
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
   @ViewChild('popupReject') popupReject;
