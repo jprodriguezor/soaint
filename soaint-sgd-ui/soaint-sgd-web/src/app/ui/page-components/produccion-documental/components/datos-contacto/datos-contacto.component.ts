@@ -5,7 +5,6 @@ import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
-import {CorrespondenciaDTO} from '../../../../../domain/correspondenciaDTO';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
 import {DESTINATARIO_PRINCIPAL} from '../../../../../shared/bussiness-properties/radicacion-properties';
 import {VALIDATION_MESSAGES} from '../../../../../shared/validation-messages';

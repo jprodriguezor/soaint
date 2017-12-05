@@ -41,6 +41,12 @@ export class Sandbox {
     });
   }
 
+  obtenerMunicipiosPorCodigos(codigos: string) {
+    return this._api.list(`${environment.obtenerMunicipiosPorCodigo_endpoint}`, {
+      codigos: codigos
+    });
+  }
+
   obtenerComunicacionPorNroRadicado(nroRadicado: string) {
     return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
   }

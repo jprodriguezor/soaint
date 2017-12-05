@@ -27,4 +27,13 @@ public class MunicipioClient {
                 .get();
     }
 
+    public Response listarMunicipiosPorCodigo(String codigos) {
+        log.info("Municipios - [trafic] - listing Municipios by codes with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/municipios-web-api/municipios")
+                .queryParam("codigos", codigos)
+                .request()
+                .get();
+    }
+
 }
