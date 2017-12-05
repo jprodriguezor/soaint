@@ -141,7 +141,6 @@ export class DetallesAsignacionComponent implements OnInit {
         }
       }
     ).subscribe((data) => {
-      console.log(data);
       this.constantes = [...data.constantes, ...data.dependencias];
       this.municipios = data.municipios;
       this.refreshView();
