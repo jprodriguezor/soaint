@@ -15,7 +15,7 @@ export class DetallesDatosRemitenteComponent {
   constantesList: ConstanteDTO[];
 
   @Input()
-  municipiosList: any[];
+  municipiosList: any[] = [];
 
   @Input()
   remitente: AgentDTO;
