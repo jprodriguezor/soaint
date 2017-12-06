@@ -2,6 +2,16 @@ import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter} from '@an
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from "../domain/ResultUploadDTO";
+import {Observable} from 'rxjs/Observable';
+import {State as RootState, State} from 'app/infrastructure/redux-store/redux-reducers';
+import {
+    getAuthenticatedFuncionario,
+    getSelectedDependencyGroupFuncionario
+} from '../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {Store} from '@ngrx/store';
+import {DependenciaDTO} from '../../../../domain/dependenciaDTO';
+import {Subscription} from 'rxjs/Subscription';
+import {FuncionarioDTO} from '../../../../domain/funcionarioDTO';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -24,20 +34,33 @@ export class CargaMasivaUploaderComponent {
   status: UploadStatus;
   previewWasRefreshed = false;
   resultUpload: ResultUploadDTO;
+  dependenciaSelected$: Observable<DependenciaDTO>;
+  dependenciaSelected: DependenciaDTO;
+
+    globalDependencySubcription: Subscription;
+
+    funcionarioLog: FuncionarioDTO;
+
+    funcionarioSubcription: Subscription;
 
   @Output()
   docUploaded = new EventEmitter<boolean>();
 
   @ViewChild('uploader') uploader;
 
-  constructor(private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {}
+  constructor(private _store: Store<RootState>,private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {
+      this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+      this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+          this.funcionarioLog = funcionario;
+      });
+  }
 
   showUploadButton() {
     return this.status === UploadStatus.CLEAN;
   }
 
   uploadFileAction (event) : void {
-      this.cmService.uploadFile(event.files, {codigoSede:1040, codigoDependencia:10401040})
+      this.cmService.uploadFile(event.files, {codigoSede:this.dependenciaSelected.codSede, codigoDependencia:this.dependenciaSelected.codigo, funcRadica:this.funcionarioLog.id})
         .then(result => {
             this.resultUpload = result;
             console.log("READY!!!");
@@ -81,5 +104,16 @@ export class CargaMasivaUploaderComponent {
     this.changeDetection.detectChanges();
     this.status = UploadStatus.LOADED;
   }
+
+    ngOnInit() {
+        this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+            this.dependenciaSelected = result;
+        });
+    }
+
+    ngOnDestroy() {
+        this.funcionarioSubcription.unsubscribe();
+        this.globalDependencySubcription.unsubscribe();
+    }
 
 }
