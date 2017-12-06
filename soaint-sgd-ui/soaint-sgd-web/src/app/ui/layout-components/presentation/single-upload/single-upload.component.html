@@ -1,0 +1,16 @@
+<p-fileUpload
+  mode="basic"
+  accept="*"
+  maxFileSize="1000000"
+  chooseLabel="Adjuntar"
+  uploadLabel="Adjuntado"
+  cancelLabel="Cancelar"
+  accept="application/*"
+  maxFileSize="1000000"
+  customUpload="true"
+  (uploadHandler)="customUploader($event)"
+  (onUpload)="onUpload($event)"
+  (onClear)="onClear($event)"
+  (onSelect)="onSelect($event)"
+  (onError)="onErrorUpload($event)"
+></p-fileUpload>

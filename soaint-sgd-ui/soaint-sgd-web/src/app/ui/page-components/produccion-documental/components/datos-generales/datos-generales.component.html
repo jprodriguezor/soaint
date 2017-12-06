@@ -206,7 +206,7 @@
           <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
             <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
               <button type="button" pButton label="Eliminar"
-                      class="ui-button ui-button-danger"></button>
+                      class="ui-button ui-button-danger" (click)="removeFromList(i, 'listaVersionesDocumento')"></button>
             </ng-template>
           </p-column>
         </p-dataTable>
@@ -255,40 +255,31 @@
           </div>
         </div>
       </div>
+
       <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
+          <div class="ui-g-12">
+            <app-single-upload (fileUploaded)="onFileUploaded($event)"></app-single-upload>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
         <div class="ui-g form-group">
           <div class="ui-g-12">
+            <div style="display: flex;align-items: flex-end; height: 100%; float: left">
+              <span><label> <b>Cantidad anexos: </b> {{listaAnexos.length}}</label></span>
+            </div>
             <button pButton label="Agregar"
                     [disabled]="!form.get('tipoAnexo').value || !form.get('soporte').value"
                     (click)="agregarAnexo()"
-                    style="width: auto;margin-top: 28px;margin-left: 10px; float: right;"
-                    type="button">
-            </button>
-            <button label="Adjuntar" pButton
-                    [disabled]="form.get('soporte').value != 'electronico'"
-                    style="width: auto;margin-top: 28px;float: right;"
+                    style="width: auto;margin-top: 20px;margin-left: 10px; float: right;"
                     type="button">
             </button>
           </div>
         </div>
       </div>
-      <div class="ui-g-12" padding-bottom>
-        <div class="ui-sm-12">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-                <label>Cantidad anexos</label>
-              </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
-                  <label
-                    style="color: inherit">{{listaAnexos.length}}</label>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div class="ui-sm-12 ui-g-12 ui-lg-12">
         <p-dataTable selectionMode="single"
                      [paginator]="true"
@@ -301,13 +292,13 @@
           <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
           <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
             <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton class="ui-button ui-button-info" label="Ver">
+              <button type="button" pButton class="ui-button ui-button-info" label="Ver" (click)="visualizarDocumentos(i)">
               </button>
             </ng-template>
           </p-column>
           <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
             <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar">
+              <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar" (click)="removeFromList(i, 'listaAnexos')" >
               </button>
             </ng-template>
           </p-column>
