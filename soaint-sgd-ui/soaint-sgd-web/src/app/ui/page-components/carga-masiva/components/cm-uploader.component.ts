@@ -1,12 +1,12 @@
 import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter} from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
-import {ResultUploadDTO} from "../domain/ResultUploadDTO";
+import {ResultUploadDTO} from '../domain/ResultUploadDTO';
 import {Observable} from 'rxjs/Observable';
 import {State as RootState, State} from 'app/infrastructure/redux-store/redux-reducers';
 import {
-    getAuthenticatedFuncionario,
-    getSelectedDependencyGroupFuncionario
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
 } from '../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {Store} from '@ngrx/store';
 import {DependenciaDTO} from '../../../../domain/dependenciaDTO';
@@ -37,36 +37,36 @@ export class CargaMasivaUploaderComponent {
   dependenciaSelected$: Observable<DependenciaDTO>;
   dependenciaSelected: DependenciaDTO;
 
-    globalDependencySubcription: Subscription;
+  globalDependencySubcription: Subscription;
 
-    funcionarioLog: FuncionarioDTO;
+  funcionarioLog: FuncionarioDTO;
 
-    funcionarioSubcription: Subscription;
+  funcionarioSubcription: Subscription;
 
   @Output()
   docUploaded = new EventEmitter<boolean>();
 
   @ViewChild('uploader') uploader;
 
-  constructor(private _store: Store<RootState>,private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {
-      this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-      this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-          this.funcionarioLog = funcionario;
-      });
+  constructor(private _store: Store<RootState>, private changeDetection: ChangeDetectorRef, private cmService: CargaMasivaService) {
+    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+      this.funcionarioLog = funcionario;
+    });
   }
 
   showUploadButton() {
     return this.status === UploadStatus.CLEAN;
   }
 
-  uploadFileAction (event) : void {
-      this.cmService.uploadFile(event.files, {codigoSede:this.dependenciaSelected.codSede, codigoDependencia:this.dependenciaSelected.codigo, funcRadica:this.funcionarioLog.id})
-        .then(result => {
-            this.resultUpload = result;
-            console.log("READY!!!");
-            this.docUploaded.emit(true);
-            this.changeDetection.detectChanges();
-        });
+  uploadFileAction(event): void {
+    this.cmService.uploadFile(event.files, {codigoSede: this.dependenciaSelected.codSede, codigoDependencia: this.dependenciaSelected.codigo, funcRadica: this.funcionarioLog.id})
+      .subscribe(result => {
+        this.resultUpload = result;
+        console.log('READY!!!');
+        this.docUploaded.emit(true);
+        this.changeDetection.detectChanges();
+      });
   }
 
   onUpload(event) {
@@ -91,13 +91,15 @@ export class CargaMasivaUploaderComponent {
       while (this.uploader.files.length !== 1) {
         if (this.uploader.files[index] !== this.uploadFile) {
           this.uploader.remove(index);
-          index --;
-        } else if ( this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
+          index--;
+        } else if (this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
           this.uploader.remove(index);
-          index --;
+          index--;
         } else {
           index++;
-          if (index === this.uploader.files.length) { break; }
+          if (index === this.uploader.files.length) {
+            break;
+          }
         }
       }
     }
@@ -105,15 +107,15 @@ export class CargaMasivaUploaderComponent {
     this.status = UploadStatus.LOADED;
   }
 
-    ngOnInit() {
-        this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
-            this.dependenciaSelected = result;
-        });
-    }
+  ngOnInit() {
+    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+    });
+  }
 
-    ngOnDestroy() {
-        this.funcionarioSubcription.unsubscribe();
-        this.globalDependencySubcription.unsubscribe();
-    }
+  ngOnDestroy() {
+    this.funcionarioSubcription.unsubscribe();
+    this.globalDependencySubcription.unsubscribe();
+  }
 
 }
