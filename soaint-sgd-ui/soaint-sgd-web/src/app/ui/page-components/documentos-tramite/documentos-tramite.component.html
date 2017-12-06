@@ -11,7 +11,8 @@
           <p-tabPanel header="Remitente / Destinatario" leftIcon="ui-icon-assignment">
             <app-detalles-datos-remitente [remitente]="remitente$ | async"
                                           [contactos]="contactos$ | async"
-                                          [constantesList]="constantes"></app-detalles-datos-remitente>
+                                          [constantesList]="constantes"
+                                          [municipiosList]="municipios"></app-detalles-datos-remitente>
 
             <app-detalles-datos-destinatario [destinatarios]="destinatarios$ | async"
                                              [constantesList]="constantes"></app-detalles-datos-destinatario>

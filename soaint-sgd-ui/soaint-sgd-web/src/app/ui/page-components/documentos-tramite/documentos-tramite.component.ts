@@ -41,6 +41,8 @@ export class DocumentosTramiteComponent implements OnInit {
 
   constantes: ConstanteDTO[];
 
+  municipios: any[];
+
   dependencias: OrganigramaDTO[];
 
   remitente$: Observable<AgentDTO>;
@@ -291,13 +293,30 @@ export class DocumentosTramiteComponent implements OnInit {
     return result;
   }
 
+  getDepartamentosCode() {
+    let result = '';
+    this.comunicacion.datosContactoList.forEach((item) => {
+      result += item.codMunicipio + ',';
+    });
+    return result;
+  }
+
   loadConstantsByCodes() {
-    this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()).subscribe((response) => {
-      this.constantes = response.constantes;
-      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
-        this.constantes.push(...result.dependencias);
-        this.refreshView();
-      });
+    Observable.combineLatest(
+      this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()),
+      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()),
+      this._asiganacionSandbox.obtenerMunicipiosPorCodigos(this.getDepartamentosCode()),
+      (constantes, dependencias, municipios) => {
+        return {
+          constantes: constantes.constantes,
+          dependencias: dependencias.dependencias,
+          municipios: municipios
+        }
+      }
+    ).subscribe((data) => {
+      this.constantes = [...data.constantes, ...data.dependencias];
+      this.municipios = data.municipios;
+      this.refreshView();
     });
   }
 

@@ -196,6 +196,7 @@
       <div class="ui-g-12" style="padding-top: 20px">
         <button pButton type="button" label="Agregar"
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                [disabled]="!canInsert"
                 (click)="adicionarDestinatario()"></button>
       </div>
     </div>
@@ -206,11 +207,12 @@
          *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
   <div class="ui-g ui-fluid">
     <div class="ui-g-12">
-      <p-dataTable emptyMessage="Inserte destinatarios" selectionMode="multiple"
-                   [paginator]="true" [rows]="10" [responsive]="true" [value]="(comunicaciones$ | async)">
-        <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-        <p-column field="correspondencia.nroRadicado" header="Número de radicado" [sortable]="true"></p-column>
-        <p-column field="fecRadicado" header="Fecha y hora de radicación" [sortable]="true"></p-column>
+      <p-dataTable emptyMessage="No hay resultados" selectionMode="multiple"
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="destinatarios">
+        <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+        <p-column field="sedeAdministrativa.nombre" header="Sede" [sortable]="true"></p-column>
+        <p-column field="dependenciaGrupo.nombre" header="Dependencia" [sortable]="true"></p-column>
+        <p-column field="funcionario.nombre" header="Funcionario" [sortable]="true"></p-column>
       </p-dataTable>
     </div>
   </div>
