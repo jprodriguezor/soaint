@@ -29,7 +29,7 @@ export class Effects {
     .distinctUntilChanged()
     .switchMap(
       ([action, state]) => {
-        return this._sandbox.loadAllFuncionarios(action.payload.codDependencia || state.codigo)
+        return this._sandbox.loadAllFuncionarios((action.payload && action.payload.codDependencia) ? action.payload.codDependencia : state.codigo)
           .map((response) => new actions.LoadAllSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
           )

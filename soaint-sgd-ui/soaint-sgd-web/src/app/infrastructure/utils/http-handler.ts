@@ -23,11 +23,15 @@ export class HttpHandler {
       // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
-      options.headers = new Headers();
+      options.headers = options.headers || new Headers();
       if (token !== null) {
 
-        options.headers.append('Content-Type', 'application/json');
-        options.headers.append('Authorization', 'Bearer ' + token);
+        if (!options.headers.has('Content-Type')) {
+          options.headers.append('Content-Type', 'application/json');
+        }
+        if (!options.headers.has('Authorization')) {
+          options.headers.append('Authorization', 'Bearer ' + token);
+        }
       } else {
         options.headers.append('Content-Type', 'application/json');
       }

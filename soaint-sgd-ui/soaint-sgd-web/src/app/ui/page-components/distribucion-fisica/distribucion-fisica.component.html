@@ -95,12 +95,14 @@
               </p-column>
               <p-column header="Número identificación/NIT" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(getDatosRemitente(correspondencia) | async).codTipoPers}}
+                  {{(getDatosRemitente(correspondencia) | async).nit || (getDatosRemitente(correspondencia) |
+                  async).nroDocuIdentidad}}
                 </ng-template>
               </p-column>
               <p-column header="Nombre/Razón social" [sortable]="true">
                 <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{(getDatosRemitente(correspondencia) | async).razonSocial}}
+                  {{(getDatosRemitente(correspondencia) | async).razonSocial || (getDatosRemitente(correspondencia) |
+                  async).nombre}}
                 </ng-template>
               </p-column>
               <p-column header="Sede administrativa" [sortable]="true">

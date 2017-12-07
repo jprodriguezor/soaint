@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -43,20 +43,18 @@ export class PDDatosGeneralesComponent implements OnInit {
 
   listaVersionesDocumento: VersionDocumentoDTO[] = [];
   listaAnexos: AnexoDTO[] = [];
+  fileContent: {id: number; file: Blob };
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
               private pdMessageService: PdMessageService) {
-    console.log(this.form);
     this.initForm();
   }
 
 
   initForm() {
-    console.log(this.form);
-    console.log(this.formBuilder);
     this.form = this.formBuilder.group({
       'tipoComunicacion': [null, Validators.required],
       'tipoPlantilla': [null, Validators.required],
@@ -107,25 +105,29 @@ export class PDDatosGeneralesComponent implements OnInit {
     const anexo: AnexoDTO = {
       soporte: this.form.get('soporte').value,
       tipo: this.form.get('tipoAnexo').value,
-      descripcion: this.form.get('descripcion').value
+      descripcion: this.form.get('descripcion').value,
+      file: this.fileContent
     };
     anexos.push(anexo);
     this.listaAnexos = [...anexos];
     this.refreshView();
   }
 
+  removeFromList(i, listname: string) {
+    const list = [...this[listname]];
+    list.splice(i,1);
+    this[listname] = list;
+    // this._changeDetectorRef.detectChanges();
+  }
 
   ngOnInit(): void {
     this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-
     this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-
     this.listenForErrors();
-    console.log(this.taskData);
   }
 
 
@@ -155,6 +157,20 @@ export class PDDatosGeneralesComponent implements OnInit {
       }
     });
   }
+
+  visualizarDocumentos(index) {
+    const file = this.listaAnexos[index].file;
+    if (file === undefined || !file.id) {
+      alert('Failed to open PDF.');
+    } else {
+      window.open(URL.createObjectURL(file.file), '_blank');
+    }
+  }
+
+  onFileUploaded(event) {
+      this.fileContent = event;
+  }
+
 
   refreshView() {
     this._changeDetectorRef.detectChanges();

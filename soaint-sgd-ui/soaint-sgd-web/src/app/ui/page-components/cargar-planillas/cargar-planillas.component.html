@@ -27,9 +27,21 @@
                              [paginator]="true" [rows]="10" [responsive]="true" [value]="comunicaciones">
                   <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
                   <p-column field="nroRadicado" header="Número radicado" [sortable]="true"></p-column>
-                  <p-column header="Tipo de persona" [sortable]="true"></p-column>
-                  <p-column header="Número identificación" [sortable]="true"></p-column>
-                  <p-column header="Nombre" [sortable]="true"></p-column>
+                  <p-column header="Tipo de persona" [sortable]="true">
+                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                      {{correspondencia.tipoPersona?.nombre}}
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Número identificación" [sortable]="true">
+                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                      {{correspondencia.nroDocuIdentidad || correspondencia.nit}}
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Nombre" [sortable]="true">
+                    <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                      {{correspondencia.nombre}}
+                    </ng-template>
+                  </p-column>
                   <p-column header="Sede" [sortable]="true">
                     <ng-template let-col let-correspondencia="rowData" pTemplate="body">
                       {{findSede(data.codSedeDestino)}}
@@ -65,7 +77,7 @@
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
                 </button>
                 <!--@todo-->
-                <button pButton type="button" label="Registar Resultado"
+                <button pButton type="button" label="Registrar resultdo"
                         [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
                 </button>
@@ -81,9 +93,9 @@
           [contentStyle]="{'overflow':'scroll'}"
           (onHide)="hideEditarPlanillaDialog()" [width]="800">
   <p-header>
-    Redireccionar
+    Registrar resultdo
   </p-header>
-  <app-editar-planilla #popupEditar></app-editar-planilla>
+  <app-editar-planilla #popupEditar [planilla]="data"></app-editar-planilla>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
