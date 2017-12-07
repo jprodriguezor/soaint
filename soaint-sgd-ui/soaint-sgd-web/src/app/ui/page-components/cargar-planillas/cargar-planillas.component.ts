@@ -191,6 +191,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   showEditarPlanillaDialog() {
+    this.popupEditar.resetData();
     this.editarPlanillaDialogVisible = true;
   }
 

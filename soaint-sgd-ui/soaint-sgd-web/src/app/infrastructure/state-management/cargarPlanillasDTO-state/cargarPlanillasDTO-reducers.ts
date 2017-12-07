@@ -1,7 +1,7 @@
 import {Actions, ActionTypes as Autocomplete} from './cargarPlanillasDTO-actions';
 import {tassign} from 'tassign';
-import {PlanillaDTO} from "../../../domain/PlanillaDTO";
-import {PlanAgenDTO} from "../../../domain/PlanAgenDTO";
+import {PlanillaDTO} from '../../../domain/PlanillaDTO';
+import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
 
 
 export interface State {
@@ -35,6 +35,7 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
+      console.log(action);
       const values = action.payload.pagentes.pagente;
       if (!values) {
         return tassign(state, {
