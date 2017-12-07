@@ -18,7 +18,7 @@ export class EditarPlanillaComponent implements OnInit {
   form: FormGroup;
 
   @Input()
-  planilla: Observable<any>;
+  planilla: any;
 
   showDependencia = false;
 
