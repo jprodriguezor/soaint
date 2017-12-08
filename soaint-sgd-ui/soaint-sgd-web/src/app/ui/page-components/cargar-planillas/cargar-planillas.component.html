@@ -77,7 +77,7 @@
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
                 </button>
                 <!--@todo-->
-                <button pButton type="button" label="Registrar resultdo"
+                <button pButton type="button" label="Registrar resultado"
                         [disabled]="selectedComunications.length == 0" (click)="showEditarPlanillaDialog()"
                         style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px">
                 </button>
@@ -93,7 +93,7 @@
           [contentStyle]="{'overflow':'scroll'}"
           (onHide)="hideEditarPlanillaDialog()" [width]="800">
   <p-header>
-    Registrar resultdo
+    Registrar resultado
   </p-header>
   <app-editar-planilla #popupEditar [planilla]="data"></app-editar-planilla>
 
