@@ -214,8 +214,10 @@ public class PlanillasControl {
             SimpleXlsxReportConfiguration xlsxReportConfiguration = new SimpleXlsxReportConfiguration();
             xlsxReportConfiguration.setOnePagePerSheet(false);
             xlsxReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
+            xlsxReportConfiguration.setRemoveEmptySpaceBetweenColumns(true);
             xlsxReportConfiguration.setDetectCellType(false);
             xlsxReportConfiguration.setWhitePageBackground(false);
+            xlsxReportConfiguration.setWrapText(true);
             xlsxExporter.setConfiguration(xlsxReportConfiguration);
             xlsxExporter.exportReport();
 
