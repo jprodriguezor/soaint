@@ -7,7 +7,7 @@
             <th>Nombre</th><td>{{ (registro$ | async)?.nombreCargaMasiva }}</td>
         </tr>
         <tr>
-            <th>Fecha creación</th><td>{{ (registro$ | async)?.fechaCreacionCargaMasiva }}</td>
+            <th>Fecha creación</th><td>{{ (registro$ | async)?.fechaCreacionCargaMasiva  | date:'dd-MM-yyyy'}}</td>
         </tr>
         <tr>
             <th>Estado</th><td>{{ (registro$ | async)?.estadoCargaMasiva }}</td>
