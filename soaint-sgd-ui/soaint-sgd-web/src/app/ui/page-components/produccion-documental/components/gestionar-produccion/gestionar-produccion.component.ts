@@ -5,6 +5,10 @@ import {ConstanteDTO} from '../../../../../domain/constanteDTO';
 import {ProduccionDocumentalApiService} from 'app/infrastructure/api/produccion-documental.api';
 import {RolDTO} from '../../../../../domain/rolesDTO';
 import {VALIDATION_MESSAGES} from '../../../../../shared/validation-messages';
+import {Subscription} from 'rxjs/Subscription';
+import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -20,21 +24,27 @@ export class PDGestionarProduccionComponent implements OnInit {
 
   listaDocumentos: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
 
-  sedesAdministrativas$: Observable<ConstanteDTO[]>;
-  dependencias$: Observable<ConstanteDTO[]>;
-  roles$: Observable<RolDTO[]>;
-  funcionarios$: Observable<ConstanteDTO[]>;
+    sedesAdministrativas$: Observable<ConstanteDTO[]>;
+    dependencias: Array<any> = [];
+    roles$: Observable<RolDTO[]>;
+    funcionarios$: Observable<FuncionarioDTO[]>;
+
+    subscribers: Array<Subscription> = [];
 
 
   constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private _funcionarioSandBox: FuncionarioSandbox,
               private formBuilder: FormBuilder) {
     this.initForm();
   }
 
   dependenciaChange(event) {
-    this.dependenciaSelected = event.value;
-    this.funcionarios$ = this._produccionDocumentalApi.getFuncionariosPorDependenciaRol({codDependencia: this.dependenciaSelected.codigo});
+      this.dependenciaSelected = event.value;
+      this.funcionarios$ = this._funcionarioSandBox.loadAllFuncionariosByRol({codDependencia: this.form.get('dependencia').value.codigo, rol: 'Proyector'}).map(res => {
+          return res.funcionarios
+      });
   }
 
   eliminarDocumento(index) {
@@ -99,9 +109,21 @@ export class PDGestionarProduccionComponent implements OnInit {
 
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-    this.dependencias$ = this._produccionDocumentalApi.getDependencias({});
     this.roles$ = this._produccionDocumentalApi.getRoles({});
+      this.listenForChanges();
   }
+
+    listenForChanges() {
+        this.subscribers.push(this.form.get('sede').valueChanges.distinctUntilChanged().subscribe((sede) => {
+            this.form.get('dependencia').reset();
+            if (sede) {
+                const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
+                    this.dependencias = dependencias.organigrama;
+                    depedenciaSubscription.unsubscribe();
+                });
+            }
+        }));
+    }
 
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');
