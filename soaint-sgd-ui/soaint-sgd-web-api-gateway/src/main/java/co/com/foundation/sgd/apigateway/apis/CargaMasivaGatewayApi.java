@@ -84,9 +84,12 @@ public class CargaMasivaGatewayApi {
                 MultivaluedMap<String, String> headers = part.getHeaders();
                 String fileName = parseFileName(headers);
                 log.info("Valor fileName: ===> " + fileName);
-                Response response = client.cargarDocumento(part, codigoSede, codigoDependencia, codfunRadica, fileName);
-                responseContent[0] = response.readEntity(String.class);
-                estadoRespuesta[0] = response.getStatus();
+                if (key.equals("file")){
+                    Response response = client.cargarDocumento(part, codigoSede, codigoDependencia, codfunRadica, fileName);
+                    responseContent[0] = response.readEntity(String.class);
+                    estadoRespuesta[0] = response.getStatus();
+                }
+
 
             });
         });
