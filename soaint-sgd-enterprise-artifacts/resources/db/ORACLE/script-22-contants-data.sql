@@ -47,8 +47,8 @@ Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('2
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('27','ME-RECVN','Ventanilla','ME-RECE','A ');
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('28','ME-RECCM','Correspondencia Masiva','ME-RECE','A ');
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('29','TP-CMC','Tipo Comunicación',null,'A ');
-Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('30','TP-CMCOE','Comunicación Oficial Externa Recibida','TP-CMC','A ');
-Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('31','TP-CMCOI','Comunicación Oficial Interna Recibida','TP-CMC','A ');
+Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('30','EE','Comunicación Oficial Externa Recibida','TP-CMC','A ');
+Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('31','EI','Comunicación Oficial Interna Recibida','TP-CMC','A ');
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('32','TP-PER','Tipo Persona',null,'A ');
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('33','TP-PERPN','Persona Natural','TP-PER','A ');
 Insert into TVS_CONSTANTES (IDE_CONST,CODIGO,NOMBRE,COD_PADRE,ESTADO) values ('34','TP-PERPJ','Persona Jurídica','TP-PER','A ');
