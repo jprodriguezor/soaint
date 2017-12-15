@@ -21,6 +21,7 @@ import {RedireccionDTO} from '../../../domain/redireccionDTO';
 import {DroolsRedireccionarCorrespondenciaApi} from '../../../infrastructure/api/drools-redireccionar-correspondencia.api';
 import {PushNotificationAction} from 'app/infrastructure/state-management/notifications-state/notifications-actions';
 import {WARN_REDIRECTION} from 'app/shared/lang/es';
+import {SUCCESS_REASIGNACION} from 'app/shared/lang/es';
 import 'rxjs/add/operator/toArray';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
@@ -195,12 +196,21 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
     console.log(this.asignationType);
 
-    this._asignacionSandbox.reassignDispatch(tassign({
+    console.log(this._asignacionSandbox.reassignDispatch(tassign({
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
       },
       idFunc: this.funcionarioLog.id
-    }, this.authPayload));
+    }, this.authPayload)));
+
+    this.selectedComunications.forEach((value, index) => {
+
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'success',
+        summary: SUCCESS_REASIGNACION + value.correspondencia.nroRadicado
+      }));
+
+    });
 
   }
 
