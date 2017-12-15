@@ -50,10 +50,10 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.procesosSuggestions = [/*{
+    this.procesosSuggestions = [{
       nombre: 'Archivar documento',
       id: 1
-    },*/ {
+    }, {
       nombre: 'Devolver',
       id: 2
     }, {
