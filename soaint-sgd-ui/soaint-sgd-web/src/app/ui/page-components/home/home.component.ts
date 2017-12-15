@@ -26,11 +26,11 @@ export class HomeComponent implements OnInit {
 
   inProgressTasks$: Observable<TareaDTO[]>;
 
-  completedTasks: number = 0;
-  reservedTasks: number = 0;
-  readyTasks: number = 0;
+  completedTasks: any = 0;
+  reservedTasks: any = 0;
+  readyTasks = 0;
 
-  visibleRadicadoTicket: boolean = false;
+  visibleRadicadoTicket = false;
 
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox, private _taskSandbox: TaskDtoSandbox) {
     this._store.dispatch(new GetTaskStatsAction());
@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit {
 
     this.inProgressTasks$ = this._store.select(getInProgressTasksArrayData);
     this.tasksStadistics$ = this._store.select(getTasksStadistics).map(value => {
-      console.log(value);
       this.completedTasks = value.find(status => status.name === 'COMPLETADO');
       this.readyTasks = value.find(status => status.name === 'LISTO');
       this.reservedTasks = value.find(status => status.name === 'RESERVADO');
@@ -61,7 +60,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this._taskSandbox.loadDispatch();
-    this._processSandbox.loadDispatch();
   }
 
   showRadicadoTicket(event) {

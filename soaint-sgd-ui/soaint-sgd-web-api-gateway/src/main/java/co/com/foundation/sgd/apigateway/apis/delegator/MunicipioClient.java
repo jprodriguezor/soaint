@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -12,8 +13,7 @@ import javax.ws.rs.core.Response;
 @Log4j2
 public class MunicipioClient {
 
-    @Value("${backapi.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
     public MunicipioClient() {
         super();
@@ -23,6 +23,15 @@ public class MunicipioClient {
         log.info("Municipios - [trafic] - listing Municipios with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/municipios-web-api/municipios/" + departamento + "/A")
+                .request()
+                .get();
+    }
+
+    public Response listarMunicipiosPorCodigo(String codigos) {
+        log.info("Municipios - [trafic] - listing Municipios by codes with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/municipios-web-api/municipios")
+                .queryParam("codigos", codigos)
                 .request()
                 .get();
     }

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Actions, Effect, toPayload} from '@ngrx/effects';
+import {Actions, Effect} from '@ngrx/effects';
 import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -22,20 +22,14 @@ import {getSelectedDependencyGroupFuncionario} from './funcionarioDTO-selectors'
 @Injectable()
 export class Effects {
 
-  constructor(private actions$: Actions,
-              private _store$: Store<RootState>,
-              private _sandbox: Sandbox) {
-  }
-
-
   @Effect()
   loadAll: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.LOAD_ALL)
     .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .distinctUntilChanged()
     .switchMap(
-      ([payload, state]) => {
-        return this._sandbox.loadAllFuncionarios(state.codigo)
+      ([action, state]) => {
+        return this._sandbox.loadAllFuncionarios((action.payload && action.payload.codDependencia) ? action.payload.codDependencia : state.codigo)
           .map((response) => new actions.LoadAllSuccessAction(response))
           .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
           )
@@ -43,4 +37,25 @@ export class Effects {
     );
 
 
+  @Effect()
+  loadAllByRol: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.LOAD_ALL_BY_ROL)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
+    .distinctUntilChanged()
+    .switchMap(
+      ([action, state]) => {
+        return this._sandbox.loadAllFuncionariosByRol({
+          codDependencia: action.payload.codDependencia || state.codigo,
+          rol: action.payload.rol
+        })
+          .map((response) => new actions.LoadAllSuccessAction(response))
+          .catch((error) => Observable.of(new actions.LoadAllFailAction({error}))
+          )
+      }
+    );
+
+  constructor(private actions$: Actions,
+              private _store$: Store<RootState>,
+              private _sandbox: Sandbox) {
+  }
 }

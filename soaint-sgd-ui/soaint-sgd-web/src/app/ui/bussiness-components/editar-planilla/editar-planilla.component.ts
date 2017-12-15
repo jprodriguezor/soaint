@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {DependenciaDTO} from "../../../domain/dependenciaDTO";
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {Observable} from "rxjs/Observable";
-import {getDataobj} from "../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors";
-import {Store} from "@ngrx/store";
+import {Observable} from 'rxjs/Observable';
+import {getDataobj} from '../../../infrastructure/state-management/cargarPlanillasDTO-state/cargarPlanillasDTO-selectors';
+import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 
 
@@ -17,9 +17,10 @@ export class EditarPlanillaComponent implements OnInit {
 
   form: FormGroup;
 
-  planilla$: Observable<any>;
+  @Input()
+  planilla: any;
 
-  showDependencia: boolean = false;
+  showDependencia = false;
 
   estadoEntregaSuggestions: any[] = [
     {nombre: 'ENTREGADO', codigo: 'EN'},
@@ -34,11 +35,14 @@ export class EditarPlanillaComponent implements OnInit {
               private _store: Store<RootState>,
               private _dependenciaSandbox: DependenciaSandbox) {
     this.initForm();
-    this.planilla$ = this._store.select(getDataobj);
   }
 
   ngOnInit() {
     this.listarDependencias();
+  }
+
+  resetData() {
+    this.form.reset();
   }
 
   initForm() {
@@ -57,16 +61,17 @@ export class EditarPlanillaComponent implements OnInit {
   }
 
   estadoEntregaChange() {
-    this.showDependencia = this.form.get('estadoEntrega').value && this.form.get('estadoEntrega').value.codigo == "DV";
+    this.showDependencia = this.form.get('estadoEntrega').value && this.form.get('estadoEntrega').value.codigo === 'DV';
   }
 
   findDependency(code): string {
-    const result = this.dependencias.find((element) => element.codigo == code);
+    const result = this.dependencias.find((element) => element.codigo === code);
     return result ? result.nombre : '';
   }
 
   findSede(code): string {
-    const result = this.dependencias.find((element) => element.codSede == code);
+    console.log(code);
+    const result = this.dependencias.find((element) => element.codSede === code);
     return result ? result.nomSede : '';
   }
 

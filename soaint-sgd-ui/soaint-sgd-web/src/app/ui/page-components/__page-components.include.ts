@@ -11,12 +11,14 @@ import {PopupAgregarObservacionesComponent} from '../bussiness-components/popup-
 import {PopupRejectComponent} from '../bussiness-components/popup-reject/popup-reject.component';
 import {GestionarComunicacionComponent} from '../bussiness-components/gestionar-comunicacion/gestionar-comunicacion.component';
 import {RadicarSalidaComponent} from './radicacion-salida/radicar-salida.component';
-import {CARGA_MASIVA_COMPONENTS} from "./carga-masiva/__cm-components.include";
+import {CARGA_MASIVA_COMPONENTS} from './carga-masiva/__cm-components.include';
 import {DistribucionFisicaComponent} from './distribucion-fisica/distribucion-fisica.component';
-import {CargarPlanillasComponent} from "./cargar-planillas/cargar-planillas.component";
-import {EditarPlanillaComponent} from "../bussiness-components/editar-planilla/editar-planilla.component";
-import {PRODUCCION_DOCUMENTAL_COMPONENTS} from "./produccion-documental/_pd-components.include";
-import {PlanillaGeneradaComponent} from "../bussiness-components/planilla-generada/planilla-generada.component";
+import {CargarPlanillasComponent} from './cargar-planillas/cargar-planillas.component';
+import {EditarPlanillaComponent} from '../bussiness-components/editar-planilla/editar-planilla.component';
+import {PRODUCCION_DOCUMENTAL_COMPONENTS} from './produccion-documental/_pd-components.include';
+import {PlanillaGeneradaComponent} from '../bussiness-components/planilla-generada/planilla-generada.component';
+import {SeleccionarUnidadDocumentalComponent} from './archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
+import {SeleccionarDocumentosComponent} from './archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -47,6 +49,8 @@ export const PAGE_COMPONENTS = [
   CargarPlanillasComponent,
   EditarPlanillaComponent,
   PlanillaGeneradaComponent,
+  SeleccionarUnidadDocumentalComponent,
+  SeleccionarDocumentosComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];

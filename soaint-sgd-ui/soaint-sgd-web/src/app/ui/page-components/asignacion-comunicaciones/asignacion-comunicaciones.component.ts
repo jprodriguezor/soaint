@@ -8,7 +8,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {createSelector} from 'reselect';
 import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as ComunicacionesArrayData} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-selectors';
-import {Sandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {AsignacionDTO} from '../../../domain/AsignacionDTO';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
@@ -26,7 +26,7 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/forkJoin';
 import {tassign} from 'tassign';
-import {PpdTrazDocumentoDTO} from '../../../domain/PpdTrazDocumentoDTO';
+import {DevolverDTO} from '../../../domain/devolverDTO';
 
 @Component({
   selector: 'app-asignacion-comunicaciones',
@@ -76,7 +76,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
   comunicacionesSubcription: Subscription;
 
-  redireccionesFallidas: Array<RedireccionDTO>;
+  globalDependencySubcription: Subscription;
+
+  redireccionesFallidas: Array<AgentDTO>;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -92,13 +94,11 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<RootState>,
               private _comunicacionOficialApi: CominicacionOficialSandbox,
               private _asignacionSandbox: AsignacionSandbox,
-              private _funcionarioSandbox: Sandbox,
+              private _funcionarioSandbox: FuncionariosSandbox,
               private ruleCheckRedirectionNumber: DroolsRedireccionarCorrespondenciaApi,
               private formBuilder: FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-    this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-    });
+
     this.comunicaciones$ = this._store.select(ComunicacionesArrayData);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this.justificationDialogVisible$ = this._store.select(getJustificationDialogVisible);
@@ -130,7 +130,15 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._funcionarioSandbox.loadAllFuncionariosDispatch();
+    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
+      this.dependenciaSelected = result;
+      this.listarComunicaciones();
+    });
+
+    this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
+      rol: 'RECEPTOR'
+    });
+
     this.llenarEstadosCorrespondencias();
     this.listarComunicaciones();
   }
@@ -138,6 +146,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.funcionarioSubcription.unsubscribe();
     this.comunicacionesSubcription.unsubscribe();
+    this.globalDependencySubcription.unsubscribe();
   }
 
   initForm() {
@@ -214,37 +223,18 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
 
         this.redireccionesFallidas = failChecks;
 
+        const selectedComunications = this.selectedComunications.filter((com) => {
+          const index = this.redireccionesFallidas.findIndex((red) => red.ideAgente === com.agenteList[0].ideAgente);
+          return index >= 0;
+        });
+
+        this.rejectComunicationsAction(selectedComunications, null, 'NR', 'Ha vencido el numero maximo de redirecciones');
+
       } else {
         this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
       }
     });
 
-  }
-
-  devolverComunicaciones(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
-
-    // const checks = this.checkRedirectionsAgentes('numDevoluciones', justificationValues);
-
-    // if (checks.failChecks.length > 0) {
-    //   this._store.dispatch(new PushNotificationAction({
-    //     severity: 'warn',
-    //     summary: WARN_REDIRECTION
-    //   }));
-    //
-    // } else {
-    //   this._store.dispatch(new PushNotificationAction({
-    //     severity: 'success',
-    //     summary: SUCCESS_REDIRECTION
-    //   }));
-    //
-    //   alert('Aún no se ha definido como se debe proceder');
-    //   // checks.successChecks.forEach(payload => {
-    //   //   // this._asignacionSandbox.redirectDispatch(payload);
-    //   //
-    //   // });
-    // }
-    //
-    // this.redireccionesFallidas = checks.failChecks;
   }
 
   sendRedirect() {
@@ -399,6 +389,21 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       }).toArray();
   }
 
+  checkDevolucionesAgentes(key): Observable<any[]> {
+    return Observable.from(this.selectedComunications)
+      .flatMap(value => {
+        const agente = value.agenteList[0];
+        delete agente['_$visited'];
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            radicacion: value,
+            agente: agente
+          };
+        });
+      }).toArray();
+  }
+
   createRecursiveRedirectsPayload(agentes, justification): RedireccionDTO {
     return {
       agentes: [...agentes],
@@ -426,6 +431,79 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       cod_estado: this.form.get('estadoCorrespondencia').value,
       nro_radicado: this.form.get('nroRadicado').value ? this.form.get('nroRadicado').value : '',
     });
+  }
+
+
+  rejectComunications($event) {
+    this.checkDevolucionesAgentes('numDevoluciones').subscribe(checks => {
+      const failChecks = [];
+      const agentesSuccess = [];
+
+      checks.forEach(value => {
+        if (!value.success) {
+          failChecks.push(value.agente);
+        } else {
+          agentesSuccess.push(value.agente);
+        }
+      });
+
+      if (failChecks.length > 0) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
+
+        this.redireccionesFallidas = failChecks;
+
+      } else {
+        this.rejectComunicationsAction(this.selectedComunications, $event);
+      }
+    });
+  }
+
+  rejectComunicationsAction(selectedComunications, payload, cause?: string, observation?: string) {
+    this._asignacionSandbox.rejectComunicationsAsignacion(this.rejectPayload(selectedComunications, payload, cause, observation)).subscribe(result => {
+      this.listarComunicaciones();
+      this.hideRejectDialog();
+      this.hideJustificationPopup();
+    });
+  }
+
+  rejectPayload(agentes, payload, cause?: string, observation?: string): DevolverDTO {
+    return {
+      itemsDevolucion: this.getItemsDevolucion(agentes, payload, cause),
+      traza: {
+        id: null,
+        observacion: observation || payload.observacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
+  }
+
+  getItemsDevolucion(agentes: any[], payload, cause?: string): any[] {
+    const items = [];
+    agentes.forEach(ag => {
+      const a = ag.agenteList[0];
+      a.nroDocuIdentidad = ag.correspondencia.nroRadicado;
+      a.codDependencia = this.dependenciaSelected.codigo;
+      items.push({
+        agente: a,
+        causalDevolucion: cause || payload.causalDevolucion.codigo
+      });
+    });
+    return items;
+  }
+
+  sendReject() {
+    this.popupReject.devolverComunicaciones();
+  }
+
+  devolverOrigenRedireccionFallida() {
+
   }
 }
 

@@ -8,9 +8,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {VALIDATION_MESSAGES} from "../../../shared/validation-messages";
+import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
-import {OrganigramaDTO} from "../../../domain/organigramaDTO";
+import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 
 @Component({
   selector: 'app-popup-justificacion',
@@ -20,7 +20,7 @@ export class PopupJustificacionComponent implements OnInit {
 
   form: FormGroup;
 
-  validations = {};
+  validations: any = {};
 
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
 

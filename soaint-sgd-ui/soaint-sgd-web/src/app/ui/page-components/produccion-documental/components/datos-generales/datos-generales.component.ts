@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -20,151 +20,160 @@ import {AnexoDTO} from '../../models/AnexoDTO';
 
 export class PDDatosGeneralesComponent implements OnInit {
 
-    form: FormGroup;
+  form: FormGroup;
 
-    validations: any = {};
-    @Input() taskData: TareaDTO;
+  validations: any = {};
 
-    funcionarioLog: FuncionarioDTO;
+  @Input()
+  taskData: TareaDTO;
 
-    tiposComunicacion$: Observable<ConstanteDTO[]>;
-    tiposAnexo$: Observable<ConstanteDTO[]>;
-    tiposPlantilla$: Observable<ConstanteDTO[]>;
+  funcionarioLog: FuncionarioDTO;
 
-    confirmadaGenerarVersion = false;
-    versionesDocumentoVisible = false;
-    nombreVersionDocumento: string;
+  tiposComunicacion$: Observable<ConstanteDTO[]>;
+  tiposAnexo$: Observable<ConstanteDTO[]>;
+  tiposPlantilla$: Observable<ConstanteDTO[]>;
 
-    tipoPlantillaSelected: ConstanteDTO[];
+  confirmadaGenerarVersion = false;
+  versionesDocumentoVisible = false;
+  nombreVersionDocumento: string;
 
-    listaVersionesDocumento: VersionDocumentoDTO[] = [];
-    listaAnexos: AnexoDTO[] = [];
+  fechaCreacion = new Date();
 
-    constructor(private _store: Store<State>,
-                private _produccionDocumentalApi: ProduccionDocumentalApiService,
-                private formBuilder: FormBuilder,
-                private _changeDetectorRef: ChangeDetectorRef,
-                private pdMessageService: PdMessageService) {}
+  tipoPlantillaSelected: ConstanteDTO[];
+
+  listaVersionesDocumento: VersionDocumentoDTO[] = [];
+  listaAnexos: AnexoDTO[] = [];
+  fileContent: {id: number; file: Blob };
+
+  constructor(private _store: Store<State>,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
+              private formBuilder: FormBuilder,
+              private _changeDetectorRef: ChangeDetectorRef,
+              private pdMessageService: PdMessageService) {
+    this.initForm();
+  }
 
 
-    initForm() {
-        this.form = this.formBuilder.group({
-            // Datos generales
-            'usuarioResponsable': [this.taskData.variables.usuarioProyector],
-            'fechaCreacion': [new Date()],
-            'sedeAdministrativa': [this.taskData.variables.codigoSede],
-            'dependencia': [this.taskData.variables.codigoDependencia],
+  initForm() {
+    this.form = this.formBuilder.group({
+      'tipoComunicacion': [null, Validators.required],
+      'tipoPlantilla': [null, Validators.required],
+      'elaborarDocumento': [null],
+      'soporte': 'electronico',
+      'tipoAnexo': [null],
+      'descripcion': [null],
+    });
+  }
 
-            // Radicado asociado
-            'fechaRadicacion': [new Date()],
-            'noRadicado': [this.taskData.variables.numeroRadicado],
 
-            // Producir documento
-            'tipoComunicacion': [{value: null}, Validators.required],
-            'tipoPlantilla': [{value: null}],
-            'elaborarDocumento': [null],
+  tipoComunicacionChange(event) {
+    this.pdMessageService.sendMessage(event.value);
+  }
 
-            // Anexos
-            'soporte': 'electronico',
-            'tipoAnexo': [{value: null}],
-            'descripcion': [null],
-        });
+  tipoPlanillaChange(event) {
+    this.tipoPlantillaSelected = event.value;
+    this.nombreVersionDocumento = event.value.nombre + '_';
+  }
+
+  hideVersionesDocumentoDialog() {
+    this.versionesDocumentoVisible = false;
+    this.confirmadaGenerarVersion = false;
+  }
+
+  showVersionesDocumentoDialog() {
+    this.versionesDocumentoVisible = true;
+  }
+
+  confirmarGenerarVersion() {
+    this.confirmadaGenerarVersion = true;
+  }
+
+  agregarVersion() {
+    const versiones = this.listaVersionesDocumento;
+    versiones.push({
+      tipo: 'PDF',
+      nombre: this.nombreVersionDocumento,
+      size: Math.floor(Math.random() * (100000 - 1) + 1)
+    });
+    this.listaVersionesDocumento = [...versiones];
+    this.hideVersionesDocumentoDialog();
+    this.refreshView();
+  }
+
+  agregarAnexo() {
+    const anexos = this.listaAnexos;
+    const anexo: AnexoDTO = {
+      soporte: this.form.get('soporte').value,
+      tipo: this.form.get('tipoAnexo').value,
+      descripcion: this.form.get('descripcion').value,
+      file: this.fileContent
+    };
+    anexos.push(anexo);
+    this.listaAnexos = [...anexos];
+    this.refreshView();
+  }
+
+  removeFromList(i, listname: string) {
+    const list = [...this[listname]];
+    list.splice(i,1);
+    this[listname] = list;
+    // this._changeDetectorRef.detectChanges();
+  }
+
+  ngOnInit(): void {
+    this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+      this.funcionarioLog = funcionario;
+    });
+    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
+    this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
+    this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
+    this.listenForErrors();
+  }
+
+
+  listenForErrors() {
+    this.bindToValidationErrorsOf('tipoPlantilla');
+    this.bindToValidationErrorsOf('tipoComunicacion');
+  }
+
+  listenForBlurEvents(control: string) {
+    const ac = this.form.get(control);
+    if (ac.touched && ac.invalid) {
+      const error_keys = Object.keys(ac.errors);
+      const last_error_key = error_keys[error_keys.length - 1];
+      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
+  }
 
+  bindToValidationErrorsOf(control: string) {
+    const ac = this.form.get(control);
+    ac.valueChanges.subscribe(value => {
+      if ((ac.touched || ac.dirty) && ac.errors) {
+        const error_keys = Object.keys(ac.errors);
+        const last_error_key = error_keys[error_keys.length - 1];
+        this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      } else {
+        delete this.validations[control];
+      }
+    });
+  }
 
-    tipoComunicacionChange(event) {
-        this.pdMessageService.sendMessage(event.value);
+  visualizarDocumentos(index) {
+    const file = this.listaAnexos[index].file;
+    if (file === undefined || !file.id) {
+      alert('Failed to open PDF.');
+    } else {
+      window.open(URL.createObjectURL(file.file), '_blank');
     }
+  }
 
-    tipoPlanillaChange(event) {
-        this.tipoPlantillaSelected = event.value;
-        this.nombreVersionDocumento = event.value.nombre + '_';
-    }
-
-    hideVersionesDocumentoDialog() {
-        this.versionesDocumentoVisible = false;
-        this.confirmadaGenerarVersion = false;
-    }
-
-    showVersionesDocumentoDialog() {
-        this.versionesDocumentoVisible = true;
-    }
-
-    confirmarGenerarVersion() {
-        this.confirmadaGenerarVersion = true;
-    }
-
-    agregarVersion() {
-        const versiones = this.listaVersionesDocumento;
-        versiones.push({
-            tipo: 'PDF',
-            nombre: this.nombreVersionDocumento,
-            size: Math.floor(Math.random() * (100000 - 1) + 1)
-        });
-        this.listaVersionesDocumento = [...versiones];
-        this.hideVersionesDocumentoDialog();
-        this.refreshView();
-    }
-
-    agregarAnexo() {
-        const anexos = this.listaAnexos;
-        const anexo: AnexoDTO = {
-            soporte: this.form.get('soporte').value,
-            tipo: this.form.get('tipoAnexo').value,
-            descripcion: this.form.get('descripcion').value
-        };
-        anexos.push(anexo);
-        this.listaAnexos = [...anexos];
-        this.refreshView();
-    }
+  onFileUploaded(event) {
+      this.fileContent = event;
+  }
 
 
-    ngOnInit(): void {
-        this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-            this.funcionarioLog = funcionario;
-        });
-
-        this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
-        this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
-        this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-
-
-        this.initForm();
-
-        this.listenForErrors();
-
-        console.log(this.taskData);
-    }
-
-
-    listenForErrors() {
-        this.bindToValidationErrorsOf('tipoComunicacion');
-    }
-
-    listenForBlurEvents(control: string) {
-        const ac = this.form.get(control);
-        if (ac.touched && ac.invalid) {
-          const error_keys = Object.keys(ac.errors);
-          const last_error_key = error_keys[error_keys.length - 1];
-          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-        }
-    }
-
-    bindToValidationErrorsOf(control: string) {
-        const ac = this.form.get(control);
-        ac.valueChanges.subscribe(value => {
-          if ((ac.touched || ac.dirty) && ac.errors) {
-            const error_keys = Object.keys(ac.errors);
-            const last_error_key = error_keys[error_keys.length - 1];
-            this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-          } else {
-            delete this.validations[control];
-          }
-        });
-    }
-
-    refreshView() {
-        this._changeDetectorRef.detectChanges();
-    }
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
+  }
 }
 

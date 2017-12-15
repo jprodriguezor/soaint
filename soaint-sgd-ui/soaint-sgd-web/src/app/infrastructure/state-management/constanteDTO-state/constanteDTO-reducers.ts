@@ -110,7 +110,6 @@ export function reducer(state = initialState, action: Actions) {
         ids: [...state[target].ids, ...newValuesIds],
         entities: Object.assign({}, state[target].entities, newValuesEntities)
       };
-      console.log(cloneState);
       return cloneState;
     }
 

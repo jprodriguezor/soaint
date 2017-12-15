@@ -175,6 +175,41 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @POST
+    @Path("/devolver")
+    @JWTTokenSecurity
+    public Response devolverComunicaciones(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
+        Response response = client.devolverComunicaciones(devolucion);
+        devolucion.getItemsDevolucion().forEach(item -> {
+            if (item.getCausalDevolucion().equals("NR")) {
+                EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+                entradaProceso.setIdProceso("proceso.gestor-devoluciones");
+                entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+                devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
+            }
+        });
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @POST
+    @Path("/devolver/asignacion")
+    @JWTTokenSecurity
+    public Response devolverComunicacionesAsignacion(DevolucionDTO devolucion) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
+
+        EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
+        entradaProceso.setIdProceso("proceso.gestor-devoluciones");
+        entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
+
+        devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
+
+        Response response = client.devolverComunicaciones(devolucion);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
     @GET
     @Path("/metricasTiempo")
     @JWTTokenSecurity
@@ -275,6 +310,7 @@ public class CorrespondenciaGatewayApi {
         entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestion-planillas:1.0.0-SNAPSHOT");
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numPlanilla", responseObject.getNroPlanilla());
+        parametros.put("codDependencia", planilla.getCodDependenciaOrigen());
         entradaProceso.setParametros(parametros);
         this.procesoClient.iniciarTercero(entradaProceso);
 

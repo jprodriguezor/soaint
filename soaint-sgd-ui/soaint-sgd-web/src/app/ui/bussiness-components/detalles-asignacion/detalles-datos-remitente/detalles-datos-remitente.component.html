@@ -1,67 +1,68 @@
 <div class="ui-g ui-fluid" *ngIf="remitente !== null">
 
 
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipoPers">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipoPers">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
           <span class="md-inputfield">
             <label>Tipo de persona</label>
           </span>
-        </div>
-        <div class="ui-g-12">
+      </div>
+      <div class="ui-g-12">
           <span class="md-inputfield">
               <label
                 style="color: inherit">{{ remitente.codTipoPers | constantCode: constantesList }}</label>
           </span>
-        </div>
       </div>
     </div>
+  </div>
 
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipDocIdent">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.codTipDocIdent">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
           <span class="md-inputfield">
             <label>Tipo de documento</label>
           </span>
-        </div>
-        <div class="ui-g-12">
+      </div>
+      <div class="ui-g-12">
           <span class="md-inputfield">
 
               <label style="color: inherit">{{ remitente.codTipDocIdent | constantCode: constantesList }}</label>
           </span>
-        </div>
       </div>
     </div>
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.nit">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
+  </div>
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.nit">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
           <span class="md-inputfield">
             <!--nit-->
             <label>No Documento identidad</label>
           </span>
-        </div>
-        <div class="ui-g-12">
+      </div>
+      <div class="ui-g-12">
           <span class="md-inputfield">
               <label style="color: inherit">{{ remitente.nit }}</label>
           </span>
-        </div>
       </div>
     </div>
+  </div>
 
-    <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom style="align-content: flex-end" [hidden]="!remitente.nroDocuIdentidad">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
+  <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom style="align-content: flex-end"
+       [hidden]="!remitente.nroDocuIdentidad">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
           <span class="md-inputfield">
             <label>Número documento identidad</label>
           </span>
-        </div>
-        <div class="ui-g-12">
+      </div>
+      <div class="ui-g-12">
           <span class="md-inputfield">
               <label style="color: inherit">{{ remitente.nroDocuIdentidad | constantCode: constantesList}}</label>
           </span>
-        </div>
       </div>
     </div>
+  </div>
 
 
   <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4" padding-bottom [hidden]="!remitente.razonSocial">
@@ -110,7 +111,7 @@
   </div>
 
 
-  <div class="ui-g-12" *ngIf="contactos.length > 0" padding-top >
+  <div class="ui-g-12" *ngIf="contactos.length > 0" padding-top>
     <div class="ui-sm-12 ui-md-12 ui-g-12 ui-lg-12">
       <div class="ui-g-12">
 
@@ -158,21 +159,21 @@
                 <div class="ui-g-12" *ngIf="contact.codPais">
                     <span class="table-text-custom">
                       <b>País: &nbsp;</b>
-                      {{ contact.codPais | constantCode: constantesList  }}
+                      {{ getPais(contact.codPais) }}
                     </span>
                 </div>
 
                 <div class="ui-g-12" *ngIf="contact.codDepartamento">
                     <span class="table-text-custom">
                       <b>Departamento: &nbsp;</b>
-                      {{ contact.codDepartamento | constantCode: constantesList}}
+                      {{ getDepartamento(contact.codDepartamento) }}
                     </span>
                 </div>
 
                 <div class="ui-g-12" *ngIf="contact.codMunicipio">
                     <span class="table-text-custom">
                       <b>Municipio: &nbsp;</b>
-                    {{ contact.codMunicipio | constantCode: constantesList }}
+                    {{ getMunicipio(contact.codMunicipio) }}
                     </span>
                 </div>
 

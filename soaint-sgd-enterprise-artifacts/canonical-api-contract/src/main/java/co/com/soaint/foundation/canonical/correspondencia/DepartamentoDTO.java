@@ -35,5 +35,17 @@ public class DepartamentoDTO implements Serializable {
     private String nombreDepar;
     @JsonProperty("codigo")
     private String codDepar;
-    private String codPais;
+    private PaisDTO pais;
+
+    /**
+     *
+     * @param ideDepar
+     * @param nombreDepar
+     * @param codDepar
+     */
+    public DepartamentoDTO(BigInteger ideDepar, String nombreDepar, String codDepar){
+        this.ideDepar = ideDepar;
+        this.nombreDepar = nombreDepar;
+        this.codDepar = codDepar;
+    }
 }

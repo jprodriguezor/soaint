@@ -1,6 +1,7 @@
 import {ActionTypes as Autocomplete, Actions} from './departamentoDTO-actions';
 import {tassign} from 'tassign';
 import {DepartamentoDTO} from 'app/domain/departamentoDTO';
+import {loadDataReducer} from '../../redux-store/redux-util';
 
 
 export interface State {
@@ -26,23 +27,8 @@ export function reducer(state = initialState, action: Actions) {
 
     case Autocomplete.FILTER_COMPLETE:
     case Autocomplete.LOAD_SUCCESS: {
-      console.log(action.payload);
-      const values = action.payload.departamentos;
-      const newValues = values.filter(data => !state.entities[data.id]);
 
-      const newValuesIds = newValues.map(data => data.id);
-      const newValuesEntities = newValues.reduce((entities: { [id: number]: DepartamentoDTO }, value: DepartamentoDTO) => {
-        return Object.assign(entities, {
-          [value.id]: value
-        });
-      }, {});
-
-      return tassign(state, {
-        ids: [...state.ids, ...newValuesIds],
-        entities: tassign(state.entities, newValuesEntities),
-        selectedId: state.selectedId
-      });
-
+      return loadDataReducer(action, state, action.payload.departamentos, 'id');
     }
 
     default:

@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
+import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import lombok.extern.log4j.Log4j2;
@@ -15,10 +16,7 @@ import javax.ws.rs.core.Response;
 @Log4j2
 public class SecurityClient {
 
-
-
-    @Value("${backapi.funcionario.service.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL);
 
     public SecurityClient() {
         super();

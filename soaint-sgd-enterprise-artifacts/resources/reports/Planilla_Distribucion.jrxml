@@ -60,93 +60,99 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="82" splitType="Stretch">
+		<band height="89" splitType="Stretch">
 			<staticText>
-				<reportElement x="198" y="5" width="112" height="16" uuid="8b72500c-a8d4-47f1-b2b0-9fa8d63d4822"/>
-				<textElement textAlignment="Right">
+				<reportElement x="190" y="5" width="113" height="16" uuid="8b72500c-a8d4-47f1-b2b0-9fa8d63d4822"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Lugar Administrativo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="198" y="26" width="113" height="16" uuid="e63cc16a-0b4f-4053-af5b-6925753a793c"/>
-				<textElement textAlignment="Right">
+				<reportElement x="190" y="32" width="114" height="16" uuid="e63cc16a-0b4f-4053-af5b-6925753a793c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dependencia Destino:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="48" width="100" height="18" uuid="cf6ae2bd-1110-4c94-bcf7-9b66f34fb506"/>
-				<textElement textAlignment="Right">
+				<reportElement x="190" y="60" width="113" height="18" uuid="cf6ae2bd-1110-4c94-bcf7-9b66f34fb506"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Responsable:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="581" y="5" width="100" height="16" uuid="41cc8b5d-dcb8-432b-a4e7-a40a3771b070"/>
-				<textElement textAlignment="Right">
+				<reportElement x="580" y="5" width="100" height="16" uuid="41cc8b5d-dcb8-432b-a4e7-a40a3771b070"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nro Planilla:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="581" y="26" width="100" height="17" uuid="9927d70a-1cfa-4ea3-8cf5-cb3a74178012"/>
-				<textElement textAlignment="Right">
+				<reportElement x="580" y="32" width="101" height="17" uuid="9927d70a-1cfa-4ea3-8cf5-cb3a74178012"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Genaracion:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="579" y="48" width="100" height="17" uuid="fdbd9126-dcc2-4ed5-8a0f-8757a5c12f35"/>
-				<textElement textAlignment="Right">
+				<reportElement x="580" y="60" width="99" height="17" uuid="fdbd9126-dcc2-4ed5-8a0f-8757a5c12f35"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Usuario Planilla:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="314" y="5" width="256" height="16" uuid="c9d2da3b-4822-4ef0-be63-8ccaaff11979"/>
-				<textElement>
+				<reportElement x="307" y="5" width="268" height="16" uuid="c9d2da3b-4822-4ef0-be63-8ccaaff11979"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{lugarAdministrativo}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="315" y="26" width="255" height="16" uuid="89907627-c6b4-4395-ad6f-4578c988b551"/>
-				<textElement>
+				<reportElement x="308" y="32" width="267" height="16" uuid="89907627-c6b4-4395-ad6f-4578c988b551"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dependenciaDestino}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="315" y="48" width="255" height="17" uuid="6cb7b7aa-eafa-46ab-97ed-6cf2629dd2e3"/>
-				<textElement>
+				<reportElement x="308" y="60" width="267" height="17" uuid="6cb7b7aa-eafa-46ab-97ed-6cf2629dd2e3"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph lineSpacing="Single" spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{responsable}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="685" y="5" width="115" height="16" uuid="1a9ba2c3-be49-4ba3-9d0a-227527c42de0"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nroPlanilla}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="685" y="26" width="115" height="17" uuid="f064bab7-11ed-4a74-8c02-f7ae1f7ec906"/>
-				<textElement>
+				<reportElement x="685" y="32" width="115" height="17" uuid="f064bab7-11ed-4a74-8c02-f7ae1f7ec906"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecGeneracion}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="685" y="48" width="115" height="16" uuid="3856a9a1-9265-45b4-8f1a-28eca5d95762"/>
-				<textElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="685" y="60" width="115" height="16" uuid="3856a9a1-9265-45b4-8f1a-28eca5d95762"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
+					<paragraph spacingBefore="3" spacingAfter="3"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{funcGenera}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="0" y="5" width="180" height="61" uuid="95e6690f-17b8-4658-9c59-4aeaa3922253"/>
+				<reportElement x="0" y="5" width="190" height="61" uuid="95e6690f-17b8-4658-9c59-4aeaa3922253"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 		</band>

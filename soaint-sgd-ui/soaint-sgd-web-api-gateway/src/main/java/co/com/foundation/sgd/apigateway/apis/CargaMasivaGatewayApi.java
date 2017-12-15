@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.CargaMasivaClient;
+import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,11 +64,14 @@ public class CargaMasivaGatewayApi {
 
 
     @POST
-    @Path("/cargar-fichero/{codigoSede}/{codigoDependencia}")
+    @Path("/cargar-fichero/{codigoSede}/{codigoDependencia}/{codfunRadica}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-//    @JWTTokenSecurity
-    public Response cargarDocumento(@PathParam("codigoSede") String codigoSede, @PathParam("codigoDependencia") String codigoDependencia, MultipartFormDataInput file) {
+    @JWTTokenSecurity
+    public Response cargarDocumento(@PathParam("codigoSede") String codigoSede,
+                                    @PathParam("codigoDependencia") String codigoDependencia,
+                                    @PathParam("codfunRadica") String codfunRadica,
+                                    MultipartFormDataInput file) {
         final String[] responseContent = {""};
         final int[] estadoRespuesta = {0};
         log.info("CargaMasivaGatewayApi - [trafic] - carga masiva");
@@ -80,9 +84,12 @@ public class CargaMasivaGatewayApi {
                 MultivaluedMap<String, String> headers = part.getHeaders();
                 String fileName = parseFileName(headers);
                 log.info("Valor fileName: ===> " + fileName);
-                Response response = client.cargarDocumento(part, codigoSede, codigoDependencia, fileName);
-                responseContent[0] = response.readEntity(String.class);
-                estadoRespuesta[0] = response.getStatus();
+                if (key.equals("file")){
+                    Response response = client.cargarDocumento(part, codigoSede, codigoDependencia, codfunRadica, fileName);
+                    responseContent[0] = response.readEntity(String.class);
+                    estadoRespuesta[0] = response.getStatus();
+                }
+
 
             });
         });

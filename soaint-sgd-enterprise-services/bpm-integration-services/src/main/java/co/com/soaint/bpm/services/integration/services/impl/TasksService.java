@@ -1,5 +1,6 @@
 package co.com.soaint.bpm.services.integration.services.impl;
 
+import co.com.soaint.bpm.services.integration.services.IProcessServices;
 import co.com.soaint.bpm.services.integration.services.ITaskServices;
 import co.com.soaint.bpm.services.util.EngineConexion;
 import co.com.soaint.bpm.services.util.Estados;
@@ -21,6 +22,7 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +73,8 @@ public class TasksService implements ITaskServices {
     private EntityManager em;
     EngineConexion engine = EngineConexion.getInstance();
     Estados estadosOperaciones = new Estados();
+    @Autowired
+    IProcessServices procesoOperaciones;
 
 
     private TasksService() {
@@ -275,6 +279,10 @@ public class TasksService implements ITaskServices {
             taskService = engine.obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(entrada.getUsuario(), formatoIdioma);
             for (TaskSummary task : tasks) {
+                entrada.setInstanciaProceso(task.getProcessInstanceId());
+                entrada.setIdDespliegue(task.getDeploymentId());
+                JSONObject respuestaJson = new JSONObject(procesoOperaciones.listarVariablesProcesos(entrada));
+                JSONObject valor = respuestaJson.getJSONObject("variables");
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
                         .idTarea(task.getId())
                         .estado(estadosOperaciones.estadoRespuesta(task.getStatusId()))
@@ -287,6 +295,7 @@ public class TasksService implements ITaskServices {
                         .tiempoActivacion(task.getActivationTime())
                         .tiempoExpiracion(task.getExpirationTime())
                         .descripcion(task.getDescription())
+                        .codigoDependencia(valor.getString("codDependencia"))
                         .build();
                 tareas.add(respuestaTarea);
             }
@@ -403,6 +412,7 @@ public class TasksService implements ITaskServices {
      * @throws MalformedURLException
      */
     @Override
+
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws SystemException {
 
         List<RespuestaTareaDTO> tareas = new ArrayList<>();
@@ -411,6 +421,7 @@ public class TasksService implements ITaskServices {
         try {
             log.info("iniciar - listar tareas instancias proceso: {}", entrada);
             taskService = engine.obtenerEngine(entrada).getTaskService();
+
             List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, formatoIdioma);
             for (TaskSummary task : tasks) {
                 RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()

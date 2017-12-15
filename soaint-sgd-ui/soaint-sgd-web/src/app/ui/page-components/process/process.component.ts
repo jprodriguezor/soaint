@@ -33,7 +33,6 @@ export class ProcessComponent implements OnInit {
   }
 
   getProcessDisplayName(proceso) {
-    console.log(proceso);
     return process_info[proceso.codigoProceso] ? process_info[proceso.codigoProceso].displayValue : proceso.nombreProceso
   }
 

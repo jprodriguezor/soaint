@@ -148,4 +148,22 @@ public class FuncionariosControl {
                     .buildSystemException();
         }
     }
+
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
+    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        try {
+            securityApiClient.crearFuncionario(funcionario);
+            funcionariosWebApiClient.crearFuncionario(funcionario);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }

@@ -26,13 +26,18 @@ import java.math.BigInteger;
 @Table(name = "TVS_MUNICIPIO")
 @NamedQueries({
         @NamedQuery(name = "TvsMunicipio.findAll", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
-                "(t.ideMunic, t.nombreMunic, t.codMunic, t.codDepar) " +
+                "(t.ideMunic, t.nombreMunic, t.codMunic) " +
                 "FROM TvsMunicipio t " +
                 "WHERE TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
         @NamedQuery(name = "TvsMunicipio.findAllByCodDeparAndEstado", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
-                "(t.ideMunic, t.nombreMunic, t.codMunic, t.codDepar) " +
+                "(t.ideMunic, t.nombreMunic, t.codMunic ) " +
                 "FROM TvsMunicipio t " +
-                "WHERE TRIM(t.codDepar) = TRIM(:COD_DEPAR) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)")})
+                "INNER JOIN t.departamento d " +
+                "WHERE TRIM(d.codDepar) = TRIM(:COD_DEPAR) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsMunicipio.findAllByCodigos", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
+                "(t.ideMunic, t.nombreMunic, t.codMunic) " +
+                "FROM TvsMunicipio t " +
+                "WHERE TRIM(t.codMunic) IN :CODIGOS")})
 public class TvsMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,9 +49,9 @@ public class TvsMunicipio implements Serializable {
     private String nombreMunic;
     @Column(name = "COD_MUNIC")
     private String codMunic;
-    @Basic(optional = false)
-    @Column(name = "COD_DEPAR")
-    private String codDepar;
+    @JoinColumn(name = "COD_DEPAR", referencedColumnName = "COD_DEPAR")
+    @ManyToOne
+    private TvsDepartamento departamento;
     @Embedded
     private AuditColumns auditColumns;
 

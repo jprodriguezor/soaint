@@ -26,6 +26,8 @@ export class DetallesAsignacionComponent implements OnInit {
 
   constantes: ConstanteDTO[];
 
+  municipios: any[];
+
   dependencias: OrganigramaDTO[];
 
   remitente$: Observable<AgentDTO>;
@@ -37,6 +39,8 @@ export class DetallesAsignacionComponent implements OnInit {
   radicacionEntradaDTV: any;
 
   docSrc: any;
+
+  ideEcm: string;
 
   constructor(private _changeDetectorRef: ChangeDetectorRef, private _asiganacionSandbox: AsiganacionDTOSandbox) {
   }
@@ -50,12 +54,13 @@ export class DetallesAsignacionComponent implements OnInit {
   }
 
   loadDocumento() {
-    this.docSrc = environment.obtenerDocumento + this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.ideEcm = this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.docSrc = environment.obtenerDocumento + this.ideEcm;
   }
 
   preview(file) {
     const self = this;
-    let myblob = new Blob([file], {
+    const myblob = new Blob([file], {
       type: 'application/pdf'
     });
     const reader = new FileReader();
@@ -115,13 +120,30 @@ export class DetallesAsignacionComponent implements OnInit {
     return result;
   }
 
+  getDepartamentosCode() {
+    let result = '';
+    this.comunicacion.datosContactoList.forEach((item) => {
+      result += item.codMunicipio + ',';
+    });
+    return result;
+  }
+
   loadConstantsByCodes() {
-    this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()).subscribe((response) => {
-      this.constantes = response.constantes;
-      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
-        this.constantes.push(...result.dependencias);
-        this.refreshView();
-      });
+    Observable.combineLatest(
+      this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()),
+      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()),
+      this._asiganacionSandbox.obtenerMunicipiosPorCodigos(this.getDepartamentosCode()),
+      (constantes, dependencias, municipios) => {
+        return {
+          constantes: constantes.constantes,
+          dependencias: dependencias.dependencias,
+          municipios: municipios
+        }
+      }
+    ).subscribe((data) => {
+      this.constantes = [...data.constantes, ...data.dependencias];
+      this.municipios = data.municipios;
+      this.refreshView();
     });
   }
 

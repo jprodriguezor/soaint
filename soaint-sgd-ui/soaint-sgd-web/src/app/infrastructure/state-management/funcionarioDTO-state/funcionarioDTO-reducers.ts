@@ -31,7 +31,7 @@ export function reducer(state = initialState, action: Actions) {
       const funcionario = action.payload;
       return tassign(state, {
         authenticatedFuncionario: funcionario,
-        selectedDependencyGroup: Array.isArray(funcionario.dependencias)? funcionario.dependencias[0]: null
+        selectedDependencyGroup: Array.isArray(funcionario.dependencias) ? funcionario.dependencias[0] : null
       });
     }
 
@@ -53,7 +53,6 @@ export function reducer(state = initialState, action: Actions) {
     }
 
     case ActionTypes.SELECT_DEPENDENCY_GROUP: {
-      console.log(action.payload);
       return tassign(state, {
         selectedDependencyGroup: action.payload ? action.payload : (state.authenticatedFuncionario ? state.authenticatedFuncionario.dependencias[0] : null)
       });

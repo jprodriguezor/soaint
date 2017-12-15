@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
 import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -45,7 +46,17 @@ public class GestionarAgenteWS {
      * @throws SystemException
      */
     @WebMethod(action = "redireccionarCorrespondencia", operationName = "redireccionarCorrespondencia")
-    public void redireccionarCorrespondencia(@WebParam(name = "agenteList") final RedireccionDTO redireccion) throws SystemException {
+    public void redireccionarCorrespondencia(@WebParam(name = "redireccion") final RedireccionDTO redireccion) throws SystemException {
         boundary.redireccionarCorrespondencia(redireccion);
+    }
+
+    /**
+     *
+     * @param devolucion
+     * @throws SystemException
+     */
+    @WebMethod(action = "devolverCorrespondencia", operationName = "devolverCorrespondencia")
+    public void devolverCorrespondencia(@WebParam(name = "devolucion") final DevolucionDTO devolucion) throws SystemException {
+        boundary.devolverCorrespondencia(devolucion);
     }
 }

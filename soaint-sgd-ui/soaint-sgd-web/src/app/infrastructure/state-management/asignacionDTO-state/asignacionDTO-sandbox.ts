@@ -41,6 +41,12 @@ export class Sandbox {
     });
   }
 
+  obtenerMunicipiosPorCodigos(codigos: string) {
+    return this._api.list(`${environment.obtenerMunicipiosPorCodigo_endpoint}`, {
+      codigos: codigos
+    });
+  }
+
   obtenerComunicacionPorNroRadicado(nroRadicado: string) {
     return this._api.list(`${environment.obtenerComunicacion_endpoint}${nroRadicado}`);
   }
@@ -51,6 +57,14 @@ export class Sandbox {
 
   redirectComunications(payload: any) {
     return this._api.post(environment.redireccionarComunicaciones_endpoint, payload);
+  }
+
+  rejectComunications(payload: any) {
+    return this._api.post(environment.devolverComunicaciones_endpoint, payload);
+  }
+
+  rejectComunicationsAsignacion(payload: any) {
+    return this._api.post(environment.devolverComunicacionesAsigancion_endpoint, payload);
   }
 
   assignDispatch(payload) {

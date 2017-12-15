@@ -46,7 +46,7 @@
   <p-header>
     Devolver
   </p-header>
-  <app-popup-reject #popupReject></app-popup-reject>
+  <app-popup-reject #popupReject (onRejectComunication)="rejectComunications($event)"></app-popup-reject>
 
 
   <p-footer>
@@ -61,7 +61,7 @@
 
 
 <p-dialog [visible]="justificationDialogVisible" modal="modal" [responsive]="true" positionTop="20"
-          [contentStyle]="{'overflow':'scroll'}"
+          [contentStyle]="{'overflow':'visible'}"
           (onHide)="hideJustificationPopup()" [width]="800">
   <p-header>
     Redireccionar

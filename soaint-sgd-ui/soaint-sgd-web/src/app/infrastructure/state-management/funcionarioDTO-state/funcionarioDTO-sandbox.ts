@@ -18,8 +18,17 @@ export class Sandbox {
     return this._api.list(endpoint);
   }
 
+  loadAllFuncionariosByRol(payload?: any) {
+    const endpoint = `${environment.listarFuncionarios_endpoint}/${payload.codDependencia}/${payload.rol}`;
+    return this._api.list(endpoint);
+  }
+
   loadAllFuncionariosDispatch(payload?) {
     this._store.dispatch(new actions.LoadAllAction(payload));
+  }
+
+  loadAllFuncionariosByRolDispatch(payload?) {
+    this._store.dispatch(new actions.LoadAllByRolAction(payload));
   }
 
 

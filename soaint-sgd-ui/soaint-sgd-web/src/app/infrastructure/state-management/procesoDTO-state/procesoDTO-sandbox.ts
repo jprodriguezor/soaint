@@ -27,7 +27,7 @@ export class Sandbox implements OnDestroy {
     return this._api.list(environment.proceso_endpoint, payload);
   }
 
-  startProcess(payload: any) {
+  startProcess(payload: any, dependency?: any) {
 
     return this._api.post(environment.startProcess_endpoint,
       Object.assign({}, {
@@ -35,7 +35,10 @@ export class Sandbox implements OnDestroy {
         idDespliegue: payload.idDespliegue,
         estados: [
           'LISTO'
-        ]
+        ],
+        parametros: {
+          codDependencia: dependency.codigo
+        }
       }, this.authPayload));
   }
 

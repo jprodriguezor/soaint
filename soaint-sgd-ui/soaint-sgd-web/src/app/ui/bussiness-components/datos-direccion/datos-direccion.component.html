@@ -2,7 +2,7 @@
 <div class="ui-g">
 
   <div class="card card-w-title" *ngIf="showContactForm !== true">
-    <h1>Datos de Contactos</h1>
+    <h1>Datos de Contacto</h1>
     <div class="ui-g ui-fluid">
 
       <!--Direccion-->
@@ -110,7 +110,7 @@
 
   <form [formGroup]="form" novalidate name="formContacto" *ngIf="showContactForm === true" class="fadein-down">
 
-    <div class="card card-w-title" >
+    <div class="card card-w-title">
       <h1>Datos de contacto</h1>
       <!--Tipo Telefono-->
       <div class="ui-g ui-fluid">
@@ -120,7 +120,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <input type="text" pInputText id="correoEle" emailOptional="" formControlName="correoEle" />
+                <input type="text" pInputText id="correoEle" emailOptional="" formControlName="correoEle"/>
                 <label>Correo electronico</label>
               </span>
             </div>
@@ -132,7 +132,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                <input type="text" pInputText id="numeroTel" formControlName="numeroTel" countryPhoneInput />
+                <input type="text" pInputText id="numeroTel" formControlName="numeroTel" countryPhoneInput/>
               <label>No. de teléfono</label>
               </span>
             </div>
@@ -144,7 +144,7 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-                 <input type="text" pInputText id="celular" formControlName="celular" mobilePhoneInput />
+                 <input type="text" pInputText id="celular" formControlName="celular" mobilePhoneInput/>
               <label>celular</label>
               </span>
             </div>
@@ -155,7 +155,7 @@
         <div class="ui-sm-12 ui-g-4 ui-lg-4">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="pais">Pais</label>
+              <label for="pais">País</label>
             </div>
             <div class="ui-g-12">
               <p-autoComplete id="pais"
@@ -216,7 +216,7 @@
         <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="tipoVia"><span class="text-danger">*</span> Tipo Via</label>
+              <label for="tipoVia">Tipo Via</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="tipoViaSuggestions$ | async | dropdownItem"
@@ -235,8 +235,9 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal" [dynamicDisable]="!showDireccionForm">
-              <label for="noViaPrincipal"><span class="text-danger">*</span> No. Via Principal</label>
+              <input type="text" pInputText id="noViaPrincipal" formControlName="noViaPrincipal"
+                     [dynamicDisable]="!showDireccionForm">
+              <label for="noViaPrincipal">No. Via Principal</label>
               </span>
             </div>
           </div>
@@ -248,7 +249,7 @@
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="(prefijoCuadranteSuggestions$ | async) | orderBy:'nombre' |  dropdownItem"
                           id="prefijoCuadrante"
                           formControlName="prefijoCuadrante"
                           placeholder="Seleccione"
@@ -301,7 +302,7 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
                 <input type="text" pInputText id="noVia" formControlName="noVia" [dynamicDisable]="!showDireccionForm">
-                <label for="noVia"><span class="text-danger">*</span> No. Via</label>
+                <label for="noVia">No. Via</label>
               </span>
             </div>
           </div>
@@ -313,7 +314,7 @@
               <label for="prefijoCuadrante">Prefijo cuadrante</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="prefijoCuadranteSuggestions$ | async | orderBy:'nombre' | dropdownItem"
                           id="prefijoCuadrante_se"
                           formControlName="prefijoCuadrante_se"
                           placeholder="Seleccione"
@@ -330,7 +331,7 @@
             <div class="ui-g-12">
             <span class="md-inputfield">
             <input type="text" pInputText id="placa" formControlName="placa" [dynamicDisable]="!showDireccionForm">
-            <label for="placa"><span class="text-danger">*</span> # Placa</label>
+            <label for="placa"># Placa</label>
             </span>
             </div>
           </div>
@@ -394,7 +395,7 @@
   </form>
 
   <div class="ui-g-12" *ngIf="showContactForm === true">
-    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6"  >
+    <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
       <div style="padding: 20px 0 0 10px">
         <p-checkbox name="cg" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
       </div>

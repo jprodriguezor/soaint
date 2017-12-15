@@ -5,12 +5,11 @@ export const MENU_OPTIONS = [
   {label: 'Tareas', icon: 'list', routerLink: ['/' + ROUTES_PATH.workspace]},
   {label: 'Procesos', icon: 'work', routerLink: ['/' + ROUTES_PATH.processList]},
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
-  {label: 'Radicacion salida (Prueba)', icon: 'subject', routerLink: ['/' + ROUTES_PATH.radicarCofSalida]},
   {label: 'Carga masiva', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
-  {label: 'Producción Documental', icon: 'subject', routerLink: ['/task/' + ROUTES_PATH.produccionDocumentalMultiple]},
+  {label: 'Seleccionar UD', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarUnidadDocumental]},
+  {label: 'Seleccionar Documentos', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarDocumentos]},
 ];
-
 
 
 export const PROCESS_OPTION = {

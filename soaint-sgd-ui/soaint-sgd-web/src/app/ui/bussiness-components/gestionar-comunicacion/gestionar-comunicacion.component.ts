@@ -17,7 +17,7 @@ export class GestionarComunicacionComponent implements OnInit {
 
   form: FormGroup;
 
-  validations = {};
+  validations: any = {};
 
   @Input()
   remitente: AgentDTO;
@@ -99,13 +99,6 @@ export class GestionarComunicacionComponent implements OnInit {
     }
   }
 
-  sendReject() {
-    this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id === 1 ? 5 : 6;
-    this.completeTask();
-    this.onDevolverTriggered.emit();
-
-  }
-
   completeTask() {
     this._tareaSandbox.completeTaskDispatch(this.getTaskToCompletePayload());
   }
@@ -129,6 +122,14 @@ export class GestionarComunicacionComponent implements OnInit {
     this.justificationDialogVisible = false;
   }
 
+  rejectComunications($event) {
+    this.onDevolverTriggered.emit({
+      payload: $event,
+      taskToCompletePayload: this.getTaskToCompletePayload()
+    });
+    this.hideRejectDialog();
+  }
+
   onChange() {
     this.form.get('responseToRem').disable();
     this.hideCheckBox = true;
@@ -136,19 +137,6 @@ export class GestionarComunicacionComponent implements OnInit {
       this.hideCheckBox = false;
       this.form.get('responseToRem').enable();
     }
-  }
-
-
-  createAgentes(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }): AgentDTO[] {
-    const agentes: AgentDTO[] = [];
-    const agente = this.remitente;
-    console.log(this.remitente);
-    agente.ideAgente = this.task.variables.idAgente;
-    agente.codSede = justificationValues.sedeAdministrativa.codigo;
-    agente.codDependencia = justificationValues.dependenciaGrupo.codigo;
-    delete agente['_$visited'];
-    agentes.push(agente);
-    return agentes;
   }
 
   initForm() {
@@ -195,6 +183,11 @@ export class GestionarComunicacionComponent implements OnInit {
 
   sendRedirect() {
     this.popupjustificaciones.redirectComunications();
+  }
+
+  sendReject() {
+    this.procesoSeguir = this.popupReject.form.get('causalDevolucion').value.id === 1 ? 5 : 6;
+    this.popupReject.devolverComunicaciones();
   }
 
 }

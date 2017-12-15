@@ -9,15 +9,17 @@ export class ConstantCodePipe implements PipeTransform {
     let result = '';
     let isSede = false;
     if (contantes) {
-      let finded = contantes.find((item) => {
+      const finded = contantes.find((item) => {
         isSede = item.codSede === value;
         return item.codigo === value || item.codSede === value;
       });
       if (finded) {
-        if (!isSede)
+        if (!isSede) {
           result = finded.nombre;
-        else
+        }
+        else {
           result = finded.nomSede;
+        }
       }
     }
     return result;

@@ -15,6 +15,9 @@ export class DetallesDatosRemitenteComponent {
   constantesList: ConstanteDTO[];
 
   @Input()
+  municipiosList: any[] = [];
+
+  @Input()
   remitente: AgentDTO;
 
   @Input()
@@ -22,6 +25,18 @@ export class DetallesDatosRemitenteComponent {
 
 
   constructor() {
+  }
+
+  getPais(codigoPais): string {
+    return this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais).departamento.pais.nombre;
+  }
+
+  getDepartamento(codigoDepartamento): string {
+    return this.municipiosList.find((municipio) => municipio.departamento.codigo === codigoDepartamento).departamento.nombre;
+  }
+
+  getMunicipio(codigoMunicipio): string {
+    return this.municipiosList.find((municipio) => municipio.codigo === codigoMunicipio).nombre;
   }
 
 }

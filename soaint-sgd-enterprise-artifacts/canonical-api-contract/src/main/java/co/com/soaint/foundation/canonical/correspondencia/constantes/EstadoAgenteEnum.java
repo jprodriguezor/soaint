@@ -11,6 +11,7 @@ import lombok.Getter;
 public enum EstadoAgenteEnum {
     SIN_ASIGNAR("SA", "SIN ASIGNAR"),
     ASIGNADO("AS", "ASIGNADO"),
+    DEVUELTO("DV", "DEVUELTO"),
     TRAMITADO("TD", "TRAMITADO");
 
     private final String codigo;

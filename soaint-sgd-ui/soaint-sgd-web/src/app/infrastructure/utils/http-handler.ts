@@ -6,9 +6,6 @@ import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {RequestArgs} from '@angular/http/src/interfaces';
-import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
-import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
-import {BAD_AUTHENTICATION} from '../../shared/lang/es';
 
 
 @Injectable()
@@ -26,11 +23,15 @@ export class HttpHandler {
       // console.log('Calling protected URL ...', token);
 
       options = options || new RequestOptions();
-      options.headers = new Headers();
+      options.headers = options.headers || new Headers();
       if (token !== null) {
 
-        options.headers.append('Content-Type', 'application/json');
-        options.headers.append('Authorization', 'Bearer ' + token);
+        if (!options.headers.has('Content-Type')) {
+          options.headers.append('Content-Type', 'application/json');
+        }
+        if (!options.headers.has('Authorization')) {
+          options.headers.append('Authorization', 'Bearer ' + token);
+        }
       } else {
         options.headers.append('Content-Type', 'application/json');
       }
@@ -72,27 +73,10 @@ export class HttpHandler {
 
   handleResponse(request$: Observable<Response>, token): Observable<Response> {
     return request$.map((res: Response) => {
-      console.log(res.headers.get('Content-Type'));
-      if ('application/json' === res.headers.get('Content-Type'))
-        return res.json()
-      else
-        return res;
-    }).catch(res => {
-      if (res.status === 401) {
-        if (token !== null) {
-          this._store.dispatch(new LogoutAction());
-        } else {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'info',
-            summary: BAD_AUTHENTICATION
-          }));
-        }
-      } else {
-        this._store.dispatch(new PushNotificationAction({
-          summary: res.status
-        }));
-        return Observable.create(observer => observer.error(res));
+      if ('application/json' === res.headers.get('Content-Type')) {
+        return res.json();
       }
+      return res;
     });
   }
 

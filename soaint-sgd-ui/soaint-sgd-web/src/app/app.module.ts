@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { AppRoutes } from './app.routes';
+import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {AppRoutes} from './app.routes';
 import 'rxjs/add/operator/toPromise';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { NgxBarcodeModule } from 'ngx-barcode';
-import { ToastrModule } from 'ngx-toastr';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {NgxBarcodeModule} from 'ngx-barcode';
+import {ToastrModule} from 'ngx-toastr';
 // APP COMPONENTS
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {
   BUSSINESS_COMPONENTS_PROVIDERS,
   LAYOUT_COMPONENTS_PROVIDERS,
@@ -18,25 +18,27 @@ import {
   UI_COMPONENTS
 } from 'app/ui/__ui.include';
 // APP MODULES
-import { ConfirmationService, PIPES, PRIMENG_MODULES, } from './shared/__shared.include';
+import {ConfirmationService, PIPES, PRIMENG_MODULES,} from './shared/__shared.include';
 // import {PRIMENG_MODULES} from './shared/primeng/__primeng';
 // import {PrintDirective} from './shared/directives/print.directive';
-import { LocalStorageModule } from 'angular-2-local-storage';
+import {LocalStorageModule} from 'angular-2-local-storage';
 // APP SERVICES
-import { API_SERVICES, EFFECTS_MODULES, INFRASTRUCTURE_SERVICES } from './infrastructure/__infrastructure.include';
+import {API_SERVICES, EFFECTS_MODULES, INFRASTRUCTURE_SERVICES} from './infrastructure/__infrastructure.include';
 // Redux Store and Colaterals
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { ReduxStore } from './infrastructure/redux-store/__redux-config';
-import { RouterStoreModule } from '@ngrx/router-store';
-import { PdfViewerComponent } from 'ng2-pdf-viewer';
-import { DistribucionFisicaComponent } from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
-import { CargarPlanillasComponent } from './ui/page-components/cargar-planillas/cargar-planillas.component';
-import { EditarPlanillaComponent } from './ui/bussiness-components/editar-planilla/editar-planilla.component';
-import { PlanillaGeneradaComponent } from './ui/bussiness-components/planilla-generada/planilla-generada.component';
-import { DIRECTIVES } from './shared/directives/__directives.include';
-import { PIPES_AS_PROVIDERS } from './shared/pipes/__pipes.include';
-
+import {StoreModule} from '@ngrx/store';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {ReduxStore} from './infrastructure/redux-store/__redux-config';
+import {RouterStoreModule} from '@ngrx/router-store';
+import {PdfViewerComponent} from 'ng2-pdf-viewer';
+import {DistribucionFisicaComponent} from './ui/page-components/distribucion-fisica/distribucion-fisica.component';
+import {CargarPlanillasComponent} from './ui/page-components/cargar-planillas/cargar-planillas.component';
+import {EditarPlanillaComponent} from './ui/bussiness-components/editar-planilla/editar-planilla.component';
+import {PlanillaGeneradaComponent} from './ui/bussiness-components/planilla-generada/planilla-generada.component';
+import {DIRECTIVES} from './shared/directives/__directives.include';
+import {PIPES_AS_PROVIDERS} from './shared/pipes/__pipes.include';
+import {customHttpProvider} from './shared/interceptors/http.provider';
+import { OrderModule } from 'ngx-order-pipe';
+import { SingleUploadComponent } from './ui/layout-components/presentation/single-upload/single-upload.component';
 
 @NgModule({
   imports: [
@@ -48,6 +50,7 @@ import { PIPES_AS_PROVIDERS } from './shared/pipes/__pipes.include';
     BrowserAnimationsModule,
     NgxChartsModule,
     NgxBarcodeModule,
+    OrderModule,
     ToastrModule.forRoot({
       closeButton: true, // show close button
       timeOut: 3000, // time to live
@@ -117,6 +120,7 @@ import { PIPES_AS_PROVIDERS } from './shared/pipes/__pipes.include';
     CargarPlanillasComponent,
     EditarPlanillaComponent,
     PlanillaGeneradaComponent,
+    SingleUploadComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -126,7 +130,8 @@ import { PIPES_AS_PROVIDERS } from './shared/pipes/__pipes.include';
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
-    ConfirmationService
+    ConfirmationService,
+    customHttpProvider()
   ],
   bootstrap: [AppComponent]
 })

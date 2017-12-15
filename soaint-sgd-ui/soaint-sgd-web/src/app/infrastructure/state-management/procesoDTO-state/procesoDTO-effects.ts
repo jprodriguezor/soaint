@@ -18,6 +18,7 @@ import * as actions from './procesoDTO-actions';
 import {StartTaskAction} from '../tareasDTO-state/tareasDTO-actions';
 import {Sandbox} from './procesoDTO-sandbox';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
+import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/funcionarioDTO-selectors';
 
 @Injectable()
 export class Effects {
@@ -42,8 +43,9 @@ export class Effects {
   startProcess: Observable<Action> = this.actions$
     .ofType(actions.ActionTypes.START_PROCESS)
     .map(toPayload)
+    .withLatestFrom(this._store$.select(getSelectedDependencyGroupFuncionario))
     .switchMap(
-      (payload) => this._sandbox.startProcess(payload)
+      ([payload, dependency]) => this._sandbox.startProcess(payload, dependency)
         .map((response) => new actions.LoadTasksInsideProcessAction({data: response}))
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )

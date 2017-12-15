@@ -17,11 +17,13 @@ export class DropdownItemPipe implements PipeTransform {
 export class DropdownItemPipeFullName implements PipeTransform {
   transform(value, args?) {
     // ES6 array destructuring
-    return value.map(item => {
-      return {
-        label: item.nombre + ' ' + (item.valApellido1 ? item.valApellido1 : "") + ' ' + (item.valApellido2 ? item.valApellido2 : ""),
-        value: item
-      };
-    });
+    if (value) {
+      return value.map(item => {
+        return {
+          label: item.nombre + ' ' + (item.valApellido1 ? item.valApellido1 : '') + ' ' + (item.valApellido2 ? item.valApellido2 : ''),
+          value: item
+        };
+      });
+    }
   }
 }

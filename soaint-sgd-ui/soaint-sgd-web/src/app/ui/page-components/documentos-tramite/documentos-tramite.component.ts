@@ -20,6 +20,7 @@ import {WARN_REDIRECTION} from '../../../shared/lang/es';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {DevolverDTO} from '../../../domain/devolverDTO';
 
 
 @Component({
@@ -34,9 +35,13 @@ export class DocumentosTramiteComponent implements OnInit {
 
   nroRadicado: string;
 
+  tabIndex = 0;
+
   comunicacion: ComunicacionOficialDTO = {};
 
   constantes: ConstanteDTO[];
+
+  municipios: any[];
 
   dependencias: OrganigramaDTO[];
 
@@ -59,6 +64,8 @@ export class DocumentosTramiteComponent implements OnInit {
   dependenciaSelected: DependenciaDTO;
 
   docSrc: any;
+
+  ideEcm: string;
 
   task: any;
 
@@ -104,7 +111,8 @@ export class DocumentosTramiteComponent implements OnInit {
   }
 
   loadDocumento() {
-    this.docSrc = environment.obtenerDocumento + this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.ideEcm = this.comunicacion.ppdDocumentoList[0].ideEcm;
+    this.docSrc = environment.obtenerDocumento + this.ideEcm;
   }
 
   preview(file) {
@@ -147,7 +155,12 @@ export class DocumentosTramiteComponent implements OnInit {
           severity: 'warn',
           summary: WARN_REDIRECTION
         }));
-
+        const agente = checks.agente;
+        agente.nroDocuIdentidad = this.comunicacion.correspondencia.nroRadicado;
+        this.devolverAction({
+          payload: {},
+          taskToCompletePayload: payload.taskToCompletePayload
+        }, checks.agente, 'NR', 'Ha vencido el numero maximo de redirecciones');
         this.redireccionFallida$.next(true);
       } else {
         this._asiganacionSandbox.redirectComunications(this.redirectPayload(checks.agente, justificationValues)).toPromise()
@@ -156,16 +169,71 @@ export class DocumentosTramiteComponent implements OnInit {
           });
       }
     });
+  }
 
+  devolver(payload) {
+    this.checkRejectAgente('numDevoluciones').subscribe(checks => {
+      if (!checks.success) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: WARN_REDIRECTION
+        }));
+        this.redireccionFallida$.next(true);
+      } else {
+        this.devolverAction(payload, checks.agente);
+      }
+    });
+  }
+
+  devolverAction(payload: any, agente, cause?: string, observation?: string) {
+    this._asiganacionSandbox.rejectComunications(this.rejectPayload(agente, payload.payload, cause, observation)).toPromise()
+      .then(() => {
+        payload.taskToCompletePayload.parametros.causalDevolucion = cause || payload.payload.causalDevolucion.codigo;
+        payload.taskToCompletePayload.parametros.codDependenciaCo = this.comunicacion.correspondencia.codDependencia;
+        this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
+      });
+  }
+
+  rejectPayload(agente, payload, cause?: string, observation?: string): DevolverDTO {
+    return {
+      itemsDevolucion: [
+        {
+          agente: agente,
+          causalDevolucion: cause || payload.causalDevolucion.codigo
+        }
+      ],
+      traza: {
+        id: null,
+        observacion: observation || payload.observacion,
+        ideFunci: this.funcionarioLog.id,
+        codDependencia: this.dependenciaSelected.codigo,
+        estado: null,
+        fecha: null,
+        ideDocumento: null
+      }
+    };
   }
 
   checkRedirectionAgente(key, justification): Observable<any> {
-
     return Observable.of(this.comunicacion)
       .switchMap(value => {
         const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
+        delete agente['_$visited'];
+        return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
+          return {
+            success: ruleCheck,
+            agente: agente
+          };
+        });
+      });
+  }
+
+  checkRejectAgente(key): Observable<any> {
+    return Observable.of(this.comunicacion)
+      .switchMap(value => {
+        const agente = value.agenteList.find(agent => agent.ideAgente.toString() === this.task.variables.idAgente.toString());
         delete agente['_$visited'];
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {
@@ -190,7 +258,6 @@ export class DocumentosTramiteComponent implements OnInit {
       }
     };
   }
-
 
   getConstantsCodes() {
     let result = '';
@@ -226,13 +293,30 @@ export class DocumentosTramiteComponent implements OnInit {
     return result;
   }
 
+  getDepartamentosCode() {
+    let result = '';
+    this.comunicacion.datosContactoList.forEach((item) => {
+      result += item.codMunicipio + ',';
+    });
+    return result;
+  }
+
   loadConstantsByCodes() {
-    this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()).subscribe((response) => {
-      this.constantes = response.constantes;
-      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()).subscribe((result) => {
-        this.constantes.push(...result.dependencias);
-        this.refreshView();
-      });
+    Observable.combineLatest(
+      this._asiganacionSandbox.obtnerConstantesPorCodigos(this.getConstantsCodes()),
+      this._asiganacionSandbox.obtnerDependenciasPorCodigos(this.getDependenciesCodes()),
+      this._asiganacionSandbox.obtenerMunicipiosPorCodigos(this.getDepartamentosCode()),
+      (constantes, dependencias, municipios) => {
+        return {
+          constantes: constantes.constantes,
+          dependencias: dependencias.dependencias,
+          municipios: municipios
+        }
+      }
+    ).subscribe((data) => {
+      this.constantes = [...data.constantes, ...data.dependencias];
+      this.municipios = data.municipios;
+      this.refreshView();
     });
   }
 
