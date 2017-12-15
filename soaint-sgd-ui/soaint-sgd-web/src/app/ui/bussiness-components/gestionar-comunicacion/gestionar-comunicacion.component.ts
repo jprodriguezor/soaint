@@ -109,7 +109,9 @@ export class GestionarComunicacionComponent implements OnInit {
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
       parametros: {
-        procesoSeguir: this.procesoSeguir
+        procesoSeguir: this.procesoSeguir,
+        codDependenciaCo: '',
+        causalDevolucion: '',
       }
     }
   }
