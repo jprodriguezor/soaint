@@ -81,7 +81,7 @@ export class DatosGeneralesComponent implements OnInit {
       'inicioConteo': [null],
       'reqDistFisica': [{value: null, disabled: !this.editable}],
       'reqDigit': [{value: null, disabled: !this.editable}],
-      'reqDigitInmediata': [{value: null, disabled: true}],
+      'reqDigitInmediata': [{value: null, disabled: false}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
       'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],

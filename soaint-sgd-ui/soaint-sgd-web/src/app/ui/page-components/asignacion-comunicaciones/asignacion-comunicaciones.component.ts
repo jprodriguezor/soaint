@@ -192,12 +192,16 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   reassignComunications() {
+
+    console.log(this.asignationType);
+
     this._asignacionSandbox.reassignDispatch(tassign({
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
       },
       idFunc: this.funcionarioLog.id
     }, this.authPayload));
+
   }
 
   redirectComunications(justificationValues: { justificacion: string, sedeAdministrativa: OrganigramaDTO, dependenciaGrupo: OrganigramaDTO }) {
@@ -282,7 +286,6 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     this.popupAgregarObservaciones.loadObservations();
     this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(true);
   }
-
   hideAddObservationsPopup() {
     this._asignacionSandbox.setVisibleAddObservationsDialogDispatch(false);
   }
@@ -300,9 +303,13 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
     const asignaciones: AsignacionDTO[] = [];
     let funcIndex = 0;
     this.selectedComunications.forEach((value, index) => {
+      console.log(value);
       if (!this.selectedFuncionarios[funcIndex]) {
         funcIndex = 0;
       }
+
+      console.log(this.selectedFuncionarios[funcIndex]);
+
       asignaciones.push({
         ideAsignacion: null,
         fecAsignacion: null,
@@ -326,12 +333,15 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       });
       funcIndex++;
     });
+    console.log(asignaciones);
     return asignaciones
   }
 
   createAsignaciones(idFuncionario?, loginNameFuncionario?): AsignacionDTO[] {
     const asignaciones: AsignacionDTO[] = [];
     this.selectedComunications.forEach((value) => {
+
+
       asignaciones.push({
         ideAsignacion: null,
         fecAsignacion: null,

@@ -38,6 +38,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   display = false;
   @Input() editable = true;
   validations: any = {};
+  visibility: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;
   departamentoSuggestions$: Observable<DepartamentoDTO[]>;
@@ -78,6 +79,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
 
+    this.addColombiaByDefault();
   }
 
   initForm() {
@@ -99,7 +101,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       'pais': [null],
       'departamento': [null],
       'municipio': [null],
-      'principal': [null]
+      'principal': [null],
+      'provinciaEstado': [null],
+      'direccionText': [null],
+      'ciudad': [null],
     });
   }
 
@@ -125,6 +130,16 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
     }));
 
+    paisControl.valueChanges.subscribe(value =>{
+
+      this.visibility.selectedColombia = true;
+
+      if (value && (value.codigo != 'CO')) {
+        this.visibility.selectedColombia = false;
+      }
+
+    });
+
     this.subscribers.push(departamentoControl.valueChanges.subscribe(value => {
       if (this.editable && value) {
         municipioControl.enable();
@@ -135,6 +150,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     }));
 
   }
+
 
   onDropdownClickPais() {
     this._paisSandbox.loadDispatch();
@@ -184,6 +200,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const numeroTel = this.form.get('numeroTel');
     const celular = this.form.get('celular');
     const email = this.form.get('correoEle');
+    const provinciaEstado = this.form.get('provinciaEstado');
+    const ciudad = this.form.get('ciudad');
+    const direccionText = this.form.get('direccionText');
 
     const toSave = tassign({
       pais: pais.value,
@@ -191,10 +210,17 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       municipio: municipio.value,
       numeroTel: numeroTel.value,
       celular: celular.value,
-      correoEle: email.value
+      correoEle: email.value,
+      provinciaEstado:provinciaEstado.value,
+      ciudad:ciudad.value,
+      direccionText:direccionText.value
+
     }, this.saveDireccionData());
 
     pais.reset();
+    provinciaEstado.reset();
+    ciudad.reset();
+    direccionText.reset();
     departamento.reset();
     municipio.reset();
     numeroTel.reset();
@@ -209,7 +235,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   }
 
   saveDireccionData() {
-
     let direccion = '';
     const tipoVia = this.form.get('tipoVia');
     const noViaPrincipal = this.form.get('noViaPrincipal');
@@ -282,9 +307,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     return value;
   }
 
-  onFilterPais(event) {
-  }
-
   deleteContact(index) {
     const radref = [...this.contacts];
     radref.splice(index, 1);
@@ -303,11 +325,17 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   addContact() {
     this.showContactForm = true;
     this.formContext = FormContextEnum.CREATE;
+
+    this.addColombiaByDefault();
+
   }
 
-  save() {
+  onFilterPais(event) {
+  }
+
+    save() {
     if (this.form.valid) {
-      // debugger;
+       debugger;
       // ;
       if (this.formContext === FormContextEnum.CREATE) {
         this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
@@ -329,6 +357,18 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.subscribers.forEach(subscriber => {
       subscriber.unsubscribe();
     });
+  }
+
+  addColombiaByDefault(){
+
+    this.paisSuggestions$.take(2).subscribe((values) => {
+      this.form.get('pais').setValue(values.find(value=>value.codigo === 'CO'));
+    });
+
+    this._paisSandbox.loadDispatch();
+
+    this.visibility.selectedColombia = true;
+
   }
 
 }

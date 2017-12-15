@@ -120,6 +120,7 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
         tipoPersona: true
       };
     }
+    console.info("Se escogio tipo de comunicacion " + this.tipoComunicacion );
 
     if (value.codigo === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
@@ -137,6 +138,7 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
         this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
       }).unsubscribe();
       this.visibility['personaJuridica'] = true;
+      //Cambio diony
     } else if (value.codigo === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
       this.visibility['nombreApellidos'] = true;
       this.visibility['departamento'] = true;
@@ -154,6 +156,7 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
   }
 
   setTipoComunicacion(value) {
+    console.info("Se escogio tipo de comunicacion en la vista " + value.codigo );
     if (value) {
       this.visibility = {};
       this.tipoComunicacion = value.codigo;

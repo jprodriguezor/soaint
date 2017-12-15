@@ -83,6 +83,27 @@
                     </span>
                 </div>
 
+                <div class="ui-g-12" *ngIf="contact.provinciaEstado">
+                    <span class="table-text-custom">
+                      <b>Provincia/Estado: &nbsp;</b>
+                    {{ contact.provinciaEstado }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.ciudad">
+                    <span class="table-text-custom">
+                      <b>Ciudad: &nbsp;</b>
+                    {{ contact.ciudad }}
+                    </span>
+                </div>
+
+                <div class="ui-g-12" *ngIf="contact.direccionText">
+                    <span class="table-text-custom">
+                      <b>Dirección: &nbsp;</b>
+                    {{ contact.direccionText }}
+                    </span>
+                </div>
+
               </div>
             </ng-template>
           </p-column>
@@ -205,6 +226,43 @@
             </div>
           </div>
         </div>
+
+        <!--Provincia-->
+        <div class="ui-sm-12 ui-g-4 ui-lg-4" [hidden]="visibility.selectedColombia">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+             <span class="md-inputfield">
+                 <input type="text" pInputText id="provinciaEstado" formControlName="provinciaEstado"/>
+              <label>Provincia/Estado</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Estado/Ciudad-->
+        <div class="ui-sm-12 ui-g-4 ui-lg-4" [hidden]="visibility.selectedColombia">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+             <span class="md-inputfield">
+                 <input type="text" pInputText id="ciudad" formControlName="ciudad"/>
+              <label>Ciudad</label>
+             </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Direccion-->
+        <div class="ui-sm-12 ui-g-4 ui-lg-4" [hidden]="visibility.selectedColombia">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+             <span class="md-inputfield">
+                 <input type="text" pInputText id="direccionText" formControlName="direccionText"/>
+              <label>Dirección</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 

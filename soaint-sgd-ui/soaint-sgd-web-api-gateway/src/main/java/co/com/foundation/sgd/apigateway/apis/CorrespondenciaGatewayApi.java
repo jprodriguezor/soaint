@@ -123,6 +123,7 @@ public class CorrespondenciaGatewayApi {
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
             FuncAsigDTO asigDTO = client.obtenerFuncionarInfoParaReasignar(asignacionDTO.getIdeAgente()).readEntity(FuncAsigDTO.class);
+            log.info("Sacar el hash " + asigDTO);
             EntradaProcesoDTO entradaParaTarea = new EntradaProcesoDTO();
             entradaParaTarea.setUsuario(reasignarComunicacionDTO.getUsuario());
             entradaParaTarea.setPass(reasignarComunicacionDTO.getPass());
