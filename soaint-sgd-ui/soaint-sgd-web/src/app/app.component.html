@@ -1,0 +1,11 @@
+<app-admin-layout #app></app-admin-layout>
+
+
+<p-confirmDialog header="Confirmación" icon="" width="425" acceptLabel="Aceptar" rejectLabel="Cancelar"
+                 responsive="true">
+</p-confirmDialog>
+
+
+<p-blockUI [blocked]="isLoading"></p-blockUI>
+<p-progressSpinner *ngIf="isLoading" [style]="{width: '100px', height: '100px'}" strokeWidth="4" fill="#EEEEEE"
+                   animationDuration="1s"></p-progressSpinner>
