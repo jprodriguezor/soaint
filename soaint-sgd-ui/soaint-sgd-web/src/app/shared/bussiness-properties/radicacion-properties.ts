@@ -1,8 +1,8 @@
 export const PERSONA_ANONIMA = 'TP-PERA';
 export const PERSONA_JURIDICA = 'TP-PERPJ';
 export const PERSONA_NATURAL = 'TP-PERPN';
-export const COMUNICACION_EXTERNA = 'TP-CMCOE';
-export const COMUNICACION_INTERNA = 'TP-CMCOI';
+export const COMUNICACION_EXTERNA = 'EE';
+export const COMUNICACION_INTERNA = 'EI';
 
 export const DESTINATARIO_PRINCIPAL = 'TP-DESP';
 

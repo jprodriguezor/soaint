@@ -50,10 +50,10 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.procesosSuggestions = [/*{
+    this.procesosSuggestions = [{
       nombre: 'Archivar documento',
       id: 1
-    },*/ {
+    }, {
       nombre: 'Devolver',
       id: 2
     }, {
@@ -109,7 +109,9 @@ export class GestionarComunicacionComponent implements OnInit {
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
       parametros: {
-        procesoSeguir: this.procesoSeguir
+        procesoSeguir: this.procesoSeguir,
+        codDependenciaCo: '',
+        causalDevolucion: '',
       }
     }
   }

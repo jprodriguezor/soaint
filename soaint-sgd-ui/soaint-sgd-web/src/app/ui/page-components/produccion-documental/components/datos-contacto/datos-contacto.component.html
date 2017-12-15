@@ -52,7 +52,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="tipoPersona">Tipo persona</label>
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Nombre y apellidos</label>
@@ -80,7 +80,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Tipo documento</label>
@@ -99,7 +99,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EE' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label *ngIf="tipoPersonaSelected && 'TP-PERPN' == tipoPersonaSelected.codigo">No. Documento de
@@ -112,7 +112,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
+           *ngIf="tipoComunicacionSelected && tipoPersona && ('EE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label>Razón social</label>
@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && tipoPersona && ('TP-CMCOE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
+           *ngIf="tipoComunicacionSelected && tipoPersona && ('EE' == tipoComunicacionSelected.codigo) && ('TP-PERPJ' == tipoPersonaSelected.codigo)">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="actuaCalidad">Actua en calidad</label>
@@ -139,7 +139,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="sedeAdministrativa">Sede</label>
@@ -157,7 +157,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="dependencia">Dependencia</label>
@@ -175,7 +175,7 @@
         </div>
       </div>
       <div class="ui-sm-12 ui-g-3 ui-lg-3"
-           *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+           *ngIf="tipoComunicacionSelected && 'EI' == tipoComunicacionSelected.codigo">
         <div class="ui-g form-group">
           <div class="ui-g-12">
             <label for="funcionario">Funcionario</label>
@@ -204,7 +204,7 @@
 </form>
 
 <p-panel header="Destinatarios" [style]="{border: 'none'}"
-         *ngIf="tipoComunicacionSelected && 'TP-CMCOI' == tipoComunicacionSelected.codigo">
+         *ngIf="tipoComunicacionSelected && 'EI' == tipoComunicacionSelected.codigo">
   <div class="ui-g ui-fluid">
     <div class="ui-g-12">
       <p-dataTable emptyMessage="No hay resultados" selectionMode="multiple"
@@ -219,5 +219,5 @@
 </p-panel>
 
 <app-datos-direccion
-  *ngIf="tipoComunicacionSelected && 'TP-CMCOE' == tipoComunicacionSelected.codigo && responseToRem">
+  *ngIf="tipoComunicacionSelected && 'EE' == tipoComunicacionSelected.codigo && responseToRem">
 </app-datos-direccion>

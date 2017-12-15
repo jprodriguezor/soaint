@@ -1,351 +1,299 @@
 <form [formGroup]="form">
-  <p-panel header="Datos Generales" [style]="{border: 'none'}">
-    <div class="ui-g ui-fluid">
-      <div class="ui-g-12" padding-bottom>
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+    <p-panel header="Datos Generales" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12" padding-bottom>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Usuario Responsable</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{taskData.variables.usuarioProyector}}</label>
               </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Fecha y Hora de creación</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{fechaCreacion | date:'dd/MM/yyyy hh:mm a'}}</label>
               </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Sede</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{taskData.variables.codigoSede}}</label>
               </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Dependencia</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{taskData.variables.codDependencia}}</label>
               </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </p-panel>
-  <p-panel header="Radicado asociado" [style]="{border: 'none'}">
-    <div class="ui-g ui-fluid">
-      <div class="ui-g-12" padding-bottom style="max-height: 68px">
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+    </p-panel>
+
+    <p-panel header="Radicado asociado" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12" padding-bottom style="max-height: 68px">
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Fecha y Hora de radicacion</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{taskData.variables.fechaRadicacion | date:'dd/MM/yyyy hh:mm a'}}</label>
               </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                 <label>Número de Radicado</label>
               </span>
-            </div>
-            <div class="ui-g-12">
-              <span class="md-inputfield">
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
                   <label
                     style="color: inherit">{{taskData.variables.numeroRadicado}}</label>
               </span>
-            </div>
-          </div>
-        </div>
-        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData.variables.numeroRadicado">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <button pButton type="button" label="Ver documento" style="width: auto;float: right;margin-top: 5px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData.variables.numeroRadicado">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;">
               </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </p-panel>
-  <p-panel header="Producir Documento" [style]="{border: 'none'}">
-    <div class="ui-g ui-fluid">
-      <div class="ui-sm-12 ui-g-4 ui-lg-4">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
-          </div>
-          <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tiposComunicacion$ | async | dropdownItem"
-                        id="tipoComunicacion"
-                        formControlName="tipoComunicacion"
-                        placeholder="Seleccione"
-                        [autoWidth]="false"
-                        (onBlur)="listenForBlurEvents('tipoComunicacion')"
-                        (onChange)="tipoComunicacionChange($event)">
-            </p-dropdown>
-          </div>
-        </div>
-      </div>
-      <div class="ui-sm-12 ui-g-4 ui-lg-4">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipoPlantilla">Tipo de plantilla</label>
-          </div>
-          <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem"
-                        id="tipoPlantilla"
-                        formControlName="tipoPlantilla"
-                        placeholder="Seleccione"
-                        [autoWidth]="false"
-                        (onBlur)="listenForBlurEvents('tipoPlantilla')"
-                        (onChange)="tipoPlanillaChange($event)">
-            </p-dropdown>
-          </div>
-        </div>
-      </div>
-      <div class="ui-sm-12 ui-g-4 ui-lg-4">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <button pButton label="Adjuntar"
-                    [disabled]="!form.valid"
-                    style="width: auto;margin-top: 28px;margin-left: 10px; float: right;"
-                    type="button">
+    </p-panel>
+
+    <p-panel header="Producir Documento" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-4 ui-lg-4">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="tiposComunicacion$ | async | dropdownItem" id="tipoComunicacion" formControlName="tipoComunicacion" placeholder="Seleccione" [autoWidth]="false" (onBlur)="listenForBlurEvents('tipoComunicacion')" (onChange)="tipoComunicacionChange($event)">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-4 ui-lg-4">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="tipoPlantilla">Tipo de plantilla</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem" id="tipoPlantilla" formControlName="tipoPlantilla" placeholder="Seleccione" [autoWidth]="false" (onBlur)="listenForBlurEvents('tipoPlantilla')" (onChange)="tipoPlanillaChange($event)">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-4 ui-lg-4">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <button pButton label="Adjuntar" [disabled]="!form.valid" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button">
             </button>
-            <button label="Cargar" pButton
-                    [disabled]="!form.valid"
-                    style="width: auto;margin-top: 28px;float: right;"
-                    type="button">
+                        <button label="Cargar" pButton [disabled]="!form.valid" style="width: auto;margin-top: 28px;float: right;" type="button">
             </button>
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="ui-g ui-fluid">
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-                <textarea id="elaborarDocumento"
-                          pInputTextarea
-                          title="Elaborar documento"
-                          formControlName="elaborarDocumento"
-                          class="prod-doc"
-                          placeholder="Elaborar documento"
-                          style="width:100%;resize:vertical">
+        <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <textarea id="elaborarDocumento" pInputTextarea title="Elaborar documento" formControlName="elaborarDocumento" class="prod-doc" placeholder="Elaborar documento" style="width:100%;resize:vertical">
                 </textarea>
-          </div>
-          <div class="ui-g-12">
-            <button pButton type="button" label="Versionar"
-                    style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-                    [disabled]="!form.get('elaborarDocumento').value || !form.valid || listaVersionesDocumento.length > 0"
-                    (click)="showVersionesDocumentoDialog()">
+                    </div>
+                    <div class="ui-g-12">
+                        <button pButton type="button" label="Versionar" style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px" [disabled]="!form.get('elaborarDocumento').value || !form.valid || listaVersionesDocumento.length > 0" (click)="showVersionesDocumentoDialog()">
             </button>
-          </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="ui-g ui-fluid" style="margin-bottom: 16px">
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <p-dataTable selectionMode="single"
-                     [paginator]="true"
-                     [rows]="10"
-                     [responsive]="true"
-                     [value]="listaVersionesDocumento"
-                     emptyMessage="No se encontraron resultados">
-          <p-header> Tabla versiones documento</p-header>
-          <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
-          <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
-          <p-column field="size" header="Tamaño (Kb)" [sortable]="true"></p-column>
-          <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
-            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton label="Ver"
-                      class="ui-button ui-button-info"></button>
-            </ng-template>
-          </p-column>
-          <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
-            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton label="Eliminar"
-                      class="ui-button ui-button-danger" (click)="removeFromList(i, 'listaVersionesDocumento')"></button>
-            </ng-template>
-          </p-column>
-        </p-dataTable>
-      </div>
-    </div>
-  </p-panel>
-  <p-panel header="Anexos" [style]="{border: 'none'}">
-    <div class="ui-g ui-fluid">
-      <div class="ui-sm-12 ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label>Soporte</label>
-          </div>
-          <div class="ui-g-12">
-            <label class="md-check">
+        <div class="ui-g ui-fluid" style="margin-bottom: 16px">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se encontraron resultados">
+                    <p-header> Tabla versiones documento</p-header>
+                    <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
+                    <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+                    <p-column field="size" header="Tamaño (Kb)" [sortable]="true"></p-column>
+                    <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton label="Ver" class="ui-button ui-button-info"></button>
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
+                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger" (click)="removeFromList(i, 'listaVersionesDocumento')"></button>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+    </p-panel>
+
+    <p-panel header="Anexos" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label>Soporte</label>
+                    </div>
+                    <div class="ui-g-12">
+                        <label class="md-check">
               <input type="radio" value="fisico" name="soporte" formControlName="soporte"> Físico
             </label>
-            <label class="md-check">
+                        <label class="md-check">
               <input type="radio" value="electronico" name="soporte" formControlName="soporte"> Electrónico
             </label>
-          </div>
-        </div>
-      </div>
-      <div class="ui-sm-12 ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="tipoAnexo">Tipo de anexo</label>
-          </div>
-          <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="tiposAnexo$ | async | dropdownItem"
-                        id="tipoAnexo"
-                        formControlName="tipoAnexo"
-                        placeholder="Seleccione"
-                        [autoWidth]="false">
-            </p-dropdown>
-          </div>
-        </div>
-      </div>
-      <div class="ui-sm-12 ui-g-3 ui-lg-3">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <label for="descripcion">Descripcion</label>
-          </div>
-          <div class="ui-g-12">
-            <input type="text" pInputText id="descripcion" formControlName="descripcion"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-sm-12 ui-g-3 ui-lg-3">
-        <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
-          <div class="ui-g-12">
-            <app-single-upload (fileUploaded)="onFileUploaded($event)"></app-single-upload>
-          </div>
-        </div>
-      </div>
-
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <div class="ui-g form-group">
-          <div class="ui-g-12">
-            <div style="display: flex;align-items: flex-end; height: 100%; float: left">
-              <span><label> <b>Cantidad anexos: </b> {{listaAnexos.length}}</label></span>
+                    </div>
+                </div>
             </div>
-            <button pButton label="Agregar"
-                    [disabled]="!form.get('tipoAnexo').value || !form.get('soporte').value"
-                    (click)="agregarAnexo()"
-                    style="width: auto;margin-top: 20px;margin-left: 10px; float: right;"
-                    type="button">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="tipoAnexo">Tipo de anexo</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="tiposAnexo$ | async | dropdownItem" [disabled]="form.get('soporte').value != 'fisico'" id="tipoAnexo"
+                                    formControlName="tipoAnexo" placeholder="Seleccione" [autoWidth]="false">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="descripcion">Descripcion</label>
+                    </div>
+                    <div class="ui-g-12">
+                        <input type="text" pInputText [dynamicDisable]="form.get('soporte').value != 'fisico'" disabled="disabled" id="descripcion" formControlName="descripcion" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
+                    <div class="ui-g-12">
+                        <app-single-upload *ngIf="form.get('soporte').value == 'electronico'"  (fileUploaded)="onFileUploaded($event)"></app-single-upload>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <div style="display: flex;align-items: flex-end; height: 100%; float: left">
+                            <span><label> <b>Cantidad anexos: </b> {{listaAnexos.length}}</label></span>
+                        </div>
+                        <button pButton label="Agregar" [disabled]="!form.get('tipoAnexo').value || !form.get('soporte').value" (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
             </button>
-          </div>
-        </div>
-      </div>
+                    </div>
+                </div>
+            </div>
 
-      <div class="ui-sm-12 ui-g-12 ui-lg-12">
-        <p-dataTable selectionMode="single"
-                     [paginator]="true"
-                     [rows]="10"
-                     [responsive]="true"
-                     [value]="listaAnexos"
-                     emptyMessage="No se encontraron resultados">
-          <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
-          <p-column field="tipo.nombre" header="Tipo de anexo" [sortable]="true"></p-column>
-          <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-          <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
-            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton class="ui-button ui-button-info" label="Ver" (click)="visualizarDocumentos(i)">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaAnexos" emptyMessage="No se encontraron resultados">
+                    <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
+                    <p-column field="tipo.nombre" header="Tipo de anexo" [sortable]="true"></p-column>
+                    <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+                    <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
+                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton class="ui-button ui-button-info" label="Ver" (click)="visualizarDocumentos(i)">
               </button>
-            </ng-template>
-          </p-column>
-          <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
-            <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar" (click)="removeFromList(i, 'listaAnexos')" >
+                        </ng-template>
+                    </p-column>
+                    <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
+                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar" (click)="removeFromList(i, 'listaAnexos')">
               </button>
-            </ng-template>
-          </p-column>
-        </p-dataTable>
-      </div>
-    </div>
-  </p-panel>
+                        </ng-template>
+                    </p-column>
+                </p-dataTable>
+            </div>
+        </div>
+    </p-panel>
 </form>
-<p-dialog [visible]="versionesDocumentoVisible" modal="modal" [responsive]="true" positionTop="20"
-          (onHide)="hideVersionesDocumentoDialog()" [width]="510">
-  <p-header>
-    Confirmación
-  </p-header>
+<p-dialog [visible]="versionesDocumentoVisible" modal="modal" [responsive]="true" positionTop="20" (onHide)="hideVersionesDocumentoDialog()" [width]="510">
+    <p-header>
+        Confirmación
+    </p-header>
 
-  <div class="ui-g ui-fluid">
-    <div class="ui-sm-12 ui-g-8 ui-lg-8" style="padding-left: 16px;padding-top: 10px;">
-      <span style="text-align:center;">¿Está seguro de generar versión del documento?</span>
-    </div>
-
-    <div class="ui-sm-12 ui-g-4 ui-lg-4 text-right">
-      <button pButton type="button" label="Si"
-              style="width: auto; margin-bottom: 10px;margin-left: 12px"
-              [disabled]="confirmadaGenerarVersion"
-              (click)="confirmarGenerarVersion()">
-      </button>
-      <button pButton type="button" label="No"
-              style="width: auto; margin-bottom: 10px;margin-left: 12px"
-              (click)="hideVersionesDocumentoDialog()">
-      </button>
-    </div>
-    <div class="ui-sm-12 ui-g-12 ui-lg-12">
-      <div class="ui-g form-group">
-        <div class="ui-g-12">
-          <div class="ui-sm-12 ui-g-12 ui-lg-12">
-            <input [disabled]="!confirmadaGenerarVersion" type="text" pInputText [(ngModel)]="nombreVersionDocumento"/>
-          </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-8 ui-lg-8" style="padding-left: 16px;padding-top: 10px;">
+            <span style="text-align:center;">¿Está seguro de generar versión del documento?</span>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button pButton type="button" label="Guardar" [disabled]="!confirmadaGenerarVersion"
-              style="width: auto; margin-bottom: 10px;margin-left: 12px"
-              (click)="agregarVersion()"
-      ></button>
+        <div class="ui-sm-12 ui-g-4 ui-lg-4 text-right">
+            <button pButton type="button" label="Si" style="width: auto; margin-bottom: 10px;margin-left: 12px" [disabled]="confirmadaGenerarVersion" (click)="confirmarGenerarVersion()">
+      </button>
+            <button pButton type="button" label="No" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="hideVersionesDocumentoDialog()">
+      </button>
+        </div>
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                    <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                        <input [disabled]="!confirmadaGenerarVersion" type="text" pInputText [(ngModel)]="nombreVersionDocumento" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </p-footer>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button pButton type="button" label="Guardar" [disabled]="!confirmadaGenerarVersion" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="agregarVersion()"></button>
+        </div>
+    </p-footer>
 </p-dialog>

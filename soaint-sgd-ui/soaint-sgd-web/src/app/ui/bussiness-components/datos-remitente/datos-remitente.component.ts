@@ -198,6 +198,4 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
       subscriber.unsubscribe();
     });
   }
-
-
 }

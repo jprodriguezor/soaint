@@ -567,7 +567,7 @@ public class ContentControlAlfresco implements ContentControl {
                 Carpeta folderAlfresco;
                 logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
 
-                if ("TP-CMCOE".equals (tipoComunicacion)) {
+                if ("EE".equals (tipoComunicacion)) {
 
                     folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
                 } else {
