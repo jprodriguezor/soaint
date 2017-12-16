@@ -31,13 +31,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tipoPersonaSelected: ConstanteDTO;
   subscription: Subscription;
 
-  validations: any = {};
-
-  @Input()
-  taskData: TareaDTO;
-
-  tipoPersona: any;
-
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
   dependencias$: Observable<ConstanteDTO[]>;
   tiposPersona$: Observable<ConstanteDTO[]>;
@@ -46,13 +39,18 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   tiposDocumento$: Observable<ConstanteDTO[]>;
   funcionarios$: Observable<FuncionarioDTO[]>;
 
+  validations: any = {};
+  tipoPersona: any;
   destinatarios: any[] = [];
 
+
+  @Input()
+  taskData: TareaDTO;
   @Output()
   onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
-  canInsert = false;
 
+  canInsert = false;
   responseToRem = false;
 
   constructor(private formBuilder: FormBuilder,
@@ -198,7 +196,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   confirmSubstitucionDestinatarioPrincipal() {
     this.confirmationService.confirm({
-      message: '<p style="text-align: center"> Está seguro desea substituir el destinatario principal?</p>',
+      message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
       accept: () => {
         this.substitudeAgenteDestinatario();
       }
