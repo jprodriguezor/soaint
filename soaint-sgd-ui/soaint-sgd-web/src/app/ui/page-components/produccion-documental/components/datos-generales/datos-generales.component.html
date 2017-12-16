@@ -236,7 +236,9 @@
                         <div style="display: flex;align-items: flex-end; height: 100%; float: left">
                             <span><label> <b>Cantidad anexos: </b> {{listaAnexos.length}}</label></span>
                         </div>
-                        <button pButton label="Agregar" [disabled]="!form.get('tipoAnexo').value || !form.get('soporte').value" (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
+                        <button pButton label="Agregar"
+                                [disabled]="!((form.get('soporte').value == 'electronico' && fileContent) || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
+                                (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
             </button>
                     </div>
                 </div>
