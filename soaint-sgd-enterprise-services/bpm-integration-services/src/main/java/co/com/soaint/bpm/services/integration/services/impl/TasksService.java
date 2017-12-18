@@ -12,10 +12,12 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.hornetq.utils.json.JSONArray;
 import org.hornetq.utils.json.JSONException;
 import org.hornetq.utils.json.JSONObject;
 import org.kie.api.task.TaskService;
@@ -65,9 +67,12 @@ public class TasksService implements ITaskServices {
     private String formatoIdioma = "";
     @Value("${protocolo}")
     private String protocolo = "";
+    @Value("${tarea.querys}")
+    private String tareaQuerys = "";
     private HttpClient httpClient;
     private HttpPost postRequest;
     private HttpResponse response;
+    HttpGet getRequest;
     private String estado = "";
     @PersistenceContext
     private EntityManager em;
@@ -507,6 +512,62 @@ public class TasksService implements ITaskServices {
                     .buildSystemException();
         } finally {
             log.info("fin - listar tareas  por usuario ");
+        }
+    }
+
+    /**
+     * Listar tareas por instancia de proceso
+     *
+     * @param entrada Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
+    @Override
+
+    public List<RespuestaTareaDTO> listarTareasPorUsuarioAsignado(EntradaProcesoDTO entrada) throws SystemException {
+
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
+        try {
+            log.info("iniciar - listar tareas asignadas: {}", entrada);
+
+            httpClient = HttpClientBuilder.create().build();
+
+            URI uri = new URIBuilder(protocolo.concat(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT)).concat(tareaQuerys))
+                    .addParameter("taskOwner", entrada.getParametros().get("usuario").toString())
+                    .addParameter("processInstanceId", String.valueOf(entrada.getInstanciaProceso()))
+                            .build();
+            getRequest = new HttpGet(uri);
+            getRequest.addHeader(headerAccept, valueApplicationType);
+            getRequest.addHeader(headerAuthorization, valueAuthorization + " " + entrada.getPass());
+
+            response = httpClient.execute(getRequest);
+            JSONObject respuestaJson = new JSONObject(EntityUtils.toString(response.getEntity()));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatusLine().getStatusCode())
+                        .buildBusinessException();
+            } else {
+                JSONArray listaProcesosJson = respuestaJson.getJSONArray("taskSummaryList");
+                for (int i = 0; i < listaProcesosJson.length(); i++) {
+                JSONObject valor = (JSONObject) listaProcesosJson.get(i);
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(valor.getLong("id"))
+                        .estado(estadosOperaciones.estadoRespuesta(valor.getString("status")))
+                        .nombre(valor.getString("name"))
+                        .descripcion(valor.getString("description"))
+                        .build();
+                tareas.add(respuestaTarea);
+                }
+            }
+            return tareas;
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - listar - tareas estados instancias proceso ");
         }
     }
 }
