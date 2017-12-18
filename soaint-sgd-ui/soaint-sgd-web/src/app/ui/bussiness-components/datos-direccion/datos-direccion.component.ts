@@ -362,6 +362,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   addColombiaByDefault(){
 
     this.paisSuggestions$.take(2).subscribe((values) => {
+      console.info(values);
       this.form.get('pais').setValue(values.find(value=>value.codigo === 'CO'));
     });
 
