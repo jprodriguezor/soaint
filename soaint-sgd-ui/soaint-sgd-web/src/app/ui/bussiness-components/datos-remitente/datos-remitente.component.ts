@@ -137,7 +137,6 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
         this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
       }).unsubscribe();
       this.visibility['personaJuridica'] = true;
-      //Cambio diony
     } else if (value.codigo === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
       this.visibility['nombreApellidos'] = true;
       this.visibility['departamento'] = true;
