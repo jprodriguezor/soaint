@@ -20,6 +20,8 @@ public interface ITaskServices {
 
     List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException;
 
+    List<RespuestaTareaDTO> listarTareasPorUsuarioAsignado(EntradaProcesoDTO entradaTarea) throws SystemException;
+
     List<RespuestaTareaBamDTO> listarTareasCompletadas(EntradaProcesoDTO entradaTarea) throws SystemException;
 
     List<RespuestaTareaBamDTO> listarTareasPorUsuario(EntradaProcesoDTO entradaTarea) throws SystemException;
