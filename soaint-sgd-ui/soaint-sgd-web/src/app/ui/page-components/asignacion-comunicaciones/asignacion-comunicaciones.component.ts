@@ -200,7 +200,9 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
       },
-      idFunc: this.funcionarioLog.id
+      idFunc: this.funcionarioLog.id,
+      logueado: this.funcionarioLog
+
     }, this.authPayload)));
 
     this.selectedComunications.forEach((value, index) => {

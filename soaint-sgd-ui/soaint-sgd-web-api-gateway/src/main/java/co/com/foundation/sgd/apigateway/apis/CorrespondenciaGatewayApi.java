@@ -122,23 +122,35 @@ public class CorrespondenciaGatewayApi {
             EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
             entradaProceso.setIdProceso("proceso.recibir-gestionar-doc");
             entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-recibir-gestionar-doc:1.0.4-SNAPSHOT");
+
             FuncAsigDTO asigDTO = client.obtenerFuncionarInfoParaReasignar(asignacionDTO.getIdeAgente()).readEntity(FuncAsigDTO.class);
             log.info("Sacar el hash " + asigDTO);
+
             EntradaProcesoDTO entradaParaTarea = new EntradaProcesoDTO();
-            entradaParaTarea.setUsuario(reasignarComunicacionDTO.getUsuario());
-            entradaParaTarea.setPass(reasignarComunicacionDTO.getPass());
+
+//          entradaParaTarea.setUsuario(asignacionDTO.getLoginName());
+
+//            funcionariosControl.consultarCredencialesByIdeFunci(asignacion.getIdeFunci())
+
+            entradaParaTarea.setPass(asigDTO.getCredenciales());
             entradaParaTarea.setInstanciaProceso(Long.parseLong(asigDTO.getAsignacion().getIdInstancia()));
 
-            List<EstadosEnum> estados = new ArrayList<>();
-            estados.add(EstadosEnum.LISTO);
-            estados.add(EstadosEnum.ENPROGRESO);
-            estados.add(EstadosEnum.COMPLETADO);
-            estados.add(EstadosEnum.RESERVADO);
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("usuario", asignacionDTO.getLoginName());
+            entradaParaTarea.setParametros(parametros);
 
-            entradaParaTarea.setEstados(estados);
+//            List<EstadosEnum> estados = new ArrayList<>();
+//            estados.add(EstadosEnum.LISTO);
+//            estados.add(EstadosEnum.ENPROGRESO);
+//            estados.add(EstadosEnum.COMPLETADO);
+//            estados.add(EstadosEnum.RESERVADO);
+//            entradaParaTarea.setEstados(estados);
 
-            log.info("CorrespondenciaGatewayApi - [trafic] - buscando tareas por proceso");
-            Response responseTasks = procesoClient.listarPorIdProceso(entradaParaTarea);
+            log.info("CorrespondenciaGatewayApi - [trafic] - buscando tareas por usuario y id proceso");
+            //Response responseTasks = procesoClient.listarPorIdProceso(entradaParaTarea);
+
+            Response responseTasks = procesoClient.listarPorUsuarioYPorIdProceso(entradaParaTarea);
+
             List<RespuestaTareaDTO> responseTareas = responseTasks.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
             });
             entradaProceso.setPass(asigDTO.getCredenciales());
@@ -146,7 +158,7 @@ public class CorrespondenciaGatewayApi {
 
             if (responseTareas != null && !responseTareas.isEmpty()) {
                 entradaProceso.setIdTarea(responseTareas.get(0).getIdTarea());
-                Map<String, Object> parametros = new HashMap<>();
+                //Map<String, Object> parametros = new HashMap<>();
                 parametros.put("usuarioReasignar", asignacionDTO.getLoginName());
                 entradaProceso.setParametros(parametros);
                 this.procesoClient.reasignarTarea(entradaProceso);

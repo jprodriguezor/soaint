@@ -79,6 +79,15 @@ public class ProcesoClient {
                 .post(Entity.json(entradaProcesoDTO));
     }
 
+    public Response listarPorUsuarioYPorIdProceso(EntradaProcesoDTO entrada) {
+        log.info("Task - [trafic] - listing Tasks By Usuario y Id Proccess with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        EntradaProcesoDTO entradaProcesoDTO = entrada;
+        return wt.path("/bpm/tareas/listar/asignado/")
+                .request()
+                .post(Entity.json(entradaProcesoDTO));
+    }
+
     public Response listarTareas(EntradaProcesoDTO entrada) {
         log.info("Task - [trafic] - listing Task with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
