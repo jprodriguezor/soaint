@@ -14,4 +14,5 @@ export interface PlanillaDTO {
   codModalidadEnvio: string;
   pagentes: PlanAgentesDTO;
   ideEcm: string;
+ 
 }

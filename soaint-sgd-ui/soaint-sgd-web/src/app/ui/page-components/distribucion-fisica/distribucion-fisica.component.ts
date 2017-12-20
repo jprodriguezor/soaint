@@ -23,6 +23,7 @@ import {PlanillaDTO} from '../../../domain/PlanillaDTO';
 import {PlanAgentesDTO} from '../../../domain/PlanAgentesDTO';
 import {PlanAgenDTO} from '../../../domain/PlanAgenDTO';
 import {Sandbox as ProcessSandbox} from '../../../infrastructure/state-management/procesoDTO-state/procesoDTO-sandbox';
+import {correspondenciaEntrada} from "../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 
 @Component({
   selector: 'app-distribucion-fisica',
@@ -74,6 +75,8 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   @ViewChild('detallesView') detallesView;
 
+  @ViewChild('popUpPlanillaGenerada') popUpPlanillaGenerada;
+
   downloadName: string;
 
   constructor(private _store: Store<RootState>,
@@ -116,8 +119,9 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
   }
 
   getDatosDestinatario(comunicacion): Observable<AgentDTO[]> {
-    const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
-    return radicacionEntradaDTV.getDatosDestinatarios();
+      const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
+      return radicacionEntradaDTV.getDatosDestinatarios();
+
   }
 
   getDatosDestinatarioInmediate(comunicacion): AgentDTO[] {
@@ -235,14 +239,25 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
       codModalidadEnvio: null,
       pagentes: agentes,
       ideEcm: null
+
     };
 
     return planilla;
   };
 
   generarPlanilla() {
+    const dependenciaDestinoArray= [];
+    const sedeDestinoArray= [];
     const planilla = this.generarDatosExportar();
     this._planillaService.generarPlanillas(planilla).subscribe((result) => {
+
+      this.selectedComunications.forEach((element) => {
+        dependenciaDestinoArray.push(element.correspondencia.codDependencia);
+        sedeDestinoArray.push(element.correspondencia.codSede);
+      })
+
+      this.popUpPlanillaGenerada.setDependenciaDestino(this.findDependency(dependenciaDestinoArray[0] ));
+      this.popUpPlanillaGenerada.setSedeDestino(this.findSede( sedeDestinoArray[0]));
       this.planillaGenerada = result;
       this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
