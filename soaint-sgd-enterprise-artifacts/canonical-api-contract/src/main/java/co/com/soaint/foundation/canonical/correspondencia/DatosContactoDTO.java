@@ -43,4 +43,5 @@ public class DatosContactoDTO implements Serializable {
     private String codMunicipio;
     private String provEstado;
     private String principal;
+    private String ciudad;
 }
