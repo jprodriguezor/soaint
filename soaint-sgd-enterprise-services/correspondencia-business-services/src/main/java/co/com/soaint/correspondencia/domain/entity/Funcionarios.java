@@ -44,6 +44,9 @@ import java.util.List;
         @NamedQuery(name = "Funcionarios.consultarCredencialesByIdeFunci", query = "SELECT f.credenciales " +
                 "FROM Funcionarios f " +
                 "WHERE f.ideFunci = :IDE_FUNCI"),
+        @NamedQuery(name = "Funcionarios.consultarLoginNameByIdeFunci", query = "SELECT f.loginName " +
+                "FROM Funcionarios f " +
+                "WHERE f.ideFunci = :IDE_FUNCI"),
         @NamedQuery(name = "Funcionarios.findAllByCodOrgaAdmiAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +

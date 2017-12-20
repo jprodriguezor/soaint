@@ -207,6 +207,7 @@ public class AsignacionControl {
             AsignacionDTO asignacion = em.createNamedQuery("DctAsigUltimo.consultarByIdeAgente", AsignacionDTO.class)
                     .setParameter("IDE_AGENTE", ideAgente)
                     .getSingleResult();
+            asignacion.setLoginName(funcionariosControl.consultarLoginNameByIdeFunci(asignacion.getIdeFunci()));
             return FuncAsigDTO.newInstance()
                     .asignacion(asignacion)
                     .credenciales(funcionariosControl.consultarCredencialesByIdeFunci(asignacion.getIdeFunci()))

@@ -136,6 +136,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
       if (value && (value.codigo != 'CO')) {
         this.visibility.selectedColombia = false;
+        departamentoControl.reset();
+        departamentoControl.disable();
+        municipioControl.reset();
+        municipioControl.disable();
       }
 
     });
@@ -335,8 +339,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
     save() {
     if (this.form.valid) {
-       debugger;
-      // ;
+       //debugger;
       if (this.formContext === FormContextEnum.CREATE) {
         this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
       } else {

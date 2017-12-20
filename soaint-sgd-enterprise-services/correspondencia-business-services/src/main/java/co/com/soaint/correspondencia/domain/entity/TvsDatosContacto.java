@@ -29,7 +29,7 @@ import javax.persistence.*;
         @NamedQuery(name = "TvsDatosContacto.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO " +
                 "(t.ideContacto,  t.nroViaGeneradora, t.nroPlaca, t.codTipoVia, t.codPrefijoCuadrant, t.codPostal, t.direccion, t.celular, " +
                 "t.telFijo, t.extension, t.corrElectronico, t.codPais, t.codDepartamento, t.codMunicipio, " +
-                "t.provEstado, t.principal) " +
+                "t.provEstado, t.principal, t.ciudad) " +
                 "FROM TvsDatosContacto t INNER JOIN t.corAgente co " +
                 "WHERE co.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "TVS_DATOS_CONTACTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
@@ -72,6 +72,8 @@ public class TvsDatosContacto implements Serializable {
     private String provEstado;
     @Column(name = "PRINCIPAL")
     private String principal;
+    @Column(name = "CIUDAD")
+    private String ciudad;
     @JoinColumn(name = "IDE_AGENTE", referencedColumnName = "IDE_AGENTE")
     @ManyToOne(optional = false)
     private CorAgente corAgente;

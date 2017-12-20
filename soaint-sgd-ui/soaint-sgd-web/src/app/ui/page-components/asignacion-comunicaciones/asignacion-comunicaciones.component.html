@@ -235,13 +235,13 @@
   </p-dialog>
 
   <!--Quité el popup de redirecionamiendo cuando falla para que cuando este la info mostrarla [visible]="redireccionesFallidas"-->
-  <p-dialog [visible]="false" modal="modal" [responsive]="true"
+  <p-dialog [visible]="redireccionesFallidas" modal="modal" [responsive]="true"
             [contentStyle]="{'overflow':'visible'}"
             (onHide)="hideAndCleanDevolucionesFallidasDialog()" [width]="800">
     <p-header>
       Devoluciones / Redirecciones - Fallidas
     </p-header>
-    <app-redirecciones-recursivas-traza [redireccionesFallidas]=""
+    <app-redirecciones-recursivas-traza [redireccionesFallidas]="redireccionesFallidas"
                                         (onEjecutarRedireccionOrigen)="devolverOrigenRedireccionFallida()"></app-redirecciones-recursivas-traza>
 
 

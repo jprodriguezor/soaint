@@ -1,6 +1,7 @@
 package co.com.soaint.foundation.canonical.ui;
 
 import co.com.soaint.foundation.canonical.correspondencia.AsignacionesDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,4 +25,6 @@ public class ReasignarComunicacionDTO implements Serializable {
     private String pass;
 
     private BigInteger idFunc;
+
+    private FuncionarioDTO logueado;
 }

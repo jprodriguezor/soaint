@@ -281,6 +281,20 @@ public class BpmIntegrationServicesClientRest {
     }
 
     /**
+     * Permite listar tareas asociados a usuarios propietario
+     *
+     * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso
+     * @return lista de tareas
+     * @throws MalformedURLException
+     */
+    @POST
+    @Path("/tareas/listar/asignado/")
+    public List<RespuestaTareaDTO> listarTareasPorUsuarioAsignado(EntradaProcesoDTO entradaTarea) throws SystemException {
+        log.info("processing rest request - listar tareas con sus estados por usuario");
+        return tarea.listarTareasPorUsuarioAsignado(entradaTarea);
+    }
+
+    /**
      * Permite listar las tareas asociadas a una instancia de procesos por sus estados
      *
      * @param entradaTarea Objeto que contiene los parametros de entrada para un proceso

@@ -201,6 +201,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
       },
       idFunc: this.funcionarioLog.id
+      //logueado: this.funcionarioLog
+
     }, this.authPayload)));
 
     this.selectedComunications.forEach((value, index) => {
@@ -222,6 +224,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       const agentesSuccess = [];
 
       checks.forEach(value => {
+        console.log(value);
         if (!value.success) {
           failChecks.push(value.agente);
         } else {
@@ -399,6 +402,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
         const agente = value.agenteList[0];
         agente.codSede = justification.sedeAdministrativa.codigo;
         agente.codDependencia = justification.dependenciaGrupo.codigo;
+        agente.nombre = value.correspondencia.descripcion;
         delete agente['_$visited'];
         return this.ruleCheckRedirectionNumber.check(agente[key]).map(ruleCheck => {
           return {

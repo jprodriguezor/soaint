@@ -79,6 +79,7 @@ public class DatosContactoControl {
                 .codMunicipio(datosContactoDTO.getCodMunicipio())
                 .provEstado(datosContactoDTO.getProvEstado())
                 .principal(datosContactoDTO.getPrincipal())
+                .ciudad(datosContactoDTO.getCiudad())
                 .build();
     }
 }
