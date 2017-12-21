@@ -136,7 +136,7 @@ public class CorrespondenciaGatewayApi {
             entradaParaTarea.setInstanciaProceso(Long.parseLong(asigDTO.getAsignacion().getIdInstancia()));
 
             Map<String, Object> parametros = new HashMap<>();
-            parametros.put("usuario", asignacionDTO.getLoginName());
+            parametros.put("usuario", asigDTO.getAsignacion().getLoginName());
             entradaParaTarea.setParametros(parametros);
 
 //            List<EstadosEnum> estados = new ArrayList<>();

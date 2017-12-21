@@ -7,6 +7,8 @@ const REDIRECCIONES = 'redirecciones';
 
 export const SUCCESS_REDIRECTION = `La ${REDIRECCION} fue realizada Correctamente`;
 export const SUCCESS_REASIGNACION = `Ha sido reasignado el documento No. `;
+export const SUCCESS_ADJUNTAR_DOCUMENTO = `Se ha adjuntado correctamente el documento `;
+export const ERROR_ADJUNTAR_DOCUMENTO = `Ha ocurrido un error adjuntando el documento `;
 export const SUCCESS_DEVOLUTION = `La ${DEVOLUCION} fue realizada Correctamente`;
 export const WARN_DEVOLUTION = `No todas las ${REDIRECCIONES} pudieron ser ejecutadas`;
 export const WARN_REDIRECTION = `No todas las ${DEVOLUCIONES} pudieron ser ejecutadas`;

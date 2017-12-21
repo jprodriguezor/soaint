@@ -51,6 +51,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   contacts: Array<any> = [];
   showDireccionForm = false;
+  showCheckDireccionForm = false;
   showContactForm = false;
   formContext: FormContextEnum;
   editIndexContext: number;
@@ -136,10 +137,13 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
       if (value && (value.codigo != 'CO')) {
         this.visibility.selectedColombia = false;
+        this.showCheckDireccionForm = false;
         departamentoControl.reset();
         departamentoControl.disable();
         municipioControl.reset();
         municipioControl.disable();
+      }else{
+        this.showCheckDireccionForm = true;
       }
 
     });
@@ -208,6 +212,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const ciudad = this.form.get('ciudad');
     const direccionText = this.form.get('direccionText');
 
+
     const toSave = tassign({
       pais: pais.value,
       departamento: departamento.value,
@@ -217,7 +222,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       correoEle: email.value,
       provinciaEstado:provinciaEstado.value,
       ciudad:ciudad.value,
-      direccionText:direccionText.value
+      direccionText:direccionText.value,
 
     }, this.saveDireccionData());
 
@@ -252,62 +257,70 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const tipoComplemento = this.form.get('complementoTipo');
     const complementoAdicional = this.form.get('complementoAdicional');
 
+    const pais = this.form.get('pais');
+    const direccionText = this.form.get('direccionText');
+
     const value = {};
 
-    if (tipoVia.value) {
-      direccion += tipoVia.value.nombre;
-      value['tipoVia'] = tipoVia.value;
-      tipoVia.reset();
-    }
-    if (noViaPrincipal.value) {
-      direccion += ' ' + noViaPrincipal.value;
-      value['noViaPrincipal'] = noViaPrincipal.value;
-      noViaPrincipal.reset();
-    }
-    if (prefijoCuadrante.value) {
-      direccion += ' ' + prefijoCuadrante.value.nombre;
-      value['prefijoCuadrante'] = prefijoCuadrante.value;
-      prefijoCuadrante.reset();
-    }
-    if (bis.value) {
-      direccion += ' ' + bis.value.nombre;
-      value['bis'] = bis;
-      bis.reset();
-    }
-    if (orientacion.value) {
-      direccion += ' ' + orientacion.value.nombre;
-      value['orientacion'] = orientacion.value;
-      orientacion.reset();
-    }
-    if (noVia.value) {
-      direccion += ' ' + noVia.value;
-      value['noVia'] = noVia.value;
-      noVia.reset();
-    }
-    if (prefijoCuadrante_se.value) {
-      direccion += ' ' + prefijoCuadrante_se.value.nombre;
-      prefijoCuadrante_se.reset();
-    }
-    if (placa.value) {
-      direccion += ' ' + placa.value;
-      value['placa'] = placa.value;
-      placa.reset();
-    }
-    if (orientacion_se.value) {
-      direccion += ' ' + orientacion_se.value.nombre;
-      orientacion_se.reset();
-    }
-    if (tipoComplemento.value) {
-      direccion += ' ' + tipoComplemento.value.nombre;
-      tipoComplemento.reset();
-    }
-    if (complementoAdicional.value) {
-      direccion += ' ' + complementoAdicional.value;
-      complementoAdicional.reset();
-    }
+    if(pais.value === 'CO'){
 
-    value['direccion'] = direccion === ''? null: direccion;
+      if (tipoVia.value) {
+        direccion += tipoVia.value.nombre;
+        value['tipoVia'] = tipoVia.value;
+        tipoVia.reset();
+      }
+      if (noViaPrincipal.value) {
+        direccion += ' ' + noViaPrincipal.value;
+        value['noViaPrincipal'] = noViaPrincipal.value;
+        noViaPrincipal.reset();
+      }
+      if (prefijoCuadrante.value) {
+        direccion += ' ' + prefijoCuadrante.value.nombre;
+        value['prefijoCuadrante'] = prefijoCuadrante.value;
+        prefijoCuadrante.reset();
+      }
+      if (bis.value) {
+        direccion += ' ' + bis.value.nombre;
+        value['bis'] = bis;
+        bis.reset();
+      }
+      if (orientacion.value) {
+        direccion += ' ' + orientacion.value.nombre;
+        value['orientacion'] = orientacion.value;
+        orientacion.reset();
+      }
+      if (noVia.value) {
+        direccion += ' ' + noVia.value;
+        value['noVia'] = noVia.value;
+        noVia.reset();
+      }
+      if (prefijoCuadrante_se.value) {
+        direccion += ' ' + prefijoCuadrante_se.value.nombre;
+        prefijoCuadrante_se.reset();
+      }
+      if (placa.value) {
+        direccion += ' ' + placa.value;
+        value['placa'] = placa.value;
+        placa.reset();
+      }
+      if (orientacion_se.value) {
+        direccion += ' ' + orientacion_se.value.nombre;
+        orientacion_se.reset();
+      }
+      if (tipoComplemento.value) {
+        direccion += ' ' + tipoComplemento.value.nombre;
+        tipoComplemento.reset();
+      }
+      if (complementoAdicional.value) {
+        direccion += ' ' + complementoAdicional.value;
+        complementoAdicional.reset();
+      }
 
+      value['direccion'] = direccion === ''? null: direccion;
+
+    }else{
+      value['direccion'] = direccionText.value;
+    }
     return value;
   }
 

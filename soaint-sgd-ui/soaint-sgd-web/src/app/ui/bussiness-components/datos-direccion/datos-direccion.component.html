@@ -455,7 +455,7 @@
   <div class="ui-g-12" *ngIf="showContactForm === true">
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
       <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="cg" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
+        <p-checkbox name="cg" [hidden]="!showCheckDireccionForm" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
       </div>
     </div>
 
