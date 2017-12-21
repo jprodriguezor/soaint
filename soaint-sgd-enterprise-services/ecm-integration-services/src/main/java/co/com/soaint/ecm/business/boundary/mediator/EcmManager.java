@@ -59,17 +59,21 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public String subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
+    public MensajeRespuesta subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
         logger.info("### Subiendo documento al content..");
-        String idDocumento = "";
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
-            idDocumento = contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion);
+            response.setCodMensaje(contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion).getCodMensaje());
+            response.setMensaje(contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion).getMensaje());
+
         } catch (Exception e) {
             logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM");
             throw e;
         }
 
-        return idDocumento;
+        return response;
     }
 
     /**

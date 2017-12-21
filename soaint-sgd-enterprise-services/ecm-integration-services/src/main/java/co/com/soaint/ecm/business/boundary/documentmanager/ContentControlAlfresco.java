@@ -520,11 +520,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
+    public MensajeRespuesta subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
         logger.info ("Se entra al metodo subirDocumento");
 
-        String idDocumento = "";
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        String idDocumento="";
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
 
@@ -582,20 +583,26 @@ public class ContentControlAlfresco implements ContentControl {
                 idDocumento = newDocument.getId ( );
                 String[] parts = idDocumento.split (";");
                 idDocumento = parts[0];
+                response.setCodMensaje("0000");
+                response.setMensaje(idDocumento);
 
                 logger.info ("### Documento creado con id " + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
-                idDocumento =  configuracion.getPropiedad ("ECM_ERROR_DUPLICADO");
+                response.setCodMensaje("1111");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR_DUPLICADO"));
             } catch (CmisConstraintException cce) {
                 logger.error ("### Error tipo CmisConstraintException----------------------------- :", cce);
-                idDocumento =  configuracion.getPropiedad ("ECM_ERROR");
+                response.setCodMensaje("2222");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
             } catch (Exception e) {
                 logger.error ("### Error tipo Exception----------------------------- :", e);
-                idDocumento =  configuracion.getPropiedad ("ECM_ERROR");
+                response.setCodMensaje("2222");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
             }
         }
-        return idDocumento;
+
+        return response;
     }
 
     /**

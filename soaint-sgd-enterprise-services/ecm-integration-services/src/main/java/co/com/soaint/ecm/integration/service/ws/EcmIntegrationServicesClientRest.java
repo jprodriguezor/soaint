@@ -70,7 +70,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/subirDocumentoECM/{nombreDocumento}/{tipoComunicacion}")
     @Consumes("multipart/form-data")
-    public String subirDocumentoECM(@PathParam("nombreDocumento") String nombreDocumento,
+    public MensajeRespuesta subirDocumentoECM(@PathParam("nombreDocumento") String nombreDocumento,
                                     @RequestPart("documento") final MultipartFormDataInput documento,
                                     @PathParam("tipoComunicacion") String tipoComunicacion) throws IOException {
         logger.info("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);

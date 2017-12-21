@@ -79,7 +79,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public String subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
+    public MensajeRespuesta subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
 
         logger.info ("### Subiendo documento al content..");
@@ -96,18 +96,17 @@ public class ContentManager {
             carpeta = new Carpeta ( );
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             logger.info ("### Se invoca el metodo de subir el documento..");
-            idDocumento = contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
 
-            response.setCodMensaje ("0000");
-            response.setMensaje ("OK");
+            response.setCodMensaje (contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion).getCodMensaje());
+            response.setMensaje (contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion).getMensaje());
 
         } catch (Exception e) {
             logger.error ("Error subiendo documento", e);
-            response.setCodMensaje ("00005");
+            response.setCodMensaje ("2222");
             response.setMensaje ("Error al crear el documento");
             throw e;
         }
-        return idDocumento;
+        return response;
 
     }
 

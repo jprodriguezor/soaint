@@ -44,7 +44,7 @@ public interface ContentControl {
      * @return ide de documento
      * @throws IOException exception
      */
-    String subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
+    MensajeRespuesta subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
 
     /**
      * Descargar documento
