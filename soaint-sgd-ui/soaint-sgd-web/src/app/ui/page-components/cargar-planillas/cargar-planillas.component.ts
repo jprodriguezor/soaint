@@ -9,6 +9,8 @@ import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {SUCCESS_ADJUNTAR_DOCUMENTO} from 'app/shared/lang/es';
+import {ERROR_ADJUNTAR_DOCUMENTO} from 'app/shared/lang/es';
 import {Store} from '@ngrx/store';
 import {PlanillasApiService} from '../../../infrastructure/api/planillas.api';
 import {Sandbox as ConstanteSandbox} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox';
@@ -35,6 +37,7 @@ import {correspondenciaEntrada} from '../../../infrastructure/state-management/r
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 
 @Component({
   selector: 'app-cargar-planillas',
@@ -44,65 +47,65 @@ import {CompleteTaskAction} from '../../../infrastructure/state-management/tarea
 })
 export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
-  form: FormGroup;
+  form:FormGroup;
 
-  comunicaciones: PlanAgenDTO[] = [];
+  comunicaciones:PlanAgenDTO[] = [];
 
-  data: PlanillaDTO | any = {};
+  data:PlanillaDTO | any = {};
 
-  selectedComunications: PlanAgenDTO[] = [];
+  selectedComunications:PlanAgenDTO[] = [];
 
-  start_date: Date = new Date();
+  start_date:Date = new Date();
 
   editarPlanillaDialogVisible = false;
 
-  dependencia: any;
+  dependencia:any;
 
-  funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
+  funcionariosSuggestions$:Observable<FuncionarioDTO[]>;
 
-  justificationDialogVisible$: Observable<boolean>;
+  justificationDialogVisible$:Observable<boolean>;
 
-  detailsDialogVisible$: Observable<boolean>;
+  detailsDialogVisible$:Observable<boolean>;
 
-  agregarObservacionesDialogVisible$: Observable<boolean>;
+  agregarObservacionesDialogVisible$:Observable<boolean>;
 
-  rejectDialogVisible$: Observable<boolean>;
+  rejectDialogVisible$:Observable<boolean>;
 
-  dependenciaSelected$: Observable<DependenciaDTO>;
+  dependenciaSelected$:Observable<DependenciaDTO>;
 
-  dependenciaSelected: DependenciaDTO;
+  dependenciaSelected:DependenciaDTO;
 
-  funcionarioLog: FuncionarioDTO;
+  funcionarioLog:FuncionarioDTO;
 
-  funcionarioSubcription: Subscription;
+  funcionarioSubcription:Subscription;
 
-  comunicacionesSubcription: Subscription;
+  comunicacionesSubcription:Subscription;
 
-  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
+  tipologiaDocumentalSuggestions$:Observable<ConstanteDTO[]>;
 
-  tipologiasDocumentales: ConstanteDTO[];
+  tipologiasDocumentales:ConstanteDTO[];
 
-  dependencias: DependenciaDTO[] = [];
+  dependencias:DependenciaDTO[] = [];
 
-  activeTaskUnsubscriber: Subscription;
+  activeTaskUnsubscriber:Subscription;
 
   @ViewChild('popupEditar') popupEditar;
 
-  uploadUrl: string;
+  uploadUrl:string;
 
-  task: any;
+  task:any;
 
-  nroPlanilla: string;
+  nroPlanilla:string;
 
-  constructor(private _store: Store<RootState>,
-              private _cargarPlanillasApi: CargarPlanillasSandbox,
-              private _funcionarioSandbox: FuncionarioSandbox,
-              private _constSandbox: ConstanteSandbox,
-              private _dependenciaSandbox: DependenciaSandbox,
-              private _planillaService: PlanillasApiService,
-              private _changeDetectorRef: ChangeDetectorRef,
-              private _api: ApiBase,
-              private formBuilder: FormBuilder) {
+  constructor(private _store:Store<RootState>,
+              private _cargarPlanillasApi:CargarPlanillasSandbox,
+              private _funcionarioSandbox:FuncionarioSandbox,
+              private _constSandbox:ConstanteSandbox,
+              private _dependenciaSandbox:DependenciaSandbox,
+              private _planillaService:PlanillasApiService,
+              private _changeDetectorRef:ChangeDetectorRef,
+              private _api:ApiBase,
+              private formBuilder:FormBuilder) {
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
     this.dependenciaSelected$.subscribe((result) => {
       this.dependenciaSelected = result;
@@ -142,7 +145,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     this.listarDependencias();
   }
 
-  getDatosRemitente(comunicacion): Observable<AgentDTO> {
+  getDatosRemitente(comunicacion):Observable<AgentDTO> {
     const radicacionEntradaDTV = new RadicacionEntradaDTV(comunicacion);
     return radicacionEntradaDTV.getDatosRemitente();
   }
@@ -170,12 +173,12 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     });
   }
 
-  findDependency(code): string {
+  findDependency(code):string {
     const result = this.dependencias.find((element) => element.codigo === code);
     return result ? result.nombre : '';
   }
 
-  findSede(code): string {
+  findSede(code):string {
     const result = this.dependencias.find((element) => element.codSede === code);
     return result ? result.nomSede : '';
   }
@@ -199,10 +202,10 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     this.editarPlanillaDialogVisible = false;
   }
 
-  createAgents(): PlanAgenDTO[] {
-    const agents: PlanAgenDTO[] = [];
+  createAgents():PlanAgenDTO[] {
+    const agents:PlanAgenDTO[] = [];
     this.selectedComunications.forEach((element) => {
-      const agent: PlanAgenDTO = {
+      const agent:PlanAgenDTO = {
         idePlanAgen: element.idePlanAgen,
         estado: this.popupEditar.form.get('estadoEntrega').value.codigo,
         varPeso: element.varPeso,
@@ -234,7 +237,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   editarPlanilla() {
-    const agents: PlanAgenDTO[] = this.createAgents();
+    const agents:PlanAgenDTO[] = this.createAgents();
     const coms = [...this.comunicaciones];
     agents.forEach((element) => {
       const index = coms.findIndex((el) => el.ideAgente === element.ideAgente);
@@ -249,7 +252,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
   }
 
-  onDocUploaded(event): void {
+  onDocUploaded(event):void {
     console.log(event);
   }
 
@@ -258,14 +261,31 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
   }
 
   customUploader(event) {
+
     const formData = new FormData();
-    formData.append('file[]', event.files[0], event.files[0].name);
-    this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
-      this._api.sendFile(this.uploadUrl, formData, ['1', '2']).subscribe(response => {
-        console.log(response);
+
+
+    event.files.forEach((file) => {
+
+      formData.append('file[]', file, file.name);
+
+      this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
+        this._api.sendFile(this.uploadUrl, formData, ['1', '2']).subscribe(response => {
+          console.log(response);
+          if (response.ecmIds[0] == "") {
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'error',
+              summary: ERROR_ADJUNTAR_DOCUMENTO + file.name
+            }));
+          } else {
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'success',
+              summary: SUCCESS_ADJUNTAR_DOCUMENTO + file.name
+            }));
+          }
+        });
       });
     });
-
   }
 
   actualizarPlanilla() {
@@ -273,10 +293,10 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
       delete p.usuario;
       delete p['_$visited'];
     });
-    const agentes: PlanAgentesDTO = {
+    const agentes:PlanAgentesDTO = {
       pagente: this.comunicaciones
     };
-    const planilla: PlanillaDTO = {
+    const planilla:PlanillaDTO = {
       idePlanilla: null,
       nroPlanilla: null,
       fecGeneracion: null,
@@ -307,7 +327,7 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
     }
   }
 
-  canUpdatePlanilla(): boolean {
+  canUpdatePlanilla():boolean {
     return this.comunicaciones.length > 0 && this.comunicaciones.every((e) => e.estado && e.estado !== '');
   }
 

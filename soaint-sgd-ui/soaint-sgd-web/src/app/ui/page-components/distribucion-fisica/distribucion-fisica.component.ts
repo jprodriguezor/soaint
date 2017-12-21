@@ -188,7 +188,7 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
     const agensDTO: PlanAgenDTO[] = [];
 
     this.selectedComunications.forEach((element) => {
-      const agenDTO: PlanAgenDTO = {
+       const agenDTO: PlanAgenDTO = {
         idePlanAgen: null,
         estado: null,
         varPeso: null,
@@ -242,10 +242,12 @@ export class DistribucionFisicaComponent implements OnInit, OnDestroy {
 
   generarPlanilla() {
     const planilla = this.generarDatosExportar();
+
     this._planillaService.generarPlanillas(planilla).subscribe((result) => {
       this.planillaGenerada = result;
       this.numeroPlanillaDialogVisible = true;
       this.listarDistribuciones();
+
     });
   }
 

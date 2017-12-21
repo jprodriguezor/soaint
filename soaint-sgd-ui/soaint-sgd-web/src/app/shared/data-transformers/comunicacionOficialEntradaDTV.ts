@@ -199,7 +199,8 @@ export class ComunicacionOficialEntradaDTV {
         codPais: contact.pais ? contact.pais.codigo : null,
         codDepartamento: contact.departamento ? contact.departamento.codigo : null,
         codMunicipio: contact.municipio ? contact.municipio.codigo : null,
-        provEstado: null,
+        provEstado: contact.provinciaEstado ? contact.provinciaEstado : null,
+        ciudad: contact.ciudad ? contact.ciudad : null,
         principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
       });
     });

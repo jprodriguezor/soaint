@@ -48,7 +48,9 @@ export interface RadicacionEntradaFormInterface {
     departamento?:any,
     municipio?:any,
     principal?:any,
-    direccion?: any
+    direccion?: any,
+    provinciaEstado?: any,
+    ciudad?:any,
   }>,
   radicadosReferidos:Array<{ nombre:string }>,
   remitente:{
