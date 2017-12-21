@@ -51,6 +51,7 @@ public class ContentControlAlfresco implements ContentControl {
 
     @Value("${claseSubserie}")
     private static String aclaseSubserie;
+
     private static final Logger logger = LogManager.getLogger (ContentControlAlfresco.class.getName ( ));
 
     private static final String CLASE_BASE = "claseBase";
@@ -527,9 +528,6 @@ public class ContentControlAlfresco implements ContentControl {
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
 
-
-        logger.info ("Debug------------------------------" + inputParts);
-
         String fileName;
         String mimeType = "application/pdf";
         for (InputPart inputPart : inputParts) {
@@ -588,10 +586,13 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info ("### Documento creado con id " + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+                idDocumento =  configuracion.getPropiedad ("ECM_ERROR_DUPLICADO");
             } catch (CmisConstraintException cce) {
                 logger.error ("### Error tipo CmisConstraintException----------------------------- :", cce);
+                idDocumento =  configuracion.getPropiedad ("ECM_ERROR");
             } catch (Exception e) {
                 logger.error ("### Error tipo Exception----------------------------- :", e);
+                idDocumento =  configuracion.getPropiedad ("ECM_ERROR");
             }
         }
         return idDocumento;
