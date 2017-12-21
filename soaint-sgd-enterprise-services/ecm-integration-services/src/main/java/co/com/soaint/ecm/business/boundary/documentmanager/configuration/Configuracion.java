@@ -35,8 +35,10 @@ public class Configuracion {
     private String aecm;
     @Value("${REPOSITORY_ID}")
     private String aRepositoryId;
-
-
+    @Value("${errorSubirDocumento}")
+    private String aerrorSubirDocumento;
+    @Value("${errorSubirDocumentoDuplicado}")
+    private String aerrorSubirDocumentoDuplicado;
     private Configuracion(){
         /*
          *a
@@ -83,6 +85,10 @@ public class Configuracion {
                 return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
+            case "ECM_ERROR":
+                return aerrorSubirDocumento != null ? aerrorSubirDocumento : "ECMError";
+            case "ECM_ERROR_DUPLICADO":
+                return aerrorSubirDocumentoDuplicado != null ? aerrorSubirDocumentoDuplicado : "ECMErrorDuplicado";
             default:
                 return "";
         }
