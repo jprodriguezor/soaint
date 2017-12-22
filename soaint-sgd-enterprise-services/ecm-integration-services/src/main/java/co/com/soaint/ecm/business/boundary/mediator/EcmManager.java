@@ -63,9 +63,7 @@ public class EcmManager {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response.setCodMensaje(contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion).getCodMensaje());
-            response.setMensaje(contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion).getMensaje());
-
+            response=contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
