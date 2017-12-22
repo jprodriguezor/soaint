@@ -540,7 +540,7 @@ public class ContentControlAlfresco implements ContentControl {
                 if (name.trim ( ).startsWith ("filename")) {
                     String[] tmp = name.split ("=");
                     fileName = tmp[1].trim ( ).replaceAll ("\"", "");
-                    logger.info ("El nombre del fichera es: " + fileName);
+                    logger.info ("El nombre del fichero es: " + fileName);
                 }
             }
             InputStream inputStream = null;

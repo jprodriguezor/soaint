@@ -81,7 +81,6 @@ public class ContentManager {
      */
     public MensajeRespuesta subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
 
-
         logger.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         String idDocumento = "";
@@ -98,7 +97,7 @@ public class ContentManager {
             logger.info ("### Se invoca el metodo de subir el documento..");
 
             response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
-           
+
         } catch (Exception e) {
             logger.error ("Error subiendo documento", e);
             response.setCodMensaje ("2222");
