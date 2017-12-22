@@ -97,9 +97,8 @@ public class ContentManager {
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             logger.info ("### Se invoca el metodo de subir el documento..");
 
-            response.setCodMensaje (contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion).getCodMensaje());
-            response.setMensaje (contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion).getMensaje());
-
+            response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
+           
         } catch (Exception e) {
             logger.error ("Error subiendo documento", e);
             response.setCodMensaje ("2222");
