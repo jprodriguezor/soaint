@@ -271,12 +271,18 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
 
       this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
         this._api.sendFile(this.uploadUrl, formData, ['1', '2']).subscribe(response => {
-          console.log(response);
-          if (response.ecmIds[0] == "") {
+
+
+          let objresponse = JSON.parse(response.ecmIds[0]);
+
+          console.log(objresponse);
+
+          if (objresponse.codMensaje == "1111") {
             this._store.dispatch(new PushNotificationAction({
               severity: 'error',
-              summary: ERROR_ADJUNTAR_DOCUMENTO + file.name
+              summary: ERROR_ADJUNTAR_DOCUMENTO + objresponse.mensaje + ' ' + file.name
             }));
+
           } else {
             this._store.dispatch(new PushNotificationAction({
               severity: 'success',

@@ -4,7 +4,6 @@ import {Injectable} from '@angular/core';
 import {Headers, RequestOptions} from '@angular/http';
 import {_ParseAST} from '@angular/compiler';
 
-
 @Injectable()
 export class ApiBase {
 
