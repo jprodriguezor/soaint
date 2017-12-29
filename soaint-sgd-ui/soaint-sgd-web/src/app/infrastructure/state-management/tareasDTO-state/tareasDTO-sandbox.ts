@@ -122,6 +122,7 @@ export class Sandbox {
   }
 
   completeTask(payload: any) {
+    console.log(payload);
     return this._api.post(environment.tasksCompleteProcess,
       Object.assign({}, payload, this.authPayload));
   }

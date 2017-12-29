@@ -25,6 +25,7 @@ export class EditarPlanillaComponent implements OnInit {
     {nombre: 'DEVUELTO', codigo: 'DV'},
     {nombre: 'ANULADO', codigo: 'AN'},
     {nombre: 'PENDIENTE', codigo: 'PD'},
+    //{nombre: 'REDIRECCIONAR', codigo: 'RE'},
   ];
 
   dependencias: DependenciaDTO[] = [];

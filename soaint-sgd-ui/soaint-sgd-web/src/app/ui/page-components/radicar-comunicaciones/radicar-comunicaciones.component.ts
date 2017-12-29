@@ -209,12 +209,21 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
       }));
 
+      console.log(this.valueGeneral);
+      let requiereDigitalizacion = 0;
+
+      if(this.valueGeneral.reqDigit == "1"){
+        requiereDigitalizacion = 1;
+      }else if(this.valueGeneral.reqDigit == "2"){
+        requiereDigitalizacion = 2;
+      }
+
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
-          requiereDigitalizacion: this.valueGeneral.reqDigit ? 1 : 0,
+          requiereDigitalizacion: requiereDigitalizacion,
           digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
         }
