@@ -138,10 +138,9 @@
             <div class="ui-sm-12 ui-g-4 ui-lg-4">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton label="Adjuntar" [disabled]="!form.valid" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button">
-            </button>
-                        <button label="Cargar" pButton [disabled]="!form.valid" style="width: auto;margin-top: 28px;float: right;" type="button">
-            </button>
+                        <button pButton label="Adjuntar" [disabled]="!form.valid" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"></button>
+                        <button pButton label="Cargar" [disabled]="!form.valid" style="width: auto;margin-top:28px;float:right;" type="button"
+                            (click)="cargarPlantilla(form.get('tipoPlantilla').value)"></button>
                     </div>
                 </div>
             </div>
@@ -266,6 +265,21 @@
         </div>
     </p-panel>
 </form>
+
+<p-dialog [(visible)]="editarPlantillaVisible" [responsive]="true" [modal]="true" positionTop="20">
+    <p-header>
+        Editar Planilla
+    </p-header>
+
+    <p-editor [(ngModel)]="plantillaHtmlContent" [style]="{'height':'320px'}"></p-editor>
+    
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button pButton type="button" label="Guardar" [disabled]="!plantillaHtmlContent" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="agregarVersion()"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
 <p-dialog [visible]="versionesDocumentoVisible" modal="modal" [responsive]="true" positionTop="20" (onHide)="hideVersionesDocumentoDialog()" [width]="510">
     <p-header>
         Confirmación

@@ -33,6 +33,9 @@ export class PDDatosGeneralesComponent implements OnInit {
   tiposAnexo$: Observable<ConstanteDTO[]>;
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
+  editarPlantillaVisible = false;
+  plantillaHtmlContent: string;
+
   confirmadaGenerarVersion = false;
   versionesDocumentoVisible = false;
   nombreVersionDocumento: string;
@@ -65,6 +68,11 @@ export class PDDatosGeneralesComponent implements OnInit {
     });
   }
 
+  cargarPlantilla(tipoSelected) {
+    console.log(tipoSelected);
+
+    this.editarPlantillaVisible = true;
+  }
 
   tipoComunicacionChange(event) {
     this.pdMessageService.sendMessage(event.value);
