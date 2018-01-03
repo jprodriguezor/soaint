@@ -10,6 +10,8 @@ import co.com.soaint.funcionario.business.control.FuncionariosControl;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
+
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
@@ -57,5 +59,23 @@ public class GestionarFuncionarios {
      */
     public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         control.crearFuncionario(funcionario);
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
+    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        control.actualizarFuncionario(funcionario);
+    }
+
+    /**
+     *
+     * @param idFuncionario
+     * @throws SystemException
+     */
+    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+        control.eliminarFuncionario(idFuncionario);
     }
 }
