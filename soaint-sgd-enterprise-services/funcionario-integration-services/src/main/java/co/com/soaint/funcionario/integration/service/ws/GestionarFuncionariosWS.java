@@ -51,25 +51,32 @@ public class GestionarFuncionariosWS {
     @WebMethod(action = "crearFuncionario", operationName = "crearFuncionario")
     public void crearFuncionario(@WebParam(name = "funcionario")final FuncionarioDTO funcionario)throws SystemException{
         boundary.crearFuncionario(funcionario);
+        //TODo devolver un codigo indicando si funciono
     }
 
     @WebMethod(action = "actualizarFuncionario", operationName = "actualizarFuncionario")
-    public void actualizarFuncionario(@WebParam(name = "funcionario")final FuncionarioDTO funcionario)throws SystemException{
+    public String actualizarFuncionario(@WebParam(name = "funcionario")final FuncionarioDTO funcionario)throws SystemException{
         //boundary.crearFuncionario(funcionario);
+        //TODo implementacion
+        return "1";
     }
 
     @WebMethod(action = "eliminarFuncionario", operationName = "eliminarFuncionario")
-    public void eliminarFuncionario(@WebParam(name = "id-funcionario")final BigInteger idFuncionario)throws SystemException{
+    public String eliminarFuncionario(@WebParam(name = "id-funcionario")final BigInteger idFuncionario)throws SystemException{
         //boundary.crearFuncionario(funcionario);
+        //TODo implementacion
+        return "1";
     }
 
     @WebMethod(action = "buscarFuncionarios", operationName = "buscarFuncionarios")
     public FuncionariosDTO buscarFuncionarios(@WebParam(name = "funcionario")final FuncionarioDTO funcionario) throws BusinessException, SystemException {
-        return null;
+        //TODo implementacion
+        return new FuncionariosDTO();
     }
 
     @WebMethod(action = "obtenerFuncionario", operationName = "obtenerFuncionario")
-    public FuncionariosDTO obtenerFuncionario(@WebParam(name = "id-funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
-        return null;
+    public FuncionarioDTO obtenerFuncionario(@WebParam(name = "id-funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
+        //TODo implementacion
+        return new FuncionarioDTO();
     }
 }

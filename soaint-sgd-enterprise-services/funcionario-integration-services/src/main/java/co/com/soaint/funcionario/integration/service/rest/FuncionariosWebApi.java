@@ -75,20 +75,25 @@ public class FuncionariosWebApi {
     public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         log.info("processing rest request - crear funcionario");
         boundary.crearFuncionario(funcionario);
+        //TODo devolver un codigo indicando si funciono
     }
 
     @PUT
     @Path("/funcionarios")
-    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
         log.info("processing rest request - actualizar funcionario");
         boundary.actualizarFuncionario(funcionario);
+        //TODo Implementacion
+        return "1";
     }
 
     @DELETE
     @Path("/funcionarios")
-    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+    public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
         log.info("processing rest request - actualizar funcionario");
         boundary.eliminarFuncionario(idFuncionario);
+        //TODo Implementacion
+        return "1";
     }
 
     /**
@@ -100,7 +105,8 @@ public class FuncionariosWebApi {
     @Path("/funcionarios/buscar-funcionarios")
     public FuncionariosDTO buscarFuncionarios(FuncionarioDTO funcionario) throws BusinessException, SystemException {
         log.info("processing rest request - asignar tramite a funcionario");
-        return null;
+        //TODo Implementacion
+        return new FuncionariosDTO();
     }
 
     /**
@@ -114,6 +120,7 @@ public class FuncionariosWebApi {
     public FuncionarioDTO obtenerFuncionario(@PathParam("id_funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
         log.info("processing rest request - obtener funcionario por id");
         //return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
-        return null;
+        //TODo Implementacion
+        return new FuncionarioDTO();
     }
 }
