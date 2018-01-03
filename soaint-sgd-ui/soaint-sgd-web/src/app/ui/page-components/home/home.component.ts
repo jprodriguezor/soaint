@@ -33,8 +33,8 @@ export class HomeComponent implements OnInit {
   visibleRadicadoTicket = false;
 
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox, private _taskSandbox: TaskDtoSandbox) {
-    this._store.dispatch(new GetTaskStatsAction());
 
+    this._store.dispatch(new GetTaskStatsAction());
     this.allTasks$ = this._store.select(getArrayData);
     this.staticProcess$ = this._store.select(ProcessArrayData);
 

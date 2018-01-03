@@ -45,6 +45,7 @@ export class InlineProfileComponent {
 
   public _onSecurityRole(): void {
     this.onSecurityRole.emit();
+    event.preventDefault();
   }
 
   public onClick(event): void {
