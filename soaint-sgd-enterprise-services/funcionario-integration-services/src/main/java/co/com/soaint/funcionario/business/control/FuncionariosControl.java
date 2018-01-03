@@ -13,6 +13,7 @@ import co.com.soaint.funcionario.apis.delegator.security.SecurityApiClient;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -165,5 +166,41 @@ public class FuncionariosControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @throws SystemException
+     */
+    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        /*try {
+            securityApiClient.crearFuncionario(funcionario);
+            funcionariosWebApiClient.crearFuncionario(funcionario);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }*/
+    }
+
+    /**
+     *
+     * @param idFuncionario
+     * @throws SystemException
+     */
+    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+        /*try {
+            securityApiClient.crearFuncionario(funcionario);
+            funcionariosWebApiClient.crearFuncionario(funcionario);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }*/
     }
 }

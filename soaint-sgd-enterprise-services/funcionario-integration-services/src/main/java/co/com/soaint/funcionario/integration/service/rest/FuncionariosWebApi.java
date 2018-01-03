@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,5 +75,45 @@ public class FuncionariosWebApi {
     public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         log.info("processing rest request - crear funcionario");
         boundary.crearFuncionario(funcionario);
+    }
+
+    @PUT
+    @Path("/funcionarios")
+    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        log.info("processing rest request - actualizar funcionario");
+        boundary.actualizarFuncionario(funcionario);
+    }
+
+    @DELETE
+    @Path("/funcionarios")
+    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+        log.info("processing rest request - actualizar funcionario");
+        boundary.eliminarFuncionario(idFuncionario);
+    }
+
+    /**
+     * @param funcionario
+     * @return
+     * @throws SystemException
+     */
+    @POST
+    @Path("/funcionarios/buscar-funcionarios")
+    public FuncionariosDTO buscarFuncionarios(FuncionarioDTO funcionario) throws BusinessException, SystemException {
+        log.info("processing rest request - asignar tramite a funcionario");
+        return null;
+    }
+
+    /**
+     *
+     * @param idFuncionario
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/{id_funcionario}")
+    public FuncionarioDTO obtenerFuncionario(@PathParam("id_funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
+        log.info("processing rest request - obtener funcionario por id");
+        //return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
+        return null;
     }
 }
