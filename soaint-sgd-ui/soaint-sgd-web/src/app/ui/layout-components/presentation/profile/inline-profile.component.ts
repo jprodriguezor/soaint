@@ -32,6 +32,8 @@ export class InlineProfileComponent {
   @Input() username: string;
 
   @Output() onSignOffUser: EventEmitter<any> = new EventEmitter();
+  @Output() onSecurityRole: EventEmitter<any> = new EventEmitter();
+
 
   constructor() {
   }
@@ -39,6 +41,10 @@ export class InlineProfileComponent {
   public logout(event): void {
     this.onSignOffUser.emit(null);
     event.preventDefault();
+  }
+
+  public _onSecurityRole(): void {
+    this.onSecurityRole.emit();
   }
 
   public onClick(event): void {
