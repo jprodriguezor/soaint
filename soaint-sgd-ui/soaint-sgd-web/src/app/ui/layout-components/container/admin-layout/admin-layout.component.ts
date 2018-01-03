@@ -262,8 +262,14 @@ export class AdminLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
     jQuery(this.layoutMenuScroller).nanoScroller({flash: true});
   }
 
-  @HostListener('window:resize', ['$event']) onResize($event) {
+  @HostListener('window:resize', ['$event'])
+  onResize($event) {
     this._sandbox.dispatchWindowResize({width: $event.target.innerWidth, height: $event.target.innerHeight});
+  }
+
+  routeToSecurityRole(): void {
+    console.log('Log....');
+    this._sandbox.dispatchRoutingSecurityRole();
   }
 
 }

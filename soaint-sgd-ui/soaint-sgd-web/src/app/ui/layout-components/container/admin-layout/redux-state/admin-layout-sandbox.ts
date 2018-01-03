@@ -11,8 +11,13 @@ import {Sandbox as ProcessSandbox} from 'app/infrastructure/state-management/pro
 import {LogoutAction} from 'app/ui/page-components/login/redux-state/login-actions';
 import {layoutWidth} from 'app/ui/layout-components/container/admin-layout/redux-state/admin-layout-selectors';
 import {SelectDependencyGroupAction} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions';
-import {getSelectedDependencyGroupFuncionario, getSuggestionsDependencyGroupFuncionarioArray} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getSelectedDependencyGroupFuncionario,
+  getSuggestionsDependencyGroupFuncionarioArray
+} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {createSelector} from 'reselect';
+import {go} from '@ngrx/router-store';
+import {ROUTES_PATH} from '../../../../../app.route-names';
 
 
 @Injectable()
@@ -81,6 +86,10 @@ export class AdminLayoutSandbox {
 
   dispatchFuncionarioAuthDependenciaSelected(payload: any) {
     this._store.dispatch(new SelectDependencyGroupAction(payload));
+  }
+
+  dispatchRoutingSecurityRole(): void {
+    this._store.dispatch(go( '/security-role'));
   }
 
 

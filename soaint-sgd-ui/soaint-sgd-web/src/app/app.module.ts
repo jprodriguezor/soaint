@@ -39,6 +39,7 @@ import {PIPES_AS_PROVIDERS} from './shared/pipes/__pipes.include';
 import {customHttpProvider} from './shared/interceptors/http.provider';
 import { OrderModule } from 'ngx-order-pipe';
 import { SingleUploadComponent } from './ui/layout-components/presentation/single-upload/single-upload.component';
+import { SecurityRoleComponent } from './ui/page-components/security-role/security-role.component';
 
 @NgModule({
   imports: [
@@ -121,6 +122,7 @@ import { SingleUploadComponent } from './ui/layout-components/presentation/singl
     EditarPlanillaComponent,
     PlanillaGeneradaComponent,
     SingleUploadComponent,
+    SecurityRoleComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

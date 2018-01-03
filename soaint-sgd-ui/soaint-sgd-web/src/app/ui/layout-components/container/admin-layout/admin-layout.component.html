@@ -16,7 +16,7 @@
     <div class="layout-menu" [ngClass]="{'layout-menu-dark': darkMenu}" (click)="onMenuClick($event)">
       <div #layoutMenuScroller class="nano">
         <div class="nano-content menu-scroll-content">
-          <inline-profile (onSignOffUser)="signOff()" *ngIf="profileMode=='inline' && !isHorizontal()" [username]="usernameAuth$ | async"></inline-profile>
+          <inline-profile (onSecurityRole)="routeToSecurityRole()" (onSignOffUser)="signOff()" *ngIf="profileMode=='inline' && !isHorizontal()" [username]="usernameAuth$ | async"></inline-profile>
           <!--<app-menu [reset]="resetMenu" [model]="(menuOptions$ | async)"></app-menu>-->
           <app-menu [reset]="resetMenu"
                     [model]="menuOptions"
