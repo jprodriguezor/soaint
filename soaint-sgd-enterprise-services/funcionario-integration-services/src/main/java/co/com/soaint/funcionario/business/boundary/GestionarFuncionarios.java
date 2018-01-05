@@ -66,8 +66,8 @@ public class GestionarFuncionarios {
      * @param funcionario
      * @throws SystemException
      */
-    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
-        control.actualizarFuncionario(funcionario);
+    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        return control.actualizarFuncionario(funcionario);
     }
 
     /**
@@ -75,7 +75,7 @@ public class GestionarFuncionarios {
      * @param idFuncionario
      * @throws SystemException
      */
-    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
-        control.eliminarFuncionario(idFuncionario);
+    public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+        return control.eliminarFuncionario(idFuncionario);
     }
 }

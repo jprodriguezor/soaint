@@ -173,17 +173,19 @@ public class FuncionariosControl {
      * @param funcionario
      * @throws SystemException
      */
-    public void actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
-        /*try {
-            securityApiClient.crearFuncionario(funcionario);
+    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        try {
+            securityApiClient.actualizarFuncionario(funcionario);
+            //TODO Llamar a Actualizar en el ApiClient de Funcionario
             funcionariosWebApiClient.crearFuncionario(funcionario);
+            return "1";
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
-        }*/
+        }
     }
 
     /**
@@ -191,16 +193,20 @@ public class FuncionariosControl {
      * @param idFuncionario
      * @throws SystemException
      */
-    public void eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
-        /*try {
-            securityApiClient.crearFuncionario(funcionario);
-            funcionariosWebApiClient.crearFuncionario(funcionario);
+    public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+        try {
+            //securityApiClient.crearFuncionario();
+            //funcionariosWebApiClient.crearFuncionario(funcionario);
+            //TODO Implementacion
+            return "1";
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
                     .withRootException(ex)
                     .buildSystemException();
-        }*/
+        }
     }
+
+    //TODO Crear operaciones Buscar, Obtener por Id y Listar roles
 }

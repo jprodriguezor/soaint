@@ -82,18 +82,14 @@ public class FuncionariosWebApi {
     @Path("/funcionarios")
     public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
         log.info("processing rest request - actualizar funcionario");
-        boundary.actualizarFuncionario(funcionario);
-        //TODo Implementacion
-        return "1";
+        return boundary.actualizarFuncionario(funcionario);
     }
 
     @DELETE
     @Path("/funcionarios")
     public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
         log.info("processing rest request - actualizar funcionario");
-        boundary.eliminarFuncionario(idFuncionario);
-        //TODo Implementacion
-        return "1";
+        return boundary.eliminarFuncionario(idFuncionario);
     }
 
     /**
@@ -123,4 +119,6 @@ public class FuncionariosWebApi {
         //TODo Implementacion
         return new FuncionarioDTO();
     }
+
+    //TODO Agregar operacion listar roles
 }

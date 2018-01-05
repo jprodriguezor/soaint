@@ -11,9 +11,7 @@ import com.soaint.services.security_cartridge._1_0.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -109,6 +107,58 @@ public class SecurityApiClient {
             if (!respuesta.isSuccessful())
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.creation_failed")
+                        .buildBusinessException();
+        } catch (BusinessException e) {
+            log.error("Api Delegator - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void actualizarFuncionario(FuncionarioDTO funcionario)throws BusinessException, SystemException{
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+            OperationStatus respuesta = securityApiService.getSecurityAPIPort().actualizarUsuario(transformToPrincipalContext(funcionario));
+            if (!respuesta.isSuccessful())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.update_failed")
+                        .buildBusinessException();
+        } catch (BusinessException e) {
+            log.error("Api Delegator - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param uid
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public void eliminarFuncionario(String uid)throws BusinessException, SystemException{
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+            OperationStatus respuesta = securityApiService.getSecurityAPIPort().eliminarUsuarioporNombre(uid);
+            if (!respuesta.isSuccessful())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.delete_failed")
                         .buildBusinessException();
         } catch (BusinessException e) {
             log.error("Api Delegator - a business error has occurred", e);

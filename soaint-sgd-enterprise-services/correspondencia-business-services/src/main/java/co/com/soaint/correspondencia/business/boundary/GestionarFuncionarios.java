@@ -9,6 +9,8 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigInteger;
+
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
@@ -68,5 +70,47 @@ public class GestionarFuncionarios {
      */
     public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
         control.crearFuncionario(funcionarioDTO);
+    }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @throws SystemException
+     */
+    public String actualizarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        return control.actualizarFuncionario(funcionarioDTO);
+    }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        return control.buscarFuncionario(funcionarioDTO);
+    }
+
+
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String consultarLoginNameByIdeFunci(BigInteger ideFunci)throws BusinessException, SystemException {
+        return control.consultarLoginNameByIdeFunci(ideFunci);
+    }
+
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci)throws BusinessException, SystemException {
+        return control.consultarFuncionarioByIdeFunci(ideFunci);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
+import java.math.BigInteger;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,4 +92,56 @@ public class FuncionariosWebApi {
         boundary.crearFuncionario(funcionarioDTO);
     }
 
+    /**
+     *
+     * @param funcionarioDTO
+     * @return
+     * @throws SystemException
+     */
+    @POST
+    @Path("/funcionarios/buscar")
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        log.info("processing rest request - buscar funcionarios" + funcionarioDTO);
+        return boundary.buscarFuncionario(funcionarioDTO);
+    }
+
+    /**
+     *
+     * @param funcionarioDTO
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/funcionarios")
+    public String actualizarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        log.info("processing rest request - actualizar funcionario: " + funcionarioDTO.getIdeFunci());
+        return boundary.actualizarFuncionario(funcionarioDTO);
+    }
+
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/by-login/{Ide_Funci}")
+    public String consultarLoginNameByIdeFunci(@PathParam("Ide_Funci") final BigInteger ideFunci) throws BusinessException, SystemException {
+        log.info("processing rest request - obtener login_name por id de funcionario: " + ideFunci.toString());
+        return boundary.consultarLoginNameByIdeFunci(ideFunci);
+    }
+
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/by-id/{Ide_Funci}")
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(@PathParam("Ide_Funci") final BigInteger ideFunci) throws BusinessException, SystemException {
+        log.info("processing rest request - obtener Funcionario por id de funcionario");
+        return boundary.consultarFuncionarioByIdeFunci(ideFunci);
+    }
 }

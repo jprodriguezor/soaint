@@ -13,6 +13,7 @@ import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -223,6 +224,71 @@ public class FuncionariosControl {
             }
             em.persist(funcionario);
             em.flush();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @return
+     * @throws SystemException
+     */
+    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        try {
+            em.createNamedQuery("Funcionarios.update")
+                    .setParameter("IDE_FUNCI", funcionario.getIdeFunci())
+                    .setParameter("COD_TIP_DOC_IDENT", funcionario.getCodTipDocIdent())
+                    .setParameter("NRO_IDENTIFICACION", funcionario.getNroIdentificacion())
+                    .setParameter("NOM_FUNCIONARIO", funcionario.getNomFuncionario())
+                    .setParameter("VAL_APELLIDO1", funcionario.getValApellido1())
+                    .setParameter("VAL_APELLIDO2", funcionario.getValApellido2())
+                    .setParameter("CORR_ELECTRONICO", funcionario.getCorrElectronico())
+                    .setParameter("ESTADO", funcionario.getEstado())
+                    .setParameter("CREDENCIALES", java.util.Base64.getEncoder().encodeToString((funcionario.getLoginName() + ":" + funcionario.getPassword()).getBytes()))
+                    .executeUpdate();
+            return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param funcionario
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        List<FuncionarioDTO> funcionarioDTOList = new ArrayList<>();
+        try {
+            em.createNamedQuery("Funcionarios.filter", FuncionarioDTO.class)
+                    .setParameter("COD_TIP_DOC_IDENT", funcionario.getCodTipDocIdent())
+                    .setParameter("NRO_IDENTIFICACION", funcionario.getNroIdentificacion())
+                    .setParameter("NOM_FUNCIONARIO", funcionario.getNomFuncionario())
+                    .setParameter("VAL_APELLIDO1", funcionario.getValApellido1())
+                    .setParameter("VAL_APELLIDO2", funcionario.getValApellido2())
+                    .setParameter("CORR_ELECTRONICO", funcionario.getCorrElectronico())
+                    .setParameter("LOGIN_NAME", funcionario.getLoginName())
+                    .setParameter("ESTADO", funcionario.getEstado())
+                    .getResultList()
+                    .stream()
+                    .forEach(funcionarioDTO -> {
+                        funcionarioDTO.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionarioDTO.getIdeFunci()));
+                        funcionarioDTOList.add(funcionarioDTO);
+                    });
+
+            return FuncionariosDTO.newInstance().funcionarios(funcionarioDTOList).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
