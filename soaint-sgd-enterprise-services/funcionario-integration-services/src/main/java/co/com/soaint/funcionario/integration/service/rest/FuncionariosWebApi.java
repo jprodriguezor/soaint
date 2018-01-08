@@ -89,10 +89,10 @@ public class FuncionariosWebApi {
 
     @POST
     @Path("/funcionarios")
-    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         log.info("processing rest request - crear funcionario");
-        boundary.crearFuncionario(funcionario);
-        //TODo devolver un codigo indicando si funciono
+        return boundary.crearFuncionario(funcionario);
+
     }
 
     @PUT
@@ -117,9 +117,8 @@ public class FuncionariosWebApi {
     @POST
     @Path("/funcionarios/buscar-funcionarios")
     public FuncionariosDTO buscarFuncionarios(FuncionarioDTO funcionario) throws BusinessException, SystemException {
-        log.info("processing rest request - asignar tramite a funcionario");
-        //TODo Implementacion
-        return new FuncionariosDTO();
+        log.info("processing rest request - buscar funcionarios");
+        return boundary.buscarFuncionario(funcionario);
     }
 
     /**

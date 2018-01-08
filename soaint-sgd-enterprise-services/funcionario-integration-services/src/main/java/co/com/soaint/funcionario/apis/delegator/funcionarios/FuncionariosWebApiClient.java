@@ -94,12 +94,13 @@ public class FuncionariosWebApiClient {
      * @param funcionario
      * @throws SystemException
      */
-    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         try {
             WebTarget wt = getWebTarget();
-            wt.path("/funcionarios-web-api/funcionarios")
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios")
                     .request()
                     .post(Entity.json(funcionario));
+            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1": "0";
         } catch (Exception ex) {
             log.error("Api Delegator - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -128,6 +129,25 @@ public class FuncionariosWebApiClient {
                     .buildSystemException();
         }
     }
+
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        try {
+            WebTarget wt = getWebTarget();
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios/buscar")
+                    .request()
+                    .post(Entity.json(funcionarioDTO));
+            return respuesta.readEntity(FuncionariosDTO.class);
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+
+    
 
     private WebTarget getWebTarget(){
         return ClientBuilder.newClient().target(endpoint);

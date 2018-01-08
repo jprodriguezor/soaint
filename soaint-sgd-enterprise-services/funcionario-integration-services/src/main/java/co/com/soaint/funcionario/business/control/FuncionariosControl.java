@@ -155,10 +155,10 @@ public class FuncionariosControl {
      * @param funcionario
      * @throws SystemException
      */
-    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
         try {
             securityApiClient.crearFuncionario(funcionario);
-            funcionariosWebApiClient.crearFuncionario(funcionario);
+            return funcionariosWebApiClient.crearFuncionario(funcionario);
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -214,7 +214,7 @@ public class FuncionariosControl {
         try {
             return securityApiClient.obtenerRoles();
         } catch (BusinessException e) {
-            log.error("Business Control - a business error has occurred obtenerRoles", e);
+            log.error("Business Control - a business error has occurred", e);
             throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -225,5 +225,18 @@ public class FuncionariosControl {
         }
     }
 
-    //TODO Crear operaciones Buscar, Obtener por Id y Listar roles
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+        try {
+            return funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    //TODO Crear operaciones Buscar, Obtener por Id
+
 }

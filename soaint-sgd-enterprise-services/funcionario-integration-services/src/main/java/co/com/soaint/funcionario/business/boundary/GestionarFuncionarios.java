@@ -59,8 +59,8 @@ public class GestionarFuncionarios {
      * @param funcionario
      * @throws SystemException
      */
-    public void crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
-        control.crearFuncionario(funcionario);
+    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        return control.crearFuncionario(funcionario);
     }
 
     /**
@@ -87,5 +87,13 @@ public class GestionarFuncionarios {
      */
     public List<RolDTO> obtenerRoles() throws BusinessException,SystemException{
         return control.obtenerRoles();
+    }
+
+    /**
+     *
+     * @throws SystemException
+     */
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO) throws SystemException{
+        return control.buscarFuncionario(funcionarioDTO);
     }
 }
