@@ -45,4 +45,10 @@ public class FuncionarioClient {
                 .get();
     }
 
+    public Response listarFuncionarioRoles(){
+        log.info("Funcionario - [trafic] - obtener Funcionario Roles with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/obtener_roles").request().get();
+    }
+
 }
