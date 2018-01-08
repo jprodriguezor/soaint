@@ -70,4 +70,19 @@ public class FuncionarioGatewayApi {
         return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
     }
 
+    @GET
+    @Path("/funcionarios/roles")
+    @JWTTokenSecurity
+    public Response listarFuncionariosRoles(){
+        log.info("FuncionarioGatewayApi - [trafic] - listing roles funcionarios");
+        Response response = client.listarFuncionarioRoles();
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+
+        if (response.getStatus() == HttpStatus.OK.value())
+            return Response.status(response.getStatus()).entity(responseContent).build();
+        return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+
+    }
+
 }
