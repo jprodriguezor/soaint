@@ -237,6 +237,16 @@ public class FuncionariosControl {
         }
     }
 
-    //TODO Crear operaciones Buscar, Obtener por Id
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci)throws SystemException{
+        try {
+            return funcionariosWebApiClient.consultarFuncionarioByIdeFunci(ideFunci);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 
 }

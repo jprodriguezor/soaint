@@ -147,7 +147,21 @@ public class FuncionariosWebApiClient {
     }
 
 
-    
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws SystemException{
+        try {
+            WebTarget wt = getWebTarget();
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios/by-id/" + ideFunci)
+                    .request()
+                    .get();
+            return respuesta.readEntity(FuncionarioDTO.class);
+        }catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 
     private WebTarget getWebTarget(){
         return ClientBuilder.newClient().target(endpoint);

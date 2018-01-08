@@ -128,12 +128,11 @@ public class FuncionariosWebApi {
      * @throws SystemException
      */
     @GET
-    @Path("/funcionarios/{id_funcionario}")
+    @Path("/funcionarios/by-id/{id_funcionario}")
     public FuncionarioDTO obtenerFuncionario(@PathParam("id_funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
         log.info("processing rest request - obtener funcionario por id");
-        //return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
-        //TODo Implementacion
-        return new FuncionarioDTO();
+        return boundary.consultarFuncionarioByIdeFunci(idFuncionario);
+        //return new FuncionarioDTO();
     }
 
 

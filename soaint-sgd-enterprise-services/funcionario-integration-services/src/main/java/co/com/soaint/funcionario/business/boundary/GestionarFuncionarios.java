@@ -96,4 +96,12 @@ public class GestionarFuncionarios {
     public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO) throws SystemException{
         return control.buscarFuncionario(funcionarioDTO);
     }
+
+    /**
+     * @param ideFunci
+     * @throws SystemException
+     */
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci)throws SystemException{
+        return control.consultarFuncionarioByIdeFunci(ideFunci);
+    }
 }
