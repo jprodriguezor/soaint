@@ -13,6 +13,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.math.BigInteger;
 
 /**
  * Created by esanchez on 8/28/2017.
@@ -99,6 +100,26 @@ public class FuncionariosWebApiClient {
             wt.path("/funcionarios-web-api/funcionarios")
                     .request()
                     .post(Entity.json(funcionario));
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @throws SystemException
+     */
+    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+        try {
+            WebTarget wt = getWebTarget();
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios")
+                    .request()
+                    .put(Entity.json(funcionario));
+            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1": "0";
         } catch (Exception ex) {
             log.error("Api Delegator - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

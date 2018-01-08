@@ -172,6 +172,43 @@ public class SecurityApiClient {
         }
     }
 
+    /**
+     *
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public List<RolDTO> obtenerRoles() throws BusinessException, SystemException{
+        List<RolDTO> roles = new ArrayList<>();
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+             OperationRolesListStatus respuesta = securityApiService.getSecurityAPIPort().listadoDeRoles();
+            if (respuesta.isSuccessful()) {
+                List<Rol> rolesResp = respuesta.getRoles().getRol();
+                for (Rol rolR: rolesResp){
+                    RolDTO nrol = new RolDTO();
+                    nrol.setRol(rolR.getName());
+                    roles.add(nrol);
+                }
+                return roles;
+            }
+            else
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.obtener-roles-failed")
+                        .buildBusinessException();
+
+        } catch (BusinessException e) {
+            log.error("Api Delegator - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+
+    }
+
     private SecurityAPIService getSecutrityApiService()throws MalformedURLException{
         return new SecurityAPIService(new URL(endpoint));
     }
@@ -183,13 +220,20 @@ public class SecurityApiClient {
         usuario.setLastName(StringUtils.defaultString(funcionario.getValApellido1(), "") + " " + StringUtils.defaultString(funcionario.getValApellido2(), ""));
         usuario.setEmail(funcionario.getCorrElectronico());
         usuario.setPassword(funcionario.getPassword());
-        Roles roles = new Roles();
-        for(RolDTO rolDTO : funcionario.getRoles()){
-            Rol rol = new Rol();
-            rol.setName(rolDTO.getRol());
-            roles.getRol().add(rol);
+
+        if(funcionario.getRoles() != null){
+            Roles roles = new Roles();
+            for(RolDTO rolDTO : funcionario.getRoles()){
+                Rol rol = new Rol();
+                rol.setName(rolDTO.getRol());
+                roles.getRol().add(rol);
+            }
+            usuario.setRoles(roles);
         }
-        usuario.setRoles(roles);
+
         return usuario;
     }
+
+
+
 }

@@ -176,9 +176,7 @@ public class FuncionariosControl {
     public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
         try {
             securityApiClient.actualizarFuncionario(funcionario);
-            //TODO Llamar a Actualizar en el ApiClient de Funcionario
-            funcionariosWebApiClient.crearFuncionario(funcionario);
-            return "1";
+            return funcionariosWebApiClient.actualizarFuncionario(funcionario);
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -199,6 +197,25 @@ public class FuncionariosControl {
             //funcionariosWebApiClient.crearFuncionario(funcionario);
             //TODO Implementacion
             return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @throws SystemException
+     */
+    public List<RolDTO> obtenerRoles() throws BusinessException, SystemException{
+        try {
+            return securityApiClient.obtenerRoles();
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred obtenerRoles", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

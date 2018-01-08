@@ -3,6 +3,7 @@ package co.com.soaint.funcionario.business.boundary;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RolDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,5 +79,13 @@ public class GestionarFuncionarios {
      */
     public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
         return control.eliminarFuncionario(idFuncionario);
+    }
+
+    /**
+     *
+     * @throws SystemException
+     */
+    public List<RolDTO> obtenerRoles() throws BusinessException,SystemException{
+        return control.obtenerRoles();
     }
 }

@@ -3,6 +3,7 @@ package co.com.soaint.funcionario.integration.service.rest;
 import co.com.soaint.foundation.canonical.correspondencia.CredencialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
+import co.com.soaint.foundation.canonical.correspondencia.RolDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.business.boundary.GestionarFuncionarios;
@@ -12,6 +13,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +57,20 @@ public class FuncionariosWebApi {
                                                                           @PathParam("cod_estado")final String codEstado) throws BusinessException, SystemException {
         log.info("processing rest request - listar funcionarios por dependencia, rol y estado");
         return boundary.listarFuncionariosByDependenciaAndRolAndEstado(codDependencia, rol, codEstado);
+    }
+
+    /**
+     *
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/obtener_roles")
+    public List<RolDTO> obtenerRoles() throws BusinessException, SystemException {
+        log.info("processing rest request - obtener-roles");
+        List<RolDTO> nuevo = new ArrayList<RolDTO>();
+        //return nuevo;
+        return boundary.obtenerRoles();
     }
 
     /**
@@ -120,5 +137,6 @@ public class FuncionariosWebApi {
         return new FuncionarioDTO();
     }
 
-    //TODO Agregar operacion listar roles
+
+
 }
