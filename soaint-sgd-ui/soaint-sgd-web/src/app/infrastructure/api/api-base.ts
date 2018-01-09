@@ -18,6 +18,10 @@ export class ApiBase {
     return this._http.post(endpoint, payload);
   }
 
+  public put(endpoint: string, payload = {}): Observable<any> {
+    return this._http.put(endpoint, payload);
+  }
+
   public sendFile(endpoint: string, formData, pathParams: Array<string>): Observable<any> {
 
     let fullEndpoint = `${endpoint}`;
