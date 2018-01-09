@@ -19,6 +19,7 @@ export class FuncionarioListComponent implements OnInit {
   funcionarioEdit: FuncionarioDTO;
   funcionarioSelected: FuncionarioDTO;
   funcionarioEditDialog: Boolean = false;
+  funcionarioBusqueda = { nombre : '', valApellido1: '', valApellido2: '' };
 
   selectedFuncionarios: string[];
 
@@ -29,15 +30,20 @@ export class FuncionarioListComponent implements OnInit {
   }
 
   ngOnInit() {
-    const payload = {cod_dependencia: '10401040'};
+    /*const payload = {cod_dependencia: '10401040'};
     const endpoint = `${environment.listarFuncionarios_endpoint}` + '/' + payload.cod_dependencia;
-    this.funcionarios = this._api.list(endpoint).map(data => data.funcionarios);
-    this.loadAllRoles();
+    this.funcionarios = this._api.list(endpoint).map(data => data.funcionarios);*/
+    this.searchFuncionarios(); this.loadAllRoles();
   }
 
   loadAllRoles() {
     const endpoint = `${environment.obtenerFuncionarios_roles_endpoint}`;
-    this.roles =  this._api.list(endpoint);
+    this.roles = this._api.list(endpoint);
+  }
+
+  searchFuncionarios() {
+    const endpoint = `${environment.buscarFuncionarios_endpoint}`;
+    this.funcionarios = this._api.post(endpoint, this.funcionarioBusqueda);
   }
 
   editFuncionario(func: FuncionarioDTO): void {
@@ -49,7 +55,8 @@ export class FuncionarioListComponent implements OnInit {
 
   updateFuncionarioRol(): void {
     this.funcionarioEdit.roles = this.selectedFuncionarios.map(role => {
-      return {rol: role}; }).concat();
+      return {rol: role};
+    }).concat();
     const endpoint = `${environment.updateFuncionarios_roles_endpoint}`;
     this._api.put(endpoint, this.funcionarioEdit).subscribe(state => {
       console.log(state);
