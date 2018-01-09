@@ -43,6 +43,19 @@ public class FuncionariosWebApi {
     }
 
     /**
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/dependencia/{cod_dependencia}/{cod_estado}")
+    public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(@PathParam("cod_dependencia") final String codDependencia, @PathParam("cod_estado") final String codEstado) throws BusinessException,SystemException{
+        log.info("processing rest request - listar funcionario por codigo dependencia y estado");
+        return boundary.listarFuncionariosByCodDependenciaAndEstado(codDependencia,codEstado);
+    }
+
+    /**
      *
      * @param codDependencia
      * @param rol
@@ -134,6 +147,8 @@ public class FuncionariosWebApi {
         return boundary.consultarFuncionarioByIdeFunci(idFuncionario);
         //return new FuncionarioDTO();
     }
+
+
 
 
 

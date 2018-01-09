@@ -209,6 +209,40 @@ public class SecurityApiClient {
 
     }
 
+    public List<RolDTO> obtenerRolesUsuario(String loginName) throws BusinessException, SystemException{
+        List<RolDTO> roles = new ArrayList<>();
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+            ListadoRoles rolesUser = securityApiService.getSecurityAPIPort().getRolesbyUser(loginName);
+            //if (rolesUser.) {
+                List<Rol> rolesResp = rolesUser.getRoles().getRol();
+                for (Rol rolR: rolesResp){
+                    RolDTO nrol = new RolDTO();
+                    nrol.setRol(rolR.getName());
+                    roles.add(nrol);
+                }
+                return roles;
+            /*
+            }
+            else
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionario.obtener-roles-failed")
+                        .buildBusinessException();
+
+
+        } catch (BusinessException e) {
+            log.error("Api Delegator - a business error has occurred", e);
+            throw e;*/
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+
+    }
+
     private SecurityAPIService getSecutrityApiService()throws MalformedURLException{
         return new SecurityAPIService(new URL(endpoint));
     }

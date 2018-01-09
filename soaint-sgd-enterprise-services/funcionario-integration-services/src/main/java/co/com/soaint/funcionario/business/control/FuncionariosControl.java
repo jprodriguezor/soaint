@@ -107,6 +107,10 @@ public class FuncionariosControl {
     public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(String codDependencia, String codEstado) throws BusinessException, SystemException {
         try {
             List<FuncionarioDTO> funcionariosDepenendencia = funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios();
+            for (FuncionarioDTO funcionarioActual: funcionariosDepenendencia) {
+                log.info("processing rest request - funcionarios " + securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()).size());
+                funcionarioActual.setRoles(securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()));
+            }
             if (funcionariosDepenendencia.isEmpty())
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionario.funcionario_not_exist_by_codDependencia")
@@ -227,7 +231,12 @@ public class FuncionariosControl {
 
     public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
         try {
-            return funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            FuncionariosDTO funcionarios = funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            for (FuncionarioDTO funcionarioActual: funcionarios.getFuncionarios()) {
+                log.info("processing rest request - funcionarios " + securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()).size());
+                funcionarioActual.setRoles(securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()));
+            }
+            return funcionarios;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
