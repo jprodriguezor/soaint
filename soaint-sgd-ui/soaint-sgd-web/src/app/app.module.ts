@@ -40,6 +40,7 @@ import {customHttpProvider} from './shared/interceptors/http.provider';
 import { OrderModule } from 'ngx-order-pipe';
 import { SingleUploadComponent } from './ui/layout-components/presentation/single-upload/single-upload.component';
 import { SecurityRoleComponent } from './ui/page-components/security-role/security-role.component';
+import { FuncionarioListComponent } from './ui/page-components/security-role/components/funcionario-list/funcionario-list.component';
 
 @NgModule({
   imports: [
@@ -123,6 +124,7 @@ import { SecurityRoleComponent } from './ui/page-components/security-role/securi
     PlanillaGeneradaComponent,
     SingleUploadComponent,
     SecurityRoleComponent,
+    FuncionarioListComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
