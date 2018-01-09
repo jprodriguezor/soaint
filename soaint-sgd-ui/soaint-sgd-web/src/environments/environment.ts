@@ -2,9 +2,9 @@
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+//const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
-//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 export const environment = {
   production: false,
@@ -48,6 +48,7 @@ export const environment = {
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   updateFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
   obtenerFuncionarios_roles_endpoint: `${host}/funcionario-gateway-api/funcionarios/roles`,
+  buscarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios/buscar`,
   redireccionarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/redireccionar`,
   devolverComunicaciones_endpoint: `${host}/correspondencia-gateway-api/devolver`,
   devolverComunicacionesAsigancion_endpoint: `${host}/correspondencia-gateway-api/devolver/asignacion`,
