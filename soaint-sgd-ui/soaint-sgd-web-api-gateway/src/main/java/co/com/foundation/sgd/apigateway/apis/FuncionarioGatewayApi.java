@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.FuncionarioClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,6 +84,29 @@ public class FuncionarioGatewayApi {
             return Response.status(response.getStatus()).entity(responseContent).build();
         return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
 
+    }
+
+    @PUT
+    @Path("/funcionarios")
+    @JWTTokenSecurity
+    public Response updateFuncionarioRole(FuncionarioDTO funcionarioDTO){
+        log.info("processing rest request - actualizar funcionario");
+        Response response = client.updateFuncionarioRoles(funcionarioDTO);
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+        return response.getStatus() == HttpStatus.OK.value() ?
+             Response.status(response.getStatus()).entity(responseContent).build() : response;
+    }
+
+    @POST
+    @Path("/funcionarios/buscar")
+    @JWTTokenSecurity
+    public Response buscarFuncionarios(FuncionarioDTO funcionarioDTO){
+        log.info("FuncionarioGatewayApi - [trafic] - buscar funcionarios");
+        Response response = client.buscarFuncionario(funcionarioDTO);
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

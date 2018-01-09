@@ -2,11 +2,14 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @ApiDelegator
@@ -49,6 +52,18 @@ public class FuncionarioClient {
         log.info("Funcionario - [trafic] - obtener Funcionario Roles with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
         return wt.path("/funcionarios-web-api/funcionarios/obtener_roles").request().get();
+    }
+
+    public Response updateFuncionarioRoles(FuncionarioDTO funcionarioDTO){
+        log.info("Funcionario - [trafic] - update Funcionario Roles with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios").request().buildPut(Entity.json(funcionarioDTO)).invoke();
+    }
+
+    public Response buscarFuncionario(FuncionarioDTO funcionarioDTO){
+        log.info("Funcionario - [trafic] - buscar Funcionarios with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/buscar-funcionarios").request().buildPost(Entity.json(funcionarioDTO)).invoke();
     }
 
 }
