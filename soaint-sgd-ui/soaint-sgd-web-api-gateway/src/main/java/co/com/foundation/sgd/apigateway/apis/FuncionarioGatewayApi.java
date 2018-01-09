@@ -98,4 +98,15 @@ public class FuncionarioGatewayApi {
              Response.status(response.getStatus()).entity(responseContent).build() : response;
     }
 
+    @POST
+    @Path("/funcionarios/buscar")
+    @JWTTokenSecurity
+    public Response buscarFuncionarios(FuncionarioDTO funcionarioDTO){
+        log.info("FuncionarioGatewayApi - [trafic] - buscar funcionarios");
+        Response response = client.buscarFuncionario(funcionarioDTO);
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }

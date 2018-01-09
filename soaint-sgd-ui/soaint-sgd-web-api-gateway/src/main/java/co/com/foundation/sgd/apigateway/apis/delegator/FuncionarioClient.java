@@ -58,7 +58,12 @@ public class FuncionarioClient {
         log.info("Funcionario - [trafic] - update Funcionario Roles with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
         return wt.path("/funcionarios-web-api/funcionarios").request().buildPut(Entity.json(funcionarioDTO)).invoke();
+    }
 
+    public Response buscarFuncionario(FuncionarioDTO funcionarioDTO){
+        log.info("Funcionario - [trafic] - buscar Funcionarios with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/buscar-funcionarios").request().buildPost(Entity.json(funcionarioDTO)).invoke();
     }
 
 }
