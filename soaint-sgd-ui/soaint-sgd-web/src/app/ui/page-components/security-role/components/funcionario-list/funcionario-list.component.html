@@ -63,6 +63,16 @@
   <p-header>Datos del Funcionario</p-header>
   <a id='dwnldLnk' style="display:none;" target="_blank"></a>
     <div class="card card-w-title">
+
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <h3 class="first">Password</h3>
+              <input pPassword type="password" />
+            </div>
+          </div>
+        </div>
+
       <h1>Listado de Roles</h1>
       <!--form [formGroup]="form"-->
       <p-dataTable [value]="(roles | async)" selectionMode="single" [(selection)]="roleSelected"
