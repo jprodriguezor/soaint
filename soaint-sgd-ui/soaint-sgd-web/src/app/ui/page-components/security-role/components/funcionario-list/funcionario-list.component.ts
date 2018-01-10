@@ -6,7 +6,7 @@ import {State as RootState, State} from 'app/infrastructure/redux-store/redux-re
 import {ApiBase} from '../../../../../infrastructure/api/api-base';
 import {environment} from '../../../../../../environments/environment';
 import {RolDTO} from '../../../../../domain/rolesDTO';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'funcionario-role-list',
@@ -44,9 +44,9 @@ export class FuncionarioListComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      'nombre': [null],
-      'primerApellido': [null],
-      'segundoApellido': [null],
+      'nombre': [null,Validators.minLength(3)],
+      'primerApellido': [null, Validators.minLength(3)],
+      'segundoApellido': [null, Validators.minLength(3)],
     });
   }
 
@@ -57,6 +57,7 @@ export class FuncionarioListComponent implements OnInit {
 
   searchFuncionarios() {
     const endpoint = `${environment.buscarFuncionarios_endpoint}`;
+
     this.funcionarioBusqueda.nombre = this.form.get('nombre').value;
     this.funcionarioBusqueda.valApellido1 = this.form.get('primerApellido').value;
     this.funcionarioBusqueda.valApellido2 = this.form.get('segundoApellido').value;
