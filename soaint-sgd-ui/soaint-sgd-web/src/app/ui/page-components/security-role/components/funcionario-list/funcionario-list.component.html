@@ -10,7 +10,7 @@
               <label for="nombre">Nombre</label>
             </div>
             <div class="ui-g-12">
-              <input type="text" pInputText id="nombre" formControlName="funcionarioBusqueda.nombre">
+              <input type="text" pInputText id="nombre" formControlName="nombre">
             </div>
           </div>
         </div>
@@ -20,7 +20,7 @@
               <label for="primerApellido">Primer Apellido</label>
             </div>
             <div class="ui-g-12">
-              <input type="text" pInputText id="primerApellido" formControlName="funcionarioBusqueda.primerApellido">
+              <input type="text" pInputText id="primerApellido" formControlName="primerApellido">
             </div>
           </div>
         </div>
@@ -30,14 +30,14 @@
               <label for="segundoApellido">Segundo Apellido</label>
             </div>
             <div class="ui-g-12">
-              <input type="text" pInputText id="segundoApellido" formControlName="funcionarioBusqueda.segundoApellido">
+              <input type="text" pInputText id="segundoApellido" formControlName="segundoApellido">
             </div>
           </div>
         </div>
         <div class="ui-g-12" [style.padding-top]="'40px'">
           <button pButton type="button" label="Buscar"
                   style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right"
-                  (click)="buscarFuncionarios()"></button>
+                  (click)="searchFuncionarios()"></button>
         </div>
       </div>
     </div>
@@ -63,8 +63,18 @@
   <p-header>Datos del Funcionario</p-header>
   <a id='dwnldLnk' style="display:none;" target="_blank"></a>
     <div class="card card-w-title">
+
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <h3 class="first">Password</h3>
+              <input pPassword type="password" [(ngModel)]="funcionarioPassword" />
+            </div>
+          </div>
+        </div>
+
       <h1>Listado de Roles</h1>
-      <!--form [formGroup]="form"-->
+      <!--form [formGroup]="form" -->
       <p-dataTable [value]="(roles | async)" selectionMode="single" [(selection)]="roleSelected"
                    [paginator]="true" [rows]="6" [responsive]="true"
                    emptyMessage="No se encontraron resultados">
