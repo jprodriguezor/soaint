@@ -82,6 +82,7 @@ export class FuncionarioListComponent implements OnInit {
     this._api.put(endpoint, this.funcionarioEdit).subscribe(state => {
       console.log(state);
     });
+    this.hideEditFuncionario();
   }
 
   hideEditFuncionario() {
