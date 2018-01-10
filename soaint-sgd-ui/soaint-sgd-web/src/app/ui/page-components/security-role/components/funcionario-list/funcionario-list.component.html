@@ -68,13 +68,13 @@
         <div class="ui-g-12">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
               <h3 class="first">Password</h3>
-              <input pPassword type="password" />
+              <input pPassword type="password" [(ngModel)]="funcionarioPassword" />
             </div>
           </div>
         </div>
 
       <h1>Listado de Roles</h1>
-      <!--form [formGroup]="form"-->
+      <!--form [formGroup]="form" -->
       <p-dataTable [value]="(roles | async)" selectionMode="single" [(selection)]="roleSelected"
                    [paginator]="true" [rows]="6" [responsive]="true"
                    emptyMessage="No se encontraron resultados">

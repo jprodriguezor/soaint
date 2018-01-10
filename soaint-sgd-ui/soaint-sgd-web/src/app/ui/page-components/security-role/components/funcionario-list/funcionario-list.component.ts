@@ -77,6 +77,7 @@ export class FuncionarioListComponent implements OnInit {
       return {rol: role};
     }).concat();
     this.funcionarioEdit.password = this.funcionarioPassword;
+    console.log(this.funcionarioEdit);
     const endpoint = `${environment.updateFuncionarios_roles_endpoint}`;
     this._api.put(endpoint, this.funcionarioEdit).subscribe(state => {
       console.log(state);
