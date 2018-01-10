@@ -23,6 +23,7 @@ export class FuncionarioListComponent implements OnInit {
   funcionarioSelected: FuncionarioDTO;
   funcionarioEditDialog: Boolean = false;
   funcionarioBusqueda = { nombre : '', valApellido1: '', valApellido2: '' };
+  funcionarioPassword: '';
 
   selectedFuncionarios: string[];
 
@@ -65,6 +66,7 @@ export class FuncionarioListComponent implements OnInit {
 
   editFuncionario(func: FuncionarioDTO): void {
     this.funcionarioEdit = func;
+    this.funcionarioPassword = '';
     this.selectedFuncionarios = (null == func.roles) ? [] :
       func.roles.map(role => role.rol).concat();
     this.funcionarioEditDialog = true;
@@ -74,6 +76,7 @@ export class FuncionarioListComponent implements OnInit {
     this.funcionarioEdit.roles = this.selectedFuncionarios.map(role => {
       return {rol: role};
     }).concat();
+    this.funcionarioEdit.password = this.funcionarioPassword;
     const endpoint = `${environment.updateFuncionarios_roles_endpoint}`;
     this._api.put(endpoint, this.funcionarioEdit).subscribe(state => {
       console.log(state);
