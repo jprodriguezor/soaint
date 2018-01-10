@@ -175,6 +175,9 @@ public class FuncionariosControl {
      */
     public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
         try {
+            if (funcionario.getPassword().isEmpty()){
+                funcionario.setPassword(null);
+            }
             securityApiClient.actualizarFuncionario(funcionario);
             return funcionariosWebApiClient.actualizarFuncionario(funcionario);
         } catch (Exception ex) {
