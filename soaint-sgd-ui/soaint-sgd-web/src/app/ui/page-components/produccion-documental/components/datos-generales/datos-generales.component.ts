@@ -68,8 +68,24 @@ export class PDDatosGeneralesComponent implements OnInit {
     });
   }
 
+  readFileFile(fileSrc) {
+      const rawFile = new XMLHttpRequest();
+      rawFile.open('GET', fileSrc, false);
+      rawFile.onreadystatechange = function () {
+          if (rawFile.readyState === 4) {
+              if (rawFile.status === 200 || rawFile.status === 0) {
+                  const allText = rawFile.responseText;
+                  alert(allText);
+              }
+          }
+      };
+      rawFile.send(null);
+  }
+
   cargarPlantilla(tipoSelected) {
     console.log(tipoSelected);
+
+    this.readFileFile('file:///D:/WORK/SOAINT/CORRESPONDENCIA/ProduccionDocumental/plantillas/Plantilla-Memorando.html');
 
     this.editarPlantillaVisible = true;
   }
@@ -123,7 +139,7 @@ export class PDDatosGeneralesComponent implements OnInit {
 
   removeFromList(i, listname: string) {
     const list = [...this[listname]];
-    list.splice(i,1);
+    list.splice(i, 1);
     this[listname] = list;
     // this._changeDetectorRef.detectChanges();
   }
