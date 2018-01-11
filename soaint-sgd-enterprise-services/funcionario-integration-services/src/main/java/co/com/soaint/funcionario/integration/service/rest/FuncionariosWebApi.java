@@ -84,7 +84,10 @@ public class FuncionariosWebApi {
     @Path("/funcionarios/verificar-credenciales")
     public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
         log.info("processing rest request - verificar credenciales");
-        return boundary.verificarCredenciales(credenciales);
+        FuncionarioDTO funcionario = boundary.verificarCredenciales(credenciales);
+
+        return funcionario;
+
     }
 
     @POST

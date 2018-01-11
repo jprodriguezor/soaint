@@ -47,7 +47,10 @@ public class FuncionariosControl {
         FuncionarioDTO funcionario;
         try {
             FuncionarioDTO usuario = securityApiClient.verificarCredenciales(credenciales);
-            funcionario = funcionariosWebApiClient.listarFuncionarioByLoginNameAndEstado(usuario.getLoginName(), "A");
+            funcionario = funcionariosWebApiClient.listarFuncionarioByLoginName(usuario.getLoginName());
+            if (funcionario.getEstado().equals("I")){
+                throw new BusinessException("Business Control - a business error has occurred: User inactivo");
+            }
             funcionario.setRoles(usuario.getRoles());
             return funcionario;
         } catch (BusinessException e) {

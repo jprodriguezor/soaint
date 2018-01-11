@@ -60,9 +60,8 @@ public class FuncionariosControl {
                     .setParameter("LOGIN_NAME", loginName)
                     .setParameter("ESTADO", estado)
                     .getSingleResult();
-
-            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
-            return funcionario;
+                funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
+                return funcionario;
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
