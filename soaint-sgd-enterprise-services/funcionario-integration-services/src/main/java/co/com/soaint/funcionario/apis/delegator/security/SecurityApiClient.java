@@ -209,6 +209,27 @@ public class SecurityApiClient {
 
     }
 
+    public List<RolDTO> obtenerRolesUsuario(String userName) throws BusinessException, SystemException{
+        List<RolDTO> roles = new ArrayList<>();
+        try {
+            SecurityAPIService securityApiService = getSecutrityApiService();
+            ListadoRoles respuesta = securityApiService.getSecurityAPIPort().getRolesbyUser(userName);
+            List<Rol> rolesResp = respuesta.getRoles().getRol();
+            for (Rol rolR : rolesResp) {
+                RolDTO nrol = new RolDTO();
+                nrol.setRol(rolR.getName());
+                roles.add(nrol);
+            }
+            return roles;
+            }catch (Exception ex) {
+                log.error("Api Delegator - a system error has occurred", ex);
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("system.generic.error")
+                        .withRootException(ex)
+                        .buildSystemException();
+            }
+        }
+
     private SecurityAPIService getSecutrityApiService()throws MalformedURLException{
         return new SecurityAPIService(new URL(endpoint));
     }
@@ -233,6 +254,8 @@ public class SecurityApiClient {
 
         return usuario;
     }
+
+
 
 
 
