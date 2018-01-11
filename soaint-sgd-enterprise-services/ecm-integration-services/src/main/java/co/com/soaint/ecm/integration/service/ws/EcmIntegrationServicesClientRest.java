@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.ecm.domain.entity.Metadatos;
 import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
