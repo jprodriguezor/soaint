@@ -200,9 +200,9 @@ public class FuncionariosControl {
     public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
         try {
             //securityApiClient.crearFuncionario();
-            //funcionariosWebApiClient.crearFuncionario(funcionario);
-            //TODO Implementacion
-            return "1";
+            FuncionarioDTO funcionario = funcionariosWebApiClient.consultarFuncionarioByIdeFunci(idFuncionario);
+            funcionario.setEstado("I");
+            return funcionariosWebApiClient.actualizarFuncionario(funcionario);
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
