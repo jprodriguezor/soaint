@@ -15,5 +15,6 @@ export interface FuncionarioDTO {
   estado: string;
   roles: RolDTO[];
   password?: string;
+  usuarioCrea?: string;
   dependencias: DependenciaDTO[];
 }
