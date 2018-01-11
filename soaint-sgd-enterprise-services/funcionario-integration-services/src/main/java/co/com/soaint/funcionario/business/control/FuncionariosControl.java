@@ -47,7 +47,7 @@ public class FuncionariosControl {
         FuncionarioDTO funcionario;
         try {
             FuncionarioDTO usuario = securityApiClient.verificarCredenciales(credenciales);
-            funcionario = funcionariosWebApiClient.listarFuncionarioByLoginName(usuario.getLoginName());
+            funcionario = funcionariosWebApiClient.listarFuncionarioByLoginNameAndEstado(usuario.getLoginName(), "A");
             funcionario.setRoles(usuario.getRoles());
             return funcionario;
         } catch (BusinessException e) {
