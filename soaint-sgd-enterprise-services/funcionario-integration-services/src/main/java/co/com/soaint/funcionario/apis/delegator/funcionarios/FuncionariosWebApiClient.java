@@ -91,6 +91,38 @@ public class FuncionariosWebApiClient {
 
     /**
      *
+     * @param loginName
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado)throws SystemException {
+        try {
+            WebTarget wt = getWebTarget();
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios/" + loginName + "/" + estado)
+                    .request()
+                    .get();
+            if (Response.Status.OK.getStatusCode() == respuesta.getStatus()) {
+                return respuesta.readEntity(FuncionarioDTO.class);
+            }
+            else
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("funcionarios.error consultando servicio de negocio GestionarFuncionarios")
+                        .buildSystemException();
+        } catch (SystemException e) {
+            log.error("Api Delegator - a api delegator error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
      * @param funcionario
      * @throws SystemException
      */
