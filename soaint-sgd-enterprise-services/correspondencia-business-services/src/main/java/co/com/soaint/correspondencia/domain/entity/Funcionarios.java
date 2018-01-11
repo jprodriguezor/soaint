@@ -66,7 +66,8 @@ import java.util.List;
                 "SET f.codTipDocIdent = :COD_TIP_DOC_IDENT, f.nroIdentificacion = :NRO_IDENTIFICACION, " +
                 "f.nomFuncionario = :NOM_FUNCIONARIO, f.valApellido1 = :VAL_APELLIDO1, " +
                 "f.valApellido2 = :VAL_APELLIDO2, f.corrElectronico = :CORR_ELECTRONICO, " +
-                "f.credenciales = :CREDENCIALES, f.auditColumns.estado = :ESTADO " +
+                "f.credenciales = :CREDENCIALES, f.auditColumns.estado = :ESTADO, " +
+                "f.auditColumns.fecCambio = :FECHA " +
                 "WHERE f.ideFunci = :IDE_FUNCI")})
 @javax.persistence.TableGenerator(name = "FUNCIONARIOS_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "FUNCIONARIOS_SEQ", allocationSize = 1)
