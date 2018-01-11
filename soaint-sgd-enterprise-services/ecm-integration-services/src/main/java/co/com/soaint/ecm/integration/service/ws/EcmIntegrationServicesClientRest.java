@@ -1,6 +1,8 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
+import co.com.soaint.ecm.domain.entity.Metadatos;
+import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -15,7 +18,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dasiel
@@ -82,6 +87,28 @@ public class EcmIntegrationServicesClientRest {
 
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento ECM ", e);
+            throw e;
+        }
+
+    }
+    /**
+     * Modificar metadatos a documento en el ECM
+     *
+     * @param metadatos metadatos del documento
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/modificarMetadatosDocumentoECM/")
+    public MensajeRespuesta modificarMetadatosDocumentoECM(@RequestBody MetadatosDocumentosDTO metadatos) throws IOException {
+        logger.info("processing rest request - Subir Documento ECM " + metadatos.getNombreDocumento());
+        try {
+            return fEcmManager.modificarMetadatosDocumento(metadatos);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
+            throw e;
+
+        } catch (IOException e) {
+            logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
             throw e;
         }
 
