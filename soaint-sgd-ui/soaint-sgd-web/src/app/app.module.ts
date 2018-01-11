@@ -41,6 +41,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { SingleUploadComponent } from './ui/layout-components/presentation/single-upload/single-upload.component';
 import { SecurityRoleComponent } from './ui/page-components/security-role/security-role.component';
 import { FuncionarioListComponent } from './ui/page-components/security-role/components/funcionario-list/funcionario-list.component';
+import { ControlMessagesComponent } from './ui/page-components/security-role/components/control-messages/control-messages.component';
 
 @NgModule({
   imports: [
@@ -125,6 +126,7 @@ import { FuncionarioListComponent } from './ui/page-components/security-role/com
     SingleUploadComponent,
     SecurityRoleComponent,
     FuncionarioListComponent,
+    ControlMessagesComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -44,6 +44,7 @@ public class FuncionarioDTO  implements Serializable {
     private List<DependenciaDTO> dependencias;
     private List<RolDTO> roles;
     private String password;
+    private String usuarioCrea;
 
     public FuncionarioDTO(BigInteger ideFunci, String codTipDocIdent, String nroIdentificacion, String nomFuncionario,
                           String valApellido1, String valApellido2, String corrElectronico,

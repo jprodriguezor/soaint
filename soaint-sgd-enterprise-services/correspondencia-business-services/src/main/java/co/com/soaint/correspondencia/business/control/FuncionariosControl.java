@@ -11,6 +11,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,9 +62,8 @@ public class FuncionariosControl {
                     .setParameter("LOGIN_NAME", loginName)
                     .setParameter("ESTADO", estado)
                     .getSingleResult();
-
-            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
-            return funcionario;
+                funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
+                return funcionario;
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -212,6 +213,7 @@ public class FuncionariosControl {
      */
     public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
         try {
+            funcionarioDTO.setEstado("A");
             Funcionarios funcionario = funcionarioTransform(funcionarioDTO);
             funcionario.setTvsOrgaAdminXFunciPkList(new ArrayList<>());
             for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()){
@@ -250,6 +252,7 @@ public class FuncionariosControl {
                     .setParameter("VAL_APELLIDO2", funcionario.getValApellido2())
                     .setParameter("CORR_ELECTRONICO", funcionario.getCorrElectronico())
                     .setParameter("ESTADO", funcionario.getEstado())
+                    .setParameter("FECHA", new Date())
                     .setParameter("CREDENCIALES", java.util.Base64.getEncoder().encodeToString((funcionario.getLoginName() + ":" + funcionario.getPassword()).getBytes()))
                     .executeUpdate();
             return "1";
@@ -301,6 +304,7 @@ public class FuncionariosControl {
     public Funcionarios funcionarioTransform(FuncionarioDTO funcionarioDTO){
         AuditColumns auditColumns = new AuditColumns();
         auditColumns.setEstado(funcionarioDTO.getEstado());
+        auditColumns.setCodUsuarioCrea(funcionarioDTO.getUsuarioCrea());
         return Funcionarios.newInstance()
                 .codTipDocIdent(funcionarioDTO.getCodTipDocIdent())
                 .nroIdentificacion(funcionarioDTO.getNroIdentificacion())
