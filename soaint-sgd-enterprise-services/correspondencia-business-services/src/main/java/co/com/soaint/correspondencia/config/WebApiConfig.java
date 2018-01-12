@@ -64,6 +64,7 @@ public class WebApiConfig extends Application {
         resources.add(OrganigramaAdministrativoWebApi.class);
         resources.add(PaisesWebApi.class);
         resources.add(PlanillasWebApi.class);
+        resources.add(PlantillaWebApi.class);
         resources.add(TareaWebApi.class);
 
         resources.add(ApiListingResource.class);

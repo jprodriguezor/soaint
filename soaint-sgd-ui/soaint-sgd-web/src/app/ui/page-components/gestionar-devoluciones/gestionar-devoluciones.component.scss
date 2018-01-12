@@ -1,0 +1,14 @@
+@import '../../../../styles';
+.radicar-comunicaciones {
+
+  a span.ui-tabview-left-icon.ui-icon-edit {
+      color: $primaryColor;
+  }
+
+  a span.ui-tabview-left-icon.ui-icon-done {
+      color: $success;
+      font-weight: bold;
+      -webkit-animation: tada 2s linear infinite;
+      animation: tada 2s linear infinite;
+  }
+}
