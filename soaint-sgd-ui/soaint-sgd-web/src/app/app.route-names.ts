@@ -3,6 +3,7 @@ export const ROUTES_PATH = {
   radicarCofEntrada: 'radicar-comunicaciones',
   radicarCofSalida: 'radicacion-salida',
   digitalizarDocumento: 'digitalizar-documentos',
+  gestionarDevoluciones: 'gestionar-devoluciones',
   dashboard: 'home',
   login: 'login',
   workspace: 'workspace',

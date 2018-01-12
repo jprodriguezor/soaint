@@ -21,6 +21,7 @@ import {ProduccionDocumentalMultipleComponent} from './ui/page-components/produc
 import {SeleccionarUnidadDocumentalComponent} from './ui/page-components/archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
 import {SeleccionarDocumentosComponent} from './ui/page-components/archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 import {SecurityRoleComponent} from "./ui/page-components/security-role/security-role.component";
+import {GestionarDevolucionesComponent} from "./ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -59,6 +60,11 @@ export const routes: Routes = [
       {
         path: ROUTES_PATH.produccionDocumental,
         component: ProduccionDocumentalComponent,
+        canActivate: [AuthenticatedGuard]
+      },
+      {
+        path: ROUTES_PATH.gestionarDevoluciones,
+        component: GestionarDevolucionesComponent,
         canActivate: [AuthenticatedGuard]
       },
     ]
@@ -100,6 +106,7 @@ export const routes: Routes = [
     component: SeleccionarDocumentosComponent,
     canActivate: [AuthenticatedGuard]
   },
+
   {
     path: ROUTES_PATH.securityRole,
     component: SecurityRoleComponent
