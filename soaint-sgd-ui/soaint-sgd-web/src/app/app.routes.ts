@@ -22,8 +22,7 @@ import {SeleccionarUnidadDocumentalComponent} from './ui/page-components/archiva
 import {SeleccionarDocumentosComponent} from './ui/page-components/archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 import {SecurityRoleComponent} from './ui/page-components/security-role/security-role.component';
 import {UnidadesDocumentalesComponent} from './ui/page-components/unidades-documentales/unidades-documentales.component';
-import {SecurityRoleComponent} from "./ui/page-components/security-role/security-role.component";
-import {GestionarDevolucionesComponent} from "./ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component";
+import {GestionarDevolucionesComponent} from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
