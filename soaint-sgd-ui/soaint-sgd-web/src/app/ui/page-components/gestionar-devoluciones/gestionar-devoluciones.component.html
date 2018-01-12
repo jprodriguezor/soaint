@@ -1,4 +1,4 @@
-<div class="ui-fluid radicar-comunicaciones">
+<div class="ui-fluid gestionar-devoluciones">
   <app-task-container>
     <div customActions>
 
@@ -12,7 +12,8 @@
       (click)="rechazarDevolucion()"></button>
 
     </div>
-
+    <div taskBody>
+    <h3>sdkskdsk</h3>
     <p-panel header="Datos generales devolución" [style]="{ border: 'none'}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
@@ -29,22 +30,7 @@
         </div>
       </div>
     </p-panel>
-
-      <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
-                (onHide)="hideTicketRadicado()">
-        <app-ticket-radicado id="ticket" #ticketRadicado
-
-        ></app-ticket-radicado>
-
-        <p-footer>
-          <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
-                    [inlineStyles]="printStyle" label="Imprimir"></button>
-          </div>
-        </p-footer>
-
-      </p-dialog>
-
+    </div>
   </app-task-container>
 </div>
 
