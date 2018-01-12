@@ -130,8 +130,7 @@ import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-d
     SecurityRoleComponent,
     FuncionarioListComponent,
     ControlMessagesComponent,
-    UnidadesDocumentalesComponent
-    ControlMessagesComponent,
+    UnidadesDocumentalesComponent,
     GestionarDevolucionesComponent
   ],
   providers: [
