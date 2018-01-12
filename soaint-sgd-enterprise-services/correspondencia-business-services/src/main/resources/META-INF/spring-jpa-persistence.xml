@@ -25,6 +25,8 @@
         <class>co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsTarea</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsDserial</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPlantilla</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato</class>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>
