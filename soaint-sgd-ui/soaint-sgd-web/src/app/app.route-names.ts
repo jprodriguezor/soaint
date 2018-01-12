@@ -18,5 +18,6 @@ export const ROUTES_PATH = {
   produccionDocumental: 'producir-documento',
   seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
   seleccionarDocumentos: 'seleccionar-documentos',
-  securityRole: 'security-role'
+  securityRole: 'security-role',
+  gestionUnidadDocumental: 'gestion-unidad-documental'
 };
