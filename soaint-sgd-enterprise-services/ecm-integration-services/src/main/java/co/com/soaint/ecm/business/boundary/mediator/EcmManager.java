@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
+import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
@@ -64,6 +65,29 @@ public class EcmManager {
         MensajeRespuesta response = new MensajeRespuesta();
         try {
             response=contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion);
+        } catch (Exception e) {
+            logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM");
+            throw e;
+        }
+
+        return response;
+    }
+
+    /**
+     * Metodo que llama el servicio para modificar metadatos del documento en el ECM
+     *
+     * @param metadatosDocumentos  DTO que contiene los metadatos del documento
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta modificarMetadatosDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+        logger.info("### Subiendo documento al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response.setMensaje("Ok");
+            response.setCodMensaje("0000");
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");

@@ -48,6 +48,9 @@ public class FuncionariosControl {
         try {
             FuncionarioDTO usuario = securityApiClient.verificarCredenciales(credenciales);
             funcionario = funcionariosWebApiClient.listarFuncionarioByLoginName(usuario.getLoginName());
+            if (funcionario.getEstado().equals("I")){
+                throw new BusinessException("Business Control - a business error has occurred: User inactivo");
+            }
             funcionario.setRoles(usuario.getRoles());
             return funcionario;
         } catch (BusinessException e) {
@@ -197,9 +200,9 @@ public class FuncionariosControl {
     public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
         try {
             //securityApiClient.crearFuncionario();
-            //funcionariosWebApiClient.crearFuncionario(funcionario);
-            //TODO Implementacion
-            return "1";
+            FuncionarioDTO funcionario = funcionariosWebApiClient.consultarFuncionarioByIdeFunci(idFuncionario);
+            funcionario.setEstado("I");
+            return funcionariosWebApiClient.actualizarFuncionario(funcionario);
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -230,7 +233,11 @@ public class FuncionariosControl {
 
     public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
         try {
-            return funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            FuncionariosDTO funcionarios = funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            for (FuncionarioDTO funcionario: funcionarios.getFuncionarios()) {
+                funcionario.setRoles(securityApiClient.obtenerRolesUsuario(funcionario.getLoginName()));
+            }
+            return funcionarios;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
