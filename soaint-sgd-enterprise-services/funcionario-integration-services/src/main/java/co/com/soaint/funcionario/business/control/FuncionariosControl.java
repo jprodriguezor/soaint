@@ -233,7 +233,11 @@ public class FuncionariosControl {
 
     public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
         try {
-            return funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            FuncionariosDTO funcionarios = funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
+            for (FuncionarioDTO funcionario: funcionarios.getFuncionarios()) {
+                funcionario.setRoles(securityApiClient.obtenerRolesUsuario(funcionario.getLoginName()));
+            }
+            return funcionarios;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
