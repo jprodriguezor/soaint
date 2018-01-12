@@ -39,8 +39,10 @@ public class AsignacionWebApi {
     }
 
     /**
-     * @param asignacionesDTO
+     *
+     * @param asignacionTramite
      * @return
+     * @throws BusinessException
      * @throws SystemException
      */
     @POST
