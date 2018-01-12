@@ -20,8 +20,9 @@ import {ProduccionDocumentalComponent} from './ui/page-components/produccion-doc
 import {ProduccionDocumentalMultipleComponent} from './ui/page-components/produccion-documental/produccion-documental-multiple.component';
 import {SeleccionarUnidadDocumentalComponent} from './ui/page-components/archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
 import {SeleccionarDocumentosComponent} from './ui/page-components/archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
-import {SecurityRoleComponent} from "./ui/page-components/security-role/security-role.component";
-import {GestionarDevolucionesComponent} from "./ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component";
+import {SecurityRoleComponent} from './ui/page-components/security-role/security-role.component';
+import {UnidadesDocumentalesComponent} from './ui/page-components/unidades-documentales/unidades-documentales.component';
+import {GestionarDevolucionesComponent} from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -67,6 +68,11 @@ export const routes: Routes = [
         component: GestionarDevolucionesComponent,
         canActivate: [AuthenticatedGuard]
       },
+      {
+        path: ROUTES_PATH.gestionUnidadDocumental,
+        component: UnidadesDocumentalesComponent,
+        canActivate: [AuthenticatedGuard]
+      }
     ]
   },
   {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
@@ -106,7 +112,6 @@ export const routes: Routes = [
     component: SeleccionarDocumentosComponent,
     canActivate: [AuthenticatedGuard]
   },
-
   {
     path: ROUTES_PATH.securityRole,
     component: SecurityRoleComponent
