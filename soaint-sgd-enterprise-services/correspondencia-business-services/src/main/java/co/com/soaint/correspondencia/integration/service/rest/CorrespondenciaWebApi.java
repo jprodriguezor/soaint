@@ -156,4 +156,17 @@ public class CorrespondenciaWebApi {
         log.info("processing rest request - verificar correspondencia por numeroRadicado");
         return boundary.verificarByNroRadicado(nroRadicado);
     }
+
+    /**
+     * @param correspondenciaDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/correspondencia/actualizar-comunicacion")
+    public String actualizarComunicacion(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizar comunicacion");
+        //boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
+        return "1";
+    }
 }
