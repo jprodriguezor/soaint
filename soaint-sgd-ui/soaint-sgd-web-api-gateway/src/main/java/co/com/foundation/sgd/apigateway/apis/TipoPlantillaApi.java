@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.TipoPlantillaClient;
+import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -26,7 +27,7 @@ public class TipoPlantillaApi {
 
     @GET
     @Path("/plantilla/{codClasificacion}/{estado}")
- //   @JWTTokenSecurity
+    @JWTTokenSecurity
     public Response get(@PathParam("codClasificacion") final String codClasificacion, @PathParam("estado") final String estado) {
 
         log.info("TiposPlantillaGatewayApi - [trafic] - listing TiposPlantilla");
