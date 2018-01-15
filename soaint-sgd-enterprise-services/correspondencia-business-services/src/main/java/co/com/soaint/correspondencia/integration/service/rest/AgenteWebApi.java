@@ -74,4 +74,32 @@ public class AgenteWebApi {
         log.info("processing rest request - devolver correspondencia");
         boundary.devolverCorrespondencia(devolucion);
     }
+
+    /**
+     * @param agenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/agente/actualizar-remitente")
+    public String actualizarRemitente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizar remitente");
+        //boundary.actualizarEstadoAgente(agenteDTO);
+        //TODO Implementacion
+        return "1";
+    }
+
+    /**
+     * @param agenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/agente/actualizar-destinatario")
+    public String actualizarDestinatario(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizar destinatario");
+        //boundary.actualizarEstadoAgente(agenteDTO);
+        //TODO Implementacion
+        return "1";
+    }
 }
