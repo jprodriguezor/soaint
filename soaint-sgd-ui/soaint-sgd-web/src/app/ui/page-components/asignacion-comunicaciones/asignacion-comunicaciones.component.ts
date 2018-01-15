@@ -233,6 +233,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       });
 
       if (failChecks.length > 0) {
+
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: WARN_REDIRECTION
@@ -245,7 +246,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
           return index >= 0;
         });
 
-        this.rejectComunicationsAction(selectedComunications, null, 'NR', 'Ha vencido el numero maximo de redirecciones');
+        this.rejectComunicationsAction(selectedComunications, null, '3', 'Ha vencido el numero maximo de redirecciones');
 
       } else {
         this._asignacionSandbox.redirectDispatch(this.createRecursiveRedirectsPayload(agentesSuccess, justificationValues));
@@ -516,7 +517,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       a.codDependencia = this.dependenciaSelected.codigo;
       items.push({
         agente: a,
-        causalDevolucion: cause || payload.causalDevolucion.codigo
+        causalDevolucion: cause || payload.causalDevolucion.id
       });
     });
     return items;

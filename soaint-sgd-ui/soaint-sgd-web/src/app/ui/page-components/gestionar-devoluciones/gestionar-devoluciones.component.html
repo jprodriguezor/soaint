@@ -13,17 +13,17 @@
 
     </div>
     <div taskBody>
-    <h3>sdkskdsk</h3>
     <p-panel header="Datos generales devolución" [style]="{ border: 'none'}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
           <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
             <div class="ui-g form-group">
+
               <div class="ui-g-12">
-                <label for="numeroRadicado">Número de radicado</label>
-              </div>
-              <div class="ui-g-12">
-                <input type="text" pInputText id="numeroRadicado" formControlName="nroRadicado">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="nroRadicado" readonly formControlName="nroRadicado">
+                    <label style="color: blue">Número de radicado</label>
+                  </span>
               </div>
             </div>
           </div>

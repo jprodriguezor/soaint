@@ -42,15 +42,19 @@ export class GestionarDevolucionesComponent implements OnInit {
     });
   }
 
-  restore() {
+    restore() {
     if (this.task) {
+      console.log(this.task);
       this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
         const results = response.payload;
+        console.log("datos de la tarea de devolucion");
+
+
         if (!results) {
           return;
         }
-        console.log("datos de la tarea de devolucion");
 
+        this.form.get('nroRadicado').setValue(results.variables.numeroRadicado);
         console.log(results);
       });
     }
