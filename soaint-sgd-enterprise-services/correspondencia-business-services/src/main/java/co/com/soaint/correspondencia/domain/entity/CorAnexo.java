@@ -27,7 +27,7 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name = "CorAnexo.findAll", query = "SELECT c FROM CorAnexo c"),
         @NamedQuery(name = "CorAnexo.findByIdePpdDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AnexoDTO " +
-                "(c.ideAnexo, c.codAnexo, c.descripcion) " +
+                "(c.ideAnexo, c.codAnexo, c.descripcion, c.codTipoSoporte) " +
                 "FROM CorAnexo c " +
                 "INNER JOIN c.ppdDocumento pp " +
                 "WHERE pp.idePpdDocumento = :IDE_PPD_DOCUMENTO")})
@@ -45,6 +45,8 @@ public class CorAnexo implements Serializable {
     private String codAnexo;
     @Column(name = "DESCRIPCION")
     private String descripcion;
+    @Column(name = "COD_TIPO_SOP")
+    private String codTipoSoporte;
     @JoinColumn(name = "IDE_PPD_DOCUMENTO", referencedColumnName = "IDE_PPD_DOCUMENTO")
     @ManyToOne
     private PpdDocumento ppdDocumento;

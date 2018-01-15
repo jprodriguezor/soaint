@@ -63,6 +63,7 @@ public class AnexoControl {
         return CorAnexo.newInstance()
                 .codAnexo(anexoDTO.getCodAnexo())
                 .descripcion(anexoDTO.getDescripcion())
+                .codTipoSoporte(anexoDTO.getCodTipoSoporte())
                 .build();
     }
 }
