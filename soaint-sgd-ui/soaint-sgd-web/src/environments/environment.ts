@@ -112,4 +112,9 @@ export const process_info = {
     displayValue: 'Recibir y gestionar documento',
     show: false
   },
+  'proceso.gestion-unidades-documentales': {
+    displayValue: 'Gestión de unidades documentales',
+    show: true
+  }
+
 };

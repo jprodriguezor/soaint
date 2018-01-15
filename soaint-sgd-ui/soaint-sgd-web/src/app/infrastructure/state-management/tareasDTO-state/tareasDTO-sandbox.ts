@@ -9,11 +9,11 @@ import {TareaDTO} from '../../../domain/tareaDTO';
 import {isArray} from 'rxjs/util/isArray';
 import {ApiBase} from '../../api/api-base';
 import {
-    TASK_APROBAR_DOCUMENTO,
-    TASK_CARGAR_PLANILLA_ENTRADA,
-    TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
-    TASK_GESTION_PRODUCCION_MULTIPLE, TASK_PRODUCIR_DOCUMENTO,
-    TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO
+  TASK_APROBAR_DOCUMENTO,
+  TASK_CARGAR_PLANILLA_ENTRADA,
+  TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
+  TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
+  TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -137,13 +137,16 @@ export class Sandbox {
   }
 
   initTaskDispatch(task: TareaDTO): any {
-
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
         break;
       case TASK_DIGITALIZAR_DOCUMENTO:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
+        break;
+      case TASK_GESTIONAR_DEVOLUCIONES:
+        console.log('/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionarDevoluciones, task);
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionarDevoluciones, task]));
         break;
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
@@ -153,6 +156,9 @@ export class Sandbox {
         break;
       case TASK_GESTION_PRODUCCION_MULTIPLE:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumentalMultiple, task]));
+        break;
+      case TASK_GESTIONAR_UNIDADES_DOCUMENTALES:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionUnidadDocumental, task]));
         break;
       case TASK_PRODUCIR_DOCUMENTO:
       case TASK_REVISAR_DOCUMENTO:

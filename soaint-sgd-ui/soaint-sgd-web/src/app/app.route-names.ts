@@ -3,6 +3,7 @@ export const ROUTES_PATH = {
   radicarCofEntrada: 'radicar-comunicaciones',
   radicarCofSalida: 'radicacion-salida',
   digitalizarDocumento: 'digitalizar-documentos',
+  gestionarDevoluciones: 'gestionar-devoluciones',
   dashboard: 'home',
   login: 'login',
   workspace: 'workspace',
@@ -18,5 +19,6 @@ export const ROUTES_PATH = {
   produccionDocumental: 'producir-documento',
   seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
   seleccionarDocumentos: 'seleccionar-documentos',
-  securityRole: 'security-role'
+  securityRole: 'security-role',
+  gestionUnidadDocumental: 'gestion-unidad-documental'
 };
