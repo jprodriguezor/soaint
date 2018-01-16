@@ -517,7 +517,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       a.codDependencia = this.dependenciaSelected.codigo;
       items.push({
         agente: a,
-        causalDevolucion: cause || payload.causalDevolucion.id
+        causalDevolucion: cause || payload.causalDevolucion.id,
+        funDevuelve: this.funcionarioLog.loginName
       });
     });
     return items;

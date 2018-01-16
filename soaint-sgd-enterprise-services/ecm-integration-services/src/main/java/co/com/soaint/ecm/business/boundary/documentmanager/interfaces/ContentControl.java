@@ -47,6 +47,35 @@ public interface ContentControl {
     MensajeRespuesta subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
 
     /**
+     * Subir documento Custom
+     *
+     * @param session          Objeto conexion
+     * @param nombreDocumento  nombre de documento
+     * @param documento        documento a subir
+     * @param tipoComunicacion tipo de comunicacion
+     * @param nroRadicado Número de Radicado
+     * @return ide de documento
+     * @throws IOException exception
+     */
+    MensajeRespuesta subirDocumentoCustom(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion, String nroRadicado) throws IOException;
+
+
+    /**
+     * Modificar documento Content
+     *
+     * @param session          Objeto conexion
+     * @param idDocumento  nombre de documento
+     * @param nroRadicado        número de radicado del documento
+     * @param tipologiaDocumental tipologia documental
+     * @param nombreRemitente Nombre del remitente
+     * @return MensajeRespuesta
+     * @throws IOException exception
+     */
+    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental,String nombreRemitente) throws IOException;
+
+
+
+    /**
      * Descargar documento
      *
      * @param idDocumento Identificador del documento en el ECM
