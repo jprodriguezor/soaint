@@ -21,7 +21,7 @@
 
   <div class="ui-g ui-fluid">
     <div class="ui-g-12" style="padding-top: 20px">
-      <button pButton type="button" label="Cerrar"
+      <button pButton type="button" label="Cerrar" [hidden] = "!isPopup"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="hideDialog()">
       </button>

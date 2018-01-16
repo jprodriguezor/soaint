@@ -1,15 +1,15 @@
 <div class="ui-fluid gestionar-devoluciones">
   <app-task-container>
-    <div customActions>
+    <div customActions [formGroup]="form">
 
-      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"
-              (click)="guardar()"></button>
+      <!--<button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"-->
+              <!--(click)="guardar()"></button>-->
 
       <button pButton type="button" label="Gestionar devolución" style="width: auto; margin-bottom: 10px"
-              (click)="gestionarDevolucion()"></button>
+              (click)="gestionarDevolucion()" ></button>
 
       <button pButton type="button" label="Rechazar devolución" style="width: auto; margin-bottom: 10px"
-      (click)="rechazarDevolucion()"></button>
+      (click)="rechazarDevolucion()" [disabled] = "isdisabledDevolucionRechazar()"></button>
 
     </div>
     <div taskBody>
@@ -20,7 +20,7 @@
             <div class="ui-g form-group">
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="nroRadicado" readonly [(value)]="task.variables.numeroRadicado" [(ngModel)]="task.variables.numeroRadicado" formControlName="nroRadicado">
+                    <input type="text" pInputText id="nroRadicado" disabled [(value)]="task.variables.numeroRadicado" [(ngModel)]="task.variables.numeroRadicado" formControlName="nroRadicado">
                     <label>Número de radicado</label>
                   </span>
               </div>
@@ -30,7 +30,7 @@
             <div class="ui-g form-group">
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="causalDevolucion" readonly [(value)]="causalDevolucion" [(ngModel)]="causalDevolucion" formControlName="causalDevolucion">
+                    <input type="text" pInputText id="causalDevolucion" disabled [(value)]="causalDevolucion" [(ngModel)]="causalDevolucion" formControlName="causalDevolucion">
                     <label>Causal devolución</label>
                   </span>
               </div>
@@ -41,7 +41,7 @@
             <div class="ui-g form-group">
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="usuariodevuelve" readonly [(value)]="usuariodevuelve" [(ngModel)]="usuariodevuelve" formControlName="usuariodevuelve">
+                    <input type="text" pInputText id="usuariodevuelve" disabled [(value)]="usuariodevuelve" [(ngModel)]="usuariodevuelve" formControlName="usuariodevuelve">
                     <label>Usuario que devolver</label>
                   </span>
               </div>
@@ -54,7 +54,7 @@
             <div class="ui-g form-group">
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="sedeAdministrativa" readonly [(value)]="sedeAdministrativa" [(ngModel)]="sedeAdministrativa" formControlName="sedeAdministrativa">
+                    <input type="text" pInputText id="sedeAdministrativa" disabled [(value)]="sedeAdministrativa" [(ngModel)]="sedeAdministrativa" formControlName="sedeAdministrativa">
                     <label>Sede administrativa</label>
                   </span>
               </div>
@@ -65,7 +65,7 @@
             <div class="ui-g form-group">
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="dependencia" readonly [(value)]="dependencia" [(ngModel)]="dependencia" formControlName="dependencia">
+                    <input type="text" pInputText id="dependencia" disabled [(value)]="dependencia" [(ngModel)]="dependencia" formControlName="dependencia">
                     <label>Dependecia</label>
                   </span>
               </div>
