@@ -1,7 +1,6 @@
-import {Component, Input, OnInit, Output, ViewChild, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
-import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {AgentDTO} from '../../../domain/agentDTO';
 import {Sandbox as TaskSandbox} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';

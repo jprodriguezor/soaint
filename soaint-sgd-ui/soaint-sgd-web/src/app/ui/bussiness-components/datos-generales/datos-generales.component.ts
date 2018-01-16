@@ -9,7 +9,8 @@ import {
   getTipoAnexosArrayData,
   getTipoComunicacionArrayData,
   getTipologiaDocumentalArrayData,
-  getUnidadTiempoArrayData
+  getUnidadTiempoArrayData,
+  getSoporteAnexoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/single';
@@ -36,11 +37,12 @@ export class DatosGeneralesComponent implements OnInit {
   visibility: any = {};
 
   radicadosReferidos: Array<{ nombre: string }> = [];
-  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string }> = [];
+  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }> = [];
 
   tipoComunicacionSuggestions$: Observable<any[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
+  soporteAnexosSuggestions$: Observable<any[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
   metricasTiempoTipologia$: Observable<any>;
@@ -86,6 +88,7 @@ export class DatosGeneralesComponent implements OnInit {
       'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
       'tipoAnexos': [{value: null, disabled: !this.editable}],
+      'soporteAnexos': [{value: null, disabled: !this.editable}],
       'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
       'hasAnexos': [{value: null, disabled: !this.editable}]
     });
@@ -107,6 +110,8 @@ export class DatosGeneralesComponent implements OnInit {
     this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
+
+    this.soporteAnexosSuggestions$ = this._store.select(getSoporteAnexoArrayData);
 
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());
@@ -131,13 +136,13 @@ export class DatosGeneralesComponent implements OnInit {
       }
     });
 
-    //this.form.get('reqDigit').valueChanges.distinctUntilChanged().subscribe((value) => {
+    // this.form.get('reqDigit').valueChanges.distinctUntilChanged().subscribe((value) => {
     //  if (value) {
     //    this.visibility.reqDigitInmediata = true;
     //  } else {
     //    delete this.visibility.reqDigitInmediata;
     //  }
-    //});
+    // });
 
     this.listenForErrors();
   }
@@ -150,12 +155,13 @@ export class DatosGeneralesComponent implements OnInit {
 
   addTipoAnexosDescripcion() {
     const tipoAnexo = this.form.get('tipoAnexos').value;
+    const soporteAnexo = this.form.get('soporteAnexos').value;
     const descripcion = this.form.get('tipoAnexosDescripcion').value;
 
     if (!tipoAnexo) {
       return;
     }
-    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion}];
+    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
     this.descripcionAnexos = [
       ...insertVal,
       ...this.descripcionAnexos.filter(
@@ -165,6 +171,7 @@ export class DatosGeneralesComponent implements OnInit {
     ];
     this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);
     this.form.get('tipoAnexos').reset();
+    this.form.get('soporteAnexos').reset();
     this.form.get('tipoAnexosDescripcion').reset();
   }
 

@@ -212,9 +212,9 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       console.log(this.valueGeneral);
       let requiereDigitalizacion = 0;
 
-      if(this.valueGeneral.reqDigit == "1"){
+      if (this.valueGeneral.reqDigit === 1) {
         requiereDigitalizacion = 1;
-      }else if(this.valueGeneral.reqDigit == "2"){
+      } else if (this.valueGeneral.reqDigit === 2) {
         requiereDigitalizacion = 2;
       }
 
@@ -224,7 +224,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         idTarea: this.task.idTarea,
         parametros: {
           requiereDigitalizacion: requiereDigitalizacion,
-          digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
         }
       });
@@ -345,9 +344,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   testEditRadicado() {
-    this._coSandbox.loadData({
-
-    });
+    this._coSandbox.loadData({});
   }
 
   ngOnDestroy() {
