@@ -136,10 +136,11 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         this._store.dispatch(new LoadDatosRemitenteAction())
       });
 
-    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigitInmediata').valueChanges
+    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
       .subscribe(value => {
+        console.log(value);
         // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
-        if (value) {
+        if (value && value === 2) {
           const payload: LoadNextTaskPayload = {
             idProceso: this.task.idProceso,
             idInstanciaProceso: this.task.idInstanciaProceso,
