@@ -44,7 +44,7 @@ export class DigitalizarDocumentoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.uploadUrl =  environment.digitalizar_doc_upload_endpoint;
+    this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
     });
@@ -58,15 +58,16 @@ export class DigitalizarDocumentoComponent implements OnInit {
     const formData = new FormData();
     formData.append('file[]', event.files[0], event.files[0].name);
     this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
-      this._api.sendFile( this.uploadUrl, formData, [value.tipoComunicacion.codigo , value.numeroRadicado ]).subscribe(response => {
-          this._store.dispatch(new CompleteTaskAction({
-            idProceso: this.task.idProceso,
-            idDespliegue: this.task.idDespliegue,
-            idTarea: this.task.idTarea,
-            parametros: {
-              ideEcm: response.ecmIds[0]
-            }
-          }));
+      console.log(value);
+      this._api.sendFile(this.uploadUrl, formData, [value.tipoComunicacion.codigo, value.numeroRadicado]).subscribe(response => {
+        this._store.dispatch(new CompleteTaskAction({
+          idProceso: this.task.idProceso,
+          idDespliegue: this.task.idDespliegue,
+          idTarea: this.task.idTarea,
+          parametros: {
+            ideEcm: JSON.parse(response.ecmIds[0])['mensaje']
+          }
+        }));
       });
     });
 
@@ -106,13 +107,15 @@ export class DigitalizarDocumentoComponent implements OnInit {
       while (this.uploader.files.length !== 1) {
         if (this.uploader.files[index] !== this.uploadFile) {
           this.uploader.remove(index);
-          index --;
-        } else if ( this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
+          index--;
+        } else if (this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
           this.uploader.remove(index);
-          index --;
+          index--;
         } else {
           index++;
-          if (index === this.uploader.files.length) { break; }
+          if (index === this.uploader.files.length) {
+            break;
+          }
         }
       }
     }

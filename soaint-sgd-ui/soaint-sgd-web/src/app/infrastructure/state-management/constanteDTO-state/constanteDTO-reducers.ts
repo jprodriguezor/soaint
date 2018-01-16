@@ -33,6 +33,7 @@ export interface State {
   tipoComplemento: ConstanteDTOStateInterface;
   actuaCalidad: ConstanteDTOStateInterface;
   causalDevolucion: ConstanteDTOStateInterface;
+  soporteAnexo: ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -52,7 +53,8 @@ const initialState: State = {
   orientacion: new ConstanteDTOStateInstance(),
   tipoComplemento: new ConstanteDTOStateInstance(),
   actuaCalidad: new ConstanteDTOStateInstance(),
-  causalDevolucion: new ConstanteDTOStateInstance()
+  causalDevolucion: new ConstanteDTOStateInstance(),
+  soporteAnexo: new ConstanteDTOStateInstance()
 };
 
 /**

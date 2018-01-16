@@ -1,7 +1,7 @@
-import { AgentDTO } from '../../domain/agentDTO';
-import { ContactoDTO } from '../../domain/contactoDTO';
-import { DocumentoDTO } from '../../domain/documentoDTO';
-import { RadicacionEntradaFormInterface } from '../interfaces/data-transformers/radicacionEntradaForm.interface';
+import {AgentDTO} from '../../domain/agentDTO';
+import {ContactoDTO} from '../../domain/contactoDTO';
+import {DocumentoDTO} from '../../domain/documentoDTO';
+import {RadicacionEntradaFormInterface} from '../interfaces/data-transformers/radicacionEntradaForm.interface';
 import {
   COMUNICACION_INTERNA,
   DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO,
@@ -9,16 +9,16 @@ import {
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO,
   TIPO_REMITENTE_INTERNO
 } from '../bussiness-properties/radicacion-properties';
-import { ReferidoDTO } from 'app/domain/referidoDTO';
-import { AnexoDTO } from '../../domain/anexoDTO';
-import { CorrespondenciaDTO } from '../../domain/correspondenciaDTO';
+import {ReferidoDTO} from 'app/domain/referidoDTO';
+import {AnexoDTO} from '../../domain/anexoDTO';
+import {CorrespondenciaDTO} from '../../domain/correspondenciaDTO';
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from '../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
-import { State as RootState } from '../../infrastructure/redux-store/redux-reducers';
-import { Store } from '@ngrx/store';
-import { ComunicacionOficialDTO } from '../../domain/comunicacionOficialDTO';
+import {State as RootState} from '../../infrastructure/redux-store/redux-reducers';
+import {Store} from '@ngrx/store';
+import {ComunicacionOficialDTO} from '../../domain/comunicacionOficialDTO';
 
 export class ComunicacionOficialEntradaDTV {
 
@@ -104,10 +104,12 @@ export class ComunicacionOficialEntradaDTV {
   getListaAnexos(): Array<AnexoDTO> {
     const anexoList = [];
     this.source.descripcionAnexos.forEach((anexo) => {
+      console.log(anexo);
       anexoList.push({
         ideAnexo: null,
         codAnexo: anexo.tipoAnexo ? anexo.tipoAnexo.codigo : null,
-        descripcion: anexo.descripcion
+        descripcion: anexo.descripcion,
+        codTipoSoporte: anexo.soporteAnexo.codigo
       });
     });
     return anexoList;
