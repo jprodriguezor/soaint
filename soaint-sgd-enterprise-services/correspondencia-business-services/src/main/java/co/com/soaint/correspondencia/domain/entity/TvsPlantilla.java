@@ -21,9 +21,13 @@ import java.util.List;
 @Table(name = "TVS_PLANTILLA")
 @NamedQueries({
         @NamedQuery(name = "TvsPlantilla.findByCodClasificacionAndEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PlantillaDTO " +
-                "(t.idePlantilla, t.referencia, t.codClasificacion, t.codTipoUbicacion, t.ubicacion) " +
+                "(t.idePlantilla, t.referencia, t.tipoDoc.codigo, t.codTipoUbicacion, t.ubicacion) " +
                 "FROM TvsPlantilla t " +
-                "WHERE t.codClasificacion = :COD_CLASIFICACICON AND t.estado = :ESTADO")})
+                "WHERE t.tipoDoc.codigo = :COD_TIPO_DOC AND t.estado = :ESTADO"),
+        @NamedQuery(name = "TvsPlantilla.findTipoDocByEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO " +
+                "(t.tipoDoc.ideConst, t.tipoDoc.codigo, t.tipoDoc.nombre, t.tipoDoc.codPadre) " +
+                "FROM TvsPlantilla t " +
+                "WHERE t.estado = :ESTADO")})
 @javax.persistence.TableGenerator(name = "TVS_PLANTILLA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_PLANTILLA_SEQ", allocationSize = 1)
 public class TvsPlantilla implements Serializable {
@@ -38,9 +42,6 @@ public class TvsPlantilla implements Serializable {
     @Column(name = "REFERENCIA")
     private String referencia;
     @Basic(optional = false)
-    @Column(name = "COD_CLASIFICACION")
-    private String codClasificacion;
-    @Basic(optional = false)
     @Column(name = "COD_TIPO_UBICACION")
     private String codTipoUbicacion;
     @Basic(optional = false)
@@ -51,4 +52,7 @@ public class TvsPlantilla implements Serializable {
     private String estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "plantilla")
     private List<TvsPlantillaMetadato> metadatos;
+    @JoinColumn(name = "COD_TIPO_DOC", referencedColumnName = "CODIGO")
+    @ManyToOne(optional = false)
+    private TvsConstantes tipoDoc;
 }

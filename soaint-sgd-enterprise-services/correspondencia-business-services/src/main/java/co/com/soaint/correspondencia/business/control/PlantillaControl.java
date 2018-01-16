@@ -1,5 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlantillaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,18 +36,17 @@ public class PlantillaControl {
     private PlantillaMetadatoControl plantillaMetadatoControl;
 
     /**
-     *
-     * @param codClasificacion
+     * @param codTipoDoc
      * @param estado
      * @return
      * @throws SystemException
      * @throws BusinessException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public PlantillaDTO consultarPlantillaByCodClasificacionAndEstaddo(String codClasificacion, String estado)throws SystemException, BusinessException {
+    public PlantillaDTO consultarPlantillaByCodClasificacionAndEstaddo(String codTipoDoc, String estado) throws SystemException, BusinessException {
         try {
             PlantillaDTO plantilla = em.createNamedQuery("TvsPlantilla.findByCodClasificacionAndEstado", PlantillaDTO.class)
-                    .setParameter("COD_CLASIFICACICON", codClasificacion)
+                    .setParameter("COD_TIPO_DOC", codTipoDoc)
                     .setParameter("ESTADO", estado)
                     .getSingleResult();
             plantilla.setMetadatos(plantillaMetadatoControl.listarMetadatos(plantilla.getIdePlantilla()));
@@ -56,6 +57,27 @@ public class PlantillaControl {
                     .withMessage("plantilla.plantilla_not_exist_by_codClasificacion_and_estado")
                     .withRootException(n)
                     .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param estado
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<ConstanteDTO> listarTipologiasDocumentalesByEstado(String estado) throws SystemException {
+        try {
+            return em.createNamedQuery("TvsPlantilla.findTipoDocByEstado", ConstanteDTO.class)
+                    .setParameter("ESTADO", estado)
+                    .getResultList();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
