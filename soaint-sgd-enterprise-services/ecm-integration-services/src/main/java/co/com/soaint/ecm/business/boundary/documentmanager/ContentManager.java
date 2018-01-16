@@ -4,6 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
@@ -96,12 +97,45 @@ public class ContentManager {
             carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             logger.info ("### Se invoca el metodo de subir el documento..");
 
-            response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
+//            response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
+            response=contentControl.subirDocumentoCustom (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion,"cuco");
 
         } catch (Exception e) {
             logger.error ("Error subiendo documento", e);
             response.setCodMensaje ("2222");
             response.setMensaje ("Error al crear el documento");
+            throw e;
+        }
+        return response;
+
+    }
+
+    /**
+     * Metodo generico para subir los dccumentos al content
+     *
+     * @param metadatosDocumentos  Metadatos del documento a modificar
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta modificarMetadatoDocumentoContent(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+
+        logger.info ("### Modificando metadatos del documento..");
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        Carpeta carpeta;
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info (MSGCONEXION);
+            conexion = contentControl.obtenerConexion ( );
+
+            logger.info ("### Se invoca el metodo de modificar el documento..");
+
+            response=contentControl.modificarMetadatosDocumento (conexion.getSession ( ), metadatosDocumentos.getIdDocumento(),metadatosDocumentos.getNroRadicado(), metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
+
+        } catch (Exception e) {
+            logger.error ("Error modificando el documento", e);
+            response.setCodMensaje ("2222");
+            response.setMensaje ("Error al modificar el documento");
             throw e;
         }
         return response;

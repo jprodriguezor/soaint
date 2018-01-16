@@ -97,7 +97,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/modificarMetadatosDocumentoECM/")
     public MensajeRespuesta modificarMetadatosDocumentoECM(@RequestBody MetadatosDocumentosDTO metadatos) throws IOException {
-        logger.info("processing rest request - Subir Documento ECM " + metadatos.getNombreDocumento());
+        logger.info("processing rest request - Subir Documento ECM " + metadatos.getIdDocumento());
         try {
             return fEcmManager.modificarMetadatosDocumento(metadatos);
         } catch (RuntimeException e) {
