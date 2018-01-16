@@ -56,8 +56,6 @@ export class GestionarDevolucionesComponent implements OnInit {
 
     this.initForm();
   }
-
-
   form = new FormGroup({
     causalDevolucion: new FormControl(),
     usuariodevuelve: new FormControl(),
