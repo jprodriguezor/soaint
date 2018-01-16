@@ -42,6 +42,9 @@ import { SingleUploadComponent } from './ui/layout-components/presentation/singl
 import { SecurityRoleComponent } from './ui/page-components/security-role/security-role.component';
 import { FuncionarioListComponent } from './ui/page-components/security-role/components/funcionario-list/funcionario-list.component';
 import { ControlMessagesComponent } from './ui/page-components/security-role/components/control-messages/control-messages.component';
+import { UnidadesDocumentalesComponent } from './ui/page-components/unidades-documentales/unidades-documentales.component';
+import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
+
 
 @NgModule({
   imports: [
@@ -126,7 +129,9 @@ import { ControlMessagesComponent } from './ui/page-components/security-role/com
     SingleUploadComponent,
     SecurityRoleComponent,
     FuncionarioListComponent,
-    ControlMessagesComponent
+    ControlMessagesComponent,
+    UnidadesDocumentalesComponent,
+    GestionarDevolucionesComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -1,22 +1,23 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.correspondencia.domain.entity.CorAnexo;
-import co.com.soaint.foundation.canonical.correspondencia.AnexoDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlantillaMetadatoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PlantillaMetadatosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  * SGD Enterprise Services
- * Created: 13-Jun-2017
+ * Created: 11-Ene-2017
  * Author: esanchez
  * Type: JAVA class Artifact
  * Purpose: CONTROL - business component services
@@ -24,27 +25,26 @@ import java.util.List;
  */
 @BusinessControl
 @Log4j2
-public class AnexoControl {
+public class PlantillaMetadatoControl {
 
     @PersistenceContext
     private EntityManager em;
 
     /**
      *
-     * @param ppdDocumentoDTOList
+     * @param idePlantilla
      * @return
+     * @throws SystemException
      */
-    public List<AnexoDTO> consultarAnexosByPpdDocumentos(List<PpdDocumentoDTO> ppdDocumentoDTOList)throws SystemException{
-        List<AnexoDTO> anexoList = new ArrayList<>();
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public PlantillaMetadatosDTO listarMetadatos(BigInteger idePlantilla)throws SystemException {
         try {
-            for (PpdDocumentoDTO ppdDocumentoDTO : ppdDocumentoDTOList) {
-                em.createNamedQuery("CorAnexo.findByIdePpdDocumento", AnexoDTO.class)
-                        .setParameter("IDE_PPD_DOCUMENTO", ppdDocumentoDTO.getIdePpdDocumento())
-                        .getResultList()
-                        .stream()
-                        .forEach(anexoList::add);
-            }
-            return anexoList;
+            List<PlantillaMetadatoDTO> metadatos = em.createNamedQuery("TvsPlantillaMestadato.findByIdePlantilla", PlantillaMetadatoDTO.class)
+                    .setParameter("IDE_PLANTILLA", idePlantilla)
+                    .getResultList();
+            return PlantillaMetadatosDTO.newInstance()
+                    .metadato(metadatos)
+                    .build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -52,18 +52,5 @@ public class AnexoControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
-    }
-
-    /**
-     *
-     * @param anexoDTO
-     * @return
-     */
-    public CorAnexo corAnexoTransform(AnexoDTO anexoDTO){
-        return CorAnexo.newInstance()
-                .codAnexo(anexoDTO.getCodAnexo())
-                .descripcion(anexoDTO.getDescripcion())
-                .codTipoSoporte(anexoDTO.getCodTipoSoporte())
-                .build();
     }
 }

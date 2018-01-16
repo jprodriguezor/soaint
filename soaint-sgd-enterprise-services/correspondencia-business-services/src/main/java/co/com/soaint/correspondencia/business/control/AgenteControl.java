@@ -265,7 +265,7 @@ public class AgenteControl {
                 //-----------------Asignacion--------------------------
 
                 asignacionControl.actualizarAsignacionFromDevolucion(itemDevolucion.getAgente().getIdeAgente(),
-                        correspondencia.getIdeDocumento(), devolucion.getTraza().getIdeFunci(), itemDevolucion.getCausalDevolucion(),
+                        correspondencia.getIdeDocumento(), devolucion.getTraza().getIdeFunci(), itemDevolucion.getCausalDevolucion().toString(),
                         devolucion.getTraza().getObservacion());
 
                 //-----------------------------------------------------
@@ -328,7 +328,7 @@ public class AgenteControl {
         for (AgenteDTO agenteDTO : agentes) {
             CorAgente corAgente = corAgenteTransform(agenteDTO);
 
-            if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()))
+            if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()) && datosContactoList != null)
                 AgenteControl.asignarDatosContacto(corAgente, datosContactoList);
 
             if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {

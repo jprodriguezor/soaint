@@ -7,27 +7,25 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- * Soaint Generic Artifact
- * Created:03-Nov-2017
+ * SGD Generic Artifact
+ * Created: 3
  * Author: esanchez
- * Type: JAVA class Artifact
- * Purpose: DTO - Model Artifact
+ * Type: JAVA class
+ * Artifact Purpose: DTO - Model Artifact
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
-
 @Data
-@NoArgsConstructor
+@Builder(builderMethodName="newInstance")
 @AllArgsConstructor
-@Builder(builderMethodName = "newInstance")
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/item-devolucion/1.0.0")
-public class ItemDevolucionDTO implements Serializable {
+@NoArgsConstructor
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/platilla-metadatos/1.0.0")
+public class PlantillaMetadatosDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    AgenteDTO agente;
-    Integer causalDevolucion;
-    String funDevuelve;
-}
+    private List<PlantillaMetadatoDTO> metadato;
 
+}
