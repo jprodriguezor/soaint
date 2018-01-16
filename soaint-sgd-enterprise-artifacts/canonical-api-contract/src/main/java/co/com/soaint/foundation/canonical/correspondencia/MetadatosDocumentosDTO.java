@@ -26,7 +26,7 @@ import java.io.Serializable;
 public class MetadatosDocumentosDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String nombreDocumento;
+    private String idDocumento;
     private String nroRadicado;
     private String tipologiaDocumental;
     private String nombreRemitente;

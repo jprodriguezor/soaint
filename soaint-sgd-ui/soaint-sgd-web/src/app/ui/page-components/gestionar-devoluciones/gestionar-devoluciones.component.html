@@ -15,21 +15,75 @@
     <div taskBody>
     <p-panel header="Datos generales devolución" [style]="{ border: 'none'}">
       <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-          <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+        <div class="ui-g-12" style="padding-top: 50px" padding-bottom>
+          <div class="ui-sm-12 ui-g-4 ui-lg-4" [formGroup]="form">
             <div class="ui-g form-group">
-
               <div class="ui-g-12">
                   <span class="md-inputfield">
-                    <input type="text" pInputText id="nroRadicado" readonly formControlName="nroRadicado">
-                    <label style="color: blue">Número de radicado</label>
+                    <input type="text" pInputText id="nroRadicado" readonly [(value)]="task.variables.numeroRadicado" [(ngModel)]="task.variables.numeroRadicado" formControlName="nroRadicado">
+                    <label>Número de radicado</label>
+                  </span>
+              </div>
+            </div>
+          </div>
+          <div class="ui-sm-12 ui-g-4 ui-lg-4" [formGroup]="form">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="causalDevolucion" readonly [(value)]="causalDevolucion" [(ngModel)]="causalDevolucion" formControlName="causalDevolucion">
+                    <label>Causal devolución</label>
+                  </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-3 ui-lg-3" [formGroup]="form">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="usuariodevuelve" readonly [(value)]="usuariodevuelve" [(ngModel)]="usuariodevuelve" formControlName="usuariodevuelve">
+                    <label>Usuario que devolver</label>
                   </span>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="ui-g-12" style="padding-top: 50px" padding-bottom>
+          <div class="ui-sm-12 ui-g-4 ui-lg-4" [formGroup]="form">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="sedeAdministrativa" readonly [(value)]="sedeAdministrativa" [(ngModel)]="sedeAdministrativa" formControlName="sedeAdministrativa">
+                    <label>Sede administrativa</label>
+                  </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-sm-12 ui-g-4 ui-lg-4" [formGroup]="form">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="dependencia" readonly [(value)]="dependencia" [(ngModel)]="dependencia" formControlName="dependencia">
+                    <label>Dependecia</label>
+                  </span>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
       </div>
+
     </p-panel>
+
+      <p-panel header="Observaciones" [style]="{ border: 'none'}">
+
+        <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+
+      </p-panel>
     </div>
   </app-task-container>
 </div>

@@ -27,6 +27,7 @@ import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.type.VersionType;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -606,6 +607,144 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo para subir documentos al Alfresco
+     *
+     * @param session          Objeto de conexion a Alfresco
+     * @param nombreDocumento  Nombre del documento que se va a crear
+     * @param documento        Documento que se va a subir
+     * @param tipoComunicacion Tipo de comunicacion que puede ser Externa o Interna
+     * @param nroRadicado Número de Radicado
+     * @return Devuelve el id de la carpeta creada
+     * @throws IOException Excepcion ante errores de entrada/salida
+     */
+    @Override
+    public MensajeRespuesta subirDocumentoCustom(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion, String nroRadicado) throws IOException {
+
+        logger.info ("Se entra al metodo subirDocumento");
+
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        String idDocumento="";
+        Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
+        List <InputPart> inputParts = uploadForm.get ("documento");
+
+        String fileName;
+        String mimeType = "application/pdf";
+        for (InputPart inputPart : inputParts) {
+
+            // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
+            MultivaluedMap <String, String> headers = inputPart.getHeaders ( );
+            String[] contentDispositionHeader = headers.getFirst ("Content-Disposition").split (";");
+            for (String name : contentDispositionHeader) {
+                if (name.trim ( ).startsWith ("filename")) {
+                    String[] tmp = name.split ("=");
+                    fileName = tmp[1].trim ( ).replaceAll ("\"", "");
+                    logger.info ("El nombre del fichero es: " + fileName);
+                }
+            }
+            InputStream inputStream = null;
+
+            try {
+                inputStream = inputPart.getBody (InputStream.class, null);
+            } catch (IOException e) {
+                logger.error ("### Error..------", e);
+            }
+
+            assert inputStream != null;
+            byte[] bytes = IOUtils.toByteArray (inputStream);
+
+            //Se definen las propiedades del documento a subir
+            Map <String, Object> properties = new HashMap <> ( );
+//cmis:document,P:cm:titled
+            properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+            properties.put ("cmcor:NroRadicado", "CucoNroRadicado");
+            properties.put (PropertyIds.NAME, nombreDocumento);
+
+            try {
+                //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
+                new Carpeta ( );
+                Carpeta folderAlfresco;
+                logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar..");
+
+                if ("EE".equals (tipoComunicacion)) {
+
+                    folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
+                } else {
+
+                    folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
+                }
+                logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.." + folderAlfresco.getFolder ( ).getName ( ));
+                VersioningState vs = VersioningState.MAJOR;
+                ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
+                //Se crea el documento
+                logger.info ("### Se va a crear el documento..");
+                Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+
+                idDocumento = newDocument.getId ( );
+                String[] parts = idDocumento.split (";");
+                idDocumento = parts[0];
+                response.setCodMensaje("0000");
+                response.setMensaje(idDocumento);
+
+                logger.info ("### Documento creado con id " + idDocumento);
+            } catch (CmisContentAlreadyExistsException ccaee) {
+                logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+                response.setCodMensaje("1111");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR_DUPLICADO"));
+            } catch (CmisConstraintException cce) {
+                logger.error ("### Error tipo CmisConstraintException----------------------------- :", cce);
+                response.setCodMensaje("2222");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
+            } catch (Exception e) {
+                logger.error ("### Error tipo Exception----------------------------- :", e);
+                response.setCodMensaje("2222");
+                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
+            }
+        }
+
+        return response;
+    }
+
+
+    /**
+     * Metodo para modificar metadatos del documento de Alfresco
+     *
+     * @param session          Objeto de conexion a Alfresco
+     * @param idDocumento  Nombre del documento que se va a crear
+     * @param nroRadicado        Documento que se va a subir
+     * @param tipologiaDocumental Tipo de comunicacion que puede ser Externa o Interna
+     * @param nroRadicado Número de Radicado
+     * @return Devuelve el id de la carpeta creada
+     * @throws IOException Excepcion ante errores de entrada/salida
+     */
+    @Override
+    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental,String nombreRemitente) throws IOException{
+        logger.info ("### Modificar documento: " + idDocumento);
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        try {
+
+            ObjectId idDoc=new ObjectIdImpl (idDocumento);
+
+            Map<String, Object> updateProperties = new HashMap<String, Object>();
+            updateProperties.put ("cmcor:NroRadicado", nroRadicado);
+            updateProperties.put ("cmcor:NombreRemitente", nombreRemitente);
+            updateProperties.put ("cmcor:TipologiaDocumental", tipologiaDocumental);
+
+
+            CmisObject object = session.getObject(idDoc);
+            object.updateProperties(updateProperties);
+            logger.info ("### Modificados los metadatos de correctamente");
+            response.setMensaje ("OK");
+            response.setCodMensaje ("0000");
+
+        } catch (CmisObjectNotFoundException e) {
+            logger.error ("*** Error al modificar el documento *** ", e);
+            response.setMensaje ("Documento no encontrado");
+            response.setCodMensaje ("00006");
+        }
+        return response;
+    }
+
+    /**
      * Metodo para llenar propiedades para crear carpeta
      *
      * @param tipoCarpeta tipo de carpeta
@@ -678,8 +817,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Un objeto File
      * @throws IOException En caso de error
      */
-    private static File convertInputStreamToFile(ContentStream contentStream)
-            throws IOException {
+    private static File convertInputStreamToFile(ContentStream contentStream) throws IOException {
 
         File file = File.createTempFile (contentStream.getFileName ( ), "");
 
