@@ -1,12 +1,15 @@
 package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.PlantillaControl;
+import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PlantillaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,13 +33,17 @@ public class GestionarPlantilla {
 
     /**
      *
-     * @param codClasificacion
+     * @param codTipoDoc
      * @param estado
      * @return
      * @throws SystemException
      * @throws BusinessException
      */
-    public PlantillaDTO consultarPlantillaByCodClasificacionAndEstaddo(String codClasificacion, String estado)throws SystemException, BusinessException {
-        return control.consultarPlantillaByCodClasificacionAndEstaddo(codClasificacion, estado);
+    public PlantillaDTO consultarPlantillaByCodClasificacionAndEstaddo(String codTipoDoc, String estado)throws SystemException, BusinessException {
+        return control.consultarPlantillaByCodClasificacionAndEstaddo(codTipoDoc, estado);
+    }
+
+    public List<ConstanteDTO> listarTipologiasDocumentalesByEstado(String estado)throws SystemException{
+        return control.listarTipologiasDocumentalesByEstado(estado);
     }
 }
