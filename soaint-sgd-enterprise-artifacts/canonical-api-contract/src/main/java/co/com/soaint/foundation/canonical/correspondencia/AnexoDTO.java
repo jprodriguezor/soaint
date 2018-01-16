@@ -30,4 +30,5 @@ public class AnexoDTO implements Serializable {
     private BigInteger ideAnexo;
     private String codAnexo;
     private String descripcion;
+    private String codTipoSoporte;
 }
