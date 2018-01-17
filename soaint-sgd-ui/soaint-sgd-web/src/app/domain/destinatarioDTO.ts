@@ -11,7 +11,7 @@ export interface DestinatarioDTO {
     nit?: string,
     actuaCalidad?: ConstanteDTO,
     actuaCalidadNombre?: string,
-    cede?: ConstanteDTO,
+    sede?: ConstanteDTO,
     dependencia?: ConstanteDTO,
     direccion?: DireccionDestinatarioDTO
 }
