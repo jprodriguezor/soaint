@@ -24,7 +24,6 @@ import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radic
     templateUrl: 'datos-destinatario-externo.component.html'
 })
 export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
-
     form: FormGroup;
     tipoPersonaSelected: ConstanteDTO;
 

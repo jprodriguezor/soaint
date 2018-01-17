@@ -188,6 +188,7 @@
     <div class="ui-g-12" style="padding-top: 20px">
         <button pButton type="button" label="Agregar"
                 style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                [disabled]="!canInsert"
                 (click)="adicionarDestinatario()"></button>
     </div>
 </div>
