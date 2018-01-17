@@ -67,11 +67,6 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     adicionarDestinatario() {
         const tipoDestinatario = this.form.get('tipoDestinatario');
 
-        if (tipoDestinatario.value.codigo === DESTINATARIO_PRINCIPAL
-            && this.listaDestinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
-            throw new Error('Ya hay un destinatario principal');
-        }
-
         const toInsert = [{
             interno: true,
             tipoDestinatario: tipoDestinatario.value,
@@ -80,50 +75,40 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
             funcionario: this.form.get('funcionario').value,
         }];
 
+        if (tipoDestinatario.value.codigo === DESTINATARIO_PRINCIPAL
+            && this.listaDestinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+            this.confirmSubstitucionDestinatarioPrincipal(toInsert);
+            return;
+        }
+
         this.listaDestinatarios = [
             ...toInsert,
             ...this.listaDestinatarios.filter(
-                value => value.sede.codigo !== this.form.get('sede').value.codigo
+                value =>
+                    value.sede.codigo !== this.form.get('sede').value.codigo
+                && value.dependencia.codigo !==  this.form.get('dependencia').value.codigo
+                && value.tipoDestinatario.codigo !== this.form.get('tipoDestinatario').value.codigo
+                && value.funcionario.loginName !== this.form.get('funcionario').value.loginName
             )
         ];
     }
 
-    confirmSubstitucionDestinatarioPrincipal() {
+    confirmSubstitucionDestinatarioPrincipal(toInsert) {
         this.confirmationService.confirm({
             message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
             accept: () => {
-                this.substitudeAgenteDestinatario();
+                this.substitudeAgenteDestinatario(toInsert);
             }
         });
     }
 
-    substitudeAgenteDestinatario() {
-
-        const tipo = this.form.get('tipoDestinatario');
-        const sede = this.form.get('sedeAdministrativa');
-        const grupo = this.form.get('dependencia');
-        const func = this.form.get('funcionario');
-
-        const insertVal = [
-            {
-                tipoDestinatario: tipo.value,
-                sedeAdministrativa: sede.value,
-                dependenciaGrupo: grupo.value,
-                funcionario: func.value
-            }
-        ];
-
+    substitudeAgenteDestinatario(toInsert) {
         this.listaDestinatarios = [
-            ...insertVal,
-            ...this.listaDestinatarios.filter(
-                value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL
-            )
+            ...toInsert,
+            // ...this.listaDestinatarios.filter(
+            //     value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL
+            // )
         ];
-
-        tipo.reset();
-        sede.reset();
-        grupo.reset();
-        func.reset();
     }
 
 
