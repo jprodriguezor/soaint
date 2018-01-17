@@ -28,44 +28,26 @@ export class GestionarDevolucionesComponent implements OnInit {
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
-  editable = true;
-  //form = new FormGroup({});
   causalDevolucion: any;
   usuariodevuelve: any;
   sedeAdministrativa: any;
   dependencia: any;
-  observacion: any;
-  radicacionEntradaDTV: any;
 
   causalText: String;
 
   sedeCode: String;
-
   dependenciaCode: String;
 
   dependencias: DependenciaDTO[] = [];
-
   disabledDevolucionRechazar: Boolean;
 
-  funcionarioLog: FuncionarioDTO;
 
-  funcionarioSubcription: Subscription;
-
-  dependenciaSelected$: Observable<DependenciaDTO>;
-
-  dependenciaSelected: DependenciaDTO;
-
-  globalDependencySubcription: Subscription;
+  comunicacion: ComunicacionOficialDTO = {};
+  task: TareaDTO;
+  activeTaskUnsubscriber: Subscription;
 
   constructor(private _store: Store<State>,private _dependenciaSandbox: DependenciaSandbox , private _sandbox: RadicarComunicacionesSandBox, private _constSandbox: ConstanteSandbox, private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder, private _asiganacionSandbox: AsiganacionDTOSandbox) {
-
-    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
-
-    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-
-    this.initForm();
+     this.initForm();
   }
   form = new FormGroup({
     causalDevolucion: new FormControl(),
@@ -75,31 +57,17 @@ export class GestionarDevolucionesComponent implements OnInit {
     observacion: new FormControl(),
   });
 
-  comunicacion: ComunicacionOficialDTO = {};
-  task: TareaDTO;
-  activeTaskUnsubscriber: Subscription;
-
   ngOnInit() {
-
-    this.listarDependencias();
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
       this.restore();
     });
 
-    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
-    });
-
     this.disabledDevolucionRechazar = false;
     if("3" == this.task.variables.causalD){
       this.disabledDevolucionRechazar = true;
     }
-
-  }
-
-  listarDependencias() {
 
     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
 
@@ -112,6 +80,7 @@ export class GestionarDevolucionesComponent implements OnInit {
       this.form.get("sedeAdministrativa").setValue(objSede ? objSede.nomSede : '');
 
     });
+
   }
 
   initForm() {
@@ -121,7 +90,6 @@ export class GestionarDevolucionesComponent implements OnInit {
       'usuariodevuelve': [null],
       'sedeAdministrativa': [null],
       'dependencia': [null],
-      'observacion': [null],
     });
   }
 
@@ -145,18 +113,25 @@ export class GestionarDevolucionesComponent implements OnInit {
 
         this.dependenciaCode= this.comunicacion.correspondencia.codDependencia;
         this.sedeCode =  this.comunicacion.correspondencia.codSede;
+        //console.log("comunicacion");
+        //console.log(this.comunicacion);
 
-        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        //this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        //console.log("radicacion_entrada");
+        //console.log(this.radicacionEntradaDTV);
 
-        this.popupAgregarObservaciones.form.reset();
-        this.popupAgregarObservaciones.setData({
-          idDocumento: this.radicacionEntradaDTV.source.correspondencia.ideDocumento,
-          idFuncionario: this.funcionarioLog.id,
-          codOrgaAdmin: this.dependenciaSelected.codigo,
-          isPopup: false
-        });
+        if(this.comunicacion){
+            this.popupAgregarObservaciones.form.reset();
+            this.popupAgregarObservaciones.setData({
+              idDocumento: this.comunicacion.correspondencia.ideDocumento,
+              idFuncionario: this.comunicacion.correspondencia.codFuncRadica,
+              codOrgaAdmin: this.comunicacion.correspondencia.codDependencia,
+              isPopup: false
+            });
 
-        this.popupAgregarObservaciones.loadObservations();
+            this.popupAgregarObservaciones.loadObservations();
+        }
+
 
       });
     }
@@ -190,15 +165,11 @@ export class GestionarDevolucionesComponent implements OnInit {
   }
 
   isdisabledDevolucionRechazar(){
-
-    console.log(this.popupAgregarObservaciones.loadObservations());
-
     return this.disabledDevolucionRechazar;
   }
 
   ngOnDestroy() {
     this.activeTaskUnsubscriber.unsubscribe();
-    this.funcionarioSubcription.unsubscribe();
   }
 
 }
