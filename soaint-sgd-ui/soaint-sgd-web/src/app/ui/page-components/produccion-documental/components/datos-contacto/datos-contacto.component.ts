@@ -51,7 +51,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   canInsert = false;
-  responseToRem = false;
+  responseToRem = true;
 
   constructor(private formBuilder: FormBuilder,
               private _store: Store<State>,
@@ -67,57 +67,55 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.funcionarios$ = this._store.select(getFuncionarioArrayData);
 
     this.initForm();
-    this.listenForChanges();
-    this.listenForErrors();
+    // this.listenForChanges();
+    // this.listenForErrors();
 
-    Observable.combineLatest(
-      this.form.get('tipoDestinatario').valueChanges,
-      this.form.get('sedeAdministrativa').valueChanges,
-      this.form.get('dependencia').valueChanges,
-      this.form.get('funcionario').valueChanges
-    ).do(() => this.canInsert = false)
-      .filter(([tipo, sede, grupo, func]) => tipo && sede && grupo && func)
-      .zip(([tipo, sede, grupo, func]) => {
-        return {tipo: tipo, sede: sede, grupo: grupo, funcionario: func}
-      })
-      .subscribe(value => {
-        this.canInsert = true
-      });
+    // Observable.combineLatest(
+    //   this.form.get('tipoDestinatario').valueChanges,
+    //   this.form.get('sedeAdministrativa').valueChanges,
+    //   this.form.get('dependencia').valueChanges,
+    //   this.form.get('funcionario').valueChanges
+    // ).do(() => this.canInsert = false)
+    //   .filter(([tipo, sede, grupo, func]) => tipo && sede && grupo && func)
+    //   .zip(([tipo, sede, grupo, func]) => {
+    //     return {tipo: tipo, sede: sede, grupo: grupo, funcionario: func}
+    //   })
+    //   .subscribe(value => {
+    //     this.canInsert = true
+    //   });
   }
 
 
-  tipoPersonaChange(event) {
-    this.tipoPersonaSelected = event.value;
-  }
+
 
   ngOnInit(): void {
-    this.sedesAdministrativas$ = this._store.select(sedeAdministrativaArrayData);
-    this.dependencias$ = this._store.select(dependenciaGrupoArrayData);
-    this._store.dispatch(new SedeAdministrativaLoadAction());
+    // this.sedesAdministrativas$ = this._store.select(sedeAdministrativaArrayData);
+    // this.dependencias$ = this._store.select(dependenciaGrupoArrayData);
+    // this._store.dispatch(new SedeAdministrativaLoadAction());
+    //
+    // this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
+    //   rol: 'RECEPTOR'
+    // });
 
-    this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
-      rol: 'RECEPTOR'
-    });
+    // this.tiposPersona$ = this._produccionDocumentalApi.getTiposPersona({});
+    // this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
+    // this.actuanEnCalidad$ = this._produccionDocumentalApi.getActuaEnCalidad({});
+    // this.tiposDocumento$ = this._produccionDocumentalApi.getTiposDocumento({});
 
-    this.tiposPersona$ = this._produccionDocumentalApi.getTiposPersona({});
-    this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
-    this.actuanEnCalidad$ = this._produccionDocumentalApi.getActuaEnCalidad({});
-    this.tiposDocumento$ = this._produccionDocumentalApi.getTiposDocumento({});
-
-    this.tiposPersona$.subscribe((results) => {
-      if (results.length > 0) {
-        this.tipoPersonaSelected = results[0];
-        this.form.get('tipoPersona').setValue(results[0]);
-      }
-    });
-
-    this.tiposDestinatario$.subscribe((results) => {
-      if (results.length > 0) {
-        this.form.get('tipoDestinatario').setValue(results.find((tipoDestinatario) => {
-          return tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL;
-        }));
-      }
-    });
+    // this.tiposPersona$.subscribe((results) => {
+    //   if (results.length > 0) {
+    //     this.tipoPersonaSelected = results[0];
+    //     this.form.get('tipoPersona').setValue(results[0]);
+    //   }
+    // });
+    //
+    // this.tiposDestinatario$.subscribe((results) => {
+    //   if (results.length > 0) {
+    //     this.form.get('tipoDestinatario').setValue(results.find((tipoDestinatario) => {
+    //       return tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL;
+    //     }));
+    //   }
+    // });
   }
 
   initForm() {
