@@ -87,11 +87,11 @@
                 <p-column field="sede.nombre" header="Sede Administrativa" [sortable]="true"></p-column>
                 <p-column field="dependencia.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
                 <p-column field="funcionario.nombre" header="Usuario" [sortable]="true"></p-column>
-                <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
+                <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="listaDestinatarios && listaDestinatarios.length > 0">
                     <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
-                        <button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"
-                                class="amber-btn ui-button ui-button-icon"></button>
-                        <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
+                        <!--<button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"-->
+                        <!--class="amber-btn ui-button ui-button-icon"></button>-->
+                        <button type="button" icon="ui-icon-close" pButton (click)="eliminarDestinatario(i)"
                                 class="ui-button ui-button-icon ui-button-danger"></button>
                     </ng-template>
                 </p-column>

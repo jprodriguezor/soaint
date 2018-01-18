@@ -16,8 +16,10 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
 import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
+import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
+import {ConfirmationService} from 'primeng/primeng';
 
 @Component({
     selector: 'datos-destinatario-externo',
@@ -37,66 +39,108 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     departamentos$: Observable<DepartamentoDTO[]>;
 
     visibility: any = {};
-    subscribers: Array<Subscription> = [];
+    validations: any = {};
 
     listaDestinatarios: DestinatarioDTO[] = [];
+    canInsert = false;
 
     constructor(private formBuilder: FormBuilder,
                 private _store: Store<State>,
                 private _paisSandbox: PaisSandbox,
+                private confirmationService: ConfirmationService,
                 private _departamentoSandbox: DepartamentoSandbox,
                 private _municipioSandbox: MunicipioSandbox,
                 private _produccionDocumentalApi: ProduccionDocumentalApiService) {
 
         this.initForm();
+
+        Observable.combineLatest(
+            this.form.get('tipoDestinatario').valueChanges,
+            this.form.get('tipoPersona').valueChanges,
+            this.form.get('nombre').valueChanges,
+            this.form.get('tipoDocumento').valueChanges,
+            this.form.get('nit').valueChanges,
+            this.form.get('actuaCalidad').valueChanges,
+            this.form.get('actuaCalidadNombre').valueChanges,
+            this.form.get('email').valueChanges,
+            this.form.get('phone').valueChanges,
+            this.form.get('mobile').valueChanges,
+            this.form.get('pais').valueChanges,
+            this.form.get('departamento').valueChanges,
+            this.form.get('municipio').valueChanges
+        ).do(() => this.canInsert = false)
+            .filter(([tipoDestinatario, tipoPersona, nombre, tipoDocumento,
+                         nit, actuaCalidad, actuaCalidadNombre, email, phone, mobile, pais, departamento, municipio]) =>
+                tipoDestinatario && tipoPersona && nombre && tipoDocumento && nit && actuaCalidad && actuaCalidadNombre
+                && email && phone && mobile && pais && departamento && municipio)
+            .zip(([tipoDestinatario, tipoPersona, nombre, tipoDocumento,
+                      nit, actuaCalidad, actuaCalidadNombre, email, phone, mobile, pais, departamento, municipio]) => {
+                return {tipoDestinatario: tipoDestinatario, tipoPersona: tipoPersona, nombre: nombre, tipoDocumento: tipoDocumento,
+                    nit: nit, actuaCalidad: actuaCalidad, actuaCalidadNombre: actuaCalidadNombre, email: email, phone: phone,
+                    mobile: mobile, pais: pais, departamento: departamento, municipio: municipio}
+            })
+            .subscribe(() => { this.canInsert = true });
+    }
+
+    checkDestinatarioInList(newone: DestinatarioDTO, lista: DestinatarioDTO[]) {
+        return lista.filter(current =>  current.email === newone.email ).length > 0;
     }
 
     adicionarDestinatario() {
-        const tipoDestinatario = this.form.get('tipoDestinatario');
-
-        if (tipoDestinatario.value.codigo === DESTINATARIO_PRINCIPAL
-            && this.listaDestinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
-            throw new Error('Ya hay un destinatario principal');
+        if (!this.form.valid) {
+            return false;
         }
 
-        const toInsert = [{
-            interno: false,
-            tipoDestinatario: tipoDestinatario.value,
-            tipoPersona: this.form.get('tipoPersona').value,
-            nombre: this.form.get('nombreApellidos').value,
-            tipoDocumento: this.form.get('tipoDocumento').value,
-            nit: this.form.get('nit').value,
-            actuaCalidad: this.form.get('actuaCalidad').value,
-            actuaCalidadNombre: this.form.get('actuaCalidadNombre').value,
+        const destinatarios = this.listaDestinatarios;
+        const newone: DestinatarioDTO = this.form.value;
+        newone.interno = false;
 
-            direccion: {
-                email: this.form.get('email').value,
-                mobile: this.form.get('mobile').value,
-                phone: this.form.get('phone').value,
-                pais: this.form.get('pais').value,
-                departamento: this.form.get('departamento').value,
-                municipio: this.form.get('municipio').value,
-            }
-        }];
+        if (this.checkDestinatarioInList(newone, destinatarios)) {
+            return false;
+        }
 
-        this.listaDestinatarios = [
-            ...toInsert,
-            ...this.listaDestinatarios.filter(
-                value => value.nombre !== this.form.get('nombreApellidos').value
-            )
-        ];
+        if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL
+            && destinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+            this.confirmationService.confirm({
+                message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
+                accept: () => {
+                    const newList = destinatarios.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL);
+                    newList.unshift(newone);
+                    this.listaDestinatarios = [...newList];
+                    this.form.reset();
+                }
+            });
+            return true;
+        }
+
+        if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
+            destinatarios.unshift(newone);
+        } else {
+            destinatarios.push(newone);
+        }
+
+        this.listaDestinatarios = [...destinatarios];
+        this.form.reset();
+
+        return true;
     }
 
-    tipoPersonaChange(event) {
-        this.tipoPersonaSelected = event.value;
+    eliminarDestinatario(index: number) {
+        if (index > -1) {
+            const destinatarios = this.listaDestinatarios;
+            destinatarios.splice(index, 1);
+            this.listaDestinatarios = [...destinatarios];
+        }
     }
+
+    tipoPersonaChange(event) { this.tipoPersonaSelected = event.value; }
 
     initForm() {
         this.form = this.formBuilder.group({
             // Datos destinatario
             'tipoDestinatario': [null, Validators.required],
             'tipoPersona': [{value: null}],
-            'nombreApellidos': [null],
+            'nombre': [null],
             'tipoDocumento': [{value: null}],
             'nit': [null],
             'actuaCalidad': [{value: null}],
@@ -110,6 +154,10 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
             'municipio': [{value: null}],
         });
     }
+
+
+
+
 
     ngOnInit(): void {
         this.tiposPersona$ = this._produccionDocumentalApi.getTiposPersona({});
