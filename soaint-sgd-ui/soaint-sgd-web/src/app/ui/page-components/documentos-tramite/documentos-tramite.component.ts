@@ -160,7 +160,7 @@ export class DocumentosTramiteComponent implements OnInit {
         this.devolverAction({
           payload: {},
           taskToCompletePayload: payload.taskToCompletePayload
-        }, checks.agente, 'NR', 'Ha vencido el numero maximo de redirecciones');
+        }, checks.agente, '3', 'Ha vencido el numero maximo de redirecciones');
         this.redireccionFallida$.next(true);
       } else {
         this._asiganacionSandbox.redirectComunications(this.redirectPayload(checks.agente, justificationValues)).toPromise()
@@ -188,7 +188,7 @@ export class DocumentosTramiteComponent implements OnInit {
   devolverAction(payload: any, agente, cause?: string, observation?: string) {
     this._asiganacionSandbox.rejectComunications(this.rejectPayload(agente, payload.payload, cause, observation)).toPromise()
       .then(() => {
-        payload.taskToCompletePayload.parametros.causalDevolucion = cause || payload.payload.causalDevolucion.codigo;
+        payload.taskToCompletePayload.parametros.causalDevolucion = cause || payload.payload.causalDevolucion.id;
         payload.taskToCompletePayload.parametros.codDependenciaCo = this.comunicacion.correspondencia.codDependencia;
         this._store.dispatch(new CompleteTaskAction(payload.taskToCompletePayload));
       });
@@ -199,14 +199,14 @@ export class DocumentosTramiteComponent implements OnInit {
       itemsDevolucion: [
         {
           agente: agente,
-          causalDevolucion: cause || payload.causalDevolucion.codigo
+          causalDevolucion: cause || payload.causalDevolucion.id
         }
       ],
       traza: {
         id: null,
         observacion: observation || payload.observacion,
         ideFunci: this.funcionarioLog.id,
-        codDependencia: this.dependenciaSelected.codigo,
+        codDependencia: this.dependenciaSelected.id,
         estado: null,
         fecha: null,
         ideDocumento: null
