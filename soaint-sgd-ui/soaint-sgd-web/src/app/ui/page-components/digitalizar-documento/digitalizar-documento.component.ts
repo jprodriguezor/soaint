@@ -1,15 +1,13 @@
-import {
-  ChangeDetectorRef, SimpleChange, Component, OnInit, ViewChild, ViewEncapsulation, ViewContainerRef,
-  ComponentFactoryResolver
-} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
-import {correspondenciaEntrada} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
+import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
+import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 
 
 enum UploadStatus {
@@ -25,14 +23,16 @@ enum UploadStatus {
   styleUrls: ['./digitalizar-documento.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class DigitalizarDocumentoComponent implements OnInit {
+export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
 
-  uploadFile: any;
+  uploadFiles: any[] = [];
   task: any;
   url: string;
   status: UploadStatus;
   previewWasRefreshed = false;
   uploadUrl: string;
+  principalFile: string;
+  correspondencia: CorrespondenciaDTO;
 
   activeTaskUnsubscriber: Subscription;
 
@@ -40,13 +40,21 @@ export class DigitalizarDocumentoComponent implements OnInit {
   @ViewChild('viewer') viewer;
 
 
-  constructor(private changeDetection: ChangeDetectorRef, private _api: ApiBase, private _store: Store<RootState>) {
+  constructor(private changeDetection: ChangeDetectorRef,
+              private _api: ApiBase,
+              private _asignacionSandBox: AsignacionSandbox,
+              private _store: Store<RootState>) {
   }
 
   ngOnInit() {
     this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
+      if (this.task) {
+        this._asignacionSandBox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((comunicacion) => {
+          this.correspondencia = comunicacion.correspondencia;
+        });
+      }
     });
   }
 
@@ -56,24 +64,23 @@ export class DigitalizarDocumentoComponent implements OnInit {
 
   customUploader(event) {
     const formData = new FormData();
-    formData.append('file[]', event.files[0], event.files[0].name);
-    this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
-      console.log(value);
-      this._api.sendFile(this.uploadUrl, formData, [value.tipoComunicacion.codigo, value.numeroRadicado]).subscribe(response => {
-        this._store.dispatch(new CompleteTaskAction({
-          idProceso: this.task.idProceso,
-          idDespliegue: this.task.idDespliegue,
-          idTarea: this.task.idTarea,
-          parametros: {
-            ideEcm: JSON.parse(response.ecmIds[0])['mensaje']
-          }
-        }));
-      });
+    for (const file of event.files) {
+      formData.append('files', file, file.name);
+    }
+    this._api.sendFile(this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado]).subscribe(response => {
+      this._store.dispatch(new CompleteTaskAction({
+        idProceso: this.task.idProceso,
+        idDespliegue: this.task.idDespliegue,
+        idTarea: this.task.idTarea,
+        parametros: {
+          ideEcm: JSON.parse(response.ecmIds[0])['mensaje']
+        }
+      }));
     });
-
   }
 
   preview(file) {
+    console.log(this.principalFile);
     const self = this;
     const reader = new FileReader();
     reader.addEventListener('load', () => {
@@ -86,7 +93,7 @@ export class DigitalizarDocumentoComponent implements OnInit {
   }
 
   onUpload(event) {
-    this.uploadFile = event.files[0];
+    // this.uploadFiles = event.files;
     this.status = UploadStatus.UPLOADED;
   }
 
@@ -97,10 +104,16 @@ export class DigitalizarDocumentoComponent implements OnInit {
 
   onSelect(event) {
 
-    this.previewWasRefreshed = false;
-    this.uploadFile = event.files[0];
+    console.log(event.files);
 
-    if (this.uploader.files.length === 2) {
+    this.previewWasRefreshed = false;
+
+    for (const file of event.files) {
+      this.uploadFiles.push(file);
+    }
+    console.log(this.uploadFiles);
+
+    /*if (this.uploader.files.length === 2) {
       this.uploader.remove(0);
     } else if (this.uploader.files.length > 2) {
       let index = 0;
@@ -118,9 +131,13 @@ export class DigitalizarDocumentoComponent implements OnInit {
           }
         }
       }
-    }
+    }*/
     this.changeDetection.detectChanges();
     this.status = UploadStatus.LOADED;
+  }
+
+  ngOnDestroy() {
+    this.activeTaskUnsubscriber.unsubscribe();
   }
 
 }

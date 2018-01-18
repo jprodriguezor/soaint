@@ -12,6 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,19 @@ public class DigitalizarDocumentoClient {
                 .queryParam("identificadorDoc", idDocumento)
                 .request()
                 .get();
+    }
+
+    public String getPartFileName(InputPart part) {
+        String FileName = "";
+        MultivaluedMap<String, String> headers = part.getHeaders();
+        String[] contentDispositionHeader = headers.getFirst("Content-Disposition").split(";");
+        for (String name : contentDispositionHeader) {
+            if ((name.trim().startsWith("filename"))) {
+                String[] tmp = name.split("=");
+                FileName = tmp[1].trim().replaceAll("\"", "");
+            }
+        }
+        return FileName;
     }
 
 }
