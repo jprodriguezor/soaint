@@ -40,7 +40,7 @@
                         <label>Nombre y apellidos / Razón Social</label>
                     </div>
                     <div class="ui-g-12">
-                        <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos"/>
+                        <input type="text" pInputText id="nombre" formControlName="nombre"/>
                     </div>
                 </div>
             </div>
@@ -204,17 +204,17 @@
                 <p-column field="nombre" header="Nombre/Razón Social" [sortable]="true"></p-column>
                 <p-column field="tipoDocumento.nombre" header="Tipo documento" [sortable]="true"></p-column>
                 <p-column field="nit" header="Numero documento identidad" [sortable]="true"></p-column>
-                <p-column field="direccion.email" header="Correo eléctronico" [sortable]="true"></p-column>
-                <p-column field="direccion.phone" header="No teléfono" [sortable]="true"></p-column>
-                <p-column field="direccion.mobile" header="Celular" [sortable]="true"></p-column>
-                <p-column field="direccion.pais.nombre" header="Pais" [sortable]="true"></p-column>
-                <p-column field="direccion.departamento.nombre" header="Departamento" [sortable]="true"></p-column>
-                <p-column field="direccion.municipio.nombre" header="Municipio" [sortable]="true"></p-column>
-                <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
+                <p-column field="email" header="Correo eléctronico" [sortable]="true"></p-column>
+                <p-column field="phone" header="No teléfono" [sortable]="true"></p-column>
+                <p-column field="mobile" header="Celular" [sortable]="true"></p-column>
+                <p-column field="pais.nombre" header="Pais" [sortable]="true"></p-column>
+                <p-column field="departamento.nombre" header="Departamento" [sortable]="true"></p-column>
+                <p-column field="municipio.nombre" header="Municipio" [sortable]="true"></p-column>
+                <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="listaDestinatarios && listaDestinatarios.length > 0">
                     <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
-                        <button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"
-                                class="amber-btn ui-button ui-button-icon"></button>
-                        <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
+                        <!--<button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"-->
+                                <!--class="amber-btn ui-button ui-button-icon"></button>-->
+                        <button type="button" icon="ui-icon-close" pButton (click)="eliminarDestinatario(i)"
                                 class="ui-button ui-button-icon ui-button-danger"></button>
                     </ng-template>
                 </p-column>
