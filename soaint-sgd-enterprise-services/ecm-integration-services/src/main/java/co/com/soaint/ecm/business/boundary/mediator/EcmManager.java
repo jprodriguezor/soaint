@@ -86,8 +86,7 @@ public class EcmManager {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response.setMensaje("Ok");
-            response.setCodMensaje("0000");
+            response=contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");

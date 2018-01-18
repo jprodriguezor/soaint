@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,17 +29,17 @@ public class PlantillaDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private BigInteger idePlantilla;
     private String referencia;
-    private String codClasificacion;
+    private String codTipoDoc;
     private String codTipoUbicacion;
     private String ubicacion;
     private String estado;
     private PlantillaMetadatosDTO metadatos;
 
-    public PlantillaDTO(BigInteger idePlantilla, String referencia, String codClasificacion,
+    public PlantillaDTO(BigInteger idePlantilla, String referencia, String codTipoDoc,
                         String codTipoUbicacion, String ubicacion){
         this.idePlantilla = idePlantilla;
         this.referencia = referencia;
-        this.codClasificacion = codClasificacion;
+        this.codTipoDoc = codTipoDoc;
         this.codTipoUbicacion = codTipoUbicacion;
         this.ubicacion = ubicacion;
     }

@@ -1,0 +1,143 @@
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {Observable} from 'rxjs/Observable';
+import {ProduccionDocumentalApiService} from '../../../infrastructure/api/produccion-documental.api';
+import {PaisDTO} from '../../../domain/paisDTO';
+import {DepartamentoDTO} from '../../../domain/departamentoDTO';
+import {MunicipioDTO} from '../../../domain/municipioDTO';
+import {Store} from '@ngrx/store';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
+import {Sandbox as PaisSandbox} from '../../../infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
+import {Sandbox as DepartamentoSandbox} from '../../../infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
+import {Sandbox as MunicipioSandbox} from '../../../infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
+
+import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
+import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
+import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
+import {Subscription} from 'rxjs/Subscription';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
+
+@Component({
+    selector: 'datos-destinatario-externo',
+    templateUrl: 'datos-destinatario-externo.component.html'
+})
+export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
+    form: FormGroup;
+    tipoPersonaSelected: ConstanteDTO;
+
+    tiposPersona$: Observable<ConstanteDTO[]>;
+    tiposDestinatario$: Observable<ConstanteDTO[]>;
+    actuanEnCalidad$: Observable<ConstanteDTO[]>;
+    tiposDocumento$: Observable<ConstanteDTO[]>;
+
+    paises$: Observable<PaisDTO[]>;
+    municipios$: Observable<MunicipioDTO[]>;
+    departamentos$: Observable<DepartamentoDTO[]>;
+
+    visibility: any = {};
+    subscribers: Array<Subscription> = [];
+
+    listaDestinatarios: DestinatarioDTO[] = [];
+
+    constructor(private formBuilder: FormBuilder,
+                private _store: Store<State>,
+                private _paisSandbox: PaisSandbox,
+                private _departamentoSandbox: DepartamentoSandbox,
+                private _municipioSandbox: MunicipioSandbox,
+                private _produccionDocumentalApi: ProduccionDocumentalApiService) {
+
+        this.initForm();
+    }
+
+    adicionarDestinatario() {
+        const tipoDestinatario = this.form.get('tipoDestinatario');
+
+        if (tipoDestinatario.value.codigo === DESTINATARIO_PRINCIPAL
+            && this.listaDestinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+            throw new Error('Ya hay un destinatario principal');
+        }
+
+        const toInsert = [{
+            interno: false,
+            tipoDestinatario: tipoDestinatario.value,
+            tipoPersona: this.form.get('tipoPersona').value,
+            nombre: this.form.get('nombreApellidos').value,
+            tipoDocumento: this.form.get('tipoDocumento').value,
+            nit: this.form.get('nit').value,
+            actuaCalidad: this.form.get('actuaCalidad').value,
+            actuaCalidadNombre: this.form.get('actuaCalidadNombre').value,
+
+            direccion: {
+                email: this.form.get('email').value,
+                mobile: this.form.get('mobile').value,
+                phone: this.form.get('phone').value,
+                pais: this.form.get('pais').value,
+                departamento: this.form.get('departamento').value,
+                municipio: this.form.get('municipio').value,
+            }
+        }];
+
+        this.listaDestinatarios = [
+            ...toInsert,
+            ...this.listaDestinatarios.filter(
+                value => value.nombre !== this.form.get('nombreApellidos').value
+            )
+        ];
+    }
+
+    tipoPersonaChange(event) {
+        this.tipoPersonaSelected = event.value;
+    }
+
+    initForm() {
+        this.form = this.formBuilder.group({
+            // Datos destinatario
+            'tipoDestinatario': [null, Validators.required],
+            'tipoPersona': [{value: null}],
+            'nombreApellidos': [null],
+            'tipoDocumento': [{value: null}],
+            'nit': [null],
+            'actuaCalidad': [{value: null}],
+            'actuaCalidadNombre': [null],
+
+            'email': [null],
+            'phone': [null],
+            'mobile': [null],
+            'pais': [{value: null}],
+            'departamento': [{value: null}],
+            'municipio': [{value: null}],
+        });
+    }
+
+    ngOnInit(): void {
+        this.tiposPersona$ = this._produccionDocumentalApi.getTiposPersona({});
+        this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
+        this.actuanEnCalidad$ = this._produccionDocumentalApi.getActuaEnCalidad({});
+        this.tiposDocumento$ = this._produccionDocumentalApi.getTiposDocumento({});
+        this.paises$ = this._store.select(paisArrayData);
+        this.municipios$ = this._store.select(municipioArrayData);
+        this.departamentos$ = this._store.select(departamentoArrayData);
+
+        this._paisSandbox.loadDispatch();
+    }
+
+    onPaisChange() {
+        const pais = this.form.get('pais').value;
+        console.log(pais);
+        if (pais) {
+            console.log({codPais: pais.codigo});
+            this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+        }
+    }
+
+    onDepartamentoChange() {
+        const departamento = this.form.get('departamento').value;
+        if (departamento) {
+            this._municipioSandbox.loadDispatch({codDepar: departamento.codigo});
+        }
+    }
+
+    ngOnDestroy(): void {}
+}

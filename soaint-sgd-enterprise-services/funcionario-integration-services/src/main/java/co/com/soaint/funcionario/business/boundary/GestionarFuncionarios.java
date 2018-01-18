@@ -104,4 +104,8 @@ public class GestionarFuncionarios {
     public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci)throws SystemException{
         return control.consultarFuncionarioByIdeFunci(ideFunci);
     }
+
+    public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(String codDependencia, String codEstado) throws BusinessException,SystemException{
+        return control.listarFuncionariosByCodDependenciaAndEstado(codDependencia,codEstado);
+    }
 }
