@@ -195,12 +195,12 @@ public class CorrespondenciaGatewayApi {
         log.info("CorrespondenciaGatewayApi - [trafic] - devolver Comunicaciones");
         Response response = client.devolverComunicaciones(devolucion);
         devolucion.getItemsDevolucion().forEach(item -> {
-            if (item.getCausalDevolucion().equals("NR")) {
+//            if (item.getCausalDevolucion().equals("NR")) {
                 EntradaProcesoDTO entradaProceso = new EntradaProcesoDTO();
                 entradaProceso.setIdProceso("proceso.gestor-devoluciones");
                 entradaProceso.setIdDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT");
                 devolucion.getItemsDevolucion().forEach((itemDevolucion -> this.procesoClient.iniciarProcesoGestorDevoluciones(itemDevolucion, entradaProceso)));
-            }
+//            }
         });
         String responseObject = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseObject).build();

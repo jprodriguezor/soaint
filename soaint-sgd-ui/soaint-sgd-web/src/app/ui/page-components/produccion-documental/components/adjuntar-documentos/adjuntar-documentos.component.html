@@ -1,0 +1,99 @@
+<div class="ui-fluid">
+    <div customActions></div>
+    <div taskBody>
+      <p-fileUpload id="doc-digitalize" #uploader
+                    mode="advanced"
+                    chooseLabel="Buscar"
+                    uploadLabel="Subir"
+                    cancelLabel="Cancelar"
+                    multiple="false"
+                    accept="application/*"
+                    maxFileSize="10000000"
+                    customUpload="true"
+                    (uploadHandler)="customUploader($event)"
+                    (onUpload)="onUpload($event)"
+                    (onClear)="onClear($event)"
+                    (onSelect)="onSelect($event)"
+      >
+
+        <ng-template pTemplate="content" #parent>
+          <pdf-viewer #viewer [src]="url" *ngIf="status >= 1 && previewWasRefreshed"
+                      [show-all]="true"
+                      [original-size]="false"
+                      style="display: block;"
+          ></pdf-viewer>
+        </ng-template>
+
+
+        <ng-template let-file pTemplate="file" class="ui-fluid">
+          <div class="ui-g ui-fileupload-row">
+            <div>{{ file.name }}</div>
+            <div>{{ file.size }} KB</div>
+            <div>{{ file.type }}</div>
+            <div>{{ file.lastModifiedDate | date:'dd/MM/yyyy' }}</div>
+            <div>
+              <button alt="Visualizar Contenido" icon="ui-icon-remove-red-eye" pButton type="button" class="ui-button ui-button-icon-only orange-btn"></button>
+            </div>
+          </div>
+
+        </ng-template>
+
+        <!--<ng-template let-file pTemplate="file">-->
+        <!--<div>Custom UI to display a file</div>-->
+        <!--</ng-template>-->
+        <!--<ng-template pTemplate="content">-->
+        <!--<div>Custom UI to manage uploaded files</div>-->
+        <!--</ng-template>-->
+      </p-fileUpload>
+
+    </div>
+   <div>
+     <p-dataTable [value]="(docs | async)" selectionMode="single" [(selection)]="docSelected"
+                  [paginator]="true" [rows]="10" [responsive]="true"
+                  emptyMessage="No hay documentos asociados">
+       <p-header></p-header>
+       <p-column field="nroFolios" header="Nro Folios" [sortable]="true"></p-column>
+       <p-column field="nroAnexos" header="Nro Anexos" [sortable]="true"></p-column>
+       <p-column field="asunto" header="Asunto" [sortable]="true"></p-column>
+       <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+         <ng-template let-func="rowData" pTemplate="item">
+           <button pButton type="button" label="Ver Detalles"></button>
+           <button pButton type="button" label="Eliminar"></button>
+         </ng-template>
+       </p-column>
+     </p-dataTable>
+   </div>
+
+  <p-dialog [visible]="dialogPrimaryDoc" modal="modal"
+            [responsive]="true" [positionTop]="'50%'" (onHide)="hideDialog()" [width]="600">
+    <p-header>Seleccione el documento primario</p-header>
+    <a id='dwnldLnk' style="display:none;" target="_blank"></a>
+    <div class="card card-w-title">
+
+      <h1>Listado de Roles</h1>
+      <!--form [formGroup]="form" -->
+      <p-dataTable [value]="(uploadFiles)" selectionMode="single" [(selection)]="primaryFile"
+                   [paginator]="true" [rows]="6" [responsive]="true"
+                   emptyMessage="No se encontraron resultados">
+        <p-header></p-header>
+        <p-column field="name" header="Nombre" [sortable]="true"></p-column>
+        <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+          <ng-template let-file="rowData" pTemplate="item">
+            <div class="ui-g-12">
+              <p-checkbox name="group1" [value]="file.name"
+                          [(ngModel)]="selectedFiles" inputId="file.name"></p-checkbox>
+            </div>
+          </ng-template>
+        </p-column>
+      </p-dataTable>
+      <!--/form-->
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button pButton type="button" (click)="updateFuncionarioRol()"
+                class="ui-button-primary" label="Aplicar"></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+</div>

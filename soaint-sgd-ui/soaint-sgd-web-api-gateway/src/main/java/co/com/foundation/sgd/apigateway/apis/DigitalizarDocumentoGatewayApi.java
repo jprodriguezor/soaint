@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.soaint.foundation.canonical.ui.DigitalizarDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,10 +11,12 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
@@ -35,13 +38,12 @@ public class DigitalizarDocumentoGatewayApi {
 
         List<String> ecmIds = new ArrayList<>();
         log.info("DigitalizarDocumentoGatewayApi - [content] : ");
-        file.getFormDataMap().forEach((key, parts) -> {
-            parts.forEach((part) -> {
-                Response response = digitalizarDocumentoClient.digitalizar(part, fileName, tipoComunicacion);
-                if (response.getStatus() == HttpStatus.OK.value())
-                    ecmIds.add(response.readEntity(String.class));
-            });
-        });
+        file.getFormDataMap().forEach((key, parts) -> parts.forEach((part) -> {
+            String fileAuxName = digitalizarDocumentoClient.getPartFileName(part);
+            Response response = digitalizarDocumentoClient.digitalizar(part, fileName, tipoComunicacion);
+            if (response.getStatus() == HttpStatus.OK.value())
+                ecmIds.add(response.readEntity(String.class));
+        }));
         log.info("DigitalizarDocumentoGatewayApi - [content] : " + ecmIds);
         if (!ecmIds.isEmpty()) {
             DigitalizarDocumentoDTO docs = new DigitalizarDocumentoDTO(ecmIds);
