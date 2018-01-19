@@ -14,7 +14,7 @@ import {getArrayData as dependenciaGrupoArrayData} from '../../../infrastructure
 import {getArrayData as sedeAdministrativaArrayData} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
-import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
 import {ConfirmationService} from 'primeng/components/common/api';
 
 @Component({
@@ -60,55 +60,63 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
         .zip(([tipo, sede, grupo, func]) => {
             return {tipo: tipo, sede: sede, grupo: grupo, funcionario: func}
         })
-        .subscribe(value => { this.canInsert = true });
+        .subscribe(() => { this.canInsert = true });
 
+    }
+
+    checkDestinatarioInList(newone: DestinatarioDTO, lista: DestinatarioDTO[]) {
+        return lista.filter(current => {
+            return current.funcionario.id === newone.funcionario.id
+                && current.dependencia.id === newone.dependencia.id
+                && current.sede.id === newone.sede.id;
+        }).length > 0;
     }
 
     adicionarDestinatario() {
-        const tipoDestinatario = this.form.get('tipoDestinatario');
-
-        const toInsert = [{
-            interno: true,
-            tipoDestinatario: tipoDestinatario.value,
-            sede: this.form.get('sede').value,
-            dependencia: this.form.get('dependencia').value,
-            funcionario: this.form.get('funcionario').value,
-        }];
-
-        if (tipoDestinatario.value.codigo === DESTINATARIO_PRINCIPAL
-            && this.listaDestinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
-            this.confirmSubstitucionDestinatarioPrincipal(toInsert);
-            return;
+        if (!this.form.valid) {
+            return false;
         }
 
-        this.listaDestinatarios = [
-            ...toInsert,
-            ...this.listaDestinatarios.filter(
-                value =>
-                    value.sede.codigo !== this.form.get('sede').value.codigo
-                && value.dependencia.codigo !==  this.form.get('dependencia').value.codigo
-                && value.tipoDestinatario.codigo !== this.form.get('tipoDestinatario').value.codigo
-                && value.funcionario.loginName !== this.form.get('funcionario').value.loginName
-            )
-        ];
+        const destinatarios = this.listaDestinatarios;
+        const newone: DestinatarioDTO = this.form.value;
+        newone.interno = true;
+
+        if (this.checkDestinatarioInList(newone, destinatarios)) {
+            return false;
+        }
+
+        if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL
+            && destinatarios.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
+            this.confirmationService.confirm({
+                message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
+                accept: () => {
+                    const newList = destinatarios.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL);
+                    newList.unshift(newone);
+                    this.listaDestinatarios = [...newList];
+                    this.form.reset();
+                }
+            });
+            return true;
+        }
+
+        if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
+            destinatarios.unshift(newone);
+        } else {
+            destinatarios.push(newone);
+        }
+
+        this.listaDestinatarios = [...destinatarios];
+        this.form.reset();
+
+        return true;
     }
 
-    confirmSubstitucionDestinatarioPrincipal(toInsert) {
-        this.confirmationService.confirm({
-            message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
-            accept: () => {
-                this.substitudeAgenteDestinatario(toInsert);
-            }
-        });
-    }
-
-    substitudeAgenteDestinatario(toInsert) {
-        this.listaDestinatarios = [
-            ...toInsert,
-            // ...this.listaDestinatarios.filter(
-            //     value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL
-            // )
-        ];
+    eliminarDestinatario(index: number) {
+        if (index > -1) {
+            const destinatarios = this.listaDestinatarios;
+            destinatarios.splice(index, 1);
+            this.listaDestinatarios = [...destinatarios];
+        }
     }
 
 
@@ -148,14 +156,12 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.form.get('dependencia').valueChanges.subscribe((value) => {
+        /*this.form.get('dependencia').valueChanges.subscribe((value) => {
             if (value) {
                 this.form.get('funcionario').reset();
-                this._funcionarioSandbox.loadAllFuncionariosDispatch({
-                    codDependencia: value.codigo
-                });
+                this._funcionarioSandbox.loadAllFuncionariosDispatch({codDependencia: value.codigo});
             }
-        });
+        });*/
     }
 
     listenForBlurEvents(control: string) {
@@ -174,9 +180,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
         this.dependencias$ = this._store.select(dependenciaGrupoArrayData);
         this._store.dispatch(new SedeAdministrativaLoadAction());
 
-        this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({
-          rol: 'RECEPTOR'
-        });
+        this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({rol: 'RECEPTOR'});
 
         this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
 

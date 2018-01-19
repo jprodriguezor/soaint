@@ -158,15 +158,14 @@ public class CorrespondenciaWebApi {
     }
 
     /**
-     * @param correspondenciaDTO
+     * @param comunicacionOficialDTO
      * @throws BusinessException
      * @throws SystemException
      */
     @PUT
     @Path("/correspondencia/actualizar-comunicacion")
-    public String actualizarComunicacion(CorrespondenciaDTO correspondenciaDTO) throws BusinessException, SystemException {
-        log.info("processing rest request - actualizar comunicacion");
-        //boundary.actualizarEstadoCorrespondencia(correspondenciaDTO);
-        return "1";
+    public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizar comunicacion", comunicacionOficialDTO);
+        return boundary.actualizarComunicacion(comunicacionOficialDTO);
     }
 }
