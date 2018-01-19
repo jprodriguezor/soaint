@@ -206,7 +206,7 @@ export class DocumentosTramiteComponent implements OnInit {
         id: null,
         observacion: observation || payload.observacion,
         ideFunci: this.funcionarioLog.id,
-        codDependencia: this.dependenciaSelected.id,
+        codDependencia: this.dependenciaSelected.codigo,
         estado: null,
         fecha: null,
         ideDocumento: null
