@@ -7,11 +7,12 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.infrastructure.ApiDelegator;
+import co.com.soaint.funcionario.util.SystemParameters;
 import com.soaint.services.security_cartridge._1_0.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,8 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SecurityApiClient {
 
-    @Value("${securityapi.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.SECURITY_FOUNDATION_SERVICE_ENDPOINT_URL);
 
     /**
      * @param rol
