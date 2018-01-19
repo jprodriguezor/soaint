@@ -683,4 +683,74 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+
+    public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+        try {
+            CorCorrespondencia correspondencia = em.find(CorCorrespondencia.class ,comunicacionOficialDTO.getCorrespondencia().getIdeDocumento());
+
+            for (AgenteDTO corAgente: comunicacionOficialDTO.getAgenteList()){
+                if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(corAgente.getCodTipAgent())) {
+                    log.error("Destinatario");
+                    DestinatarioDTO destinatario = DestinatarioDTO.newInstance()
+                            .agenteDestinatario(corAgente)
+                            .ideFuncionarioCreaModifica(new BigInteger(comunicacionOficialDTO.getCorrespondencia().getCodFuncRadica()))
+                            .build();
+                        agenteControl.actualizarDestinatario(destinatario);
+                }
+                else{
+                    log.error("Remitente");
+                    RemitenteDTO remitente = RemitenteDTO.newInstance()
+                            .ideFuncionarioCreaModifica(new BigInteger(comunicacionOficialDTO.getCorrespondencia().getCodFuncRadica()))
+                            .agenteRemitente(corAgente)
+                            .datosContactoList(comunicacionOficialDTO.getDatosContactoList())
+                            .build();
+                    agenteControl.actualizarRemitente(remitente);
+                }
+            }
+
+            PpdDocumento ppdDocumento = em.find(PpdDocumento.class, comunicacionOficialDTO.getPpdDocumentoList().get(0).getIdePpdDocumento());
+            if (!comunicacionOficialDTO.getPpdDocumentoList().get(0).getCodTipoDoc().equals(ppdDocumento.getCodTipoDoc())){
+                correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
+                ppdDocumento.setCodTipoDoc(comunicacionOficialDTO.getPpdDocumentoList().get(0).getCodTipoDoc());
+            }
+            ppdDocumento.setAsunto(comunicacionOficialDTO.getPpdDocumentoList().get(0).getAsunto());
+
+            if (comunicacionOficialDTO.getAnexoList() != null) {
+                comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
+                    if (em.find(CorAnexo.class, anexoDTO.getIdeAnexo()) == null){
+                        CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                        corAnexo.setPpdDocumento(ppdDocumento);
+                        ppdDocumento.getCorAnexoList().add(corAnexo);
+                    }
+                });
+            }
+
+            if (comunicacionOficialDTO.getReferidoList() != null)
+                comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
+                    if (em.find(CorReferido.class, referidoDTO.getIdeReferido()) == null){
+                        CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                        corReferido.setCorCorrespondencia(correspondencia);
+                        correspondencia.getCorReferidoList().add(corReferido);
+                    }
+                });
+
+            em.merge(correspondencia);
+            em.flush();
+
+            log.info("Actualizacion exitosa de la comunicacion");
+            return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }

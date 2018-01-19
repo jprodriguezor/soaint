@@ -287,6 +287,10 @@ public class AsignacionControl {
      */
     public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci) throws SystemException {
         try {
+            log.error("ideAgente: " + ideAgente);
+            log.error("ideDocumento: " + ideDocumento);
+            log.error("codDependencia: " + codDependencia);
+            log.error("ideFunci: " + ideFunci);
             DctAsigUltimo asignacionUltimo = getAsignacionUltimoByIdeAgente(ideAgente);
 
             CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()
@@ -300,6 +304,7 @@ public class AsignacionControl {
             DctAsignacion asignacion = DctAsignacion.newInstance()
                     .corCorrespondencia(correspondencia)
                     .ideUsuarioCreo(String.valueOf(ideFunci))
+                    .ideFunci(ideFunci)
                     .codDependencia(codDependencia)
                     .codTipAsignacion("CTA")
                     .fecAsignacion(new Date())
@@ -316,6 +321,7 @@ public class AsignacionControl {
             em.persist(asignacion);
             em.merge(asignacionUltimo);
             em.flush();
+            log.error("Actualizo la asignacion correctamente");
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
