@@ -1,9 +1,7 @@
 package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.AgenteControl;
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -51,5 +49,23 @@ public class GestionarAgente {
      */
     public void devolverCorrespondencia(DevolucionDTO devolucion) throws SystemException {
         control.devolverCorrespondencia(devolucion);
+    }
+
+    /**
+     * @param destinatarioDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String actualizarDestinatario(DestinatarioDTO destinatarioDTO) throws SystemException {
+        return control.actualizarDestinatario(destinatarioDTO);
+    }
+
+    /**
+     * @param remitenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String actualizarRemitente(RemitenteDTO remitenteDTO) throws SystemException {
+        return control.actualizarRemitente(remitenteDTO);
     }
 }

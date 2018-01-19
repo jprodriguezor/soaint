@@ -113,4 +113,14 @@ public class GestionarCorrespondencia {
     public Boolean verificarByNroRadicado(String nroRadicado) throws SystemException{
         return control.verificarByNroRadicado(nroRadicado);
     }
+
+    /**
+     *
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws SystemException
+     */
+    public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException{
+        return control.actualizarComunicacion(comunicacionOficialDTO);
+    }
 }
