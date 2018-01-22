@@ -55,7 +55,7 @@ public class ProcesoClient {
         parametros.put("numeroRadicado", itemDevolucion.getAgente().getNroDocuIdentidad());
         parametros.put("causalD", itemDevolucion.getCausalDevolucion());
         parametros.put("funDevuelve", itemDevolucion.getFunDevuelve());
-        parametros.put("fechaVencimiento", "");
+        parametros.put("fechaVencimiento", itemDevolucion.getCorrespondencia().getFecVenGestion());
         parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
         parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
         parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
