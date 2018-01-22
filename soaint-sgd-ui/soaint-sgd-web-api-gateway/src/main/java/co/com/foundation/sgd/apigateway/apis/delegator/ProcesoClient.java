@@ -50,7 +50,6 @@ public class ProcesoClient {
                 .request()
                 .post(Entity.json(entradaProcesoDTO));
     }
-
     public Response iniciarProcesoGestorDevoluciones(ItemDevolucionDTO itemDevolucion, EntradaProcesoDTO entradaProceso) {
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("numeroRadicado", itemDevolucion.getAgente().getNroDocuIdentidad());
@@ -60,6 +59,8 @@ public class ProcesoClient {
         parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
         parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
         parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
+        parametros.put("requiereDigitalizacion", itemDevolucion.getCorrespondencia().getReqDigita());
+
         entradaProceso.setParametros(parametros);
         return this.iniciarTercero(entradaProceso);
     }

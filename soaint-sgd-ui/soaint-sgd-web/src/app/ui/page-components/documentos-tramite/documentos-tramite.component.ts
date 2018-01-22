@@ -199,7 +199,8 @@ export class DocumentosTramiteComponent implements OnInit {
       itemsDevolucion: [
         {
           agente: agente,
-          causalDevolucion: cause || payload.causalDevolucion.id
+          causalDevolucion: cause || payload.causalDevolucion.id,
+          correspondencia: this.comunicacion.correspondencia
         }
       ],
       traza: {

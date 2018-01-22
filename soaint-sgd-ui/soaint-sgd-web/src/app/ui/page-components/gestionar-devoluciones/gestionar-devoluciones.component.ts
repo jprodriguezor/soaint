@@ -41,7 +41,6 @@ export class GestionarDevolucionesComponent implements OnInit {
   dependencias: DependenciaDTO[] = [];
   disabledDevolucionRechazar: Boolean;
 
-
   comunicacion: ComunicacionOficialDTO = {};
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
@@ -113,12 +112,6 @@ export class GestionarDevolucionesComponent implements OnInit {
 
         this.dependenciaCode= this.comunicacion.correspondencia.codDependencia;
         this.sedeCode =  this.comunicacion.correspondencia.codSede;
-        //console.log("comunicacion");
-        //console.log(this.comunicacion);
-
-        //this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
-        //console.log("radicacion_entrada");
-        //console.log(this.radicacionEntradaDTV);
 
         if(this.comunicacion){
             this.popupAgregarObservaciones.form.reset();
