@@ -60,7 +60,6 @@ public class ProcesoClient {
         parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
         parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
         parametros.put("requiereDigitalizacion", itemDevolucion.getCorrespondencia().getReqDigita());
-
         entradaProceso.setParametros(parametros);
         return this.iniciarTercero(entradaProceso);
     }

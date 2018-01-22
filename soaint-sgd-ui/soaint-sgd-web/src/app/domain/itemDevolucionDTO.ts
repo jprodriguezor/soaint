@@ -5,4 +5,7 @@ export interface ItemDevolucionDTO {
   agente: AgentDTO;
   causalDevolucion: string;
   correspondencia: CorrespondenciaDTO;
+  funDevuelve: String;
+
+
 }

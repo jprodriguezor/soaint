@@ -82,8 +82,7 @@ export class DatosGeneralesComponent implements OnInit {
       'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
       'inicioConteo': [null],
       'reqDistFisica': [{value: null, disabled: !this.editable}],
-      'reqDigit': [{value: null, disabled: !this.editable}],
-      'reqDigitInmediata': [{value: false, disabled: false}],
+      'reqDigit': [{value: "1", disabled: !this.editable}],
       'tiempoRespuesta': [{value: null, disabled: !this.editable}],
       'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
       'radicadoReferido': [{value: null, disabled: !this.editable}],
@@ -135,15 +134,6 @@ export class DatosGeneralesComponent implements OnInit {
         delete this.visibility.numeroGuia;
       }
     });
-
-    // this.form.get('reqDigit').valueChanges.distinctUntilChanged().subscribe((value) => {
-    //  if (value) {
-    //    this.visibility.reqDigitInmediata = true;
-    //  } else {
-    //    delete this.visibility.reqDigitInmediata;
-    //  }
-    // });
-
     this.listenForErrors();
   }
 
