@@ -5,7 +5,6 @@ import {PDDatosContactoComponent} from './components/datos-contacto/datos-contac
 import {ProduccionDocumentalMultipleComponent} from './produccion-documental-multiple.component';
 import {DatosDestinatarioInternoComponent} from '../datos-destinatario/datos-destinatario-interno.component';
 import {DatosDestinatarioExternoComponent} from '../datos-destinatario/datos-destinatario-externo.component';
-import {AdjuntarDocumentosComponent} from "./components/adjuntar-documentos/adjuntar-documentos.component";
 
 export const PRODUCCION_DOCUMENTAL_COMPONENTS = [
     ProduccionDocumentalMultipleComponent,
@@ -15,5 +14,6 @@ export const PRODUCCION_DOCUMENTAL_COMPONENTS = [
     PDGestionarProduccionComponent,
     DatosDestinatarioInternoComponent,
     DatosDestinatarioExternoComponent,
-    AdjuntarDocumentosComponent
+    DatosDestinatarioInternoComponent,
+    DatosDestinatarioExternoComponent,
 ];

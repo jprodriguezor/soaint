@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdjuntarDocumentosComponent } from './adjuntar-documentos.component';
+import { DocumentoEcmComponent } from './documento-ecm.component';
 
-describe('AdjuntarDocumentosComponent', () => {
-  let component: AdjuntarDocumentosComponent;
-  let fixture: ComponentFixture<AdjuntarDocumentosComponent>;
+describe('DocumentoEcmComponent', () => {
+  let component: DocumentoEcmComponent;
+  let fixture: ComponentFixture<DocumentoEcmComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdjuntarDocumentosComponent ]
+      declarations: [ DocumentoEcmComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdjuntarDocumentosComponent);
+    fixture = TestBed.createComponent(DocumentoEcmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
