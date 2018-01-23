@@ -38,4 +38,12 @@ public class TipoPlantillaApi {
         return Response.status( response.getStatus() ).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/obtener/{codClasificacion}")
+    //@JWTTokenSecurity
+    public Response read(@PathParam("codClasificacion") final String codClasificacion) {
+        String responseContent = "";
+        return Response.status( Response.Status.ACCEPTED ).entity(responseContent).build();
+    }
+
 }

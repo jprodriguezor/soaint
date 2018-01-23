@@ -85,7 +85,7 @@ export class PDDatosGeneralesComponent implements OnInit {
   cargarPlantilla(tipoSelected) {
     console.log(tipoSelected);
 
-    this.readFileFile('file:///D:/WORK/SOAINT/CORRESPONDENCIA/ProduccionDocumental/plantillas/Plantilla-Memorando.html');
+    // this.readFileFile('file:///D:/WORK/SOAINT/CORRESPONDENCIA/ProduccionDocumental/plantillas/Plantilla-Memorando.html');
 
     this.editarPlantillaVisible = true;
   }

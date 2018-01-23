@@ -6,29 +6,13 @@
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                <label>Usuario Responsable</label>
-              </span>
+                                <label>Usuario Responsable</label>
+                            </span>
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                  <label
-                    style="color: inherit">{{taskData.variables.usuarioProyector}}</label>
-              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
-                    <div class="ui-g form-group">
-                        <div class="ui-g-12">
-                            <span class="md-inputfield">
-                <label>Fecha y Hora de creación</label>
-              </span>
-                        </div>
-                        <div class="ui-g-12">
-                            <span class="md-inputfield">
-                  <label
-                    style="color: inherit">{{fechaCreacion | date:'dd/MM/yyyy hh:mm a'}}</label>
-              </span>
+                                <label style="color: inherit">{{taskData.variables.usuarioProyector}}</label>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -36,14 +20,13 @@
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                <label>Sede</label>
-              </span>
+                              <label>Fecha y Hora de creación</label>
+                            </span>
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                  <label
-                    style="color: inherit">{{taskData.variables.codigoSede}}</label>
-              </span>
+                                <label style="color: inherit">{{fechaCreacion | date:'dd/MM/yyyy hh:mm a'}}</label>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -51,14 +34,27 @@
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                <label>Dependencia</label>
-              </span>
+                                <label>Sede</label>
+                            </span>
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                  <label
-                    style="color: inherit">{{taskData.variables.codDependencia}}</label>
-              </span>
+                                <label style="color: inherit">{{taskData.variables.codigoSede}}</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
+                                <label>Dependencia</label>
+                            </span>
+                        </div>
+                        <div class="ui-g-12">
+                            <span class="md-inputfield">
+                                <label style="color: inherit">{{taskData.variables.codDependencia}}</label>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -272,7 +268,7 @@
     </p-header>
 
     <p-editor [(ngModel)]="plantillaHtmlContent" [style]="{'height':'320px'}"></p-editor>
-    
+
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" label="Guardar" [disabled]="!plantillaHtmlContent" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="agregarVersion()"></button>
