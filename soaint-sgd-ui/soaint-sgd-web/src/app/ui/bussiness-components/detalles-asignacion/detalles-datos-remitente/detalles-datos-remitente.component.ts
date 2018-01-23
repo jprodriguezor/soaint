@@ -28,7 +28,11 @@ export class DetallesDatosRemitenteComponent {
   }
 
   getPais(codigoPais): string {
-    return this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais).departamento.pais.nombre;
+    const pais = this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais);
+    if (pais) {
+      return pais.departamento.pais.nombre;
+    }
+    return '';
   }
 
   getDepartamento(codigoDepartamento): string {
