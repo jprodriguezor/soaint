@@ -30,5 +30,9 @@ public class MetadatosDocumentosDTO implements Serializable {
     private String nroRadicado;
     private String tipologiaDocumental;
     private String nombreRemitente;
+    private String sede;
+    private String dependencia;
+    private String nombreDocumento;
+    private String idDocumentoPadre;
 
 }
