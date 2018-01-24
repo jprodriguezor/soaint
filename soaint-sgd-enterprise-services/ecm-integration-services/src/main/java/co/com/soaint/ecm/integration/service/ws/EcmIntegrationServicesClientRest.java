@@ -93,17 +93,29 @@ public class EcmIntegrationServicesClientRest {
      * Subir documento a ECM
      *
      * @param documento        documento a subir
-     * @param metadatosDocumentosDTO Objeto de Metadatos de los documentos
+     * @param nombreDocumento Nombre del documento
+     * @param idDocPadre Identificador del documento padre
+     * @param sede Sede a la que pertenece el documento
+     * @param dependencia Dependencia a la que pertenece el documento
      * @return identificador del documento en el ecm
      */
     @POST
-    @Path("/subirDocumentoRelacionECM/")
+    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{idDocPadre}/{sede}/{dependencia}")
     @Consumes("multipart/form-data")
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestPart("documento") final MultipartFormDataInput documento,
-                                                              @RequestBody MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+                                                              @PathParam("nombreDocumento") String nombreDocumento,
+                                                              @PathParam("idDocPadre") String idDocPadre,
+                                                              @PathParam("sede") String sede,
+                                                              @PathParam("dependencia") String dependencia) throws IOException {
 
-        logger.info("processing rest request - Subir Documento ECM " + metadatosDocumentosDTO.getNombreDocumento());
+        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento);
         try {
+            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
+            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
+            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
+            metadatosDocumentosDTO.setSede(sede);
+            metadatosDocumentosDTO.setDependencia(dependencia);
+
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
         } catch (RuntimeException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
