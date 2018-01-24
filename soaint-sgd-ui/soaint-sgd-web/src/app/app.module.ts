@@ -44,6 +44,7 @@ import { FuncionarioListComponent } from './ui/page-components/security-role/com
 import { ControlMessagesComponent } from './ui/page-components/security-role/components/control-messages/control-messages.component';
 import { UnidadesDocumentalesComponent } from './ui/page-components/unidades-documentales/unidades-documentales.component';
 import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
+import { DocumentoEcmComponent } from './ui/bussiness-components/documento-ecm/documento-ecm.component';
 
 
 @NgModule({
@@ -131,7 +132,8 @@ import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-d
     FuncionarioListComponent,
     ControlMessagesComponent,
     UnidadesDocumentalesComponent,
-    GestionarDevolucionesComponent
+    GestionarDevolucionesComponent,
+    DocumentoEcmComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

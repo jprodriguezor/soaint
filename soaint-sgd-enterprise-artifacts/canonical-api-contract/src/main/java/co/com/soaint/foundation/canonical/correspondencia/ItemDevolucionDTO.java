@@ -29,5 +29,6 @@ public class ItemDevolucionDTO implements Serializable {
     AgenteDTO agente;
     Integer causalDevolucion;
     String funDevuelve;
+    CorrespondenciaDTO correspondencia;
 }
 

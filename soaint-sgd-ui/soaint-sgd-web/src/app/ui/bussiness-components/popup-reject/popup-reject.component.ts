@@ -80,4 +80,5 @@ export class PopupRejectComponent implements OnInit {
       this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
   }
+
 }

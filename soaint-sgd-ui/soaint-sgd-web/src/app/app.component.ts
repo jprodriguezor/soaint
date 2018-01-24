@@ -11,6 +11,7 @@ import {Observable} from 'rxjs/Observable';
 export class AppComponent implements OnInit {
   isLoading: boolean;
   loading$: Observable<boolean>;
+
   constructor(private _store: Store<RootState>, private loading: LoadingService) {
     this.loading$ = this.loading.getLoaderAsObservable();
 

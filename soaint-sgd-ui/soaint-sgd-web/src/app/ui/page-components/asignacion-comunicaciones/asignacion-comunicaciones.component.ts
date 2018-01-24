@@ -518,7 +518,8 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       items.push({
         agente: a,
         causalDevolucion: cause || payload.causalDevolucion.id,
-        funDevuelve: this.funcionarioLog.loginName
+        funDevuelve: this.funcionarioLog.loginName,
+        correspondencia: ag.correspondencia
       });
     });
     return items;

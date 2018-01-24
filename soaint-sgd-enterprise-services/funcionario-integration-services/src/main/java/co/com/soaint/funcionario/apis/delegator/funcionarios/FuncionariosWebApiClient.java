@@ -5,9 +5,9 @@ import co.com.soaint.foundation.canonical.correspondencia.FuncionariosDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.funcionario.infrastructure.ApiDelegator;
+import co.com.soaint.funcionario.util.SystemParameters;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -23,8 +23,7 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class FuncionariosWebApiClient {
 
-    @Value("${backapi.endpoint.url}")
-    private String endpoint = "";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
     /**
      * @param codDependencia

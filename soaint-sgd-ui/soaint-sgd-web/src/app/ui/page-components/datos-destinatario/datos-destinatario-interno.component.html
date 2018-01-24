@@ -1,0 +1,101 @@
+<form [formGroup]="form">
+    <p-panel header="Datos destinatario interno" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label>Tipo destinatario</label>
+                    </div>
+                    <div class="ui-g-12">
+                        <p-dropdown [options]="tiposDestinatario$ | async | dropdownItem"
+                                    id="tipoDestinatario"
+                                    formControlName="tipoDestinatario"
+                                    placeholder="Seleccione"
+                                    [autoWidth]="false">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="sede">Sede</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="sedesAdministrativas$ | async | dropdownItem"
+                                    id="sede"
+                                    formControlName="sede"
+                                    placeholder="Seleccione"
+                                    (onBlur)="listenForBlurEvents('sede')"
+                                    [autoWidth]="false">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="dependencia">Dependencia</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="dependencias$ | async | dropdownItem"
+                                    id="dependencia"
+                                    formControlName="dependencia"
+                                    placeholder="Seleccione"
+                                    (onBlur)="listenForBlurEvents('dependencia')"
+                                    [autoWidth]="false">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="funcionario">Usuario</label>
+                    </div>
+                    <div class="ui-g-12 md-dropdownfield">
+                        <p-dropdown [options]="funcionarios$ | async | dropdownItem"
+                                    id="funcionario"
+                                    formControlName="funcionario"
+                                    placeholder="Seleccione"
+                                    (onBlur)="listenForBlurEvents('funcionario')"
+                                    [autoWidth]="false">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p-panel>
+</form>
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12" style="padding-top: 20px">
+        <button pButton type="button" label="Agregar"
+                style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+                [disabled]="!canInsert"
+                (click)="adicionarDestinatario()"></button>
+    </div>
+</div>
+
+
+<p-panel header="Datos destinatarios internos" [style]="{border: 'none'}">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-dataTable emptyMessage="No hay resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="listaDestinatarios">
+                <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+                <p-column field="sede.nombre" header="Sede Administrativa" [sortable]="true"></p-column>
+                <p-column field="dependencia.nombre" header="Dependencia/Grupo" [sortable]="true"></p-column>
+                <p-column field="funcionario.nombre" header="Usuario" [sortable]="true"></p-column>
+                <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="listaDestinatarios && listaDestinatarios.length > 0">
+                    <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+                        <!--<button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"-->
+                        <!--class="amber-btn ui-button ui-button-icon"></button>-->
+                        <button type="button" icon="ui-icon-close" pButton (click)="eliminarDestinatario(i)"
+                                class="ui-button ui-button-icon ui-button-danger"></button>
+                    </ng-template>
+                </p-column>
+            </p-dataTable>
+        </div>
+    </div>
+</p-panel>

@@ -9,9 +9,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TipoCausalEnum {
-    MALACALIDADIMAGEN(1, "MALACALIDADIMAGEN"),
-    DATOSINCORRECTOS(2, "DATOSINCORRECTOS"),
-    NUMEROREINTENTOSMAXIMO(3, "NUMEROREINTENTOSMAXIMO");
+    MALACALIDADIMAGEN(1, "Calidad Imagen"),
+    DATOSINCORRECTOS(2, "Datos incorrectos"),
+    NUMEROREINTENTOSMAXIMO(3, "Supera los intentos permitidos de Redireccionamiento");
 
     private final int codigo;
     private final String nombre;

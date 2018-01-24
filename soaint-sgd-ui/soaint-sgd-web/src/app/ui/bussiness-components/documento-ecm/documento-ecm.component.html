@@ -1,0 +1,45 @@
+<div class="ui-fluid radicar-comunicaciones">
+    <div customActions></div>
+    <div taskBody>
+      <p-fileUpload id="doc-digitalize" #uploader
+                    mode="advanced"
+                    chooseLabel="Buscar"
+                    uploadLabel="Digitalizar"
+                    cancelLabel="Cancelar"
+                    multiple="true"
+                    accept="application/*"
+                    maxFileSize="10000000"
+                    customUpload="true"
+                    (uploadHandler)="customUploader($event)"
+                    (onUpload)="onUpload($event)"
+                    (onClear)="onClear($event)"
+                    (onSelect)="onSelect($event)">
+
+        <ng-template pTemplate="content" #parent>
+          <pdf-viewer #viewer [src]="url" *ngIf="status >= 1 && previewWasRefreshed"
+                      [show-all]="true"
+                      [original-size]="false"
+                      style="display: block;"
+          ></pdf-viewer>
+        </ng-template>
+
+        <ng-template let-file pTemplate="file" class="ui-fluid">
+          <div class="ui-g ui-fileupload-row">
+            <div class="ui-lg-3 ui-sm-3 ui-xl-3">{{ file.name }}</div>
+            <div class="ui-lg-2 ui-sm-2 ui-xl-2">{{ file.size }} KB</div>
+            <div class="ui-lg-2 ui-sm-2 ui-xl-2">{{ file.type }}</div>
+            <div class="ui-lg-2 ui-sm-2 ui-xl-2">{{ file.lastModifiedDate | date:'dd/MM/yyyy' }}</div>
+            <div class="ui-lg-2 ui-sm-2 ui-xl-2">
+              <p-radioButton name="principal" [value]="file.name" label="Principal"
+                             [(ngModel)]="principalFile">
+              </p-radioButton>
+            </div>
+            <div class="ui-lg-1 ui-sm-1 ui-xl-1">
+              <button alt="Visualizar Contenido" icon="ui-icon-remove-red-eye" pButton type="button"
+                      class="ui-button ui-button-icon-only orange-btn" (click)="preview(file)"></button>
+            </div>
+          </div>
+        </ng-template>
+      </p-fileUpload>
+    </div>
+</div>

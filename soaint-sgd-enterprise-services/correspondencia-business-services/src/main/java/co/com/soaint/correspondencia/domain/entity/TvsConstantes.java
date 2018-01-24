@@ -12,13 +12,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import java.util.List;
+import javax.persistence.*;
 
 /**
  *
@@ -63,5 +58,6 @@ public class TvsConstantes implements Serializable {
     private String codPadre;
     @Column(name = "ESTADO")
     private String estado;
-    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoDoc")
+    private List<TvsPlantilla> platillas;
 }

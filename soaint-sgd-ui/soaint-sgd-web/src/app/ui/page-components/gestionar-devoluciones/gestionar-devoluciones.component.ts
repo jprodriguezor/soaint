@@ -17,6 +17,7 @@ import {getArrayData as getFuncionarioArrayData, getAuthenticatedFuncionario, ge
 import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
+import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
 @Component({
   selector: 'app-gestionar-devoluciones',
@@ -27,34 +28,25 @@ export class GestionarDevolucionesComponent implements OnInit {
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
-  editable = true;
-  //form = new FormGroup({});
   causalDevolucion: any;
   usuariodevuelve: any;
   sedeAdministrativa: any;
   dependencia: any;
-  observacion: any;
-  radicacionEntradaDTV: any;
 
-  funcionarioLog: FuncionarioDTO;
+  causalText: String;
 
-  funcionarioSubcription: Subscription;
+  sedeCode: String;
+  dependenciaCode: String;
 
-  dependenciaSelected$: Observable<DependenciaDTO>;
+  dependencias: DependenciaDTO[] = [];
+  disabledDevolucionRechazar: Boolean;
 
-  dependenciaSelected: DependenciaDTO;
+  comunicacion: ComunicacionOficialDTO = {};
+  task: TareaDTO;
+  activeTaskUnsubscriber: Subscription;
 
-  globalDependencySubcription: Subscription;
-
-  constructor(private _store: Store<State>, private _sandbox: RadicarComunicacionesSandBox, private _constSandbox: ConstanteSandbox, private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder, private _asiganacionSandbox: AsiganacionDTOSandbox) {
-
-    this.funcionarioSubcription = this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
-
-    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
-
-    this.initForm();
+  constructor(private _store: Store<State>,private _dependenciaSandbox: DependenciaSandbox , private _sandbox: RadicarComunicacionesSandBox, private _constSandbox: ConstanteSandbox, private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder, private _asiganacionSandbox: AsiganacionDTOSandbox) {
+     this.initForm();
   }
   form = new FormGroup({
     causalDevolucion: new FormControl(),
@@ -64,10 +56,6 @@ export class GestionarDevolucionesComponent implements OnInit {
     observacion: new FormControl(),
   });
 
-  comunicacion: ComunicacionOficialDTO = {};
-  task: TareaDTO;
-  activeTaskUnsubscriber: Subscription;
-
   ngOnInit() {
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
@@ -75,9 +63,23 @@ export class GestionarDevolucionesComponent implements OnInit {
       this.restore();
     });
 
-    this.globalDependencySubcription = this.dependenciaSelected$.subscribe((result) => {
-      this.dependenciaSelected = result;
+    this.disabledDevolucionRechazar = false;
+    if("3" == this.task.variables.causalD){
+      this.disabledDevolucionRechazar = true;
+    }
+
+    this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
+
+      this.dependencias = results.dependencias;
+
+      const objDependencia  = results.dependencias.find((element) => element.codigo === this.dependenciaCode);
+      const objSede  = results.dependencias.find((element) => element.codSede === this.sedeCode);
+
+      this.form.get("dependencia").setValue(objDependencia ? objDependencia.nombre : '');
+      this.form.get("sedeAdministrativa").setValue(objSede ? objSede.nomSede : '');
+
     });
+
   }
 
   initForm() {
@@ -87,33 +89,44 @@ export class GestionarDevolucionesComponent implements OnInit {
       'usuariodevuelve': [null],
       'sedeAdministrativa': [null],
       'dependencia': [null],
-      'observacion': [null],
     });
   }
 
   restore() {
     if (this.task) {
       console.log(this.task);
-      this.causalDevolucion = this.task.variables.causalDevolucion;
-      this.usuariodevuelve = this.task.variables.causalDevolucion;
-      this.sedeAdministrativa = this.task.variables.codDependencia;
-      this.dependencia = this.task.variables.codDependencia;
+      if("1" == this.task.variables.causalD){
+        this.causalText = "Calidad Imagen";
+      }else if("2" == this.task.variables.causalD){
+        this.causalText = "Datos incorrectos";
+      }else if("3" == this.task.variables.causalD){
+        this.causalText = "Supera los intentos permitidos de Redireccionamiento";
+      }
+
+      this.causalDevolucion =  this.causalText;
+      this.usuariodevuelve = this.task.variables.funDevuelve;
 
       this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
+
         this.comunicacion = result;
 
-        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        this.dependenciaCode= this.comunicacion.correspondencia.codDependencia;
+        this.sedeCode =  this.comunicacion.correspondencia.codSede;
 
-        this.popupAgregarObservaciones.form.reset();
-        this.popupAgregarObservaciones.setData({
-          idDocumento: this.radicacionEntradaDTV.source.correspondencia.ideDocumento,
-          idFuncionario: this.funcionarioLog.id,
-          codOrgaAdmin: this.dependenciaSelected.codigo
-        });
-        this.popupAgregarObservaciones.loadObservations();
+        if(this.comunicacion){
+            this.popupAgregarObservaciones.form.reset();
+            this.popupAgregarObservaciones.setData({
+              idDocumento: this.comunicacion.correspondencia.ideDocumento,
+              idFuncionario: this.comunicacion.correspondencia.codFuncRadica,
+              codOrgaAdmin: this.comunicacion.correspondencia.codDependencia,
+              isPopup: false
+            });
+
+            this.popupAgregarObservaciones.loadObservations();
+        }
+
 
       });
-
     }
   }
 
@@ -141,5 +154,15 @@ export class GestionarDevolucionesComponent implements OnInit {
         devolucion: 2,
       }
     });
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
+
+  isdisabledDevolucionRechazar(){
+    return this.disabledDevolucionRechazar;
+  }
+
+  ngOnDestroy() {
+    this.activeTaskUnsubscriber.unsubscribe();
+  }
+
 }

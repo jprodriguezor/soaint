@@ -16,6 +16,10 @@
           <pd-datos-generales #datosGenerales [taskData]="task"></pd-datos-generales>
           <br/>
         </p-tabPanel>
+        <p-tabPanel header="Adjuntar Documentos" leftIcon="ui-icon-assignment">
+          <documento-ecm #documentoEcm></documento-ecm>
+          <!--pd-adjuntar-documentos #adjuntarDocumentos></pd-adjuntar-documentos-->
+        </p-tabPanel>
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
           <pd-datos-contacto #datosContacto [taskData]="task"></pd-datos-contacto>
         </p-tabPanel>

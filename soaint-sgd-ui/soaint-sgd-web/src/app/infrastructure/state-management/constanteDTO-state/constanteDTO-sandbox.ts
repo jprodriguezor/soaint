@@ -66,6 +66,9 @@ export class Sandbox {
       case 'prefijoCuadrante':
         endpoint = environment.prefijoCuadrante_endpoint;
         break;
+      case 'soporteAnexo':
+        endpoint = environment.soporteAnexo_endpoint;
+        break;
     }
 
     if (endpoint !== null) {

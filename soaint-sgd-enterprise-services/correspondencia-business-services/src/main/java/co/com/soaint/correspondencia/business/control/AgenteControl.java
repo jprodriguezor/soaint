@@ -1,6 +1,8 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
+import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
+import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
@@ -19,6 +21,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -386,5 +389,104 @@ public class AgenteControl {
                 .indOriginal(agenteDTO.getIndOriginal())
                 .tvsDatosContactoList(new ArrayList<>())
                 .build();
+    }
+
+    /**
+     * @param destinatarioDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String actualizarDestinatario(DestinatarioDTO destinatarioDTO) throws SystemException {
+        try {
+            if (!verificarByIdeAgente(destinatarioDTO.getAgenteDestinatario().getIdeAgente()))
+                return "0";
+            log.error("Actualizando destinatario");
+            CorAgente destinatario = em.getReference(CorAgente.class, destinatarioDTO.getAgenteDestinatario().getIdeAgente());
+            destinatario.setCodDependencia(destinatarioDTO.getAgenteDestinatario().getCodDependencia());
+            destinatario.setCodSede(destinatarioDTO.getAgenteDestinatario().getCodSede());
+            log.error("Actualizando Asignaciones");
+            asignacionControl.actualizarAsignacion(destinatario.getIdeAgente(), destinatario.getCorCorrespondencia().getIdeDocumento(),
+                    destinatario.getCodDependencia(), destinatarioDTO.getIdeFuncionarioCreaModifica());
+
+            em.flush();
+
+            return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param remitenteDTO
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public String actualizarRemitente(RemitenteDTO remitenteDTO) throws SystemException {
+        try {
+            if (!verificarByIdeAgente(remitenteDTO.getAgenteRemitente().getIdeAgente()))
+                return "0";
+
+            CorAgente remitente = em.getReference(CorAgente.class, remitenteDTO.getAgenteRemitente().getIdeAgente());
+            remitente.setCodDependencia(remitenteDTO.getAgenteRemitente().getCodDependencia());
+            remitente.setCodSede(remitenteDTO.getAgenteRemitente().getCodSede());
+            remitente.setCodTipoPers(remitenteDTO.getAgenteRemitente().getCodTipoPers());
+            remitente.setCodTipDocIdent(remitenteDTO.getAgenteRemitente().getCodTipDocIdent());
+            remitente.setNroDocuIdentidad(remitenteDTO.getAgenteRemitente().getNroDocuIdentidad());
+            remitente.setCodCortesia(remitenteDTO.getAgenteRemitente().getCodCortesia());
+            remitente.setNombre(remitenteDTO.getAgenteRemitente().getNombre());
+            remitente.setCodTipoRemite(remitenteDTO.getAgenteRemitente().getCodTipoRemite());
+            remitente.setRazonSocial(remitenteDTO.getAgenteRemitente().getRazonSocial());
+            remitente.setNit(remitenteDTO.getAgenteRemitente().getNit());
+            remitente.setCodEnCalidad(remitenteDTO.getAgenteRemitente().getCodEnCalidad());
+            remitente.setCodEstado(remitenteDTO.getAgenteRemitente().getCodEstado());
+            remitente.setCodTipAgent(remitenteDTO.getAgenteRemitente().getCodTipAgent());
+            remitente.setIndOriginal(remitenteDTO.getAgenteRemitente().getIndOriginal());
+
+            CorAgente agente = CorAgente.newInstance()
+                    .ideAgente(remitenteDTO.getAgenteRemitente().getIdeAgente())
+                    .build();
+
+            DatosContactoControl datosContactoControl = new DatosContactoControl();
+            for (DatosContactoDTO datosContactoDTO : remitenteDTO.getDatosContactoList()) {
+                TvsDatosContacto datosCont = em.find(TvsDatosContacto.class, datosContactoDTO.getIdeContacto());
+                if (datosCont == null) {
+                    TvsDatosContacto datosContacto = TvsDatosContacto.newInstance()
+                            .ideContacto(datosContactoDTO.getIdeContacto())
+                            .nroViaGeneradora(datosContactoDTO.getNroViaGeneradora())
+                            .nroPlaca(datosContactoDTO.getNroPlaca())
+                            .codTipoVia(datosContactoDTO.getCodTipoVia())
+                            .codPrefijoCuadrant(datosContactoDTO.getCodPrefijoCuadrant())
+                            .codPostal(datosContactoDTO.getCodPostal())
+                            .direccion(datosContactoDTO.getDireccion())
+                            .celular(datosContactoDTO.getCelular())
+                            .telFijo(datosContactoDTO.getTelFijo())
+                            .extension(datosContactoDTO.getExtension())
+                            .corrElectronico(datosContactoDTO.getCorrElectronico())
+                            .codPais(datosContactoDTO.getCodPais())
+                            .codDepartamento(datosContactoDTO.getCodDepartamento())
+                            .codMunicipio(datosContactoDTO.getCodMunicipio())
+                            .provEstado(datosContactoDTO.getProvEstado())
+                            .principal(datosContactoDTO.getPrincipal())
+                            .ciudad(datosContactoDTO.getCiudad())
+                            .corAgente(remitente)
+                            .build();
+                    remitente.getTvsDatosContactoList().add(datosContacto);
+                }
+            }
+            em.merge(remitente);
+            em.flush();
+
+            return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }

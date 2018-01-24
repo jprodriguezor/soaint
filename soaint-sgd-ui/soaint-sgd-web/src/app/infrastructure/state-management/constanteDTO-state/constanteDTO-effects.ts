@@ -22,6 +22,7 @@ import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers'
 function isEmptyObject(obj) {
   return (obj && (Object.keys(obj).length === 0));
 }
+
 function isLoaded() {
   return (source) =>
     source.filter(([action, state]) => {
@@ -64,13 +65,15 @@ export class Effects {
       this._sandbox.loadData({key: 'unidadTiempo'}),
       this._sandbox.loadData({key: 'tipoDocumento'}),
       this._sandbox.loadData({key: 'tipologiaDocumental'}),
+      this._sandbox.loadData({key: 'soporteAnexo'}),
 
       (tipoComunicacion,
        mediosRecepcion,
        tipoAnexos,
        unidadTiempo,
        tipoDocumento,
-       tipologiaDocumental) => {
+       tipologiaDocumental,
+       soporteAnexo) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
           mediosRecepcion: {key: 'mediosRecepcion', data: mediosRecepcion},
@@ -78,6 +81,7 @@ export class Effects {
           unidadTiempo: {key: 'unidadTiempo', data: unidadTiempo},
           tipoDocumento: {key: 'tipoDocumento', data: tipoDocumento},
           tipologiaDocumental: {key: 'tipologiaDocumental', data: tipologiaDocumental},
+          soporteAnexo: {key: 'soporteAnexo', data: soporteAnexo},
         }
       }).take(1)
       .mergeMap((data: any) => {
@@ -88,6 +92,7 @@ export class Effects {
           new actions.LoadSuccessAction(data.unidadTiempo),
           new actions.LoadSuccessAction(data.tipoDocumento),
           new actions.LoadSuccessAction(data.tipologiaDocumental),
+          new actions.LoadSuccessAction(data.soporteAnexo),
         ];
       })
       .catch(error => Observable.of(new actions.LoadFailAction({error})))

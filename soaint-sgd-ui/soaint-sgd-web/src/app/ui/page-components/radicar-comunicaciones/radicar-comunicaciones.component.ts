@@ -136,10 +136,11 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         this._store.dispatch(new LoadDatosRemitenteAction())
       });
 
-    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigitInmediata').valueChanges
+    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
       .subscribe(value => {
+        console.log(value);
         // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
-        if (value) {
+        if (value && value === 2) {
           const payload: LoadNextTaskPayload = {
             idProceso: this.task.idProceso,
             idInstanciaProceso: this.task.idInstanciaProceso,
@@ -212,9 +213,9 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
       console.log(this.valueGeneral);
       let requiereDigitalizacion = 0;
 
-      if(this.valueGeneral.reqDigit == "1"){
+      if (this.valueGeneral.reqDigit === 1) {
         requiereDigitalizacion = 1;
-      }else if(this.valueGeneral.reqDigit == "2"){
+      } else if (this.valueGeneral.reqDigit === 2) {
         requiereDigitalizacion = 2;
       }
 
@@ -224,7 +225,6 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
         idTarea: this.task.idTarea,
         parametros: {
           requiereDigitalizacion: requiereDigitalizacion,
-          digitalizacionInmediata: this.valueGeneral.reqDigitInmediata ? 1 : 0,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
         }
       });
@@ -345,9 +345,7 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
   }
 
   testEditRadicado() {
-    this._coSandbox.loadData({
-
-    });
+    this._coSandbox.loadData({});
   }
 
   ngOnDestroy() {

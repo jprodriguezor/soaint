@@ -1,9 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.DevolucionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import io.swagger.annotations.Api;
@@ -76,30 +74,26 @@ public class AgenteWebApi {
     }
 
     /**
-     * @param agenteDTO
+     * @param remitenteDTO
      * @throws BusinessException
      * @throws SystemException
      */
     @PUT
     @Path("/agente/actualizar-remitente")
-    public String actualizarRemitente(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+    public String actualizarRemitente(RemitenteDTO remitenteDTO) throws SystemException {
         log.info("processing rest request - actualizar remitente");
-        //boundary.actualizarEstadoAgente(agenteDTO);
-        //TODO Implementacion
-        return "1";
+        return boundary.actualizarRemitente(remitenteDTO);
     }
 
     /**
-     * @param agenteDTO
+     * @param destinatarioDTO
      * @throws BusinessException
      * @throws SystemException
      */
     @PUT
     @Path("/agente/actualizar-destinatario")
-    public String actualizarDestinatario(AgenteDTO agenteDTO) throws BusinessException, SystemException {
+    public String actualizarDestinatario(DestinatarioDTO destinatarioDTO) throws SystemException {
         log.info("processing rest request - actualizar destinatario");
-        //boundary.actualizarEstadoAgente(agenteDTO);
-        //TODO Implementacion
-        return "1";
+        return boundary.actualizarDestinatario(destinatarioDTO);
     }
 }
