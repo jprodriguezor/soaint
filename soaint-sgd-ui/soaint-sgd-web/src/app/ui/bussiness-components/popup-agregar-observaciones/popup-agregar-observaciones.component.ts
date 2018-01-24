@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
@@ -12,12 +12,14 @@ import {ObservacionDTO} from '../../../domain/observacionDTO';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopupAgregarObservacionesComponent implements OnInit {
-
   form: FormGroup;
 
   validations: any = {};
 
   observaciones: ObservacionDTO[];
+
+  @Output()
+  countObservaciones = new EventEmitter();
 
   @Input()
   idDocumento: number;
@@ -49,6 +51,7 @@ export class PopupAgregarObservacionesComponent implements OnInit {
   loadObservations() {
     this._asignacionSandbox.obtenerObservaciones(this.idDocumento).subscribe((results) => {
       this.observaciones = [...results.observaciones];
+      this.countObservaciones.emit(this.observaciones.length);
       this._changeDetectorRef.detectChanges();
     });
   }

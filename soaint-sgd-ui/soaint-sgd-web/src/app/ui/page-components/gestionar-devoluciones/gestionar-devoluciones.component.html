@@ -6,10 +6,10 @@
               <!--(click)="guardar()"></button>-->
 
       <button pButton type="button" label="Gestionar devolución" style="width: auto; margin-bottom: 10px"
-              (click)="gestionarDevolucion()" ></button>
+              (click)="gestionarDevolucion()" [disabled] = "disabledDevolucionAction" ></button>
 
       <button pButton type="button" label="Rechazar devolución" style="width: auto; margin-bottom: 10px"
-      (click)="rechazarDevolucion()" [disabled] = "isdisabledDevolucionRechazar()"></button>
+      (click)="rechazarDevolucion()" [disabled] = "disabledDevolucionRechazar"></button>
 
     </div>
     <div taskBody>
@@ -81,7 +81,7 @@
 
       <p-panel header="Observaciones" [style]="{ border: 'none'}">
 
-        <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
+        <app-popup-agregar-observaciones #popupAgregarObservaciones (countObservaciones)="handleCountObservaciones($event)"></app-popup-agregar-observaciones>
 
       </p-panel>
     </div>

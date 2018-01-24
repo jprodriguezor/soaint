@@ -195,4 +195,12 @@ public class CorrespondenciaClient {
                 .request()
                 .post(Entity.json(tarea));
     }
+
+    public Response actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) {
+        log.info("Comunicacion - [trafic] - comunicacion with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia")
+                .request()
+                .put(Entity.json(comunicacionOficialDTO));
+    }
 }

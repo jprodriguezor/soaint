@@ -44,6 +44,7 @@ import { FuncionarioListComponent } from './ui/page-components/security-role/com
 import { ControlMessagesComponent } from './ui/page-components/security-role/components/control-messages/control-messages.component';
 import { UnidadesDocumentalesComponent } from './ui/page-components/unidades-documentales/unidades-documentales.component';
 import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
+import { CorregirRadicacionComponent } from './ui/page-components/corregir-radicacion/corregir-radicacion.component';
 import { DocumentoEcmComponent } from './ui/bussiness-components/documento-ecm/documento-ecm.component';
 
 
@@ -133,6 +134,7 @@ import { DocumentoEcmComponent } from './ui/bussiness-components/documento-ecm/d
     ControlMessagesComponent,
     UnidadesDocumentalesComponent,
     GestionarDevolucionesComponent,
+    CorregirRadicacionComponent,
     DocumentoEcmComponent
   ],
   providers: [
