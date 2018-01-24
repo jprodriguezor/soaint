@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @ApiDelegator
 @Log4j2
@@ -17,7 +20,10 @@ public class TipoPlantillaClient {
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
     @Value("${contants.tipoplantilla.value}")
-    private String tipoDestValue = "";
+    private String tipoplantilla = "";
+
+    @Value("${locations.tiposplantilla.root}")
+    private String location_root = "";
 
     public TipoPlantillaClient() {
         super();
@@ -29,6 +35,11 @@ public class TipoPlantillaClient {
         return wt.path("/plantilla-web-api/plantilla/" + codClasificacion + "/" +estado)
                 .request()
                 .get();
+    }
+
+    public String readFromFile(String codigo) throws IOException {
+        String location = location_root.concat(codigo).concat(".html");
+        return new String(Files.readAllBytes(Paths.get(location)));
     }
 
 }
