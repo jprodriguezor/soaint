@@ -2,6 +2,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -50,14 +51,12 @@ public interface ContentControl {
      * Subir documento Custom
      *
      * @param session          Objeto conexion
-     * @param nombreDocumento  nombre de documento
      * @param documento        documento a subir
-     * @param tipoComunicacion tipo de comunicacion
-     * @param nroRadicado Número de Radicado
+     * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoCustom(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion, String nroRadicado) throws IOException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException;
 
 
     /**

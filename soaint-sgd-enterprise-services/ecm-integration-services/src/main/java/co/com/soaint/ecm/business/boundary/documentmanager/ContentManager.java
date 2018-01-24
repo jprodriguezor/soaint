@@ -110,6 +110,42 @@ public class ContentManager {
     }
 
     /**
+     * Metodo generico para subir los dccumentos adjuntos al content
+     *
+     * @param documento        Documento que se va a subir
+     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+
+        logger.info ("### Subiendo documento adjunto al content..");
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        String idDocumento = "";
+        Carpeta carpeta;
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info (MSGCONEXION);
+            conexion = contentControl.obtenerConexion ( );
+
+            //Carpeta donde se va a guardar el documento
+            carpeta = new Carpeta ( );
+//            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
+            logger.info ("### Se invoca el metodo de subir el documento..");
+
+            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO);
+
+        } catch (Exception e) {
+            logger.error ("Error subiendo documento", e);
+            response.setCodMensaje ("2222");
+            response.setMensaje ("Error al crear el documento");
+            throw e;
+        }
+        return response;
+
+    }
+    /**
      * Metodo generico para subir los dccumentos al content
      *
      * @param metadatosDocumentos  Metadatos del documento a modificar

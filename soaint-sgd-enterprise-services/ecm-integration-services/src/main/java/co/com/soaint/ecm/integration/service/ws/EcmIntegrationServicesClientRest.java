@@ -46,7 +46,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Crear estructura del ECM
      *
-     * @param structure Estrcutura a crear
+     * @param structure Estructura a crear
      * @return Mensaje de respuesta
      */
     @POST
@@ -88,6 +88,38 @@ public class EcmIntegrationServicesClientRest {
         }
 
     }
+
+    /**
+     * Subir documento a ECM
+     *
+     * @param nombreDocumento  nombre documento
+     * @param documento        documento a subir
+     * @param tipoComunicacion tipo de documento
+     * @param idDocPadre marca si va a ser documento principal o no
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{tipoComunicacion}/{idDocPadre}")
+    @Consumes("multipart/form-data")
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@PathParam("nombreDocumento") String nombreDocumento,
+                                              @RequestPart("documento") final MultipartFormDataInput documento,
+                                              @PathParam("tipoComunicacion") String tipoComunicacion,
+                                              @PathParam("idDocPadre") String idDocPadre) throws IOException {
+
+        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
+        try {
+            return fEcmManager.subirDocumentoPrincipalAdjunto(me, documento, tipoComunicacion,idDocPadre);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+
+        } catch (IOException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+        }
+
+    }
+
     /**
      * Modificar metadatos a documento en el ECM
      *

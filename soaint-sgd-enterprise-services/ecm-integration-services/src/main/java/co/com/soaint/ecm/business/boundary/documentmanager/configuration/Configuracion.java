@@ -39,6 +39,14 @@ public class Configuracion {
     private String aerrorSubirDocumento;
     @Value("${errorSubirDocumentoDuplicado}")
     private String aerrorSubirDocumentoDuplicado;
+    @Value("${comunicacionInterna}")
+    private String acomunicacionInterna;
+    @Value("${comunicacionExterna}")
+    private String acomunicacionExterna;
+    @Value("${carpetaPlantilla}")
+    private String acarpetaPlantilla;
+
+
     private Configuracion(){
         /*
          *a
@@ -89,6 +97,12 @@ public class Configuracion {
                 return aerrorSubirDocumento != null ? aerrorSubirDocumento : "ECMError";
             case "ECM_ERROR_DUPLICADO":
                 return aerrorSubirDocumentoDuplicado != null ? aerrorSubirDocumentoDuplicado : "ECMErrorDuplicado";
+            case "comunicacionInterna":
+                return acomunicacionInterna != null ? acomunicacionInterna : "EI";
+            case "comunicacionExterna":
+                return acomunicacionExterna != null ? acomunicacionExterna : "EE";
+            case "carpetaPlantilla":
+                return acarpetaPlantilla != null ? acarpetaPlantilla : "100100.00303_PLANTILLAS";
             default:
                 return "";
         }
