@@ -1,4 +1,4 @@
-package co.com.soaint.foundation.canonical.correspondencia;
+package co.com.soaint.foundation.canonical.ecm;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
