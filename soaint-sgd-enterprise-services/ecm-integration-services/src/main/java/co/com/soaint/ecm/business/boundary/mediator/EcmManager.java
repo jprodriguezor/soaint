@@ -1,7 +1,7 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
@@ -74,7 +74,28 @@ public class EcmManager {
 
         return response;
     }
+    /**
+     * Metodo que llama el servicio para subir documentos de producción documental y los documentos adjuntos al ECM.
+     *
+     * @param documento        Documento que se va a subir
+     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+        logger.info("### Subiendo documento adjunto al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response=contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO);
+        } catch (Exception e) {
+            logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM");
+            throw e;
+        }
 
+        return response;
+    }
     /**
      * Metodo que llama el servicio para modificar metadatos del documento en el ECM
      *

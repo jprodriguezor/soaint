@@ -32,6 +32,7 @@ export class PDDatosGeneralesComponent implements OnInit {
   tiposComunicacion$: Observable<ConstanteDTO[]>;
   tiposAnexo$: Observable<ConstanteDTO[]>;
   tiposPlantilla$: Observable<ConstanteDTO[]>;
+    contenidoPlantilla$: Observable<any>;
 
   editarPlantillaVisible = false;
   plantillaHtmlContent: string;
@@ -57,42 +58,32 @@ export class PDDatosGeneralesComponent implements OnInit {
   }
 
 
-  initForm() {
-    this.form = this.formBuilder.group({
-      'tipoComunicacion': [null, Validators.required],
-      'tipoPlantilla': [null, Validators.required],
-      'elaborarDocumento': [null],
-      'soporte': 'electronico',
-      'tipoAnexo': [null],
-      'descripcion': [null],
-    });
-  }
+    initForm() {
+        this.form = this.formBuilder.group({
+          'tipoComunicacion': [null, Validators.required],
+          'tipoPlantilla': [null, Validators.required],
+          'elaborarDocumento': [null],
+          'soporte': 'electronico',
+          'tipoAnexo': [null],
+          'descripcion': [null],
+        });
+    }
 
-  readFileFile(fileSrc) {
-      const rawFile = new XMLHttpRequest();
-      rawFile.open('GET', fileSrc, false);
-      rawFile.onreadystatechange = function () {
-          if (rawFile.readyState === 4) {
-              if (rawFile.status === 200 || rawFile.status === 0) {
-                  const allText = rawFile.responseText;
-                  alert(allText);
-              }
-          }
-      };
-      rawFile.send(null);
-  }
+    cargarPlantilla(tipoSelected) {
+        this.contenidoPlantilla$ = this._produccionDocumentalApi.getTipoPlantilla({codigo:'oficio'});
+        console.log(this.contenidoPlantilla$);
 
-  cargarPlantilla(tipoSelected) {
-    console.log(tipoSelected);
+        this.editarPlantillaVisible = true;
+    }
 
-    this.readFileFile('file:///D:/WORK/SOAINT/CORRESPONDENCIA/ProduccionDocumental/plantillas/Plantilla-Memorando.html');
 
-    this.editarPlantillaVisible = true;
-  }
 
-  tipoComunicacionChange(event) {
-    this.pdMessageService.sendMessage(event.value);
-  }
+    tipoComunicacionChange(event) {
+        this.pdMessageService.sendMessage(event.value);
+    }
+
+
+
 
   tipoPlanillaChange(event) {
     this.tipoPlantillaSelected = event.value;
@@ -151,6 +142,7 @@ export class PDDatosGeneralesComponent implements OnInit {
     this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
+      this.contenidoPlantilla$ = this._produccionDocumentalApi.getTipoPlantilla({codigo:'oficio'});
     this.listenForErrors();
   }
 

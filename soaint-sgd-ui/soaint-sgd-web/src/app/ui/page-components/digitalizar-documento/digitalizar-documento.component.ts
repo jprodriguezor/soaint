@@ -39,7 +39,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   @ViewChild('uploader') uploader;
   @ViewChild('viewer') viewer;
 
-
   constructor(private changeDetection: ChangeDetectorRef,
               private _api: ApiBase,
               private _asignacionSandBox: AsignacionSandbox,

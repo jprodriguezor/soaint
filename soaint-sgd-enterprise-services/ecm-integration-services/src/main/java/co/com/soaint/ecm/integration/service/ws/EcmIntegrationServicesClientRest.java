@@ -1,7 +1,7 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.foundation.canonical.correspondencia.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +46,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Crear estructura del ECM
      *
-     * @param structure Estrcutura a crear
+     * @param structure Estructura a crear
      * @return Mensaje de respuesta
      */
     @POST
@@ -88,6 +88,46 @@ public class EcmIntegrationServicesClientRest {
         }
 
     }
+
+    /**
+     * Subir documento a ECM
+     *
+     * @param documento        documento a subir
+     * @param nombreDocumento Nombre del documento
+     * @param idDocPadre Identificador del documento padre
+     * @param sede Sede a la que pertenece el documento
+     * @param dependencia Dependencia a la que pertenece el documento
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{idDocPadre}/{sede}/{dependencia}")
+    @Consumes("multipart/form-data")
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestPart("documento") final MultipartFormDataInput documento,
+                                                              @PathParam("nombreDocumento") String nombreDocumento,
+                                                              @PathParam("idDocPadre") String idDocPadre,
+                                                              @PathParam("sede") String sede,
+                                                              @PathParam("dependencia") String dependencia) throws IOException {
+
+        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento);
+        try {
+            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
+            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
+            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
+            metadatosDocumentosDTO.setSede(sede);
+            metadatosDocumentosDTO.setDependencia(dependencia);
+
+            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+
+        } catch (IOException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+        }
+
+    }
+
     /**
      * Modificar metadatos a documento en el ECM
      *
