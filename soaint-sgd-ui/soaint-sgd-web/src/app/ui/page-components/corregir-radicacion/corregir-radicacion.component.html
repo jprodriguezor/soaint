@@ -15,7 +15,7 @@
     </div>
     <div taskBody>
 
-      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+      <p-tabView [activeIndex]="tabIndex">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
           <app-datos-generales #datosGenerales [editable]="editable"
                                [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
