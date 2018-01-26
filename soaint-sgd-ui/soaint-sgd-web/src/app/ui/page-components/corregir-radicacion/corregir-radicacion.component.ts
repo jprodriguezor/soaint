@@ -36,6 +36,8 @@ export class CorregirRadicacionComponent implements OnInit {
 
   editable = false;
 
+  tabIndex = 0;
+
   comunicacion: ComunicacionOficialDTO = {};
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
