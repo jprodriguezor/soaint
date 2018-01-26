@@ -46,13 +46,11 @@ public class ProduccionDocumentalGatewayApi {
     }
 
     @POST
-    @Path("/{nombreDocumento}/{idDocPadre}/{sede}/{dependencia}/{fileName}")
+    @Path("/{sede}/{dependencia}/{fileName}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@PathParam("nombreDocumento") String nombreDocumento,
-                                @PathParam("sede") String sede,  @PathParam("dependencia") String dependencia,
+    public Response digitalizar(@PathParam("sede") String sede,  @PathParam("dependencia") String dependencia,
                                 @PathParam("fileName") String fileName, MultipartFormDataInput file) {
-        List<String> ecmIds = new ArrayList<String>();
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
 
         Map<String,InputPart> files = new HashMap<String, InputPart>();
@@ -61,32 +59,23 @@ public class ProduccionDocumentalGatewayApi {
             String name = findName(part); if(!"".equals(name)) files.put(name,part);
         }));
 
-        InputPart parent = files.get(nombreDocumento);
-        Response response = client.producirDocumento(nombreDocumento, "undefined", sede, dependencia, fileName, parent);
-        ResponseECM parentResponse = response.readEntity(ResponseECM.class);
+        InputPart parent = files.get(fileName);
+        Response response = client.producirDocumento(sede, dependencia, fileName, parent, "");
+        ResponseECM parentResponse = response.readEntity(ResponseECM.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
             Map<String,String> docs = new HashMap<String,String>();
             files.forEach((key, part) -> {
-                if(!nombreDocumento.equalsIgnoreCase(key)) {
                     String parentId = parentResponse.getMensaje();
-                    Response _response = client.producirDocumento(
-                            nombreDocumento, parentResponse.getMensaje(), sede, dependencia, fileName, part);
+                    Response _response = client.producirDocumento(sede, dependencia, key, part, parentId);
                     ResponseECM asociadoResponse = _response.readEntity(ResponseECM.class);
                     if (_response.getStatus() == HttpStatus.OK.value()
                             && "0000".equals(asociadoResponse.getCodMensaje())) {
-                        docs.put("id-" + parentResponse.getMensaje(),nombreDocumento);
+                        docs.put("id-" + parentResponse.getMensaje(), key);
                     }
-                }
             });
             return Response.status(Response.Status.OK).entity(docs).build();
         }
         return response;
-    }
-
-    @Data
-    private final class ResponseECM {
-           private String codMensaje;
-           private String mensaje;
     }
 
     public String findName(InputPart part) {
@@ -100,6 +89,12 @@ public class ProduccionDocumentalGatewayApi {
             }
         }
         return fileName;
+    }
+
+    @Data
+    private final class ResponseECM {
+        private String codMensaje;
+        private String mensaje;
     }
 
 }

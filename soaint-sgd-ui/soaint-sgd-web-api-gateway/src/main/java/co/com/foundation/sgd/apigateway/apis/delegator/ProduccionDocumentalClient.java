@@ -70,8 +70,7 @@ public class ProduccionDocumentalClient {
         return procesoClient.listarPorIdProceso(entrada);
     }
 
-    public Response producirDocumento(
-            String nombreDocumento, String idDocPadre, String sede, String dependencia, String fileName, InputPart part) {
+    public Response producirDocumento(String sede, String dependencia, String fileName, InputPart part, String parentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
@@ -84,9 +83,9 @@ public class ProduccionDocumentalClient {
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
 
-        return wt.path("/subirDocumentoRelacionECM/" + nombreDocumento + "/" + idDocPadre + "/" + sede + "/" + dependencia)
-                .request()
-                .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+        return wt.path("/subirDocumentoRelacionECM/" + sede + "/" + dependencia + "/" + fileName +
+                (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
+                .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
 
 }
