@@ -46,13 +46,13 @@ public class ProduccionDocumentalGatewayApi {
     }
 
     @POST
-    @Path("/{sede}/{dependencia}/{fileName}")
+    @Path("/adjuntar/documento/{sede}/{dependencia}/{fileName}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response digitalizar(@PathParam("sede") String sede,  @PathParam("dependencia") String dependencia,
                                 @PathParam("fileName") String fileName, MultipartFormDataInput file) {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
-
+        List<String> ecmIds = new ArrayList<>();
         Map<String,InputPart> files = new HashMap<String, InputPart>();
         Collection<List<InputPart>> inputParts = file.getFormDataMap().values();
         inputParts.stream().forEach(parts -> parts.forEach(part -> {
@@ -63,17 +63,16 @@ public class ProduccionDocumentalGatewayApi {
         Response response = client.producirDocumento(sede, dependencia, fileName, parent, "");
         ResponseECM parentResponse = response.readEntity(ResponseECM.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            Map<String,String> docs = new HashMap<String,String>();
             files.forEach((key, part) -> {
                     String parentId = parentResponse.getMensaje();
                     Response _response = client.producirDocumento(sede, dependencia, key, part, parentId);
                     ResponseECM asociadoResponse = _response.readEntity(ResponseECM.class);
                     if (_response.getStatus() == HttpStatus.OK.value()
                             && "0000".equals(asociadoResponse.getCodMensaje())) {
-                        docs.put("id-" + parentResponse.getMensaje(), key);
+                        ecmIds.add(parentResponse.getMensaje());
                     }
             });
-            return Response.status(Response.Status.OK).entity(docs).build();
+            return Response.status(Response.Status.OK).entity(ecmIds).build();
         }
         return response;
     }
