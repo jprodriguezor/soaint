@@ -34,11 +34,17 @@ export class CorregirRadicacionComponent implements OnInit {
 
   @ViewChild('datosDestinatario') datosDestinatario;
 
-  editable = true;
+  editable = false;
+
+  tabIndex = 0;
 
   comunicacion: ComunicacionOficialDTO = {};
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
+
+  radicacion: ComunicacionOficialDTO;
+
+  radicacionEntradaDTV: any;
 
   constructor(private _store: Store<State>, private _sandbox: RadicarComunicacionesSandBox, private _asiganacionSandbox: AsiganacionDTOSandbox, private _comunicacionOficialApi: CominicacionOficialSandbox,private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder) {
      //this.initForm();
@@ -50,7 +56,6 @@ export class CorregirRadicacionComponent implements OnInit {
       this.restore();
     });
   }
-
 
   abort() {
     this._taskSandBox.abortTaskDispatch({
@@ -88,7 +93,7 @@ export class CorregirRadicacionComponent implements OnInit {
     if (this.task) {
       console.log(this.task);
 
-      this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).subscribe(response => {
+      /*this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).subscribe(response => {
 
         console.log(response);
 
@@ -102,17 +107,26 @@ export class CorregirRadicacionComponent implements OnInit {
         this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
         this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
 
-      });
+      });*/
 
-      //this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
-      //  this.comunicacion = result;
-      //
-      //});
+      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
+        this.comunicacion = result;
+        console.log(this.comunicacion);
+
+        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        console.log(this.radicacionEntradaDTV);
+        this.datosRemitente.form.patchValue(this.radicacionEntradaDTV.getDatosRemitente());
+        this.datosGenerales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
+        //this.contactos$ = this.radicacionEntradaDTV.getDatosContactos();
+        //this.destinatarios$ = this.radicacionEntradaDTV.getDatosDestinatarios();
+
+      });
     }
   }
   actualizarComunicacion(){
     this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
   }
+
   ngOnDestroy() {
 
   }
