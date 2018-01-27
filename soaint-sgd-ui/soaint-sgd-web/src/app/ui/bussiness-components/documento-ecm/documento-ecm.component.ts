@@ -8,6 +8,9 @@ import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-
 import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
+import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {FAIL_ADJUNTAR_PRINCIPAL} from '../../../shared/lang/es';
+import {isNullOrUndefined} from 'util';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -26,6 +29,8 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
 
   uploadFiles: any[] = [];
   task: any;
+  sede: string;
+  depedencia: string;
   url: string;
   status: UploadStatus;
   previewWasRefreshed = false;
@@ -46,15 +51,18 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.uploadUrl = environment.digitalizar_doc_upload_endpoint;
+    this.uploadUrl = environment.pd_adjuntar_documento_endpoint;
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
-      if (this.task) {
+      this.sede = activeTask.variables.codigoSede;
+      this.depedencia = activeTask.variables.codDependencia;
+      /*if (this.task) {
         this._asignacionSandBox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((comunicacion) => {
           this.correspondencia = comunicacion.correspondencia;
         });
-      }
+      }*/
     });
+    console.log(this.task);
   }
 
   showUploadButton() {
@@ -62,20 +70,27 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   customUploader(event) {
-    const formData = new FormData();
-    for (const file of event.files) {
-      formData.append('files', file, file.name);
-    }
-    this._api.sendFile(this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado]).subscribe(response => {
-      this._store.dispatch(new CompleteTaskAction({
-        idProceso: this.task.idProceso,
-        idDespliegue: this.task.idDespliegue,
-        idTarea: this.task.idTarea,
-        parametros: {
-          ideEcm: JSON.parse(response.ecmIds[0])['mensaje']
-        }
+    if (isNullOrUndefined(this.principalFile)) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: FAIL_ADJUNTAR_PRINCIPAL
       }));
-    });
+    } else {
+      const formData = new FormData();
+      for (const file of event.files) {
+        formData.append('files', file, file.name);
+      }
+      this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
+        this._store.dispatch(new CompleteTaskAction({
+          idProceso: this.task.idProceso,
+          idDespliegue: this.task.idDespliegue,
+          idTarea: this.task.idTarea,
+          parametros: {
+            ideEcm: JSON.parse(response.ecmIds)
+          }
+        }));
+      });
+    }
   }
 
   preview(file) {

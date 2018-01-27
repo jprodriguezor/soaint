@@ -14,3 +14,4 @@ export const WARN_DEVOLUTION = `No todas las ${REDIRECCIONES} pudieron ser ejecu
 export const WARN_REDIRECTION = `No todas las ${DEVOLUCIONES} pudieron ser ejecutadas`;
 export const FAIL_REDIRECTION = `No se pudieron realizar ${REDIRECCIONES}`;
 export const FAIL_DEVOLUTION = `No se pudieron realizar ${DEVOLUCIONES}`;
+export const FAIL_ADJUNTAR_PRINCIPAL = `Debe seleccionar un documento como principal`;
