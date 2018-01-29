@@ -70,7 +70,16 @@ export class PDDatosGeneralesComponent implements OnInit {
 
     generarPdf() {
       this._produccionDocumentalApi.generarPdf({htmlContent:this.plantillaHtmlContent}).subscribe(
-        result => console.log(result),
+        result => {
+            if (result.success) {
+              this.editarPlantillaVisible = false;
+              this.form.get('tipoPlantilla').reset();
+              this.tipoPlantillaSelected = null;
+              this.plantillaHtmlContent = "";
+            } else {
+              console.log(result.text);
+            }
+        },
         error => console.log("Error :: " + error)
       );
 
