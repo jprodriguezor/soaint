@@ -83,7 +83,7 @@ public class ProduccionDocumentalClient {
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
 
-        return wt.path("/subirDocumentoRelacionECM/" + sede + "/" + dependencia + "/" + fileName +
+        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  +
                 (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
                 .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
