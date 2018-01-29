@@ -69,7 +69,10 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
     generarPdf() {
-
+      this._produccionDocumentalApi.generarPdf({htmlContent:this.plantillaHtmlContent}).subscribe(
+        result => console.log(result),
+        error => console.log("Error :: " + error)
+      );
 
         console.log(this.plantillaHtmlContent);
     }

@@ -3,7 +3,6 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.TipoPlantillaClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.foundation.sgd.utils.PdfConverter;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

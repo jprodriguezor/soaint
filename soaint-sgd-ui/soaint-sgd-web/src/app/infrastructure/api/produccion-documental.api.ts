@@ -56,7 +56,7 @@ export class ProduccionDocumentalApiService {
   }
 
   generarPdf(payload) : Observable<string> {
-    return this._api.post(`${environment.tipoPlantilla_endpoint}/generar-pdf}`, payload).map(res => res.text);
+    return this._api.post(`${environment.tipoPlantilla_endpoint}/generar-pdf`, payload).map(res => res.text);
   }
 
   getTiposPlantilla(payload: {}): Observable<ConstanteDTO[]> {
