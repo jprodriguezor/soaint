@@ -22,8 +22,6 @@ export class PDDatosGeneralesComponent implements OnInit {
 
   form: FormGroup;
 
-  @ViewChild('p-editor') htmlEditor;
-
   validations: any = {};
 
   @Input()
@@ -70,8 +68,10 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
-    cargarPlantilla(tipoSelected) {
-        this.editarPlantillaVisible = true;
+    generarPdf() {
+
+
+        console.log(this.plantillaHtmlContent);
     }
 
     tipoComunicacionChange(event) {
