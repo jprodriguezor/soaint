@@ -151,6 +151,7 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
             metadatosDocumentosDTO.setSede(sede);
             metadatosDocumentosDTO.setDependencia(dependencia);
+            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
 
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
         } catch (RuntimeException e) {

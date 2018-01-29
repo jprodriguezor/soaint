@@ -659,7 +659,10 @@ public class ContentControlAlfresco implements ContentControl {
             //Se definen las propiedades del documento a subir
             Map <String, Object> properties = new HashMap <> ( );
             properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
-//            properties.put ("cmcor:NroRadicado", "CucoNroRadicado");
+            //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
+            if (!metadatosDocumentosDTO.getIdDocumentoPadre().isEmpty()){
+                properties.put ("cmcor:xIdentificadorDocPrincipal",metadatosDocumentosDTO.getIdDocumentoPadre());
+            }
             properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
             try {
