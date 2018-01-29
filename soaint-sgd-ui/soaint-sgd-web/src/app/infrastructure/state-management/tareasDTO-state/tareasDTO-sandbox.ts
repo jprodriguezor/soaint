@@ -13,7 +13,7 @@ import {
   TASK_CARGAR_PLANILLA_ENTRADA,
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
-  TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES
+  TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -145,9 +145,12 @@ export class Sandbox {
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
         break;
       case TASK_GESTIONAR_DEVOLUCIONES:
-        console.log('/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionarDevoluciones, task);
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionarDevoluciones, task]));
         break;
+      case TASK_CORREGIR_RADICACION:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.corregirRadicacion, task]));
+        break;
+
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
         break;

@@ -39,7 +39,8 @@ export class GestionarDevolucionesComponent implements OnInit {
   dependenciaCode: String;
 
   dependencias: DependenciaDTO[] = [];
-  disabledDevolucionRechazar: Boolean;
+  disabledDevolucionRechazar: Boolean = false;
+  disabledDevolucionAction: Boolean = false;
 
   comunicacion: ComunicacionOficialDTO = {};
   task: TareaDTO;
@@ -63,10 +64,7 @@ export class GestionarDevolucionesComponent implements OnInit {
       this.restore();
     });
 
-    this.disabledDevolucionRechazar = false;
-    if("3" == this.task.variables.causalD){
-      this.disabledDevolucionRechazar = true;
-    }
+    this.verificaVisibilidadRechazar();
 
     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
 
@@ -114,6 +112,7 @@ export class GestionarDevolucionesComponent implements OnInit {
         this.sedeCode =  this.comunicacion.correspondencia.codSede;
 
         if(this.comunicacion){
+
             this.popupAgregarObservaciones.form.reset();
             this.popupAgregarObservaciones.setData({
               idDocumento: this.comunicacion.correspondencia.ideDocumento,
@@ -121,12 +120,28 @@ export class GestionarDevolucionesComponent implements OnInit {
               codOrgaAdmin: this.comunicacion.correspondencia.codDependencia,
               isPopup: false
             });
-
             this.popupAgregarObservaciones.loadObservations();
         }
 
 
       });
+    }
+  }
+
+  handleCountObservaciones(count){
+    if(count == 0){
+      this.disabledDevolucionRechazar = true;
+      this.disabledDevolucionAction = true;
+    }else{
+      this.disabledDevolucionRechazar = false;
+      this.disabledDevolucionAction = false;
+    }
+    this.verificaVisibilidadRechazar();
+  }
+
+  verificaVisibilidadRechazar(){
+    if("3" == this.task.variables.causalD){
+      this.disabledDevolucionRechazar = true;
     }
   }
 
@@ -138,6 +153,7 @@ export class GestionarDevolucionesComponent implements OnInit {
       idTarea: this.task.idTarea,
       parametros: {
         devolucion: 1,
+        requiereDigitalizacion: this.comunicacion.correspondencia.reqDigita,
       }
     });
 
@@ -152,13 +168,10 @@ export class GestionarDevolucionesComponent implements OnInit {
       idTarea: this.task.idTarea,
       parametros: {
         devolucion: 2,
+        requiereDigitalizacion: this.comunicacion.correspondencia.reqDigita,
       }
     });
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
-  }
-
-  isdisabledDevolucionRechazar(){
-    return this.disabledDevolucionRechazar;
   }
 
   ngOnDestroy() {

@@ -136,7 +136,7 @@
                     <div class="ui-g-12">
                         <button pButton label="Adjuntar" [disabled]="!form.valid" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"></button>
                         <button pButton label="Cargar" [disabled]="!form.valid" style="width: auto;margin-top:28px;float:right;" type="button"
-                            (click)="cargarPlantilla(form.get('tipoPlantilla').value)"></button>
+                            (click)="this.editarPlantillaVisible = true"></button>
                     </div>
                 </div>
             </div>
@@ -271,7 +271,7 @@
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button pButton type="button" label="Guardar" [disabled]="!plantillaHtmlContent" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="agregarVersion()"></button>
+            <button pButton type="button" label="Guardar" [disabled]="!plantillaHtmlContent" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="generarPdf()"></button>
         </div>
     </p-footer>
 </p-dialog>
