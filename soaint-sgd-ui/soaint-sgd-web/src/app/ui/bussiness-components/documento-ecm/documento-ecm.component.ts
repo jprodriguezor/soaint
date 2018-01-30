@@ -11,6 +11,7 @@ import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {FAIL_ADJUNTAR_PRINCIPAL} from '../../../shared/lang/es';
 import {isNullOrUndefined} from 'util';
+import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -30,7 +31,9 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   uploadFiles: any[] = [];
   task: any;
   sede: string;
+  codSede: string;
   depedencia: string;
+  codDepedencia: string;
   url: string;
   status: UploadStatus;
   previewWasRefreshed = false;
@@ -46,7 +49,7 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
 
   constructor(private changeDetection: ChangeDetectorRef,
               private _api: ApiBase,
-              private _asignacionSandBox: AsignacionSandbox,
+              private _asignacionSandBox: AsignacionSandbox, private _dependenciaSandbox: DependenciaSandbox,
               private _store: Store<RootState>) {
   }
 
@@ -54,15 +57,13 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
     this.uploadUrl = environment.pd_adjuntar_documento_endpoint;
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
-      this.sede = activeTask.variables.codigoSede;
-      this.depedencia = activeTask.variables.codDependencia;
-      /*if (this.task) {
-        this._asignacionSandBox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((comunicacion) => {
-          this.correspondencia = comunicacion.correspondencia;
-        });
-      }*/
+      this.codSede = activeTask.variables.codigoSede;
+      this.codDepedencia = activeTask.variables.codDependencia;
+      this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
+        this.depedencia  = results.dependencias.find((element) => element.codigo === this.codDepedencia).nombre;
+        this.sede  = results.dependencias.find((element) => element.codSede === this.codSede).nomSede;
+      });
     });
-    console.log(this.task);
   }
 
   showUploadButton() {
@@ -81,6 +82,7 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
         formData.append('files', file, file.name);
       }
       this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
+        console.log(response.ecmIds);
         this._store.dispatch(new CompleteTaskAction({
           idProceso: this.task.idProceso,
           idDespliegue: this.task.idDespliegue,
