@@ -390,7 +390,7 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder) {
         logger.info ("### Generando arbol");
-
+        Conexion conexion = obtenerConexion ( );
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
             int bandera = 0;
@@ -409,10 +409,18 @@ public class ContentControlAlfresco implements ContentControl {
                 //Recorremos la lista organigrama
                 for (OrganigramaDTO organigrama : organigramaList)
                     if (bandera == 0) {
+
                         folderFather = chequearCapetaPadre (folder, organigrama.getCodOrg ( ));
                         if (folderFather == null) {
-                            logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
-                            folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASE_BASE, null);
+                            if (obtenerCarpetaPorNombre(organigrama.getNomOrg ( ),conexion.getSession()).getFolder()!=null){
+                                folderFather=obtenerCarpetaPorNombre(organigrama.getNomOrg ( ),conexion.getSession());
+                                logger.info("Organigrama -- ya existe la carpeta: "+ folderFather.getFolder().getName() );
+                            }
+                            else{
+                                logger.info ("Organigrama --  Creando folder: " + organigrama.getNomOrg ( ));
+                                folderFather = crearCarpeta (folder, organigrama.getNomOrg ( ), organigrama.getCodOrg ( ), CLASE_BASE, null);
+                            }
+
                         } else {
                             logger.info ("Organigrama --  La carpeta ya esta creado: " + folderFather.getFolder ( ).getName ( ));
                             //Actualización de folder
@@ -630,10 +638,9 @@ public class ContentControlAlfresco implements ContentControl {
         String idDocumento;
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
-
         String fileName;
         String mimeType = "application/pdf";
-        for (InputPart inputPart : inputParts) {
+         for (InputPart inputPart : inputParts) {
 
             // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
             MultivaluedMap <String, String> headers = inputPart.getHeaders ( );
@@ -645,22 +652,25 @@ public class ContentControlAlfresco implements ContentControl {
                     logger.info ("El nombre del fichero principal/adjunto es: " + fileName);
                 }
             }
-            InputStream inputStream = null;
 
-            try {
+            InputStream inputStream = null;
+             try {
                 inputStream = inputPart.getBody (InputStream.class, null);
-            } catch (IOException e) {
-                logger.error ("### Error..------", e);
+
+             } catch (IOException e) {
+                 logger.error ("### Error..------", e);
             }
 
             assert inputStream != null;
             byte[] bytes = IOUtils.toByteArray (inputStream);
-
+             logger.info ("33333333333333333333333 entra al metodo subirDocumentoPrincipalAdjunto" );
             //Se definen las propiedades del documento a subir
             Map <String, Object> properties = new HashMap <> ( );
+             logger.info ("444444444444444444444 entra al metodo subirDocumentoPrincipalAdjunto" );
             properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+             logger.info ("555555555555555555555 entra al metodo subirDocumentoPrincipalAdjunto" );
             //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
-            if (!metadatosDocumentosDTO.getIdDocumentoPadre().isEmpty()){
+            if (metadatosDocumentosDTO.getIdDocumentoPadre()!= null){
                 properties.put ("cmcor:xIdentificadorDocPrincipal",metadatosDocumentosDTO.getIdDocumentoPadre());
             }
             properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
