@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ui.DigitalizarDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -11,12 +12,11 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
@@ -31,19 +31,43 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @POST
-    @Path("/{tipoComunicacion}/{fileName}")
+    @Path("/{tipoComunicacion}/{fileName}/{principalFileName}/{sede}/{dependencia}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName, MultipartFormDataInput file) {
+    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName,
+                                @PathParam("principalFileName") String principalFileName, @PathParam("sede") String sede,
+                                @PathParam("dependencia") String dependencia, MultipartFormDataInput file) {
 
         List<String> ecmIds = new ArrayList<>();
         log.info("DigitalizarDocumentoGatewayApi - [content] : ");
+
+        List<InputPart> anexos = new ArrayList<>();
+        MensajeRespuesta respuesta;
+        AtomicReference<Response> response = new AtomicReference<>();
+
         file.getFormDataMap().forEach((key, parts) -> parts.forEach((part) -> {
             String fileAuxName = digitalizarDocumentoClient.getPartFileName(part);
-            Response response = digitalizarDocumentoClient.digitalizar(part, fileName, tipoComunicacion);
-            if (response.getStatus() == HttpStatus.OK.value())
-                ecmIds.add(response.readEntity(String.class));
+            fileAuxName = fileAuxName.substring(0, fileAuxName.indexOf('.'));
+            if (fileAuxName.equals(principalFileName)) {
+                response.set(digitalizarDocumentoClient.digitalizarPrincipal(part, fileAuxName, sede, dependencia));
+                if (response.get().getStatus() == HttpStatus.OK.value()) {
+                    ecmIds.add(response.get().readEntity(String.class));
+                }
+            } else {
+                anexos.add(part);
+            }
         }));
+
+        respuesta = response.get().readEntity(MensajeRespuesta.class);
+
+        anexos.forEach(anexo -> {
+            String fileAuxName = digitalizarDocumentoClient.getPartFileName(anexo);
+            fileAuxName = fileAuxName.substring(0, fileAuxName.indexOf('.'));
+            response.set(digitalizarDocumentoClient.digitalizarAnexo(anexo, fileAuxName, sede, dependencia, respuesta.getMensaje()))
+            ;
+        });
+
+
         log.info("DigitalizarDocumentoGatewayApi - [content] : " + ecmIds);
         if (!ecmIds.isEmpty()) {
             DigitalizarDocumentoDTO docs = new DigitalizarDocumentoDTO(ecmIds);
