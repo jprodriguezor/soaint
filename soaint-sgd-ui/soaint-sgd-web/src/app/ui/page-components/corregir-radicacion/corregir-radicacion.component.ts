@@ -124,7 +124,20 @@ export class CorregirRadicacionComponent implements OnInit {
     }
   }
   actualizarComunicacion(){
+    console.log(this.comunicacion);
+
+
     this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
+
+    this._taskSandBox.completeTaskDispatch({
+      idProceso: this.task.idProceso,
+      idDespliegue: this.task.idDespliegue,
+      idTarea: this.task.idTarea,
+      parametros: {
+      }
+    });
+    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+
   }
 
   ngOnDestroy() {
