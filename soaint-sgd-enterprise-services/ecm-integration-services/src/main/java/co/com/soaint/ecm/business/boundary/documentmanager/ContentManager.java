@@ -128,12 +128,7 @@ public class ContentManager {
             new Conexion ( );
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
-
-            //Carpeta donde se va a guardar el documento
-            carpeta = new Carpeta ( );
-//            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
             logger.info ("### Se invoca el metodo de subir el documento..");
-
             response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO);
 
         } catch (Exception e) {
