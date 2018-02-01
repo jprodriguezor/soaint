@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -32,7 +32,6 @@ export class PDDatosGeneralesComponent implements OnInit {
   tiposComunicacion$: Observable<ConstanteDTO[]>;
   tiposAnexo$: Observable<ConstanteDTO[]>;
   tiposPlantilla$: Observable<ConstanteDTO[]>;
-    contenidoPlantilla$: Observable<any>;
 
   editarPlantillaVisible = false;
   plantillaHtmlContent: string;
@@ -43,7 +42,7 @@ export class PDDatosGeneralesComponent implements OnInit {
 
   fechaCreacion = new Date();
 
-  tipoPlantillaSelected: ConstanteDTO[];
+  tipoPlantillaSelected: ConstanteDTO;
 
   listaVersionesDocumento: VersionDocumentoDTO[] = [];
   listaAnexos: AnexoDTO[] = [];
@@ -69,25 +68,35 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
-    cargarPlantilla(tipoSelected) {
-        this.contenidoPlantilla$ = this._produccionDocumentalApi.getTipoPlantilla({codigo:'oficio'});
-        console.log(this.contenidoPlantilla$);
+    generarPdf() {
+      this._produccionDocumentalApi.generarPdf({htmlContent:this.plantillaHtmlContent}).subscribe(
+        result => {
+            if (result.success) {
+              this.editarPlantillaVisible = false;
+              this.form.get('tipoPlantilla').reset();
+              this.tipoPlantillaSelected = null;
+              this.plantillaHtmlContent = "";
+            } else {
+              console.log(result.text);
+            }
+        },
+        error => console.log("Error :: " + error)
+      );
 
-        this.editarPlantillaVisible = true;
+        console.log(this.plantillaHtmlContent);
     }
-
-
 
     tipoComunicacionChange(event) {
         this.pdMessageService.sendMessage(event.value);
     }
 
-
-
-
   tipoPlanillaChange(event) {
     this.tipoPlantillaSelected = event.value;
     this.nombreVersionDocumento = event.value.nombre + '_';
+    this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
+      result => this.plantillaHtmlContent = result,
+      error => console.log("Error :: " + error)
+    );
   }
 
   hideVersionesDocumentoDialog() {
@@ -142,7 +151,6 @@ export class PDDatosGeneralesComponent implements OnInit {
     this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-      this.contenidoPlantilla$ = this._produccionDocumentalApi.getTipoPlantilla({codigo:'oficio'});
     this.listenForErrors();
   }
 

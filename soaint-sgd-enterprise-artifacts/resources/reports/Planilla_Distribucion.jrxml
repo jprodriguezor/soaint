@@ -94,7 +94,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Fecha Genaracion:]]></text>
+				<text><![CDATA[Fecha Generación:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="580" y="60" width="99" height="17" uuid="fdbd9126-dcc2-4ed5-8a0f-8757a5c12f35"/>

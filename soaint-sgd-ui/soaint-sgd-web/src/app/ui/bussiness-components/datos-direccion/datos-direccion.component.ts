@@ -4,7 +4,7 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
 import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
@@ -131,18 +131,20 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
     }));
 
-    paisControl.valueChanges.subscribe(value =>{
+    paisControl.valueChanges.subscribe(value => {
 
       this.visibility.selectedColombia = true;
 
-      if (value && (value.codigo != 'CO')) {
+      console.log(value);
+
+      if (value && (value.codigo.toUpperCase() !== 'CO')) {
         this.visibility.selectedColombia = false;
         this.showCheckDireccionForm = false;
         departamentoControl.reset();
         departamentoControl.disable();
         municipioControl.reset();
         municipioControl.disable();
-      }else{
+      } else {
         this.showCheckDireccionForm = true;
       }
 
@@ -220,9 +222,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       numeroTel: numeroTel.value,
       celular: celular.value,
       correoEle: email.value,
-      provinciaEstado:provinciaEstado.value,
-      ciudad:ciudad.value,
-      direccionText:direccionText.value,
+      provinciaEstado: provinciaEstado.value,
+      ciudad: ciudad.value,
+      direccionText: direccionText.value,
 
     }, this.saveDireccionData());
 
@@ -262,7 +264,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
     const value = {};
 
-    if(pais.value === 'CO'){
+    if (pais.value && pais.value.codigo.toUpperCase() === 'CO') {
 
       if (tipoVia.value) {
         direccion += tipoVia.value.nombre;
@@ -316,9 +318,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
         complementoAdicional.reset();
       }
 
-      value['direccion'] = direccion === ''? null: direccion;
+      value['direccion'] = direccion === '' ? null : direccion;
 
-    }else{
+    } else {
       value['direccion'] = direccionText.value;
     }
     return value;
@@ -350,9 +352,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   onFilterPais(event) {
   }
 
-    save() {
+  save() {
     if (this.form.valid) {
-       //debugger;
       if (this.formContext === FormContextEnum.CREATE) {
         this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
       } else {
@@ -362,6 +363,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
       this.formContext = null;
       this.editIndexContext = null;
+      console.log(this.contacts);
     }
   }
 
@@ -375,10 +377,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     });
   }
 
-  addColombiaByDefault(){
+  addColombiaByDefault() {
 
     this.paisSuggestions$.take(2).subscribe((values) => {
-      this.form.get('pais').setValue(values.find(value=>value.codigo === 'CO'));
+      this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
     });
 
     this._paisSandbox.loadDispatch();

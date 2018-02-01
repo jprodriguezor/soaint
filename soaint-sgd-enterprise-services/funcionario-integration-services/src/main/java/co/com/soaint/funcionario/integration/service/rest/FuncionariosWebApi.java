@@ -13,7 +13,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,8 +80,6 @@ public class FuncionariosWebApi {
     @Path("/funcionarios/obtener_roles")
     public List<RolDTO> obtenerRoles() throws BusinessException, SystemException {
         log.info("processing rest request - obtener-roles");
-        List<RolDTO> nuevo = new ArrayList<RolDTO>();
-        //return nuevo;
         return boundary.obtenerRoles();
     }
 
@@ -97,9 +94,7 @@ public class FuncionariosWebApi {
     @Path("/funcionarios/verificar-credenciales")
     public FuncionarioDTO verificarCredenciales(CredencialesDTO credenciales) throws BusinessException, SystemException {
         log.info("processing rest request - verificar credenciales");
-        FuncionarioDTO funcionario = boundary.verificarCredenciales(credenciales);
-
-        return funcionario;
+        return boundary.verificarCredenciales(credenciales);
 
     }
 
@@ -148,7 +143,6 @@ public class FuncionariosWebApi {
     public FuncionarioDTO obtenerFuncionario(@PathParam("id_funcionario")final BigInteger idFuncionario) throws BusinessException, SystemException {
         log.info("processing rest request - obtener funcionario por id");
         return boundary.consultarFuncionarioByIdeFunci(idFuncionario);
-        //return new FuncionarioDTO();
     }
 
 

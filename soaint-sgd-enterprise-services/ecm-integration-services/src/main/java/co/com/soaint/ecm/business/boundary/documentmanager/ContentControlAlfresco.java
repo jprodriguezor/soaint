@@ -101,55 +101,7 @@ public class ContentControlAlfresco implements ContentControl {
         return conexion;
     }
 
-    /**
-     * Metodo que crea carpetas dentro de Alfresco
-     *
-     * @param folder          Objeto carpeta que contiene un Folder de Alfresco
-     * @param nameOrg         Nombre de la carpeta
-     * @param codOrg          Codigo de la carpeta que se va a crear
-     * @param classDocumental Clase documental que tiene la carpeta que se va a crar.
-     * @param folderFather    Carpeta dentro de la cual se va a crear la carpeta
-     * @return Devuelve la carpeta creada dentro del objeto Carpeta
-     */
-    private Carpeta crearCarpetaProduccionDocumental(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather) {
-        Carpeta newFolder = null;
-        try {
 
-            logger.info ("### Creando Carpeta.. con clase documental:" + classDocumental);
-            Map <String, String> props = new HashMap <> ( );
-            //Se define como nombre de la carpeta nameOrg
-            props.put (PropertyIds.NAME, nameOrg);
-
-            //Se estable como codigo unidad administrativa Padre el codigo de la carpeta padre
-
-            switch (classDocumental) {
-                case CLASE_BASE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoBase", CLASE_BASE, props, codOrg);
-                    break;
-                case CLASE_DEPENDENCIA:
-                    llenarPropiedadesCarpeta (CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg, folderFather);
-                    break;
-                case CLASE_SERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg, folderFather);
-                    break;
-                case CLASE_SUBSERIE:
-                    llenarPropiedadesCarpeta ("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg, folderFather);
-
-                    break;
-                default:
-                    break;
-            }
-            //Se crea la carpeta dentro de la carpeta folder
-            logger.info ("*** Se procede a crear la carpeta ***");
-            newFolder = new Carpeta ( );
-            newFolder.setFolder (folder.getFolder ( ).createFolder (props));
-            logger.info ("---------------------Carpeta: " + newFolder.getFolder ( ).getName ( ) + " creada--------------");
-        } catch (Exception e) {
-            logger.error ("*** Error al crear carpeta *** ", e);
-        }
-        return newFolder;
-
-    }
 
     /**
      * Metodo que crea carpetas dentro de Alfresco
@@ -576,7 +528,7 @@ public class ContentControlAlfresco implements ContentControl {
         logger.info ("Se entra al metodo subirDocumento");
 
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento="";
+        String idDocumento;
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
 
@@ -675,7 +627,7 @@ public class ContentControlAlfresco implements ContentControl {
         logger.info ("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento="";
+        String idDocumento;
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
 
@@ -690,7 +642,7 @@ public class ContentControlAlfresco implements ContentControl {
                 if (name.trim ( ).startsWith ("filename")) {
                     String[] tmp = name.split ("=");
                     fileName = tmp[1].trim ( ).replaceAll ("\"", "");
-                    logger.info ("El nombre del fichero es: " + fileName);
+                    logger.info ("El nombre del fichero principal/adjunto es: " + fileName);
                 }
             }
             InputStream inputStream = null;
@@ -707,41 +659,64 @@ public class ContentControlAlfresco implements ContentControl {
             //Se definen las propiedades del documento a subir
             Map <String, Object> properties = new HashMap <> ( );
             properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
-//            properties.put ("cmcor:NroRadicado", "CucoNroRadicado");
+            //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
+            if (!metadatosDocumentosDTO.getIdDocumentoPadre().isEmpty()){
+                properties.put ("cmcor:xIdentificadorDocPrincipal",metadatosDocumentosDTO.getIdDocumentoPadre());
+            }
             properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
             try {
                 //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
                 new Carpeta ( );
                 Carpeta folderAlfresco;
-                logger.info ("### Se elige la carpeta donde se va a guardar el documento adjunto a radicar..");
+                logger.info ("### Se elige la carpeta donde se va a guardar el documento principal..");
+                logger.info ("###------------ Se elige la sede donde se va a guardar el documento principal..");
+                    folderAlfresco = obtenerCarpetaPorNombre(metadatosDocumentosDTO.getSede(), session);
+                logger.info ("###------------------- Se obtienen todas las dependencias de la sede..");
+                    List<Carpeta> carpetasHijas=obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
-                if (metadatosDocumentosDTO.getIdDocumentoPadre().isEmpty()) {
+                    for (Carpeta carpetaP: carpetasHijas){
+                        logger.info("Se obtienen la dependencia referente a la sede"+ carpetaP.getFolder().getName());
+                        if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())){
+                            logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
 
-                    folderAlfresco = obtenerCarpetaPorNombre ("100101.00302_COMUNICACION_EXTERNA", session);
-                } else {
+                            Calendar cal= Calendar.getInstance();
+                            int year= cal.get(Calendar.YEAR);
 
-                    folderAlfresco = obtenerCarpetaPorNombre ("100100.00301_COMUNICACION_INTERNA", session);
-                }
-                logger.info ("### Se elige la carpeta donde se va a guardar el documento adjunto a radicar.." + folderAlfresco.getFolder ( ).getName ( ));
-                VersioningState vs = VersioningState.MAJOR;
-                ContentStream contentStream = new ContentStreamImpl (metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
-                //Se crea el documento
-                logger.info ("### Se va a crear el documento..");
-                Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
+                            logger.info("Se obtienen todas las carpetas dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
+                            List<Carpeta> carpetasDeLaDependencia=obtenerCarpetasHijasDadoPadre(carpetaP);
 
-                idDocumento = newDocument.getId ( );
-                String[] parts = idDocumento.split (";");
-                idDocumento = parts[0];
+                            boolean existe=false;
+                            Carpeta carpetaTarget = new Carpeta();
+                            for (Carpeta carpetaDependencia: carpetasDeLaDependencia) {
+                            if(carpetaDependencia.getFolder().getName().equals("PRODUCCION DOCUMENTAL "+ year)){
+                                logger.info("Existe la Carpeta: PRODUCCION DOCUMENTAL "+year);
+                                carpetaTarget =carpetaDependencia;
+                                existe=true;
+                            }
+                            }
+                            if (!existe)
+                            {
+                                logger.info("Se crea la Carpeta: PRODUCCION DOCUMENTAL "+year);
+                                carpetaTarget= crearCarpeta(carpetaP,"PRODUCCION DOCUMENTAL "+ year,"11",CLASE_SUBSERIE,carpetaP);
+                            }
 
+                            logger.info("Se llenan los metadatos del documento a crear");
+                            VersioningState vs = VersioningState.MAJOR;
+                            ContentStream contentStream = new ContentStreamImpl (metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
+                            logger.info ("### Se va a crear el documento..");
+                            Document newDocument =  carpetaTarget.getFolder().createDocument (properties, contentStream, vs);
 
-
-                //Creando el mensaje de respuesta
-                response.setCodMensaje("0000");
-                response.setMensaje(idDocumento);
-
-                logger.info ("### Documento creado con id " + idDocumento);
-            } catch (CmisContentAlreadyExistsException ccaee) {
+                            idDocumento = newDocument.getId ( );
+                            String[] parts = idDocumento.split (";");
+                            idDocumento = parts[0];
+                            //Creando el mensaje de respuesta
+                            response.setCodMensaje("0000");
+                            response.setMensaje(idDocumento);
+                            logger.info ("### Documento creado con id " + idDocumento);
+                            }
+                        }
+                   } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
                 response.setCodMensaje("1111");
                 response.setMensaje(configuracion.getPropiedad ("ECM_ERROR_DUPLICADO"));
@@ -767,7 +742,6 @@ public class ContentControlAlfresco implements ContentControl {
      * @param idDocumento  Nombre del documento que se va a crear
      * @param nroRadicado        Documento que se va a subir
      * @param tipologiaDocumental Tipo de comunicacion que puede ser Externa o Interna
-     * @param nroRadicado Número de Radicado
      * @return Devuelve el id de la carpeta creada
      * @throws IOException Excepcion ante errores de entrada/salida
      */
@@ -779,7 +753,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             ObjectId idDoc=new ObjectIdImpl (idDocumento);
 
-            Map<String, Object> updateProperties = new HashMap<String, Object>();
+            Map<String, Object> updateProperties = new HashMap<>();
             updateProperties.put ("cmcor:NroRadicado", nroRadicado);
             updateProperties.put ("cmcor:NombreRemitente", nombreRemitente);
             updateProperties.put ("cmcor:TipologiaDocumental", tipologiaDocumental);
@@ -810,9 +784,7 @@ public class ContentControlAlfresco implements ContentControl {
         props.put (PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad (clase));
         props.put (PropertyIds.DESCRIPTION, configuracion.getPropiedad (clase));
         props.put (tipoCarpeta, codOrg);
-        logger.info ("Estamos mirando las propiedades");
-        logger.info (folderFather);
-        logger.info ("Estamos mirando las propiedades FIN");
+
         if ("cmcor:CodigoSubserie".equals (tipoCarpeta)) {
             if (folderFather != null) {
                 props.put (CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder ( ).getPropertyValue ("cmcor:CodigoSerie"));

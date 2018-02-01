@@ -27,7 +27,7 @@ public class DigitalizarDocumentoClient {
         super();
     }
 
-    public Response digitalizar(InputPart part, String fileName, String tipoComunicacion) {
+    public Response digitalizarPrincipal(InputPart part, String fileName, String codSede, String codDependencia) {
         log.info("Municipios - [trafic] - listing Municipios with endpointEcm: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
@@ -45,7 +45,30 @@ public class DigitalizarDocumentoClient {
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {
         };
 
-        return wt.path("/subirDocumentoECM/" + fileName + "/" + tipoComunicacion)
+        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + codSede + "/" + codDependencia)
+                .request()
+                .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+    }
+
+    public Response digitalizarAnexo(InputPart part, String fileName, String codSede, String codDependencia, String idDocPadre) {
+        log.info("Municipios - [trafic] - digitalizar anexo with endpointEcm: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        MultipartFormDataOutput multipart = new MultipartFormDataOutput();
+
+        InputStream inputStream = null;
+        try {
+            inputStream = part.getBody(InputStream.class, null);
+        } catch (IOException e) {
+            log.error("Se ha generado un error del tipo IO:", e);
+        }
+        multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
+
+
+        GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {
+        };
+
+        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + codSede + "/" + codDependencia + "/" + idDocPadre)
                 .request()
                 .post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }

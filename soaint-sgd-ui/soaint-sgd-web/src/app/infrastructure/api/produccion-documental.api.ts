@@ -51,9 +51,12 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
   }
 
-  getTipoPlantilla(payload:{}) {
-      //return this._api.list(environment.tipoPlantilla_endpoint, payload).map(res => res);
-      return this._api.list(environment.tipoDestinatario_endpoint, payload).map(res => res.constantes);
+  getTipoPlantilla(payload) : Observable<string> {
+      return this._api.list(`${environment.tipoPlantilla_endpoint}/obtener/${payload.codigo}`, payload).map(res => res.text);
+  }
+
+  generarPdf(payload) : Observable<{success:boolean,text:string}> {
+    return this._api.post(`${environment.tipoPlantilla_endpoint}/generar-pdf`, payload).map(res => res);
   }
 
   getTiposPlantilla(payload: {}): Observable<ConstanteDTO[]> {

@@ -362,6 +362,19 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @PUT
+    @Path("/actualizar-comunicacion")
+    @JWTTokenSecurity
+    public Response actualizarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - comunicacion");
+        Response response = client.actualizarComunicacion(comunicacionOficial);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
     @GET
     @Path("/restablecer_correspondencia_entrada/{proceso}/{tarea}")
     @JWTTokenSecurity

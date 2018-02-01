@@ -15,6 +15,7 @@ export const environment = {
   tipoDocumento_endpoint: `${host}/tipo-documento-gateway-api`,
   tipoComunicacion_endpoint: `${host}/tipo-comunicacion-gateway-api`,
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
+  soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
@@ -76,6 +77,7 @@ export const environment = {
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
+  actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
   // Produccion Documental

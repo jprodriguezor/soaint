@@ -20,12 +20,14 @@ export class EditarPlanillaComponent implements OnInit {
 
   showDependencia = false;
 
+  maxDateValue: Date = new Date();
+
   estadoEntregaSuggestions: any[] = [
     {nombre: 'ENTREGADO', codigo: 'EN'},
-    {nombre: 'DEVUELTO', codigo: 'DV'},
-    {nombre: 'ANULADO', codigo: 'AN'},
-    {nombre: 'PENDIENTE', codigo: 'PD'},
-    //{nombre: 'REDIRECCIONAR', codigo: 'RE'},
+    {nombre: 'DEVUELTO', codigo: 'DV'}
+    //{nombre: 'ANULADO', codigo: 'AN'},
+    //{nombre: 'PENDIENTE', codigo: 'PD'},
+    // {nombre: 'REDIRECCIONAR', codigo: 'RE'},
   ];
 
   dependencias: DependenciaDTO[] = [];
@@ -60,7 +62,8 @@ export class EditarPlanillaComponent implements OnInit {
   }
 
   estadoEntregaChange() {
-    this.showDependencia = this.form.get('estadoEntrega').value && this.form.get('estadoEntrega').value.codigo === 'DV';
+    console.log('State Change');
+    /*this.showDependencia = this.form.get('estadoEntrega').value && this.form.get('estadoEntrega').value.codigo === 'DV';*/
   }
 
   findDependency(code): string {

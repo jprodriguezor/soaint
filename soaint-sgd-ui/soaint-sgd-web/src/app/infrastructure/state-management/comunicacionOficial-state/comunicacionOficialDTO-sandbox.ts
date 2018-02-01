@@ -25,5 +25,8 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadAction(payload));
   }
 
+  actualizarComunicacion(payload: any){
+    return this._api.put(environment.actualizarComunicacion_endpoint, payload);
+  }
 }
 

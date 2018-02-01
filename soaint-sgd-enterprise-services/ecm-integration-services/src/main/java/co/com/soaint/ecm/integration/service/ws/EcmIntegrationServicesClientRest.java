@@ -90,31 +90,68 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
-     * Subir documento a ECM
+     * Subir documento Principal al ECM
      *
      * @param documento        documento a subir
      * @param nombreDocumento Nombre del documento
-     * @param idDocPadre Identificador del documento padre
      * @param sede Sede a la que pertenece el documento
      * @param dependencia Dependencia a la que pertenece el documento
      * @return identificador del documento en el ecm
      */
     @POST
-    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{idDocPadre}/{sede}/{dependencia}")
+    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{sede}/{dependencia}")
     @Consumes("multipart/form-data")
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestPart("documento") final MultipartFormDataInput documento,
-                                                              @PathParam("nombreDocumento") String nombreDocumento,
-                                                              @PathParam("idDocPadre") String idDocPadre,
-                                                              @PathParam("sede") String sede,
-                                                              @PathParam("dependencia") String dependencia) throws IOException {
+                                                     @PathParam("nombreDocumento") String nombreDocumento,
+                                                     @PathParam("sede") String sede,
+                                                     @PathParam("dependencia") String dependencia
+                                                     ) throws IOException {
 
-        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento);
+        logger.info("processing rest request - Subir Documento Adjunto al ECM " + nombreDocumento);
+        try {
+            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
+            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
+            metadatosDocumentosDTO.setSede(sede);
+            metadatosDocumentosDTO.setDependencia(dependencia);
+
+            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+
+        } catch (IOException e) {
+            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
+            throw e;
+        }
+
+    }
+    /**
+     * Subir documento Adjunto a ECM
+     *
+     * @param documento        documento a subir
+     * @param nombreDocumento Nombre del documento
+     * @param idDocPadre Identificador del documento Principal al que esta asociado
+     * @param sede Sede a la que pertenece el documento
+     * @param dependencia Dependencia a la que pertenece el documento
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/subirDocumentoRelacionECM/{nombreDocumento}/{sede}/{dependencia}/{idDocPadre}")
+    @Consumes("multipart/form-data")
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestPart("documento") final MultipartFormDataInput documento,
+                                                     @PathParam("nombreDocumento") String nombreDocumento,
+                                                     @PathParam("sede") String sede,
+                                                     @PathParam("dependencia") String dependencia,
+                                                     @PathParam("idDocPadre") String idDocPadre) throws IOException {
+
+        logger.info("processing rest request - Subir Documento Adjunto al ECM " + nombreDocumento);
         try {
             MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
             metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
             metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
             metadatosDocumentosDTO.setSede(sede);
             metadatosDocumentosDTO.setDependencia(dependencia);
+            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
 
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
         } catch (RuntimeException e) {

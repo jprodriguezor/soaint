@@ -59,5 +59,5 @@ public class TvsConstantes implements Serializable {
     @Column(name = "ESTADO")
     private String estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoDoc")
-    private List<TvsPlantilla> platillas;
+    private List<TvsPlantilla> plantillas;
 }

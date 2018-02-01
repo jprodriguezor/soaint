@@ -23,6 +23,7 @@ import {SeleccionarDocumentosComponent} from './ui/page-components/archivar-docu
 import {SecurityRoleComponent} from './ui/page-components/security-role/security-role.component';
 import {UnidadesDocumentalesComponent} from './ui/page-components/unidades-documentales/unidades-documentales.component';
 import {GestionarDevolucionesComponent} from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
+import {CorregirRadicacionComponent} from './ui/page-components/corregir-radicacion/corregir-radicacion.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -68,6 +69,12 @@ export const routes: Routes = [
         component: GestionarDevolucionesComponent,
         canActivate: [AuthenticatedGuard]
       },
+      {
+        path: ROUTES_PATH.corregirRadicacion,
+        component: CorregirRadicacionComponent,
+        canActivate: [AuthenticatedGuard]
+      },
+
       {
         path: ROUTES_PATH.gestionUnidadDocumental,
         component: UnidadesDocumentalesComponent,

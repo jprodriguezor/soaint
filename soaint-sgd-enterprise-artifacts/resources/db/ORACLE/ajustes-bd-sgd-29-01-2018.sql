@@ -1,0 +1,13 @@
+  -- INSERTAR CONSTANTES
+  
+	INSERT INTO TVS_CONSTANTES (IDE_CONST, CODIGO, NOMBRE, ESTADO) VALUES ('173', 'TP-CMCE', 'Tipo Comunicación Enviada', 'A');
+	INSERT INTO TVS_CONSTANTES (IDE_CONST, CODIGO, NOMBRE, COD_PADRE, ESTADO) VALUES ('174', 'SE', 'Comunicación Oficial Externa Enviada', 'TP-CMCE', 'A');
+	INSERT INTO TVS_CONSTANTES (IDE_CONST, CODIGO, NOMBRE, COD_PADRE, ESTADO) VALUES ('175', 'SI', 'Comunicación Oficial Interna Enviada', 'TP-CMCE', 'A');
+
+
+
+	  
+
+	
+	
+  
