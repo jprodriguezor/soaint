@@ -8,6 +8,8 @@ import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-
 import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/switchMap';
 
 
 enum UploadStatus {
@@ -66,7 +68,21 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     for (const file of event.files) {
       formData.append('files', file, file.name);
     }
-    this._api.sendFile(this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado]).subscribe(response => {
+
+    this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
+        console.log(result);
+        return this._api.sendFile(
+          this.uploadUrl,
+          formData,
+          [
+            this.correspondencia.codTipoCmc,
+            this.correspondencia.nroRadicado,
+            this.principalFile,
+            result.dependencias[0].nomSede,
+            result.dependencias[0].nombre,
+          ]);
+      }
+    ).subscribe(response => {
       this._store.dispatch(new CompleteTaskAction({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
@@ -76,6 +92,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
         }
       }));
     });
+
   }
 
   preview(file) {
