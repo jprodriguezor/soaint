@@ -8,8 +8,8 @@
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
     production: false,
@@ -93,7 +93,7 @@ export const environment = {
 
   // Produccion Documental
   pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_adjuntar_documento_endpoint: `${host}/adjuntar/documento`,
+  pd_adjuntar_documento_endpoint: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
 
 };
 
