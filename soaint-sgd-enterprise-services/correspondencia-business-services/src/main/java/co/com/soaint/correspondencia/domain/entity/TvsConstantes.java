@@ -58,6 +58,4 @@ public class TvsConstantes implements Serializable {
     private String codPadre;
     @Column(name = "ESTADO")
     private String estado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoDoc")
-    private List<TvsPlantilla> plantillas;
 }
