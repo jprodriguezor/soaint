@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {FAIL_ADJUNTAR_PRINCIPAL} from '../../../shared/lang/es';
+import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO} from '../../../shared/lang/es';
 import {isNullOrUndefined} from 'util';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
@@ -62,6 +62,8 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
       this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
         this.depedencia  = results.dependencias.find((element) => element.codigo === this.codDepedencia).nombre;
         this.sede  = results.dependencias.find((element) => element.codSede === this.codSede).nomSede;
+        console.log(this.depedencia);
+        console.log(this.sede);
       });
     });
   }
@@ -82,14 +84,17 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
         formData.append('files', file, file.name);
       }
       this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
-        console.log(response.ecmIds);
         this._store.dispatch(new CompleteTaskAction({
           idProceso: this.task.idProceso,
           idDespliegue: this.task.idDespliegue,
           idTarea: this.task.idTarea,
           parametros: {
-            ideEcm: JSON.parse(response.ecmIds)
+            ideEcm: response.ecmIds[0]
           }
+        }));
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'success',
+          summary: SUCCESS_ADJUNTAR_DOCUMENTO
         }));
       });
     }

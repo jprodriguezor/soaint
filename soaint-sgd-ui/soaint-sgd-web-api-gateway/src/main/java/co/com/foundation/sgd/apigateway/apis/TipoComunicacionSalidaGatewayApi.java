@@ -14,19 +14,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/tipo-comunicacion-gateway-api")
+@Path("/tipo-comunicacion-salida-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
-public class TipoComunicacionGatewayApi {
+public class TipoComunicacionSalidaGatewayApi {
 
     @Autowired
     private TipoComunicacionClient tipoComunicacionClient;
 
-    @Value("${contants.tipocomunicacion.value}")
+    @Value("${contants.tipocomunicacion.enviada.value}")
     private String tipoCoValue = "";
 
-    public TipoComunicacionGatewayApi() {
+    public TipoComunicacionSalidaGatewayApi() {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
@@ -36,10 +36,10 @@ public class TipoComunicacionGatewayApi {
     @JWTTokenSecurity
     public Response list() {
 
-        log.info("TipoComunicacionGatewayApi - [trafic] - listing TipoComunicacion");
+        log.info("TipoComunicacionSalidaGatewayApi - [trafic] - listing TipoComunicacion");
         Response response = tipoComunicacionClient.list(tipoCoValue);
         String responseContent = response.readEntity(String.class);
-        log.info("TipoComunicacionGatewayApi - [content] : " + responseContent);
+        log.info("TipoComunicacionSalidaGatewayApi - [content] : " + responseContent);
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

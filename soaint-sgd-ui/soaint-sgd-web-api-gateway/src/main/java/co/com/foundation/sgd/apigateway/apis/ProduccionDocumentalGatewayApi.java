@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -61,12 +62,12 @@ public class ProduccionDocumentalGatewayApi {
 
         InputPart parent = files.get(fileName);
         Response response = client.producirDocumento(sede, dependencia, fileName, parent, "");
-        ResponseECM parentResponse = response.readEntity(ResponseECM.class); files.remove(fileName);
+        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
             files.forEach((key, part) -> {
                     String parentId = parentResponse.getMensaje();
                     Response _response = client.producirDocumento(sede, dependencia, key, part, parentId);
-                    ResponseECM asociadoResponse = _response.readEntity(ResponseECM.class);
+                    MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
                     if (_response.getStatus() == HttpStatus.OK.value()
                             && "0000".equals(asociadoResponse.getCodMensaje())) {
                         ecmIds.add(parentResponse.getMensaje());
@@ -88,12 +89,6 @@ public class ProduccionDocumentalGatewayApi {
             }
         }
         return fileName;
-    }
-
-    @Data
-    private final class ResponseECM {
-        private String codMensaje;
-        private String mensaje;
     }
 
 }

@@ -10,10 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
-import javax.persistence.*;
 
 /**
  *
@@ -58,6 +57,4 @@ public class TvsConstantes implements Serializable {
     private String codPadre;
     @Column(name = "ESTADO")
     private String estado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoDoc")
-    private List<TvsPlantilla> plantillas;
 }

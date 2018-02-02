@@ -19,6 +19,10 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.tipoComunicacion_endpoint, payload).map(res => res.constantes);
   }
 
+  getTiposComunicacionSalida(payload: {}) {
+    return this._api.list(environment.tipoComunicacionSalida_endpoint, payload).map(res => res.constantes);
+  }
+
   getFuncionariosPorDependenciaRol(payload) {
     return this._api.list(environment.listarFuncionarios_endpoint + '/' + payload.codDependencia, payload);
   }
