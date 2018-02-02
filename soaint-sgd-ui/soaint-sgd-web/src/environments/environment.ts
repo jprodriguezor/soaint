@@ -5,8 +5,8 @@
 //const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 //const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
@@ -24,6 +24,7 @@ export const environment = {
     tipoPlantilla_endpoint: `${host}/tipo-plantilla-gateway-api`,
     tipoDocumento_endpoint: `${host}/tipo-documento-gateway-api`,
     tipoComunicacion_endpoint: `${host}/tipo-comunicacion-gateway-api`,
+    tipoComunicacionSalida_endpoint: `${host}/tipo-comunicacion-salida-gateway-api`,
     tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
     soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
     sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
