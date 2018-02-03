@@ -50,6 +50,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
 
   contacts: Array<any> = [];
+  contactPrincial = false;
   showDireccionForm = false;
   showCheckDireccionForm = false;
   showContactForm = false;
@@ -132,11 +133,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     }));
 
     paisControl.valueChanges.subscribe(value => {
-
       this.visibility.selectedColombia = true;
-
-      console.log(value);
-
       if (value && (value.codigo.toUpperCase() !== 'CO')) {
         this.visibility.selectedColombia = false;
         this.showCheckDireccionForm = false;
@@ -213,8 +210,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const provinciaEstado = this.form.get('provinciaEstado');
     const ciudad = this.form.get('ciudad');
     const direccionText = this.form.get('direccionText');
-
-
+    const principal = this.form.get('principal');
     const toSave = tassign({
       pais: pais.value,
       departamento: departamento.value,
@@ -225,7 +221,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       provinciaEstado: provinciaEstado.value,
       ciudad: ciudad.value,
       direccionText: direccionText.value,
-
+      principal: (principal.value === null ? false : true)
     }, this.saveDireccionData());
 
     pais.reset();
@@ -237,6 +233,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     numeroTel.reset();
     celular.reset();
     email.reset();
+    principal.reset();
 
     this.showContactForm = false;
     this.showDireccionForm = false;
@@ -344,9 +341,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   addContact() {
     this.showContactForm = true;
     this.formContext = FormContextEnum.CREATE;
-
     this.addColombiaByDefault();
-
+    this.contacts.forEach(value => {
+      if (value.principal) {
+        this.contactPrincial = true;
+      }
+    });
   }
 
   onFilterPais(event) {
@@ -363,7 +363,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
       this.formContext = null;
       this.editIndexContext = null;
-      console.log(this.contacts);
     }
   }
 
