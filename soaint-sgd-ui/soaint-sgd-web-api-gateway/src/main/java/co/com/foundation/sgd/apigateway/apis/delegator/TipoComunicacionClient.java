@@ -15,14 +15,11 @@ public class TipoComunicacionClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    @Value("${contants.tipocomunicacion.value}")
-    private String tipoCoValue = "";
-
     public TipoComunicacionClient() {
         super();
     }
 
-    public Response list() {
+    public Response list(String tipoCoValue) {
         log.info("TipoComunicacion - [trafic] - listing TipoComunicacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/constantes-web-api/constantes/hijos/" + tipoCoValue + "/A")

@@ -148,7 +148,7 @@ export class PDDatosGeneralesComponent implements OnInit {
     this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
       this.funcionarioLog = funcionario;
     });
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
+    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.listenForErrors();

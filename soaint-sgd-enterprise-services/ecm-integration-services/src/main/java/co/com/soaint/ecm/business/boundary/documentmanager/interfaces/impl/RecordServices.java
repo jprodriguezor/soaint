@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by amartinez on 24/01/2018.
@@ -58,21 +59,26 @@ public class RecordServices implements IRecordServices {
     private String tagPropiedades = "";
 
     private String codigoOrgAUX = " ";
-    private String codigoSerieAUX = "";
     private String codCategory = "";
-    private HashMap<String, String> codigosRecord = new HashMap<>();
-    private HashMap<String, String> idNodosPadre = new HashMap<>();
-    private HashMap<String, String> propiedades = new HashMap<>();
+    private Map<String, String> codigosRecord = new HashMap<>();
+    private Map<String, String> propiedades = new HashMap<>();
+    private Map<String, String> codigosSubseries = new HashMap<>();
+
 
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
-
+        Map<String, String> idNodosPadre = new HashMap<>();
+        codigosRecord = new HashMap<>();
         for (EstructuraTrdDTO estructura : structure) {
+
             List<OrganigramaDTO> organigramaList = estructura.getOrganigramaItemList();
             List<ContenidoDependenciaTrdDTO> trdList = estructura.getContenidoDependenciaList();
-            generarOrganigrama(organigramaList);
+            generarOrganigrama(organigramaList, idNodosPadre);
             generarDependencia(trdList);
+
         }
+        idPadre = "";
+
         return MensajeRespuesta.newInstance()
                 .codMensaje("OKOKOK")
                 .build();
@@ -163,7 +169,8 @@ public class RecordServices implements IRecordServices {
         return codigoId;
     }
 
-    private void generarOrganigrama(List<OrganigramaDTO> organigramaList) throws SystemException {
+    private void generarOrganigrama(List<OrganigramaDTO> organigramaList, Map<String, String> idNodosPadre) throws SystemException {
+        propiedades = new HashMap<>();
 
         for (OrganigramaDTO organigrama : organigramaList) {
 
@@ -173,65 +180,77 @@ public class RecordServices implements IRecordServices {
             entrada.put(tipoNodo, recordCategoria);
             String idOrganAdmin = String.valueOf(organigrama.getIdeOrgaAdmin());
             if ("P".equalsIgnoreCase(organigrama.getTipo()) && !idNodosPadre.containsKey(idOrganAdmin)) {
-                propiedades.put("rmc:xFondo",organigrama.getNomOrg());
-                entrada.put(tagPropiedades,propiedades);
+                propiedades.put("rmc:xFondo", organigrama.getNomOrg());
+                entrada.put(tagPropiedades, propiedades);
                 idPadre = crearRootCategory(entrada);
                 codigosRecord.put(codigoOrg, idPadre);
                 idNodosPadre.put(idOrganAdmin, idPadre);
                 codigoOrgAUX = organigrama.getCodOrg();
 
             } else {
-                    if (!codigosRecord.containsKey(codigoOrg)) {
-                        propiedades.put("rmc:xSeccion",organigrama.getNomOrg());
-                        entrada.put(tagPropiedades,propiedades);
-                        idSubCategoria = crearNodo(entrada, codigosRecord.get(codigoOrgAUX));
-                        codigoOrgAUX = organigrama.getCodOrg();
-                        codigosRecord.put(organigrama.getCodOrg(), idSubCategoria);
-                        idNodosPadre.put(idOrganAdmin, idPadre);
-                    } else {
-                        codigoOrgAUX = organigrama.getCodOrg();
-                    }
+                if (!codigosRecord.containsKey(codigoOrg)) {
+                    propiedades.put("rmc:xSeccion", organigrama.getNomOrg());
+                    entrada.put(tagPropiedades, propiedades);
+                    idSubCategoria = crearNodo(entrada, codigosRecord.get(codigoOrgAUX));
+                    codigoOrgAUX = organigrama.getCodOrg();
+                    codigosRecord.put(organigrama.getCodOrg(), idSubCategoria);
+                    idNodosPadre.put(idOrganAdmin, idPadre);
+                } else {
+                    codigoOrgAUX = organigrama.getCodOrg();
+                }
             }
         }
     }
 
     private void generarDependencia(List<ContenidoDependenciaTrdDTO> trdList) throws SystemException {
-        HashMap<String, String> codigosSubseries = new HashMap<>();
+        codigosSubseries = new HashMap<>();
+        Map<String, String> codigoSeries = new HashMap<>();
+        String codigoSerieAUX = "";
         for (ContenidoDependenciaTrdDTO trd : trdList) {
             JSONObject serie = new JSONObject();
             serie.put("name", trd.getNomSerie());
 
-            if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals(""))) {
-                serie.put(tipoNodo, recordCategoria);
-                propiedades.put("rmc:xSerie",trd.getNomSerie());
-                propiedades.put("rmc:xCodSerie",trd.getCodSerie());
-                serie.put(tagPropiedades,propiedades);
-                crearNodo(serie, idSubCategoria);
-                codigosRecord.put(trd.getIdOrgOfc(), idPadre);
+            if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) && !codigoSeries.containsKey(trd.getIdOrgOfc())) {
+                crearSerie(trd, serie);
+                codigoSeries.put(trd.getIdOrgOfc(), idPadre);
             } else {
                 if (codigoSerieAUX.equals("") || !codigoSerieAUX.equals(trd.getCodSerie())) {
-                    serie.put(tipoNodo, recordCategoria);
-                    propiedades.put("rmc:xSerie",trd.getNomSerie());
-                    propiedades.put("rmc:xCodSerie",trd.getCodSerie());
-                    serie.put(tagPropiedades,propiedades);
-                    codCategory = crearNodo(serie, idSubCategoria);
+
+                    codCategory = crearSerie(trd, serie);
                     codigoSerieAUX = trd.getCodSerie();
+                    codigoSeries.put(trd.getIdOrgOfc(), codCategory);
                 }
 
-                if (!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) {
-                    JSONObject subSerie = new JSONObject();
-                    subSerie.put("name", trd.getNomSubSerie());
-                    subSerie.put("nodeType", recordCategoria);
-                    propiedades.put("rmc:xSubserie",trd.getNomSubSerie());
-                    propiedades.put("rmc:xCodSubSerie",trd.getCodSubSerie());
-                    subSerie.put(tagPropiedades,propiedades);
-                    crearNodo(subSerie, codCategory);
-                    codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
-
-                }
-
+                crearSubserie(trd);
             }
         }
+    }
+
+    private String crearSerie(ContenidoDependenciaTrdDTO trd, JSONObject serie) throws SystemException {
+
+        serie.put(tipoNodo, recordCategoria);
+        propiedades.put("rmc:xSerie", trd.getNomSerie());
+        propiedades.put("rmc:xCodSerie", trd.getCodSerie());
+        serie.put(tagPropiedades, propiedades);
+        return crearNodo(serie, idSubCategoria);
+
+    }
+
+    private void crearSubserie(ContenidoDependenciaTrdDTO trd) throws SystemException {
+
+        if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
+
+            JSONObject subSerie = new JSONObject();
+            subSerie.put("name", trd.getNomSubSerie());
+            subSerie.put("nodeType", recordCategoria);
+            propiedades.put("rmc:xSubserie", trd.getNomSubSerie());
+            propiedades.put("rmc:xCodSubSerie", trd.getCodSubSerie());
+            subSerie.put(tagPropiedades, propiedades);
+            crearNodo(subSerie, codCategory);
+            codigosSubseries.put(trd.getCodSubSerie(), trd.getNomSubSerie());
+        }
+
+
     }
 
 }

@@ -2,8 +2,9 @@
 
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
+
 export const environment = {
-  production: true,
+  production: false,
   security_endpoint: `${host}/securidad-gateway-api`,
   product_endpoint: `${host}/productos-gateway-api`,
   tipoDestinatario_endpoint: `${host}/tipo-destinatario-gateway-api`,
@@ -12,6 +13,7 @@ export const environment = {
   tipologiaDocumental_endpoint: `${host}/tipologia-documental-gateway-api`,
   tipoTelefono_endpoint: `${host}/tipo-telefono-gateway-api`,
   tipoPersona_endpoint: `${host}/tipo-persona-gateway-api`,
+  tipoPlantilla_endpoint: `${host}/tipo-plantilla-gateway-api`,
   tipoDocumento_endpoint: `${host}/tipo-documento-gateway-api`,
   tipoComunicacion_endpoint: `${host}/tipo-comunicacion-gateway-api`,
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
@@ -77,11 +79,13 @@ export const environment = {
   cargarPlanilla_endpoint: `${host}/correspondencia-gateway-api/cargar-plantilla`,
 
   salvarCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/salvar-correspondencia-entrada`,
+
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
   // Produccion Documental
   pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+  pd_adjuntar_documento_endpoint: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
 
 };
 

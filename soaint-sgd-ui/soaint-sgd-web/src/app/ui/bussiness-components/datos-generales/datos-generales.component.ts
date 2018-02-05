@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output,ViewChild, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -13,6 +13,7 @@ import {
   getSoporteAnexoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Dropdown } from "primeng/components/dropdown/dropdown";
 import 'rxjs/add/operator/single';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-generales.api';
@@ -63,6 +64,9 @@ export class DatosGeneralesComponent implements OnInit {
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
   validations: any = {};
+  //
+  //@ViewChild('dropDownThing')
+  //dropDownThing: Dropdown;
 
 
   constructor(private _store: Store<State>, private _apiDatosGenerales: DatosGeneralesApiService, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder) {
@@ -204,6 +208,10 @@ export class DatosGeneralesComponent implements OnInit {
       this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
   }
+  //resetCarFilter() {
+  //  console.log(this.dropDownThing);
+  //  this.dropDownThing.selectedOption = null;
+  //}
 
   bindToValidationErrorsOf(control: string) {
     const ac = this.form.get(control);
