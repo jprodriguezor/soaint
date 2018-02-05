@@ -134,14 +134,15 @@
             <div class="ui-sm-12 ui-g-4 ui-lg-4">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton label="Adjuntar" [disabled]="!form.valid" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"></button>
+                        <button pButton label="Adjuntar" [disabled]="listaVersionesDocumento.length !== 0" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"></button>
                         <button pButton label="Cargar" [disabled]="!form.valid" style="width: auto;margin-top:28px;float:right;" type="button"
-                            (click)="this.editarPlantillaVisible = true"></button>
+                            (click)=" versionDocumentoEditable = true;editarPlantillaVisible = true;"></button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="ui-g ui-fluid">
+
+        <!--<div class="ui-g ui-fluid">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
@@ -154,7 +155,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
+
         <div class="ui-g ui-fluid" style="margin-bottom: 16px">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
                 <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se encontraron resultados">
@@ -164,7 +166,7 @@
                     <p-column field="size" header="Tamaño (Kb)" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Ver" class="ui-button ui-button-info"></button>
+                            <button type="button" pButton label="Ver" class="ui-button ui-button-info" (click)="mostrarVersion(i)"></button>
                         </ng-template>
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
@@ -262,16 +264,17 @@
     </p-panel>
 </form>
 
-<p-dialog [(visible)]="editarPlantillaVisible" [responsive]="true" [modal]="true" positionTop="20">
+<p-dialog [visible]="editarPlantillaVisible" [responsive]="true" [modal]="true" positionTop="20">
     <p-header>
         Editar Planilla
     </p-header>
 
-    <p-editor [(ngModel)]="plantillaHtmlContent" [style]="{'height':'320px'}"></p-editor>
+    <p-editor [(ngModel)]="versionDocumentoCurrent && versionDocumentoCurrent.contenido" [readonly]="!versionDocumentoEditable" [style]="{'height':'320px'}"></p-editor>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button pButton type="button" label="Guardar" [disabled]="!plantillaHtmlContent" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="generarPdf()"></button>
+            <button type="button" pButton class="ui-button ui-button-danger" label="Cerrar" (click)="editarPlantillaVisible = false;"></button>
+            <button pButton type="button" label="Guardar" [disabled]="!versionDocumentoEditable" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="versionesDocumentoVisible = true"></button>
         </div>
     </p-footer>
 </p-dialog>
@@ -287,7 +290,7 @@
         </div>
 
         <div class="ui-sm-12 ui-g-4 ui-lg-4 text-right">
-            <button pButton type="button" label="Si" style="width: auto; margin-bottom: 10px;margin-left: 12px" [disabled]="confirmadaGenerarVersion" (click)="confirmarGenerarVersion()">
+            <button pButton type="button" label="Si" style="width: auto; margin-bottom: 10px;margin-left: 12px" [disabled]="confirmadaGenerarVersion" (click)="confirmadaGenerarVersion = true">
       </button>
             <button pButton type="button" label="No" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="hideVersionesDocumentoDialog()">
       </button>
@@ -305,7 +308,7 @@
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button pButton type="button" label="Guardar" [disabled]="!confirmadaGenerarVersion" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="agregarVersion()"></button>
+            <button pButton type="button" label="Guardar" [disabled]="!confirmadaGenerarVersion" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="generarVersion()"></button>
         </div>
     </p-footer>
 </p-dialog>
