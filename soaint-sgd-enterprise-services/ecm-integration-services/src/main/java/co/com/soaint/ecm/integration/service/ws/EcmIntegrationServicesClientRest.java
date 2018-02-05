@@ -166,6 +166,33 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
+     * Obtener id documentos adjuntos dado id documento principal
+     *
+     * @param idDocPadre Identificador del documento Principal al que esta asociado
+     * @return Lista de documentos adjuntos ECM
+     */
+    @POST
+    @Path("/obtenerDocumentosAdjuntosECM/{idDocPadre}")
+    public MensajeRespuesta obtenerDocumentoPrincipalAdjunto(@PathParam("idDocPadre") String idDocPadre) throws IOException {
+
+        logger.info("processing rest request - Buscar Documento Adjunto en el ECM dado id: " + idDocPadre);
+        try {
+            return fEcmManager.obtenerDocumentosAdjuntos(idDocPadre);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
+            throw e;
+
+        } catch (IOException e) {
+            logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
+            throw e;
+        }
+
+    }
+
+
+
+
+    /**
      * Modificar metadatos a documento en el ECM
      *
      * @param metadatos metadatos del documento

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,5 +35,9 @@ public class MetadatosDocumentosDTO implements Serializable {
     private String dependencia;
     private String nombreDocumento;
     private String idDocumentoPadre;
+    private Date fechaCreacion;
+    private String tipoDocumento;
+    private String tamano;
+    private String tipoPadreAdjunto;
 
 }

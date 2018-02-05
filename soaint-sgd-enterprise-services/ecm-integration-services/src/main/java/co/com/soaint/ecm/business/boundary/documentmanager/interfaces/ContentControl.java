@@ -48,7 +48,7 @@ public interface ContentControl {
     MensajeRespuesta subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
 
     /**
-     * Subir documento Custom
+     * Subir documento Principal Adjuntos al ECM
      *
      * @param session          Objeto conexion
      * @param documento        documento a subir
@@ -57,6 +57,17 @@ public interface ContentControl {
      * @throws IOException exception
      */
     MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException;
+
+    /**
+     * Obtener documento Adjunto dado id Documento Principal
+     *
+     * @param session          Objeto conexion
+     * @param idDocPrincipal        documento a subir
+     * @return Lista de documentos adjuntos
+     * @throws IOException exception
+     */
+    MensajeRespuesta obtenerDocumentosAdjuntos(Session session,String idDocPrincipal) throws IOException;
+
 
 
     /**

@@ -5,6 +5,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.ecm.uti.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
@@ -620,6 +621,73 @@ public class ContentControlAlfresco implements ContentControl {
         return response;
     }
 
+
+    /**
+     * Metodo para obtener documentos asociados a un documento principal en Alfresco
+     *
+     * @param session          Objeto de conexion a Alfresco
+     * @param idDocPadre        Documento que se va a subir
+     * @return Devuelve el listado de documentos asociados al id de documento padre
+     * @throws IOException Excepcion ante errores de entrada/salida
+     */
+    @Override
+    public MensajeRespuesta obtenerDocumentosAdjuntos(Session session,String idDocPadre) throws IOException {
+
+        logger.info ("Se entra al metodo obtenerDocumentosAdjuntos");
+
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        try {
+
+            //Obtener el documentosAdjuntos
+            String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
+                    " WHERE( cmis:objectId = '" + idDocPadre + "'" +
+                    " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
+
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = session.query(principalAdjuntos, false);
+
+
+            ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<MetadatosDocumentosDTO>();
+
+            for (QueryResult qResult : resultsPrincipalAdjunto) {
+
+                MetadatosDocumentosDTO metadatosDocumentosDTO=new MetadatosDocumentosDTO();
+
+                String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split (";");
+                String idDocumento = parts[0];
+
+                metadatosDocumentosDTO.setIdDocumento(idDocumento);
+                if(qResult.getPropertyValueByQueryName("cmcor:xIdentificadorDocPrincipal")!=null)
+                {
+                    metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
+                    metadatosDocumentosDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
+                }
+                else{
+                    metadatosDocumentosDTO.setTipoPadreAdjunto("Principal");
+                }
+                metadatosDocumentosDTO.setNombreDocumento(qResult.getPropertyValueByQueryName("cmis:name"));
+                GregorianCalendar newGregCal = qResult.getPropertyValueByQueryName("cmis:creationDate");
+                metadatosDocumentosDTO.setFechaCreacion(newGregCal.getTime());
+                metadatosDocumentosDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
+                metadatosDocumentosDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
+
+                documentosLista.add(metadatosDocumentosDTO);
+
+            }
+            response.setCodMensaje("0000");
+            response.setMensaje(documentosLista.toString());
+
+        }
+        catch (Exception e)
+        {
+            response.setCodMensaje("2222");
+            response.setMensaje("Error en la obtención de los documentos adjuntos: "+e.getMessage());
+            logger.error("Error en la obtención de los documentos adjuntos: "+e.getMessage());
+        }
+        logger.info ("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: "+response.toString());
+        return response;
+
+
+    }
     /**
      * Metodo para subir documentos al Alfresco
      *
@@ -672,7 +740,9 @@ public class ContentControlAlfresco implements ContentControl {
             //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
             if (metadatosDocumentosDTO.getIdDocumentoPadre()!= null){
                 properties.put ("cmcor:xIdentificadorDocPrincipal",metadatosDocumentosDTO.getIdDocumentoPadre());
+                properties.put ("cmcor:xTipo","Anexo");
             }
+
             properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
             try {
