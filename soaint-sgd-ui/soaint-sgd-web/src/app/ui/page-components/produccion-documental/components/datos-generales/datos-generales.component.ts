@@ -10,8 +10,8 @@ import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/f
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {VersionDocumentoDTO} from '../../models/VersionDocumentoDTO';
-import {AnexoDTO} from '../../models/AnexoDTO';
+import {TipoDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
+import {AnexoDTO} from '../../models/DocumentoDTO';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -34,10 +34,10 @@ export class PDDatosGeneralesComponent implements OnInit {
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
   editarPlantillaVisible = false;
-  plantillaHtmlContent: string;
-
+  versionDocumentoCurrent: VersionDocumentoDTO;
   confirmadaGenerarVersion = false;
   versionesDocumentoVisible = false;
+  versionDocumentoEditable = true;
   nombreVersionDocumento: string;
 
   fechaCreacion = new Date();
@@ -68,136 +68,121 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
-    generarPdf() {
-      this._produccionDocumentalApi.generarPdf({htmlContent:this.plantillaHtmlContent}).subscribe(
-        result => {
-            if (result.success) {
-              this.editarPlantillaVisible = false;
-              this.form.get('tipoPlantilla').reset();
-              this.tipoPlantillaSelected = null;
-              this.plantillaHtmlContent = "";
-            } else {
-              console.log(result.text);
-            }
-        },
-        error => console.log("Error :: " + error)
-      );
+    mostrarVersion(i) {
+        this.versionDocumentoEditable = false;
+        this.versionDocumentoCurrent = this.listaVersionesDocumento[i];
+        this.editarPlantillaVisible = true;
+    }
 
-        console.log(this.plantillaHtmlContent);
+    generarVersion() {
+        const versiones = this.listaVersionesDocumento;
+        const htmlDoc: VersionDocumentoDTO = {
+          nombre : this.nombreVersionDocumento,
+          size : Math.ceil(this.versionDocumentoCurrent.contenido.length / 1024),
+          contenido : this.versionDocumentoCurrent.contenido,
+          tipo : 'HTML'
+        };
+        this.form.get('tipoPlantilla').reset();
+        this.editarPlantillaVisible = false;
+
+        versiones.push(htmlDoc);
+        this.listaVersionesDocumento = [...versiones];
+        this.hideVersionesDocumentoDialog();
+        this.refreshView();
     }
 
     tipoComunicacionChange(event) {
         this.pdMessageService.sendMessage(event.value);
     }
 
-  tipoPlanillaChange(event) {
-    this.tipoPlantillaSelected = event.value;
-    this.nombreVersionDocumento = event.value.nombre + '_';
-    this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
-      result => this.plantillaHtmlContent = result,
-      error => console.log("Error :: " + error)
-    );
-  }
-
-  hideVersionesDocumentoDialog() {
-    this.versionesDocumentoVisible = false;
-    this.confirmadaGenerarVersion = false;
-  }
-
-  showVersionesDocumentoDialog() {
-    this.versionesDocumentoVisible = true;
-  }
-
-  confirmarGenerarVersion() {
-    this.confirmadaGenerarVersion = true;
-  }
-
-  agregarVersion() {
-    const versiones = this.listaVersionesDocumento;
-    versiones.push({
-      tipo: 'PDF',
-      nombre: this.nombreVersionDocumento,
-      size: Math.floor(Math.random() * (100000 - 1) + 1)
-    });
-    this.listaVersionesDocumento = [...versiones];
-    this.hideVersionesDocumentoDialog();
-    this.refreshView();
-  }
-
-  agregarAnexo() {
-    const anexos = this.listaAnexos;
-    const anexo: AnexoDTO = {
-      soporte: this.form.get('soporte').value,
-      tipo: this.form.get('tipoAnexo').value,
-      descripcion: this.form.get('descripcion').value,
-      file: this.fileContent
-    };
-    anexos.push(anexo);
-    this.listaAnexos = [...anexos];
-    this.refreshView();
-  }
-
-  removeFromList(i, listname: string) {
-    const list = [...this[listname]];
-    list.splice(i, 1);
-    this[listname] = list;
-    // this._changeDetectorRef.detectChanges();
-  }
-
-  ngOnInit(): void {
-    this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacion({});
-    this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
-    this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-    this.listenForErrors();
-  }
-
-
-  listenForErrors() {
-    this.bindToValidationErrorsOf('tipoPlantilla');
-    this.bindToValidationErrorsOf('tipoComunicacion');
-  }
-
-  listenForBlurEvents(control: string) {
-    const ac = this.form.get(control);
-    if (ac.touched && ac.invalid) {
-      const error_keys = Object.keys(ac.errors);
-      const last_error_key = error_keys[error_keys.length - 1];
-      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+    tipoPlanillaChange(event) {
+      this.tipoPlantillaSelected = event.value;
+      this.nombreVersionDocumento = event.value.nombre + '_';
+      this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
+        result => this.versionDocumentoCurrent = {nombre:'',tipo:'HTML',contenido:result,size:0},
+        error => console.log("Error :: " + error)
+      );
     }
-  }
 
-  bindToValidationErrorsOf(control: string) {
-    const ac = this.form.get(control);
-    ac.valueChanges.subscribe(value => {
-      if ((ac.touched || ac.dirty) && ac.errors) {
+    hideVersionesDocumentoDialog() {
+      this.versionesDocumentoVisible = false;
+      this.confirmadaGenerarVersion = false;
+    }
+
+    agregarAnexo() {
+      const anexos = this.listaAnexos;
+      const anexo: AnexoDTO = {
+        soporte: this.form.get('soporte').value,
+        tipo: this.form.get('tipoAnexo').value,
+        descripcion: this.form.get('contenido').value,
+        file: this.fileContent
+      };
+      anexos.push(anexo);
+      this.listaAnexos = [...anexos];
+      this.refreshView();
+    }
+
+    removeFromList(i, listname: string) {
+      const list = [...this[listname]];
+      list.splice(i, 1);
+      this[listname] = list;
+      // this._changeDetectorRef.detectChanges();
+    }
+
+    ngOnInit(): void {
+      this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+        this.funcionarioLog = funcionario;
+      });
+      this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
+      this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
+      this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
+      this.listenForErrors();
+    }
+
+
+    listenForErrors() {
+      this.bindToValidationErrorsOf('tipoPlantilla');
+      this.bindToValidationErrorsOf('tipoComunicacion');
+    }
+
+    listenForBlurEvents(control: string) {
+      const ac = this.form.get(control);
+      if (ac.touched && ac.invalid) {
         const error_keys = Object.keys(ac.errors);
         const last_error_key = error_keys[error_keys.length - 1];
         this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-      } else {
-        delete this.validations[control];
       }
-    });
-  }
-
-  visualizarDocumentos(index) {
-    const file = this.listaAnexos[index].file;
-    if (file === undefined || !file.id) {
-      alert('Failed to open PDF.');
-    } else {
-      window.open(URL.createObjectURL(file.file), '_blank');
     }
-  }
 
-  onFileUploaded(event) {
-      this.fileContent = event;
-  }
+    bindToValidationErrorsOf(control: string) {
+      const ac = this.form.get(control);
+      ac.valueChanges.subscribe(value => {
+        if ((ac.touched || ac.dirty) && ac.errors) {
+          const error_keys = Object.keys(ac.errors);
+          const last_error_key = error_keys[error_keys.length - 1];
+          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+        } else {
+          delete this.validations[control];
+        }
+      });
+    }
+
+    visualizarDocumentos(index) {
+      const file = this.listaAnexos[index].file;
+      if (file === undefined || !file.id) {
+        alert('Failed to open PDF.');
+      } else {
+        window.open(URL.createObjectURL(file.file), '_blank');
+      }
+    }
+
+    onFileUploaded(event) {
+        this.fileContent = event;
+    }
 
 
-  refreshView() {
-    this._changeDetectorRef.detectChanges();
-  }
+    refreshView() {
+      this._changeDetectorRef.detectChanges();
+    }
 }
 
