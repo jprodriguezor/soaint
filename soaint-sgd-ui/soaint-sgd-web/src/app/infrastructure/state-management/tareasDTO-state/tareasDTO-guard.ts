@@ -37,7 +37,7 @@ export class TareaDtoGuard implements CanDeactivate<any>, OnDestroy {
     // get observable
     const observable = Observable.combineLatest(
       this._store.select((s: RootStore) => s.tareas.activeTask),
-      this._store.select((s: RootStore) => s.tareas.nextTask),
+      this._store.select((s: RootStore) => s.tareas.nextTask)
     ).switchMap(([activeTask, nextTask]) => {
         if (this._taskSandbox.isTaskRoutingStarted()) {
           this._taskSandbox.taskRoutingEnd();
