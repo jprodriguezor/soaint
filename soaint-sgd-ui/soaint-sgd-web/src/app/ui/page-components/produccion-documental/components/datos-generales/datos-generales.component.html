@@ -177,7 +177,8 @@
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger" (click)="removeFromList(i, 'listaVersionesDocumento')"></button>
+                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger"
+                                    (click)="eliminarVersion(i);"></button>
                         </ng-template>
                     </p-column>
                 </p-dataTable>
@@ -284,7 +285,10 @@
             <button type="button" pButton class="ui-button ui-button-danger" label="Cerrar"
                     (click)="producirDocumento.editarPlantillaVisible = false;"></button>
             <button pButton type="button" label="Guardar"
-                    [disabled]="!producirDocumento.currentVersionEditable" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    [disabled]="!producirDocumento.currentVersionEditable || producirDocumento.newVersionIndex < 0" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    (click)="editarCurrentVersion()"></button>
+            <button pButton type="button" label="Versionar"
+                    [disabled]="!producirDocumento.currentVersionEditable || producirDocumento.newVersionIndex >= 0" style="width: auto; margin-bottom: 10px;margin-left: 12px"
                     (click)="producirDocumento.currentVersionVisible = true"></button>
         </div>
     </p-footer>

@@ -40,7 +40,8 @@ export class PDDatosGeneralesComponent implements OnInit {
     currentVersionEditable : true,
     currentVersionVisible : false,
     currentVersionConfirmed : false,
-    newVersionName : ''
+    newVersionName : '',
+    newVersionIndex : -1
   };
   listaVersionesDocumento: VersionDocumentoDTO[] = [];
 
@@ -71,8 +72,25 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
-    mostrarVersion(i) {
+    eliminarVersion(i) {
+      this.removeFromList(i, 'listaVersionesDocumento');
+      if (i === this.producirDocumento.newVersionIndex) {
+        this.producirDocumento.newVersionIndex = -1;
+      }
+      this.producirDocumento.newVersionIndex--;
+    }
 
+    editarCurrentVersion() {
+      this.producirDocumento.editarPlantillaVisible = false;
+      this.currentVersionObject = null;
+    }
+
+    mostrarVersion(i) {
+        if (i !== this.producirDocumento.newVersionIndex) {
+          this.producirDocumento.currentVersionEditable = false;
+        }
+        this.currentVersionObject = this.listaVersionesDocumento[i];
+        this.producirDocumento.editarPlantillaVisible = true;
     }
 
     generarVersion() {
@@ -80,7 +98,7 @@ export class PDDatosGeneralesComponent implements OnInit {
         this.form.get('tipoPlantilla').reset();
         this.currentVersionObject.calculateSize();
 
-        versiones.push(this.currentVersionObject);
+        this.producirDocumento.newVersionIndex = versiones.push(this.currentVersionObject) - 1;
         this.listaVersionesDocumento = [...versiones];
 
         this.producirDocumento.editarPlantillaVisible = false;
@@ -93,32 +111,32 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
     tipoPlanillaChange(event) {
-      this.tipoPlantillaSelected = event.value;
-      this.producirDocumento.newVersionName = event.value.nombre;
-      this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
-        result =>
-          this.currentVersionObject = new VersionDocumento(null, this.producirDocumento.newVersionName, result, 0, 'HTML'),
-        error => console.log("Error :: " + error)
-      );
+        this.tipoPlantillaSelected = event.value;
+        this.producirDocumento.newVersionName = event.value.nombre + "_";
+        this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
+          result =>
+            this.currentVersionObject = new VersionDocumento(null, this.producirDocumento.newVersionName, result, 0, 'HTML'),
+          error => console.log("Error :: " + error)
+        );
     }
 
     hideVersionesDocumentoDialog() {
-      this.producirDocumento.currentVersionConfirmed = false;
-      this.producirDocumento.currentVersionVisible = false;
+        this.producirDocumento.currentVersionConfirmed = false;
+        this.producirDocumento.currentVersionVisible = false;
     }
 
     agregarAnexo() {
-      const anexos = this.listaAnexos;
-      const anexo: AnexoDTO = {
-        id : (new Date()).getTime().toString(),
-        soporte: this.form.get('soporte').value,
-        tipo: this.form.get('tipoAnexo').value,
-        descripcion: this.form.get('contenido').value,
-        file: this.fileContent
-      };
-      anexos.push(anexo);
-      this.listaAnexos = [...anexos];
-      this.refreshView();
+        const anexos = this.listaAnexos;
+        const anexo: AnexoDTO = {
+          id : (new Date()).getTime().toString(),
+          soporte: this.form.get('soporte').value,
+          tipo: this.form.get('tipoAnexo').value,
+          descripcion: this.form.get('descripcion').value,
+          file: this.fileContent
+        };
+        anexos.push(anexo);
+        this.listaAnexos = [...anexos];
+        this.refreshView();
     }
 
     removeFromList(i, listname: string) {

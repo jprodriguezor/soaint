@@ -36,6 +36,6 @@
 </form>
 
 
-<datos-destinatario-externo *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'"></datos-destinatario-externo>
+<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'"></datos-destinatario-externo>
 
-<datos-destinatario-interno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'"></datos-destinatario-interno>
+<datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'"></datos-destinatario-interno>

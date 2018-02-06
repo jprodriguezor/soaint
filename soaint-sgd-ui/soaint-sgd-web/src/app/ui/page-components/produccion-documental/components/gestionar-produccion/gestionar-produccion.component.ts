@@ -22,7 +22,7 @@ export class PDGestionarProduccionComponent implements OnInit {
 
   dependenciaSelected: ConstanteDTO;
 
-  listaDocumentos: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
+  listaProyectores: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
 
     sedesAdministrativas$: Observable<ConstanteDTO[]>;
     dependencias: Array<any> = [];
@@ -47,22 +47,22 @@ export class PDGestionarProduccionComponent implements OnInit {
       });
   }
 
-  eliminarDocumento(index) {
+  eliminarProyector(index) {
     if (index > -1) {
-      const documentos = this.listaDocumentos;
+      const documentos = this.listaProyectores;
       documentos.splice(index, 1);
 
-      this.listaDocumentos = [...documentos];
+      this.listaProyectores = [...documentos];
       this.refreshView();
     }
   }
 
-  agregarDocumento() {
+  agregarProyector() {
     if (!this.form.valid) {
       return false;
     }
 
-    const documentos = this.listaDocumentos;
+    const documentos = this.listaProyectores;
     const documento = {
       sede: this.form.get('sede').value,
       dependencia: this.form.get('dependencia').value,
@@ -70,13 +70,13 @@ export class PDGestionarProduccionComponent implements OnInit {
       rol: this.form.get('rol').value
     };
 
-    if (this.checkDocumento(documento)) {
+    if (this.checkProyector(documento)) {
       console.log('Ya existe el documento');
       return false;
     }
 
     documentos.push(documento);
-    this.listaDocumentos = [...documentos];
+    this.listaProyectores = [...documentos];
     this.form.reset();
     this.funcionarios$ = Observable.of([]);
     this.refreshView();
@@ -84,9 +84,9 @@ export class PDGestionarProduccionComponent implements OnInit {
     return true;
   }
 
-  checkDocumento(newDocumento: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }) {
+  checkProyector(newDocumento: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }) {
     let exists = false;
-    this.listaDocumentos.forEach((current: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }, index) => {
+    this.listaProyectores.forEach((current: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }, index) => {
       if (current.sede.id === newDocumento.sede.id &&
         current.dependencia.id === newDocumento.dependencia.id &&
         current.funcionario.id === newDocumento.funcionario.id &&
