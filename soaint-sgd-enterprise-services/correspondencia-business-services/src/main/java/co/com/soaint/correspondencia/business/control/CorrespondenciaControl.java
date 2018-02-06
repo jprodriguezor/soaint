@@ -753,4 +753,87 @@ public class CorrespondenciaControl {
                     .buildSystemException();
         }
     }
+
+    /**
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+
+    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+        Date fecha = new Date();
+        try {
+            if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
+                comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(comunicacionOficialDTO.getCorrespondencia().getFecRadicado());
+            int anno = cal.get(Calendar.YEAR);
+
+            CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
+            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
+            correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
+            correspondencia.setCorAgenteList(new ArrayList<>());
+
+            log.info("Antes de Agente");
+            agenteControl.conformarAgentesSalida(comunicacionOficialDTO.getAgenteList(), correspondencia.getReqDistFisica())
+                    .stream().forEach(corAgente -> {
+                corAgente.setCorCorrespondencia(correspondencia);
+                log.info(corAgente.getTvsDatosContactoList().size());
+                correspondencia.getCorAgenteList().add(corAgente);
+            });
+            log.info("Despues de Agente");
+
+            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
+            ppdDocumento.setCorCorrespondencia(correspondencia);
+
+            if (comunicacionOficialDTO.getAnexoList() != null) {
+                ppdDocumento.setCorAnexoList(new ArrayList<>());
+                comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
+                    CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                    corAnexo.setPpdDocumento(ppdDocumento);
+                    ppdDocumento.getCorAnexoList().add(corAnexo);
+                });
+
+            }
+
+            correspondencia.getPpdDocumentoList().add(ppdDocumento);
+
+            if (comunicacionOficialDTO.getReferidoList() != null)
+                comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
+                    CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                    corReferido.setCorCorrespondencia(correspondencia);
+                    correspondencia.getCorReferidoList().add(corReferido);
+                });
+
+            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
+                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
+
+            correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
+                    correspondencia.getCodSede(),
+                    correspondencia.getCodTipoCmc(),
+                    String.valueOf(anno), consecutivo));
+
+            dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
+                    correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
+            em.persist(correspondencia);
+
+            em.flush();
+
+            log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
+            return ComunicacionOficialDTO.newInstance()
+                    .correspondencia(consultarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado()))
+                    .build();
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }

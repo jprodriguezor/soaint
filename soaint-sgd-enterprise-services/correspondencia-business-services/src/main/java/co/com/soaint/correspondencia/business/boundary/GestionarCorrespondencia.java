@@ -123,4 +123,15 @@ public class GestionarCorrespondencia {
     public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException{
         return control.actualizarComunicacion(comunicacionOficialDTO);
     }
+
+    /**
+     *
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+        return control.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+    }
 }

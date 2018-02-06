@@ -345,6 +345,29 @@ public class AgenteControl {
     }
 
     /**
+     * @param agentes
+     * @param rDistFisica
+     * @return
+     */
+    public List<CorAgente> conformarAgentesSalida(List<AgenteDTO> agentes, String rDistFisica) {
+        List<CorAgente> corAgentes = new ArrayList<>();
+        for (AgenteDTO agenteDTO : agentes) {
+            CorAgente corAgente = corAgenteTransform(agenteDTO);
+
+            if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent()) && TipoRemitenteEnum.EXTERNO.getCodigo().equals(agenteDTO.getCodTipoRemite()))
+                AgenteControl.asignarDatosContacto(corAgente, agenteDTO.getDatosContactoList());
+
+            if (TipoAgenteEnum.REMITENTE.getCodigo().equals(agenteDTO.getCodTipAgent())) {
+                corAgente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
+                corAgente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
+            }
+
+            corAgentes.add(corAgente);
+        }
+        return corAgentes;
+    }
+
+    /**
      *
      * @param ideAgente
      * @param estadoDistribucion
