@@ -57,8 +57,8 @@ public class DigitalizarDocumentoGatewayApi {
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
 
-            ecmIds.add(parentResponse.getCodMensaje());
-            ecmIds.addAll(client.uploadDocumentsAsociates(parentResponse.getCodMensaje(), files, sede, dependencia));
+            ecmIds.add(parentResponse.getMensaje());
+            ecmIds.addAll(client.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
 
             return Response.status(Response.Status.OK).entity(ecmIds).build();
         }

@@ -51,7 +51,6 @@ public class ECMClient {
     public List<String> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia){
         List<String> ecmIds = new ArrayList<>();
         try {
-
             files.forEach((key, part) -> {
                 Response _response = this.uploadDocument(sede, dependencia, key, part, parentId);
                 MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
