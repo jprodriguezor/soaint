@@ -49,9 +49,7 @@ public class ECMClient {
     }
 
     public List<String> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia){
-
         List<String> ecmIds = new ArrayList<>();
-
         try {
 
             files.forEach((key, part) -> {
@@ -62,11 +60,9 @@ public class ECMClient {
                     ecmIds.add(asociadoResponse.getMensaje());
                 }
             });
-
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
         }
-
         return ecmIds;
     }
 

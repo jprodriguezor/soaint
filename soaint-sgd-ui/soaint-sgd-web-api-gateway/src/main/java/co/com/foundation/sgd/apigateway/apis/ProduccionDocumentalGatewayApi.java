@@ -61,18 +61,14 @@ public class ProduccionDocumentalGatewayApi {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
         Map<String,InputPart> files = ECMUtils.findFiles(file);
         List<String> ecmIds = new ArrayList<>();
-
         /* Subida del fichero principal */
         InputPart parent = files.get(fileName);
         Response response = clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-
-            ecmIds.add(parentResponse.getCodMensaje());
-            ecmIds.addAll(clientECM.uploadDocumentsAsociates(parentResponse.getCodMensaje(), files, sede, dependencia));
-
+            ecmIds.add(parentResponse.getMensaje());
+            ecmIds.addAll(clientECM.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
             return Response.status(Response.Status.OK).entity(ecmIds).build();
-
         }
         return response;
     }
