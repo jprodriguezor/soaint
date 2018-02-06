@@ -84,12 +84,13 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
         formData.append('files', file, file.name);
       }
       this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
+        console.log(response);
         this._store.dispatch(new CompleteTaskAction({
           idProceso: this.task.idProceso,
           idDespliegue: this.task.idDespliegue,
           idTarea: this.task.idTarea,
           parametros: {
-            ideEcm: response.ecmIds[0]
+            ideEcm: response[0]
           }
         }));
         this._store.dispatch(new PushNotificationAction({
@@ -101,7 +102,6 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   preview(file) {
-    console.log(this.principalFile);
     const self = this;
     const reader = new FileReader();
     reader.addEventListener('load', () => {
