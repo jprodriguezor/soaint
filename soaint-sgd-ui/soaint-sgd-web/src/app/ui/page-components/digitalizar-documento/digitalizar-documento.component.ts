@@ -83,16 +83,17 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           ]);
       }
     ).subscribe(response => {
+      console.log("respuesta del subir");
+      console.log(response);
       this._store.dispatch(new CompleteTaskAction({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
-          ideEcm: JSON.parse(response.ecmIds[0])['mensaje']
+          ideEcm: response[0]
         }
       }));
     });
-
   }
 
   preview(file) {

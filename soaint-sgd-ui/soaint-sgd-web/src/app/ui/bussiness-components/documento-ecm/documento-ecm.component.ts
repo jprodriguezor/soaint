@@ -89,7 +89,7 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
           idDespliegue: this.task.idDespliegue,
           idTarea: this.task.idTarea,
           parametros: {
-            ideEcm: response.ecmIds[0]
+            ideEcm: response[0]
           }
         }));
         this._store.dispatch(new PushNotificationAction({
@@ -101,7 +101,6 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   preview(file) {
-    console.log(this.principalFile);
     const self = this;
     const reader = new FileReader();
     reader.addEventListener('load', () => {
