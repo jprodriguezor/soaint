@@ -23,7 +23,7 @@
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
           <pd-datos-contacto #datosContacto [taskData]="task"></pd-datos-contacto>
         </p-tabPanel>
-        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
+        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment" [disabled]="!seccionProyector">
           <pd-gestionar-produccion #gestionarProduccion></pd-gestionar-produccion>
         </p-tabPanel>
       </p-tabView>

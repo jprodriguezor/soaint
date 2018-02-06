@@ -31,6 +31,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   tipoComunicacionSelected: ConstanteDTO;
   subscription: Subscription;
 
+  seccionProyector = true;
+
   revisar = false;
   aprobar = false;
   tabIndex = 0;
