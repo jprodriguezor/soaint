@@ -1,5 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis;
 
+import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
+import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
@@ -28,6 +30,10 @@ public class ProduccionDocumentalGatewayApi {
     @Autowired
     private ProduccionDocumentalClient client;
 
+    @Autowired
+    private ECMClient clientECM;
+
+
     public ProduccionDocumentalGatewayApi() {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -53,42 +59,22 @@ public class ProduccionDocumentalGatewayApi {
     public Response digitalizar(@PathParam("sede") String sede,  @PathParam("dependencia") String dependencia,
                                 @PathParam("fileName") String fileName, MultipartFormDataInput file) {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
+        Map<String,InputPart> files = ECMUtils.findFiles(file);
         List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> files = new HashMap<String, InputPart>();
-        Collection<List<InputPart>> inputParts = file.getFormDataMap().values();
-        inputParts.stream().forEach(parts -> parts.forEach(part -> {
-            String name = findName(part); if(!"".equals(name)) files.put(name,part);
-        }));
 
+        /* Subida del fichero principal */
         InputPart parent = files.get(fileName);
-        Response response = client.producirDocumento(sede, dependencia, fileName, parent, "");
+        Response response = clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            files.forEach((key, part) -> {
-                    String parentId = parentResponse.getMensaje();
-                    Response _response = client.producirDocumento(sede, dependencia, key, part, parentId);
-                    MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
-                    if (_response.getStatus() == HttpStatus.OK.value()
-                            && "0000".equals(asociadoResponse.getCodMensaje())) {
-                        ecmIds.add(parentResponse.getMensaje());
-                    }
-            });
+
+            ecmIds.add(parentResponse.getCodMensaje());
+            ecmIds.addAll(clientECM.uploadDocumentsAsociates(parentResponse.getCodMensaje(), files, sede, dependencia));
+
             return Response.status(Response.Status.OK).entity(ecmIds).build();
+
         }
         return response;
-    }
-
-    public String findName(InputPart part) {
-        String fileName = "";
-        MultivaluedMap<String, String> headers = part.getHeaders();
-        String[] contentDispositionHeader = headers.getFirst("Content-Disposition").split(";");
-        for (String name : contentDispositionHeader) {
-            if ((name.trim().startsWith("filename"))) {
-                String[] tmp = name.split("=");
-                fileName = tmp[1].trim().replaceAll("\"", "");
-            }
-        }
-        return fileName;
     }
 
 }
