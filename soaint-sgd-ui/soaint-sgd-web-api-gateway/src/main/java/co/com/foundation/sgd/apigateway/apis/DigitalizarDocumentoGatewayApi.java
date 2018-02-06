@@ -32,7 +32,6 @@ public class DigitalizarDocumentoGatewayApi {
     private ECMClient client;
 
 
-
     public DigitalizarDocumentoGatewayApi() {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
