@@ -89,7 +89,7 @@
               <div class="ui-g form-group">
                 <div class="ui-g-12"> <label></label> </div>
                 <div class="ui-g-12">
-                  <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right" (click)="agregarDocumento()"
+                  <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right" (click)="agregarProyector()"
                   ></button>
                 </div>
               </div>
@@ -109,7 +109,7 @@
                          [paginator]="true"
                          [rows]="10"
                          [responsive]="true"
-                         [value]="listaDocumentos"
+                         [value]="listaProyectores"
                          emptyMessage="No se encontraron resultados"
             >
               <p-column field="sede.nombre" header="Sede Administrativa" [sortable]="true"></p-column>
@@ -119,7 +119,7 @@
               <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
                 <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
                   <button type="button" icon="ui-icon-close" pButton
-                          class="ui-button ui-button-icon ui-button-danger" (click)="eliminarDocumento(rindex)"
+                          class="ui-button ui-button-icon ui-button-danger" (click)="eliminarProyector(rindex)"
                   ></button>
                 </ng-template>
               </p-column>

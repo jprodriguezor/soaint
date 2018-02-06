@@ -10,7 +10,7 @@ import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/f
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {TipoDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
+import {TipoDocumento, VersionDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
 import {AnexoDTO} from '../../models/DocumentoDTO';
 
 @Component({
@@ -33,18 +33,22 @@ export class PDDatosGeneralesComponent implements OnInit {
   tiposAnexo$: Observable<ConstanteDTO[]>;
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
-  editarPlantillaVisible = false;
-  versionDocumentoCurrent: VersionDocumentoDTO;
-  confirmadaGenerarVersion = false;
-  versionesDocumentoVisible = false;
-  versionDocumentoEditable = true;
-  nombreVersionDocumento: string;
+  currentVersionObject : VersionDocumentoDTO;
+
+  producirDocumento = {
+    editarPlantillaVisible : false,
+    currentVersionEditable : true,
+    currentVersionVisible : false,
+    currentVersionConfirmed : false,
+    newVersionName : '',
+    newVersionIndex : -1
+  };
+  listaVersionesDocumento: VersionDocumentoDTO[] = [];
 
   fechaCreacion = new Date();
 
   tipoPlantillaSelected: ConstanteDTO;
 
-  listaVersionesDocumento: VersionDocumentoDTO[] = [];
   listaAnexos: AnexoDTO[] = [];
   fileContent: {id: number; file: Blob };
 
@@ -68,25 +72,36 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
+    eliminarVersion(i) {
+      this.removeFromList(i, 'listaVersionesDocumento');
+      if (i === this.producirDocumento.newVersionIndex) {
+        this.producirDocumento.newVersionIndex = -1;
+      }
+      this.producirDocumento.newVersionIndex--;
+    }
+
+    editarCurrentVersion() {
+      this.producirDocumento.editarPlantillaVisible = false;
+      this.currentVersionObject = null;
+    }
+
     mostrarVersion(i) {
-        this.versionDocumentoEditable = false;
-        this.versionDocumentoCurrent = this.listaVersionesDocumento[i];
-        this.editarPlantillaVisible = true;
+        if (i !== this.producirDocumento.newVersionIndex) {
+          this.producirDocumento.currentVersionEditable = false;
+        }
+        this.currentVersionObject = this.listaVersionesDocumento[i];
+        this.producirDocumento.editarPlantillaVisible = true;
     }
 
     generarVersion() {
         const versiones = this.listaVersionesDocumento;
-        const htmlDoc: VersionDocumentoDTO = {
-          nombre : this.nombreVersionDocumento,
-          size : Math.ceil(this.versionDocumentoCurrent.contenido.length / 1024),
-          contenido : this.versionDocumentoCurrent.contenido,
-          tipo : 'HTML'
-        };
         this.form.get('tipoPlantilla').reset();
-        this.editarPlantillaVisible = false;
+        this.currentVersionObject.calculateSize();
 
-        versiones.push(htmlDoc);
+        this.producirDocumento.newVersionIndex = versiones.push(this.currentVersionObject) - 1;
         this.listaVersionesDocumento = [...versiones];
+
+        this.producirDocumento.editarPlantillaVisible = false;
         this.hideVersionesDocumentoDialog();
         this.refreshView();
     }
@@ -96,30 +111,32 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
     tipoPlanillaChange(event) {
-      this.tipoPlantillaSelected = event.value;
-      this.nombreVersionDocumento = event.value.nombre + '_';
-      this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
-        result => this.versionDocumentoCurrent = {nombre:'',tipo:'HTML',contenido:result,size:0},
-        error => console.log("Error :: " + error)
-      );
+        this.tipoPlantillaSelected = event.value;
+        this.producirDocumento.newVersionName = event.value.nombre + "_";
+        this._produccionDocumentalApi.getTipoPlantilla({codigo:this.tipoPlantillaSelected.nombre.toLowerCase()}).subscribe(
+          result =>
+            this.currentVersionObject = new VersionDocumento(null, this.producirDocumento.newVersionName, result, 0, 'HTML'),
+          error => console.log("Error :: " + error)
+        );
     }
 
     hideVersionesDocumentoDialog() {
-      this.versionesDocumentoVisible = false;
-      this.confirmadaGenerarVersion = false;
+        this.producirDocumento.currentVersionConfirmed = false;
+        this.producirDocumento.currentVersionVisible = false;
     }
 
     agregarAnexo() {
-      const anexos = this.listaAnexos;
-      const anexo: AnexoDTO = {
-        soporte: this.form.get('soporte').value,
-        tipo: this.form.get('tipoAnexo').value,
-        descripcion: this.form.get('contenido').value,
-        file: this.fileContent
-      };
-      anexos.push(anexo);
-      this.listaAnexos = [...anexos];
-      this.refreshView();
+        const anexos = this.listaAnexos;
+        const anexo: AnexoDTO = {
+          id : (new Date()).getTime().toString(),
+          soporte: this.form.get('soporte').value,
+          tipo: this.form.get('tipoAnexo').value,
+          descripcion: this.form.get('descripcion').value,
+          file: this.fileContent
+        };
+        anexos.push(anexo);
+        this.listaAnexos = [...anexos];
+        this.refreshView();
     }
 
     removeFromList(i, listname: string) {

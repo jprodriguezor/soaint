@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Subscription} from 'rxjs/Subscription';
@@ -18,7 +18,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   validations: any = {};
 
-
+  @ViewChild('destinatarioExterno') destinatarioExterno;
+  @ViewChild('destinatarioInterno') destinatarioInterno;
   @Input() taskData: TareaDTO;
 
 
