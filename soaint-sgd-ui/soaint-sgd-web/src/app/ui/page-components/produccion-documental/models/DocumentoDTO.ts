@@ -1,6 +1,5 @@
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
 
-export type TipoDocumento = 'PDF' | 'HTML';
 
 export interface AnexoDTO {
     id: string,
@@ -12,27 +11,29 @@ export interface AnexoDTO {
 
 export interface VersionDocumentoDTO {
     id: string,
-    tipo: TipoDocumento;
-    nombre: string;
-    size: number;
-    contenido?: string;
-
-    calculateSize(): number;
+    tipo: string,
+    nombre: string,
+    size: number,
+    contenido?: string,
+    file?: File,
+    calculateSize(): number
 }
 
 export class VersionDocumento implements VersionDocumentoDTO{
     id: string;
-    tipo: TipoDocumento;
+    tipo: string;
     nombre: string;
     size: number;
     contenido?: string;
+    file?: File;
 
-    constructor (id?: string, nombre?: string, contenido?: string, size?: number, type?: TipoDocumento) {
+    constructor (id?: string, nombre?: string, contenido?: string, size?: number, type?: string, file?: File) {
        this.id = id || (new Date()).getTime().toString();
-       this.tipo = type || 'HTML';
-       this.size = size || 0;
-       this.nombre = nombre || '';
+       this.tipo = type || (file && file.type) || 'HTML';
+       this.size = size || (file && Math.ceil(file.size / 1024)) || 0;
+       this.nombre = nombre || (file && file.name) || '';
        this.contenido = contenido || '';
+       this.file = file || null;
 
        if (contenido && contenido.length > 0) {
           this.calculateSize();
