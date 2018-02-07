@@ -10,8 +10,9 @@ import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/f
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {TipoDocumento, VersionDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
+import {VersionDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
 import {AnexoDTO} from '../../models/DocumentoDTO';
+import {environment} from "../../../../../../environments/environment";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -20,45 +21,45 @@ import {AnexoDTO} from '../../models/DocumentoDTO';
 
 export class PDDatosGeneralesComponent implements OnInit {
 
-  form: FormGroup;
+    form: FormGroup;
 
-  validations: any = {};
+    validations: any = {};
 
-  @Input()
-  taskData: TareaDTO;
+    @Input()
+    taskData: TareaDTO;
 
-  funcionarioLog: FuncionarioDTO;
+    funcionarioLog: FuncionarioDTO;
 
-  tiposComunicacion$: Observable<ConstanteDTO[]>;
-  tiposAnexo$: Observable<ConstanteDTO[]>;
-  tiposPlantilla$: Observable<ConstanteDTO[]>;
+    tiposComunicacion$: Observable<ConstanteDTO[]>;
+    tiposAnexo$: Observable<ConstanteDTO[]>;
+    tiposPlantilla$: Observable<ConstanteDTO[]>;
 
-  currentVersionObject : VersionDocumentoDTO;
+    currentVersionObject : VersionDocumentoDTO;
 
-  producirDocumento = {
-    editarPlantillaVisible : false,
-    currentVersionEditable : true,
-    currentVersionVisible : false,
-    currentVersionConfirmed : false,
-    newVersionName : '',
-    newVersionIndex : -1
-  };
-  listaVersionesDocumento: VersionDocumentoDTO[] = [];
+    producirDocumento = {
+      editarPlantillaVisible : false,
+      currentVersionEditable : true,
+      currentVersionVisible : false,
+      currentVersionConfirmed : false,
+      newVersionName : '',
+      newVersionIndex : -1
+    };
+    listaVersionesDocumento: VersionDocumentoDTO[] = [];
 
-  fechaCreacion = new Date();
+    fechaCreacion = new Date();
 
-  tipoPlantillaSelected: ConstanteDTO;
+    tipoPlantillaSelected: ConstanteDTO;
 
-  listaAnexos: AnexoDTO[] = [];
-  fileContent: {id: number; file: Blob };
+    listaAnexos: AnexoDTO[] = [];
+    fileContent: {id: number; file: Blob };
 
-  constructor(private _store: Store<State>,
-              private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private formBuilder: FormBuilder,
-              private _changeDetectorRef: ChangeDetectorRef,
-              private pdMessageService: PdMessageService) {
-    this.initForm();
-  }
+    constructor(private _store: Store<State>,
+                private _produccionDocumentalApi: ProduccionDocumentalApiService,
+                private formBuilder: FormBuilder,
+                private _changeDetectorRef: ChangeDetectorRef,
+                private pdMessageService: PdMessageService) {
+      this.initForm();
+    }
 
 
     initForm() {
@@ -70,6 +71,25 @@ export class PDDatosGeneralesComponent implements OnInit {
           'tipoAnexo': [null],
           'descripcion': [null],
         });
+    }
+
+    versionDocumentoUpload(newDoc) {
+      const formData = new FormData();
+      formData.append('files[]', newDoc.file, newDoc.nombre);
+      this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(response => {
+        //this.fileUploaded.emit({id: response.ecmIds[0], file: event.files[0]});
+      });
+    }
+
+    versionDocumentoSelected(event) {
+      if (event.files.length === 0) {
+        return false;
+      }
+      const newDoc = new VersionDocumento(null,null,null,null,null,event.files[0]);
+      const versiones = this.listaVersionesDocumento;
+      versiones.push(newDoc);
+      this.listaVersionesDocumento = [...versiones];
+      this.refreshView();
     }
 
     eliminarVersion(i) {
@@ -86,10 +106,13 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
     mostrarVersion(i) {
+        this.currentVersionObject = this.listaVersionesDocumento[i];
+        if (this.currentVersionObject.file) {
+            return this.visualizarDocumentos(i, 'listaVersionesDocumento');
+        }
         if (i !== this.producirDocumento.newVersionIndex) {
           this.producirDocumento.currentVersionEditable = false;
         }
-        this.currentVersionObject = this.listaVersionesDocumento[i];
         this.producirDocumento.editarPlantillaVisible = true;
     }
 
@@ -184,19 +207,21 @@ export class PDDatosGeneralesComponent implements OnInit {
       });
     }
 
-    visualizarDocumentos(index) {
-      const file = this.listaAnexos[index].file;
-      if (file === undefined || !file.id) {
-        alert('Failed to open PDF.');
+    visualizarDocumentos(index, lista) {
+      const file = this[lista][index].file;
+      console.log(file);
+      if (file === undefined || !file.name) {
+        console.log('Error el visualizar documento');
+        return false;
       } else {
-        window.open(URL.createObjectURL(file.file), '_blank');
+        window.open(URL.createObjectURL(file), '_blank');
       }
+      return true;
     }
 
-    onFileUploaded(event) {
-        this.fileContent = event;
+    onErrorUpload(event) {
+        console.log(event);
     }
-
 
     refreshView() {
       this._changeDetectorRef.detectChanges();

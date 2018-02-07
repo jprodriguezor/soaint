@@ -2,11 +2,8 @@
   <app-task-container>
     <div customActions>
       <button pButton type="button" label="Aprobar"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="aprobar != true"
-              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-      ></button>
-      <button pButton type="button" label="Continuar"
-              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="completarTarea()"
       ></button>
     </div>

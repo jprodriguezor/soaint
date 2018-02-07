@@ -140,28 +140,24 @@
             <div class="ui-sm-12 ui-g-4 ui-lg-4">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton label="Adjuntar" [disabled]="listaVersionesDocumento.length !== 0" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"></button>
+                        <!--<button pButton label="Adjuntar" [disabled]="listaVersionesDocumento.length !== 0" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"-->
+                            <!--(click)="clearFile()"></button>-->
+                        <p-fileUpload
+                            mode="basic"
+                            accept="*"
+                            chooseLabel="Adjuntar"
+                            customUpload="true"
+                            [disabled]="listaVersionesDocumento && listaVersionesDocumento.length > 0"
+                            (uploadHandler)="versionDocumentoUpload($event)"
+                            (onSelect)="versionDocumentoSelected($event)"
+                            (onError)="onErrorUpload($event)"
+                        ></p-fileUpload>
                         <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length !== 0" style="width: auto;margin-top:28px;float:right;" type="button"
                             (click)=" producirDocumento.currentVersionEditable = true;producirDocumento.editarPlantillaVisible = true;"></button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!--<div class="ui-g ui-fluid">
-            <div class="ui-sm-12 ui-g-12 ui-lg-12">
-                <div class="ui-g form-group">
-                    <div class="ui-g-12">
-                        <textarea id="elaborarDocumento" pInputTextarea title="Elaborar documento" formControlName="elaborarDocumento" class="prod-doc" placeholder="Elaborar documento" style="width:100%;resize:vertical">
-                </textarea>
-                    </div>
-                    <div class="ui-g-12">
-                        <button pButton type="button" label="Versionar" style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px" [disabled]="!form.get('elaborarDocumento').value || !form.valid || listaVersionesDocumento.length > 0" (click)="showVersionesDocumentoDialog()">
-            </button>
-                    </div>
-                </div>
-            </div>
-        </div>-->
 
         <div class="ui-g ui-fluid" style="margin-bottom: 16px">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
@@ -229,7 +225,16 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
                     <div class="ui-g-12">
-                        <app-single-upload *ngIf="form.get('soporte').value == 'electronico'"  (fileUploaded)="onFileUploaded($event)"></app-single-upload>
+                        <p-fileUpload
+                          mode="basic"
+                          accept="*"
+                          chooseLabel="Adjuntar"
+                          customUpload="true"
+                          [disabled]="form.get('soporte').value !== 'electronico'"
+                          (uploadHandler)="versionDocumentoUpload($event)"
+                          (onSelect)="versionDocumentoSelected($event)"
+                          (onError)="onErrorUpload($event)"
+                        ></p-fileUpload>
                     </div>
                 </div>
             </div>
@@ -256,13 +261,13 @@
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton class="ui-button ui-button-info" label="Ver" (click)="visualizarDocumentos(i)">
-              </button>
+                            </button>
                         </ng-template>
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar" (click)="removeFromList(i, 'listaAnexos')">
-              </button>
+                            </button>
                         </ng-template>
                     </p-column>
                 </p-dataTable>
