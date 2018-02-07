@@ -19,6 +19,7 @@ export class ProcessComponent implements OnInit {
 
   constructor(private _store: Store<RootState>, private _processSandbox: ProcessDtoSandbox) {
     this.procesos$ = this._store.select(ProcesoDtoArrayData).map((procesos) => {
+      console.log(procesos);
       return procesos.filter((proceso) => {
         return process_info[proceso.codigoProceso] && process_info[proceso.codigoProceso].show;
       });
