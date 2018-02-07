@@ -11,6 +11,10 @@ export class ProduccionDocumentalApiService {
   constructor(private _api: ApiBase) {
   }
 
+  subirVersionDocumento(formData: FormData) {
+    return this._api.sendFile('http://platea.addons.local/api/v1/addons/prestashop/index', formData, []);
+  }
+
   ejecutarProyeccionMultiple(payload: {}) {
     return this._api.post(environment.pd_ejecutar_proyeccion_multiple, payload).map(response => response);
   }
