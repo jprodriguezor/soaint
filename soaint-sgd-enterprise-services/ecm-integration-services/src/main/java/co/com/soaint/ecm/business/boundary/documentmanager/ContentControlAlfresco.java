@@ -221,16 +221,13 @@ public class ContentControlAlfresco implements ContentControl {
             if(metadatosDocumentosDTO.getVersionLabel()!=null){
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
-                    if(version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel()))
-                    metadatosDocumentosDTO.setNombreDocumento(version.getName());
-                    metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
-                    metadatosDocumentosDTO.setIdDocumento(metadatosDocumentosDTO.getIdDocumento());
-                    metadatosDocumentosDTO.setTipoDocumento(version.getContentStreamMimeType());
-                    versionesLista.add(metadatosDocumentosDTO);
                     logger.info ("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
                     if(version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
+                        metadatosDocumentosDTO.setNombreDocumento(version.getName());
+                        versionesLista.add(metadatosDocumentosDTO);
                         file = convertInputStreamToFile(version.getContentStream());
                     }
+                 
                 }
                 return Response.ok (file)
                         .header ("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
