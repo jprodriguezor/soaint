@@ -324,33 +324,6 @@ public class ContentManager {
     /**
      * Metodo generico para eliminar los documentos del ECM
      *
-     * @param metadatosDocumentosDTO Identificador del documento dentro del ECM
-     * @return Devuelve codigo y mensaje de respuesta
-     */
-    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
-
-        logger.info ("### Modificando documento del content..");
-        MensajeRespuesta mensajeRespuesta=new MensajeRespuesta();
-        try {
-            Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de modificar el documento..");
-            return contentControl.modificarDocumento (metadatosDocumentosDTO, conexion.getSession ( ));
-
-
-        } catch (Exception e) {
-            logger.error ("Error modificadno documento", e);
-            mensajeRespuesta.setCodMensaje("2222");
-            mensajeRespuesta.setMensaje("Error modificadno documento: " + e);
-            return mensajeRespuesta;
-        }
-    }
-
-    /**
-     * Metodo generico para eliminar los documentos del ECM
-     *
      * @param idDoc Identificador del documento dentro del ECM
      * @return true en exito y false en error
      */
