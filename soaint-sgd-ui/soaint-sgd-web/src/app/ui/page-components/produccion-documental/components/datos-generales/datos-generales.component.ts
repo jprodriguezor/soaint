@@ -16,6 +16,7 @@ import {environment} from "../../../../../../environments/environment";
 import {Sandbox as DependenciaSandbox} from "../../../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox";
 import {getActiveTask} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
 import {Subscription} from "rxjs/Subscription";
+import {StatusDTO} from "../../models/StatusDTO";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -29,6 +30,7 @@ export class PDDatosGeneralesComponent implements OnInit {
     validations: any = {};
 
     taskData: TareaDTO;
+    @Input() statusPD: StatusDTO;
 
     funcionarioLog: FuncionarioDTO;
 
@@ -65,6 +67,7 @@ export class PDDatosGeneralesComponent implements OnInit {
                 private formBuilder: FormBuilder,
                 private _changeDetectorRef: ChangeDetectorRef,
                 private pdMessageService: PdMessageService) {
+
       this.initForm();
     }
 
@@ -90,7 +93,7 @@ export class PDDatosGeneralesComponent implements OnInit {
 
     initForm() {
         this.form = this.formBuilder.group({
-          'tipoComunicacion': [null, Validators.required],
+          'tipoComunicacion': [this.statusPD && this.statusPD.datosGenerales && this.statusPD.datosGenerales.tipoComunicacion || null, Validators.required],
           'tipoPlantilla': [null, Validators.required],
           'elaborarDocumento': [null],
           'soporte': 'electronico',

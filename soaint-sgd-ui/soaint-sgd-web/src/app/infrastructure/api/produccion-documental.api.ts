@@ -11,7 +11,13 @@ export class ProduccionDocumentalApiService {
   constructor(private _api: ApiBase) {
   }
 
+  guardarEstadoTarea(payload: any) {
+    return this._api.post(environment.taskStatus_endpoint, payload).map(response => response);
+  }
 
+  obtenerEstadoTarea(payload: {idInstanciaProceso:string, idTareaProceso:string}) {
+    return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload.datosPD);
+  }
 
   subirVersionDocumento(formData:FormData, payload:{nombre:string,sede:string,dependencia:string,tipo:string,id:string}) {
     return this._api.sendFile(
