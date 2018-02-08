@@ -133,13 +133,5 @@ public interface ContentControl {
      */
     boolean eliminardocumento(String idDoc, Session session);
 
-    /**
-     * Modificar Documento del ECM
-     *
-     * @param metadatosDocumentosDTO   Objeto que contiene los datos del documento a modificar
-     * @param session Objeto de conexion al Alfresco
-     * @return Retorna la respuesta de la petición
-     */
-    MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session);
 
 }

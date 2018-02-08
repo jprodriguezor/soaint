@@ -227,7 +227,7 @@ public class ContentControlAlfresco implements ContentControl {
                         versionesLista.add(metadatosDocumentosDTO);
                         file = convertInputStreamToFile(version.getContentStream());
                     }
-                 
+
                 }
                 return Response.ok (file)
                         .header ("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
@@ -244,7 +244,8 @@ public class ContentControlAlfresco implements ContentControl {
         {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención del documento: "+e.getMessage());
-            logger.error("Error en la obtención del documento: "+e.getMessage());
+            logger.error("Error en la obtención del documento: ",e);
+
             return Response.serverError().build();
         }
     }
@@ -714,7 +715,7 @@ public class ContentControlAlfresco implements ContentControl {
         {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de los documentos adjuntos: "+e.getMessage());
-            logger.error("Error en la obtención de los documentos adjuntos: "+e.getMessage());
+            logger.error("Error en la obtención de los documentos adjuntos: ",e);
         }
         logger.info ("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: "+response.toString());
         return response;
@@ -761,7 +762,7 @@ public class ContentControlAlfresco implements ContentControl {
         {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: "+e.getMessage());
-            logger.error("Error en la obtención de las versiones del documento: "+e.getMessage());
+            logger.error("Error en la obtención de las versiones del documento: ",e);
         }
         logger.info ("Se sale del metodo obtenerVersionesDocumento con respuesta: "+response.toString());
         return response;
@@ -1074,46 +1075,7 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
-    /**
-     * Modificar Documento del ECM
-     *
-     * @param metadatosDocumentosDTO   Objeto que contiene los datos del documento a modificar
-     * @param session Objeto de conexion al Alfresco
-     * @return Retorna la respuesta de la petición
-     */
-    @Override
-    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session){
-        MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
-
-            try{
-
-//                    System.out.println("updating content stream");
-//
-//                    String mimetype = "text/plain; charset=UTF-8";
-//                    String content = "This is some updated test content for our renamed second document.";
-//                    byte[] buf = content.getBytes("UTF-8");
-//                    input = new ByteArrayInputStream(buf);
-//
-//                    ContentStream contentStream = session.getObjectFactory().createContentStream("test3.txt", buf.length, mimetype, input);
-//
-//                    doc2.setContentStream(contentStream, true);
-//
-//                    // did it work?
-//                    contentStream = doc2.getContentStream();
-//
-//                    if (contentStream != null) {
-//                        content = getContentAsString(contentStream);
-//                        System.out.println("Contents of " + doc2.getName() + " are: " + content);
-//                    } else {
-//                        System.out.println("Something went wrong.");
-//                    }
-                }catch (Exception e){
-
-            }
-        return mensajeRespuesta;
-    }
-
-    /**
+     /**
      * Convierte contentStream a File
      *
      * @param contentStream contentStream
