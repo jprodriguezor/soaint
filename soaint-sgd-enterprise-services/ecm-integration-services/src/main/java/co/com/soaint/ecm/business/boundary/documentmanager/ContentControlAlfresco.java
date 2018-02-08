@@ -904,7 +904,15 @@ public class ContentControlAlfresco implements ContentControl {
         return response;
     }
 
-
+    /**
+     * Metodo para buscar crear carpetas
+     * @param session Objeto session
+     * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos
+     * @param response Mensaje de respuesta
+     * @param bytes Contenido del documento
+     * @param properties propiedades de carpeta
+     * @param carpetaCrearBuscar Carpeta 
+     */
     private void buscarCrearCarpeta(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
         String idDocumento;
         try {
