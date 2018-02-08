@@ -53,6 +53,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
+  guardarEstadoTarea() {
+
+  }
+
   getDatosProduccionDocumental() {
     return {
       datosGenerales: {

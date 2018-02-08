@@ -140,20 +140,21 @@
             <div class="ui-sm-12 ui-g-4 ui-lg-4">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <!--<button pButton label="Adjuntar" [disabled]="listaVersionesDocumento.length !== 0" style="width: auto;margin-top: 28px;margin-left: 10px; float: right;" type="button"-->
-                            <!--(click)="clearFile()"></button>-->
-                        <p-fileUpload
-                            mode="basic"
-                            accept="*"
-                            chooseLabel="Adjuntar"
-                            customUpload="true"
-                            [disabled]="listaVersionesDocumento && listaVersionesDocumento.length > 0"
-                            (uploadHandler)="versionDocumentoUpload($event)"
-                            (onSelect)="versionDocumentoSelected($event)"
-                            (onError)="onErrorUpload($event)"
-                        ></p-fileUpload>
-                        <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length !== 0" style="width: auto;margin-top:28px;float:right;" type="button"
-                            (click)=" producirDocumento.currentVersionEditable = true;producirDocumento.editarPlantillaVisible = true;"></button>
+                        <div class="ui-sm-12 ui-g-4 ui-lg-6">
+                            <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length !== 0" style="width:auto;" type="button"
+                                  (click)=" producirDocumento.currentVersionEditable = true;producirDocumento.editarPlantillaVisible = true;"></button>
+                        </div>
+                        <div class="ui-sm-12 ui-g-8 ui-lg-6">
+                            <p-fileUpload mode="basic"
+                                          accept="*"
+                                          chooseLabel="Adjuntar"
+                                          customUpload="true"
+                                          [disabled]="listaVersionesDocumento && listaVersionesDocumento.length > 0"
+                                          (uploadHandler)="versionDocumentoUpload($event)"
+                                          (onSelect)="versionDocumentoSelected($event)"
+                                          (onError)="onErrorUpload($event)"
+                            ></p-fileUpload>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -282,16 +283,13 @@
         Editar Planilla
     </p-header>
 
-    <p-editor [(ngModel)]="currentVersionObject && currentVersionObject.contenido"
+    <p-editor [(ngModel)]="producirDocumento.newVersionContent"
               [readonly]="!producirDocumento.currentVersionEditable" [style]="{'height':'320px'}"></p-editor>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button type="button" pButton class="ui-button ui-button-danger" label="Cerrar"
                     (click)="producirDocumento.editarPlantillaVisible = false;"></button>
-            <button pButton type="button" label="Guardar"
-                    [disabled]="!producirDocumento.currentVersionEditable || producirDocumento.newVersionIndex < 0" style="width: auto; margin-bottom: 10px;margin-left: 12px"
-                    (click)="editarCurrentVersion()"></button>
             <button pButton type="button" label="Versionar"
                     [disabled]="!producirDocumento.currentVersionEditable || producirDocumento.newVersionIndex >= 0" style="width: auto; margin-bottom: 10px;margin-left: 12px"
                     (click)="producirDocumento.currentVersionVisible = true"></button>
@@ -324,7 +322,7 @@
                     <div class="ui-sm-12 ui-g-12 ui-lg-12">
                         <input type="text" pInputText
                                [disabled]="!producirDocumento.currentVersionConfirmed"
-                               [(ngModel)]="currentVersionObject && currentVersionObject.nombre" />
+                               [(ngModel)]="producirDocumento.newVersionName" />
                     </div>
                 </div>
             </div>
