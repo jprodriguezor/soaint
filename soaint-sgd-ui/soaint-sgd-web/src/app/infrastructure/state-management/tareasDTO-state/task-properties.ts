@@ -11,3 +11,4 @@ export const TASK_GESTION_PRODUCCION_MULTIPLE = 'Gestión Producción Múltiples
 export const TASK_GESTIONAR_UNIDADES_DOCUMENTALES = 'Gestionar unidades documentales';
 export const TASK_GESTIONAR_DEVOLUCIONES = 'Gestionar Devoluciones';
 export const TASK_CORREGIR_RADICACION = 'Corregir Radicacion';
+export const TASK_RADICACION_SALIDA = 'Radicar COF Salida';

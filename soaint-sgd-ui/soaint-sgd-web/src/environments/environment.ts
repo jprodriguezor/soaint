@@ -5,11 +5,11 @@
 //const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+//const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+//const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
     production: false,
@@ -101,6 +101,10 @@ export const environment = {
 export const process_info = {
   'proceso.correspondencia-entrada': {
     displayValue: 'Correspondencia de entrada',
+    show: true
+  },
+  'proceso.correspondencia-salida': {
+    displayValue: 'Correspondencia de salida',
     show: true
   },
   'proceso.gestion-planillas': {

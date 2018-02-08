@@ -3,11 +3,9 @@ import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
-import {CompleteTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
-import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO} from '../../../shared/lang/es';
 import {isNullOrUndefined} from 'util';
@@ -39,12 +37,12 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   previewWasRefreshed = false;
   uploadUrl: string;
   principalFile: string;
-  correspondencia: CorrespondenciaDTO;
-
   activeTaskUnsubscriber: Subscription;
 
   @ViewChild('uploader') uploader;
   @ViewChild('viewer') viewer;
+
+  documentIdEcm: string;
 
 
   constructor(private changeDetection: ChangeDetectorRef,
@@ -60,10 +58,8 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
       this.codSede = activeTask.variables.codigoSede;
       this.codDepedencia = activeTask.variables.codDependencia;
       this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-        this.depedencia  = results.dependencias.find((element) => element.codigo === this.codDepedencia).nombre;
-        this.sede  = results.dependencias.find((element) => element.codSede === this.codSede).nomSede;
-        console.log(this.depedencia);
-        console.log(this.sede);
+        this.depedencia = results.dependencias.find((element) => element.codigo === this.codDepedencia).nombre;
+        this.sede = results.dependencias.find((element) => element.codSede === this.codSede).nomSede;
       });
     });
   }
@@ -84,14 +80,7 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
         formData.append('files', file, file.name);
       }
       this._api.sendFile(this.uploadUrl, formData, [this.sede, this.depedencia, this.principalFile]).subscribe(response => {
-        this._store.dispatch(new CompleteTaskAction({
-          idProceso: this.task.idProceso,
-          idDespliegue: this.task.idDespliegue,
-          idTarea: this.task.idTarea,
-          parametros: {
-            ideEcm: response[0]
-          }
-        }));
+        this.documentIdEcm = response[0];
         this._store.dispatch(new PushNotificationAction({
           severity: 'success',
           summary: SUCCESS_ADJUNTAR_DOCUMENTO
@@ -113,7 +102,6 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   onUpload(event) {
-    // this.uploadFiles = event.files;
     this.status = UploadStatus.UPLOADED;
   }
 
@@ -123,35 +111,10 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   onSelect(event) {
-
-    console.log(event.files);
-
     this.previewWasRefreshed = false;
-
     for (const file of event.files) {
       this.uploadFiles.push(file);
     }
-    console.log(this.uploadFiles);
-
-    /*if (this.uploader.files.length === 2) {
-      this.uploader.remove(0);
-    } else if (this.uploader.files.length > 2) {
-      let index = 0;
-      while (this.uploader.files.length !== 1) {
-        if (this.uploader.files[index] !== this.uploadFile) {
-          this.uploader.remove(index);
-          index--;
-        } else if (this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
-          this.uploader.remove(index);
-          index--;
-        } else {
-          index++;
-          if (index === this.uploader.files.length) {
-            break;
-          }
-        }
-      }
-    }*/
     this.changeDetection.detectChanges();
     this.status = UploadStatus.LOADED;
   }
