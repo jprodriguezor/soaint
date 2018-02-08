@@ -11,8 +11,19 @@ export class ProduccionDocumentalApiService {
   constructor(private _api: ApiBase) {
   }
 
-  subirVersionDocumento(formData: FormData) {
-    return this._api.sendFile('http://platea.addons.local/api/v1/addons/prestashop/index', formData, []);
+  guardarEstadoTarea(payload: any) {
+    return this._api.post(environment.taskStatus_endpoint, payload).map(response => response);
+  }
+
+  obtenerEstadoTarea(payload: {idInstanciaProceso:string, idTareaProceso:string}) {
+    return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload.datosPD);
+  }
+
+  subirVersionDocumento(formData:FormData, payload:{nombre:string,sede:string,dependencia:string,tipo:string,id:string}) {
+    return this._api.sendFile(
+      environment.pd_gestion_documental.subirDocumentoVersionado, formData,
+      [payload.nombre,payload.sede,payload.dependencia,payload.tipo,payload.id]
+    );
   }
 
   ejecutarProyeccionMultiple(payload: {}) {

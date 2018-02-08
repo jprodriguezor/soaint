@@ -22,7 +22,7 @@ export class ApiBase {
     return this._http.put(endpoint, payload);
   }
 
-  public sendFile(endpoint: string, formData, pathParams: Array<string>): Observable<any> {
+  public sendFile(endpoint: string, formData: FormData, pathParams: Array<string>): Observable<any> {
 
     let fullEndpoint = `${endpoint}`;
     pathParams.forEach((value) => {
