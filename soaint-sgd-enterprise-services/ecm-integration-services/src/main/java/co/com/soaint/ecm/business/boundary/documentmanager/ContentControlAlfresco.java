@@ -738,7 +738,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         MensajeRespuesta response = new MensajeRespuesta ( );
 
-        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<MetadatosDocumentosDTO>();
+        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
             //Obtener documento dado id
             Document doc = (Document) session.getObject(idDoc);

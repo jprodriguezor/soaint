@@ -78,10 +78,6 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
         try {
             return fEcmManager.subirDocumento(nombreDocumento, documento, tipoComunicacion);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Subir Documento ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento ECM ", e);
             throw e;
@@ -115,10 +111,6 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setDependencia(dependencia);
 
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
@@ -154,10 +146,6 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
 
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
@@ -193,11 +181,7 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setTipoDocumento(tipoDocumento);
 
             return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
-            throw e;
-
-        } catch (IOException e) {
+         } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
         }
@@ -233,10 +217,6 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setIdDocumento(idDoc);
 
             return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
@@ -257,11 +237,8 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Buscar Documento Adjunto en el ECM dado id: " + idDocPadre);
         try {
             return fEcmManager.obtenerDocumentosAdjuntos(idDocPadre);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
-            throw e;
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
             throw e;
         }
@@ -281,10 +258,6 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Buscar Versiones del Documento en el ECM dado id: " + idDoc);
         try {
             return fEcmManager.obtenerVersionesDocumentos(idDoc);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Buscar Versiones de Documento en el ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Buscar Versiones de Documento en el ECM ", e);
             throw e;
@@ -304,10 +277,6 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Subir Documento ECM " + metadatos.getIdDocumento());
         try {
             return fEcmManager.modificarMetadatosDocumento(metadatos);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
-            throw e;
-
         } catch (IOException e) {
             logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
             throw e;
@@ -327,12 +296,8 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Modificar Documento ECM " + metadatos.getIdDocumento());
         try {
             return fEcmManager.modificarDocumento(metadatos);
-        } catch (RuntimeException e) {
-            logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
-            throw e;
-
         } catch (IOException e) {
-            logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
+            logger.error("Error en operacion - Modificar Documento ECM ", e);
             throw e;
         }
 

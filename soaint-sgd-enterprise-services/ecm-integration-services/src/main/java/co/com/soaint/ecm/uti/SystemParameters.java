@@ -1,5 +1,8 @@
 package co.com.soaint.ecm.uti;
 
+/**
+ *Clase utilitaria para devolver las constantes
+ */
 public class SystemParameters {
 
 
@@ -11,6 +14,11 @@ public class SystemParameters {
     private SystemParameters() {
     }
 
+    /**
+     * Metodo que devuelve el valor de las constantes
+     * @param parameterName Numbre del parametro que se va a devolver
+     * @return
+     */
     public static String getParameter(final String parameterName) {
         return System.getProperty(parameterName);
     }
