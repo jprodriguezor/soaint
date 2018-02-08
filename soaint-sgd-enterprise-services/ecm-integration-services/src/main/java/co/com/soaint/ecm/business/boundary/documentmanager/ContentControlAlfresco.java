@@ -682,7 +682,7 @@ public class ContentControlAlfresco implements ContentControl {
             ItemIterable<QueryResult> resultsPrincipalAdjunto = session.query(principalAdjuntos, false);
 
 
-            ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<MetadatosDocumentosDTO>();
+            ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<>();
 
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 
