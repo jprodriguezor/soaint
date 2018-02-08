@@ -73,4 +73,19 @@ public class ProduccionDocumentalGatewayApi {
         return response;
     }
 
+    @POST
+    @Path("/subir-version/{fileName}/{sede}/{dependencia}/{tipo}/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadVersionDocumento(@PathParam("fileName") String fileName,  @PathParam("sede") String sede,
+                                           @PathParam("dependencia") String dependencia, @PathParam("tipo") String tipo,
+                                           @PathParam("id") String id, MultipartFormDataInput file) {
+        log.info("ProduccionDocumentalGatewayApi - [content] : Subir Version Documento");
+        Map<String,InputPart> files = ECMUtils.findFiles(file);
+        List<String> ecmIds = new ArrayList<>();
+        /* Subida del fichero principal */
+        InputPart parent = files.get(fileName);
+        return clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
+    }
+
 }

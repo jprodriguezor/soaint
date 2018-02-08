@@ -84,7 +84,6 @@ public class ContentManager {
 
         logger.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
         Carpeta carpeta;
         try {
             Conexion conexion;
@@ -121,8 +120,6 @@ public class ContentManager {
 
         logger.info ("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -141,7 +138,35 @@ public class ContentManager {
 
     }
 
+    /**
+     * Metodo generico para subir los dccumentos adjuntos al content
+     *
+     * @param documento        Documento que se va a subir
+     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
 
+        logger.info ("### Subiendo versionando documento generado al content..");
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info (MSGCONEXION);
+            conexion = contentControl.obtenerConexion ( );
+            logger.info ("### Se invoca el metodo de subir/versionar el documento..");
+            response=contentControl.subirVersionarDocumentoGenerado(conexion.getSession ( ), documento, metadatosDocumentosDTO);
+
+        } catch (Exception e) {
+            logger.error ("Error subiendo/versionando documento", e);
+            response.setCodMensaje ("2222");
+            response.setMensaje ("Error al crear/versionar el documento");
+            throw e;
+        }
+        return response;
+
+    }
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
@@ -153,8 +178,6 @@ public class ContentManager {
 
         logger.info ("### Obtener documento principal y adjunto del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -172,6 +195,35 @@ public class ContentManager {
         return response;
 
     }
+
+    /**
+     * Metodo generico para obtener las versiones de un documento del content
+     *
+     * @param idDoc        Id Documento que se va  a pedir Versiones
+     * @return Lista de objetos de documentos asociados al idDocPrincipal
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta obtenerVersionesDocumentoContent(String idDoc) throws IOException {
+
+        logger.info ("### Obtener versiones documento del content..");
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        try {
+            Conexion conexion;
+            new Conexion ( );
+            logger.info (MSGCONEXION);
+            conexion = contentControl.obtenerConexion ( );
+            logger.info ("### Se invoca el metodo de obtener versiones del documento..");
+            response=contentControl.obtenerVersionesDocumento(conexion.getSession ( ), idDoc );
+
+        } catch (Exception e) {
+            logger.error ("Error obteniendo versiones del documento", e);
+            response.setCodMensaje ("2222");
+            response.setMensaje ("Error obteniendo versiones del documento");
+            throw e;
+        }
+        return response;
+
+    }
     /**
      * Metodo generico para subir los dccumentos al content
      *
@@ -183,7 +235,6 @@ public class ContentManager {
 
         logger.info ("### Modificando metadatos del documento..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -237,10 +288,10 @@ public class ContentManager {
     /**
      * Metodo generico para descargar los documentos del ECM
      *
-     * @param idDoc Identificador del documento dentro del ECM
+     * @param metadatosDocumentosDTO Metadatos del documento dentro del ECM
      * @return Documento
      */
-    public Response descargarDocumentoContent(String idDoc) {
+    public Response descargarDocumentoContent(MetadatosDocumentosDTO metadatosDocumentosDTO) {
 
         logger.info ("### Descargando documento del content..");
         ResponseBuilder response = new ResponseBuilderImpl ( );
@@ -251,7 +302,7 @@ public class ContentManager {
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de descargar el documento..");
-            return contentControl.descargarDocumento (idDoc, conexion.getSession ( ));
+            return contentControl.descargarDocumento (metadatosDocumentosDTO, conexion.getSession ( ));
 
         } catch (Exception e) {
             logger.error ("Error descargando documento", e);

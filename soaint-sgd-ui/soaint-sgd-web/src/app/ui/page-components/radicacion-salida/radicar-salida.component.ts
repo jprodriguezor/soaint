@@ -35,7 +35,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   ngOnInit() {
-
+    console.log('Pase por aquí....');
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
     });

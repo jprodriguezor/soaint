@@ -59,6 +59,17 @@ public interface ContentControl {
     MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException;
 
     /**
+     * Subir Versionar documento Generado al ECM
+     *
+     * @param session          Objeto conexion
+     * @param documento        documento a subir/versionar
+     * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
+     * @return ide de documento
+     * @throws IOException exception
+     */
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException;
+
+    /**
      * Obtener documento Adjunto dado id Documento Principal
      *
      * @param session          Objeto conexion
@@ -68,7 +79,15 @@ public interface ContentControl {
      */
     MensajeRespuesta obtenerDocumentosAdjuntos(Session session,String idDocPrincipal) throws IOException;
 
-
+    /**
+     * Obtener versiones del documento dado id Documento
+     *
+     * @param session          Objeto conexion
+     * @param idDoc        documento a subir
+     * @return Lista de documentos adjuntos
+     * @throws IOException exception
+     */
+    MensajeRespuesta obtenerVersionesDocumento(Session session,String idDoc) throws IOException;
 
     /**
      * Modificar documento Content
@@ -88,11 +107,11 @@ public interface ContentControl {
     /**
      * Descargar documento
      *
-     * @param idDocumento Identificador del documento en el ECM
+     * @param metadatosDocumentosDTO Objeto que contiene metadatos del documento en el ECM
      * @param session     Objeto conexion
      * @return Se retorna el documento
      */
-    Response descargarDocumento(String idDocumento, Session session) throws IOException;
+    Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException;
 
     /**
      * MOver documento
@@ -113,5 +132,6 @@ public interface ContentControl {
      * @return Retorna true si borró con exito y false si no
      */
     boolean eliminardocumento(String idDoc, Session session);
+
 
 }
