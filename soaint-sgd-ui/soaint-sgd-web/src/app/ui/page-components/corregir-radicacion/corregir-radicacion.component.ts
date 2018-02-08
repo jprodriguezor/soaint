@@ -28,7 +28,7 @@ import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/sta
 export class CorregirRadicacionComponent implements OnInit {
 
 
-  @ViewChild('datosGenerales') datosGenerales;
+  @ViewChild('actualizarDatosGenerales') actualizarDatosGenerales;
 
   @ViewChild('datosRemitente') datosRemitente;
 
@@ -39,6 +39,7 @@ export class CorregirRadicacionComponent implements OnInit {
   tabIndex = 0;
 
   comunicacion: ComunicacionOficialDTO = {};
+
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
 
@@ -68,10 +69,10 @@ export class CorregirRadicacionComponent implements OnInit {
   save(): Observable<any> {
     const payload: any = {
       destinatario: this.datosDestinatario.form.value,
-      generales: this.datosGenerales.form.value,
+      generales: this.actualizarDatosGenerales.form.value,
       remitente: this.datosRemitente.form.value,
-      descripcionAnexos: this.datosGenerales.descripcionAnexos,
-      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      descripcionAnexos: this.actualizarDatosGenerales.descripcionAnexos,
+      radicadosReferidos: this.actualizarDatosGenerales.radicadosReferidos,
       agentesDestinatario: this.datosDestinatario.agentesDestinatario
     };
 
@@ -116,7 +117,7 @@ export class CorregirRadicacionComponent implements OnInit {
         this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
         console.log(this.radicacionEntradaDTV);
         this.datosRemitente.form.patchValue(this.radicacionEntradaDTV.getDatosRemitente());
-        this.datosGenerales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
+        this.actualizarDatosGenerales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
         //this.contactos$ = this.radicacionEntradaDTV.getDatosContactos();
         //this.destinatarios$ = this.radicacionEntradaDTV.getDatosDestinatarios();
 

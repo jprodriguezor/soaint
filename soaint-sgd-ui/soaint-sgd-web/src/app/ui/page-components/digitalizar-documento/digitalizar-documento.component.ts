@@ -10,7 +10,11 @@ import {Sandbox as AsignacionSandbox} from '../../../infrastructure/state-manage
 import {CorrespondenciaDTO} from '../../../domain/correspondenciaDTO';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
-
+import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO, FAIL_ADJUNTAR_ANEXOS} from '../../../shared/lang/es';
+import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {isNullOrUndefined} from 'util';
+import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
+import {empty} from "rxjs/Observer";
 
 enum UploadStatus {
   CLEAN = 0,
@@ -35,6 +39,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   uploadUrl: string;
   principalFile: string;
   correspondencia: CorrespondenciaDTO;
+  comunicacion: ComunicacionOficialDTO = {};
+
+  tipoSoporteElectronico: boolean = false;
 
   activeTaskUnsubscriber: Subscription;
 
@@ -53,6 +60,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       this.task = activeTask;
       if (this.task) {
         this._asignacionSandBox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((comunicacion) => {
+          this.comunicacion = comunicacion;
           this.correspondencia = comunicacion.correspondencia;
         });
       }
@@ -64,36 +72,77 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   }
 
   customUploader(event) {
+
     const formData = new FormData();
     for (const file of event.files) {
       formData.append('files', file, file.name);
     }
+    console.log("datos subida");
+    console.log(formData);
 
-    this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
-        console.log(result);
-        return this._api.sendFile(
-          this.uploadUrl,
-          formData,
-          [
-            this.correspondencia.codTipoCmc,
-            this.correspondencia.nroRadicado,
-            this.principalFile,
-            result.dependencias[0].nomSede,
-            result.dependencias[0].nombre,
-          ]);
+    this.comunicacion.anexoList.forEach(value => {
+      console.log("anexos");
+      console.log(value);
+      if (value.codTipoSoporte == "TP-SOPE") {
+        this.tipoSoporteElectronico = true;
       }
-    ).subscribe(response => {
-      console.log("respuesta del subir");
-      console.log(response);
-      this._store.dispatch(new CompleteTaskAction({
-        idProceso: this.task.idProceso,
-        idDespliegue: this.task.idDespliegue,
-        idTarea: this.task.idTarea,
-        parametros: {
-          ideEcm: response[0]
-        }
-      }));
     });
+
+    //console.log(this.tipoSoporteElectronico);
+    //console.log(event.files.length);
+    //console.log(this.comunicacion.anexoList);
+
+    if (isNullOrUndefined(this.principalFile)) {
+
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: FAIL_ADJUNTAR_PRINCIPAL
+      }));
+
+    }else if(!this.tipoSoporteElectronico && event.files.length > 1){
+
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: FAIL_ADJUNTAR_ANEXOS
+      }));
+
+    }else{
+
+      this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
+          console.log(result);
+          return this._api.sendFile(
+            this.uploadUrl,
+            formData,
+            [
+              this.correspondencia.codTipoCmc,
+              this.correspondencia.nroRadicado,
+              this.principalFile,
+              result.dependencias[0].nomSede,
+              result.dependencias[0].nombre,
+            ]);
+        }
+      ).subscribe(response => {
+         console.log(response);
+
+        if (isNullOrUndefined(response[0])) {
+
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'success',
+            summary: SUCCESS_ADJUNTAR_DOCUMENTO
+          }));
+
+        }
+        this._store.dispatch(new CompleteTaskAction({
+          idProceso: this.task.idProceso,
+          idDespliegue: this.task.idDespliegue,
+          idTarea: this.task.idTarea,
+          parametros: {
+            ideEcm: response[0]
+          }
+        }));
+      });
+    }
+
   }
 
   preview(file) {

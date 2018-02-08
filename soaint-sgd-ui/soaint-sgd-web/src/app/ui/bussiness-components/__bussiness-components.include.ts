@@ -9,6 +9,7 @@ import {DetallesDatosRemitenteComponent} from './detalles-asignacion/detalles-da
 import {DetallesDatosDestinatarioComponent} from './detalles-asignacion/detalles-datos-destinatario/detalles-datos-destinatario.component';
 import {DocumentosTramiteComponent} from '../page-components/documentos-tramite/documentos-tramite.component';
 import {DestinatarioSalidaComponent} from './destinatario-salida/destinatario-salida.component';
+import {ActualizarDatosGeneralesComponent} from './actualizar-datos-generales/actualizar-datos-generales.component';
 import {RedireccionesRecursivasTrazaComponent} from './redirecciones-recursivas-traza/redirecciones-recursivas-traza.component';
 
 /**
@@ -32,7 +33,8 @@ export const BUSSINESS_COMPONENTS = [
   DetallesDatosDestinatarioComponent,
   DocumentosTramiteComponent,
   DestinatarioSalidaComponent,
-  RedireccionesRecursivasTrazaComponent
+  RedireccionesRecursivasTrazaComponent,
+  ActualizarDatosGeneralesComponent
 ];
 
 export * from './__bussiness-providers.include';
