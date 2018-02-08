@@ -223,13 +223,14 @@ public class ContentControlAlfresco implements ContentControl {
                 for (Document version : versions) {
                     if(version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel()))
                     metadatosDocumentosDTO.setNombreDocumento(version.getName());
-                    metadatosDocumentosDTO.setVersionLabel(version.getVersionLabel());
                     metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
                     metadatosDocumentosDTO.setIdDocumento(metadatosDocumentosDTO.getIdDocumento());
                     metadatosDocumentosDTO.setTipoDocumento(version.getContentStreamMimeType());
                     versionesLista.add(metadatosDocumentosDTO);
                     logger.info ("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
-                    file = convertInputStreamToFile (version.getContentStream());
+                    if(version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
+                        file = convertInputStreamToFile(version.getContentStream());
+                    }
                 }
                 return Response.ok (file)
                         .header ("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
@@ -738,13 +739,14 @@ public class ContentControlAlfresco implements ContentControl {
         logger.info ("Se entra al metodo obtenerVersionesDocumento");
 
         MensajeRespuesta response = new MensajeRespuesta ( );
-        MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
+
         ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<MetadatosDocumentosDTO>();
         try {
             //Obtener documento dado id
             Document doc = (Document) session.getObject(idDoc);
             List<Document> versions = doc.getAllVersions();
             for (Document version : versions) {
+                MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
                 metadatosDocumentosDTO.setNombreDocumento(version.getName());
                 metadatosDocumentosDTO.setVersionLabel(version.getVersionLabel());
                 metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
@@ -886,7 +888,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             // Check in the pwc
             try {
-                pwc.checkIn(true, null, contentStream, "minor version");
+                pwc.checkIn(false, null, contentStream, "minor version");
                 response.setMensaje("0000");
                 response.setCodMensaje("Documento versionado correctamente");
             } catch (CmisBaseException e) {
