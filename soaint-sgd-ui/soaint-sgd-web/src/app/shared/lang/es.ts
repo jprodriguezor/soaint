@@ -15,3 +15,4 @@ export const WARN_REDIRECTION = `No todas las ${DEVOLUCIONES} pudieron ser ejecu
 export const FAIL_REDIRECTION = `No se pudieron realizar ${REDIRECCIONES}`;
 export const FAIL_DEVOLUTION = `No se pudieron realizar ${DEVOLUCIONES}`;
 export const FAIL_ADJUNTAR_PRINCIPAL = `Debe seleccionar un documento como principal`;
+export const FAIL_ADJUNTAR_ANEXOS = `No puede adjuntar un documento anexo, no tiene axesos electronicos`;
