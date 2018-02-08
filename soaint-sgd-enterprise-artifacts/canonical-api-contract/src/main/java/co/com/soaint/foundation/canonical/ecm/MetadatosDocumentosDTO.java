@@ -39,5 +39,6 @@ public class MetadatosDocumentosDTO implements Serializable {
     private String tipoDocumento;
     private String tamano;
     private String tipoPadreAdjunto;
+    private String versionLabel;
 
 }

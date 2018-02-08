@@ -90,7 +90,30 @@ public class EcmManager {
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
+            response.setMensaje("Error ECM Subiendo documento adjunto al content");
+            throw e;
+        }
+
+        return response;
+    }
+
+    /**
+     * Metodo que llama el servicio para subir versionar documentos generado de producción documental al ECM.
+     *
+     * @param documento        Documento que se va a subir
+     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+        logger.info("### Subiendo/Versionando documento generado al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response=contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO);
+        } catch (Exception e) {
+            logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM Subiendo/Versionando documento generado al content");
             throw e;
         }
 
@@ -110,6 +133,28 @@ public class EcmManager {
             response=contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
         } catch (Exception e) {
             logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM");
+            throw e;
+        }
+
+        return response;
+    }
+
+    /**
+     * Metodo que llama el servicio para buscar las versiones del documentos en el ECM dado el Id del documento.
+     *
+     * @param idDoc Identificador del documento para obtener los documentos.
+     * @return Lista de objetos de documentos adjuntos.
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta obtenerVersionesDocumentos(String idDoc) throws IOException {
+        logger.info("### Obteniendo las versiones del documento dado id..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response=contentManager.obtenerVersionesDocumentoContent(idDoc);
+        } catch (Exception e) {
+            logger.error("### Error ECM..------", e);
             response.setCodMensaje("2222");
             response.setMensaje("Error ECM");
             throw e;
@@ -139,6 +184,28 @@ public class EcmManager {
         return response;
     }
 
+
+    /**
+     * Metodo que llama el servicio para modificar metadatos del documento en el ECM
+     *
+     * @param metadatosDocumentos  DTO que contiene los metadatos del documento
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+        logger.info("### Subiendo documento al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response=contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
+        } catch (Exception e) {
+            logger.error("### Error..------", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM");
+            throw e;
+        }
+
+        return response;
+    }
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      *
@@ -167,14 +234,14 @@ public class EcmManager {
     /**
      * Metodo generico para descargar los documentos del ECM
      *
-     * @param idDoc Identificador del documento dentro del ECM
+     * @param metadatosDocumentosDTO Objeto que contiene los metadatos
      * @return Documento
      */
-    public Response descargarDocumento(String idDoc) {
+    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
         logger.info("### Descargando documento del content..");
         ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl();
         try {
-            return contentManager.descargarDocumentoContent(idDoc);
+            return contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
         } catch (Exception e) {
             logger.error("Error descargando documento", e);
         }

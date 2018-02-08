@@ -5,7 +5,6 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.ecm.uti.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
@@ -22,6 +21,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
@@ -203,20 +203,52 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para devolver documento para su visualización
      *
-     * @param idDocumento Identificador del documento dentro del ECM
+     * @param metadatosDocumentosDTO Objeto que contiene los metadatos del documento dentro del ECM
      * @param session     Objeto de conexion
      * @return Objeto de tipo response que devuleve el documento
      */
     @Override
-    public Response descargarDocumento(String idDocumento, Session session) throws IOException {
+    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
 
-        logger.info ("Se entra al metodo de descargar el documento");
-        Document doc = (Document) session.getObject (idDocumento);
-        File file = convertInputStreamToFile (doc.getContentStream ( ));
-        logger.info ("Se procede a devolver el documento" + file.getName ( ));
-        return Response.ok (file)
-                .header ("Content-Disposition", "attachment; filename=" + file.getName ( )) //optional
-                .build ( );
+
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
+        try {
+
+            logger.info ("Se entra al metodo de descargar el documento");
+            Document doc = (Document) session.getObject (metadatosDocumentosDTO.getIdDocumento());
+            File file = null;
+            if(metadatosDocumentosDTO.getVersionLabel()!=null){
+                List<Document> versions = doc.getAllVersions();
+                for (Document version : versions) {
+                    if(version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel()))
+                    metadatosDocumentosDTO.setNombreDocumento(version.getName());
+                    metadatosDocumentosDTO.setVersionLabel(version.getVersionLabel());
+                    metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
+                    metadatosDocumentosDTO.setIdDocumento(metadatosDocumentosDTO.getIdDocumento());
+                    metadatosDocumentosDTO.setTipoDocumento(version.getContentStreamMimeType());
+                    versionesLista.add(metadatosDocumentosDTO);
+                    logger.info ("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
+                    file = convertInputStreamToFile (version.getContentStream());
+                }
+                return Response.ok (file)
+                        .header ("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                        .build ( );
+            }
+            else{
+                file = convertInputStreamToFile (doc.getContentStream ( ));
+                return Response.ok (file)
+                        .header ("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                        .build ( );
+            }
+        }
+        catch (Exception e)
+        {
+            response.setCodMensaje("2222");
+            response.setMensaje("Error en la obtención del documento: "+e.getMessage());
+            logger.error("Error en la obtención del documento: "+e.getMessage());
+            return Response.serverError().build();
+        }
     }
 
 
@@ -542,7 +574,8 @@ public class ContentControlAlfresco implements ContentControl {
         List <InputPart> inputParts = uploadForm.get ("documento");
 
         String fileName;
-        String mimeType = "application/pdf";
+        MetadatosDocumentosDTO metadatosDocumentosDTO= new MetadatosDocumentosDTO();
+        metadatosDocumentosDTO.setTipoDocumento("application/pdf");
         for (InputPart inputPart : inputParts) {
 
             // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
@@ -572,6 +605,8 @@ public class ContentControlAlfresco implements ContentControl {
             properties.put (PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled");
             properties.put (PropertyIds.NAME, nombreDocumento);
 
+            buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties,"PRODUCCION DOCUMENTAL ");
+
             try {
                 //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
                 new Carpeta ( );
@@ -591,7 +626,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 logger.info ("### Se elige la carpeta donde se va a guardar el documento a radicar.." + folderAlfresco.getFolder ( ).getName ( ));
                 VersioningState vs = VersioningState.MAJOR;
-                ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
+                ContentStream contentStream = new ContentStreamImpl (nombreDocumento, BigInteger.valueOf (bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream (bytes));
                 //Se crea el documento
                 logger.info ("### Se va a crear el documento..");
                 Document newDocument = folderAlfresco.getFolder ( ).createDocument (properties, contentStream, vs);
@@ -688,6 +723,52 @@ public class ContentControlAlfresco implements ContentControl {
 
 
     }
+
+    /**
+     * Metodo para obtener versiones del documento
+     *
+     * @param session          Objeto de conexion a Alfresco
+     * @param idDoc        Id Documento que se va pedir versiones
+     * @return Devuelve el listado de versiones asociados al id de documento
+     * @throws IOException Excepcion ante errores de entrada/salida
+     */
+    @Override
+    public MensajeRespuesta obtenerVersionesDocumento(Session session,String idDoc) throws IOException {
+
+        logger.info ("Se entra al metodo obtenerVersionesDocumento");
+
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
+        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<MetadatosDocumentosDTO>();
+        try {
+            //Obtener documento dado id
+            Document doc = (Document) session.getObject(idDoc);
+            List<Document> versions = doc.getAllVersions();
+            for (Document version : versions) {
+                metadatosDocumentosDTO.setNombreDocumento(version.getName());
+                metadatosDocumentosDTO.setVersionLabel(version.getVersionLabel());
+                metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
+                metadatosDocumentosDTO.setIdDocumento(idDoc);
+                metadatosDocumentosDTO.setTipoDocumento(version.getContentStreamMimeType());
+                versionesLista.add(metadatosDocumentosDTO);
+
+            }
+
+            response.setCodMensaje("0000");
+            response.setMensaje(versionesLista.toString());
+
+        }
+        catch (Exception e)
+        {
+            response.setCodMensaje("2222");
+            response.setMensaje("Error en la obtención de las versiones del documento: "+e.getMessage());
+            logger.error("Error en la obtención de las versiones del documento: "+e.getMessage());
+        }
+        logger.info ("Se sale del metodo obtenerVersionesDocumento con respuesta: "+response.toString());
+        return response;
+
+
+    }
     /**
      * Metodo para subir documentos al Alfresco
      *
@@ -703,11 +784,10 @@ public class ContentControlAlfresco implements ContentControl {
         logger.info ("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento;
         Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
         List <InputPart> inputParts = uploadForm.get ("documento");
         String fileName;
-        String mimeType = "application/pdf";
+        metadatosDocumentosDTO.setTipoDocumento("application/pdf");
          for (InputPart inputPart : inputParts) {
 
             // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
@@ -731,12 +811,9 @@ public class ContentControlAlfresco implements ContentControl {
 
             assert inputStream != null;
             byte[] bytes = IOUtils.toByteArray (inputStream);
-             logger.info ("33333333333333333333333 entra al metodo subirDocumentoPrincipalAdjunto" );
             //Se definen las propiedades del documento a subir
             Map <String, Object> properties = new HashMap <> ( );
-             logger.info ("444444444444444444444 entra al metodo subirDocumentoPrincipalAdjunto" );
             properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
-             logger.info ("555555555555555555555 entra al metodo subirDocumentoPrincipalAdjunto" );
             //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
             if (metadatosDocumentosDTO.getIdDocumentoPadre()!= null){
                 properties.put ("cmcor:xIdentificadorDocPrincipal",metadatosDocumentosDTO.getIdDocumentoPadre());
@@ -745,73 +822,155 @@ public class ContentControlAlfresco implements ContentControl {
 
             properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
+             buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties,"PRODUCCION DOCUMENTAL ");
+         }
+
+        return response;
+    }
+
+    /**
+     * Metodo para subir/versionar documentos al Alfresco
+     *
+     * @param session          Objeto de conexion a Alfresco
+     * @param documento        Documento que se va a subir/versionar
+     * @param metadatosDocumentosDTO  Objeto que contiene los metadatos de los documentos.
+     * @return Devuelve el id de la carpeta creada
+     * @throws IOException Excepcion ante errores de entrada/salida
+     */
+    @Override
+    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+
+        logger.info ("Se entra al metodo subirVersionarDocumentoGenerado");
+
+        MensajeRespuesta response = new MensajeRespuesta ( );
+        Map <String, List <InputPart>> uploadForm = documento.getFormDataMap ( );
+        List <InputPart> inputParts = uploadForm.get ("documento");
+        for (InputPart inputPart : inputParts) {
+
+            InputStream inputStream = null;
             try {
-                //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-                new Carpeta ( );
-                Carpeta folderAlfresco;
-                logger.info ("### Se elige la carpeta donde se va a guardar el documento principal..");
-                logger.info ("###------------ Se elige la sede donde se va a guardar el documento principal..");
-                    folderAlfresco = obtenerCarpetaPorNombre(metadatosDocumentosDTO.getSede(), session);
-                logger.info ("###------------------- Se obtienen todas las dependencias de la sede..");
-                    List<Carpeta> carpetasHijas=obtenerCarpetasHijasDadoPadre(folderAlfresco);
+                inputStream = inputPart.getBody (InputStream.class, null);
 
-                    for (Carpeta carpetaP: carpetasHijas){
-                        logger.info("Se obtienen la dependencia referente a la sede"+ carpetaP.getFolder().getName());
-                        if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())){
-                            logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
+            } catch (IOException e) {
+                logger.error ("### Error..------", e);
+            }
 
-                            Calendar cal= Calendar.getInstance();
-                            int year= cal.get(Calendar.YEAR);
+            assert inputStream != null;
+            byte[] bytes = IOUtils.toByteArray (inputStream);
 
-                            logger.info("Se obtienen todas las carpetas dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                            List<Carpeta> carpetasDeLaDependencia=obtenerCarpetasHijasDadoPadre(carpetaP);
+            if("html".equals(metadatosDocumentosDTO.getTipoDocumento())){
+                metadatosDocumentosDTO.setTipoDocumento("text/html");
+            }
+            else{
+                metadatosDocumentosDTO.setTipoDocumento("application/pdf");
+            }
+        if("none".equals(metadatosDocumentosDTO.getIdDocumento())){
 
-                            boolean existe=false;
-                            Carpeta carpetaTarget = new Carpeta();
-                            for (Carpeta carpetaDependencia: carpetasDeLaDependencia) {
-                            if(carpetaDependencia.getFolder().getName().equals("PRODUCCION DOCUMENTAL "+ year)){
-                                logger.info("Existe la Carpeta: PRODUCCION DOCUMENTAL "+year);
-                                carpetaTarget =carpetaDependencia;
-                                existe=true;
-                            }
-                            }
-                            if (!existe)
-                            {
-                                logger.info("Se crea la Carpeta: PRODUCCION DOCUMENTAL "+year);
-                                carpetaTarget= crearCarpeta(carpetaP,"PRODUCCION DOCUMENTAL "+ year,"11",CLASE_SUBSERIE,carpetaP);
-                            }
+                //Se definen las propiedades del documento a subir
+                Map <String, Object> properties = new HashMap <> ( );
+                properties.put (PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+                properties.put (PropertyIds.CONTENT_STREAM_MIME_TYPE,metadatosDocumentosDTO.getTipoDocumento() );
+                properties.put (PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
-                            logger.info("Se llenan los metadatos del documento a crear");
-                            VersioningState vs = VersioningState.MAJOR;
-                            ContentStream contentStream = new ContentStreamImpl (metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf (bytes.length), mimeType, new ByteArrayInputStream (bytes));
-                            logger.info ("### Se va a crear el documento..");
-                            Document newDocument =  carpetaTarget.getFolder().createDocument (properties, contentStream, vs);
+                buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties,"PRODUCCION DOCUMENTAL ");
 
-                            idDocumento = newDocument.getId ( );
-                            String[] parts = idDocumento.split (";");
-                            idDocumento = parts[0];
-                            //Creando el mensaje de respuesta
-                            response.setCodMensaje("0000");
-                            response.setMensaje(idDocumento);
-                            logger.info ("### Documento creado con id " + idDocumento);
-                            }
-                        }
-                   } catch (CmisContentAlreadyExistsException ccaee) {
-                logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
-                response.setCodMensaje("1111");
-                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR_DUPLICADO"));
-            } catch (CmisConstraintException cce) {
-                logger.error ("### Error tipo CmisConstraintException----------------------------- :", cce);
-                response.setCodMensaje("2222");
-                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
-            } catch (Exception e) {
-                logger.error ("### Error tipo Exception----------------------------- :", e);
-                response.setCodMensaje("2222");
-                response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
+
+            }
+        else{
+            //Obtener documento dado id
+            Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
+            //Obtener el PWC (Private Working copy)
+            Document pwc = (Document) session.getObject(doc.checkOut());
+
+            ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf (bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+
+            // Check in the pwc
+            try {
+                pwc.checkIn(true, null, contentStream, "minor version");
+                response.setMensaje("0000");
+                response.setCodMensaje("Documento versionado correctamente");
+            } catch (CmisBaseException e) {
+                e.printStackTrace();
+                logger.error("checkin failed, trying to cancel the checkout");
+                pwc.cancelCheckOut();
+                response.setMensaje("222222");
+                response.setCodMensaje("Error versionando documento: "+ e);
+
             }
         }
 
+        }
+
         return response;
+    }
+
+
+    private void buscarCrearCarpeta(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
+        String idDocumento;
+        try {
+            //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
+            new Carpeta( );
+            Carpeta folderAlfresco;
+            logger.info ("### Se elige la carpeta donde se va a guardar el documento principal..");
+            logger.info ("###------------ Se elige la sede donde se va a guardar el documento principal..");
+                folderAlfresco = obtenerCarpetaPorNombre(metadatosDocumentosDTO.getSede(), session);
+            logger.info ("###------------------- Se obtienen todas las dependencias de la sede..");
+                List<Carpeta> carpetasHijas=obtenerCarpetasHijasDadoPadre(folderAlfresco);
+
+                for (Carpeta carpetaP: carpetasHijas){
+                    logger.info("Se obtienen la dependencia referente a la sede"+ carpetaP.getFolder().getName());
+                    if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())){
+                        logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
+
+                        Calendar cal= Calendar.getInstance();
+                        int year= cal.get(Calendar.YEAR);
+
+                        logger.info("Se obtienen todas las carpetas dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
+                        List<Carpeta> carpetasDeLaDependencia=obtenerCarpetasHijasDadoPadre(carpetaP);
+
+                        boolean existe=false;
+                        Carpeta carpetaTarget = new Carpeta();
+                        for (Carpeta carpetaDependencia: carpetasDeLaDependencia) {
+                        if(carpetaDependencia.getFolder().getName().equals(carpetaCrearBuscar+ year)){
+                            logger.info("Existe la Carpeta: "+carpetaCrearBuscar+year);
+                            carpetaTarget =carpetaDependencia;
+                            existe=true;
+                        }
+                        }
+                        if (!existe)
+                        {
+                            logger.info("Se crea la Carpeta: "+carpetaCrearBuscar + year);
+                            carpetaTarget= crearCarpeta(carpetaP,carpetaCrearBuscar + year,"11",CLASE_SUBSERIE,carpetaP);//TODO ver lo del codOrg
+                        }
+
+                        logger.info("Se llenan los metadatos del documento a crear");
+                        VersioningState vs = VersioningState.MAJOR;
+                        ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf (bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+                        logger.info ("### Se va a crear el documento..");
+                        Document newDocument =  carpetaTarget.getFolder().createDocument (properties, contentStream, vs);
+
+                        idDocumento = newDocument.getId ( );
+                        String[] parts = idDocumento.split (";");
+                        idDocumento = parts[0];
+                        //Creando el mensaje de respuesta
+                        response.setCodMensaje("0000");
+                        response.setMensaje(idDocumento);
+                        logger.info ("### Documento creado con id " + idDocumento);
+                        }
+                    }
+               } catch (CmisContentAlreadyExistsException ccaee) {
+            logger.error ("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+            response.setCodMensaje("1111");
+            response.setMensaje(configuracion.getPropiedad ("ECM_ERROR_DUPLICADO"));
+        } catch (CmisConstraintException cce) {
+            logger.error ("### Error tipo CmisConstraintException----------------------------- :", cce);
+            response.setCodMensaje("2222");
+            response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
+        } catch (Exception e) {
+            logger.error ("### Error tipo Exception----------------------------- :", e);
+            response.setCodMensaje("2222");
+            response.setMensaje(configuracion.getPropiedad ("ECM_ERROR"));
+        }
     }
 
 
@@ -914,6 +1073,45 @@ public class ContentControlAlfresco implements ContentControl {
             return Boolean.FALSE;
         }
 
+    }
+
+    /**
+     * Modificar Documento del ECM
+     *
+     * @param metadatosDocumentosDTO   Objeto que contiene los datos del documento a modificar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna la respuesta de la petición
+     */
+    @Override
+    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session){
+        MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
+
+            try{
+
+//                    System.out.println("updating content stream");
+//
+//                    String mimetype = "text/plain; charset=UTF-8";
+//                    String content = "This is some updated test content for our renamed second document.";
+//                    byte[] buf = content.getBytes("UTF-8");
+//                    input = new ByteArrayInputStream(buf);
+//
+//                    ContentStream contentStream = session.getObjectFactory().createContentStream("test3.txt", buf.length, mimetype, input);
+//
+//                    doc2.setContentStream(contentStream, true);
+//
+//                    // did it work?
+//                    contentStream = doc2.getContentStream();
+//
+//                    if (contentStream != null) {
+//                        content = getContentAsString(contentStream);
+//                        System.out.println("Contents of " + doc2.getName() + " are: " + content);
+//                    } else {
+//                        System.out.println("Something went wrong.");
+//                    }
+                }catch (Exception e){
+
+            }
+        return mensajeRespuesta;
     }
 
     /**
