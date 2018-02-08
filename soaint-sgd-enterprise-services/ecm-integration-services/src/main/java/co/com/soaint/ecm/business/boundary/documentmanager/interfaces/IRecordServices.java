@@ -1,5 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
+import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -15,6 +16,6 @@ public interface IRecordServices {
 
 
     MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException;
-
+    MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 
 }

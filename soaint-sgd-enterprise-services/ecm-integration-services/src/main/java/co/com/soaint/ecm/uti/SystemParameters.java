@@ -7,6 +7,7 @@ public class SystemParameters {
     public static final String BUSINESS_PLATFORM_USER = "ecm-user";
     public static final String BUSINESS_PLATFORM_PASS = "ecm-pass";
     public static final String BUSINESS_PLATFORM_RECORD = "record-endpoint";
+    public static final String API_SEARCH_ALFRESCO = "search-endpoint";
 
     private SystemParameters() {
     }
