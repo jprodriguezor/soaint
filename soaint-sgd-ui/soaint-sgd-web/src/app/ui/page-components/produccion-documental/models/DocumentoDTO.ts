@@ -5,7 +5,8 @@ export interface AnexoDTO {
     id: string,
     soporte: string,
     tipo: ConstanteDTO,
-    descripcion: string,
+    descripcion?: string,
+    idEcm?: string,
     file?: any,
 }
 
@@ -15,9 +16,9 @@ export interface VersionDocumentoDTO {
     nombre: string,
     size: number,
     contenido?: string,
-    file?: Blob,
     idEcm?: string,
-    calculateSize(): number
+    version?: string,
+    file?: Blob
 }
 
 export class VersionDocumento implements VersionDocumentoDTO{
@@ -26,12 +27,11 @@ export class VersionDocumento implements VersionDocumentoDTO{
     nombre: string;
     size: number;
     contenido?: string;
-    file?: Blob;
     idEcm?: string;
+    version?: string;
+    file?: Blob;
 
     constructor (nombre?: string, contenido?: string, size?: number, type?: string, file?: Blob) {
-
-
       this.id = 'none';
       this.tipo = type || (file && file.type) || 'html';
       this.size = size || (file && Math.ceil(file.size / 1024)) || 0;
@@ -40,11 +40,6 @@ export class VersionDocumento implements VersionDocumentoDTO{
       this.file = file || null;
       this.idEcm = null;
 
-      if (contenido && contenido.length > 0) {this.calculateSize();}
-    }
-
-    calculateSize(): number {
-      this.size = Math.ceil(this.contenido.length / 1024);
-      return this.size;
+      if (contenido && contenido.length > 0) {this.size = Math.ceil(this.contenido.length / 1024)}
     }
 }

@@ -146,6 +146,7 @@
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
                             <p-fileUpload mode="basic"
+                                          [disabled]="true"
                                           accept="*"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
@@ -192,11 +193,11 @@
                     </div>
                     <div class="ui-g-12">
                         <label class="md-check">
-              <input type="radio" value="fisico" name="soporte" formControlName="soporte"> Físico
-            </label>
+                          <input type="radio" value="fisico" name="soporte" formControlName="soporte"> Físico
+                        </label>
                         <label class="md-check">
-              <input type="radio" value="electronico" name="soporte" formControlName="soporte"> Electrónico
-            </label>
+                          <input type="radio" value="electronico" name="soporte" formControlName="soporte"> Electrónico
+                      </label>
                     </div>
                 </div>
             </div>
@@ -225,17 +226,22 @@
 
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
-                    <div class="ui-g-12">
+                    <div class="ui-g-12"  *ngIf="form.get('soporte').value === 'electronico'">
                         <p-fileUpload
                           mode="basic"
                           accept="*"
                           chooseLabel="Adjuntar"
                           customUpload="true"
-                          [disabled]="form.get('soporte').value !== 'electronico'"
+                          [disabled]="true || form.get('soporte').value !== 'electronico'"
                           (uploadHandler)="versionDocumentoUpload($event)"
-                          (onSelect)="versionDocumentoSelected($event)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
+                    </div>
+                    <div class="ui-g-12"  *ngIf="form.get('soporte').value !== 'electronico'">
+                      <button pButton label="Agregar"
+                              [disabled]="!((form.get('soporte').value == 'electronico' && fileContent) || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
+                              (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
+                      </button>
                     </div>
                 </div>
             </div>
@@ -246,10 +252,6 @@
                         <div style="display: flex;align-items: flex-end; height: 100%; float: left">
                             <span><label> <b>Cantidad anexos: </b> {{listaAnexos.length}}</label></span>
                         </div>
-                        <button pButton label="Agregar"
-                                [disabled]="!((form.get('soporte').value == 'electronico' && fileContent) || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
-                                (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
-            </button>
                     </div>
                 </div>
             </div>

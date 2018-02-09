@@ -14,6 +14,4 @@ export const PRODUCCION_DOCUMENTAL_COMPONENTS = [
     PDGestionarProduccionComponent,
     DatosDestinatarioInternoComponent,
     DatosDestinatarioExternoComponent,
-    DatosDestinatarioInternoComponent,
-    DatosDestinatarioExternoComponent,
 ];

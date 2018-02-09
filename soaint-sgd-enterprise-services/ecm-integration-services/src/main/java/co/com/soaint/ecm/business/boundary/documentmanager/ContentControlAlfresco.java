@@ -6,11 +6,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentCon
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.uti.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
@@ -303,7 +299,7 @@ public class ContentControlAlfresco implements ContentControl {
             //Lista de carpetas hijas
             for (CmisObject contentItem : listaObjetos) {
 
-                if (contentItem instanceof Folder) {
+                if (contentItem instanceof Folder &&("CM_Serie".equals(contentItem.getDescription())||"CM_Subserie".equals(contentItem.getDescription())||"CM_Unidad_Administrativa".equals(contentItem.getDescription()))) {
                     Carpeta folder = new Carpeta ( );
                     folder.setFolder ((Folder) contentItem);
 
@@ -678,10 +674,7 @@ public class ContentControlAlfresco implements ContentControl {
                     " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
 
             ItemIterable<QueryResult> resultsPrincipalAdjunto = session.query(principalAdjuntos, false);
-
-
             ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<>();
-
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 
                 MetadatosDocumentosDTO metadatosDocumentosDTO=new MetadatosDocumentosDTO();
@@ -708,7 +701,8 @@ public class ContentControlAlfresco implements ContentControl {
 
             }
             response.setCodMensaje("0000");
-            response.setMensaje(documentosLista.toString());
+            response.setMensaje("success");
+            response.setContent(documentosLista);
 
         }
         catch (Exception e)
@@ -716,6 +710,7 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de los documentos adjuntos: "+e.getMessage());
             logger.error("Error en la obtención de los documentos adjuntos: ",e);
+            response.setContent(new ArrayList<MetadatosDocumentosDTO>());
         }
         logger.info ("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: "+response.toString());
         return response;
@@ -755,13 +750,14 @@ public class ContentControlAlfresco implements ContentControl {
             }
 
             response.setCodMensaje("0000");
-            response.setMensaje(versionesLista.toString());
+            response.setMensaje("success"); response.setContent(versionesLista);
 
         }
         catch (Exception e)
         {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: "+e.getMessage());
+            response.setContent(new ArrayList<MetadatosDocumentosDTO>());
             logger.error("Error en la obtención de las versiones del documento: ",e);
         }
         logger.info ("Se sale del metodo obtenerVersionesDocumento con respuesta: "+response.toString());

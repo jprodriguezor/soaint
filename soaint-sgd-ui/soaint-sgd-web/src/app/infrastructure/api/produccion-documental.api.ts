@@ -4,6 +4,8 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../domain/constanteDTO';
 import {RolDTO} from '../../domain/rolesDTO';
+import {SUCCESS_ADJUNTAR_DOCUMENTO} from "../../shared/lang/es";
+import {PushNotificationAction} from "../state-management/notifications-state/notifications-actions";
 
 @Injectable()
 export class ProduccionDocumentalApiService {
@@ -16,13 +18,20 @@ export class ProduccionDocumentalApiService {
   }
 
   obtenerEstadoTarea(payload: {idInstanciaProceso:string, idTareaProceso:string}) {
-    return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload.datosPD);
+    return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload);
   }
 
   subirVersionDocumento(formData:FormData, payload:{nombre:string,sede:string,dependencia:string,tipo:string,id:string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirDocumentoVersionado, formData,
       [payload.nombre,payload.sede,payload.dependencia,payload.tipo,payload.id]
+    );
+  }
+
+  subirAnexo(formData:FormData, payload:{nombre:string,sede:string,dependencia:string}) {
+    return this._api.sendFile(
+      environment.pd_gestion_documental.subirAnexo, formData,
+      [payload.sede, payload.dependencia, payload.nombre]
     );
   }
 

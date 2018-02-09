@@ -28,6 +28,9 @@ export class GestionarDevolucionesComponent implements OnInit {
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
+  @ViewChild('documentosECMList') documentosECMList;
+
+
   causalDevolucion: any;
   usuariodevuelve: any;
   sedeAdministrativa: any;
@@ -43,6 +46,7 @@ export class GestionarDevolucionesComponent implements OnInit {
   disabledDevolucionAction: Boolean = false;
 
   comunicacion: ComunicacionOficialDTO = {};
+
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
 
@@ -121,6 +125,13 @@ export class GestionarDevolucionesComponent implements OnInit {
               isPopup: false
             });
             this.popupAgregarObservaciones.loadObservations();
+
+            //para la lista de documentos
+            this.documentosECMList.setDataDocument({
+              comunicacion: this.comunicacion,
+              versionar: false,
+            });
+            this.documentosECMList.loadDocumentos();
         }
 
 

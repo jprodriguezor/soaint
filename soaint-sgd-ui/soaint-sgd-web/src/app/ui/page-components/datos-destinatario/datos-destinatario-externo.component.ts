@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Observable} from 'rxjs/Observable';
@@ -16,10 +16,11 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {ConfirmationService} from 'primeng/primeng';
+import {StatusDTO} from "../produccion-documental/models/StatusDTO";
 
 @Component({
   selector: 'datos-destinatario-externo',
@@ -41,7 +42,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   visibility: any = {};
   validations: any = {};
 
-  listaDestinatarios: DestinatarioDTO[] = [];
+  @Input() listaDestinatarios: DestinatarioDTO[];
   canInsert = false;
 
   constructor(private formBuilder: FormBuilder,
@@ -50,6 +51,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
               private confirmationService: ConfirmationService,
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
+              private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService) {
 
     this.initForm();
@@ -172,13 +174,12 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.departamentos$ = this._store.select(departamentoArrayData);
 
     this._paisSandbox.loadDispatch();
+    this.refreshView();
   }
 
   onPaisChange($event) {
     const pais = this.form.get('pais').value;
-    console.log(pais);
     if (pais) {
-      console.log({codPais: pais.codigo});
       this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
     }
   }
@@ -191,5 +192,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
   }
 }
