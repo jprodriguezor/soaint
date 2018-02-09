@@ -141,19 +141,35 @@ export class PDDatosGeneralesComponent implements OnInit {
       this.versionDocumentoUpload(newDoc);
     }
 
-    agregarAnexo(event) {
+    subirAnexo(event) {
+      const newAnexo: AnexoDTO = {
+        id : null,
+        soporte: this.form.get('soporte').value,
+        tipo: this.form.get('tipoAnexo').value
+      };
+      const formData = new FormData();
+      formData.append('documento', event.files[0].file, event.files[0].name);
+      this._produccionDocumentalApi.subirAnexo(formData,{
+        nombre:event.files[0].name,
+        sede:this.taskData.variables.nombreSede,
+        dependencia:this.taskData.variables.nombreDependencia
+      }).subscribe(
+        resp => console.log(resp)
+      );
       const anexos = this.listaAnexos;
-      if (event){
+      anexos.push(newAnexo);
+      this.listaAnexos = [...anexos];
+      this.refreshView();
+    }
 
-      }
-      const anexo: AnexoDTO = {
+    agregarAnexo() {
+      const anexos = this.listaAnexos;
+      anexos.push({
         id : (new Date()).getTime().toString(),
         soporte: this.form.get('soporte').value,
         tipo: this.form.get('tipoAnexo').value,
-        descripcion: this.form.get('descripcion').value,
-        file: this.fileContent
-      };
-      anexos.push(anexo);
+        descripcion : this.form.get('descripcion').value
+      });
       this.listaAnexos = [...anexos];
       this.refreshView();
     }

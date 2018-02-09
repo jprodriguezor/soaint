@@ -16,7 +16,7 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {ConfirmationService} from 'primeng/primeng';

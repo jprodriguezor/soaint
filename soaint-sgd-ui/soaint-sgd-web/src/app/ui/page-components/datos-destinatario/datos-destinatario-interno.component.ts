@@ -14,7 +14,7 @@ import {getArrayData as dependenciaGrupoArrayData} from '../../../infrastructure
 import {getArrayData as sedeAdministrativaArrayData} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
-import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {ConfirmationService} from 'primeng/components/common/api';
 import {StatusDTO} from "../produccion-documental/models/StatusDTO";
 
