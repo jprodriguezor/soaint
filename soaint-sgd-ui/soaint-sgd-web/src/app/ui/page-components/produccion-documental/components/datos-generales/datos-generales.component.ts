@@ -12,7 +12,6 @@ import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {VersionDocumento, VersionDocumentoDTO} from '../../models/DocumentoDTO';
 import {AnexoDTO} from '../../models/DocumentoDTO';
-import {environment} from "../../../../../../environments/environment";
 import {Sandbox as DependenciaSandbox} from "../../../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox";
 import {getActiveTask} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors";
 import {Subscription} from "rxjs/Subscription";
@@ -30,7 +29,6 @@ export class PDDatosGeneralesComponent implements OnInit {
     validations: any = {};
 
     taskData: TareaDTO;
-    @Input() statusPD: StatusDTO;
 
     funcionarioLog: FuncionarioDTO;
 
@@ -71,29 +69,38 @@ export class PDDatosGeneralesComponent implements OnInit {
       this.initForm();
     }
 
-  ngOnInit(): void {
-    this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
-      this.funcionarioLog = funcionario;
-    });
-
-    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
-      this.taskData = activeTask;
-      this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-        this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === activeTask.variables.codDependencia).nombre;
-        this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === activeTask.variables.codigoSede).nomSede;
+    ngOnInit(): void {
+      this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+        this.funcionarioLog = funcionario;
       });
-    });
 
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
-    this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
-    this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
-    this.listenForErrors();
-  }
+      this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
+        this.taskData = activeTask;
+        this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
+          this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === activeTask.variables.codDependencia).nombre;
+          this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === activeTask.variables.codigoSede).nomSede;
+        });
+      });
 
+      this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
+      this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
+      this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
+      this.listenForErrors();
+    }
+
+    updateStatus(currentStatus: StatusDTO) {
+      if (currentStatus.datosGenerales.tipoComunicacion) {
+        this.form.get('tipoComunicacion').setValue(currentStatus.datosGenerales.tipoComunicacion);
+        this.pdMessageService.sendMessage(currentStatus.datosGenerales.tipoComunicacion);
+      }
+      this.listaVersionesDocumento = [...currentStatus.datosGenerales.listaVersionesDocumento];
+      this.listaAnexos = [...currentStatus.datosGenerales.listaAnexos];
+      this.refreshView();
+    }
 
     initForm() {
         this.form = this.formBuilder.group({
-          'tipoComunicacion': [this.statusPD && this.statusPD.datosGenerales && this.statusPD.datosGenerales.tipoComunicacion || null, Validators.required],
+          'tipoComunicacion': [null, Validators.required],
           'tipoPlantilla': [null, Validators.required],
           'elaborarDocumento': [null],
           'soporte': 'electronico',
@@ -235,6 +242,11 @@ export class PDDatosGeneralesComponent implements OnInit {
 
     ngOnDestroy() {
       this.activeTaskUnsubscriber.unsubscribe();
+    }
+
+    isValid(): boolean {
+      return this.listaVersionesDocumento.length > 0
+      && this.listaAnexos.length > 0;
     }
 }
 

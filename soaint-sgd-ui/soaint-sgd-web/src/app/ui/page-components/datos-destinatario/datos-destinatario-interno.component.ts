@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {State} from '../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
@@ -16,6 +16,7 @@ import {Sandbox as DependenciaGrupoSandbox} from '../../../infrastructure/state-
 import {VALIDATION_MESSAGES} from '../../../shared/validation-messages';
 import {DestinatarioDTO} from '../produccion-documental/models/destinatarioDTO';
 import {ConfirmationService} from 'primeng/components/common/api';
+import {StatusDTO} from "../produccion-documental/models/StatusDTO";
 
 @Component({
     selector: 'datos-destinatario-interno',
@@ -29,11 +30,11 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     tiposDestinatario$: Observable<ConstanteDTO[]>;
     funcionarios$: Observable<FuncionarioDTO[]>;
 
-    @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
+    // @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
+    @Input() listaDestinatarios: DestinatarioDTO[];
 
     validations: any = {};
 
-    listaDestinatarios: DestinatarioDTO[] = [];
     canInsert = false;
 
 
@@ -42,6 +43,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
                 private confirmationService: ConfirmationService,
                 private _funcionarioSandbox: FuncionariosSandbox,
                 private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+                private _changeDetectorRef: ChangeDetectorRef,
                 private _produccionDocumentalApi: ProduccionDocumentalApiService) {
 
         this.funcionarios$ = this._store.select(getFuncionarioArrayData);
@@ -62,6 +64,15 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
         })
         .subscribe(() => { this.canInsert = true });
 
+    }
+
+    initForm() {
+      this.form = this.formBuilder.group({
+        'tipoDestinatario': [null, Validators.required],
+        'sede': [null, Validators.required],
+        'dependencia': [null, Validators.required],
+        'funcionario': [null, Validators.required],
+      });
     }
 
     checkDestinatarioInList(newone: DestinatarioDTO, lista: DestinatarioDTO[]) {
@@ -117,16 +128,6 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
             destinatarios.splice(index, 1);
             this.listaDestinatarios = [...destinatarios];
         }
-    }
-
-
-    initForm() {
-        this.form = this.formBuilder.group({
-            'tipoDestinatario': [null, Validators.required],
-            'sede': [null, Validators.required],
-            'dependencia': [null, Validators.required],
-            'funcionario': [null, Validators.required],
-        });
     }
 
     listenForErrors() {
@@ -191,5 +192,10 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
             }));
           }
         });
+        this.refreshView();
+    }
+
+    refreshView() {
+      this._changeDetectorRef.detectChanges();
     }
 }

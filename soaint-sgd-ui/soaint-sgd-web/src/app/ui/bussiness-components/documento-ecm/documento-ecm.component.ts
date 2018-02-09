@@ -52,7 +52,7 @@ export class DocumentoEcmComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.uploadUrl = environment.pd_adjuntar_documento_endpoint;
+    this.uploadUrl = environment.pd_gestion_documental.subirAnexo;
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
       this.codSede = activeTask.variables.codigoSede;
