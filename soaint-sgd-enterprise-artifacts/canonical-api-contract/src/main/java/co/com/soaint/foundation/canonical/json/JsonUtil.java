@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * @author Alien GR
  */
-public class JSONFactory {
+public class JsonUtil {
 
     public static <T> T from(String json, Class<T> clazz) {
         try {
