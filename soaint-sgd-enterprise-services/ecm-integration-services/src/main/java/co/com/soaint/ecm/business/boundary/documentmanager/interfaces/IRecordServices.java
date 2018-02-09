@@ -16,6 +16,7 @@ public interface IRecordServices {
 
 
     MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException;
+
     MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 
 }
