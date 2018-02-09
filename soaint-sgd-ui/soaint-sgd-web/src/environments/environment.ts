@@ -97,8 +97,8 @@ export const environment = {
 
   // Produccion Documental
   pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_adjuntar_documento_endpoint: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
   pd_gestion_documental : {
+    subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
     subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`
   }
 
