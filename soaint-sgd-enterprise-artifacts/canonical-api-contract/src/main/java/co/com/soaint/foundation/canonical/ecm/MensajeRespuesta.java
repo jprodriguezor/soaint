@@ -26,12 +26,20 @@ public class MensajeRespuesta {
 
     private String codMensaje;
     private String mensaje;
+    private Object content;
 
     public MensajeRespuesta() {
-
     }
+
     public MensajeRespuesta(String mensaje, String codMensaje) {
-        this.setMensaje (mensaje);
-        this.setCodMensaje (codMensaje);
+       this.codMensaje = codMensaje;
+       this.mensaje = mensaje;
+       this.content = null;
+    }
+
+    public MensajeRespuesta(String codMensaje, String mensaje, Object content) {
+        this.codMensaje = codMensaje;
+        this.mensaje = mensaje;
+        this.content = content;
     }
 }
