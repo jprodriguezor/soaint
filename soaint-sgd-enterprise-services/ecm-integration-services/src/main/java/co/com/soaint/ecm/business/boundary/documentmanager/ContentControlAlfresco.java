@@ -272,7 +272,7 @@ public class ContentControlAlfresco implements ContentControl {
         Carpeta folder = new Carpeta ( );
         try {
 
-            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
+            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'"+ "and cmis:objectTypeId <> 'rma:recordCategory'";
             ItemIterable <QueryResult> results = session.query (queryString, false);
             for (QueryResult qResult : results) {
                 String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
