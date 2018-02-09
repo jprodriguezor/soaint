@@ -43,6 +43,8 @@ public class ECMClient {
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
 
+        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
+
         return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  +
                 (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
                 .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
@@ -70,6 +72,13 @@ public class ECMClient {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/descargarDocumentoECM/")
                 .queryParam("identificadorDoc", idDocumento)
+                .request()
+                .get();
+    }
+
+    public Response findDocumentosAsociados(String idDocumento) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento)
                 .request()
                 .get();
     }

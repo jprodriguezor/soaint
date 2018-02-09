@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../domain/constanteDTO';
@@ -9,6 +9,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
+import {StatusDTO} from "../../models/StatusDTO";
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -17,8 +18,8 @@ import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 
 export class PDGestionarProduccionComponent implements OnInit {
 
-  form: FormGroup;
-  validations: any = {};
+    form: FormGroup;
+    validations: any = {};
 
   dependenciaSelected: ConstanteDTO;
 

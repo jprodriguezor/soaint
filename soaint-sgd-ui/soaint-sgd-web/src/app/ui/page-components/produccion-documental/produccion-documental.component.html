@@ -1,9 +1,14 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
     <div customActions>
+      <button pButton type="button" label="Continuar"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              [disabled]="!datosGenerales.isValid()"
+              (click)="completarTarea()"
+      ></button>
       <button pButton type="button" label="Aprobar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              [disabled]="aprobar != true"
+              [disabled]="!aprobar"
               (click)="completarTarea()"
       ></button>
       <button pButton type="button" label="Guardar"
@@ -12,19 +17,15 @@
       ></button>
     </div>
     <div taskBody>
-      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+      <p-tabView [activeIndex]="tabIndex" (onChange)="tabIndex = $event.index">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
           <pd-datos-generales #datosGenerales></pd-datos-generales>
           <br/>
         </p-tabPanel>
-        <p-tabPanel header="Adjuntar Documentos" leftIcon="ui-icon-assignment">
-          <documento-ecm #documentoEcm></documento-ecm>
-          <!--pd-adjuntar-documentos #adjuntarDocumentos></pd-adjuntar-documentos-->
-        </p-tabPanel>
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!tipoComunicacionSelected">
           <pd-datos-contacto #datosContacto [taskData]="task"></pd-datos-contacto>
         </p-tabPanel>
-        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment" [disabled]="!seccionProyector">
+        <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
           <pd-gestionar-produccion #gestionarProduccion></pd-gestionar-produccion>
         </p-tabPanel>
       </p-tabView>

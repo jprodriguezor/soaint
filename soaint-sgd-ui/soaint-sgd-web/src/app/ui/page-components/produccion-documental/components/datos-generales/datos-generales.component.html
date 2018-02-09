@@ -231,7 +231,7 @@
                           accept="*"
                           chooseLabel="Adjuntar"
                           customUpload="true"
-                          [disabled]="form.get('soporte').value !== 'electronico'"
+                          [disabled]="true || form.get('soporte').value !== 'electronico'"
                           (uploadHandler)="versionDocumentoUpload($event)"
                           (onSelect)="versionDocumentoSelected($event)"
                           (onError)="onErrorUpload($event)"
