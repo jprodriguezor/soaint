@@ -46,6 +46,10 @@ import { UnidadesDocumentalesComponent } from './ui/page-components/unidades-doc
 import { GestionarDevolucionesComponent } from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
 import { CorregirRadicacionComponent } from './ui/page-components/corregir-radicacion/corregir-radicacion.component';
 import { DocumentoEcmComponent } from './ui/bussiness-components/documento-ecm/documento-ecm.component';
+import { DatosRemitenteComponent } from './ui/page-components/radicacion-salida/components/datos-remitente/datos-remitente.component';
+import { DatosDestinatarioComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario.component';
+import { DatosDestinatarioExternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-externo/datos-destinatario-externo.component';
+import { DatosDestinatarioInternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-interno/datos-destinatario-interno.component';
 
 
 @NgModule({
@@ -135,7 +139,11 @@ import { DocumentoEcmComponent } from './ui/bussiness-components/documento-ecm/d
     UnidadesDocumentalesComponent,
     GestionarDevolucionesComponent,
     CorregirRadicacionComponent,
-    DocumentoEcmComponent
+    DocumentoEcmComponent,
+    DatosRemitenteComponent,
+    DatosDestinatarioComponent,
+    DatosDestinatarioExternoComponent,
+    DatosDestinatarioInternoComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

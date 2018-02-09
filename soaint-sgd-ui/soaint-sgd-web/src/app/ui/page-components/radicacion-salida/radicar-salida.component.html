@@ -12,8 +12,8 @@
       <!--(click)="testEditRadicado()"></button>-->
 
       <button pButton type="button" label="Radicar" style="width: auto; margin-bottom: 10px"
-              [disabled]="!datosGenerales.form.valid || !datosRemitente.form.valid || !datosDestinatario.form.valid"
-              (click)="radicarComunicacion()"></button>
+              [disabled]="!datosGenerales.form.valid"
+              (click)="radicarSalida()"></button>
 
       <button pButton type="button" label="Ver etiqueta" style="width: auto; margin-bottom: 10px" *ngIf="radicacion"
               (click)="showTicketRadicado()"></button>
@@ -22,34 +22,21 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales #datosGenerales [editable]="editable"
-                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
-                               (onChangeTipoComunicacion)="setTipoComunicacion($event)"></app-datos-generales>
+          <app-datos-generales #datosGenerales></app-datos-generales>
         </p-tabPanel>
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
-          <!--<p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" [disabled]="!datosGenerales.form.valid" >-->
-          <app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>
+          <rs-datos-remitente #datosRemitente></rs-datos-remitente>
         </p-tabPanel>
 
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
-          <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">-->
-          <datos-destinatario-externo>
-          </datos-destinatario-externo>
-          <datos-destinatario-interno>
-          </datos-destinatario-interno>
-          <app-datos-destinatario #datosDestinatario [editable]="editable"
-                                  [tipoDestinatarioDefaultInput]="tipoDestinatarioDefaultSelection$ | async"
-                                  [tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"
-                                  [sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"
-          ></app-datos-destinatario>
+          <rs-datos-destinatario #datosDestinatario [taskData]="task"></rs-datos-destinatario>
         </p-tabPanel>
       </p-tabView>
 
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
         <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
-                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
-                [disabled]="!formsTabOrder[tabIndex].form.valid">
+                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2">
         </button>
         <button pButton label="Anterior" style="width: 150px; float: left"
                 (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
@@ -58,9 +45,7 @@
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
                 (onHide)="hideTicketRadicado()">
-        <app-ticket-radicado id="ticket" #ticketRadicado
-
-        ></app-ticket-radicado>
+        <app-ticket-radicado id="ticket" #ticketRadicado></app-ticket-radicado>
 
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
