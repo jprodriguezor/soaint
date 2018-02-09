@@ -6,11 +6,15 @@
               [disabled]="aprobar != true"
               (click)="completarTarea()"
       ></button>
+      <button pButton type="button" label="Guardar"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="guardarEstadoTarea()"
+      ></button>
     </div>
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <pd-datos-generales #datosGenerales [taskData]="task"></pd-datos-generales>
+          <pd-datos-generales #datosGenerales></pd-datos-generales>
           <br/>
         </p-tabPanel>
         <p-tabPanel header="Adjuntar Documentos" leftIcon="ui-icon-assignment">

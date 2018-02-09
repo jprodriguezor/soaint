@@ -84,7 +84,6 @@ public class ContentManager {
 
         logger.info ("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
         Carpeta carpeta;
         try {
             Conexion conexion;
@@ -121,8 +120,6 @@ public class ContentManager {
 
         logger.info ("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -153,7 +150,6 @@ public class ContentManager {
 
         logger.info ("### Subiendo versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -182,8 +178,6 @@ public class ContentManager {
 
         logger.info ("### Obtener documento principal y adjunto del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        String idDocumento = "";
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -213,7 +207,6 @@ public class ContentManager {
 
         logger.info ("### Obtener versiones documento del content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );
@@ -242,7 +235,6 @@ public class ContentManager {
 
         logger.info ("### Modificando metadatos del documento..");
         MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
         try {
             Conexion conexion;
             new Conexion ( );

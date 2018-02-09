@@ -15,7 +15,8 @@ export interface VersionDocumentoDTO {
     nombre: string,
     size: number,
     contenido?: string,
-    file?: File,
+    file?: Blob,
+    idEcm?: string,
     calculateSize(): number
 }
 
@@ -25,19 +26,21 @@ export class VersionDocumento implements VersionDocumentoDTO{
     nombre: string;
     size: number;
     contenido?: string;
-    file?: File;
+    file?: Blob;
+    idEcm?: string;
 
-    constructor (id?: string, nombre?: string, contenido?: string, size?: number, type?: string, file?: File) {
-       this.id = id || (new Date()).getTime().toString();
-       this.tipo = type || (file && file.type) || 'HTML';
-       this.size = size || (file && Math.ceil(file.size / 1024)) || 0;
-       this.nombre = nombre || (file && file.name) || '';
-       this.contenido = contenido || '';
-       this.file = file || null;
+    constructor (nombre?: string, contenido?: string, size?: number, type?: string, file?: Blob) {
 
-       if (contenido && contenido.length > 0) {
-          this.calculateSize();
-       }
+
+      this.id = 'none';
+      this.tipo = type || (file && file.type) || 'html';
+      this.size = size || (file && Math.ceil(file.size / 1024)) || 0;
+      this.nombre = nombre || (file && (<File>file).name) || '';
+      this.contenido = contenido || '';
+      this.file = file || null;
+      this.idEcm = null;
+
+      if (contenido && contenido.length > 0) {this.calculateSize();}
     }
 
     calculateSize(): number {

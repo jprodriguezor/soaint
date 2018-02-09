@@ -1,18 +1,23 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
+import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresco;
+import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
+import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.uti.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.ItemIterable;
+import org.apache.chemistry.opencmis.client.api.QueryResult;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -63,6 +68,8 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosRecord = new HashMap<>();
     private Map<String, String> propiedades = new HashMap<>();
     private Map<String, String> codigosSubseries = new HashMap<>();
+    @Autowired
+    ContentControlAlfresco conexionCMIS;
 
 
     @Override
@@ -70,7 +77,8 @@ public class RecordServices implements IRecordServices {
         Map<String, String> idNodosPadre = new HashMap<>();
         codigosRecord = new HashMap<>();
         for (EstructuraTrdDTO estructura : structure) {
-
+            Utilities utils = new Utilities ( );
+            utils.ordenarListaOrganigrama (estructura.getOrganigramaItemList ( ));
             List<OrganigramaDTO> organigramaList = estructura.getOrganigramaItemList();
             List<ContenidoDependenciaTrdDTO> trdList = estructura.getContenidoDependenciaList();
             generarOrganigrama(organigramaList, idNodosPadre);
@@ -83,6 +91,60 @@ public class RecordServices implements IRecordServices {
                 .codMensaje("OKOKOK")
                 .build();
     }
+
+    @Override
+    public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
+        log.info("iniciar - Crear carpeta record: {}", entrada);
+        Map<String, String> query = new HashMap<>();
+        JSONObject parametro = new JSONObject();
+        query.put("query","select * from cmis:folder where cmis:name like '100100.10000.345%'");
+        query.put("language","cmis");
+        parametro.put("query", query);
+
+       String codigoNodo = buscarRuta(parametro);
+
+        return MensajeRespuesta.newInstance()
+                .codMensaje("OKOKOK")
+                .build();
+    }
+
+    public String buscarRuta(JSONObject entrada) throws SystemException {
+        log.info("iniciar - buscar ruta: {}", entrada);
+        try {
+
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.API_SEARCH_ALFRESCO));
+            Response response = wt.path("")
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header("Content-Type", "application/json")
+                    .post(Entity.json(entrada.toString()));
+
+            if (response.getStatus() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                        .buildBusinessException();
+            } else {
+                return obtenerIdRuta(new JSONObject(response.readEntity(String.class)));
+            }
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - buscar ruta ");
+        }
+
+    }
+
 
     public String crearRootCategory(JSONObject entrada) throws SystemException {
         log.info("iniciar - Crear categoria padre: {}", entrada);
@@ -122,7 +184,7 @@ public class RecordServices implements IRecordServices {
     }
 
     public String crearNodo(JSONObject entrada, String idPadre) throws SystemException {
-        log.info("iniciar - Crear categoria hija: {}", idPadre);
+        log.info("iniciar - Crear categoria hija: {}", entrada.toString());
         try {
 
             WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
@@ -180,7 +242,7 @@ public class RecordServices implements IRecordServices {
             entrada.put(tipoNodo, recordCategoria);
             String idOrganAdmin = String.valueOf(organigrama.getIdeOrgaAdmin());
             if ("P".equalsIgnoreCase(organigrama.getTipo()) && !idNodosPadre.containsKey(idOrganAdmin)) {
-                propiedades.put("rmc:xFondo", organigrama.getNomOrg());
+                propiedades.put("rmc:xFondo", organigrama.getCodOrg());
                 entrada.put(tagPropiedades, propiedades);
                 idPadre = crearRootCategory(entrada);
                 codigosRecord.put(codigoOrg, idPadre);
@@ -189,7 +251,7 @@ public class RecordServices implements IRecordServices {
 
             } else {
                 if (!codigosRecord.containsKey(codigoOrg)) {
-                    propiedades.put("rmc:xSeccion", organigrama.getNomOrg());
+                    propiedades.put("rmc:xSeccion", organigrama.getCodOrg());
                     entrada.put(tagPropiedades, propiedades);
                     idSubCategoria = crearNodo(entrada, codigosRecord.get(codigoOrgAUX));
                     codigoOrgAUX = organigrama.getCodOrg();
@@ -208,7 +270,7 @@ public class RecordServices implements IRecordServices {
         String codigoSerieAUX = "";
         for (ContenidoDependenciaTrdDTO trd : trdList) {
             JSONObject serie = new JSONObject();
-            serie.put("name", trd.getNomSerie());
+
 
             if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) && !codigoSeries.containsKey(trd.getIdOrgOfc())) {
                 crearSerie(trd, serie);
@@ -228,8 +290,10 @@ public class RecordServices implements IRecordServices {
 
     private String crearSerie(ContenidoDependenciaTrdDTO trd, JSONObject serie) throws SystemException {
 
+        String nombreSerie =  trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat("_").concat(trd.getNomSerie());
+        serie.put("name", nombreSerie);
         serie.put(tipoNodo, recordCategoria);
-        propiedades.put("rmc:xSerie", trd.getNomSerie());
+        propiedades.put("rmc:xSerie",nombreSerie);
         propiedades.put("rmc:xCodSerie", trd.getCodSerie());
         serie.put(tagPropiedades, propiedades);
         return crearNodo(serie, idSubCategoria);
@@ -240,10 +304,11 @@ public class RecordServices implements IRecordServices {
 
         if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
 
+            String nombreSubserie =  trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat(".").concat(trd.getCodSubSerie()).concat("_").concat(trd.getNomSubSerie());
             JSONObject subSerie = new JSONObject();
-            subSerie.put("name", trd.getNomSubSerie());
+            subSerie.put("name", nombreSubserie);
             subSerie.put("nodeType", recordCategoria);
-            propiedades.put("rmc:xSubserie", trd.getNomSubSerie());
+            propiedades.put("rmc:xSubserie",nombreSubserie);
             propiedades.put("rmc:xCodSubSerie", trd.getCodSubSerie());
             subSerie.put(tagPropiedades, propiedades);
             crearNodo(subSerie, codCategory);
@@ -251,6 +316,20 @@ public class RecordServices implements IRecordServices {
         }
 
 
+    }
+
+    private String obtenerIdRuta(JSONObject respuestaJson) {
+        String codigoId = "";
+        JSONArray listaJson = respuestaJson.getJSONArray("list");
+        Iterator keys = respuestaJson.keys();
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            if ("entry".equalsIgnoreCase(key.toString())) {
+                JSONObject valor = respuestaJson.getJSONObject((String) key);
+                codigoId = valor.getString("id");
+            }
+        }
+        return codigoId;
     }
 
 }
