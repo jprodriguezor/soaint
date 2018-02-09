@@ -74,4 +74,15 @@ public class DigitalizarDocumentoGatewayApi {
 //        response.ok(responseObject).header ("Content-Type", "application/pdf");
         return Response.status(Response.Status.OK).entity(responseObject).build();
     }
+
+    @GET
+    @Path("/obtenerdocumentosasociados/{idDocumento}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
+        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
+        Response response = client.findDocumentosAsociados(idDocumento);
+        InputStream responseObject = response.readEntity(InputStream.class);
+//        response.ok(responseObject).header ("Content-Type", "application/pdf");
+        return Response.status(Response.Status.OK).entity(responseObject).build();
+    }
 }
