@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
 import {StatusDTO} from "../../models/StatusDTO";
-import {DestinatarioDTO} from "../../models/destinatarioDTO";
+import {DestinatarioDTO} from "../../../../../domain/destinatarioDTO";
 
 
 @Component({
