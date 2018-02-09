@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/mensajeRespuesta/1.0.0")
-public class MessageContentRespuesta<T extends Serializable> extends MensajeRespuesta {
+public class MessageContentRespuesta<T> extends MensajeRespuesta {
 
     private T content;
 
