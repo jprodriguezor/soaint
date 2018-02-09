@@ -46,12 +46,10 @@ export class PDDatosGeneralesComponent implements OnInit {
       newVersionIndex : -1
     };
     listaVersionesDocumento: VersionDocumentoDTO[] = [];
+    listaAnexos: AnexoDTO[] = [];
 
     fechaCreacion = new Date();
-
     tipoPlantillaSelected: ConstanteDTO;
-
-    listaAnexos: AnexoDTO[] = [];
     fileContent: {id: number; file: Blob };
 
     nombreSede:string;
@@ -119,13 +117,20 @@ export class PDDatosGeneralesComponent implements OnInit {
         tipo:newDoc.tipo,
         id:newDoc.id
       };
-      this._produccionDocumentalApi.subirVersionDocumento(formData,payload).subscribe(response => {
-        const versiones = this.listaVersionesDocumento;
-        newDoc.idEcm = response.message;
-        this.producirDocumento.newVersionIndex = versiones.push(newDoc) - 1;
-        this.listaVersionesDocumento = [...versiones];
-        this.refreshView()
-      });
+      this._produccionDocumentalApi.subirVersionDocumento(formData,payload).subscribe(
+        resp => {
+                if (resp.codMensaje==='0000') {
+                  const versiones = this.listaVersionesDocumento;
+                  newDoc.idEcm = resp.content.idDocumento;
+                  newDoc.version = resp.content.versionLabel;
+                  this.producirDocumento.newVersionIndex = versiones.push(newDoc) - 1;
+                  this.listaVersionesDocumento = [...versiones];
+                  this.refreshView()
+                } else {
+                  console.log(resp.mensaje);
+                }
+            },
+        error => console.log(error));
     }
 
     versionDocumentoSelected(event) {
@@ -134,6 +139,23 @@ export class PDDatosGeneralesComponent implements OnInit {
       }
       const newDoc = new VersionDocumento(event.files[0].name,null,event.files[0].size,'pdf',event.files[0]);
       this.versionDocumentoUpload(newDoc);
+    }
+
+    agregarAnexo(event) {
+      const anexos = this.listaAnexos;
+      if (event){
+
+      }
+      const anexo: AnexoDTO = {
+        id : (new Date()).getTime().toString(),
+        soporte: this.form.get('soporte').value,
+        tipo: this.form.get('tipoAnexo').value,
+        descripcion: this.form.get('descripcion').value,
+        file: this.fileContent
+      };
+      anexos.push(anexo);
+      this.listaAnexos = [...anexos];
+      this.refreshView();
     }
 
     generarVersion() {
@@ -169,20 +191,6 @@ export class PDDatosGeneralesComponent implements OnInit {
     hideVersionesDocumentoDialog() {
         this.producirDocumento.currentVersionConfirmed = false;
         this.producirDocumento.currentVersionVisible = false;
-    }
-
-    agregarAnexo() {
-        const anexos = this.listaAnexos;
-        const anexo: AnexoDTO = {
-          id : (new Date()).getTime().toString(),
-          soporte: this.form.get('soporte').value,
-          tipo: this.form.get('tipoAnexo').value,
-          descripcion: this.form.get('descripcion').value,
-          file: this.fileContent
-        };
-        anexos.push(anexo);
-        this.listaAnexos = [...anexos];
-        this.refreshView();
     }
 
     removeFromList(i, listname: string) {
