@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/mensajeRespuesta/1.0.0")
-public class MensajeRespuesta<T> {
+public class MensajeRespuesta {
 
     private String codMensaje;
     private String mensaje;
-    private T content;
+    private Object content;
 
     public MensajeRespuesta(String mensaje, String codMensaje) {
         this.setMensaje (mensaje);
