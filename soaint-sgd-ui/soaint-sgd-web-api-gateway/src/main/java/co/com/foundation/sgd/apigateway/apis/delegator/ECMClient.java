@@ -78,9 +78,7 @@ public class ECMClient {
 
     public Response findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento)
-                .request()
-                .get();
+        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
     }
 
 }

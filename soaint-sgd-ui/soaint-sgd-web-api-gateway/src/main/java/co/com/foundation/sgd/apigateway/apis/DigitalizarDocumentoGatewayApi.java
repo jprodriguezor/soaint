@@ -3,11 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
-import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
-import co.com.foundation.sgd.utils.JSONUtil;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
-import co.com.soaint.foundation.canonical.ui.DigitalizarDocumentoDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -15,16 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.json.Json;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Path("/digitalizar-documento-gateway-api")
 @Log4j2
@@ -85,28 +78,6 @@ public class DigitalizarDocumentoGatewayApi {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
-        Response response = client.findDocumentosAsociados(idDocumento);
-
-        if (response.getStatus() == HttpStatus.OK.value()){
-            MensajeRespuesta responseObject = response.readEntity(MensajeRespuesta.class);
-
-            if("0000".equals(responseObject.getCodMensaje())){
-
-                String []result = responseObject.getMensaje().
-                        replace("MetadatosDocumentosDTO","").replace("(","{").replace(")","}").replace("=",":").split(",");
-
-
-                List<Object> data = Arrays.asList(result).stream().
-                        map(s -> JSONUtil.fromJson(s,MetadatosDocumentosDTO.class)).collect(Collectors.toList());
-
-
-            }
-
-        }
-
-        return null;
-
-//        response.ok(responseObject).header ("Content-Type", "application/pdf");
-        //return Response.status(Response.Status.OK).entity(responseObject).build();
+       return client.findDocumentosAsociados(idDocumento);
     }
 }
