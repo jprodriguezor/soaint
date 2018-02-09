@@ -154,12 +154,14 @@ export class PDDatosGeneralesComponent implements OnInit {
         sede:this.taskData.variables.nombreSede,
         dependencia:this.taskData.variables.nombreDependencia
       }).subscribe(
-        resp => console.log(resp)
+        resp => {
+          const anexos = this.listaAnexos;
+          anexos.push(newAnexo);
+          this.listaAnexos = [...anexos];
+          this.refreshView();
+        }
       );
-      const anexos = this.listaAnexos;
-      anexos.push(newAnexo);
-      this.listaAnexos = [...anexos];
-      this.refreshView();
+
     }
 
     agregarAnexo() {

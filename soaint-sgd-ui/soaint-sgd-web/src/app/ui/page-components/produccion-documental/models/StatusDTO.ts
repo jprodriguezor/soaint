@@ -1,7 +1,7 @@
 import {ConstanteDTO} from "../../../../domain/constanteDTO";
 import {AnexoDTO, VersionDocumentoDTO} from "./DocumentoDTO";
 import {ProyectorDTO} from "../../../../domain/ProyectorDTO";
-import {DestinatarioDTO} from "./destinatarioDTO";
+import {DestinatarioDTO} from "../../../../domain/destinatarioDTO";
 
 export interface StatusDTO {
   aprobado:number,
