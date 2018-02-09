@@ -303,7 +303,7 @@ public class ContentControlAlfresco implements ContentControl {
             //Lista de carpetas hijas
             for (CmisObject contentItem : listaObjetos) {
 
-                if (contentItem instanceof Folder) {
+                if (contentItem instanceof Folder &&("CM_Serie".equals(contentItem.getDescription())||"CM_Subserie".equals(contentItem.getDescription())||"CM_Unidad_Administrativa".equals(contentItem.getDescription()))) {
                     Carpeta folder = new Carpeta ( );
                     folder.setFolder ((Folder) contentItem);
 
