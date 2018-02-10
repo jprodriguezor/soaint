@@ -170,7 +170,7 @@
                     <p-column field="version" header="Version" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Ver" class="ui-button ui-button-info" (click)="mostrarVersion(i)"></button>
+                            <button type="button" pButton label="Ver" class="ui-button ui-button-info" (click)="mostrarVersionDocumento(i)"></button>
                         </ng-template>
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
