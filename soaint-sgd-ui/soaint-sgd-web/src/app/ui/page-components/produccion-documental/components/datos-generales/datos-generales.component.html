@@ -141,7 +141,7 @@
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
                         <div class="ui-sm-12 ui-g-4 ui-lg-6">
-                            <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length !== 0" style="width:auto;" type="button"
+                            <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length > 0" style="width:auto;" type="button"
                                   (click)="mostrarVersionDocumento(-1);"></button>
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
@@ -151,7 +151,7 @@
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
-                                          (uploadHandler)="attachDocument($event)"
+                                          (onSelect)="attachDocument($event)"
                                           (onError)="onErrorUpload($event)"
                             ></p-fileUpload>
                         </div>
@@ -170,12 +170,17 @@
                     <p-column field="version" header="Version" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Ver" class="ui-button ui-button-info" (click)="mostrarVersionDocumento(i)"></button>
+                            <button type="button" pButton label="Ver" class="ui-button ui-button-info"
+                                    [disabled]="i !== listaVersionesDocumento.length -1"
+                                    (click)="mostrarVersionDocumento(i)"></button>
                         </ng-template>
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger" (click)="eliminarVersion(i);"></button>
+                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger"
+                                    [disabled]="i !== listaVersionesDocumento.length -1"
+                                    (click)="eliminarVersionDocumento(i);">
+                            </button>
                         </ng-template>
                     </p-column>
                 </p-dataTable>
@@ -228,11 +233,12 @@
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value === 'electronico'">
                         <p-fileUpload
                           mode="basic"
-                          accept="*"
+                          auto="true"
+                          accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
                           [disabled]="true || form.get('soporte').value !== 'electronico'"
-                          (uploadHandler)="versionDocumentoUpload($event)"
+                          (onSelect)="agregarAnexo($event)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
                     </div>
@@ -261,14 +267,17 @@
                     <p-column field="tipo.nombre" header="Tipo de anexo" [sortable]="true"></p-column>
                     <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
-                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton class="ui-button ui-button-info" label="Ver" (click)="visualizarDocumentos(i)">
+                        <ng-template let-item="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton class="ui-button ui-button-info" label="Ver"
+                                    [disabled]="'electronico' === item.soporte"
+                                    (click)="visualizarDocumentos(i)">
                             </button>
                         </ng-template>
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
-                        <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar" (click)="removeFromList(i, 'listaAnexos')">
+                        <ng-template let-item="rowData" let-i="rowIndex" pTemplate="item">
+                            <button type="button" pButton class="ui-button ui-button-danger" label="Eliminar"
+                                    (click)="eliminarAnexo(i)">
                             </button>
                         </ng-template>
                     </p-column>

@@ -106,74 +106,142 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
+
+
     attachDocument(event) {
-      if (event.files.length === 0) {
-        return false;
-      }
-      this.pd_currentVersion.file = event.files[0];
-      this.pd_currentVersion.nombre = event.files[0].name;
-      this.pd_currentVersion.size = event.files[0].size;
-      this.pd_currentVersion.tipo = 'pdf';
-      this.uploadVersionDocumento();
+      if (event.files.length === 0) { return false; }
+      const nv = {id:'none',nombre:event.files[0].name,tipo:'pdf',version:'',contenido:'',file:event.files[0],size:event.files[0].size};
+      this.uploadVersionDocumento(nv);
     }
 
-
-
     mostrarVersionDocumento(index:number) {
-      this.pd_currentVersion = this.listaVersionesDocumento[index];
+      if (index === - 1) {
+        this.pd_currentVersionEditable = true;
+        this.pd_editarPlantillaVisible = true;
+        return true;
+      }
+      this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
       this._produccionDocumentalApi.obtenerVersionDocumento({id:this.pd_currentVersion.id,version:this.pd_currentVersion.version}).subscribe(
         res => {
-          console.log(res);
+          if (200 === res.status && 'pdf' === this.pd_currentVersion.tipo) {
+            window.open(res.url);
+          } else if ('html' === this.pd_currentVersion.tipo && (200 === res.status || 204 === res.status)) {
+            this.pd_currentVersion.contenido = res._body;
+            if (index === this.listaVersionesDocumento.length - 1) {
+              this.pd_currentVersionEditable = true;
+            }
+            this.pd_editarPlantillaVisible = true;
+          } else {
+            this._store.dispatch(new PushNotificationAction({severity: 'warn',summary: res.statusText}));
+          }
+        },
+        error => this._store.dispatch(new PushNotificationAction({severity: 'warn',summary: error})),
+        () => {
+          this.refreshView();
         }
       );
+    }
 
-      // if (index === this.listaVersionesDocumento.length - 1) {
-      //   this.pd_currentVersionEditable = true;
-      // }
-      // this.pd_editarPlantillaVisible = true;
+    eliminarVersionDocumento(index) {
+      this.pd_currentVersion = this.listaVersionesDocumento[index];
+      this._produccionDocumentalApi.eliminarVersionDocumento({id:this.pd_currentVersion.id}).subscribe(
+        res => {
+          this.removeFromList(index, 'listaVersionesDocumento');
+        },
+        error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error})),
+        () => this.refreshView()
+      );
     }
 
     confirmarVersionDocumento() {
-      this.pd_currentVersion.file = new Blob([this.pd_currentVersion.contenido], {type : 'text/html'});
-      this.pd_currentVersion.size = this.pd_currentVersion.file.size;
+      const blob = new Blob([this.pd_currentVersion.contenido], {type : 'text/html'});
+      const nv = {
+        id: this.pd_currentVersion.id,
+        nombre: this.pd_currentVersion.nombre,
+        tipo: 'html',
+        version:  '1.0',
+        contenido:  this.pd_currentVersion.contenido,
+        file: blob,
+        size: blob.size
+      };
       this.pd_confirmarVersionado = false;
       this.pd_confirmarVersionadoVisible = false;
       this.pd_editarPlantillaVisible = false;
       this.pd_currentVersionEditable = false;
-      this.uploadVersionDocumento();
+      this.uploadVersionDocumento(nv);
     }
 
-    uploadVersionDocumento() {
+    uploadVersionDocumento(doc:VersionDocumentoDTO) {
       const formData = new FormData();
-      formData.append('documento', this.pd_currentVersion.file, this.pd_currentVersion.nombre);
+      formData.append('documento', doc.file, doc.nombre);
       const payload = {
-        nombre:this.pd_currentVersion.nombre,
+        nombre:doc.nombre,
         sede:this.taskData.variables.nombreSede,
         dependencia:this.taskData.variables.nombreDependencia,
-        tipo:this.pd_currentVersion.tipo,
-        id:this.pd_currentVersion.id
+        tipo:doc.tipo,
+        id:doc.id
       };
       this._produccionDocumentalApi.subirVersionDocumento(formData,payload).subscribe(
         resp => {
-          if (resp.codMensaje==='0000') {
-            const versiones = this.listaVersionesDocumento;
-            this.pd_currentVersion.id = resp.content && resp.content.idDocumento || resp.mensaje || (new Date()).toTimeString();
-            this.pd_currentVersion.version = resp.content && resp.content.versionLabel || "1.0";
-            versiones.push(this.pd_currentVersion);
+          if ('0000' === resp.codMensaje || '0000' === resp.mensaje) {
+            const versiones = [...this.listaVersionesDocumento];
+            console.log(versiones);
+            doc.id = resp.content && resp.content.idDocumento || (new Date()).toTimeString();
+            doc.version = resp.content && resp.content.versionLabel || "1.0";
+            versiones.push(doc);
+            console.log(versiones);
             this.listaVersionesDocumento = [...versiones];
+            console.log(this.listaVersionesDocumento);
             this.form.get('tipoPlantilla').reset();
-            this.refreshView()
           } else {
             this._store.dispatch(new PushNotificationAction({severity: 'error',summary: resp.mensaje}));
           }
+        },
+        error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error})),
+        () => {
+          this.refreshView();
         }
       );
     }
 
 
+    agregarAnexo(event) {
+      const anexo: AnexoDTO = {
+        id: (new Date()).toTimeString(),
+        descripcion : this.form.get('descripcion').value,
+        soporte: this.form.get('soporte').value,
+        tipo: this.form.get('tipoAnexo').value
+      };
+      if (event) {
+        anexo.file = event.files[0];
+        const formData = new FormData();
+        formData.append('files', anexo.file, anexo.file.name);
+        this._produccionDocumentalApi.subirAnexo(formData,{
+          nombre:anexo.file.name,
+          dependencia:this.nombreDependencia,
+          sede:this.nombreSede
+        }).subscribe(
+          res => {
+            console.log(res);
+            this.addToList(anexo, 'listaAnexos');
+          },
+          error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error}))
+        );
+      } else {
+        this.addToList(anexo, 'listaAnexos');
+        // this.refreshView();
+      }
+    }
 
+    eliminarAnexo(i) {
+      const anex = this.listaAnexos[i];
+      if (anex.soporte === 'fisico') {
+        this.removeFromList(i, 'listaAnexos');
+        this.refreshView();
+      } else {
 
-
+      }
+    }
 
 
 
@@ -197,11 +265,16 @@ export class PDDatosGeneralesComponent implements OnInit {
         this.pd_confirmarVersionado = false;
     }
 
-    removeFromList(i, listname: string) {
+    removeFromList(i:any, listname: string) {
       const list = [...this[listname]];
       list.splice(i, 1);
       this[listname] = list;
-      // this._changeDetectorRef.detectChanges();
+    }
+
+    addToList(el:any, listname: string) {
+      const list = [...this[listname]];
+      list.push(el);
+      this[listname] = [...list];
     }
 
 
@@ -244,8 +317,13 @@ export class PDDatosGeneralesComponent implements OnInit {
       return true;
     }
 
-    previewDocument(file:File) {
+    previewDocument(file) {
       window.open(URL.createObjectURL(file), '_blank');
+    }
+
+    documentViewer(url) {
+      const win = window.open(url);
+      win.focus();
     }
 
     refreshView() {

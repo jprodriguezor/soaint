@@ -113,9 +113,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
     this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
     this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-    this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'?
-      this.datosContacto.destinatarioInterno.listaDestinatarios :
-      this.datosContacto.destinatarioExterno.listaDestinatarios;
+    if (this.datosGenerales.form.get('tipoComunicacion').value) {
+      this.taskCurrentStatus.datosContacto.listaDestinatarios =  this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'?
+        this.datosContacto.destinatarioInterno.listaDestinatarios :
+        this.datosContacto.destinatarioExterno.listaDestinatarios;
+    }else{
+      this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
+    }
     this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
     this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
       console.log(el);
