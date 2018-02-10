@@ -100,7 +100,8 @@ export const environment = {
   pd_gestion_documental : {
     subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
     subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
-    obtenerVersionDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
+    obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+    eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
   }
 
 };
