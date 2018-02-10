@@ -28,11 +28,8 @@ export class ProduccionDocumentalApiService {
     );
   }
 
-  subirAnexo(formData:FormData, payload:{nombre:string,sede:string,dependencia:string}) {
-    return this._api.sendFile(
-      environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.sede, payload.dependencia, payload.nombre]
-    );
+  obtenerVersionDocumento(payload:{id:string,version:string}) {
+    return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento,{identificadorDoc:payload.id,version:payload.version});
   }
 
   ejecutarProyeccionMultiple(payload: {}) {

@@ -61,10 +61,37 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         idTareaProceso: this.idEstadoTarea
       }).subscribe(
         status => {
+          if (status) {
+            this.taskCurrentStatus = status;
             this.datosGenerales.updateStatus(status);
             this.datosContacto.updateStatus(status);
-        },
-        error => console.log("No se pudo cargar la tarea")
+            this.gestionarProduccion.updateStatus(status);
+          } else {
+            this.taskCurrentStatus = {
+              aprobado:0,
+              listaProyector:[this.task.variables.usuarioProyector.concat(":").concat(this.task.variables.codDependenciaProyector)],
+              listaAprobador:[],
+              listaRevisor:[],
+              usuarioProyector:this.task.variables.usuarioProyector,
+              usuarioRevisor:this.task.variables.usuarioRevisor,
+              usuarioAprobador:this.task.variables.usuarioAprobador,
+              requiereAjustes:this.task.variables.requiereAjustes || false,
+              datosGenerales: {
+                tipoComunicacion: null,
+                listaVersionesDocumento: [],
+                listaAnexos: []
+              },
+              datosContacto: {
+                distribucion: null,
+                responderRemitente: false,
+                listaDestinatarios: []
+              },
+              gestionarProduccion: {
+                listaProyectores: []
+              }
+            };
+          }
+        }
       );
     });
   }
@@ -75,30 +102,35 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
-
     this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(response => {
         console.log(response);
     });
   }
 
   getCurrentStatus() : StatusDTO {
-    return {
-      datosGenerales: {
-        tipoComunicacion: this.datosGenerales.form.get('tipoComunicacion').value,
-        listaVersionesDocumento: this.datosGenerales.listaVersionesDocumento,
-        listaAnexos: this.datosGenerales.listaAnexos
-      },
-      datosContacto: {
-        distribucion: this.datosContacto.form.get('distribucion').value,
-        responderRemitente: this.datosContacto.form.get('responderRemitente').value,
-        listaDestinatarios: this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'?
-          this.datosContacto.destinatarioInterno.listaDestinatarios :
-          this.datosContacto.destinatarioExterno.listaDestinatarios
-      },
-      gestionarProduccion: {
-        listaProyectores: this.gestionarProduccion.listaProyectores
+    this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
+    this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
+    this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
+    this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
+    this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
+    this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'?
+      this.datosContacto.destinatarioInterno.listaDestinatarios :
+      this.datosContacto.destinatarioExterno.listaDestinatarios;
+    this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
+    this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
+      console.log(el);
+      if (el.rol.rol === 'proyector') {
+        this.taskCurrentStatus.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+      } else
+      if (el.rol.rol === 'revisor') {
+        this.taskCurrentStatus.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+      } else
+      if (el.rol.rol === 'aprobador') {
+        this.taskCurrentStatus.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       }
-    };
+    });
+
+    return this.taskCurrentStatus;
   }
 
   completarTarea() {

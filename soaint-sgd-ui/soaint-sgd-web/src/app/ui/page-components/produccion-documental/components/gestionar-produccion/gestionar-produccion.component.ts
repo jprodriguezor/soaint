@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../domain/constanteDTO';
@@ -10,27 +10,30 @@ import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-manag
 import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 import {StatusDTO} from "../../models/StatusDTO";
+import {ProyectorDTO} from "../../../../../domain/ProyectorDTO";
+import {Subscriber} from "rxjs/Subscriber";
 
 @Component({
   selector: 'pd-gestionar-produccion',
   templateUrl: './gestionar-produccion.component.html'
 })
 
-export class PDGestionarProduccionComponent implements OnInit {
+export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
-    form: FormGroup;
-    validations: any = {};
+  form: FormGroup;
+  validations: any = {};
 
   dependenciaSelected: ConstanteDTO;
 
-  listaProyectores: Array<{ sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }> = [];
+  listaProyectores: ProyectorDTO[] = [];
+  startIndex = 0;
 
-    sedesAdministrativas$: Observable<ConstanteDTO[]>;
-    dependencias: Array<any> = [];
-    roles$: Observable<RolDTO[]>;
-    funcionarios$: Observable<FuncionarioDTO[]>;
+  sedesAdministrativas$: Observable<ConstanteDTO[]>;
+  dependencias: Array<any> = [];
+  roles$: Observable<RolDTO[]>;
+  funcionarios$: Observable<FuncionarioDTO[]>;
 
-    subscribers: Array<Subscription> = [];
+  subscribers: Array<Subscription> = [];
 
 
   constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -39,64 +42,6 @@ export class PDGestionarProduccionComponent implements OnInit {
               private _funcionarioSandBox: FuncionarioSandbox,
               private formBuilder: FormBuilder) {
     this.initForm();
-  }
-
-  dependenciaChange(event) {
-      this.dependenciaSelected = event.value;
-      this.funcionarios$ = this._funcionarioSandBox.loadAllFuncionariosByRol({codDependencia: this.form.get('dependencia').value.codigo, rol: 'Proyector'}).map(res => {
-          return res.funcionarios
-      });
-  }
-
-  eliminarProyector(index) {
-    if (index > -1) {
-      const documentos = this.listaProyectores;
-      documentos.splice(index, 1);
-
-      this.listaProyectores = [...documentos];
-      this.refreshView();
-    }
-  }
-
-  agregarProyector() {
-    if (!this.form.valid) {
-      return false;
-    }
-
-    const documentos = this.listaProyectores;
-    const documento = {
-      sede: this.form.get('sede').value,
-      dependencia: this.form.get('dependencia').value,
-      funcionario: this.form.get('funcionario').value,
-      rol: this.form.get('rol').value
-    };
-
-    if (this.checkProyector(documento)) {
-      console.log('Ya existe el documento');
-      return false;
-    }
-
-    documentos.push(documento);
-    this.listaProyectores = [...documentos];
-    this.form.reset();
-    this.funcionarios$ = Observable.of([]);
-    this.refreshView();
-
-    return true;
-  }
-
-  checkProyector(newDocumento: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }) {
-    let exists = false;
-    this.listaProyectores.forEach((current: { sede: ConstanteDTO, dependencia: ConstanteDTO, rol: RolDTO, funcionario: ConstanteDTO }, index) => {
-      if (current.sede.id === newDocumento.sede.id &&
-        current.dependencia.id === newDocumento.dependencia.id &&
-        current.funcionario.id === newDocumento.funcionario.id &&
-        current.rol.id === newDocumento.rol.id) {
-        exists = true;
-      }
-    });
-
-    return exists;
   }
 
   initForm() {
@@ -111,20 +56,81 @@ export class PDGestionarProduccionComponent implements OnInit {
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
     this.roles$ = this._produccionDocumentalApi.getRoles({});
-      this.listenForChanges();
+    this.listenForChanges();
   }
 
-    listenForChanges() {
-        this.subscribers.push(this.form.get('sede').valueChanges.distinctUntilChanged().subscribe((sede) => {
-            this.form.get('dependencia').reset();
-            if (sede) {
-                const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
-                    this.dependencias = dependencias.organigrama;
-                    depedenciaSubscription.unsubscribe();
-                });
-            }
-        }));
+  updateStatus(currentStatus:StatusDTO) {
+    this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
+    this.startIndex = this.listaProyectores.length;
+  }
+
+  dependenciaChange(event) {
+      this.dependenciaSelected = event.value;
+      this.funcionarios$ = this._funcionarioSandBox.loadAllFuncionariosByRol({codDependencia: this.form.get('dependencia').value.codigo, rol: 'Proyector'}).map(res => res.funcionarios);
+  }
+
+  eliminarProyector(index) {
+    if (index >= this.startIndex) {
+      const proyectores = this.listaProyectores;
+      proyectores.splice(index, 1);
+
+      this.listaProyectores = [...proyectores];
+      this.refreshView();
     }
+  }
+
+  agregarProyector() {
+    if (!this.form.valid) {
+      return false;
+    }
+
+    const proyectores = this.listaProyectores;
+    const proyector = {
+      sede: this.form.get('sede').value,
+      dependencia: this.form.get('dependencia').value,
+      funcionario: this.form.get('funcionario').value,
+      rol: this.form.get('rol').value
+    };
+
+    if (this.checkProyector(proyector)) {
+      console.log('Ya existe el documento');
+      return false;
+    }
+
+    proyectores.push(proyector);
+    this.listaProyectores = [...proyectores];
+    this.form.reset();
+    this.funcionarios$ = Observable.of([]);
+    this.refreshView();
+
+    return true;
+  }
+
+  checkProyector(newProyector: ProyectorDTO) {
+    let exists = false;
+    this.listaProyectores.forEach((current: ProyectorDTO) => {
+      if (current.sede.id === newProyector.sede.id &&
+        current.dependencia.id === newProyector.dependencia.id &&
+        current.funcionario.id === newProyector.funcionario.id &&
+        current.rol.id === newProyector.rol.id) {
+        exists = true;
+      }
+    });
+
+    return exists;
+  }
+
+  listenForChanges() {
+      this.subscribers.push(this.form.get('sede').valueChanges.distinctUntilChanged().subscribe((sede) => {
+          this.form.get('dependencia').reset();
+          if (sede) {
+              const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
+                  this.dependencias = dependencias.organigrama;
+                  depedenciaSubscription.unsubscribe();
+              });
+          }
+      }));
+  }
 
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');
@@ -153,6 +159,10 @@ export class PDGestionarProduccionComponent implements OnInit {
         delete this.validations[control];
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subscribers.forEach((sub:Subscription) => sub.unsubscribe());
   }
 
   refreshView() {
