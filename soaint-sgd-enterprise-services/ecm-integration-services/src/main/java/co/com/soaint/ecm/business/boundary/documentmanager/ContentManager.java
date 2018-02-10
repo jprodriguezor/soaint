@@ -143,10 +143,11 @@ public class ContentManager {
      *
      * @param documento        Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info ("### Subiendo versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -156,7 +157,7 @@ public class ContentManager {
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de subir/versionar el documento..");
-            response=contentControl.subirVersionarDocumentoGenerado(conexion.getSession ( ), documento, metadatosDocumentosDTO);
+            response=contentControl.subirVersionarDocumentoGenerado(conexion.getSession ( ), documento, metadatosDocumentosDTO, selector);
 
         } catch (Exception e) {
             logger.error ("Error subiendo/versionando documento", e);

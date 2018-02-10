@@ -102,14 +102,15 @@ public class EcmManager {
      *
      * @param documento        Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
         logger.info("### Subiendo/Versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO);
+            response=contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO,selector);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
