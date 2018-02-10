@@ -151,7 +151,7 @@ public class RecordServices implements IRecordServices {
         try {
 
             WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-            Response response = wt.path("/file-plans/" + "96acce1c-fd76-491c-8177-75fd7c94c112" + "/categories")
+            Response response = wt.path("/file-plans/" + "9a63a2f7-481d-46a0-92bb-8a4bdeb79dd0" + "/categories")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
                     .header("Content-Type", "application/json")

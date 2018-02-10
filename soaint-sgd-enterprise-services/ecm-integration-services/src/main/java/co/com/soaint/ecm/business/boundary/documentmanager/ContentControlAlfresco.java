@@ -268,7 +268,8 @@ public class ContentControlAlfresco implements ContentControl {
         Carpeta folder = new Carpeta ( );
         try {
 
-            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'"+ "and cmis:objectTypeId <> 'rma:recordCategory'";
+//            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'"+ "and cmis:objectTypeId <> 'rma:recordCategory'";
+            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
             ItemIterable <QueryResult> results = session.query (queryString, false);
             for (QueryResult qResult : results) {
                 String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
@@ -882,16 +883,20 @@ public class ContentControlAlfresco implements ContentControl {
 
             // Check in the pwc
             try {
-                pwc.checkIn(false, null, contentStream, "minor version");
+                pwc.checkIn(false, null, contentStream, "nueva version");
+
                 response.setMensaje("0000");
                 response.setCodMensaje("Documento versionado correctamente");
+                metadatosDocumentosDTO.setVersionLabel(doc.getVersionLabel());
+                response.setContent(metadatosDocumentosDTO );
+
+//                response.setContent(session.getLatestDocumentVersion(doc));
             } catch (CmisBaseException e) {
                 e.printStackTrace();
                 logger.error("checkin failed, trying to cancel the checkout");
                 pwc.cancelCheckOut();
                 response.setMensaje("222222");
                 response.setCodMensaje("Error versionando documento: "+ e);
-
             }
         }
 
@@ -956,9 +961,12 @@ public class ContentControlAlfresco implements ContentControl {
                         idDocumento = newDocument.getId ( );
                         String[] parts = idDocumento.split (";");
                         idDocumento = parts[0];
+                        metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
+                        metadatosDocumentosDTO.setIdDocumento(idDocumento);
+                        response.setContent(metadatosDocumentosDTO );
                         //Creando el mensaje de respuesta
                         response.setCodMensaje("0000");
-                        response.setMensaje(idDocumento);
+                        response.setMensaje("Documento añadido correctamente");
                         logger.info ("### Documento creado con id " + idDocumento);
                         }
                     }
