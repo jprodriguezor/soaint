@@ -116,7 +116,7 @@
                     </div>
                     <div class="ui-g-12 md-dropdownfield">
                         <p-dropdown [options]="tiposComunicacion$ | async | dropdownItem" id="tipoComunicacion" formControlName="tipoComunicacion"
-                                    [disabled]="listaVersionesDocumento.length !== 0"
+                                    [disabled]="listaVersionesDocumento.length > 0"
                                     placeholder="Seleccione" [autoWidth]="false" (onBlur)="listenForBlurEvents('tipoComunicacion')"
                                     (onChange)="tipoComunicacionChange($event)">
                         </p-dropdown>
@@ -130,7 +130,7 @@
                     </div>
                     <div class="ui-g-12 md-dropdownfield">
                         <p-dropdown [options]="tiposPlantilla$ | async | dropdownItem" id="tipoPlantilla" formControlName="tipoPlantilla"
-                                    [disabled]="listaVersionesDocumento.length !== 0"
+                                    [disabled]="listaVersionesDocumento.length > 0"
                                     placeholder="Seleccione" [autoWidth]="false" (onBlur)="listenForBlurEvents('tipoPlantilla')"
                                     (onChange)="tipoPlanillaChange($event)">
                         </p-dropdown>
@@ -142,17 +142,16 @@
                     <div class="ui-g-12">
                         <div class="ui-sm-12 ui-g-4 ui-lg-6">
                             <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length !== 0" style="width:auto;" type="button"
-                                  (click)=" producirDocumento.currentVersionEditable = true;producirDocumento.editarPlantillaVisible = true;"></button>
+                                  (click)="mostrarVersionDocumento(-1);"></button>
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
                             <p-fileUpload mode="basic"
-                                          [disabled]="true"
-                                          accept="*"
+                                          auto="true"
+                                          [disabled]="listaVersionesDocumento.length > 0"
+                                          accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
-                                          [disabled]="listaVersionesDocumento && listaVersionesDocumento.length > 0"
-                                          (uploadHandler)="versionDocumentoUpload($event)"
-                                          (onSelect)="versionDocumentoSelected($event)"
+                                          (uploadHandler)="attachDocument($event)"
                                           (onError)="onErrorUpload($event)"
                             ></p-fileUpload>
                         </div>
@@ -168,6 +167,7 @@
                     <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
                     <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
                     <p-column field="size" header="Tamaño (Kb)" [sortable]="true"></p-column>
+                    <p-column field="version" header="Version" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton label="Ver" class="ui-button ui-button-info" (click)="mostrarVersion(i)"></button>
@@ -175,8 +175,7 @@
                     </p-column>
                     <p-column header="Eliminar" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger"
-                                    (click)="eliminarVersion(i);"></button>
+                            <button type="button" pButton label="Eliminar" class="ui-button ui-button-danger" (click)="eliminarVersion(i);"></button>
                         </ng-template>
                     </p-column>
                 </p-dataTable>
@@ -279,27 +278,27 @@
     </p-panel>
 </form>
 
-<p-dialog [visible]="producirDocumento.editarPlantillaVisible" [responsive]="true" [modal]="true" positionTop="20"
-          (onHide)="producirDocumento.editarPlantillaVisible = false;">
+<p-dialog [visible]="pd_editarPlantillaVisible" [responsive]="true" [modal]="true" positionTop="20"
+          (onHide)="pd_editarPlantillaVisible = false;">
     <p-header>
         Editar Planilla
     </p-header>
 
-    <p-editor [(ngModel)]="producirDocumento.newVersionContent"
-              [readonly]="!producirDocumento.currentVersionEditable" [style]="{'height':'320px'}"></p-editor>
+    <p-editor [(ngModel)]="pd_currentVersion.contenido"
+              [readonly]="!pd_currentVersionEditable" [style]="{'height':'320px'}"></p-editor>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button type="button" pButton class="ui-button ui-button-danger" label="Cerrar"
-                    (click)="producirDocumento.editarPlantillaVisible = false;"></button>
+                    (click)="pd_editarPlantillaVisible = false;"></button>
             <button pButton type="button" label="Versionar"
-                    [disabled]="!producirDocumento.currentVersionEditable || producirDocumento.newVersionIndex >= 0" style="width: auto; margin-bottom: 10px;margin-left: 12px"
-                    (click)="producirDocumento.currentVersionVisible = true"></button>
+                    [disabled]="!pd_currentVersionEditable" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    (click)="pd_confirmarVersionadoVisible= true"></button>
         </div>
     </p-footer>
 </p-dialog>
 
-<p-dialog [visible]="producirDocumento.currentVersionVisible" modal="modal" [responsive]="true" positionTop="20"
+<p-dialog [visible]="pd_confirmarVersionadoVisible" modal="modal" [responsive]="true" positionTop="20"
           (onHide)="hideVersionesDocumentoDialog()" [width]="510">
     <p-header>
         Confirmación
@@ -312,8 +311,8 @@
 
         <div class="ui-sm-12 ui-g-4 ui-lg-4 text-right">
             <button pButton type="button" label="Si" style="width: auto; margin-bottom: 10px;margin-left: 12px"
-                    [disabled]="producirDocumento.currentVersionConfirmed"
-                    (click)="producirDocumento.currentVersionConfirmed = true">
+                    [disabled]="pd_confirmarVersionado"
+                    (click)="pd_confirmarVersionado = true">
             </button>
             <button pButton type="button" label="No" style="width: auto; margin-bottom: 10px;margin-left: 12px" (click)="hideVersionesDocumentoDialog()">
             </button>
@@ -323,8 +322,8 @@
                 <div class="ui-g-12">
                     <div class="ui-sm-12 ui-g-12 ui-lg-12">
                         <input type="text" pInputText
-                               [disabled]="!producirDocumento.currentVersionConfirmed"
-                               [(ngModel)]="producirDocumento.newVersionName" />
+                               [disabled]="!pd_confirmarVersionado"
+                               [(ngModel)]="pd_currentVersion.nombre" />
                     </div>
                 </div>
             </div>
@@ -334,8 +333,8 @@
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button pButton type="button" label="Guardar"
-                    [disabled]="!producirDocumento.currentVersionConfirmed" style="width: auto; margin-bottom: 10px;margin-left: 12px"
-                    (click)="generarVersion()"></button>
+                    [disabled]="!pd_confirmarVersionado" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    (click)="confirmarVersionDocumento()"></button>
         </div>
     </p-footer>
 </p-dialog>
