@@ -117,14 +117,20 @@ export class PDDatosGeneralesComponent implements OnInit {
       this.uploadVersionDocumento();
     }
 
+
+
     mostrarVersionDocumento(index:number) {
-      if (index === this.listaVersionesDocumento.length - 1) {
-        this.pd_currentVersionEditable = true;
-      }
-      if (index >= 0) {
-        this.pd_currentVersion = this.listaVersionesDocumento[index];
-      }
-      this.pd_editarPlantillaVisible = true;
+      this.pd_currentVersion = this.listaVersionesDocumento[index];
+      this._produccionDocumentalApi.obtenerVersionDocumento({id:this.pd_currentVersion.id,version:this.pd_currentVersion.version}).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+
+      // if (index === this.listaVersionesDocumento.length - 1) {
+      //   this.pd_currentVersionEditable = true;
+      // }
+      // this.pd_editarPlantillaVisible = true;
     }
 
     confirmarVersionDocumento() {
