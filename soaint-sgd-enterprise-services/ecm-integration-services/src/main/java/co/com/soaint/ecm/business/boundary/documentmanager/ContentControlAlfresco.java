@@ -267,9 +267,7 @@ public class ContentControlAlfresco implements ContentControl {
     private Carpeta obtenerCarpetaPorNombre(String nombreCarpeta, Session session) {
         Carpeta folder = new Carpeta ( );
         try {
-//            String queryString = "SELECT cmis:objectTypeId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
             String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'"+ " and (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
-//            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE cmis:name = '" + nombreCarpeta + "'";
             ItemIterable <QueryResult> results = session.query (queryString, false);
             for (QueryResult qResult : results) {
                 String objectId = qResult.getPropertyValueByQueryName ("cmis:objectId");
