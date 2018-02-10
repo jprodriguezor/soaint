@@ -72,11 +72,7 @@ public class TareaControl {
                     .getSingleResult();
             return trasformToDto(tarea);
         } catch (NoResultException n) {
-            log.error("Business Control - a business error has occurred", n);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("tarea.tarea_not_exist_by_idInstanciaProceso_and_idInstaciaTarea")
-                    .withRootException(n)
-                    .buildBusinessException();
+            return null;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
