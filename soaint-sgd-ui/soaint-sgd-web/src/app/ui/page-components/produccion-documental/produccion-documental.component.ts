@@ -61,17 +61,17 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         idTareaProceso: this.idEstadoTarea
       }).subscribe(
         status => {
+          if (status) {
             this.taskCurrentStatus = status;
             this.datosGenerales.updateStatus(status);
             this.datosContacto.updateStatus(status);
             this.gestionarProduccion.updateStatus(status);
-        },
-        error => {
+          } else {
             this.taskCurrentStatus = {
               aprobado:0,
-              listaProyector:this.task.variables.listaProyector || [],
-              listaAprobador:this.task.variables.listaAprobador || [],
-              listaRevisor:this.task.variables.listaRevisor || [],
+              listaProyector:[this.task.variables.usuarioProyector.concat(":").concat(this.task.variables.codDependenciaProyector)],
+              listaAprobador:[],
+              listaRevisor:[],
               usuarioProyector:this.task.variables.usuarioProyector,
               usuarioRevisor:this.task.variables.usuarioRevisor,
               usuarioAprobador:this.task.variables.usuarioAprobador,
@@ -90,8 +90,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 listaProyectores: []
               }
             };
-        },
-        () => console.log(this.taskCurrentStatus)
+          }
+        }
       );
     });
   }
@@ -120,18 +120,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
       console.log(el);
       if (el.rol.rol === 'proyector') {
-        console.log("proyector agregado");
         this.taskCurrentStatus.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'revisor') {
-        console.log("revisor agregado");
         this.taskCurrentStatus.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'aprobador') {
-        console.log("aprobador agregado");
         this.taskCurrentStatus.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       }
-      else console.log("nadie agregado");
     });
 
     return this.taskCurrentStatus;
