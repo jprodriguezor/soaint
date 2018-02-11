@@ -51,9 +51,6 @@ export class PDDatosGeneralesComponent implements OnInit {
     tipoPlantillaSelected: ConstanteDTO;
     fileContent: {id: number; file: Blob };
 
-    nombreSede:string;
-    nombreDependencia:string;
-
     activeTaskUnsubscriber: Subscription;
 
     constructor(private _store: Store<State>,
@@ -106,6 +103,11 @@ export class PDDatosGeneralesComponent implements OnInit {
         });
     }
 
+    resetCurrentVersion() {
+      this.pd_currentVersion = {id:'none',nombre:'',tipo:'html',version:'',contenido:'',file:null,size:0};
+      return this.pd_currentVersion;
+    }
+
 
 
     attachDocument(event) {
@@ -143,10 +145,11 @@ export class PDDatosGeneralesComponent implements OnInit {
     }
 
     eliminarVersionDocumento(index) {
-      this.pd_currentVersion = this.listaVersionesDocumento[index];
+      this.pd_currentVersion = Object.assign({},this.listaVersionesDocumento[index]);
       this._produccionDocumentalApi.eliminarVersionDocumento({id:this.pd_currentVersion.id}).subscribe(
         res => {
           this.removeFromList(index, 'listaVersionesDocumento');
+          this.resetCurrentVersion();
         },
         error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error})),
         () => this.refreshView()
@@ -193,6 +196,7 @@ export class PDDatosGeneralesComponent implements OnInit {
             this.listaVersionesDocumento = [...versiones];
             console.log(this.listaVersionesDocumento);
             this.form.get('tipoPlantilla').reset();
+            this.resetCurrentVersion();
           } else {
             this._store.dispatch(new PushNotificationAction({severity: 'error',summary: resp.mensaje}));
           }
@@ -203,7 +207,6 @@ export class PDDatosGeneralesComponent implements OnInit {
         }
       );
     }
-
 
     agregarAnexo(event) {
       const anexo: AnexoDTO = {
@@ -218,8 +221,8 @@ export class PDDatosGeneralesComponent implements OnInit {
         formData.append('files', anexo.file, anexo.file.name);
         this._produccionDocumentalApi.subirAnexo(formData,{
           nombre:anexo.file.name,
-          dependencia:this.nombreDependencia,
-          sede:this.nombreSede
+          dependencia:this.taskData.variables.nombreDependencia,
+          sede:this.taskData.variables.nombreSede
         }).subscribe(
           res => {
             console.log(res);

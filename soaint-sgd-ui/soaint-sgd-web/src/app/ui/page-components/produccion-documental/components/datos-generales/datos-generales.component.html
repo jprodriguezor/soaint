@@ -237,7 +237,7 @@
                           accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
-                          [disabled]="true || form.get('soporte').value !== 'electronico'"
+                          [disabled]="form.get('soporte').value !== 'electronico'"
                           (onSelect)="agregarAnexo($event)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
