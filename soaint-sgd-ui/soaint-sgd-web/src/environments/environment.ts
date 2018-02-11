@@ -113,7 +113,7 @@ export const process_info = {
   },
   'proceso.correspondencia-salida': {
     displayValue: 'Correspondencia de salida',
-    show: true
+    show: false
   },
   'proceso.gestion-planillas': {
     displayValue: 'Gestion de planillas',
@@ -137,7 +137,7 @@ export const process_info = {
   },
   'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
-    show: true
+    show: false
   }
 
 };
