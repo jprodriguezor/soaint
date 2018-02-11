@@ -9,6 +9,7 @@ import {TareaDTO} from "../../../../../domain/tareaDTO";
 export class DatosDestinatarioComponent implements OnInit {
 
   @Input() taskData: TareaDTO;
+  principal: Boolean = false;
 
   @ViewChild('destinatarioInterno') destinatarioInterno;
   @ViewChild('destinatarioExterno') destinatarioExterno;

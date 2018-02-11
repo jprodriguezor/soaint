@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {ConstanteDTO} from '../../../../../../domain/constanteDTO';
 import {Observable} from 'rxjs/Observable';
@@ -19,6 +19,7 @@ import {getArrayData as paisArrayData} from 'app/infrastructure/state-management
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {ProduccionDocumentalApiService} from '../../../../../../infrastructure/api/produccion-documental.api';
 import {DESTINATARIO_PRINCIPAL} from '../../../../../../shared/bussiness-properties/radicacion-properties';
+import {PushNotificationAction} from '../../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 
 @Component({
   selector: 'rs-datos-destinatario-externo',
@@ -26,7 +27,12 @@ import {DESTINATARIO_PRINCIPAL} from '../../../../../../shared/bussiness-propert
   styleUrls: ['./datos-destinatario-externo.component.css']
 })
 export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
+
   form: FormGroup;
+
+  @Input('principal') principal: boolean;
+  @Output() change: EventEmitter<Boolean> = new EventEmitter<Boolean>();
+
   tipoPersonaSelected: ConstanteDTO;
 
   tiposPersona$: Observable<ConstanteDTO[]>;
@@ -100,6 +106,14 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     const newone: DestinatarioDTO = this.form.value;
     newone.interno = false;
 
+    if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'success',
+        summary: 'Existe un destinatario principal en los destinatarios externos'
+      }));
+      return false;
+    }
+
     if (this.checkDestinatarioInList(newone, destinatarios)) {
       return false;
     }
@@ -113,6 +127,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
           newList.unshift(newone);
           this.listaDestinatarios = [...newList];
           this.form.reset();
+          this.principal = true;
+          this.change.emit(this.principal);
         }
       });
       return true;
@@ -126,7 +142,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
     this.listaDestinatarios = [...destinatarios];
     this.form.reset();
-
+    this.principal = true;
+    this.change.emit(this.principal);
     return true;
   }
 

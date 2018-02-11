@@ -3,7 +3,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {State} from '../../../../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
 import {Sandbox as FuncionariosSandbox} from '../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
-import {getArrayData as getFuncionarioArrayData} from '../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getArrayData as getFuncionarioArrayData,
+  getSuggestionsDependencyGroupFuncionarioArray
+} from '../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {ProduccionDocumentalApiService} from '../../../../../../infrastructure/api/produccion-documental.api';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../../domain/constanteDTO';
@@ -16,6 +19,7 @@ import {Sandbox as DependenciaGrupoSandbox} from '../../../../../../infrastructu
 import {VALIDATION_MESSAGES} from '../../../../../../shared/validation-messages';
 import {DestinatarioDTO} from '../../../../../../domain/destinatarioDTO';
 import {ConfirmationService} from 'primeng/components/common/api';
+import {PushNotificationAction} from '../../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 
 @Component({
   selector: 'rs-datos-destinatario-interno',
@@ -25,6 +29,9 @@ import {ConfirmationService} from 'primeng/components/common/api';
 export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
+
+  @Input('principal') principal: boolean;
+  @Output() change: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   dependencias$: Observable<ConstanteDTO[]>;
   funcionarios$: Observable<FuncionarioDTO[]>;
@@ -46,7 +53,9 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
               private _produccionDocumentalApi: ProduccionDocumentalApiService) {
 
     this.funcionarios$ = this._store.select(getFuncionarioArrayData);
-    this.initForm(); this.listenForChanges(); this.listenForErrors();
+    this.initForm();
+    this.listenForChanges();
+    this.listenForErrors();
 
     Observable.combineLatest(
       this.form.get('tipoDestinatario').valueChanges,
@@ -64,7 +73,6 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    console.log('ENTRE AL PUTO FORM');
     this.form = this.formBuilder.group({
       'tipoDestinatario': [null, Validators.required],
       'sede': [null, Validators.required],
@@ -90,6 +98,14 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     const newone: DestinatarioDTO = this.form.value;
     newone.interno = true;
 
+    if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal) {
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'success',
+        summary: 'Existe un destinatario principal en los destinatarios internos'
+      }));
+      return false;
+    }
+
     if (this.checkDestinatarioInList(newone, destinatarios)) {
       return false;
     }
@@ -103,6 +119,8 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
           newList.unshift(newone);
           this.listaDestinatarios = [...newList];
           this.form.reset();
+          this.principal = true;
+          this.change.emit(this.principal);
         }
       });
       return true;
@@ -116,7 +134,8 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
 
     this.listaDestinatarios = [...destinatarios];
     this.form.reset();
-
+    this.principal = true;
+    this.change.emit(this.principal);
     return true;
   }
 
@@ -155,12 +174,12 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
       }
     });
 
-    /*this.form.get('dependencia').valueChanges.subscribe((value) => {
-        if (value) {
-            this.form.get('funcionario').reset();
-            this._funcionarioSandbox.loadAllFuncionariosDispatch({codDependencia: value.codigo});
-        }
-    });*/
+    this.form.get('dependencia').valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('funcionario').reset();
+        this._funcionarioSandbox.loadAllFuncionariosDispatch({codDependencia: value.codigo});
+      }
+    });
   }
 
   listenForBlurEvents(control: string) {
@@ -176,7 +195,16 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('ENTRE AL INIT...');
+    this.sedesAdministrativas$ = this._store.select(sedeAdministrativaArrayData);
+    this.dependencias$ = this._store.select(dependenciaGrupoArrayData);
+    console.log(this._store.select(getSuggestionsDependencyGroupFuncionarioArray));
+    console.log('DEPENDENCIAS...');
+    console.log(this.dependencias$);
+    //this._store.dispatch(new SedeAdministrativaLoadAction());
+    //this._funcionarioSandbox.loadAllFuncionariosByRolDispatch({rol: 'RECEPTOR'});
+    this.tiposDestinatario$ = this._produccionDocumentalApi.getTiposDestinatario({});
+
+    /*console.log('ENTRE AL INIT...');
     this.sedesAdministrativas$ = this._store.select(sedeAdministrativaArrayData);
     console.log('Step 2');
     this.dependencias$ = this._store.select(dependenciaGrupoArrayData);
@@ -201,7 +229,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     });
     console.log('Step 7');
     this.refreshView();
-    console.log('Step 8');
+    console.log('Step 8');*/
   }
 
   refreshView() {
