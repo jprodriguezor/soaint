@@ -121,18 +121,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
     }
     this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
-    this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
-      console.log(el);
-      if (el.rol.rol === 'proyector') {
-        this.taskCurrentStatus.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
-      } else
-      if (el.rol.rol === 'revisor') {
-        this.taskCurrentStatus.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
-      } else
-      if (el.rol.rol === 'aprobador') {
-        this.taskCurrentStatus.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
-      }
-    });
 
     return this.taskCurrentStatus;
   }
@@ -143,6 +131,18 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     this.datosContacto.form.disable();
     this.gestionarProduccion.form.disable();
     this.guardarEstadoTarea(currentStatus);
+
+    this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
+      if (el.rol.rol === 'proyector') {
+        this.taskCurrentStatus.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+      } else
+      if (el.rol.rol === 'revisor') {
+        this.taskCurrentStatus.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+      } else
+      if (el.rol.rol === 'aprobador') {
+        this.taskCurrentStatus.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+      }
+    });
 
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
