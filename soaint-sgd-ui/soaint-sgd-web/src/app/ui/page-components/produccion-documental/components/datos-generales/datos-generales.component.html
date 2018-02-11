@@ -269,8 +269,8 @@
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-item="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton class="ui-button ui-button-info" label="Ver"
-                                    [disabled]="'electronico' === item.soporte"
-                                    (click)="visualizarDocumentos(i)">
+                                    [disabled]="'electronico' !== item.soporte"
+                                    (click)="mostrarAnexo(i)">
                             </button>
                         </ng-template>
                     </p-column>
