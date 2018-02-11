@@ -3,22 +3,20 @@
     <div class="ui-g ui-fluid">
       <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
         <div style="padding: 20px 0 0 10px">
-          <p-checkbox name="fisica"
-                      label="Física"
-                      formControlName="fisica"
-                      id="fisica"
-                      binary="true">
-          </p-checkbox>
+          <p-radioButton name="distribucion"
+                         label="Física"
+                         value="física"
+                         formControlName="distribucion">
+          </p-radioButton>
         </div>
       </div>
       <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
         <div style="padding: 20px 0 0 10px">
-          <p-checkbox name="electronica"
-                      label="Electrónica"
-                      formControlName="electronica"
-                      id="electronica"
-                      binary="true">
-          </p-checkbox>
+          <p-radioButton name="distribucion"
+                         label="Electrónica"
+                         value="eléctronica"
+                         formControlName="distribucion">
+          </p-radioButton>
         </div>
       </div>
       <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
@@ -27,6 +25,7 @@
                       label="Responder a remitente"
                       formControlName="responderRemitente"
                       id="responseToRem"
+                      (onChange)="responseToRem = form.get('responderRemitente').value"
                       binary="true">
           </p-checkbox>
         </div>
@@ -35,7 +34,8 @@
   </p-panel>
 </form>
 
+<app-datos-remitente  #datosRemitente *ngIf="false" [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>
 
-<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'"></datos-destinatario-externo>
+<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'" [listaDestinatarios]="listaDestinatariosExternos"></datos-destinatario-externo>
 
-<datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'"></datos-destinatario-interno>
+<datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'" [listaDestinatarios]="listaDestinatariosInternos"></datos-destinatario-interno>

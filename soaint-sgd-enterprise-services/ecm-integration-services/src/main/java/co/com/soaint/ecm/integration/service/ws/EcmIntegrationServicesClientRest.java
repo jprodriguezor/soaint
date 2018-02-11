@@ -10,6 +10,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -159,17 +160,19 @@ public class EcmIntegrationServicesClientRest {
      * @param documento        documento a subir
      * @param nombreDocumento Nombre del documento
      * @param sede Sede a la que pertenece el documento
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @param dependencia Dependencia a la que pertenece el documento
      * @return identificador del documento en el ecm
      */
     @POST
-    @Path("/subirVersionarDocumentoGeneradoECM/{nombreDocumento}/{sede}/{dependencia}/{tipoDocumento}")
+    @Path("/subirVersionarDocumentoGeneradoECM/{nombreDocumento}/{sede}/{dependencia}/{tipoDocumento}/{selector}")
     @Consumes("multipart/form-data")
     public MensajeRespuesta subirVersionarDocumentoGeneradoECM(@RequestPart("documento") final MultipartFormDataInput documento,
                                                               @PathParam("nombreDocumento") String nombreDocumento,
                                                               @PathParam("sede") String sede,
                                                               @PathParam("dependencia") String dependencia,
-                                                              @PathParam("tipoDocumento") String tipoDocumento
+                                                              @PathParam("tipoDocumento") String tipoDocumento,
+                                                              @PathParam("selector") String selector
     ) throws IOException {
 
         logger.info("processing rest request - Subir Versionar Documento Generado al ECM " + nombreDocumento);
@@ -180,7 +183,7 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setDependencia(dependencia);
             metadatosDocumentosDTO.setTipoDocumento(tipoDocumento);
 
-            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO);
+            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO, selector );
          } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
@@ -194,17 +197,19 @@ public class EcmIntegrationServicesClientRest {
      * @param nombreDocumento Nombre del documento
      * @param sede Sede a la que pertenece el documento
      * @param dependencia Dependencia a la que pertenece el documento
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return identificador del documento en el ecm
      */
     @POST
-    @Path("/subirVersionarDocumentoGeneradoECM/{nombreDocumento}/{sede}/{dependencia}/{tipoDocumento}/{idDoc}")
+    @Path("/subirVersionarDocumentoGeneradoECM/{nombreDocumento}/{sede}/{dependencia}/{tipoDocumento}/{idDoc}/{selector}")
     @Consumes("multipart/form-data")
     public MensajeRespuesta subirVersionarDocumentoGeneradoECM(@RequestPart("documento") final MultipartFormDataInput documento,
                                                                @PathParam("nombreDocumento") String nombreDocumento,
                                                                @PathParam("sede") String sede,
                                                                @PathParam("dependencia") String dependencia,
                                                                @PathParam("tipoDocumento") String tipoDocumento,
-                                                               @PathParam("idDoc") String idDoc
+                                                               @PathParam("idDoc") String idDoc,
+                                                               @PathParam("selector") String selector
     ) throws IOException {
 
         logger.info("processing rest request - Subir Versionar Documento Generado al ECM " + nombreDocumento);
@@ -216,7 +221,7 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setTipoDocumento(tipoDocumento);
             metadatosDocumentosDTO.setIdDocumento(idDoc);
 
-            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO);
+            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO,selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
@@ -381,8 +386,8 @@ public class EcmIntegrationServicesClientRest {
      * @return True en exito false en error
      */
     @POST
-    @Path("/eliminarDocumentoECM/")
-    public boolean eliminarDocumentoECM(@QueryParam("idDocumento") final String idDocumento) {
+    @Path("/eliminarDocumentoECM/{idDocumento}")
+    public boolean eliminarDocumentoECM(@PathParam("idDocumento")  String idDocumento) {
 
         logger.info("processing rest request - Eliminar Documento ECM");
         try {

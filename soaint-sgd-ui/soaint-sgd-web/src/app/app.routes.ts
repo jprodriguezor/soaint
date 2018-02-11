@@ -44,6 +44,11 @@ export const routes: Routes = [
         canDeactivate: [TareaDtoGuard]
       },
       {
+        path: ROUTES_PATH.radicarDocumentoSalida,
+        component: RadicarSalidaComponent,
+        canDeactivate: [TareaDtoGuard]
+      },
+      {
         path: ROUTES_PATH.digitalizarDocumento,
         component: DigitalizarDocumentoComponent,
         canActivate: [AuthenticatedGuard],

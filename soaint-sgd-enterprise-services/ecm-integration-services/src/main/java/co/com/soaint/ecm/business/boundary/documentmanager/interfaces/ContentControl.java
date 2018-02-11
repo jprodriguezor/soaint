@@ -64,10 +64,11 @@ public interface ContentControl {
      * @param session          Objeto conexion
      * @param documento        documento a subir/versionar
      * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal

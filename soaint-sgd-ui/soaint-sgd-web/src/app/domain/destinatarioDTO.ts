@@ -1,8 +1,8 @@
-import {ConstanteDTO} from '../../../../domain/constanteDTO';
-import {FuncionarioDTO} from '../../../../domain/funcionarioDTO';
-import {PaisDTO} from '../../../../domain/paisDTO';
-import {DepartamentoDTO} from '../../../../domain/departamentoDTO';
-import {MunicipioDTO} from '../../../../domain/municipioDTO';
+import {ConstanteDTO} from './constanteDTO';
+import {FuncionarioDTO} from './funcionarioDTO';
+import {PaisDTO} from './paisDTO';
+import {DepartamentoDTO} from './departamentoDTO';
+import {MunicipioDTO} from './municipioDTO';
 
 export interface DestinatarioDTO {
     interno: boolean,

@@ -1,0 +1,224 @@
+<form [formGroup]="form">
+  <p-panel header="Datos destinatario externo" [style]="{border: 'none'}">
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label>Tipo destinatario</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="tiposDestinatario$ | async | dropdownItem"
+                        id="tipoDestinatario"
+                        formControlName="tipoDestinatario"
+                        placeholder="Seleccione"
+                        [autoWidth]="false">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoPersona">Tipo persona</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tiposPersona$ | async | dropdownItem"
+                        id="tipoPersona"
+                        formControlName="tipoPersona"
+                        placeholder="Seleccione"
+                        [autoWidth]="false"
+                        (onChange)="tipoPersonaChange($event)">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label>Nombre y apellidos / Razón Social</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="nombre" formControlName="nombre"/>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label>Tipo documento</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="tiposDocumento$ | async | dropdownItem"
+                        id="tipoDocumento"
+                        formControlName="tipoDocumento"
+                        placeholder="Seleccione"
+                        [autoWidth]="false">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label> No. documento identidad</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="nit" formControlName="nit"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="actuaCalidad">Actua en calidad</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="actuanEnCalidad$ | async | dropdownItem"
+                        id="actuaCalidad"
+                        formControlName="actuaCalidad"
+                        placeholder="Seleccione"
+                        [autoWidth]="false">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label> Nombre y Apellidos</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="actuaCalidadNombre" formControlName="actuaCalidadNombre"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+
+  <p-panel header="Datos contacto" [style]="{border: 'none'}">
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label> Correo eléctronico</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="email" formControlName="email"/>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label> No. Teléfono</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="phone" formControlName="phone"/>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label> Celular</label>
+          </div>
+          <div class="ui-g-12">
+            <input type="text" pInputText id="mobile" formControlName="mobile"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="pais">País</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="paises$ | async | dropdownItem"
+                        id="pais"
+                        formControlName="pais"
+                        placeholder="Seleccione"
+                        [autoWidth]="false"
+                        (onChange)="onPaisChange($event)">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="departamento">Departamento</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="departamentos$ | async | dropdownItem"
+                        id="departamento"
+                        formControlName="departamento"
+                        placeholder="Seleccione"
+                        [autoWidth]="false"
+                        (onChange)="onDepartamentoChange($event)">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="municipio">Ciudad/Municipio</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="municipios$ | async | dropdownItem"
+                        id="municipio"
+                        formControlName="municipio"
+                        placeholder="Seleccione"
+                        [autoWidth]="false">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+</form>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" style="padding-top: 20px">
+    <button pButton type="button" label="Agregar"
+            style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+            [disabled]="!canInsert"
+            (click)="adicionarDestinatario()"></button>
+  </div>
+</div>
+
+
+<p-panel header="Datos destinatarios externos" [style]="{border: 'none'}">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <p-dataTable emptyMessage="No hay resultados" selectionMode="multiple"
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="listaDestinatarios">
+        <p-column field="tipoDestinatario.nombre" header="Tipo destinatario" [sortable]="true"></p-column>
+        <p-column field="tipoPersona.nombre" header="Tipo persona" [sortable]="true"></p-column>
+        <p-column field="nombre" header="Nombre/Razón Social" [sortable]="true"></p-column>
+        <p-column field="tipoDocumento.nombre" header="Tipo documento" [sortable]="true"></p-column>
+        <p-column field="nit" header="Numero documento identidad" [sortable]="true"></p-column>
+        <p-column field="email" header="Correo eléctronico" [sortable]="true"></p-column>
+        <p-column field="phone" header="No teléfono" [sortable]="true"></p-column>
+        <p-column field="mobile" header="Celular" [sortable]="true"></p-column>
+        <p-column field="pais.nombre" header="Pais" [sortable]="true"></p-column>
+        <p-column field="departamento.nombre" header="Departamento" [sortable]="true"></p-column>
+        <p-column field="municipio.nombre" header="Municipio" [sortable]="true"></p-column>
+        <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="listaDestinatarios && listaDestinatarios.length > 0">
+          <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+            <!--<button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"-->
+            <!--class="amber-btn ui-button ui-button-icon"></button>-->
+            <button type="button" icon="ui-icon-close" pButton (click)="eliminarDestinatario(i)"
+                    class="ui-button ui-button-icon ui-button-danger"></button>
+          </ng-template>
+        </p-column>
+      </p-dataTable>
+    </div>
+  </div>
+</p-panel>
