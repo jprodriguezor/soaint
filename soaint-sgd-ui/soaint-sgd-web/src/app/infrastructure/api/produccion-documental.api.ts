@@ -28,18 +28,22 @@ export class ProduccionDocumentalApiService {
     );
   }
 
-  subirAnexo(formData:FormData, payload:{nombre:string,sede:string,dependencia:string}) {
-    return this._api.sendFile(
-      environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.sede, payload.dependencia, payload.nombre]);
-  }
-
   obtenerVersionDocumento(payload:{id:string,version:string}) {
     return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento,{identificadorDoc:payload.id,version:payload.version});
   }
 
   eliminarVersionDocumento(payload:{id:string}) {
     return this._api.post(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${payload.id}`,{});
+  }
+
+  obtenerAnexo(payload:{id:string}) {
+    return this._api.post(`${environment.pd_gestion_documental.obtenerAnexo}/${payload.id}`);
+  }
+
+  subirAnexo(formData:FormData, payload:{nombre:string,sede:string,dependencia:string}) {
+    return this._api.sendFile(
+      environment.pd_gestion_documental.subirAnexo, formData,
+      [payload.nombre, payload.sede, payload.dependencia]);
   }
 
 

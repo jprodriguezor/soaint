@@ -11,7 +11,7 @@ import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {Observable} from 'rxjs/Observable';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {ProduccionDocumentalApiService} from "../../../infrastructure/api/produccion-documental.api";
-import {StatusDTO} from "./models/StatusDTO";
+import {StatusDTO, VariablesTareaDTO} from "./models/StatusDTO";
 
 @Component({
   selector: 'produccion-documental',
@@ -23,6 +23,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   task: TareaDTO;
   taskCurrentStatus: StatusDTO;
+  taskVariables: VariablesTareaDTO;
   idEstadoTarea = '0000';
 
   @ViewChild('datosGenerales') datosGenerales;
@@ -56,6 +57,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   ngOnInit(): void {
     this._store.select(getActiveTask).take(1).subscribe(activeTask => {
       this.task = activeTask;
+      this.taskVariables = {
+        aprobado: activeTask.variables.aprobado || 0,
+        codDependenciaProyector: activeTask.variables.codDependenciaProyector || null,
+        listaProyector: activeTask.variables.listaProyector || [],
+        listaAprobador: activeTask.variables.listaAprobador || [],
+        listaRevisor: activeTask.variables.listaRevisor || [],
+        usuarioProyector: activeTask.variables.usuarioProyector || null,
+        usuarioRevisor: activeTask.variables.usuarioRevisor || null,
+        usuarioAprobador: activeTask.variables.usuarioAprobador || null
+      };
       this._produccionDocumentalApi.obtenerEstadoTarea({
         idInstanciaProceso: this.task.idInstanciaProceso,
         idTareaProceso: this.idEstadoTarea
@@ -67,15 +78,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
             this.datosContacto.updateStatus(status);
             this.gestionarProduccion.updateStatus(status);
           } else {
+            this.taskVariables.listaProyector = [this.taskVariables.usuarioProyector.concat(":").concat(this.taskVariables.codDependenciaProyector)];
             this.taskCurrentStatus = {
-              aprobado:0,
-              listaProyector:[this.task.variables.usuarioProyector.concat(":").concat(this.task.variables.codDependenciaProyector)],
-              listaAprobador:[],
-              listaRevisor:[],
-              usuarioProyector:this.task.variables.usuarioProyector,
-              usuarioRevisor:this.task.variables.usuarioRevisor,
-              usuarioAprobador:this.task.variables.usuarioAprobador,
-              requiereAjustes:this.task.variables.requiereAjustes || false,
               datosGenerales: {
                 tipoComunicacion: null,
                 listaVersionesDocumento: [],
@@ -134,13 +138,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
       if (el.rol.rol === 'proyector') {
-        this.taskCurrentStatus.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'revisor') {
-        this.taskCurrentStatus.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'aprobador') {
-        this.taskCurrentStatus.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       }
     });
 
@@ -148,7 +152,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
-      parametros: currentStatus
+      parametros: Object.assign(this.taskVariables, {datosPD:currentStatus})
     });
   }
 

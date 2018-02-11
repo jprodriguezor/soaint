@@ -70,13 +70,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   eliminarProyector(index) {
-    if (index >= this.startIndex) {
+    //if (index >= this.startIndex) {
       const proyectores = this.listaProyectores;
       proyectores.splice(index, 1);
-
       this.listaProyectores = [...proyectores];
-      this.refreshView();
-    }
+    //}
   }
 
   agregarProyector() {

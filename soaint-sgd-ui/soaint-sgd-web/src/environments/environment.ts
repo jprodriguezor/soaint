@@ -98,7 +98,9 @@ export const environment = {
   // Produccion Documental
   pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
   pd_gestion_documental : {
-    subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
+    subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
+    obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
+    //subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
     subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
     obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
     eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,

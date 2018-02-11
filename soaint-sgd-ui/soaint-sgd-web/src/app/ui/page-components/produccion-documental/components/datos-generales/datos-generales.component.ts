@@ -208,6 +208,8 @@ export class PDDatosGeneralesComponent implements OnInit {
       );
     }
 
+
+
     agregarAnexo(event) {
       const anexo: AnexoDTO = {
         id: (new Date()).toTimeString(),
@@ -218,31 +220,57 @@ export class PDDatosGeneralesComponent implements OnInit {
       if (event) {
         anexo.file = event.files[0];
         const formData = new FormData();
-        formData.append('files', anexo.file, anexo.file.name);
+        formData.append('documento', anexo.file, anexo.file.name);
         this._produccionDocumentalApi.subirAnexo(formData,{
           nombre:anexo.file.name,
           dependencia:this.taskData.variables.nombreDependencia,
           sede:this.taskData.variables.nombreSede
         }).subscribe(
-          res => {
-            console.log(res);
-            this.addToList(anexo, 'listaAnexos');
+          resp => {
+            if ('0000' === resp.codMensaje) {
+              anexo.id = resp.content && resp.content.idDocumento || (new Date()).toTimeString();
+              anexo.descripcion = resp.content && resp.content.nombreDocumento || null;
+              const versiones = [...this.listaAnexos];
+              versiones.push(anexo);
+              this.listaAnexos = [...versiones];
+              this.refreshView();
+            } else {
+              this._store.dispatch(new PushNotificationAction({severity: 'error',summary: resp.mensaje}));
+            }
           },
           error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error}))
         );
       } else {
         this.addToList(anexo, 'listaAnexos');
-        // this.refreshView();
       }
     }
 
-    eliminarAnexo(i) {
-      const anex = this.listaAnexos[i];
-      if (anex.soporte === 'fisico') {
-        this.removeFromList(i, 'listaAnexos');
-        this.refreshView();
-      } else {
+    mostrarAnexo(index:number) {
+      const anexo = this.listaAnexos[index];
+      this._produccionDocumentalApi.obtenerVersionDocumento({id:anexo.id,version:'1.0'}).subscribe(
+        res => {
+          if (200 === res.status) {
+            window.open(res.url);
+          } else {
+            this._store.dispatch(new PushNotificationAction({severity: 'warn',summary: res.statusText}));
+          }
+        },
+        error => this._store.dispatch(new PushNotificationAction({severity: 'warn',summary: error}))
+      );
+    }
 
+    eliminarAnexo(i) {
+      const anexo = this.listaAnexos[i];
+      if (anexo.soporte === 'fisico') {
+        this.removeFromList(i, 'listaAnexos');
+      } else {
+        this._produccionDocumentalApi.eliminarVersionDocumento({id:anexo.id}).subscribe(
+          res => {
+            this.removeFromList(i, 'listaAnexos');
+            this.refreshView();
+          },
+          error => this._store.dispatch(new PushNotificationAction({severity: 'error',summary: error}))
+        );
       }
     }
 
@@ -315,7 +343,7 @@ export class PDDatosGeneralesComponent implements OnInit {
         console.log('Error el visualizar documento');
         return false;
       } else {
-
+        this.previewDocument(file);
       }
       return true;
     }

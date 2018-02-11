@@ -6,7 +6,6 @@ export interface AnexoDTO {
     soporte: string,
     tipo: ConstanteDTO,
     descripcion?: string,
-    idEcm?: string,
     file?: any,
 }
 
