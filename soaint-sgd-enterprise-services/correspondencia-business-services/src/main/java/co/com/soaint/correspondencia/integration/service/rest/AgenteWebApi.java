@@ -96,4 +96,16 @@ public class AgenteWebApi {
         log.info("processing rest request - actualizar destinatario");
         return boundary.actualizarDestinatario(destinatarioDTO);
     }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/agente/remitente/{nro_radicado}")
+    public AgenteDTO consultarRemitenteByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - consultar remitente por numero de radicado");
+        return boundary.consultarRemitenteByNroRadicado(nroRadicado);
+    }
 }

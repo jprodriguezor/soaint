@@ -68,4 +68,13 @@ public class GestionarAgente {
     public String actualizarRemitente(RemitenteDTO remitenteDTO) throws SystemException {
         return control.actualizarRemitente(remitenteDTO);
     }
+
+    /**
+     * @param nroRadicado
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public AgenteDTO consultarRemitenteByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        return control.consultarRemitenteByNroRadicado(nroRadicado);
+    }
 }
