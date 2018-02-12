@@ -60,6 +60,7 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
     private static final String ECM_ERROR = "ECM_ERROR";
+    private static final String ECM_ERROR_DUPLICADO = "ECM_ERROR_DUPLICADO";
     private static final String EXISTE_CARPETA = "Existe la Carpeta: ";
     private static final String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
     private static final String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
@@ -74,6 +75,7 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String APPLICATION_PDF= "application/pdf";
     private static final String PRODUCCION_DOCUMENTAL= "PRODUCCION DOCUMENTAL ";
     private static final String AVISO_CREA_DOC= "### Se va a crear el documento..";
+    private static final String AVISO_CREA_DOC_ID= "### Documento creado con id ";
 
 
 
@@ -642,11 +644,11 @@ public class ContentControlAlfresco implements ContentControl {
                 response.setCodMensaje("0000");
                 response.setMensaje(idDocumento);
 
-                logger.info("### Documento creado con id " + idDocumento);
+                logger.info(AVISO_CREA_DOC_ID + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
                 logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
                 response.setCodMensaje("1111");
-                response.setMensaje(configuracion.getPropiedad("ECM_ERROR_DUPLICADO"));
+                response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
             } catch (CmisConstraintException cce) {
                 logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
                 response.setCodMensaje("2222");
@@ -970,13 +972,13 @@ public class ContentControlAlfresco implements ContentControl {
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
-                    logger.info("### Documento creado con id " + idDocumento);
+                    logger.info(AVISO_CREA_DOC_ID + idDocumento);
                 }
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
             response.setCodMensaje("1111");
-            response.setMensaje(configuracion.getPropiedad("ECM_ERROR_DUPLICADO"));
+            response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
         } catch (CmisConstraintException cce) {
             logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
             response.setCodMensaje("2222");
@@ -1110,7 +1112,7 @@ public class ContentControlAlfresco implements ContentControl {
                         //Creando el mensaje de respuesta
                         response.setCodMensaje("0000");
                         response.setMensaje("Documento añadido correctamente");
-                        logger.info("### Documento creado con id " + idDocumento);
+                        logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
                     response.setCodMensaje("1111");
                     response.setMensaje("No existe la carpeta de Comunicaciones Oficiales");
@@ -1119,7 +1121,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
             response.setCodMensaje("1111");
-            response.setMensaje(configuracion.getPropiedad("ECM_ERROR_DUPLICADO"));
+            response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
         } catch (CmisConstraintException cce) {
             logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
             response.setCodMensaje("2222");
