@@ -49,6 +49,9 @@ public class AgenteControl {
     @Autowired
     PpdTrazDocumentoControl ppdTrazDocumentoControl;
 
+    @Autowired
+    DatosContactoControl datosContactoControl;
+
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
@@ -504,6 +507,34 @@ public class AgenteControl {
             em.flush();
 
             return "1";
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public AgenteDTO consultarRemitenteByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            AgenteDTO agenteDTO = em.createNamedQuery("CorAgente.findByNroRadicado", AgenteDTO.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getSingleResult();
+            agenteDTO.setDatosContactoList(datosContactoControl.consultarDatosContactoByIdAgente(agenteDTO.getIdeAgente()));
+            return agenteDTO;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("agente.agente_not_exist_by_nro_radicado")
+                    .withRootException(n)
+                    .buildBusinessException();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

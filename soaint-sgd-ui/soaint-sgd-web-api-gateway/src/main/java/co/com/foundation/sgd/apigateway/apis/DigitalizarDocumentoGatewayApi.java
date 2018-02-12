@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClien
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -50,12 +51,24 @@ public class DigitalizarDocumentoGatewayApi {
         /* Subida del fichero principal */
         InputPart parent = files.get(principalFileName);
         Response response = client.uploadDocument(sede, dependencia, principalFileName, parent, "");
+        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class);
 
-        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
+        files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
 
-            ecmIds.add(parentResponse.getMensaje());
-            ecmIds.addAll(client.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
+            MetadatosDocumentosDTO metadatosDocumentosDTO = (MetadatosDocumentosDTO) parentResponse.getContent();
+
+            if(files.isEmpty()){
+                ecmIds.add(metadatosDocumentosDTO.getIdDocumento());
+            }else{
+
+                client.uploadDocumentsAsociates(metadatosDocumentosDTO.getIdDocumento(),files, sede, dependencia).forEach(mensajeRespuesta -> {
+                    if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                        MetadatosDocumentosDTO metadatosDocumentosDTO1 = (MetadatosDocumentosDTO) mensajeRespuesta.getContent();
+                        ecmIds.add(metadatosDocumentosDTO1.getIdDocumento());
+                    }
+                });
+            }
 
             return Response.status(Response.Status.OK).entity(ecmIds).build();
         }
