@@ -122,6 +122,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             ]);
         }
       ).subscribe(response => {
+
          console.log(response);
 
         if (isNullOrUndefined(response[0])) {
@@ -131,15 +132,15 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             summary: SUCCESS_ADJUNTAR_DOCUMENTO
           }));
 
+          this._store.dispatch(new CompleteTaskAction({
+            idProceso: this.task.idProceso,
+            idDespliegue: this.task.idDespliegue,
+            idTarea: this.task.idTarea,
+            parametros: {
+              ideEcm: response[0]
+            }
+          }));
         }
-        this._store.dispatch(new CompleteTaskAction({
-          idProceso: this.task.idProceso,
-          idDespliegue: this.task.idDespliegue,
-          idTarea: this.task.idTarea,
-          parametros: {
-            ideEcm: response[0]
-          }
-        }));
       });
     }
 

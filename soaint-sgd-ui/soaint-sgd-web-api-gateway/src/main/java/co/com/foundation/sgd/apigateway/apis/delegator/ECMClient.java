@@ -50,21 +50,24 @@ public class ECMClient {
                 .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
 
-    public List<String> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia){
-        List<String> ecmIds = new ArrayList<>();
+    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia){
+        List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
             files.forEach((key, part) -> {
                 Response _response = this.uploadDocument(sede, dependencia, key, part, parentId);
                 MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
-                if (_response.getStatus() == HttpStatus.OK.value()
+
+                mensajeRespuestas.add(asociadoResponse);
+
+                /*if (_response.getStatus() == HttpStatus.OK.value()
                         && "0000".equals(asociadoResponse.getCodMensaje())) {
                     ecmIds.add(asociadoResponse.getMensaje());
-                }
+                }*/
             });
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
         }
-        return ecmIds;
+        return mensajeRespuestas;
     }
 
 
