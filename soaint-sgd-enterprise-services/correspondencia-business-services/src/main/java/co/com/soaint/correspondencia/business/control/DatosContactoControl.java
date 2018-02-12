@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,24 @@ public class DatosContactoControl {
                 }
             });
             return datosContactoDTOList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param idAgente
+     * @return
+     */
+    public List<DatosContactoDTO> consultarDatosContactoByIdAgente(BigInteger idAgente) throws SystemException {
+        try {
+            return em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
+                            .setParameter("IDE_AGENTE", idAgente)
+                            .getResultList();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
