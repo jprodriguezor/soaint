@@ -95,8 +95,15 @@ public class RecordServices implements IRecordServices {
         log.info("iniciar - Crear carpeta record: {}", entrada);
         Map<String, String> query = new HashMap<>();
         JSONObject parametro = new JSONObject();
-        String codigoBusqueda = entrada.getDependencia().concat(".").concat(entrada.getSerie()).concat(".").concat(entrada.getSubSerie());
-        query.put("query", "select * from cmis:folder where cmis:name like '" + codigoBusqueda + "%'");
+        String queryPrincipal = "select * from rmc:rmarecordCategoryCustomProperties where rmc:xSeccion = '"+ entrada.getDependencia() +"' and  rmc:xCodSerie = '" + entrada.getSerie() + "' ";
+        if(!entrada.getSubSerie().equals("")){
+            String condicionSubserie = " and  rmc:xCodSubSerie = '"+entrada.getSubSerie()+"' ";
+            queryPrincipal.concat(condicionSubserie);
+        }
+       String codigoBusqueda = entrada.getDependencia().concat(".").concat(entrada.getSerie()).concat(".").concat(entrada.getSubSerie());
+
+        //query.put("query", "select * from cmis:folder where cmis:name like '" + codigoBusqueda + "%'");
+        query.put("query", queryPrincipal);
         query.put("language", "cmis");
         parametro.put("query", query);
         //String codigoNodo = buscarRuta(parametro);
