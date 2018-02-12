@@ -66,9 +66,9 @@ public class ProduccionDocumentalGatewayApi {
         Response response = clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            ecmIds.add(parentResponse.getMensaje());
+            /*ecmIds.add(parentResponse.getMensaje());
             ecmIds.addAll(clientECM.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
-            return Response.status(Response.Status.OK).entity(ecmIds).build();
+            return Response.status(Response.Status.OK).entity(ecmIds).build();*/
         }
         return response;
     }
