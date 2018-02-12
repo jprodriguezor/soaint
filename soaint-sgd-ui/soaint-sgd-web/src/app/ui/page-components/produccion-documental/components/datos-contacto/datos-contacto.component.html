@@ -34,7 +34,7 @@
   </p-panel>
 </form>
 
-<app-datos-remitente  #datosRemitente *ngIf="false" [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>
+<app-datos-remitente  #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>
 
 <datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'" [listaDestinatarios]="listaDestinatariosExternos"></datos-destinatario-externo>
 

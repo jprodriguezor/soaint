@@ -4,8 +4,8 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
-import {StatusDTO} from "../../models/StatusDTO";
-import {DestinatarioDTO} from "../../../../../domain/destinatarioDTO";
+import {StatusDTO} from '../../models/StatusDTO';
+import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
 
 
 @Component({
@@ -37,7 +37,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
-      // this.datosRemitente.setTipoComunicacion(tipoComunicacion);
+      this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
     });
 
     this.initForm();
@@ -45,7 +45,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {}
 
-  updateStatus(currentStatus:StatusDTO){
+  updateStatus(currentStatus: StatusDTO) {
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
     if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
