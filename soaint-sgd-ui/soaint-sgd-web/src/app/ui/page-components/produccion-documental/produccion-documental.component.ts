@@ -10,8 +10,8 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {TaskForm} from 'app/shared/interfaces/task-form.interface';
 import {Observable} from 'rxjs/Observable';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {ProduccionDocumentalApiService} from "../../../infrastructure/api/produccion-documental.api";
-import {StatusDTO, VariablesTareaDTO} from "./models/StatusDTO";
+import {ProduccionDocumentalApiService} from '../../../infrastructure/api/produccion-documental.api';
+import {StatusDTO, VariablesTareaDTO} from './models/StatusDTO';
 
 @Component({
   selector: 'produccion-documental',
@@ -33,7 +33,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   tipoComunicacionSelected: ConstanteDTO;
   subscription: Subscription;
 
-  revisar = false;
   aprobar = false;
   tabIndex = 0;
 
@@ -54,18 +53,20 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
+  parseIncomingListaProyector(lista: string) {
+    const proyectores = lista.match(/\[(.*)\]/)[1];
+    return proyectores.split(',');
+  }
+
+
   ngOnInit(): void {
     this._store.select(getActiveTask).take(1).subscribe(activeTask => {
       this.task = activeTask;
       this.taskVariables = {
         aprobado: activeTask.variables.aprobado || 0,
-        codDependenciaProyector: activeTask.variables.codDependenciaProyector || null,
-        listaProyector: activeTask.variables.listaProyector || [],
-        listaAprobador: activeTask.variables.listaAprobador || [],
-        listaRevisor: activeTask.variables.listaRevisor || [],
-        usuarioProyector: activeTask.variables.usuarioProyector || null,
-        usuarioRevisor: activeTask.variables.usuarioRevisor || null,
-        usuarioAprobador: activeTask.variables.usuarioAprobador || null
+        listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector) || [],
+        listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador) || [],
+        listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor) || []
       };
       this._produccionDocumentalApi.obtenerEstadoTarea({
         idInstanciaProceso: this.task.idInstanciaProceso,
@@ -78,7 +79,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
             this.datosContacto.updateStatus(status);
             this.gestionarProduccion.updateStatus(status);
           } else {
-            this.taskVariables.listaProyector = [this.taskVariables.usuarioProyector.concat(":").concat(this.taskVariables.codDependenciaProyector)];
             this.taskCurrentStatus = {
               datosGenerales: {
                 tipoComunicacion: null,
@@ -111,17 +111,17 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
-  getCurrentStatus() : StatusDTO {
+  getCurrentStatus(): StatusDTO {
     this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
     this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
     this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
     this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
     this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
     if (this.datosGenerales.form.get('tipoComunicacion').value) {
-      this.taskCurrentStatus.datosContacto.listaDestinatarios =  this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'?
+      this.taskCurrentStatus.datosContacto.listaDestinatarios =  this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI' ?
         this.datosContacto.destinatarioInterno.listaDestinatarios :
         this.datosContacto.destinatarioExterno.listaDestinatarios;
-    }else{
+    } else {
       this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
     }
     this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
@@ -138,13 +138,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
       if (el.rol.rol === 'proyector') {
-        this.taskVariables.listaProyector.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaProyector.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'revisor') {
-        this.taskVariables.listaRevisor.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaRevisor.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));
       } else
       if (el.rol.rol === 'aprobador') {
-        this.taskVariables.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
+        this.taskVariables.listaAprobador.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));
       }
     });
 
@@ -152,7 +152,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
-      parametros: Object.assign(this.taskVariables, {datosPD:currentStatus})
+      parametros: Object.assign(this.taskVariables, {datosPD: currentStatus})
     });
   }
 
