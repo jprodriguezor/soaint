@@ -147,6 +147,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this.taskVariables.listaAprobador.push(el.funcionario.loginName.concat(":").concat(el.dependencia.codigo));
       }
     });
+    console.log("finalizar tarea de producion documental");
 
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
