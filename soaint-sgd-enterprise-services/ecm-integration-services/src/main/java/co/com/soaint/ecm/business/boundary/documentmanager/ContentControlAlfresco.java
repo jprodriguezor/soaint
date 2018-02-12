@@ -60,7 +60,7 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
     private static final String ECM_ERROR = "ECM_ERROR";
-    private static final String ECM_ERROR_DUPLICADO = "ECM_ERROR_DUPLICADO";
+    private static final String ECM_ERROR_DUPLICADO = "ECM ERROR DUPLICADO";
     private static final String EXISTE_CARPETA = "Existe la Carpeta: ";
     private static final String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
     private static final String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
@@ -237,11 +237,7 @@ public class ContentControlAlfresco implements ContentControl {
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
                     logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
-                    if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
-                        metadatosDocumentosDTO.setNombreDocumento(version.getName());
-                        versionesLista.add(metadatosDocumentosDTO);
-                        file = convertInputStreamToFile(version.getContentStream());
-                    }
+                    file = getFile(metadatosDocumentosDTO, versionesLista, version);
 
                 }
                 return Response.ok(file)
@@ -260,6 +256,25 @@ public class ContentControlAlfresco implements ContentControl {
 
             return Response.serverError().build();
         }
+    }
+
+    /**
+     * Metodo para retornal el archivo
+     * @param metadatosDocumentosDTO Objeto que contiene los metadatos
+     * @param versionesLista Listado por el que se va a buscar
+     * @param version Version del documento que se esta buscando
+     * @return Objeto file
+     * @throws IOException
+     */
+    private File getFile(MetadatosDocumentosDTO metadatosDocumentosDTO, ArrayList<MetadatosDocumentosDTO> versionesLista, Document version) throws IOException {
+        File fileAux = null;
+        if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
+            metadatosDocumentosDTO.setNombreDocumento(version.getName());
+            versionesLista.add(metadatosDocumentosDTO);
+
+            fileAux = convertInputStreamToFile(version.getContentStream());
+        }
+        return fileAux;
     }
 
 
@@ -646,11 +661,11 @@ public class ContentControlAlfresco implements ContentControl {
 
                 logger.info(AVISO_CREA_DOC_ID + idDocumento);
             } catch (CmisContentAlreadyExistsException ccaee) {
-                logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+                logger.error(ECM_ERROR_DUPLICADO, ccaee);
                 response.setCodMensaje("1111");
                 response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
             } catch (CmisConstraintException cce) {
-                logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
+                logger.error(ECM_ERROR, cce);
                 response.setCodMensaje("2222");
                 response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
             } catch (Exception e) {
@@ -976,11 +991,11 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
-            logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+            logger.error(ECM_ERROR_DUPLICADO, ccaee);
             response.setCodMensaje("1111");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
         } catch (CmisConstraintException cce) {
-            logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
+            logger.error(ECM_ERROR, cce);
             response.setCodMensaje("2222");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         } catch (Exception e) {
@@ -1119,11 +1134,11 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
-            logger.error("### Error tipo CmisContentAlreadyExistsException----------------------------- :", ccaee);
+            logger.error(ECM_ERROR_DUPLICADO, ccaee);
             response.setCodMensaje("1111");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
         } catch (CmisConstraintException cce) {
-            logger.error("### Error tipo CmisConstraintException----------------------------- :", cce);
+            logger.error(ECM_ERROR, cce);
             response.setCodMensaje("2222");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         } catch (Exception e) {

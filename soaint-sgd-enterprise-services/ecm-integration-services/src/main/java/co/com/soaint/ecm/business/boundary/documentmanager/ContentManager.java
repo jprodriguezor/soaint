@@ -118,20 +118,20 @@ public class ContentManager {
      */
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
 
-        logger.info ("### Subiendo documento adjunto al content..");
+        logger.info ("### Subiendo documento principal/adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
             Conexion conexion;
             new Conexion ( );
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de subir el documento..");
+            logger.info ("### Se invoca el metodo de subir el documento principal/adjunto..");
             response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO);
 
         } catch (Exception e) {
-            logger.error ("Error subiendo documento", e);
+            logger.error ("Error subiendo documento principal/adjunto", e);
             response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear el documento");
+            response.setMensaje ("Error al crear el documento principal/adjunto");
             throw e;
         }
         return response;
