@@ -4,8 +4,8 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../domain/constanteDTO';
 import {RolDTO} from '../../domain/rolesDTO';
-import {SUCCESS_ADJUNTAR_DOCUMENTO} from "../../shared/lang/es";
-import {PushNotificationAction} from "../state-management/notifications-state/notifications-actions";
+import {SUCCESS_ADJUNTAR_DOCUMENTO} from '../../shared/lang/es';
+import {PushNotificationAction} from '../state-management/notifications-state/notifications-actions';
 
 @Injectable()
 export class ProduccionDocumentalApiService {
@@ -17,30 +17,30 @@ export class ProduccionDocumentalApiService {
     return this._api.post(environment.taskStatus_endpoint, payload).map(response => response);
   }
 
-  obtenerEstadoTarea(payload: {idInstanciaProceso:string, idTareaProceso:string}) {
+  obtenerEstadoTarea(payload: {idInstanciaProceso: string, idTareaProceso: string}) {
     return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload);
   }
 
-  subirVersionDocumento(formData:FormData, payload:{nombre:string,sede:string,dependencia:string,tipo:string,id:string}) {
+  subirVersionDocumento(formData: FormData, payload: {nombre: string, sede: string, dependencia: string, tipo: string, id: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirDocumentoVersionado, formData,
-      [payload.nombre,payload.sede,payload.dependencia,payload.tipo,payload.id,'PD']
+      [payload.nombre, payload.sede, payload.dependencia, payload.tipo, payload.id, 'PD']
     );
   }
 
-  obtenerVersionDocumento(payload:{id:string,version:string}) {
-    return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento,{identificadorDoc:payload.id,version:payload.version});
+  obtenerVersionDocumento(payload: {id: string, version: string}) {
+    return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento, {identificadorDoc: payload.id, version: payload.version});
   }
 
-  eliminarVersionDocumento(payload:{id:string}) {
-    return this._api.post(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${payload.id}`,{});
+  eliminarVersionDocumento(payload: {id: string}) {
+    return this._api.post(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${payload.id}`, {});
   }
 
-  obtenerAnexo(payload:{id:string}) {
+  obtenerAnexo(payload: {id: string}) {
     return this._api.post(`${environment.pd_gestion_documental.obtenerAnexo}/${payload.id}`);
   }
 
-  subirAnexo(formData:FormData, payload:{nombre:string,sede:string,dependencia:string}) {
+  subirAnexo(formData: FormData, payload: {nombre: string, sede: string, dependencia: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirAnexo, formData,
       [payload.nombre, payload.sede, payload.dependencia]);
@@ -92,11 +92,11 @@ export class ProduccionDocumentalApiService {
     return this._api.list(environment.dependencias_endpoint, payload).map(res => res.dependencias);
   }
 
-  getTipoPlantilla(payload) : Observable<string> {
+  getTipoPlantilla(payload): Observable<string> {
       return this._api.list(`${environment.tipoPlantilla_endpoint}/obtener/${payload.codigo}`, payload).map(res => res.text);
   }
 
-  generarPdf(payload) : Observable<{success:boolean,text:string}> {
+  generarPdf(payload): Observable<{success: boolean, text: string}> {
     return this._api.post(`${environment.tipoPlantilla_endpoint}/generar-pdf`, payload).map(res => res);
   }
 

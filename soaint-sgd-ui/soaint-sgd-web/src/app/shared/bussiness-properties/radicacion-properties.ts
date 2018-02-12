@@ -3,6 +3,8 @@ export const PERSONA_JURIDICA = 'TP-PERPJ';
 export const PERSONA_NATURAL = 'TP-PERPN';
 export const COMUNICACION_EXTERNA = 'EE';
 export const COMUNICACION_INTERNA = 'EI';
+export const COMUNICACION_EXTERNA_ENVIADA = 'SE';
+export const COMUNICACION_INTERNA_ENVIADA = 'SI';
 
 export const DESTINATARIO_PRINCIPAL = 'TP-DESP';
 
