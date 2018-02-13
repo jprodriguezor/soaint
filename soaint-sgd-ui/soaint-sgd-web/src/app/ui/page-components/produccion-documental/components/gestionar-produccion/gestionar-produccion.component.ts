@@ -11,10 +11,10 @@ import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 import {StatusDTO} from '../../models/StatusDTO';
 import {ProyectorDTO} from '../../../../../domain/ProyectorDTO';
-import {Subscriber} from 'rxjs/Subscriber';
-import {getActiveTask} from '../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Store} from '@ngrx/store';
 import {State as RootState} from '../../../../../infrastructure/redux-store/redux-reducers';
+import {isString} from 'util';
+import {DependenciaDTO} from '../../../../../domain/dependenciaDTO';
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -63,6 +63,34 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
       this.listenForChanges();
   }
 
+  initProyeccionLista(lista: string[], rol: string) {
+      const listaProyeccion: ProyectorDTO[] = [];
+      const results: FuncionarioDTO[] = [];
+      let value = [];
+      let dependencia: DependenciaDTO = null;
+      console.log(`Lista: ${rol}:`);
+      lista.forEach((el) => {
+          value = el.split(':');
+          if (value.length > 1 && isString(value[0])) {
+              console.log(`Looking for Funcionario: ${value[0]}`);
+              this._produccionDocumentalApi.getFuncionarioPorLoginname(value[0]).subscribe((res: FuncionarioDTO) => {
+                  console.log(`Found funcionario: ${res.nombre}`);
+                  dependencia = res.dependencias.find((dep: DependenciaDTO) => dep.codigo === value[1]);
+                  listaProyeccion.push({
+                      funcionario: res,
+                      dependencia: dependencia,
+                      sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
+                      rol: this._produccionDocumentalApi.getRoleByRolename(rol)
+                  });
+              });
+          }
+      });
+      this.listaProyectores = [...listaProyeccion];
+      console.log(this.listaProyectores);
+      this.startIndex += this.listaProyectores.length;
+      this.refreshView();
+  }
+
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
     this.startIndex = this.listaProyectores.length;
@@ -74,11 +102,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   eliminarProyector(index) {
-    // if (index >= this.startIndex) {
+    if (index >= this.startIndex) {
       const proyectores = this.listaProyectores;
       proyectores.splice(index, 1);
       this.listaProyectores = [...proyectores];
-    // }
+    }
   }
 
   agregarProyector() {

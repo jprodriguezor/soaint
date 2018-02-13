@@ -68,6 +68,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador) || [],
         listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor) || []
       };
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaProyector, 'proyector');
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaRevisor, 'revisor');
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaAprobador, 'aprobador');
       this._produccionDocumentalApi.obtenerEstadoTarea({
         idInstanciaProceso: this.task.idInstanciaProceso,
         idTareaProceso: this.idEstadoTarea

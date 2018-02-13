@@ -10,6 +10,13 @@ import {PushNotificationAction} from '../state-management/notifications-state/no
 @Injectable()
 export class ProduccionDocumentalApiService {
 
+    roles: RolDTO[] = [
+        {'id': 1, 'rol': 'administrador', 'nombre': 'Administrador'},
+        {'id': 2, 'rol': 'proyector', 'nombre': 'Proyector'},
+        {'id': 3, 'rol': 'revisor', 'nombre': 'Revisor'},
+        {'id': 4, 'rol': 'aprobador', 'nombre': 'Aprobador'}
+    ];
+
   constructor(private _api: ApiBase) {
   }
 
@@ -46,6 +53,13 @@ export class ProduccionDocumentalApiService {
       [payload.nombre, payload.sede, payload.dependencia]);
   }
 
+    getFuncionarioPorLoginname(loginname: string) {
+        return this._api.list(`${environment.obtenerFuncionario_endpoint}/${loginname}`).map(res => res);
+    }
+
+    getDependenciaPorCodigo(codigo: string) {
+    return this._api.list(`${environment.dependenciaGrupo_endpoint}/dependencias/${codigo}`).map(res => res);
+    }
 
 
   ejecutarProyeccionMultiple(payload: {}) {
@@ -108,12 +122,11 @@ export class ProduccionDocumentalApiService {
   }
 
   getRoles(payload: {}): Observable<RolDTO[]> {
-    return Observable.of(JSON.parse(`[
-          {"id":1,"rol":"administrador","nombre":"Administrador"},
-          {"id":2,"rol":"proyector","nombre":"Proyector"},
-          {"id":3,"rol":"revisor","nombre":"Revisor"},
-          {"id":4,"rol":"aprobador","nombre":"Aprobador"}
-        ]`));
+    return Observable.of(this.roles);
+  }
+
+  getRoleByRolename(rolname: string): RolDTO {
+    return this.roles.find((el: RolDTO) => el.rol === rolname);
   }
 
 }
