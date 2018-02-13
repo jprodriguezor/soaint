@@ -100,7 +100,6 @@ export const environment = {
   pd_gestion_documental : {
     subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
     obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
-    //subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
     subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
     obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
     eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
