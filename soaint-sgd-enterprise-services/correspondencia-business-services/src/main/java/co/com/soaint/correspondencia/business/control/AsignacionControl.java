@@ -243,7 +243,7 @@ public class AsignacionControl {
      * @throws BusinessException
      */
     public AsignacionesDTO conformarAsignaciones(List<AgenteDTO> agentes, BigInteger ideDocumento, String codTipoAsignacion,
-                                                 BigInteger ideFuncionario) throws SystemException, BusinessException {
+                                                 BigInteger ideFuncionario) {
         AsignacionesDTO asignaciones = AsignacionesDTO.newInstance()
                 .asignaciones(new ArrayList<>())
                 .build();
@@ -382,7 +382,6 @@ public class AsignacionControl {
         }
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     private DctAsigUltimo getAsignacionUltimoByIdeAgente(BigInteger ideAgente) throws BusinessException, SystemException {
         try {
             return em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
