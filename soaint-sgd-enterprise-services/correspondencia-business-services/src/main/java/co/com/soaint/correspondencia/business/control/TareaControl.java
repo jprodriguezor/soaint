@@ -71,6 +71,7 @@ public class TareaControl {
                     .getSingleResult();
             return trasformToDto(tarea);
         } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
             return null;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
