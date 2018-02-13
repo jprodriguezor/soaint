@@ -70,14 +70,12 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
     private static final String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
     private static final String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
-    private static final String CONTENT_DISPOSITION= "Content-Disposition";
-    private static final String DOCUMENTO= "documento";
-    private static final String APPLICATION_PDF= "application/pdf";
-    private static final String PRODUCCION_DOCUMENTAL= "PRODUCCION DOCUMENTAL ";
-    private static final String AVISO_CREA_DOC= "### Se va a crear el documento..";
-    private static final String AVISO_CREA_DOC_ID= "### Documento creado con id ";
-
-
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String DOCUMENTO = "documento";
+    private static final String APPLICATION_PDF = "application/pdf";
+    private static final String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
+    private static final String AVISO_CREA_DOC = "### Se va a crear el documento..";
+    private static final String AVISO_CREA_DOC_ID = "### Documento creado con id ";
 
 
     /**
@@ -260,9 +258,10 @@ public class ContentControlAlfresco implements ContentControl {
 
     /**
      * Metodo para retornal el archivo
+     *
      * @param metadatosDocumentosDTO Objeto que contiene los metadatos
-     * @param versionesLista Listado por el que se va a buscar
-     * @param version Version del documento que se esta buscando
+     * @param versionesLista         Listado por el que se va a buscar
+     * @param version                Version del documento que se esta buscando
      * @return Objeto file
      * @throws IOException
      */
@@ -794,11 +793,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session                Objeto de conexion a Alfresco
      * @param documento              Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los metadatos de los documentos.
+     * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Devuelve el id de la carpeta creada
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
@@ -841,7 +841,11 @@ public class ContentControlAlfresco implements ContentControl {
 
             properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
-            buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties, PRODUCCION_DOCUMENTAL);
+            if ("PD".equals(selector)) {
+                buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties, PRODUCCION_DOCUMENTAL);
+            } else {
+                buscarCrearCarpetaRadicacion(session, metadatosDocumentosDTO, response, bytes, properties, selector);
+            }
         }
 
         return response;
@@ -858,12 +862,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,  String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info("Se entra al metodo subirVersionarDocumentoGenerado");
 
         MensajeRespuesta response = new MensajeRespuesta();
-        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList= new ArrayList<>();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get(DOCUMENTO);
         for (InputPart inputPart : inputParts) {
@@ -884,10 +888,6 @@ public class ContentControlAlfresco implements ContentControl {
                 metadatosDocumentosDTO.setTipoDocumento(APPLICATION_PDF);
             }
 
-
-
-
-
             if ("none".equals(metadatosDocumentosDTO.getIdDocumento())) {
 
                 //Se definen las propiedades del documento a subir
@@ -899,7 +899,7 @@ public class ContentControlAlfresco implements ContentControl {
                 if ("PD".equals(selector)) {
                     buscarCrearCarpeta(session, metadatosDocumentosDTO, response, bytes, properties, PRODUCCION_DOCUMENTAL);
                 } else {
-                    buscarCrearCarpetaRadicacion(session, metadatosDocumentosDTO, response, bytes, properties,  selector);
+                    buscarCrearCarpetaRadicacion(session, metadatosDocumentosDTO, response, bytes, properties, selector);
                 }
             } else {
                 //Obtener documento dado id
@@ -943,7 +943,7 @@ public class ContentControlAlfresco implements ContentControl {
      */
     private void buscarCrearCarpeta(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
         String idDocumento;
-        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList= new ArrayList<>();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
@@ -1022,7 +1022,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param bytes                  Contenido del documento
      * @param properties             propiedades de carpeta
      */
-    private void buscarCrearCarpetaRadicacion(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties,  String tipoComunicacion) {
+    private void buscarCrearCarpetaRadicacion(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String tipoComunicacion) {
         String idDocumento;
         List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         try {
@@ -1137,8 +1137,8 @@ public class ContentControlAlfresco implements ContentControl {
                         response.setMensaje("Documento añadido correctamente");
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
-                    response.setCodMensaje("1111");
-                    response.setMensaje("No existe la carpeta de Comunicaciones Oficiales");
+                    response.setCodMensaje("0000");
+                    response.setMensaje("Documento Creado Correctamente");
                 }
             }
         } catch (CmisContentAlreadyExistsException ccaee) {

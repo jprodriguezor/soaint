@@ -113,10 +113,11 @@ public class ContentManager {
      *
      * @param documento        Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
 
         logger.info ("### Subiendo documento principal/adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -126,7 +127,7 @@ public class ContentManager {
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
             logger.info ("### Se invoca el metodo de subir el documento principal/adjunto..");
-            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO);
+            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO,selector);
 
         } catch (Exception e) {
             logger.error ("Error subiendo documento principal/adjunto", e);

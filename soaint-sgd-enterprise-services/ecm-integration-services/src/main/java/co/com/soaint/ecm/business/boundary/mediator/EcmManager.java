@@ -79,14 +79,15 @@ public class EcmManager {
      *
      * @param documento        Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
+     * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
         logger.info("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO);
+            response=contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO,selector);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
