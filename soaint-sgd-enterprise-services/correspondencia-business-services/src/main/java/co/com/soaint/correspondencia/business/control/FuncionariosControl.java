@@ -11,10 +11,8 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +21,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -62,8 +61,8 @@ public class FuncionariosControl {
                     .setParameter("LOGIN_NAME", loginName)
                     .setParameter("ESTADO", estado)
                     .getSingleResult();
-                funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
-                return funcionario;
+            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
+            return funcionario;
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -110,7 +109,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param loginName
      * @return
      * @throws BusinessException
@@ -140,6 +138,36 @@ public class FuncionariosControl {
         }
     }
 
+    /**
+     *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public FuncionariosDTO listarFuncionariosByLoginNameList(String[] loginNames) throws SystemException {
+        List<FuncionarioDTO> funcionariosDTOList = new ArrayList<>();
+        try {
+            funcionariosDTOList = em.createNamedQuery("Funcionarios.findByLoginNamList", FuncionarioDTO.class)
+                    .setParameter("LOGIN_NAMES", Arrays.asList(loginNames))
+                    .getResultList();
+            return FuncionariosDTO.newInstance().funcionarios(funcionariosDTOList).build();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws BusinessException, SystemException {
         try {
@@ -164,12 +192,19 @@ public class FuncionariosControl {
         }
     }
 
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public String consultarCredencialesByIdeFunci(BigInteger ideFunci)throws BusinessException, SystemException{
+    public String consultarCredencialesByIdeFunci(BigInteger ideFunci) throws BusinessException, SystemException {
         try {
-        return em.createNamedQuery("Funcionarios.consultarCredencialesByIdeFunci", String.class)
-                .setParameter("IDE_FUNCI", ideFunci)
-                .getSingleResult();
+            return em.createNamedQuery("Funcionarios.consultarCredencialesByIdeFunci", String.class)
+                    .setParameter("IDE_FUNCI", ideFunci)
+                    .getSingleResult();
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -185,8 +220,15 @@ public class FuncionariosControl {
         }
     }
 
+    /**
+     *
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public String consultarLoginNameByIdeFunci(BigInteger ideFunci)throws BusinessException, SystemException{
+    public String consultarLoginNameByIdeFunci(BigInteger ideFunci) throws BusinessException, SystemException {
         try {
             return em.createNamedQuery("Funcionarios.consultarLoginNameByIdeFunci", String.class)
                     .setParameter("IDE_FUNCI", ideFunci)
@@ -207,16 +249,15 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionarioDTO
      * @throws SystemException
      */
-    public void crearFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+    public void crearFuncionario(FuncionarioDTO funcionarioDTO) throws SystemException {
         try {
             funcionarioDTO.setEstado("A");
             Funcionarios funcionario = funcionarioTransform(funcionarioDTO);
             funcionario.setTvsOrgaAdminXFunciPkList(new ArrayList<>());
-            for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()){
+            for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()) {
                 TvsOrgaAdminXFunciPkPk tvsOrgaAdminXFunciPkPk = new TvsOrgaAdminXFunciPkPk();
                 tvsOrgaAdminXFunciPkPk.setCodOrgaAdmi(dependenciaDTO.getCodDependencia());
                 tvsOrgaAdminXFunciPkPk.setFuncionario(funcionario);
@@ -236,12 +277,11 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionario
      * @return
      * @throws SystemException
      */
-    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String actualizarFuncionario(FuncionarioDTO funcionario) throws SystemException {
         try {
             em.createNamedQuery("Funcionarios.update")
                     .setParameter("IDE_FUNCI", funcionario.getIdeFunci())
@@ -266,13 +306,12 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionario
      * @return
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionario) throws SystemException {
         List<FuncionarioDTO> funcionarioDTOList = new ArrayList<>();
         try {
             em.createNamedQuery("Funcionarios.filter", FuncionarioDTO.class)
@@ -301,7 +340,12 @@ public class FuncionariosControl {
         }
     }
 
-    public Funcionarios funcionarioTransform(FuncionarioDTO funcionarioDTO){
+    /**
+     *
+     * @param funcionarioDTO
+     * @return
+     */
+    public Funcionarios funcionarioTransform(FuncionarioDTO funcionarioDTO) {
         AuditColumns auditColumns = new AuditColumns();
         auditColumns.setEstado(funcionarioDTO.getEstado());
         auditColumns.setCodUsuarioCrea(funcionarioDTO.getUsuarioCrea());

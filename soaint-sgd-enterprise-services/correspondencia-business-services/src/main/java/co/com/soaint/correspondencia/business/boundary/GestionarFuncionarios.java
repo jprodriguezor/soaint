@@ -43,6 +43,16 @@ public class GestionarFuncionarios {
 
     /**
      *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO listarFuncionariosByLoginNameList(String[] loginNames) throws SystemException {
+        return control.listarFuncionariosByLoginNameList(loginNames);
+    }
+
+    /**
+     *
      * @param codDependencia
      * @param codEstado
      * @return

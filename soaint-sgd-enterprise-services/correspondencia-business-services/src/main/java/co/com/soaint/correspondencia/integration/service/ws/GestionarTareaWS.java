@@ -47,7 +47,7 @@ public class GestionarTareaWS {
      */
     @WebMethod(action = "listarEstadoTarea", operationName = "listarEstadoTarea")
     public TareaDTO listarEstadoTarea(@WebParam(name = "id-instancia-proceso")final String idInstanciaProceso,
-                                      @WebParam(name = "id-tarea-proceso")final String idTareaProceso)throws BusinessException, SystemException{
+                                      @WebParam(name = "id-tarea-proceso")final String idTareaProceso)throws SystemException{
         return boundary.listarEstadoTarea(idInstanciaProceso, idTareaProceso);
     }
 

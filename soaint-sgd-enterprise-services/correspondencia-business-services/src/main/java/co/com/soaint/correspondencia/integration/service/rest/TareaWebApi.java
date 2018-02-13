@@ -60,7 +60,7 @@ public class TareaWebApi {
     @GET
     @Path("/tarea/{id-instancia-proceso}/{id-tarea-proceso}")
     public TareaDTO listarEstadoTarea(@PathParam("id-instancia-proceso")final String idInstanciaProceso,
-                                      @PathParam("id-tarea-proceso")final String idTareaProceso)throws BusinessException, SystemException{
+                                      @PathParam("id-tarea-proceso")final String idTareaProceso)throws SystemException{
         log.info("processing rest request - listar estado de una tarea");
         return boundary.listarEstadoTarea(idInstanciaProceso, idTareaProceso);
     }
