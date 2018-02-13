@@ -9,9 +9,12 @@ import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
-import {StatusDTO} from "../../models/StatusDTO";
-import {ProyectorDTO} from "../../../../../domain/ProyectorDTO";
-import {Subscriber} from "rxjs/Subscriber";
+import {StatusDTO} from '../../models/StatusDTO';
+import {ProyectorDTO} from '../../../../../domain/ProyectorDTO';
+import {Store} from '@ngrx/store';
+import {State as RootState} from '../../../../../infrastructure/redux-store/redux-reducers';
+import {isString} from 'util';
+import {DependenciaDTO} from '../../../../../domain/dependenciaDTO';
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -36,7 +39,8 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   subscribers: Array<Subscription> = [];
 
 
-  constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
+  constructor(private _store: Store<RootState>,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private _funcionarioSandBox: FuncionarioSandbox,
@@ -54,12 +58,40 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-    this.roles$ = this._produccionDocumentalApi.getRoles({});
-    this.listenForChanges();
+      this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+      this.roles$ = this._produccionDocumentalApi.getRoles({});
+      this.listenForChanges();
   }
 
-  updateStatus(currentStatus:StatusDTO) {
+  initProyeccionLista(lista: string[], rol: string) {
+      const listaProyeccion: ProyectorDTO[] = [];
+      const results: FuncionarioDTO[] = [];
+      let value = [];
+      let dependencia: DependenciaDTO = null;
+      console.log(`Lista: ${rol}:`);
+      lista.forEach((el) => {
+          value = el.split(':');
+          if (value.length > 1 && isString(value[0])) {
+              console.log(`Looking for Funcionario: ${value[0]}`);
+              this._produccionDocumentalApi.getFuncionarioPorLoginname(value[0]).subscribe((res: FuncionarioDTO) => {
+                  console.log(`Found funcionario: ${res.nombre}`);
+                  dependencia = res.dependencias.find((dep: DependenciaDTO) => dep.codigo === value[1]);
+                  listaProyeccion.push({
+                      funcionario: res,
+                      dependencia: dependencia,
+                      sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
+                      rol: this._produccionDocumentalApi.getRoleByRolename(rol)
+                  });
+              });
+          }
+      });
+      this.listaProyectores = [...listaProyeccion];
+      console.log(this.listaProyectores);
+      this.startIndex += this.listaProyectores.length;
+      this.refreshView();
+  }
+
+  updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
     this.startIndex = this.listaProyectores.length;
   }
@@ -70,11 +102,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   eliminarProyector(index) {
-    //if (index >= this.startIndex) {
+    if (index >= this.startIndex) {
       const proyectores = this.listaProyectores;
       proyectores.splice(index, 1);
       this.listaProyectores = [...proyectores];
-    //}
+    }
   }
 
   agregarProyector() {
@@ -160,7 +192,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscribers.forEach((sub:Subscription) => sub.unsubscribe());
+    this.subscribers.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
   refreshView() {

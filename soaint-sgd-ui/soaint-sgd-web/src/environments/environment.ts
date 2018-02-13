@@ -10,8 +10,8 @@
 const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+ //const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+ //const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -78,6 +78,7 @@ export const environment = {
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo/`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
