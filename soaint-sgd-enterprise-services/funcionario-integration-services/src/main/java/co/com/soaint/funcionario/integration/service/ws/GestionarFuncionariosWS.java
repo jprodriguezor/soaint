@@ -79,4 +79,15 @@ public class GestionarFuncionariosWS {
         //TODo implementacion
         return new FuncionarioDTO();
     }
+
+    /**
+     *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    @WebMethod(action = "listarFuncionariosByLoginNameList", operationName = "listarFuncionariosByLoginNameList")
+    public FuncionariosDTO listarFuncionariosByLoginNameList(@WebParam(name = "login_name")final String[] loginNames) throws SystemException {
+        return boundary.listarFuncionariosByLoginNameList(String.join(",", loginNames));
+    }
 }
