@@ -139,19 +139,23 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param loginNames
      * @return
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionariosDTO listarFuncionariosByLoginNameList(String[] loginNames) throws SystemException {
-        List<FuncionarioDTO> funcionariosDTOList = new ArrayList<>();
         try {
-            funcionariosDTOList = em.createNamedQuery("Funcionarios.findByLoginNamList", FuncionarioDTO.class)
+            FuncionariosDTO funcionarios = FuncionariosDTO.newInstance().funcionarios(em.createNamedQuery("Funcionarios.findByLoginNamList", FuncionarioDTO.class)
                     .setParameter("LOGIN_NAMES", Arrays.asList(loginNames))
-                    .getResultList();
-            return FuncionariosDTO.newInstance().funcionarios(funcionariosDTOList).build();
+                    .getResultList())
+                    .build();
+
+            for (FuncionarioDTO funcionarioDTO : funcionarios.getFuncionarios()) {
+                funcionarioDTO.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionarioDTO.getIdeFunci()));
+            }
+
+            return funcionarios;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -162,7 +166,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param ideFunci
      * @return
      * @throws BusinessException
@@ -193,7 +196,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param ideFunci
      * @return
      * @throws BusinessException
@@ -221,7 +223,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param ideFunci
      * @return
      * @throws BusinessException
@@ -341,7 +342,6 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionarioDTO
      * @return
      */
