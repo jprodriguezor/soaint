@@ -72,6 +72,8 @@ public class RecordServices implements IRecordServices {
 
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
+        log.info("iniciar - Crear estructura en record: {}");
+        try {
         Map<String, String> idNodosPadre = new HashMap<>();
         codigosRecord = new HashMap<>();
         for (EstructuraTrdDTO estructura : structure) {
@@ -86,27 +88,35 @@ public class RecordServices implements IRecordServices {
         idPadre = "";
 
         return MensajeRespuesta.newInstance()
-                .codMensaje("OKOKOK")
+                .codMensaje("0000")
+                .mensaje("Estructura creada correctamente")
                 .build();
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin -  Crear estructura en record: ");
+        }
     }
 
     @Override
     public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
         log.info("iniciar - Crear carpeta record: {}", entrada);
+        try {
         Map<String, String> query = new HashMap<>();
         JSONObject parametro = new JSONObject();
         String queryPrincipal = "select * from rmc:rmarecordCategoryCustomProperties where rmc:xSeccion = '"+ entrada.getDependencia() +"' and  rmc:xCodSerie = '" + entrada.getSerie() + "' ";
         if(!entrada.getSubSerie().equals("")){
             String condicionSubserie = " and  rmc:xCodSubSerie = '"+entrada.getSubSerie()+"' ";
-            queryPrincipal.concat(condicionSubserie);
+           queryPrincipal = queryPrincipal.concat(condicionSubserie);
         }
        String codigoBusqueda = entrada.getDependencia().concat(".").concat(entrada.getSerie()).concat(".").concat(entrada.getSubSerie());
-
-        //query.put("query", "select * from cmis:folder where cmis:name like '" + codigoBusqueda + "%'");
         query.put("query", queryPrincipal);
         query.put("language", "cmis");
         parametro.put("query", query);
-        //String codigoNodo = buscarRuta(parametro);
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", entrada.getNombreCarpeta());
         carpeta.put(tipoNodo, recordCarpeta);
@@ -117,6 +127,15 @@ public class RecordServices implements IRecordServices {
                 .codMensaje("0000")
                 .mensaje("Carpeta creda en ".concat(codigoBusqueda))
                 .build();
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("fin -  Crear carpeta record: ");
+        }
     }
 
     public String buscarRuta(JSONObject entrada) throws SystemException {
@@ -127,7 +146,7 @@ public class RecordServices implements IRecordServices {
             Response response = wt.path("")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
-                    .header("Content-Type", "application/json")
+                    .header(headerAccept, valueApplicationType)
                     .post(Entity.json(entrada.toString()));
 
             if (response.getStatus() != 200) {
@@ -164,7 +183,7 @@ public class RecordServices implements IRecordServices {
             Response response = wt.path("/sites/" + idRecordManager + "/containers")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
-                    .header("Content-Type", "application/json")
+                    .header(headerAccept, valueApplicationType)
                     .get();
 
             if (response.getStatus() != 200) {
@@ -202,7 +221,7 @@ public class RecordServices implements IRecordServices {
             Response response = wt.path("/file-plans/" + obtenerIdFilePlan() + "/categories")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
-                    .header("Content-Type", "application/json")
+                    .header(headerAccept, valueApplicationType)
                     .post(Entity.json(entrada.toString()));
 
             if (response.getStatus() != 201) {
@@ -375,22 +394,28 @@ public class RecordServices implements IRecordServices {
                 JSONObject valor = respuestaJson.getJSONObject((String) key);
                 JSONArray listaNodosJson = valor.getJSONArray("entries");
                 for (int i = 0; i < listaNodosJson.length(); i++) {
-                    JSONObject proceso = (JSONObject) listaNodosJson.get(i);
-                    Iterator keys1 = proceso.keys();
-                    while (keys1.hasNext()) {
-                        Object key1 = keys1.next();
-                        if ("entry".equalsIgnoreCase(key1.toString())) {
-                            JSONObject valor1 = proceso.getJSONObject((String) key1);
-                            String tipoNodo = valor1.getString(nodo);
-                            if (tipoNodo.equalsIgnoreCase(nombreNodo))
-                                codigoId = valor1.getString("id");
-                        }
-                    }
+                    JSONObject valorJson = (JSONObject) listaNodosJson.get(i);
+                    codigoId = obtenerIdNodo(valorJson,nodo,nombreNodo);
+
                 }
 
             }
         }
         return codigoId;
+    }
+
+    private String obtenerIdNodo(JSONObject respuestaJson, String nodo, String nombreNodo) {
+        String nodoId = "";
+        Iterator keys1 = respuestaJson.keys();
+        while (keys1.hasNext()) {
+            Object key1 = keys1.next();
+            if ("entry".equalsIgnoreCase(key1.toString())) {
+                JSONObject valor1 = respuestaJson.getJSONObject((String) key1);
+                if (valor1.getString(nodo).equalsIgnoreCase(nombreNodo))
+                    nodoId = valor1.getString("id");
+            }
+        }
+        return nodoId;
     }
 
 }
