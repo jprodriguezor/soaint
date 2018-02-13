@@ -119,7 +119,7 @@
               <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
                 <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
                   <button type="button" icon="ui-icon-close" pButton
-                          class="ui-button ui-button-icon ui-button-danger" (click)="eliminarProyector(rindex)"
+                          class="ui-button ui-button-icon ui-button-danger" (click)="eliminarProyector(rindex)" [disabled]="rindex < startIndex"
                   ></button>
                 </ng-template>
               </p-column>
