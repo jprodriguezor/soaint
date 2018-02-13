@@ -31,7 +31,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   @Input('principal') principal: boolean;
-  @Output() change: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output('changePrincipal') changePrincipal: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   dependencias$: Observable<ConstanteDTO[]>;
   funcionarios$: Observable<FuncionarioDTO[]>;
@@ -101,7 +101,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     if (newone.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal) {
       this._store.dispatch(new PushNotificationAction({
         severity: 'success',
-        summary: 'Existe un destinatario principal en los destinatarios internos'
+        summary: 'Existe un destinatario principal en los destinatarios externos'
       }));
       return false;
     }
@@ -120,7 +120,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
           this.listaDestinatarios = [...newList];
           this.form.reset();
           this.principal = true;
-          this.change.emit(this.principal);
+          this.changePrincipal.emit(this.principal);
         }
       });
       return true;
@@ -135,7 +135,7 @@ export class DatosDestinatarioInternoComponent implements OnInit, OnDestroy {
     this.listaDestinatarios = [...destinatarios];
     this.form.reset();
     this.principal = true;
-    this.change.emit(this.principal);
+    this.changePrincipal.emit(this.principal);
     return true;
   }
 

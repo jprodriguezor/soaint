@@ -22,4 +22,8 @@ export class DatosDestinatarioComponent implements OnInit {
     console.log('ON INIT...');
   }
 
+  changePrincipal(event) {
+    this.principal = event;
+  }
+
 }

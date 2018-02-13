@@ -31,7 +31,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   @Input('principal') principal: boolean;
-  @Output() change: EventEmitter<Boolean> = new EventEmitter<Boolean>();
+  @Output('changePrincipal') changePrincipal: EventEmitter<Boolean> = new EventEmitter<Boolean>();
 
   tipoPersonaSelected: ConstanteDTO;
 
@@ -128,7 +128,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
           this.listaDestinatarios = [...newList];
           this.form.reset();
           this.principal = true;
-          this.change.emit(this.principal);
+          this.changePrincipal.emit(this.principal);
         }
       });
       return true;
@@ -143,7 +143,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.listaDestinatarios = [...destinatarios];
     this.form.reset();
     this.principal = true;
-    this.change.emit(this.principal);
+    this.changePrincipal.emit(this.principal);
     return true;
   }
 

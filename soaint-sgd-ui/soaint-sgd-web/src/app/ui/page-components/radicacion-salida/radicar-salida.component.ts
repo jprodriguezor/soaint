@@ -64,6 +64,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
   tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
 
+  tipoDeComunicacion: any;
+
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _coSandbox: ComunicacionOficialSandbox,
               private _store: Store<RootState>,
@@ -149,6 +151,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   ngOnDestroy() {
     console.log('ON DESTROY...');
     this.activeTaskUnsubscriber.unsubscribe();
+  }
+
+  changeTipoComunicacion(event) {
+    this.tipoDeComunicacion = event;
   }
 
 }
