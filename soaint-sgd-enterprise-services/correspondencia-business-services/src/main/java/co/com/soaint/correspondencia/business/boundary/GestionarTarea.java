@@ -38,10 +38,9 @@ public class GestionarTarea {
      * @param idInstanciaProceso
      * @param idTareaProceso
      * @return
-     * @throws BusinessException
      * @throws SystemException
      */
-    public TareaDTO listarEstadoTarea(String idInstanciaProceso, String idTareaProceso)throws BusinessException, SystemException{
+    public TareaDTO listarEstadoTarea(String idInstanciaProceso, String idTareaProceso)throws SystemException{
         return control.listarEstadoTarea(idInstanciaProceso, idTareaProceso);
     }
 }

@@ -54,6 +54,19 @@ public class FuncionariosWebApi {
     }
 
     /**
+     *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    @GET
+    @Path("/funcionarios/listar-by-login-names")
+    public FuncionariosDTO listarFuncionariosByLoginNameList(@QueryParam("login_names")final String loginNames) throws SystemException {
+        log.info("processing rest request - listar funcionarios por loginName list");
+        return boundary.listarFuncionariosByLoginNameList(loginNames.split(","));
+    }
+
+    /**
      * @param codDependencia
      * @param codEstado
      * @return
