@@ -273,12 +273,6 @@ export class PDDatosGeneralesComponent implements OnInit {
         );
       }
     }
-
-
-
-
-
-
     tipoComunicacionChange(event) {
         this.pdMessageService.sendMessage(event.value);
     }

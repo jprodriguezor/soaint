@@ -94,6 +94,12 @@ public class CorrespondenciaClient {
                 .put(Entity.json(devolucionDTO));
     }
 
+    public Response obtenerContactoDestinatarioExterna(String idRadicado) {
+        log.info("Correspondencia - [trafic] - obtener - Contacto- DestinatarioExterna with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/agente-web-api/agente/remitente/" + idRadicado ).request().get();
+    }
+
     public Response metricasTiempoDrools(String payload) {
         log.info("Correspondencia - [trafic] -metricas de Tiempo por Tipologia Regla: " + droolsEndpoint);
 

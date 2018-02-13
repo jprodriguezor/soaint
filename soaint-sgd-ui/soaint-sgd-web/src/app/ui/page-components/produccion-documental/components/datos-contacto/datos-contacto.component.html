@@ -25,8 +25,8 @@
                       label="Responder a remitente"
                       formControlName="responderRemitente"
                       id="responseToRem"
-                      (onChange)="responseToRem = form.get('responderRemitente').value"
-                      binary="true">
+                      binary="true"
+                      *ngIf="hasNumberRadicado">
           </p-checkbox>
         </div>
       </div>
@@ -34,8 +34,8 @@
   </p-panel>
 </form>
 
-<app-datos-remitente  #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>
+<!--<app-datos-remitente  #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>-->
 
-<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'" [listaDestinatarios]="listaDestinatariosExternos"></datos-destinatario-externo>
+<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && responseToRem && tipoComunicacionSelected.codigo == 'SE'" [listaDestinatarios]="listaDestinatariosExternos"></datos-destinatario-externo>
 
-<datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'" [listaDestinatarios]="listaDestinatariosInternos"></datos-destinatario-interno>
+<datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && responseToRem && tipoComunicacionSelected.codigo == 'SI'" [listaDestinatarios]="listaDestinatariosInternos"></datos-destinatario-interno>

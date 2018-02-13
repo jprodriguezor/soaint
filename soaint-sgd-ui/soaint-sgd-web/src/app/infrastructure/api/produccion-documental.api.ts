@@ -21,6 +21,10 @@ export class ProduccionDocumentalApiService {
     return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload);
   }
 
+  obtenerContactosDestinatarioExterno(payload: {nroRadicado: string}) {
+    return this._api.list(`${environment.obtenerContactoDestinatarioExterno_endpoint}/${payload.nroRadicado}`, {});
+  }
+
   subirVersionDocumento(formData: FormData, payload: {nombre: string, sede: string, dependencia: string, tipo: string, id: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirDocumentoVersionado, formData,

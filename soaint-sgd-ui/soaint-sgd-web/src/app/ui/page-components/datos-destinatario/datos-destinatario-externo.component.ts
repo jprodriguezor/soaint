@@ -54,6 +54,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService) {
 
+    console.log("sssss");
+    console.log(this.listaDestinatarios);
+
     this.initForm();
 
     Observable.combineLatest(
