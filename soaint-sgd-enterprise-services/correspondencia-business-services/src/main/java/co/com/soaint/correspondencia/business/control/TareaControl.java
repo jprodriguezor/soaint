@@ -61,10 +61,9 @@ public class TareaControl {
      * @param idInstanciaProceso
      * @param idTareaProceso
      * @return
-     * @throws BusinessException
      * @throws SystemException
      */
-    public TareaDTO listarEstadoTarea(String idInstanciaProceso, String idTareaProceso)throws BusinessException, SystemException{
+    public TareaDTO listarEstadoTarea(String idInstanciaProceso, String idTareaProceso)throws SystemException{
         try{
             TvsTarea tarea = em.createNamedQuery("TvsTarea.findByIdInstanciaProcesoAndIdTareaProceso", TvsTarea.class)
                     .setParameter("ID_INSTANCIA_PROCESO", idInstanciaProceso)
@@ -72,6 +71,7 @@ public class TareaControl {
                     .getSingleResult();
             return trasformToDto(tarea);
         } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
             return null;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
