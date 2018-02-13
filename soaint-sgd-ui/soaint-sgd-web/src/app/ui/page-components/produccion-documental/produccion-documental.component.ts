@@ -62,52 +62,45 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   ngOnInit(): void {
     this._store.select(getActiveTask).take(1).subscribe(activeTask => {
       this.task = activeTask;
-      console.log(this.task);
-      if(this.task){
-
-        this.taskVariables = {
-          aprobado: activeTask.variables.aprobado || 0,
-          listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector) || [],
-          listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador) || [],
-          listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor) || []
-        };
-
-        this._produccionDocumentalApi.obtenerEstadoTarea({
-          idInstanciaProceso: this.task.idInstanciaProceso,
-          idTareaProceso: this.task.idTarea}).subscribe(
-          status => {
-            console.log('datos status');
-            console.log(status);
-            if (status) {
-              this.taskCurrentStatus = status;
-              this.datosGenerales.updateStatus(status);
-              this.datosContacto.updateStatus(status);
-              this.gestionarProduccion.updateStatus(status);
-            } else {
-              this.taskCurrentStatus = {
-                datosGenerales: {
-                  tipoComunicacion: null,
-                  listaVersionesDocumento: [],
-                  listaAnexos: []
-                },
-                datosContacto: {
-                  distribucion: null,
-                  responderRemitente: false,
-                  listaDestinatarios: []
-                },
-                gestionarProduccion: {
-                  listaProyectores: []
-                }
-              };
-            }
+      this.taskVariables = {
+        aprobado: activeTask.variables.aprobado || 0,
+        listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector) || [],
+        listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador) || [],
+        listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor) || []
+      };
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaProyector, 'proyector');
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaRevisor, 'revisor');
+        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaAprobador, 'aprobador');
+      this._produccionDocumentalApi.obtenerEstadoTarea({
+        idInstanciaProceso: this.task.idInstanciaProceso,
+        idTareaProceso: this.idEstadoTarea
+      }).subscribe(
+        status => {
+          if (status) {
+            this.taskCurrentStatus = status;
+            this.datosGenerales.updateStatus(status);
+            this.datosContacto.updateStatus(status);
+            this.gestionarProduccion.updateStatus(status);
+          } else {
+            this.taskCurrentStatus = {
+              datosGenerales: {
+                tipoComunicacion: null,
+                listaVersionesDocumento: [],
+                listaAnexos: []
+              },
+              datosContacto: {
+                distribucion: null,
+                responderRemitente: false,
+                listaDestinatarios: []
+              },
+              gestionarProduccion: {
+                listaProyectores: []
+              }
+            };
           }
-        );
-      }
-
+        }
+      );
     });
-
-
-
   }
 
   guardarEstadoTarea(currentStatus: StatusDTO) {
