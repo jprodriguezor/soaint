@@ -57,39 +57,44 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
       this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
       this.roles$ = this._produccionDocumentalApi.getRoles({});
       this.listenForChanges();
-  }
+    }
 
-  initProyeccionLista(lista: string[], rol: string) {
-      const listaProyeccion: ProyectorDTO[] = [];
-      const results: FuncionarioDTO[] = [];
-      let value = [];
-      let dependencia: DependenciaDTO = null;
-      console.log(`Lista: ${rol}:`);
-      lista.forEach((el) => {
-          value = el.split(':');
-          if (value.length > 1 && isString(value[0])) {
-              console.log(`Looking for Funcionario: ${value[0]}`);
-              this._produccionDocumentalApi.getFuncionarioPorLoginname(value[0]).subscribe((res: FuncionarioDTO) => {
-                  console.log(`Found funcionario: ${res.nombre}`);
-                  dependencia = res.dependencias.find((dep: DependenciaDTO) => dep.codigo === value[1]);
-                  listaProyeccion.push({
-                      funcionario: res,
-                      dependencia: dependencia,
-                      sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
-                      rol: this._produccionDocumentalApi.getRoleByRolename(rol)
-                  });
-              });
-          }
-      });
-      this.listaProyectores = [...listaProyeccion];
-      console.log(this.listaProyectores);
-      this.startIndex += this.listaProyectores.length;
-      this.refreshView();
-  }
+    getLoginNamesFromIncomingLista(lista: string) {
+        return lista.replace(/:[0-9]+/g, '').replace(/^\[/, '').replace(/\]$/, '');
+    }
+
+    initProyeccionLista(lista: string, rol: string) {
+        const loginnames = this.getLoginNamesFromIncomingLista(lista);
+        if (loginnames.length === 0) {
+            return false;
+        }
+        console.log(`Looking for Funcionarios from loginnames: ${loginnames}`);
+
+        // const listaProyeccion: ProyectorDTO[] = [];
+        // const results: FuncionarioDTO[] = [];
+        // let value = [];
+        // let dependencia: DependenciaDTO = null;
+
+
+        this._produccionDocumentalApi.getFuncionariosByLoginnames(loginnames).subscribe((res) => {
+            console.log(res);
+            // dependencia = res.dependencias.find((dep: DependenciaDTO) => dep.codigo === value[1]);
+            // listaProyeccion.push({
+            //     funcionario: res,
+            //     dependencia: dependencia,
+            //     sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
+            //     rol: this._produccionDocumentalApi.getRoleByRolename(rol)
+            // });
+        });
+        // this.listaProyectores = [...listaProyeccion];
+        // console.log(this.listaProyectores);
+        // this.startIndex += this.listaProyectores.length;
+        // this.refreshView();
+    }
 
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];

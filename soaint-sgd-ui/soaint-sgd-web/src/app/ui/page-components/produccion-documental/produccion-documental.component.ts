@@ -54,23 +54,21 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   }
 
   parseIncomingListaProyector(lista: string) {
-    const proyectores = lista.match(/\[(.*)\]/)[1];
-    return proyectores.split(',');
+    return lista.match(/([a-z.]+):[0-9]+/g);
   }
-
 
   ngOnInit(): void {
     this._store.select(getActiveTask).take(1).subscribe(activeTask => {
       this.task = activeTask;
       this.taskVariables = {
         aprobado: activeTask.variables.aprobado || 0,
-        listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector) || [],
-        listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador) || [],
-        listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor) || []
+        listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector || ''),
+        listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador || ''),
+        listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor || '')
       };
-        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaProyector, 'proyector');
-        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaRevisor, 'revisor');
-        this.gestionarProduccion.initProyeccionLista(this.taskVariables.listaAprobador, 'aprobador');
+        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
+        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
+        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaAprobador || '', 'aprobador');
       this._produccionDocumentalApi.obtenerEstadoTarea({
         idInstanciaProceso: this.task.idInstanciaProceso,
         idTareaProceso: this.idEstadoTarea
@@ -150,7 +148,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this.taskVariables.listaAprobador.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));
       }
     });
-    console.log("finalizar tarea de producion documental");
+    console.log('finalizar tarea de producion documental');
 
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,

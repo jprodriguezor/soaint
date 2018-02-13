@@ -41,6 +41,20 @@ public class FuncionarioGatewayApi {
     }
 
     @GET
+    @Path("/funcionarios/listar-by-loginnames")
+//    @JWTTokenSecurity
+    public Response listarFuncionariosByLoginnames(@QueryParam("loginNames") String loginNames) {
+
+        log.info("FuncionarioGatewayApi - [trafic] - listing Funcionario");
+        log.info("FuncionarioGatewayApi - [trafic] - RequestParam: ".concat(loginNames));
+        Response response = client.listarFuncionariosByLoginnames(loginNames);
+        String responseContent = response.readEntity(String.class);
+        log.info("FuncionarioGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
     @Path("/funcionarios/{cod_dependencia}")
     @JWTTokenSecurity
     public Response listarFuncionarios(@PathParam("cod_dependencia") String codigoDependencia) {
