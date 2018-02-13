@@ -58,12 +58,11 @@ public class FuncionariosWebApiClient {
     }
 
     /**
-     *
      * @param loginName
      * @return
      * @throws SystemException
      */
-    public FuncionarioDTO listarFuncionarioByLoginName(String loginName)throws SystemException {
+    public FuncionarioDTO listarFuncionarioByLoginName(String loginName) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/" + loginName)
@@ -71,8 +70,7 @@ public class FuncionariosWebApiClient {
                     .get();
             if (Response.Status.OK.getStatusCode() == respuesta.getStatus()) {
                 return respuesta.readEntity(FuncionarioDTO.class);
-            }
-            else
+            } else
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionarios.error consultando servicio de negocio GestionarFuncionarios")
                         .buildSystemException();
@@ -89,13 +87,12 @@ public class FuncionariosWebApiClient {
     }
 
     /**
-     *
      * @param loginName
      * @param estado
      * @return
      * @throws SystemException
      */
-    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado)throws SystemException {
+    public FuncionarioDTO listarFuncionarioByLoginNameAndEstado(String loginName, String estado) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/" + loginName + "/" + estado)
@@ -103,8 +100,7 @@ public class FuncionariosWebApiClient {
                     .get();
             if (Response.Status.OK.getStatusCode() == respuesta.getStatus()) {
                 return respuesta.readEntity(FuncionarioDTO.class);
-            }
-            else
+            } else
                 throw ExceptionBuilder.newBuilder()
                         .withMessage("funcionarios.error consultando servicio de negocio GestionarFuncionarios")
                         .buildSystemException();
@@ -121,17 +117,16 @@ public class FuncionariosWebApiClient {
     }
 
     /**
-     *
      * @param funcionario
      * @throws SystemException
      */
-    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String crearFuncionario(FuncionarioDTO funcionario) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios")
                     .request()
                     .post(Entity.json(funcionario));
-            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1": "0";
+            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1" : "0";
         } catch (Exception ex) {
             log.error("Api Delegator - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -142,16 +137,15 @@ public class FuncionariosWebApiClient {
     }
 
     /**
-     *
      * @throws SystemException
      */
-    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String actualizarFuncionario(FuncionarioDTO funcionario) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios")
                     .request()
                     .put(Entity.json(funcionario));
-            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1": "0";
+            return (Response.Status.OK.getStatusCode() == respuesta.getStatus()) ? "1" : "0";
         } catch (Exception ex) {
             log.error("Api Delegator - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -161,7 +155,12 @@ public class FuncionariosWebApiClient {
         }
     }
 
-    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+    /**
+     * @param funcionarioDTO
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/buscar")
@@ -177,15 +176,19 @@ public class FuncionariosWebApiClient {
         }
     }
 
-
-    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws SystemException{
+    /**
+     * @param ideFunci
+     * @return
+     * @throws SystemException
+     */
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws SystemException {
         try {
             WebTarget wt = getWebTarget();
             Response respuesta = wt.path("/funcionarios-web-api/funcionarios/by-id/" + ideFunci)
                     .request()
                     .get();
             return respuesta.readEntity(FuncionarioDTO.class);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             log.error("Api Delegator - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -194,7 +197,24 @@ public class FuncionariosWebApiClient {
         }
     }
 
-    private WebTarget getWebTarget(){
+    public FuncionariosDTO listarFuncionariosByLoginNameList(String loginNames) throws SystemException{
+        try {
+            WebTarget wt = getWebTarget();
+            Response respuesta = wt.path("/funcionarios-web-api/funcionarios/listar-by-login-names/")
+                    .queryParam("login_names", loginNames)
+                    .request()
+                    .get();
+            return respuesta.readEntity(FuncionariosDTO.class);
+        } catch (Exception ex) {
+            log.error("Api Delegator - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    private WebTarget getWebTarget() {
         return ClientBuilder.newClient().target(endpoint);
     }
 }
