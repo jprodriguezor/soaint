@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -32,6 +31,11 @@ import java.util.List;
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
                 "FROM Funcionarios f " +
                 "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME) AND TRIM(f.auditColumns.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "Funcionarios.findByLoginNamList", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
+                "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
+                "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
+                "FROM Funcionarios f " +
+                "WHERE TRIM(f.loginName) IN :LOGIN_NAMES"),
         @NamedQuery(name = "Funcionarios.findByLoginName", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
