@@ -1075,7 +1075,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                     logger.info("Se obtienen todas las carpetas dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(carpetaP);
-
+                    logger.info("Cantidad de carpetas dentro de la dependencia: " + carpetasDeLaDependencia.size() + " dentro de la carpeta: "+carpetaP.getFolder().getName());
 
                     Carpeta carpetaTarget = new Carpeta();
                     for (Carpeta carpetaDependencia : carpetasDeLaDependencia) {
