@@ -1144,7 +1144,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error(ECM_ERROR_DUPLICADO, ccaee);
             response.setCodMensaje("1111");
-            response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
+            response.setMensaje("El documento ya existe en el ECM");
         } catch (CmisConstraintException cce) {
             logger.error(ECM_ERROR, cce);
             response.setCodMensaje("2222");
