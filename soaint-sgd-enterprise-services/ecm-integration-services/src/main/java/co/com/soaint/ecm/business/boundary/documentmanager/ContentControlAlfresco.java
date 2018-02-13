@@ -727,13 +727,13 @@ public class ContentControlAlfresco implements ContentControl {
             }
             response.setCodMensaje("0000");
             response.setMensaje("success");
-            response.setContent(documentosLista);
+            response.setMetadatosDocumentosDTOList(documentosLista);
 
         } catch (Exception e) {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de los documentos adjuntos: " + e.getMessage());
             logger.error("Error en la obtención de los documentos adjuntos: ", e);
-            response.setContent(new ArrayList<MetadatosDocumentosDTO>());
+            response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
         }
         logger.info("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: " + response.toString());
         return response;
@@ -774,12 +774,12 @@ public class ContentControlAlfresco implements ContentControl {
 
             response.setCodMensaje("0000");
             response.setMensaje("success");
-            response.setContent(versionesLista);
+            response.setMetadatosDocumentosDTOList(versionesLista);
 
         } catch (Exception e) {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: " + e.getMessage());
-            response.setContent(new ArrayList<MetadatosDocumentosDTO>());
+            response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
             logger.error("Error en la obtención de las versiones del documento: ", e);
         }
         logger.info("Se sale del metodo obtenerVersionesDocumento con respuesta: " + response.toString());
@@ -858,11 +858,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,  String selector) throws IOException {
 
         logger.info("Se entra al metodo subirVersionarDocumentoGenerado");
 
         MensajeRespuesta response = new MensajeRespuesta();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList= new ArrayList<>();
         Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get(DOCUMENTO);
         for (InputPart inputPart : inputParts) {
@@ -877,12 +878,16 @@ public class ContentControlAlfresco implements ContentControl {
 
             assert inputStream != null;
             byte[] bytes = IOUtils.toByteArray(inputStream);
-
             if ("html".equals(metadatosDocumentosDTO.getTipoDocumento())) {
                 metadatosDocumentosDTO.setTipoDocumento("text/html");
             } else {
                 metadatosDocumentosDTO.setTipoDocumento(APPLICATION_PDF);
             }
+
+
+
+
+
             if ("none".equals(metadatosDocumentosDTO.getIdDocumento())) {
 
                 //Se definen las propiedades del documento a subir
@@ -911,7 +916,8 @@ public class ContentControlAlfresco implements ContentControl {
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento versionado correctamente");
                     metadatosDocumentosDTO.setVersionLabel(doc.getVersionLabel());
-                    response.setContent(metadatosDocumentosDTO);
+                    metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
+                    response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
                 } catch (CmisBaseException e) {
                     logger.error("checkin failed, trying to cancel the checkout", e);
                     pwc.cancelCheckOut();
@@ -937,6 +943,7 @@ public class ContentControlAlfresco implements ContentControl {
      */
     private void buscarCrearCarpeta(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
         String idDocumento;
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList= new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
@@ -983,7 +990,8 @@ public class ContentControlAlfresco implements ContentControl {
                     idDocumento = parts[0];
                     metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
                     metadatosDocumentosDTO.setIdDocumento(idDocumento);
-                    response.setContent(metadatosDocumentosDTO);
+                    metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
+                    response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
@@ -993,7 +1001,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error(ECM_ERROR_DUPLICADO, ccaee);
             response.setCodMensaje("1111");
-            response.setMensaje(configuracion.getPropiedad(ECM_ERROR_DUPLICADO));
+            response.setMensaje(ECM_ERROR_DUPLICADO);
         } catch (CmisConstraintException cce) {
             logger.error(ECM_ERROR, cce);
             response.setCodMensaje("2222");
@@ -1013,10 +1021,10 @@ public class ContentControlAlfresco implements ContentControl {
      * @param response               Mensaje de respuesta
      * @param bytes                  Contenido del documento
      * @param properties             propiedades de carpeta
-     * @param carpetaCrearBuscar     Carpeta
      */
     private void buscarCrearCarpetaRadicacion(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties,  String tipoComunicacion) {
         String idDocumento;
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
@@ -1035,7 +1043,6 @@ public class ContentControlAlfresco implements ContentControl {
                     comunicacionOficial = TIPO_COMUNICACION_INTERNA;
                     break;
                 }
-
                 case "IE": {
                     tipoComunicacionSelector = COMUNICACIONES_INTERNAS_ENVIADAS;
                     comunicacionOficial = TIPO_COMUNICACION_INTERNA;
@@ -1123,7 +1130,8 @@ public class ContentControlAlfresco implements ContentControl {
                         idDocumento = parts[0];
                         metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
                         metadatosDocumentosDTO.setIdDocumento(idDocumento);
-                        response.setContent(metadatosDocumentosDTO);
+                        metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
+                        response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
                         //Creando el mensaje de respuesta
                         response.setCodMensaje("0000");
                         response.setMensaje("Documento añadido correctamente");
