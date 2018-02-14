@@ -67,7 +67,7 @@ public class DigitalizarDocumentoGatewayApi {
                 return Response.status(Response.Status.OK).entity(ecmIds).build();
             }
         }
-        return response;
+        return Response.status(response.getStatus()).entity(parentResponse).build();
     }
 
     @GET
