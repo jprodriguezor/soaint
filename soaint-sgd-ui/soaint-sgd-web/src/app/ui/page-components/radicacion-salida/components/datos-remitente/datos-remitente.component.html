@@ -1,3 +1,76 @@
-<p>
-  datos-remitente works!
-</p>
+<form [formGroup]="form" name="formDefault">
+  <div class="ui-fluid">
+    <div class="card card-w-title">
+      <h1>Datos Remitente</h1>
+
+      <div class="ui-g ui-fluid">
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label>Sede</label>
+            </div>
+            <div class="ui-g-12">
+              <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
+                          id="sedeAdministrativa"
+                          formControlName="sedeAdministrativa"
+                          placeholder="Seleccione"
+                          [autoWidth]="false">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label>Dependencia/Grupo</label>
+            </div>
+            <div class="ui-g-12">
+              <p-dropdown [options]="dependenciaGrupoSuggestions$ | async | dropdownItem"
+                          id="dependenciaGrupo"
+                          formControlName="dependenciaGrupo"
+                          placeholder="Seleccione"
+                          [autoWidth]="false">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label>Funcionario</label>
+            </div>
+            <div class="ui-g-12">
+              <p-dropdown [options]="funcionariosSuggestions$ | async | dropdownItem"
+                          id="funcionarioGrupo"
+                          formControlName="funcionarioGrupo"
+                          placeholder="Seleccione"
+                          [autoWidth]="false">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
