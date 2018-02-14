@@ -243,6 +243,7 @@ public class ContentControlAlfresco implements ContentControl {
                         .build();
             } else {
                 file = convertInputStreamToFile(doc.getContentStream());
+                logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
                 return Response.ok(file)
                         .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
                         .build();
