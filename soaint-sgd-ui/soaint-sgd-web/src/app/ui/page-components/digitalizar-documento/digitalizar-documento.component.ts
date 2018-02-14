@@ -12,9 +12,9 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO, FAIL_ADJUNTAR_ANEXOS} from '../../../shared/lang/es';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {isNullOrUndefined} from 'util';
+import {isArray, isNullOrUndefined} from 'util';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
-import {empty} from "rxjs/Observer";
+import {empty} from 'rxjs/Observer';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -41,7 +41,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   correspondencia: CorrespondenciaDTO;
   comunicacion: ComunicacionOficialDTO = {};
 
-  tipoSoporteElectronico: boolean = false;
+  tipoSoporteElectronico = false;
 
   activeTaskUnsubscriber: Subscription;
 
@@ -77,20 +77,16 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     for (const file of event.files) {
       formData.append('files', file, file.name);
     }
-    console.log("datos subida");
+    console.log('datos subida');
     console.log(formData);
 
     this.comunicacion.anexoList.forEach(value => {
-      console.log("anexos");
+      console.log('anexos');
       console.log(value);
-      if (value.codTipoSoporte == "TP-SOPE") {
+      if (value.codTipoSoporte == 'TP-SOPE') {
         this.tipoSoporteElectronico = true;
       }
     });
-
-    //console.log(this.tipoSoporteElectronico);
-    //console.log(event.files.length);
-    //console.log(this.comunicacion.anexoList);
 
     if (isNullOrUndefined(this.principalFile)) {
 
@@ -99,47 +95,55 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
         summary: FAIL_ADJUNTAR_PRINCIPAL
       }));
 
-    }else if(!this.tipoSoporteElectronico && event.files.length > 1){
+    } else if (!this.tipoSoporteElectronico && event.files.length > 1) {
 
       this._store.dispatch(new PushNotificationAction({
         severity: 'warn',
         summary: FAIL_ADJUNTAR_ANEXOS
       }));
 
-    }else{
+    } else {
 
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           console.log(result);
           return this._api.sendFile(
-            this.uploadUrl,
-            formData,
-            [
-              this.correspondencia.codTipoCmc,
-              this.correspondencia.nroRadicado,
-              this.principalFile,
-              result.dependencias[0].nomSede,
-              result.dependencias[0].nombre,
-            ]);
+            this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,
+              this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
         }
       ).subscribe(response => {
-
-         console.log(response);
-
-        if (isNullOrUndefined(response[0])) {
-
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'success',
-            summary: SUCCESS_ADJUNTAR_DOCUMENTO
-          }));
-
-          this._store.dispatch(new CompleteTaskAction({
-            idProceso: this.task.idProceso,
-            idDespliegue: this.task.idDespliegue,
-            idTarea: this.task.idTarea,
-            parametros: {
-              ideEcm: response[0]
-            }
-          }));
+        const data = response;
+        console.log(response);
+        if (isArray(data)) {
+          if (data.length === 0) {
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'error', summary: 'NO ADJUNTO, NO PUEDE ADJUNTAR EL DOCUMENTO'
+            }));
+          } else {
+            this._store.dispatch(new CompleteTaskAction({
+              idProceso: this.task.idProceso, idDespliegue: this.task.idDespliegue,
+              idTarea: this.task.idTarea, parametros: {ideEcm: data[0]}
+            }));
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
+            }));
+          }
+        } else {
+          switch (data.codMensaje) {
+            case '1111':
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
+              }));
+              break;
+            case '3333':
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: 'ACCESO DENEGADO, NO PUEDE SUBIR EL DOCUMENTO'
+              }));
+              break;
+            default:
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: 'UPSSS!!! HA OCURRIDO UN ERROR'
+              }));
+          }
         }
       });
     }

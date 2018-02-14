@@ -48,27 +48,26 @@ public class DigitalizarDocumentoGatewayApi {
         Map<String,InputPart> _files = ECMUtils.findFiles(files);
         InputPart parent = _files.get(principalFileName);
         Response response = client.uploadDocument(sede, dependencia, tipoComunicacion,principalFileName, parent, "");
-        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class);
-        _files.remove(fileName);
+        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); _files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
             List<MetadatosDocumentosDTO> metadatosDocumentosDTO =
                     (List<MetadatosDocumentosDTO>) parentResponse.getMetadatosDocumentosDTOList();
-            ecmIds.add(metadatosDocumentosDTO.get(0).getIdDocumento());
-            if(_files.isEmpty()){
+            if(null != metadatosDocumentosDTO && !metadatosDocumentosDTO.isEmpty()) {
                 ecmIds.add(metadatosDocumentosDTO.get(0).getIdDocumento());
-            }else{
-                client.uploadDocumentsAsociates(metadatosDocumentosDTO.
-                        get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
-                    if("0000".equals(mensajeRespuesta.getCodMensaje())){
-                        List<MetadatosDocumentosDTO> metadatosDocumentosDTO1 =
-                                (List<MetadatosDocumentosDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
-                        ecmIds.add(metadatosDocumentosDTO1.get(0).getIdDocumento());
-                    }
-                });
+                if(!_files.isEmpty()){
+                    client.uploadDocumentsAsociates(metadatosDocumentosDTO.
+                            get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
+                        if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                            List<MetadatosDocumentosDTO> metadatosDocumentosDTO1 =
+                                    (List<MetadatosDocumentosDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
+                            ecmIds.add(metadatosDocumentosDTO1.get(0).getIdDocumento());
+                        }
+                    });
+                }
+                return Response.status(Response.Status.OK).entity(ecmIds).build();
             }
         }
-        return Response.status(Response.Status.OK).entity(ecmIds).build();
-
+        return Response.status(response.getStatus()).entity(parentResponse).build();
     }
 
     @GET
