@@ -37,6 +37,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   form: FormGroup;
   display = false;
   @Input() editable = true;
+  @Input() contactsDefault: Array<any> = [];
+
   validations: any = {};
   visibility: any = {};
 
@@ -65,6 +67,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private formBuilder: FormBuilder) {
+
     this.initForm();
     this.listenForChanges();
     this.listenForErrors();
@@ -80,6 +83,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+
+    this.contacts = this.contactsDefault;
+
+    console.log(this.contacts);
 
     this.addColombiaByDefault();
   }

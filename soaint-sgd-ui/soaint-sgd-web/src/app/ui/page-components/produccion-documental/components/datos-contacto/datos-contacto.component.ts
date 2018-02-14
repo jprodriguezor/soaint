@@ -37,38 +37,33 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
+
       this.tipoComunicacionSelected = tipoComunicacion;
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
+
+      if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo == 'SE') {
+
+        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
+          nroRadicado: this.taskData.variables.numeroRadicado
+        }).subscribe( contacto => {
+          this.listaDestinatariosExternos = contacto;
+        });
+      }
+
     });
 
     this.initForm();
   }
 
   ngOnInit(): void {
-    console.log(this.taskData);
-    console.log('ini datos');
 
-    if(this.taskData.variables.numeroRadicado){
-
-      this.hasNumberRadicado = true;
-
-      if(this.tipoComunicacionSelected.codigo == 'SE') {
-
-        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-          nroRadicado: '1040EE2018000130'//this.taskData.variables.numeroRadicado
-        }).subscribe( contacto => {
-            console.log(contacto);
-        });
-
-        this.listaDestinatariosExternos
-      }
-
-    }
+    this.hasNumberRadicado = (this.taskData.variables.numeroRadicado) ? true: false;
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
     });
+
   }
 
   updateStatus(currentStatus: StatusDTO) {
