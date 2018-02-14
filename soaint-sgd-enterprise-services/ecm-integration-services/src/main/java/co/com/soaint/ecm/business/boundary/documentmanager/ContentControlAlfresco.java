@@ -1137,8 +1137,11 @@ public class ContentControlAlfresco implements ContentControl {
                         response.setMensaje("Documento añadido correctamente");
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
-                    response.setCodMensaje("0000");
-                    response.setMensaje("Documento Creado Correctamente");
+                    else{
+                        response.setCodMensaje("2222");
+                        response.setMensaje("En esta sede y dependencia no esta permitido relaizar radicaciones");
+                    }
+
                 }
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
