@@ -40,6 +40,15 @@ public class FuncionarioClient {
                 .get();
     }
 
+    public Response listarFuncionariosByLoginnames(String loginNames) {
+        log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + funcionarioEndpoint);
+        WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);
+        return wt.path("/funcionarios-web-api/funcionarios/listar-by-login-names/")
+                .queryParam("login_names", loginNames)
+                .request()
+                .get();
+    }
+
     public Response listarFuncionariosPorRol(String codigoDependencia, String rol) {
         log.info("Funcionario - [trafic] - obtener Funcionario with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(funcionarioEndpoint);

@@ -54,15 +54,11 @@ export class ProduccionDocumentalApiService {
   subirAnexo(formData: FormData, payload: {nombre: string, sede: string, dependencia: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.nombre, payload.sede, payload.dependencia]);
+      [payload.nombre, payload.sede, payload.dependencia, 'PD']);
   }
 
-    getFuncionarioPorLoginname(loginname: string) {
-        return this._api.list(`${environment.obtenerFuncionario_endpoint}/${loginname}`).map(res => res);
-    }
-
-    getDependenciaPorCodigo(codigo: string) {
-    return this._api.list(`${environment.dependenciaGrupo_endpoint}/dependencias/${codigo}`).map(res => res);
+    getFuncionariosByLoginnames(loginnames: string) {
+        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
     }
 
 
