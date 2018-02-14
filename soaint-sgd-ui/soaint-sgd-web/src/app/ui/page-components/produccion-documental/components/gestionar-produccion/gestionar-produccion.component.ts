@@ -38,7 +38,6 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   subscribers: Array<Subscription> = [];
 
-
   constructor(private _store: Store<RootState>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
@@ -57,39 +56,45 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
       this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
       this.roles$ = this._produccionDocumentalApi.getRoles({});
       this.listenForChanges();
-  }
+    }
 
-  initProyeccionLista(lista: string[], rol: string) {
-      const listaProyeccion: ProyectorDTO[] = [];
-      const results: FuncionarioDTO[] = [];
-      let value = [];
-      let dependencia: DependenciaDTO = null;
-      console.log(`Lista: ${rol}:`);
-      lista.forEach((el) => {
-          value = el.split(':');
-          if (value.length > 1 && isString(value[0])) {
-              console.log(`Looking for Funcionario: ${value[0]}`);
-              this._produccionDocumentalApi.getFuncionarioPorLoginname(value[0]).subscribe((res: FuncionarioDTO) => {
-                  console.log(`Found funcionario: ${res.nombre}`);
-                  dependencia = res.dependencias.find((dep: DependenciaDTO) => dep.codigo === value[1]);
-                  listaProyeccion.push({
-                      funcionario: res,
-                      dependencia: dependencia,
-                      sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
-                      rol: this._produccionDocumentalApi.getRoleByRolename(rol)
-                  });
-              });
-          }
-      });
-      this.listaProyectores = [...listaProyeccion];
-      console.log(this.listaProyectores);
-      this.startIndex += this.listaProyectores.length;
-      this.refreshView();
-  }
+
+
+    initProyeccionLista(lista: string, rol: string) {
+        const listaPreProyectores = this.getListaPreProyectoresFromIncomminString(lista);
+        if (listaPreProyectores.length === 0) { return false; }
+        const loginnames = this.getLoginNamesForFuncionarios(lista);
+        if (loginnames.length === 0) { return false; }
+
+        const listaProyeccion = this.listaProyectores;
+        console.log(`Looking for Funcionarios from loginnames: ${loginnames} con rol: ${rol}`);
+        console.log(listaProyeccion);
+
+        let dependencia: DependenciaDTO = null;
+        let pair: {login: string, codigo: string} = null;
+
+        this._produccionDocumentalApi.getFuncionariosByLoginnames(loginnames).subscribe((functionarios: FuncionarioDTO[]) => {
+            functionarios.forEach((fun: FuncionarioDTO) => {
+                pair = listaPreProyectores.find( el => el.login === fun.loginName);
+                dependencia = fun.dependencias.find((dep: DependenciaDTO) => dep.codigo === pair.codigo);
+                listaProyeccion.push({
+                    funcionario: fun,
+                    dependencia: dependencia,
+                    sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
+                    rol: this._produccionDocumentalApi.getRoleByRolename(rol)
+                });
+                console.log(`Agregado: ${fun.nombre} como ${rol}`);
+                this.listaProyectores = [...listaProyeccion];
+                console.log(this.listaProyectores);
+                this.startIndex = this.listaProyectores.length;
+                this.refreshView();
+            });
+        });
+    }
 
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
@@ -198,5 +203,23 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+
+    protected getListaPreProyectoresFromIncomminString(lista: string) {
+        const listaPreProyectores: {login: string, codigo: string}[] = [];
+        const matchs = lista.match(/[a-z.]+:[0-9]+/g);
+        if (matchs && matchs.length > 0) {
+            let parts = [];
+            matchs.forEach((el) => {
+                parts = el.split(':');
+                listaPreProyectores.push({login: parts[0], codigo: parts[1]});
+            });
+        }
+        return listaPreProyectores;
+    }
+
+    protected getLoginNamesForFuncionarios(lista: string) {
+        return lista.match(/\[(.*)\]/)[1].replace(/:[0-9]+/g, '');
+    }
 }
 

@@ -1,14 +1,14 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
     <div customActions>
-      <button pButton type="button" label="Continuar"
+      <button pButton type="button" label="Completar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="!datosGenerales.isValid()"
               (click)="completarTarea()"
       ></button>
       <button pButton type="button" label="Aprobar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              [disabled]="!aprobar"
+              [disabled]="!aprobado"
               (click)="completarTarea()"
       ></button>
       <button pButton type="button" label="Guardar"

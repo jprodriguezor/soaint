@@ -57,12 +57,8 @@ export class ProduccionDocumentalApiService {
       [payload.nombre, payload.sede, payload.dependencia]);
   }
 
-    getFuncionarioPorLoginname(loginname: string) {
-        return this._api.list(`${environment.obtenerFuncionario_endpoint}/${loginname}`).map(res => res);
-    }
-
-    getDependenciaPorCodigo(codigo: string) {
-    return this._api.list(`${environment.dependenciaGrupo_endpoint}/dependencias/${codigo}`).map(res => res);
+    getFuncionariosByLoginnames(loginnames: string) {
+        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
     }
 
 
