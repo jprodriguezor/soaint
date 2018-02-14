@@ -171,7 +171,6 @@
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton label="Ver" class="ui-button ui-button-info"
-                                    [disabled]="i !== listaVersionesDocumento.length -1"
                                     (click)="mostrarVersionDocumento(i)"></button>
                         </ng-template>
                     </p-column>
