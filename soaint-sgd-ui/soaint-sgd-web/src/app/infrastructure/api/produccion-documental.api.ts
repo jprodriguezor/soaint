@@ -54,7 +54,7 @@ export class ProduccionDocumentalApiService {
   }
 
     getFuncionariosByLoginnames(loginnames: string) {
-        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res);
+        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
     }
 
 
