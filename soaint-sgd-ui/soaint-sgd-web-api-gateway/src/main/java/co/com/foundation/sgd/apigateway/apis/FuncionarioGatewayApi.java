@@ -42,7 +42,7 @@ public class FuncionarioGatewayApi {
 
     @GET
     @Path("/funcionarios/listar-by-loginnames")
-//    @JWTTokenSecurity
+    @JWTTokenSecurity
     public Response listarFuncionariosByLoginnames(@QueryParam("loginNames") String loginNames) {
 
         log.info("FuncionarioGatewayApi - [trafic] - listing Funcionario");
