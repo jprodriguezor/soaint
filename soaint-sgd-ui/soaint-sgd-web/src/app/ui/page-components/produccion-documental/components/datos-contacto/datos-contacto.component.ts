@@ -25,7 +25,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   @ViewChild('destinatarioExterno') destinatarioExterno;
   @ViewChild('destinatarioInterno') destinatarioInterno;
-  //@ViewChild('datosRemitente') datosRemitente;
+  @ViewChild('datosRemitente') datosRemitente;
   @Input() taskData: TareaDTO;
 
   canInsert = false;
