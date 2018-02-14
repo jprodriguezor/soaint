@@ -4,9 +4,9 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
-import {StatusDTO} from "../../models/StatusDTO";
-import {DestinatarioDTO} from "../../../../../domain/destinatarioDTO";
-
+import {StatusDTO} from '../../models/StatusDTO';
+import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
+import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -28,16 +28,16 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   @ViewChild('datosRemitente') datosRemitente;
   @Input() taskData: TareaDTO;
 
-
   canInsert = false;
   responseToRem = true;
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
-      // this.datosRemitente.setTipoComunicacion(tipoComunicacion);
+      this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
     });
 
     this.initForm();
@@ -45,12 +45,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {}
 
-  updateStatus(currentStatus:StatusDTO){
+  updateStatus(currentStatus: StatusDTO) {
+
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
-    if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
+    if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
       this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
-    } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
+    } else if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
       this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatarios];
     }
     this.refreshView();
@@ -61,7 +62,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       // Datos destinatario
       'responderRemitente': [null],
       'distribucion': [null],
-      'destinatarioPrincipal': [{value: null, disabled: false}, Validators.required],
     });
   }
 

@@ -72,66 +72,30 @@ public class ContentManager {
     }
 
     /**
-     * Metodo generico para subir los dccumentos al content
-     *
-     * @param nombreDocumento  NOmbre del documento que se va a subir
-     * @param documento        Documento que se va a subir
-     * @param tipoComunicacion tipo de comunicacion puede ser externa o interna.
-     * @return Identificador del documento que se inserto
-     * @throws InfrastructureException Excepcion que se lanza en error
-     */
-    public MensajeRespuesta subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
-
-        logger.info ("### Subiendo documento al content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
-        try {
-            Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-
-            //Carpeta donde se va a guardar el documento
-            carpeta = new Carpeta ( );
-            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            logger.info ("### Se invoca el metodo de subir el documento..");
-
-            response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
-
-        } catch (Exception e) {
-            logger.error ("Error subiendo documento", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear el documento");
-            throw e;
-        }
-        return response;
-
-    }
-
-    /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
      * @param documento        Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
 
-        logger.info ("### Subiendo documento adjunto al content..");
+        logger.info ("### Subiendo documento principal/adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
         try {
             Conexion conexion;
             new Conexion ( );
             logger.info (MSGCONEXION);
             conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de subir el documento..");
-            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO);
+            logger.info ("### Se invoca el metodo de subir el documento principal/adjunto..");
+            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO,selector);
 
         } catch (Exception e) {
-            logger.error ("Error subiendo documento", e);
+            logger.error ("Error subiendo documento principal/adjunto", e);
             response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear el documento");
+            response.setMensaje ("Error al crear el documento principal/adjunto");
             throw e;
         }
         return response;

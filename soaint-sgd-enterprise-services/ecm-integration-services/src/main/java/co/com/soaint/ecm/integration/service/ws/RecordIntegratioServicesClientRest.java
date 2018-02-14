@@ -1,6 +1,5 @@
 package co.com.soaint.ecm.integration.service.ws;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
 import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
@@ -30,9 +29,7 @@ public class RecordIntegratioServicesClientRest {
     private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
     @Autowired
     private IRecordServices record;
-    @Autowired
-    private
-    ContentManager contentManager;
+
 
     /**
      * Constructor de la clase
@@ -52,8 +49,6 @@ public class RecordIntegratioServicesClientRest {
     public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) throws SystemException {
         logger.info("processing rest request - Crear Estructura Record");
         try {
-
-            //contentManager.crearEstructuraContent(structure);
             return record.crearEstructuraRecord(structure);
         } catch (RuntimeException e) {
             logger.error("Error servicio creando estructura ", e);

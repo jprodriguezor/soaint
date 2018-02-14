@@ -18,6 +18,8 @@ export class DocumentosECMListComponent implements OnInit {
 
   @Input()
   comunicacion: ComunicacionOficialDTO;
+
+
   documentsList: any;
   uploadUrl: String;
 
@@ -30,11 +32,15 @@ export class DocumentosECMListComponent implements OnInit {
   loadDocumentos() {
     console.log(this.comunicacion);
     const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
+    console.log("ID del ecm");
+    console.log(this.comunicacion.ppdDocumentoList);
     const endpoint = `${environment.digitalizar_doc_upload_endpoint}` + '/obtenerdocumentosasociados/' + idDocumentECM;
     console.log(endpoint);
+
     this._api.list(endpoint).map(value => {
       console.log(value);
     });
+
   }
 
   setDataDocument(data: any) {

@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +106,7 @@ public class FuncionariosControl {
     public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(String codDependencia, String codEstado) throws BusinessException, SystemException {
         try {
             List<FuncionarioDTO> funcionariosDepenendencia = funcionariosWebApiClient.listarFuncionariosByDependenciaAndEstado(codDependencia, codEstado).getFuncionarios();
-            for (FuncionarioDTO funcionarioActual: funcionariosDepenendencia) {
+            for (FuncionarioDTO funcionarioActual : funcionariosDepenendencia) {
                 log.info("processing rest request - funcionarios " + securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()).size());
                 funcionarioActual.setRoles(securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()));
             }
@@ -155,11 +154,10 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionario
      * @throws SystemException
      */
-    public String crearFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String crearFuncionario(FuncionarioDTO funcionario) throws SystemException {
         try {
             securityApiClient.crearFuncionario(funcionario);
             return funcionariosWebApiClient.crearFuncionario(funcionario);
@@ -173,13 +171,12 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param funcionario
      * @throws SystemException
      */
-    public String actualizarFuncionario(FuncionarioDTO funcionario)throws SystemException{
+    public String actualizarFuncionario(FuncionarioDTO funcionario) throws SystemException {
         try {
-            if (funcionario.getPassword().isEmpty()){
+            if (funcionario.getPassword().isEmpty()) {
                 funcionario.setPassword(null);
             }
 
@@ -195,11 +192,10 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @param idFuncionario
      * @throws SystemException
      */
-    public String eliminarFuncionario(BigInteger idFuncionario)throws SystemException{
+    public String eliminarFuncionario(BigInteger idFuncionario) throws SystemException {
         try {
             //securityApiClient.crearFuncionario();
             //funcionariosWebApiClient.crearFuncionario(funcionario);
@@ -215,10 +211,9 @@ public class FuncionariosControl {
     }
 
     /**
-     *
      * @throws SystemException
      */
-    public List<RolDTO> obtenerRoles() throws BusinessException, SystemException{
+    public List<RolDTO> obtenerRoles() throws BusinessException, SystemException {
         try {
             return securityApiClient.obtenerRoles();
         } catch (BusinessException e) {
@@ -233,10 +228,15 @@ public class FuncionariosControl {
         }
     }
 
-    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO)throws SystemException{
+    /**
+     * @param funcionarioDTO
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO buscarFuncionario(FuncionarioDTO funcionarioDTO) throws SystemException {
         try {
             FuncionariosDTO funcionarios = funcionariosWebApiClient.buscarFuncionario(funcionarioDTO);
-            for (FuncionarioDTO funcionarioActual: funcionarios.getFuncionarios()) {
+            for (FuncionarioDTO funcionarioActual : funcionarios.getFuncionarios()) {
                 log.info("processing rest request - funcionarios " + securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()).size());
                 funcionarioActual.setRoles(securityApiClient.obtenerRolesUsuario(funcionarioActual.getLoginName()));
             }
@@ -250,9 +250,36 @@ public class FuncionariosControl {
         }
     }
 
-    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci)throws SystemException{
+    /**
+     * @param ideFunci
+     * @return
+     * @throws SystemException
+     */
+    public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws SystemException {
         try {
             return funcionariosWebApiClient.consultarFuncionarioByIdeFunci(ideFunci);
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO listarFuncionariosByLoginNameList(String loginNames) throws SystemException {
+        try {
+            FuncionariosDTO funcionarios = funcionariosWebApiClient.listarFuncionariosByLoginNameList(loginNames);
+            for(FuncionarioDTO funcionario : funcionarios.getFuncionarios()){
+                funcionario.setRoles(securityApiClient.obtenerRolesUsuario(funcionario.getLoginName()));
+            }
+            return funcionarios;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

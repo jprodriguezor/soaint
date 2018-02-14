@@ -9,9 +9,12 @@ import {Subscription} from 'rxjs/Subscription';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as FuncionarioSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
-import {StatusDTO} from "../../models/StatusDTO";
-import {ProyectorDTO} from "../../../../../domain/ProyectorDTO";
-import {Subscriber} from "rxjs/Subscriber";
+import {StatusDTO} from '../../models/StatusDTO';
+import {ProyectorDTO} from '../../../../../domain/ProyectorDTO';
+import {Store} from '@ngrx/store';
+import {State as RootState} from '../../../../../infrastructure/redux-store/redux-reducers';
+import {isString} from 'util';
+import {DependenciaDTO} from '../../../../../domain/dependenciaDTO';
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -35,8 +38,8 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   subscribers: Array<Subscription> = [];
 
-
-  constructor(private _produccionDocumentalApi: ProduccionDocumentalApiService,
+  constructor(private _store: Store<RootState>,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private _funcionarioSandBox: FuncionarioSandbox,
@@ -53,13 +56,47 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-    this.roles$ = this._produccionDocumentalApi.getRoles({});
-    this.listenForChanges();
-  }
+    ngOnInit(): void {
+      this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+      this.roles$ = this._produccionDocumentalApi.getRoles({});
+      this.listenForChanges();
+    }
 
-  updateStatus(currentStatus:StatusDTO) {
+
+
+    initProyeccionLista(lista: string, rol: string) {
+        const listaPreProyectores = this.getListaPreProyectoresFromIncomminString(lista);
+        if (listaPreProyectores.length === 0) { return false; }
+        const loginnames = this.getLoginNamesForFuncionarios(lista);
+        if (loginnames.length === 0) { return false; }
+
+        const listaProyeccion = this.listaProyectores;
+        console.log(`Looking for Funcionarios from loginnames: ${loginnames} con rol: ${rol}`);
+        console.log(listaProyeccion);
+
+        let dependencia: DependenciaDTO = null;
+        let pair: {login: string, codigo: string} = null;
+
+        this._produccionDocumentalApi.getFuncionariosByLoginnames(loginnames).subscribe((functionarios: FuncionarioDTO[]) => {
+            functionarios.forEach((fun: FuncionarioDTO) => {
+                pair = listaPreProyectores.find( el => el.login === fun.loginName);
+                dependencia = fun.dependencias.find((dep: DependenciaDTO) => dep.codigo === pair.codigo);
+                listaProyeccion.push({
+                    funcionario: fun,
+                    dependencia: dependencia,
+                    sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
+                    rol: this._produccionDocumentalApi.getRoleByRolename(rol)
+                });
+                console.log(`Agregado: ${fun.nombre} como ${rol}`);
+                this.listaProyectores = [...listaProyeccion];
+                console.log(this.listaProyectores);
+                this.startIndex = this.listaProyectores.length;
+                this.refreshView();
+            });
+        });
+    }
+
+  updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
     this.startIndex = this.listaProyectores.length;
   }
@@ -70,11 +107,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   eliminarProyector(index) {
-    //if (index >= this.startIndex) {
+    if (index >= this.startIndex) {
       const proyectores = this.listaProyectores;
       proyectores.splice(index, 1);
       this.listaProyectores = [...proyectores];
-    //}
+    }
   }
 
   agregarProyector() {
@@ -160,11 +197,34 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscribers.forEach((sub:Subscription) => sub.unsubscribe());
+    this.subscribers.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+
+    getListaProyectores(): ProyectorDTO[] {
+      return this.listaProyectores;
+    }
+
+
+    protected getListaPreProyectoresFromIncomminString(lista: string) {
+        const listaPreProyectores: {login: string, codigo: string}[] = [];
+        const matchs = lista.match(/[a-z.]+:[0-9]+/g);
+        if (matchs && matchs.length > 0) {
+            let parts = [];
+            matchs.forEach((el) => {
+                parts = el.split(':');
+                listaPreProyectores.push({login: parts[0], codigo: parts[1]});
+            });
+        }
+        return listaPreProyectores;
+    }
+
+    protected getLoginNamesForFuncionarios(lista: string) {
+        return lista.match(/\[(.*)\]/)[1].replace(/:[0-9]+/g, '');
+    }
 }
 

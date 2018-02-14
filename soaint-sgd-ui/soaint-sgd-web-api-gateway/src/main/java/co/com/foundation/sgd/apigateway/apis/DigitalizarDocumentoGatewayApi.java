@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClien
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -41,25 +42,32 @@ public class DigitalizarDocumentoGatewayApi {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName,
                                 @PathParam("principalFileName") String principalFileName, @PathParam("sede") String sede,
-                                @PathParam("dependencia") String dependencia, MultipartFormDataInput file) {
-
+                                @PathParam("dependencia") String dependencia, MultipartFormDataInput files) {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
         List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> files = ECMUtils.findFiles(file);
-
-        /* Subida del fichero principal */
-        InputPart parent = files.get(principalFileName);
-        Response response = client.uploadDocument(sede, dependencia, principalFileName, parent, "");
-
-        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
+        Map<String,InputPart> _files = ECMUtils.findFiles(files);
+        InputPart parent = _files.get(principalFileName);
+        Response response = client.uploadDocument(sede, dependencia, tipoComunicacion,principalFileName, parent, "");
+        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); _files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-
-            ecmIds.add(parentResponse.getMensaje());
-            ecmIds.addAll(client.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
-
-            return Response.status(Response.Status.OK).entity(ecmIds).build();
+            List<MetadatosDocumentosDTO> metadatosDocumentosDTO =
+                    (List<MetadatosDocumentosDTO>) parentResponse.getMetadatosDocumentosDTOList();
+            if(null != metadatosDocumentosDTO && !metadatosDocumentosDTO.isEmpty()) {
+                ecmIds.add(metadatosDocumentosDTO.get(0).getIdDocumento());
+                if(!_files.isEmpty()){
+                    client.uploadDocumentsAsociates(metadatosDocumentosDTO.
+                            get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
+                        if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                            List<MetadatosDocumentosDTO> metadatosDocumentosDTO1 =
+                                    (List<MetadatosDocumentosDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
+                            ecmIds.add(metadatosDocumentosDTO1.get(0).getIdDocumento());
+                        }
+                    });
+                }
+                return Response.status(Response.Status.OK).entity(ecmIds).build();
+            }
         }
-        return response;
+        return Response.status(response.getStatus()).entity(parentResponse).build();
     }
 
     @GET

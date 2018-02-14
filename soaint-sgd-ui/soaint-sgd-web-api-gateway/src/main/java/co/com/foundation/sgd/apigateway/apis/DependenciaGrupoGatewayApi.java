@@ -38,6 +38,19 @@ public class DependenciaGrupoGatewayApi {
     }
 
     @GET
+    @Path("/dependencias/{codigo}")
+    @JWTTokenSecurity
+    public Response obtnerPorCodigo(@PathParam("codigo") String codigo) {
+
+        log.info("DependenciaGrupoGatewayApi - [trafic] - get Dependencia");
+        Response response = client.obtenerPorCodigo(codigo);
+        String responseContent = response.readEntity(String.class);
+        log.info("DependenciaGrupoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
     @Path("/dependencias")
     @JWTTokenSecurity
     public Response obtnerPorDependencia(@QueryParam("codigos") String codigosDependencia) {

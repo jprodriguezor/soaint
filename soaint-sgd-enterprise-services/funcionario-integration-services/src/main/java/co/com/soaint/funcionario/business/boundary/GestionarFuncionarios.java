@@ -105,7 +105,25 @@ public class GestionarFuncionarios {
         return control.consultarFuncionarioByIdeFunci(ideFunci);
     }
 
+    /**
+     *
+     * @param codDependencia
+     * @param codEstado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     public List<FuncionarioDTO> listarFuncionariosByCodDependenciaAndEstado(String codDependencia, String codEstado) throws BusinessException,SystemException{
         return control.listarFuncionariosByCodDependenciaAndEstado(codDependencia,codEstado);
+    }
+
+    /**
+     *
+     * @param loginNames
+     * @return
+     * @throws SystemException
+     */
+    public FuncionariosDTO listarFuncionariosByLoginNameList(String loginNames) throws SystemException {
+        return control.listarFuncionariosByLoginNameList(loginNames);
     }
 }

@@ -52,40 +52,4 @@ public class ProduccionDocumentalGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
-    @POST
-    @Path("/adjuntar/documento/{sede}/{dependencia}/{fileName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@PathParam("sede") String sede,  @PathParam("dependencia") String dependencia,
-                                @PathParam("fileName") String fileName, MultipartFormDataInput file) {
-        log.info("ProduccionDocumentalGatewayApi - [content] : ");
-        Map<String,InputPart> files = ECMUtils.findFiles(file);
-        List<String> ecmIds = new ArrayList<>();
-        /* Subida del fichero principal */
-        InputPart parent = files.get(fileName);
-        Response response = clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
-        MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); files.remove(fileName);
-        if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            ecmIds.add(parentResponse.getMensaje());
-            ecmIds.addAll(clientECM.uploadDocumentsAsociates(parentResponse.getMensaje(), files, sede, dependencia));
-            return Response.status(Response.Status.OK).entity(ecmIds).build();
-        }
-        return response;
-    }
-
-    @POST
-    @Path("/subir-version/{fileName}/{sede}/{dependencia}/{tipo}/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadVersionDocumento(@PathParam("fileName") String fileName,  @PathParam("sede") String sede,
-                                           @PathParam("dependencia") String dependencia, @PathParam("tipo") String tipo,
-                                           @PathParam("id") String id, MultipartFormDataInput file) {
-        log.info("ProduccionDocumentalGatewayApi - [content] : Subir Version Documento");
-        Map<String,InputPart> files = ECMUtils.findFiles(file);
-        List<String> ecmIds = new ArrayList<>();
-        /* Subida del fichero principal */
-        InputPart parent = files.get(fileName);
-        return clientECM.uploadDocument(sede, dependencia, fileName, parent, "");
-    }
-
 }

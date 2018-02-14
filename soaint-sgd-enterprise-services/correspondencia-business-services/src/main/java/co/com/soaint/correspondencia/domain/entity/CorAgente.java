@@ -34,6 +34,13 @@ import java.util.List;
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorAgente.findByNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
+                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
+                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "FROM CorAgente c " +
+                "INNER JOIN c.corCorrespondencia co " +
+                "WHERE co.nroRadicado = :NRO_RADICADO AND c.codTipAgent = 'TP-AGEE'"),
         @NamedQuery(name = "CorAgente.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +

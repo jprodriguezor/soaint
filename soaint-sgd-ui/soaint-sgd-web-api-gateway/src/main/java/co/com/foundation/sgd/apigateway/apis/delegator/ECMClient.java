@@ -30,7 +30,7 @@ public class ECMClient {
         super();
     }
 
-    public Response uploadDocument(String sede, String dependencia, String fileName, InputPart part, String parentId) {
+    public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
@@ -45,26 +45,23 @@ public class ECMClient {
 
         log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
 
-        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  +
+        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
                 (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
                 .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
     }
 
-    public List<String> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia){
-        List<String> ecmIds = new ArrayList<>();
+    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
+        List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
             files.forEach((key, part) -> {
-                Response _response = this.uploadDocument(sede, dependencia, key, part, parentId);
+                Response _response = this.uploadDocument(sede, dependencia, tipoComunicacion, key, part, parentId);
                 MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
-                if (_response.getStatus() == HttpStatus.OK.value()
-                        && "0000".equals(asociadoResponse.getCodMensaje())) {
-                    ecmIds.add(asociadoResponse.getMensaje());
-                }
+                mensajeRespuestas.add(asociadoResponse);
             });
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
         }
-        return ecmIds;
+        return mensajeRespuestas;
     }
 
 
