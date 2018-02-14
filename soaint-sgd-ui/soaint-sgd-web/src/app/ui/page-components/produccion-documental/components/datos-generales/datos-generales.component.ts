@@ -18,6 +18,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {StatusDTO} from '../../models/StatusDTO';
 import {WARN_REDIRECTION} from '../../../../../shared/lang/es';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {DocumentoEcmDTO} from "../../../../../domain/documentoEcmDTO";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -177,20 +178,18 @@ export class PDDatosGeneralesComponent implements OnInit {
     uploadVersionDocumento(doc: VersionDocumentoDTO) {
       const formData = new FormData();
       formData.append('documento', doc.file, doc.nombre);
-      const payload = {
-        nombre: doc.nombre,
-        sede: this.taskData.variables.nombreSede,
-        dependencia: this.taskData.variables.nombreDependencia,
-        tipo: doc.tipo,
-        id: doc.id
+      const payload = {nombre: doc.nombre, sede: this.taskData.variables.nombreSede, dependencia: this.taskData.variables.nombreDependencia,
+        tipo: doc.tipo, id: doc.id
       };
+      let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirVersionDocumento(formData, payload).subscribe(
         resp => {
-          if ('0000' === resp.codMensaje || '0000' === resp.mensaje) {
+          if ('0000' === resp.codMensaje) {
+            docEcmResp = resp.metadatosDocumentosDTOList[0];
             const versiones = [...this.listaVersionesDocumento];
             console.log(versiones);
-            doc.id = resp.content && resp.content.idDocumento || (new Date()).toTimeString();
-            doc.version = resp.content && resp.content.versionLabel || '1.0';
+            doc.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
+            doc.version = docEcmResp && docEcmResp.versionLabel || '1.0';
             versiones.push(doc);
             console.log(versiones);
             this.listaVersionesDocumento = [...versiones];
@@ -211,16 +210,14 @@ export class PDDatosGeneralesComponent implements OnInit {
 
 
     agregarAnexo(event) {
-      const anexo: AnexoDTO = {
-        id: (new Date()).toTimeString(),
-        descripcion : this.form.get('descripcion').value,
-        soporte: this.form.get('soporte').value,
-        tipo: this.form.get('tipoAnexo').value
+      const anexo: AnexoDTO = { id: (new Date()).toTimeString(), descripcion : this.form.get('descripcion').value,
+        soporte: this.form.get('soporte').value, tipo: this.form.get('tipoAnexo').value
       };
       if (event) {
         anexo.file = event.files[0];
         const formData = new FormData();
         formData.append('documento', anexo.file, anexo.file.name);
+        let docEcmResp: DocumentoEcmDTO = null;
         this._produccionDocumentalApi.subirAnexo(formData, {
           nombre: anexo.file.name,
           dependencia: this.taskData.variables.nombreDependencia,
@@ -228,14 +225,15 @@ export class PDDatosGeneralesComponent implements OnInit {
         }).subscribe(
           resp => {
             if ('0000' === resp.codMensaje) {
-              anexo.id = resp.content && resp.content.idDocumento || (new Date()).toTimeString();
-              anexo.descripcion = resp.content && resp.content.nombreDocumento || null;
-              const versiones = [...this.listaAnexos];
-              versiones.push(anexo);
-              this.listaAnexos = [...versiones];
-              this.refreshView();
+                docEcmResp = resp.metadatosDocumentosDTOList[0];
+                anexo.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
+                anexo.descripcion = docEcmResp && docEcmResp.nombreDocumento || null;
+                const versiones = [...this.listaAnexos];
+                versiones.push(anexo);
+                this.listaAnexos = [...versiones];
+                this.refreshView();
             } else {
-              this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
+                this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
             }
           },
           error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
