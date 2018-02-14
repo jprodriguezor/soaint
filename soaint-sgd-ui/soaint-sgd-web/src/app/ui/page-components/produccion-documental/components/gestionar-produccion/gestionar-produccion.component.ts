@@ -66,17 +66,16 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
     initProyeccionLista(lista: string, rol: string) {
         const listaPreProyectores = this.getListaPreProyectoresFromIncomminString(lista);
-        if (listaPreProyectores.length === 0) {
-            return false;
-        }
+        if (listaPreProyectores.length === 0) { return false; }
         const loginnames = this.getLoginNamesForFuncionarios(lista);
-        if (loginnames.length === 0) {
-            return false;
-        }
-        const listaProyeccion: ProyectorDTO[] = [];
-        console.log(`Looking for Funcionarios from loginnames: ${loginnames}`);
+        if (loginnames.length === 0) { return false; }
+
+        const listaProyeccion = this.listaProyectores;
+        console.log(`Looking for Funcionarios from loginnames: ${loginnames} con rol: ${rol}`);
+        console.log(listaProyeccion);
+
         let dependencia: DependenciaDTO = null;
-        let pair: {login: string, codigo: string} = null
+        let pair: {login: string, codigo: string} = null;
 
         this._produccionDocumentalApi.getFuncionariosByLoginnames(loginnames).subscribe((functionarios: FuncionarioDTO[]) => {
             functionarios.forEach((fun: FuncionarioDTO) => {
@@ -88,9 +87,10 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
                     sede: {codigo: dependencia.codSede, codPadre: dependencia.codigo, id: dependencia.ideSede, nombre: dependencia.nomSede},
                     rol: this._produccionDocumentalApi.getRoleByRolename(rol)
                 });
+                console.log(`Agregado: ${fun.nombre} como ${rol}`);
                 this.listaProyectores = [...listaProyeccion];
                 console.log(this.listaProyectores);
-                this.startIndex += this.listaProyectores.length;
+                this.startIndex = this.listaProyectores.length;
                 this.refreshView();
             });
         });

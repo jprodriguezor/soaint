@@ -29,8 +29,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   @Input() taskData: TareaDTO;
 
   canInsert = false;
-  responseToRem = false;
-  hasNumberRadicado=false;
+  responseToRem = true;
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
@@ -38,47 +37,21 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
-      this.responseToRem = false;
-      this.form.get('responderRemitente').setValue(false);
+      this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
     });
 
     this.initForm();
   }
 
-  ngOnInit(): void {
-    console.log(this.taskData);
-    console.log('ini datos');
-
-    if(this.taskData.variables.numeroRadicado){
-
-      this.hasNumberRadicado = true;
-
-      if(this.tipoComunicacionSelected.codigo == 'SE') {
-
-        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-          nroRadicado: '1040EE2018000130'//this.taskData.variables.numeroRadicado
-        }).subscribe( contacto => {
-            console.log(contacto);
-        });
-
-        this.listaDestinatariosExternos
-      }
-
-    }
-
-    this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
-      this.responseToRem = responderRemitente;
-    });
-  }
+  ngOnInit(): void {}
 
   updateStatus(currentStatus: StatusDTO) {
 
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
-
-    if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
+    if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
       this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
-    } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
+    } else if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
       this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatarios];
     }
     this.refreshView();

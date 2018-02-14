@@ -21,6 +21,7 @@ export interface StatusDTO {
 
 export interface VariablesTareaDTO {
   aprobado: number,
+  requiereAjustes: number,
   listaProyector: string[],
   codDependencia?: string,
   listaAprobador?: string[],
