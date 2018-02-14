@@ -6,13 +6,29 @@
     <persistence-unit name="servicios-correspondencia-h2-unit-test" transaction-type="RESOURCE_LOCAL">
 
         <!-- add classes -->
-        <class>co.com.soaint.correspondencia.domain.entity.TvsPais</class>
-        <class>co.com.soaint.correspondencia.domain.entity.TvsMunicipio</class>
-        <class>co.com.soaint.correspondencia.domain.entity.TvsDepartamento</class>
+        <class>co.com.soaint.correspondencia.domain.entity.PpdTrazDocumento</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsConstantes</class>
-        <class>co.com.soaint.correspondencia.domain.entity.Funcionarios</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorAnexo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorPlanAgen</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPais</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDepartamento</class>
+        <class>co.com.soaint.correspondencia.domain.entity.DctAsignacion</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsMunicipio</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorReferido</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDserial</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDatosContacto</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorAgente</class>
+        <class>co.com.soaint.correspondencia.domain.entity.DctAsigUltimo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.PpdDocumento</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsOrganigramaAdministrativo</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorPlanillas</class>
+        <class>co.com.soaint.correspondencia.domain.entity.CorCorrespondencia</class>
+        <class>co.com.soaint.correspondencia.domain.entity.Funcionarios</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsOrgaAdminXFunciPk</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsTarea</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsDserial</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPlantilla</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato</class>
 
         <properties>
             <!-- Configuring JDBC properties -->
