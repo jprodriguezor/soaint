@@ -33,7 +33,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   tipoComunicacionSelected: ConstanteDTO;
   subscription: Subscription;
 
-  aprobar = false;
+  aprobado = 0;
   tabIndex = 0;
 
   authPayload: { usuario: string, pass: string } | {};
@@ -60,41 +60,35 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   ngOnInit(): void {
     this._store.select(getActiveTask).take(1).subscribe(activeTask => {
       this.task = activeTask;
-      this.taskVariables = {
-        aprobado: activeTask.variables.aprobado || 0,
-        listaProyector: activeTask.variables.listaProyector && this.parseIncomingListaProyector(activeTask.variables.listaProyector || ''),
-        listaAprobador: activeTask.variables.listaAprobador && this.parseIncomingListaProyector(activeTask.variables.listaAprobador || ''),
-        listaRevisor: activeTask.variables.listaRevisor && this.parseIncomingListaProyector(activeTask.variables.listaRevisor || '')
-      };
-        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
-        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
-        this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaAprobador || '', 'aprobador');
       this._produccionDocumentalApi.obtenerEstadoTarea({
         idInstanciaProceso: this.task.idInstanciaProceso,
         idTareaProceso: this.idEstadoTarea
       }).subscribe(
         status => {
           if (status) {
-            this.taskCurrentStatus = status;
-            this.datosGenerales.updateStatus(status);
-            this.datosContacto.updateStatus(status);
-            this.gestionarProduccion.updateStatus(status);
+                this.taskCurrentStatus = status;
+                this.datosGenerales.updateStatus(status);
+                this.datosContacto.updateStatus(status);
+                this.gestionarProduccion.updateStatus(status);
           } else {
-            this.taskCurrentStatus = {
-              datosGenerales: {
-                tipoComunicacion: null,
-                listaVersionesDocumento: [],
-                listaAnexos: []
-              },
-              datosContacto: {
-                distribucion: null,
-                responderRemitente: false,
-                listaDestinatarios: []
-              },
-              gestionarProduccion: {
-                listaProyectores: []
-              }
-            };
+                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
+                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
+                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaAprobador || '', 'aprobador');
+                this.taskCurrentStatus = {
+                  datosGenerales: {
+                    tipoComunicacion: null,
+                    listaVersionesDocumento: [],
+                    listaAnexos: []
+                  },
+                  datosContacto: {
+                    distribucion: null,
+                    responderRemitente: false,
+                    listaDestinatarios: []
+                  },
+                  gestionarProduccion: {
+                    listaProyectores: this.gestionarProduccion.listaProyectores
+                  }
+                };
           }
         }
       );
@@ -136,7 +130,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     this.datosContacto.form.disable();
     this.gestionarProduccion.form.disable();
     this.guardarEstadoTarea(currentStatus);
-
+    this.taskVariables = {
+        aprobado: 0,
+        requiereAjustes: 0,
+        listaProyector: [],
+        listaAprobador: [],
+        listaRevisor: []
+    };
     this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
       if (el.rol.rol === 'proyector') {
         this.taskVariables.listaProyector.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));

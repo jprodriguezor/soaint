@@ -48,9 +48,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   updateStatus(currentStatus: StatusDTO) {
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
-    if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
+    if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
       this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
-    } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
+    } else if (currentStatus.datosGenerales.tipoComunicacion && currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
       this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatarios];
     }
     this.refreshView();
