@@ -1139,7 +1139,7 @@ public class ContentControlAlfresco implements ContentControl {
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
                     else{
-                        response.setCodMensaje("2222");
+                        response.setCodMensaje("3333");
                         response.setMensaje("En esta sede y dependencia no esta permitido relaizar radicaciones");
                     }
 
