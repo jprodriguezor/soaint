@@ -14,7 +14,7 @@ import {FAIL_ADJUNTAR_PRINCIPAL, SUCCESS_ADJUNTAR_DOCUMENTO, FAIL_ADJUNTAR_ANEXO
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {isArray, isNullOrUndefined} from 'util';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
-import {empty} from "rxjs/Observer";
+import {empty} from 'rxjs/Observer';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -41,7 +41,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   correspondencia: CorrespondenciaDTO;
   comunicacion: ComunicacionOficialDTO = {};
 
-  tipoSoporteElectronico: boolean = false;
+  tipoSoporteElectronico = false;
 
   activeTaskUnsubscriber: Subscription;
 
@@ -77,20 +77,16 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     for (const file of event.files) {
       formData.append('files', file, file.name);
     }
-    console.log("datos subida");
+    console.log('datos subida');
     console.log(formData);
 
     this.comunicacion.anexoList.forEach(value => {
-      console.log("anexos");
+      console.log('anexos');
       console.log(value);
-      if (value.codTipoSoporte == "TP-SOPE") {
+      if (value.codTipoSoporte == 'TP-SOPE') {
         this.tipoSoporteElectronico = true;
       }
     });
-
-    //console.log(this.tipoSoporteElectronico);
-    //console.log(event.files.length);
-    //console.log(this.comunicacion.anexoList);
 
     if (isNullOrUndefined(this.principalFile)) {
 
@@ -120,10 +116,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
         if (isArray(data)) {
           if (data.length === 0) {
             this._store.dispatch(new PushNotificationAction({
-              severity: 'success', summary: 'NO ADJUNTO, NO PUEDE ADJUNTAR EL DOCUMENTO'
+              severity: 'error', summary: 'NO ADJUNTO, NO PUEDE ADJUNTAR EL DOCUMENTO'
             }));
-          }
-          else {
+          } else {
             this._store.dispatch(new CompleteTaskAction({
               idProceso: this.task.idProceso, idDespliegue: this.task.idDespliegue,
               idTarea: this.task.idTarea, parametros: {ideEcm: data[0]}
@@ -132,22 +127,21 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
             }));
           }
-        }
-        else {
+        } else {
           switch (data.codMensaje) {
             case '1111':
               this._store.dispatch(new PushNotificationAction({
-                severity: 'success', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
+                severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
               break;
             case '3333':
               this._store.dispatch(new PushNotificationAction({
-                severity: 'success', summary: 'ACCESO DENEGADO, NO PUEDE SUBIR EL DOCUMENTO'
+                severity: 'error', summary: 'ACCESO DENEGADO, NO PUEDE SUBIR EL DOCUMENTO'
               }));
               break;
             default:
               this._store.dispatch(new PushNotificationAction({
-                severity: 'success', summary: 'UPSSS!!! HA OCURRIDO UN ERROR'
+                severity: 'error', summary: 'UPSSS!!! HA OCURRIDO UN ERROR'
               }));
           }
         }
