@@ -54,7 +54,7 @@ export class ProduccionDocumentalApiService {
   subirAnexo(formData: FormData, payload: {nombre: string, sede: string, dependencia: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.nombre, payload.sede, payload.dependencia]);
+      [payload.nombre, payload.sede, payload.dependencia, 'PD']);
   }
 
     getFuncionariosByLoginnames(loginnames: string) {

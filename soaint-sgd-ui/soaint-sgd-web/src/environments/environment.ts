@@ -10,8 +10,8 @@
 const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
- //const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
- //const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -96,15 +96,16 @@ export const environment = {
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
-  // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_gestion_documental : {
-    subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
-    obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
-    subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
-    obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-    eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
-  }
+    // Produccion Documental
+    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+    pd_gestion_documental : {
+        subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
+        obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
+        eliminarAnexo: ``,
+        subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
+        obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+        eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
+    }
 
 };
 
