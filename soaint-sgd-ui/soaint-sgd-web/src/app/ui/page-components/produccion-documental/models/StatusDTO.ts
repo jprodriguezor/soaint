@@ -4,6 +4,7 @@ import {ProyectorDTO} from '../../../../domain/ProyectorDTO';
 import {DestinatarioDTO} from '../../../../domain/destinatarioDTO';
 
 export interface StatusDTO {
+  status: number,
   datosGenerales: {
     tipoComunicacion: ConstanteDTO,
     listaVersionesDocumento: VersionDocumentoDTO[],
@@ -20,10 +21,9 @@ export interface StatusDTO {
 }
 
 export interface VariablesTareaDTO {
-  aprobado: number,
-  requiereAjustes: number,
-  listaProyector: string[],
-  codDependencia?: string,
+  aprobado?: number,
+  requiereAjustes?: number,
+  listaProyector?: string[],
   listaAprobador?: string[],
   listaRevisor?: string[]
 }

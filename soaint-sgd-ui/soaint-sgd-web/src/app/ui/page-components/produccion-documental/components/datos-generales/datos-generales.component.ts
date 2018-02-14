@@ -49,6 +49,7 @@ export class PDDatosGeneralesComponent implements OnInit {
     listaAnexos: AnexoDTO[] = [];
 
     fechaCreacion = new Date();
+    numeroRadicado = null;
     tipoPlantillaSelected: ConstanteDTO;
     fileContent: {id: number; file: Blob };
 
@@ -205,6 +206,10 @@ export class PDDatosGeneralesComponent implements OnInit {
           this.refreshView();
         }
       );
+    }
+
+    getListaVersiones(): VersionDocumentoDTO[] {
+        return this.listaVersionesDocumento;
     }
 
 

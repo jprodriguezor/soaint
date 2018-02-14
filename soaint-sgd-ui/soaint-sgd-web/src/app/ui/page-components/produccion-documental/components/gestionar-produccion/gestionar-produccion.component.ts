@@ -205,6 +205,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
 
+    getListaProyectores(): ProyectorDTO[] {
+      return this.listaProyectores;
+    }
+
+
     protected getListaPreProyectoresFromIncomminString(lista: string) {
         const listaPreProyectores: {login: string, codigo: string}[] = [];
         const matchs = lista.match(/[a-z.]+:[0-9]+/g);
