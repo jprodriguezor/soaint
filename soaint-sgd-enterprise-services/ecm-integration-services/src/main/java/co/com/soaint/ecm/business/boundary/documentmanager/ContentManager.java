@@ -72,43 +72,6 @@ public class ContentManager {
     }
 
     /**
-     * Metodo generico para subir los dccumentos al content
-     *
-     * @param nombreDocumento  NOmbre del documento que se va a subir
-     * @param documento        Documento que se va a subir
-     * @param tipoComunicacion tipo de comunicacion puede ser externa o interna.
-     * @return Identificador del documento que se inserto
-     * @throws InfrastructureException Excepcion que se lanza en error
-     */
-    public MensajeRespuesta subirDocumentoContent(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
-
-        logger.info ("### Subiendo documento al content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
-        Carpeta carpeta;
-        try {
-            Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-
-            //Carpeta donde se va a guardar el documento
-            carpeta = new Carpeta ( );
-            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            logger.info ("### Se invoca el metodo de subir el documento..");
-
-            response=contentControl.subirDocumento (conexion.getSession ( ), nombreDocumento, documento, tipoComunicacion);
-
-        } catch (Exception e) {
-            logger.error ("Error subiendo documento", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear el documento");
-            throw e;
-        }
-        return response;
-
-    }
-
-    /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
      * @param documento        Documento que se va a subir

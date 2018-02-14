@@ -1,9 +1,9 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,42 +52,19 @@ public class EcmManager {
     }
 
     /**
-     * Metodo que llama el servicio para subir documentos al ECM
-     *
-     * @param nombreDocumento  Nombre del documento a subir
-     * @param documento        Documento que se va a subir
-     * @param tipoComunicacion TIpo de comunicacion que puede ser Externa o Interna
-     * @return Identificador del documento creado
-     * @throws InfrastructureException Excepcion ante errores del metodo
-     */
-    public MensajeRespuesta subirDocumento(String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException {
-        logger.info("### Subiendo documento al content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            response=contentManager.subirDocumentoContent(nombreDocumento, documento, tipoComunicacion);
-        } catch (Exception e) {
-            logger.error("### Error..------", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
-            throw e;
-        }
-
-        return response;
-    }
-    /**
      * Metodo que llama el servicio para subir documentos de producción documental y los documentos adjuntos al ECM.
      *
-     * @param documento        Documento que se va a subir
+     * @param documento              Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
         logger.info("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO,selector);
+            response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO, selector);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
@@ -101,9 +78,9 @@ public class EcmManager {
     /**
      * Metodo que llama el servicio para subir versionar documentos generado de producción documental al ECM.
      *
-     * @param documento        Documento que se va a subir
+     * @param documento              Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
-     * @param selector  parametro que indica donde se va a guardar el documento
+     * @param selector               parametro que indica donde se va a guardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
@@ -111,7 +88,7 @@ public class EcmManager {
         logger.info("### Subiendo/Versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO,selector);
+            response = contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO, selector);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
@@ -121,6 +98,7 @@ public class EcmManager {
 
         return response;
     }
+
     /**
      * Metodo que llama el servicio para buscar los documentos adjuntos al ECM dado el Id del documento Principal.
      *
@@ -132,7 +110,7 @@ public class EcmManager {
         logger.info("### Obteniendo los documentos adjuntos dado id de doc Principal..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
+            response = contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
@@ -154,7 +132,7 @@ public class EcmManager {
         logger.info("### Obteniendo las versiones del documento dado id..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.obtenerVersionesDocumentoContent(idDoc);
+            response = contentManager.obtenerVersionesDocumentoContent(idDoc);
         } catch (Exception e) {
             logger.error("### Error ECM..------", e);
             response.setCodMensaje("2222");
@@ -164,10 +142,11 @@ public class EcmManager {
 
         return response;
     }
+
     /**
      * Metodo que llama el servicio para modificar metadatos del documento en el ECM
      *
-     * @param metadatosDocumentos  DTO que contiene los metadatos del documento
+     * @param metadatosDocumentos DTO que contiene los metadatos del documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
@@ -175,7 +154,7 @@ public class EcmManager {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
+            response = contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
@@ -190,7 +169,7 @@ public class EcmManager {
     /**
      * Metodo que llama el servicio para modificar metadatos del documento en el ECM
      *
-     * @param metadatosDocumentos  DTO que contiene los metadatos del documento
+     * @param metadatosDocumentos DTO que contiene los metadatos del documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
@@ -198,7 +177,7 @@ public class EcmManager {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response=contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
+            response = contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
         } catch (Exception e) {
             logger.error("### Error..------", e);
             response.setCodMensaje("2222");
@@ -208,6 +187,7 @@ public class EcmManager {
 
         return response;
     }
+
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      *

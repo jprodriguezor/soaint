@@ -36,18 +36,6 @@ public interface ContentControl {
     MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder);
 
     /**
-     * Subir documento
-     *
-     * @param session          Objeto conexion
-     * @param nombreDocumento  nombre de documento
-     * @param documento        documento a subir
-     * @param tipoComunicacion tipo de comunicacion
-     * @return ide de documento
-     * @throws IOException exception
-     */
-    MensajeRespuesta subirDocumento(Session session, String nombreDocumento, MultipartFormDataInput documento, String tipoComunicacion) throws IOException;
-
-    /**
      * Subir documento Principal Adjuntos al ECM
      *
      * @param session          Objeto conexion

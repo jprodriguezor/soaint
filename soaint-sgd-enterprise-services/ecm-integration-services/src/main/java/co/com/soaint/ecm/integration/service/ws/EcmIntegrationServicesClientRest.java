@@ -62,30 +62,6 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
-     * Subir documento a ECM
-     *
-     * @param nombreDocumento  nombre documento
-     * @param documento        documento a subir
-     * @param tipoComunicacion tipo de documento
-     * @return identificador del documento en el ecm
-     */
-    @POST
-    @Path("/subirDocumentoECM/{nombreDocumento}/{tipoComunicacion}")
-    @Consumes("multipart/form-data")
-    public MensajeRespuesta subirDocumentoECM(@PathParam("nombreDocumento") String nombreDocumento,
-                                              @RequestPart("documento") final MultipartFormDataInput documento,
-                                              @PathParam("tipoComunicacion") String tipoComunicacion) throws IOException {
-        logger.info("processing rest request - Subir Documento ECM " + nombreDocumento + " " + tipoComunicacion);
-        try {
-            return fEcmManager.subirDocumento(nombreDocumento, documento, tipoComunicacion);
-        } catch (IOException e) {
-            logger.error("Error en operacion - Subir Documento ECM ", e);
-            throw e;
-        }
-
-    }
-
-    /**
      * Subir documento Principal al ECM
      *
      * @param documento       documento a subir
@@ -150,7 +126,7 @@ public class EcmIntegrationServicesClientRest {
             metadatosDocumentosDTO.setDependencia(dependencia);
             metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
 
-            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO,selector);
+            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO, selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
@@ -164,8 +140,9 @@ public class EcmIntegrationServicesClientRest {
      * @param documento       documento a subir
      * @param nombreDocumento Nombre del documento
      * @param sede            Sede a la que pertenece el documento
-     * @param selector        parametro que indica donde se va a guardar el documento
      * @param dependencia     Dependencia a la que pertenece el documento
+     * @param selector        parametro que indica donde se va a guardar el documento
+     * @param tipoDocumento   Tipo de documento
      * @return identificador del documento en el ecm
      */
     @POST
@@ -202,6 +179,8 @@ public class EcmIntegrationServicesClientRest {
      * @param nombreDocumento Nombre del documento
      * @param sede            Sede a la que pertenece el documento
      * @param dependencia     Dependencia a la que pertenece el documento
+     * @param tipoDocumento   Tipo de documento
+     * @param idDoc           Identificador del documento
      * @param selector        parametro que indica donde se va a guardar el documento
      * @return identificador del documento en el ecm
      */
