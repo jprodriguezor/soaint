@@ -30,6 +30,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   canInsert = false;
   responseToRem = true;
+    hasNumberRadicado = false;
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
