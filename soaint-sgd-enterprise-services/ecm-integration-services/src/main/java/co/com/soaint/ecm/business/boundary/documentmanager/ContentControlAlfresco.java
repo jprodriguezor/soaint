@@ -5,6 +5,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.ecm.uti.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -223,7 +224,6 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
 
-
         MensajeRespuesta response = new MensajeRespuesta();
         ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
@@ -231,12 +231,17 @@ public class ContentControlAlfresco implements ContentControl {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
             File file = null;
+            File fileAux = null;
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
                     logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
-                    file = getFile(metadatosDocumentosDTO, versionesLista, version);
+                    if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
+                        metadatosDocumentosDTO.setNombreDocumento(version.getName());
+                        versionesLista.add(metadatosDocumentosDTO);
 
+                        file = convertInputStreamToFile(version.getContentStream());
+                    }
                 }
                 return Response.ok(file)
                         .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
@@ -256,27 +261,6 @@ public class ContentControlAlfresco implements ContentControl {
             return Response.serverError().build();
         }
     }
-
-    /**
-     * Metodo para retornal el archivo
-     *
-     * @param metadatosDocumentosDTO Objeto que contiene los metadatos
-     * @param versionesLista         Listado por el que se va a buscar
-     * @param version                Version del documento que se esta buscando
-     * @return Objeto file
-     * @throws IOException
-     */
-    private File getFile(MetadatosDocumentosDTO metadatosDocumentosDTO, ArrayList<MetadatosDocumentosDTO> versionesLista, Document version) throws IOException {
-        File fileAux = null;
-        if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
-            metadatosDocumentosDTO.setNombreDocumento(version.getName());
-            versionesLista.add(metadatosDocumentosDTO);
-
-            fileAux = convertInputStreamToFile(version.getContentStream());
-        }
-        return fileAux;
-    }
-
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
@@ -786,11 +770,10 @@ public class ContentControlAlfresco implements ContentControl {
             } else {
                 metadatosDocumentosDTO.setTipoDocumento(APPLICATION_PDF);
             }
-
+            Map<String, Object> properties = new HashMap<>();
             if ("none".equals(metadatosDocumentosDTO.getIdDocumento())) {
 
                 //Se definen las propiedades del documento a subir
-                Map<String, Object> properties = new HashMap<>();
                 properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
                 properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, metadatosDocumentosDTO.getTipoDocumento());
                 properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
@@ -806,11 +789,15 @@ public class ContentControlAlfresco implements ContentControl {
                 //Obtener el PWC (Private Working copy)
                 Document pwc = (Document) session.getObject(doc.checkOut());
 
+                //Setear el nombre del nuevo documento
+                properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
+                //Definir el contenido del documento
                 ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
 
                 // Check in the pwc
                 try {
-                    pwc.checkIn(false, null, contentStream, "nueva version");
+
+                    pwc.checkIn(false, properties, contentStream, "nueva version");
 
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento versionado correctamente");
@@ -857,12 +844,12 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
-                boolean existeDependencia=false;
+                boolean existeDependencia = false;
                 for (Carpeta carpetaP : carpetasHijas) {
                     logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
                     if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
                         logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                        existeDependencia=true;
+                        existeDependencia = true;
                         Calendar cal = Calendar.getInstance();
                         int year = cal.get(Calendar.YEAR);
 
@@ -902,14 +889,14 @@ public class ContentControlAlfresco implements ContentControl {
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
                 }
-                if (!existeDependencia){
+                if (!existeDependencia) {
                     logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
                     response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
                 }
             } else {
                 logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
-                response.setCodMensaje("2222");
+                response.setCodMensaje("4444");
                 response.setMensaje("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
@@ -981,12 +968,12 @@ public class ContentControlAlfresco implements ContentControl {
 
                 boolean existe = false;
                 boolean existeAux = false;
-                boolean existeDependencia=false;
+                boolean existeDependencia = false;
                 for (Carpeta carpetaP : carpetasHijas) {
                     logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
                     if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
                         logger.info("Se busca si existe la carpeta de COMUNICACIONES OFICIALES para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                        existeDependencia=true;
+                        existeDependencia = true;
                         Calendar cal = Calendar.getInstance();
                         int year = cal.get(Calendar.YEAR);
 
@@ -1060,7 +1047,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                     }
                 }
-                if (!existeDependencia){
+                if (!existeDependencia) {
                     logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
                     response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
