@@ -30,6 +30,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   listaProyectores: ProyectorDTO[] = [];
   startIndex = 0;
+  @Input() status = 1;
 
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
   dependencias: Array<any> = [];

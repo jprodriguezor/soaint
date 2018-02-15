@@ -18,6 +18,7 @@
                               formControlName="sede"
                               placeholder="Seleccione"
                               [autoWidth]="false"
+                              [disabled]="status > 1"
                               (onBlur)="listenForBlurEvents('sede')"
                   >
                   </p-dropdown>
@@ -37,6 +38,7 @@
                               formControlName="dependencia"
                               placeholder="Seleccione"
                               [autoWidth]="false"
+                              [disabled]="status > 1"
                               (onChange)="dependenciaChange($event)"
                               (onBlur)="listenForBlurEvents('dependencia')"
                   >
@@ -57,6 +59,7 @@
                               formControlName="rol"
                               placeholder="Seleccione"
                               [autoWidth]="false"
+                              [disabled]="status > 1"
                   >
                   </p-dropdown>
                 </div>
@@ -75,6 +78,7 @@
                               formControlName="funcionario"
                               placeholder="Seleccione"
                               [autoWidth]="false"
+                              [disabled]="status > 1"
                   >
                   </p-dropdown>
                 </div>
@@ -90,7 +94,7 @@
                 <div class="ui-g-12"> <label></label> </div>
                 <div class="ui-g-12">
                   <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right"
-                          [disabled]="!form.valid"
+                          [disabled]="status > 1 || !form.valid"
                           (click)="agregarProyector()"
                   ></button>
                 </div>
@@ -121,7 +125,9 @@
               <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
                 <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
                   <button type="button" icon="ui-icon-close" pButton
-                          class="ui-button ui-button-icon ui-button-danger" (click)="eliminarProyector(rindex)" [disabled]="rindex < startIndex"
+                          class="ui-button ui-button-icon ui-button-danger"
+                          (click)="eliminarProyector(rindex)"
+                          [disabled]="status > 1 || rindex < startIndex"
                   ></button>
                 </ng-template>
               </p-column>
