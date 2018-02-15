@@ -4,7 +4,6 @@ import {ProyectorDTO} from '../../../../domain/ProyectorDTO';
 import {DestinatarioDTO} from '../../../../domain/destinatarioDTO';
 
 export interface StatusDTO {
-  status: number,
   datosGenerales: {
     tipoComunicacion: ConstanteDTO,
     listaVersionesDocumento: VersionDocumentoDTO[],
@@ -16,6 +15,7 @@ export interface StatusDTO {
     listaDestinatarios: DestinatarioDTO[]
   },
   gestionarProduccion: {
+    startIndex: number,
     listaProyectores: ProyectorDTO[]
   }
 }

@@ -38,7 +38,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
-      this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
+      // this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
     });
 
     this.initForm();
