@@ -89,7 +89,9 @@
               <div class="ui-g form-group">
                 <div class="ui-g-12"> <label></label> </div>
                 <div class="ui-g-12">
-                  <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right" (click)="agregarProyector()"
+                  <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right"
+                          [disabled]="!form.valid"
+                          (click)="agregarProyector()"
                   ></button>
                 </div>
               </div>

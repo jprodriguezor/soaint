@@ -17,6 +17,8 @@ import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {ProyectorDTO} from '../../../domain/ProyectorDTO';
 import {ActivatedRoute} from '@angular/router';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {AgentDTO} from '../../../domain/agentDTO';
 
 @Component({
   selector: 'produccion-documental',
@@ -94,10 +96,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                     listaAnexos: []
                   },
                   datosContacto: {
-                    distribucion: null,
-                    responderRemitente: false,
-                    listaDestinatarios: [],
-                    remitenteExterno: null,
+                      distribucion: null,
+                      responderRemitente: false,
+                      listaDestinatarios: [],
+                      remitenteExterno: null
                   },
                   gestionarProduccion: {
                     startIndex: this.gestionarProduccion.listaProyectores.length,
@@ -116,47 +118,36 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
+    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(response => { console.log(response); });
+  }
 
-    console.log("entro al guardar");
-    console.log(tareaDTO);
-
-    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(response => {
-        console.log(response);
-    });
+  updateEstadoTarea() {
+      const currentStatus = this.getCurrentStatus();
+      currentStatus.gestionarProduccion.startIndex = currentStatus.gestionarProduccion.listaProyectores.length;
+      this.guardarEstadoTarea(currentStatus);
   }
 
   getCurrentStatus(): StatusDTO {
-
-    console.log('current');
-    console.log(this.datosContacto);
-
-    this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
-    this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
-    this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
-    this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
-    this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-
-    if (this.datosGenerales.form.get('tipoComunicacion').value) {
-
-      if(this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'){
-        this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
-
-      }else{
-        this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
+      this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
+      this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
+      this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
+      this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
+      this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
+      if (this.datosGenerales.form.get('tipoComunicacion').value) {
+          if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
+              this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
+          } else {
+              this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
+          }
+      } else {
+          this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
       }
-
-
-    } else {
-      this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
-    }
-    this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
-    this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
-
-    return this.taskCurrentStatus;
+      this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
+      return this.taskCurrentStatus;
   }
 
   construirListas() {
-      this.taskCurrentStatus.gestionarProduccion.listaProyectores.forEach(el => {
+      this.gestionarProduccion.getListaProyectores().forEach(el => {
           if (el.rol.rol === 'proyector') {
               this.taskVariables.listaProyector.push(el.funcionario.loginName.concat(':').concat(el.dependencia.codigo));
           } else
@@ -170,89 +161,80 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       console.log(`Listas construidas`);
   }
 
-  completarTarea() {
-    const currentStatus = this.getCurrentStatus();
-    let completar = true;
-    switch (this.status) {
-        case 1 : {
-            console.log(`Status 1`);
-            if (!this.hasAprobador()) {
-                console.log(`No hay aprobador`);
-                completar = false;
-                this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe agregar al menos un aprobador'}));
-                break;
-            }
-            this.taskVariables = {aprobado : 0, listaProyector : [],
-                listaRevisor : [], listaAprobador : [] };
-            this.construirListas();
-            break;
+    continuarProceso() {
+        if (!this.hasAprobador()) {
+            console.log(`No hay aprobador`);
+            this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe especificar al menos un aprobador'}));
+            return false;
         }
-        case 2 : {
-            console.log(`Status 2`);
-            this.taskVariables = { requiereAjustes: this.checkRequiereAjustes() ? 1 : 0 };
-            if (this.taskVariables.requiereAjustes === 1 && !this.hasAprobador()) {
-                console.log(`Requiere ajustes pero no hay aprobador`);
-                completar = false;
-                this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe agregar al menos un aprobador'}));
-            }
-            break;
-        }
-        case 3 : {
-            console.log(`Status 3`);
-            this.taskVariables = { aprobado: 1 };
-            break;
-        }
-        default : {
-            this.taskVariables = {};
-            break;
-        }
+        this.taskVariables = {aprobado : 0, listaProyector : [], listaRevisor : [], listaAprobador : [] };
+        this.construirListas();
+        this.updateEstadoTarea();
+        this.terminarTarea();
+        return true;
     }
-    console.log(this.taskVariables);
-    if (completar) {
-        // this.datosGenerales.form.disable();
-        console.log(`Terminar la tarea 1`);
-        // this.datosContacto.form.disable();
-        console.log(`Terminar la tarea 2`);
-        // this.gestionarProduccion.form.disable();
-        console.log(`Terminar la tarea 3`);
-        currentStatus.gestionarProduccion.startIndex = currentStatus.gestionarProduccion.listaProyectores.length;
-        console.log(`Terminar la tarea 4`);
-        this.guardarEstadoTarea(currentStatus);
-        console.log(`Terminar la tarea 5`);
+
+    devolverDocumento() {
+        this.taskVariables = {};
+        if (this.status === 2) {
+            this.taskVariables = { requiereAjustes: 1 };
+        } else if (this.status === 3) {
+            this.taskVariables = { aprobado: 0 };
+        }
+        this.updateEstadoTarea();
         this.terminarTarea();
     }
-  }
 
   aprobarDocumento() {
-      this.taskVariables = { aprobado: 1 };
+      switch (this.status) {
+          case 1 : {
+              this.taskVariables = {aprobado : 1, listaProyector : [], listaRevisor : [], listaAprobador : [] };
+              this.construirListas();
+              break;
+          }
+          case 2 : {
+              this.taskVariables = { requiereAjustes: 0 };
+              break;
+          }
+          case 3 : {
+              this.taskVariables = { aprobado: 1 };
+              break;
+          }
+          default : {
+              this.taskVariables = {};
+              break;
+          }
+      }
+      this.updateEstadoTarea();
       this.terminarTarea();
   }
 
+    cancelarTarea() {
+        this._taskSandBox.abortTaskDispatch({
+            idProceso: this.task.idProceso,
+            idDespliegue: this.task.idDespliegue,
+            instanciaProceso: this.task.idInstanciaProceso
+        });
+    }
 
-  terminarTarea() {
+
+    terminarTarea() {
       this._taskSandBox.completeTaskDispatch({
           idProceso: this.task.idProceso,
           idDespliegue: this.task.idDespliegue,
           idTarea: this.task.idTarea,
           parametros: this.taskVariables
       });
-  }
-
-    puedeAprobar() {
-        return 0 < this.datosGenerales.getListaVersiones().length
-            && ((1 === this.gestionarProduccion.listaProyectores.length
-            && this.funcionarioLog.loginName === this.gestionarProduccion.getListaProyectores()[0].funcionario.loginName)
-            || (this.esFuncionarioAprobador(this.funcionarioLog)))
     }
 
-    checkRequiereAjustes() {
-        return 0 < this.datosGenerales.getListaVersiones().length
-            && this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'revisor' === el.rol.rol).length > 0;
+    puedeAprobar() {
+        const valid = this.status > 1
+            || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length);
+        return valid && this.isValid();
     }
 
     hasAprobador() {
-        return 0 < this.datosGenerales.getListaVersiones().length
-            && this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
+        return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
     }
 
     esFuncionarioAprobador(funcionario: FuncionarioDTO) {
@@ -261,11 +243,19 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         ).length > 0;
     }
 
-  ngOnDestroy(): void {
-    this.authPayloadUnsubscriber.unsubscribe();
-  }
 
-  save(): Observable<any> {
-    return Observable.of(true).delay(5000);
-  }
+    isValid(): boolean {
+       let valid = true;
+       valid = valid && this.datosGenerales.isValid();
+
+       return valid;
+    }
+
+    ngOnDestroy(): void {
+        this.authPayloadUnsubscriber.unsubscribe();
+    }
+
+    save(): Observable<any> {
+        return Observable.of(true).delay(5000);
+    }
 }
