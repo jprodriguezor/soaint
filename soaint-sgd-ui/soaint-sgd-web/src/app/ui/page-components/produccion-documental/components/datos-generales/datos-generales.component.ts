@@ -113,13 +113,19 @@ export class PDDatosGeneralesComponent implements OnInit {
       return this.pd_currentVersion;
     }
 
-
-
     attachDocument(event, versionUploader: FileUpload) {
       if (event.files.length === 0) { return false; }
       const nv = {id: 'none', nombre: event.files[0].name, tipo: 'pdf', version: '', contenido: '', file: event.files[0], size: event.files[0].size};
       this.uploadVersionDocumento(nv);
       versionUploader.clear();
+    }
+
+    obtenerVersionesDocumento(idDocumento: string) {
+        this._produccionDocumentalApi.obtenerListaVersionesDocumento({id: idDocumento}).subscribe(
+            res => {
+
+            }
+        );
     }
 
     mostrarVersionDocumento(index: number) {

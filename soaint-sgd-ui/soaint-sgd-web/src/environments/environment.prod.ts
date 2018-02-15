@@ -96,6 +96,7 @@ export const environment = {
         eliminarAnexo: ``,
         subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
         obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+        obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
     }
 
