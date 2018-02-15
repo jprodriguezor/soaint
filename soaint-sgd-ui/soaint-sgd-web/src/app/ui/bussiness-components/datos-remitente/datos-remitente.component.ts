@@ -47,6 +47,7 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
   subscribers: Array<Subscription> = [];
 
   @ViewChild('datosContactos') datosContactos;
+
   @Input() editable = true;
   @Input() tipoComunicacion: any;
   @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
@@ -61,6 +62,7 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
     this.form.disable();
     this.listenForChanges();
     this.listenForErrors();
+    this.visibility['tipoPersona'] = false;
   }
 
   initLoadTipoComunicacionExterna() {

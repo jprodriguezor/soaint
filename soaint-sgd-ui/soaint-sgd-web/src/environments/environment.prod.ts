@@ -70,7 +70,7 @@ export const environment = {
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
 
-  obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo/`,
+  obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
