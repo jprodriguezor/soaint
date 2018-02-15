@@ -103,7 +103,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
-  guardarEstadoTarea(currentStatus: StatusDTO) {
+  guardarEstadoTarea(currentStatus?: StatusDTO) {
     const tareaDTO = {
       idTareaProceso: this.idEstadoTarea,
       idInstanciaProceso: this.task.idInstanciaProceso,
