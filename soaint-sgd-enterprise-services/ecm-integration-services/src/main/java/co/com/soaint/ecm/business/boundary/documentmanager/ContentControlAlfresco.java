@@ -232,25 +232,19 @@ public class ContentControlAlfresco implements ContentControl {
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
-                    logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
                     file = getFile(metadatosDocumentosDTO, versionesLista, version);
-
                 }
-                return Response.ok(file)
-                        .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
-                        .build();
+
             } else {
                 file = convertInputStreamToFile(doc.getContentStream());
-                logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
-                return Response.ok(file)
-                        .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
-                        .build();
-            }
-        } catch (Exception e) {
-            response.setCodMensaje("2222");
-            response.setMensaje("Error en la obtención del documento: " + e.getMessage());
-            logger.error("Error en la obtención del documento: ", e);
 
+            }
+            logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
+            return Response.ok(file)
+                    .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                    .build();
+        } catch (Exception e) {
+            logger.error("Error en la obtención del documento: ", e);
             return Response.serverError().build();
         }
     }
