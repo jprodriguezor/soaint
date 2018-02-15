@@ -145,13 +145,14 @@
                                   (click)="mostrarVersionDocumento(-1);"></button>
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
-                            <p-fileUpload mode="basic"
+                            <p-fileUpload #versionUploader
+                                            mode="basic"
                                           auto="true"
                                           [disabled]="listaVersionesDocumento.length > 0"
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
-                                          (onSelect)="attachDocument($event)"
+                                          (onSelect)="attachDocument($event, versionUploader)"
                                           (onError)="onErrorUpload($event)"
                             ></p-fileUpload>
                         </div>

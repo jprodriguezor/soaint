@@ -24,5 +24,4 @@ export interface DestinatarioDTO {
     pais?: PaisDTO,
     departamento?: DepartamentoDTO,
     municipio?: MunicipioDTO,
-    direcciones?: ContactoDTO,
 }
