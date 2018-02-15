@@ -222,12 +222,10 @@ public class ContentControlAlfresco implements ContentControl {
      */
     @Override
     public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
-
-
+        logger.info(metadatosDocumentosDTO.toString());
         MensajeRespuesta response = new MensajeRespuesta();
         ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
-
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
             File file = null;
