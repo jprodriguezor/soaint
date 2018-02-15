@@ -87,9 +87,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
 
-    console.log("Lista de bis");
-    console.log(this.bisSuggestons$);
-
     this.contacts = this.contactsDefault;
 
     console.log(this.contacts);
