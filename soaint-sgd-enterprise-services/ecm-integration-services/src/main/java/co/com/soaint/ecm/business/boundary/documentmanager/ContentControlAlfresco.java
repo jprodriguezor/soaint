@@ -856,11 +856,12 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
+                boolean existeDependencia=false;
                 for (Carpeta carpetaP : carpetasHijas) {
                     logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
                     if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
                         logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-
+                        existeDependencia=true;
                         Calendar cal = Calendar.getInstance();
                         int year = cal.get(Calendar.YEAR);
 
@@ -899,6 +900,11 @@ public class ContentControlAlfresco implements ContentControl {
                         response.setMensaje("Documento añadido correctamente");
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }
+                }
+                if (!existeDependencia){
+                    logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
+                    response.setCodMensaje("4445");
+                    response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
                 }
             } else {
                 logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
@@ -974,11 +980,12 @@ public class ContentControlAlfresco implements ContentControl {
 
                 boolean existe = false;
                 boolean existeAux = false;
+                boolean existeDependencia=false;
                 for (Carpeta carpetaP : carpetasHijas) {
                     logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
                     if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
                         logger.info("Se busca si existe la carpeta de COMUNICACIONES OFICIALES para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-
+                        existeDependencia=true;
                         Calendar cal = Calendar.getInstance();
                         int year = cal.get(Calendar.YEAR);
 
@@ -1052,9 +1059,14 @@ public class ContentControlAlfresco implements ContentControl {
 
                     }
                 }
+                if (!existeDependencia){
+                    logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
+                    response.setCodMensaje("4445");
+                    response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
+                }
             } else {
                 logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
-                response.setCodMensaje("2222");
+                response.setCodMensaje("4444");
                 response.setMensaje("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
