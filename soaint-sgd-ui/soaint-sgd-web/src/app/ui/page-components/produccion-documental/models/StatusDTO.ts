@@ -17,15 +17,15 @@ export interface StatusDTO {
     remitenteExterno: AgentDTO
   },
   gestionarProduccion: {
+    startIndex: number,
     listaProyectores: ProyectorDTO[]
   }
 }
 
 export interface VariablesTareaDTO {
-  aprobado: number,
-  requiereAjustes: number,
-  listaProyector: string[],
-  codDependencia?: string,
+  aprobado?: number,
+  requiereAjustes?: number,
+  listaProyector?: string[],
   listaAprobador?: string[],
   listaRevisor?: string[]
 }

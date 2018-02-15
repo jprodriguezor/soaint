@@ -37,6 +37,8 @@ export const environment = {
   tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
   tasksAbortProcess: `${host}/proceso-gateway-api/tareas/abortar/`,
+
+  taskStatus_endpoint: `${host}/tarea-gateway-api/tarea`,
   bis_endpoint: `${host}/bis-gateway-api`,
   tipoComplemento_endpoint: `${host}/tipo-complemento-gateway-api`,
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
@@ -67,6 +69,8 @@ export const environment = {
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+
+  obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo/`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
@@ -85,8 +89,15 @@ export const environment = {
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
   // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_adjuntar_documento_endpoint: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
+    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+    pd_gestion_documental : {
+        subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
+        obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
+        eliminarAnexo: ``,
+        subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
+        obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+        eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
+    }
 
 };
 
@@ -94,6 +105,10 @@ export const process_info = {
   'proceso.correspondencia-entrada': {
     displayValue: 'Correspondencia de entrada',
     show: true
+  },
+'proceso.correspondencia-salida': {
+    displayValue: 'Correspondencia de salida',
+    show: false
   },
   'proceso.gestion-planillas': {
     displayValue: 'Gestion de planillas',
@@ -115,4 +130,8 @@ export const process_info = {
     displayValue: 'Recibir y gestionar documento',
     show: false
   },
+'proceso.gestion-unidades-documentales': {
+    displayValue: 'Gestión de unidades documentales',
+    show: false
+  }
 };

@@ -62,7 +62,7 @@
         </div>
     </p-panel>
 
-    <p-panel header="Radicado asociado" [style]="{border: 'none'}">
+    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="taskData.variables.numeroRadicado">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom style="max-height: 68px">
                 <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
@@ -171,7 +171,6 @@
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton label="Ver" class="ui-button ui-button-info"
-                                    [disabled]="i !== listaVersionesDocumento.length -1"
                                     (click)="mostrarVersionDocumento(i)"></button>
                         </ng-template>
                     </p-column>

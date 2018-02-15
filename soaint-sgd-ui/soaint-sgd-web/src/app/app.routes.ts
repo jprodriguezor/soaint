@@ -70,7 +70,7 @@ export const routes: Routes = [
         canActivate: [AuthenticatedGuard]
       },
       {
-        path: ROUTES_PATH.produccionDocumental,
+        path: ROUTES_PATH.produccionDocumental + '/:status',
         component: ProduccionDocumentalComponent,
         canActivate: [AuthenticatedGuard]
       },

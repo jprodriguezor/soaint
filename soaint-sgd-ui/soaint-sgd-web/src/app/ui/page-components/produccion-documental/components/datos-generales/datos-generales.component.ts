@@ -49,6 +49,7 @@ export class PDDatosGeneralesComponent implements OnInit {
     listaAnexos: AnexoDTO[] = [];
 
     fechaCreacion = new Date();
+    numeroRadicado = null;
     tipoPlantillaSelected: ConstanteDTO;
     fileContent: {id: number; file: Blob };
 
@@ -72,8 +73,10 @@ export class PDDatosGeneralesComponent implements OnInit {
       this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
         this.taskData = activeTask;
         this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-          this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === activeTask.variables.codDependencia).nombre;
-          this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === activeTask.variables.codigoSede).nomSede;
+            if (this.taskData && this.taskData.variables) {
+                this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === activeTask.variables.codDependencia).nombre;
+                this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === activeTask.variables.codigoSede).nomSede;
+            }
         });
       });
 
@@ -205,6 +208,10 @@ export class PDDatosGeneralesComponent implements OnInit {
           this.refreshView();
         }
       );
+    }
+
+    getListaVersiones(): VersionDocumentoDTO[] {
+        return this.listaVersionesDocumento;
     }
 
 

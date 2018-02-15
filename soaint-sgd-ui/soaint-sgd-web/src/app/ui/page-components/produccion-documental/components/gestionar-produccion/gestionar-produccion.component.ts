@@ -98,7 +98,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
-    this.startIndex = this.listaProyectores.length;
+    this.startIndex = currentStatus.gestionarProduccion.startIndex;
   }
 
   dependenciaChange(event) {
@@ -203,6 +203,11 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+
+    getListaProyectores(): ProyectorDTO[] {
+      return this.listaProyectores;
+    }
 
 
     protected getListaPreProyectoresFromIncomminString(lista: string) {
