@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit,Output, EventEmitter} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -38,6 +38,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   display = false;
   @Input() editable = true;
   @Input() contactsDefault: Array<any> = [];
+
+  @Output()
+  nuevosContactos = new EventEmitter();
 
   validations: any = {};
   visibility: any = {};
@@ -83,6 +86,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+
+    console.log("Lista de bis");
+    console.log(this.bisSuggestons$);
 
     this.contacts = this.contactsDefault;
 
@@ -287,7 +293,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
       if (bis.value) {
         direccion += ' ' + bis.value.nombre;
-        value['bis'] = bis;
+        value['bis'] = bis.value;
         bis.reset();
       }
       if (orientacion.value) {
@@ -334,6 +340,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const radref = [...this.contacts];
     radref.splice(index, 1);
     this.contacts = radref;
+    this.nuevosContactos.emit(this.contacts);
   }
 
   editContact(index) {
@@ -370,6 +377,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       }
       this.formContext = null;
       this.editIndexContext = null;
+
+      this.nuevosContactos.emit(this.contacts);
     }
   }
 

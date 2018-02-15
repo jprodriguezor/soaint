@@ -88,7 +88,7 @@
                 <div class="ui-g-12">
               <span class="md-inputfield">
                   <label
-                    style="color: inherit">{{ destinatario.codTipoPers }}</label>
+                    style="color: inherit">{{ destinatario.codTipoPers  }}</label>
               </span>
                 </div>
               </div>
@@ -221,5 +221,5 @@
 </p-panel>
 
 <div *ngIf="visibility.datosContacto">
-  <app-datos-direccion [contactsDefault]="contactsDefault" [editable]="editable" ></app-datos-direccion>
+  <app-datos-direccion [contactsDefault]="contactsDefault" (nuevosContactos) = "handleCargarNuevosContactos($event)" [editable]="editable" ></app-datos-direccion>
 </div>

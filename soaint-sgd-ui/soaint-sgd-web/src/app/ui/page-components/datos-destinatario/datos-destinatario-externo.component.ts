@@ -26,6 +26,7 @@ import {StatusDTO} from "../produccion-documental/models/StatusDTO";
 import {Sandbox as AsiganacionDTOSandbox} from 'app/infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox';
 
 
+
 import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
@@ -39,6 +40,8 @@ import {
   PERSONA_NATURAL, TPDOC_CEDULA_CIUDADANIA, TPDOC_NRO_IDENTIFICACION_TRIBUTARIO
 } from 'app/shared/bussiness-properties/radicacion-properties';
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
+
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 
 @Component({
   selector: 'datos-destinatario-externo',
@@ -56,6 +59,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   tipoDocumentoSuggestions$: Observable<ConstanteDTO[]>;
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
+  paisSuggestions$: Observable<PaisDTO[]>;
+  departamentoSuggestions$: Observable<DepartamentoDTO[]>;
+  municipioSuggestions$: Observable<MunicipioDTO[]>;
 
   // Listas de subscripcion
   contacts: Array<any> = [];
@@ -67,13 +73,15 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   tipoComunicacion: any;
 
-  contact = [];
+  contact: Array<any> = [];
+  pais: Array<any> = [];
+  departamento: Array<any> = [];
+  municipio: Array<any> = [];
 
   //@ViewChild('datosDireccion') datosDireccion;
 
   @Input() editable = true;
   @Input() objTipoComunicacion: any;
-
   @Input() destinatario: AgentDTO;
 
   contactsDefault: Array<any> = [];
@@ -91,39 +99,52 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.listenForChanges();
     this.listenForErrors();
     this.visibility['tipoPersona'] = true;
+    console.log(this.destinatario);
+    if(this.destinatario){
 
-    this.setTipoComunicacion(this.objTipoComunicacion);
-    this.onSelectTipoPersona(this.destinatario.codTipoPers);
+      this.setTipoComunicacion(this.objTipoComunicacion);
+      this.onSelectTipoPersona(this.destinatario.codTipoPers);
 
-    if(this.destinatario.datosContactoList.length > 0){
-      this.destinatario.datosContactoList.forEach(departamentoArrayData => {
+      if(this.destinatario.datosContactoList.length > 0){
 
-        this.contact = [];
-        this.contact['tipoVia'] = departamentoArrayData.codTipoVia;
-        this.contact['noViaPrincipal'] = departamentoArrayData.nroViaGeneradora;
-        this.contact['prefijoCuadrante'] = departamentoArrayData.codPrefijoCuadrant;
-        this.contact['bis'] = departamentoArrayData.principal;
-        this.contact['orientacion'] = "";
-        this.contact['noVia'] = departamentoArrayData.nroViaGeneradora;
-        this.contact['prefijoCuadrante_se'] = departamentoArrayData.codPrefijoCuadrant;
-        this.contact['placa'] = departamentoArrayData.nroPlaca;
-        this.contact['orientacion_se'] = "";
-        this.contact['complementoTipo'] = "";
-        this.contact['complementoAdicional'] = "";
-        this.contact['celular'] = departamentoArrayData.celular;
-        this.contact['numeroTel'] = departamentoArrayData.telFijo;
-        this.contact['correoEle'] = departamentoArrayData.corrElectronico;
-        this.contact['pais'] = departamentoArrayData.codPais;
-        this.contact['departamento'] = departamentoArrayData.codDepartamento;
-        this.contact['municipio'] = departamentoArrayData.codMunicipio;
-        this.contact['principal'] = departamentoArrayData.principal;
-        this.contact['provinciaEstado'] = "";
-        this.contact['direccionText'] = departamentoArrayData.direccion;
-        this.contact['ciudad'] = "";
+        this.destinatario.datosContactoList.forEach(departamentoArrayData => {
 
-        this.contactsDefault.push(this.contact);
+          //this.contact = [];
+          //this.pais = [];
+          //this.municipio = [];
+          //this.departamento = [];
+          //this.contact['tipoVia'] = departamentoArrayData.codTipoVia;
+          //this.contact['noViaPrincipal'] = departamentoArrayData.nroViaGeneradora;
+          //this.contact['prefijoCuadrante'] = departamentoArrayData.codPrefijoCuadrant;
+          //this.contact['bis'] = "";
+          //this.contact['orientacion'] = "";
+          //this.contact['noVia'] = departamentoArrayData.nroViaGeneradora;
+          //this.contact['prefijoCuadrante_se'] = departamentoArrayData.codPrefijoCuadrant;
+          //this.contact['placa'] = departamentoArrayData.nroPlaca;
+          //this.contact['orientacion_se'] = "";
+          //this.contact['complementoTipo'] = "";
+          //this.contact['complementoAdicional'] = "";
+          //this.contact['celular'] = departamentoArrayData.celular;
+          //this.contact['numeroTel'] = departamentoArrayData.telFijo;
+          //this.contact['correoEle'] = departamentoArrayData.corrElectronico;
+          //
+          //this.pais['codigo'] = departamentoArrayData.codPais;
+          //this.pais['nombre'] = 'Colombia';
+          ////this.contact['pais'] =  (departamentoArrayData.codPais) ? this.findPais(departamentoArrayData.codPais): departamentoArrayData.codPais;
+          //this.contact['pais'] =  this.pais;
+          //
+          //this.contact['departamento'] = departamentoArrayData.codDepartamento;
+          //this.contact['municipio'] = departamentoArrayData.codMunicipio;
+          //this.contact['principal'] = departamentoArrayData.principal;
+          //this.contact['provinciaEstado'] = "";
+          //this.contact['direccionText'] = departamentoArrayData.direccion;
+          //this.contact['ciudad'] = "";
 
-      });
+          this.contactsDefault.push(departamentoArrayData);
+
+        });
+
+      }
     }
 
     console.log(this.objTipoComunicacion);
@@ -131,10 +152,45 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     console.log(this.destinatario);
   }
 
+  handleCargarNuevosContactos(contacts){
+    this.destinatario.datosContactoList = contacts;
+  }
+
+  ngAfterViewInit() {
+     this._store.dispatch(new LoadDatosRemitenteAction());
+  }
+
+
+  //findPais(code: string){
+  //  let pais;
+  //  console.log(this.paisSuggestions$);
+  //
+  //  this.paisSuggestions$.take(1).subscribe((values) => {
+  //    console.log(values);
+  //    pais = values.find(value => value.codigo === code);
+  //  });
+  //
+  //  console.log('pais');
+  //  console.log(pais);
+  //  return pais;
+  //}
+
+  //getPais(codigoPais): string {
+  //  const pais = this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais);
+  //  if (pais) {
+  //    return pais.departamento.pais.nombre;
+  //  }
+  //  return '';
+  //}
+
   initLoadTipoComunicacionExterna() {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
+
+    this.paisSuggestions$ = this._store.select(paisArrayData);
+    this.municipioSuggestions$ = this._store.select(municipioArrayData);
+    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
   }
 
   initLoadTipoComunicacionInterna() {

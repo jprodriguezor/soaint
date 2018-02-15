@@ -83,7 +83,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                   datosContacto: {
                     distribucion: null,
                     responderRemitente: false,
-                    listaDestinatarios: []
+                    listaDestinatarios: [],
+                    remitenteExterno: null,
                   },
                   gestionarProduccion: {
                     listaProyectores: this.gestionarProduccion.listaProyectores
@@ -101,21 +102,36 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
+
+    console.log("entro al guardar");
+    console.log(tareaDTO);
+
     this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(response => {
         console.log(response);
     });
   }
 
   getCurrentStatus(): StatusDTO {
+
+    console.log('current');
+    console.log(this.datosContacto);
+
     this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
     this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
     this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
     this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
     this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
+
     if (this.datosGenerales.form.get('tipoComunicacion').value) {
-      this.taskCurrentStatus.datosContacto.listaDestinatarios =  this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI' ?
-        this.datosContacto.destinatarioInterno.listaDestinatarios :
-        this.datosContacto.destinatarioExterno.listaDestinatarios;
+
+      if(this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI'){
+        this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
+
+      }else{
+        this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
+      }
+
+
     } else {
       this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
     }

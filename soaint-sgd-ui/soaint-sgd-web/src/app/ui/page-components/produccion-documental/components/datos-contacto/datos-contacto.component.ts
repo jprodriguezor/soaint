@@ -7,6 +7,7 @@ import {TareaDTO} from '../../../../../domain/tareaDTO';
 import {StatusDTO} from '../../models/StatusDTO';
 import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
 import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
+import {AgentDTO} from "../../../../../domain/agentDTO";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -20,7 +21,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   validations: any = {};
 
-  listaDestinatariosExternos: DestinatarioDTO[] = [];
+  remitenteExterno: AgentDTO;
   listaDestinatariosInternos: DestinatarioDTO[] = [];
 
   @ViewChild('destinatarioExterno') destinatarioExterno;
@@ -47,7 +48,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
           nroRadicado: this.taskData.variables.numeroRadicado
         }).subscribe( contacto => {
-          this.listaDestinatariosExternos = contacto;
+          this.remitenteExterno = contacto;
         });
       }
 
@@ -68,13 +69,16 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   updateStatus(currentStatus: StatusDTO) {
 
+    console.log('entro en el updateStatus');
+    console.log(currentStatus);
+
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
 
     if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
       this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
     } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
-      this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatarios];
+      this.remitenteExterno = currentStatus.datosContacto.remitenteExterno;
     }
     this.refreshView();
   }
