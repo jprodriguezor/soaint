@@ -1,19 +1,27 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
     <div customActions>
-      <button pButton type="button" label="Completar"
+      <button pButton type="button" label="Guardar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              [disabled]="!datosGenerales.isValid()"
-              (click)="completarTarea()"
+              (click)="guardarEstadoTarea()"
       ></button>
-      <button pButton type="button" label="Aprobar"
+      <button pButton type="button" label="Cerrar" *ngIf="false && task && task.variables || false"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+      ></button>
+      <button pButton type="button" label="Devolver" *ngIf="status > 1 && task && task.variables || false"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="devolverDocumento()"
+
+      ></button>
+      <button pButton type="button" label="Aprobar" *ngIf="task && task.variables || false"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="!puedeAprobar()"
               (click)="aprobarDocumento()"
       ></button>
-      <button pButton type="button" label="Guardar"
+      <button pButton type="button" label="Continuar" *ngIf="status === 1 && task && task.variables || false"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              (click)="guardarEstadoTarea()"
+              [disabled]="!isValid()"
+              (click)="continuarProceso()"
       ></button>
     </div>
     <div taskBody>
