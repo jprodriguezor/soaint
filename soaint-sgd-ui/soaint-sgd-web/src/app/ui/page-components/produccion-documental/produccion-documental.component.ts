@@ -17,6 +17,8 @@ import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {ProyectorDTO} from '../../../domain/ProyectorDTO';
 import {ActivatedRoute} from '@angular/router';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {AgentDTO} from '../../../domain/agentDTO';
 
 @Component({
   selector: 'produccion-documental',
@@ -94,9 +96,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                     listaAnexos: []
                   },
                   datosContacto: {
-                    distribucion: null,
-                    responderRemitente: false,
-                    listaDestinatarios: []
+                      distribucion: null,
+                      responderRemitente: false,
+                      listaDestinatarios: [],
+                      remitenteExterno: null
                   },
                   gestionarProduccion: {
                     startIndex: this.gestionarProduccion.listaProyectores.length,
@@ -125,22 +128,22 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   }
 
   getCurrentStatus(): StatusDTO {
-    this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
-    this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
-    this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
-    this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
-    this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-    if (this.datosGenerales.form.get('tipoComunicacion').value) {
-      this.taskCurrentStatus.datosContacto.listaDestinatarios =  this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI' ?
-        this.datosContacto.destinatarioInterno.listaDestinatarios :
-        this.datosContacto.destinatarioExterno.listaDestinatarios;
-    } else {
-      this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
-    }
-    this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
-    this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
-
-    return this.taskCurrentStatus;
+      this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
+      this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
+      this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
+      this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
+      this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
+      if (this.datosGenerales.form.get('tipoComunicacion').value) {
+          if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
+              this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
+          } else {
+              this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
+          }
+      } else {
+          this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
+      }
+      this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
+      return this.taskCurrentStatus;
   }
 
   construirListas() {
@@ -206,7 +209,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.terminarTarea();
   }
 
-  cancelarTarea() {
+    cancelarTarea() {
         this._taskSandBox.abortTaskDispatch({
             idProceso: this.task.idProceso,
             idDespliegue: this.task.idDespliegue,

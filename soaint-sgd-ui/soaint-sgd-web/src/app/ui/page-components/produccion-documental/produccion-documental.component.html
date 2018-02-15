@@ -5,8 +5,9 @@
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"
       ></button>
-      <button pButton type="button" label="Cerrar" *ngIf="false && task && task.variables || false"
+      <button pButton type="button" label="Cerrar" *ngIf="task && task.variables || false"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="cancelarTarea()"
       ></button>
       <button pButton type="button" label="Devolver" *ngIf="status > 1 && task && task.variables || false"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
