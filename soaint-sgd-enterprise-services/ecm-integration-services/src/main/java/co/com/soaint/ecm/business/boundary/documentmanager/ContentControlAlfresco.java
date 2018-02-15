@@ -231,7 +231,6 @@ public class ContentControlAlfresco implements ContentControl {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
             File file = null;
-            File fileAux = null;
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
@@ -720,6 +719,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (metadatosDocumentosDTO.getIdDocumentoPadre() != null) {
                 properties.put("cmcor:xIdentificadorDocPrincipal", metadatosDocumentosDTO.getIdDocumentoPadre());
                 properties.put("cmcor:xTipo", "Anexo");
+                properties.put("cmis:name",metadatosDocumentosDTO.getNombreDocumento());
             }
 
             properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
@@ -791,6 +791,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 //Setear el nombre del nuevo documento
                 properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
+                properties.put("cmis:name",metadatosDocumentosDTO.getNombreDocumento());
                 //Definir el contenido del documento
                 ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
 
@@ -883,6 +884,8 @@ public class ContentControlAlfresco implements ContentControl {
                         metadatosDocumentosDTO.setIdDocumento(idDocumento);
                         metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
                         response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+                        CmisObject object = session.getObject(idDocumento);
+                        object.updateProperties(properties);
                         //Creando el mensaje de respuesta
                         response.setCodMensaje("0000");
                         response.setMensaje("Documento añadido correctamente");
