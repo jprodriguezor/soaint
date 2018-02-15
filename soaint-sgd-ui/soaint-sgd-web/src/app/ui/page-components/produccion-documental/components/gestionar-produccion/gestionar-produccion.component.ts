@@ -30,6 +30,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   listaProyectores: ProyectorDTO[] = [];
   startIndex = 0;
+  @Input() status = 1;
 
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
   dependencias: Array<any> = [];
@@ -39,27 +40,28 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   subscribers: Array<Subscription> = [];
 
   constructor(private _store: Store<RootState>,
+              private formBuilder: FormBuilder,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _changeDetectorRef: ChangeDetectorRef,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
-              private _funcionarioSandBox: FuncionarioSandbox,
-              private formBuilder: FormBuilder) {
-    this.initForm();
+              private _funcionarioSandBox: FuncionarioSandbox) {
   }
 
   initForm() {
     this.form = this.formBuilder.group({
-      'sede': [{value: null}, Validators.required],
-      'dependencia': [{value: null}, Validators.required],
-      'rol': [{value: null}, Validators.required],
-      'funcionario': [{value: null}, Validators.required]
+      'sede': [null, Validators.required],
+      'dependencia': [null, Validators.required],
+      'rol': [null, Validators.required],
+      'funcionario': [null, Validators.required]
     });
   }
 
     ngOnInit(): void {
-      this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-      this.roles$ = this._produccionDocumentalApi.getRoles({});
-      this.listenForChanges();
+        this.initForm();
+        this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+        this.roles$ = this._produccionDocumentalApi.getRoles({});
+        this.listenForErrors();
+        this.listenForChanges();
     }
 
 

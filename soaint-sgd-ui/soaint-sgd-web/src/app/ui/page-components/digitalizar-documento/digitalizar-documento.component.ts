@@ -104,8 +104,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
 
     } else {
 
+      let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
-          console.log(result);
+          console.log(result); _dependencia = result[0];
           return this._api.sendFile(
             this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,
               this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
@@ -137,6 +138,16 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             case '3333':
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'ACCESO DENEGADO, NO PUEDE SUBIR EL DOCUMENTO'
+              }));
+              break;
+            case '4444':
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: 'LA SEDE ' + _dependencia.nomSede + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
+              }));
+              break;
+            case '4445':
+              this._store.dispatch(new PushNotificationAction({
+                severity: 'error', summary: 'LA DEPENDENCIA ' + _dependencia.nombre + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
               }));
               break;
             default:
