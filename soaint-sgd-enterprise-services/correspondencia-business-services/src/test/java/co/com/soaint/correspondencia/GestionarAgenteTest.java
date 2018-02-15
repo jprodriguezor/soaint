@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia;
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.correspondencia.business.control.AgenteControl;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DestinatarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.RedireccionDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -55,4 +56,21 @@ public class GestionarAgenteTest {
         AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("100"));
         assertEquals("DT",agenteObtenido.getCodEstado());
     }*/
+
+    //TODO: test_actualizar_destinatario_success pendiente de Asignacion
+    /*@Test
+    @Transactional
+    public void test_actualizar_destinatario_success() throws SystemException, BusinessException {
+        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente (new BigInteger("200"));
+        agenteDTO.setCodSede("1000");
+        agenteDTO.setCodDependencia("10001040");
+        DestinatarioDTO destinatarioDTO = new DestinatarioDTO();
+        destinatarioDTO.setAgenteDestinatario(agenteDTO);
+        destinatarioDTO.setIdeFuncionarioCreaModifica(BigInteger.ONE);
+        boundary.actualizarDestinatario(destinatarioDTO);
+        AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("200"));
+        assertEquals("1000",agenteObtenido.getCodSede());
+    }*/
+
+
 }
