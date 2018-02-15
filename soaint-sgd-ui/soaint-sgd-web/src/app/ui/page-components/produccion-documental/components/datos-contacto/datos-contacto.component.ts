@@ -30,6 +30,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   canInsert = false;
   responseToRem = true;
+    hasNumberRadicado = false;
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
@@ -37,7 +38,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private pdMessageService: PdMessageService) {
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
-      this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
+      // this.datosRemitente.setTipoComunicacion(this.tipoComunicacionSelected);
     });
 
     this.initForm();

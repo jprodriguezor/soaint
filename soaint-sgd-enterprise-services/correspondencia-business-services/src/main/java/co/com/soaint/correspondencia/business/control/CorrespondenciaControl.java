@@ -313,6 +313,11 @@ public class CorrespondenciaControl {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ComunicacionesOficialesDTO listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(Date fechaIni, Date fechaFin, String codDependencia, String codEstado, String nroRadicado) throws BusinessException, SystemException {
+        log.info("FechaInicio: " + fechaIni.toString());
+        log.info("FechaFin: " + fechaFin.toString());
+        log.info("codDependencia: " + codDependencia);
+        log.info("codEstado: " + codEstado);
+        log.info("nroRadicado: " + nroRadicado);
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(fechaFin);
