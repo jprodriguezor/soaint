@@ -19,6 +19,7 @@ import {StatusDTO} from '../../models/StatusDTO';
 import {WARN_REDIRECTION} from '../../../../../shared/lang/es';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DocumentoEcmDTO} from "../../../../../domain/documentoEcmDTO";
+import {FileUpload} from 'primeng/primeng';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -114,10 +115,11 @@ export class PDDatosGeneralesComponent implements OnInit {
 
 
 
-    attachDocument(event) {
+    attachDocument(event, versionUploader: FileUpload) {
       if (event.files.length === 0) { return false; }
       const nv = {id: 'none', nombre: event.files[0].name, tipo: 'pdf', version: '', contenido: '', file: event.files[0], size: event.files[0].size};
       this.uploadVersionDocumento(nv);
+      versionUploader.clear();
     }
 
     mostrarVersionDocumento(index: number) {
