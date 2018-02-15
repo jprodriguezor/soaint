@@ -37,13 +37,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService) {
+
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
       this.tipoComunicacionSelected = tipoComunicacion;
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
 
-      if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo == 'SE') {
+      if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo == 'SE' && this.taskData.variables.numeroRadicado) {
 
         this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
           nroRadicado: this.taskData.variables.numeroRadicado
