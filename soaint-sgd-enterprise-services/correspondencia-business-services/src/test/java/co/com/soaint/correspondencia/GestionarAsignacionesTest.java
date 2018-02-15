@@ -2,8 +2,8 @@ package co.com.soaint.correspondencia;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAsignacion;
 import co.com.soaint.correspondencia.business.control.AsignacionControl;
-import co.com.soaint.foundation.canonical.correspondencia.AsignacionDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PlanillaDTO;
+import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.junit.Test;
@@ -28,39 +28,63 @@ public class GestionarAsignacionesTest {
     @Autowired
     private GestionarAsignacion boundary;
 
-    //TODO: test_asignar_correspondencia_success Pendiente de Agente y Correspondencia
-    /*@Test
-    @Transactional
-    public void test_asignar_correspondencia_success() throws SystemException, BusinessException {
-        PlanillaDTO planillaObtenida = boundary.listarPlanillasByNroPlanilla("104000000000002");
-        assertEquals(new BigInteger("200"), planillaObtenida.getIdePlanilla());
-    }*/
+    @Autowired
+    private AsignacionControl control;
 
     @Test
     @Transactional
-    public void test_actualizarIdInstancia_success() throws SystemException, BusinessException {
+    public void test_asignar_correspondencia_success() throws SystemException, BusinessException {
+        AsignacionTramiteDTO asignacionTramiteDTO = new AsignacionTramiteDTO();
+        AsignacionDTO asignacionDTO = new AsignacionDTO();
+        asignacionDTO.setIdeAgente(new BigInteger("100"));
+        asignacionDTO.setIdeFunci(new BigInteger("1"));
+        asignacionDTO.setLoginName("eric");
+        asignacionDTO.setIdeDocumento(new BigInteger("836"));
+        asignacionTramiteDTO.setAsignaciones(new AsignacionesDTO());
+        asignacionTramiteDTO.getAsignaciones().setAsignaciones(new ArrayList<>());
+        asignacionTramiteDTO.getAsignaciones().getAsignaciones().add(asignacionDTO);
+        AsignacionesDTO asignacionesDTO = boundary.asignarCorrespondencia(asignacionTramiteDTO);
+        assertEquals("eric", asignacionesDTO.getAsignaciones().get(0).getLoginName());
+    }
+
+    @Test
+    @Transactional
+    public void test_actualizar_id_instancia_success() throws SystemException, BusinessException {
         AsignacionDTO asignacionDTO = new AsignacionDTO();
         asignacionDTO.setIdeAsignacion(new BigInteger("100"));
-        asignacionDTO.setIdeAsigUltimo(new BigInteger("200"));
+        asignacionDTO.setIdeAsigUltimo(new BigInteger("100"));
         asignacionDTO.setIdInstancia("666");
         boundary.actualizarIdInstancia(asignacionDTO);
-        AsignacionDTO asignacionObtenida = boundary.listarAsignacionesByFuncionarioAndNroRadicado(BigInteger.ONE, "").getAsignaciones().get(0);
+        DctAsigUltimo asignacionObtenida = control.getAsignacionUltimoByIdeAgente(new BigInteger("100"));
         assertEquals("666", asignacionObtenida.getIdInstancia());
     }
 
-    /*
     @Test
     @Transactional
-    public void test_planillas_cargar_planilla() throws SystemException, BusinessException {
-        PlanillaDTO planillaDTO = new PlanillaDTO();
-        PlanAgentesDTO planAgentesDTO = new PlanAgentesDTO();
-        planAgentesDTO.setPAgente(new ArrayList<>());
-        planillaDTO.setPAgentes(planAgentesDTO);
-        planillaDTO.setIdeEcm("1234");
-        planillaDTO.setIdePlanilla(new BigInteger("100"));
-        planillaDTO.setNroPlanilla("104000000000001");
-        boundary.cargarPlanilla(planillaDTO);
-        PlanillaDTO planillaObtenida = boundary.listarPlanillasByNroPlanilla(planillaDTO.getNroPlanilla());
-        assertEquals("1234", planillaObtenida.getIdeEcm());
-    }*/
+    public void test_actualizar_tipo_proceso_success() throws SystemException, BusinessException {
+        AsignacionDTO asignacionDTO = new AsignacionDTO();
+        asignacionDTO.setIdeAsignacion(new BigInteger("100"));
+        asignacionDTO.setIdeAsigUltimo(new BigInteger("100"));
+        asignacionDTO.setCodTipProceso("TP");
+        boundary.actualizarTipoProceso(asignacionDTO);
+        DctAsigUltimo asignacionObtenida = control.getAsignacionUltimoByIdeAgente(new BigInteger("100"));
+        assertEquals("TP", asignacionObtenida.getCodTipProceso());
+    }
+
+    @Test
+    @Transactional
+    public void test_listar_asignaciones_by_funcionario_and_nro_radicado_success() throws SystemException, BusinessException {
+        AsignacionesDTO asignacionesDTO = boundary.listarAsignacionesByFuncionarioAndNroRadicado(new BigInteger("2"), "1040TP-CMCOE2017000002");
+        assertEquals(new BigInteger("200"), asignacionesDTO.getAsignaciones().get(0).getIdeAsignacion());
+    }
+
+    @Test
+    @Transactional
+    public void test_consultar_asignacion_reasignar_by_ide_agente_success() throws SystemException, BusinessException {
+        FuncAsigDTO funcAsigDTO = boundary.consultarAsignacionReasignarByIdeAgente(new BigInteger("100"));
+        assertEquals(new BigInteger("100"), funcAsigDTO.getAsignacion().getIdeAsignacion());
+        assertEquals("CREDENCIALES 1", funcAsigDTO.getCredenciales());
+    }
+
+    //La operacion asignarDocumentoByNroRadicado no devuelve nada ni persiste en BD.
 }

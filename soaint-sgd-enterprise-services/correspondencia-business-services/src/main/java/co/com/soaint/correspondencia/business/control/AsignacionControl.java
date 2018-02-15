@@ -382,7 +382,7 @@ public class AsignacionControl {
         }
     }
 
-    private DctAsigUltimo getAsignacionUltimoByIdeAgente(BigInteger ideAgente) throws BusinessException, SystemException {
+    public DctAsigUltimo getAsignacionUltimoByIdeAgente(BigInteger ideAgente) throws BusinessException, SystemException {
         try {
             return em.createNamedQuery("DctAsigUltimo.findByIdeAgente", DctAsigUltimo.class)
                     .setParameter("IDE_AGENTE", ideAgente)
