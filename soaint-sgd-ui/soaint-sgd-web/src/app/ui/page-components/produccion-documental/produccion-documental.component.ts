@@ -32,6 +32,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   taskCurrentStatus: StatusDTO;
   taskVariables: VariablesTareaDTO;
   idEstadoTarea = '0000';
+  status = 1;
+
 
   @ViewChild('datosGenerales') datosGenerales;
   @ViewChild('datosContacto') datosContacto;
@@ -41,7 +43,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
 
-  status = 1;
   tabIndex = 0;
 
   authPayload: { usuario: string, pass: string } | {};
@@ -79,12 +80,15 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         idInstanciaProceso: this.task.idInstanciaProceso,
         idTareaProceso: this.idEstadoTarea
       }).subscribe(
-        status => {
+          (status: StatusDTO) => {
           if (status) {
                 this.taskCurrentStatus = status;
                 this.datosGenerales.updateStatus(status);
-                this.datosContacto.updateStatus(status);
+                if (status.datosGenerales.tipoComunicacion) {
+                    this.datosContacto.updateStatus(status);
+                }
                 this.gestionarProduccion.updateStatus(status);
+                console.log(status);
           } else {
                 this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
                 this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
