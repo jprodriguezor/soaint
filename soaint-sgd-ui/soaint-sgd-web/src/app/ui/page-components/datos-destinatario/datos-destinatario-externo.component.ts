@@ -90,7 +90,10 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
-              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private _departamentoSandbox: DepartamentoSandbox,
+              private _municipioSandbox: MunicipioSandbox
+            ) {
   }
 
   ngOnInit(): void {
@@ -109,38 +112,52 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
         this.destinatario.datosContactoList.forEach(departamentoArrayData => {
 
-          //this.contact = [];
-          //this.pais = [];
-          //this.municipio = [];
-          //this.departamento = [];
-          //this.contact['tipoVia'] = departamentoArrayData.codTipoVia;
-          //this.contact['noViaPrincipal'] = departamentoArrayData.nroViaGeneradora;
-          //this.contact['prefijoCuadrante'] = departamentoArrayData.codPrefijoCuadrant;
-          //this.contact['bis'] = "";
-          //this.contact['orientacion'] = "";
-          //this.contact['noVia'] = departamentoArrayData.nroViaGeneradora;
-          //this.contact['prefijoCuadrante_se'] = departamentoArrayData.codPrefijoCuadrant;
-          //this.contact['placa'] = departamentoArrayData.nroPlaca;
-          //this.contact['orientacion_se'] = "";
-          //this.contact['complementoTipo'] = "";
-          //this.contact['complementoAdicional'] = "";
-          //this.contact['celular'] = departamentoArrayData.celular;
-          //this.contact['numeroTel'] = departamentoArrayData.telFijo;
-          //this.contact['correoEle'] = departamentoArrayData.corrElectronico;
-          //
-          //this.pais['codigo'] = departamentoArrayData.codPais;
-          //this.pais['nombre'] = 'Colombia';
-          ////this.contact['pais'] =  (departamentoArrayData.codPais) ? this.findPais(departamentoArrayData.codPais): departamentoArrayData.codPais;
-          //this.contact['pais'] =  this.pais;
-          //
-          //this.contact['departamento'] = departamentoArrayData.codDepartamento;
-          //this.contact['municipio'] = departamentoArrayData.codMunicipio;
-          //this.contact['principal'] = departamentoArrayData.principal;
-          //this.contact['provinciaEstado'] = "";
-          //this.contact['direccionText'] = departamentoArrayData.direccion;
-          //this.contact['ciudad'] = "";
+          this.contact = [];
+          this.pais = [];
+          this.municipio = [];
+          this.departamento = [];
 
-          this.contactsDefault.push(departamentoArrayData);
+          this.contact['tipoVia'] = departamentoArrayData.codTipoVia;
+          this.contact['noViaPrincipal'] = departamentoArrayData.nroViaGeneradora;
+          this.contact['prefijoCuadrante'] = departamentoArrayData.codPrefijoCuadrant;
+          this.contact['bis'] = "";
+          this.contact['orientacion'] = "";
+          this.contact['noVia'] = departamentoArrayData.nroViaGeneradora;
+          this.contact['prefijoCuadrante_se'] = departamentoArrayData.codPrefijoCuadrant;
+          this.contact['placa'] = departamentoArrayData.nroPlaca;
+          this.contact['orientacion_se'] = "";
+          this.contact['complementoTipo'] = "";
+          this.contact['complementoAdicional'] = "";
+          this.contact['celular'] = departamentoArrayData.celular;
+          this.contact['numeroTel'] = departamentoArrayData.telFijo;
+          this.contact['correoEle'] = departamentoArrayData.corrElectronico;
+
+          this.contact['pais'] =  null;
+          this.paisSuggestions$.subscribe((values) => {
+              this.contact['pais'] = values.find(value => value.codigo == departamentoArrayData.codPais);
+          });
+          //this._departamentoSandbox.loadDispatch({codPais: departamentoArrayData.codPais});
+
+          this.contact['departamento'] = departamentoArrayData.codDepartamento;
+          //this.departamentoSuggestions$.subscribe((values) => {
+          //  this.contact['departamento'] = values.find(value => value.codigo == departamentoArrayData.codDepartamento);
+          //});
+
+          //this._municipioSandbox.loadDispatch({codDepar: departamentoArrayData.codDepartamento});
+          this.contact['municipio'] = departamentoArrayData.codMunicipio;
+          //this.municipioSuggestions$.subscribe((values) => {
+          //  this.contact['municipio'] = values.find(value => value.codigo == departamentoArrayData.codMunicipio);
+          //});
+
+          this.contact['principal'] = departamentoArrayData.principal;
+          this.contact['provinciaEstado'] = "";
+          this.contact['direccionText'] = departamentoArrayData.direccion;
+          this.contact['ciudad'] = "";
+
+          console.log("objeto departamentoArrayData");
+          console.log(departamentoArrayData);
+
+          this.contactsDefault.push(this.contact);
 
         });
 
@@ -158,12 +175,19 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
      this._store.dispatch(new LoadDatosRemitenteAction());
+
+    if(this.contactsDefault.length > 0){
+
+      this.contactsDefault.forEach(contact => {
+
+      });
+    }
+
   }
 
 
   //findPais(code: string){
   //  let pais;
-  //  console.log(this.paisSuggestions$);
   //
   //  this.paisSuggestions$.take(1).subscribe((values) => {
   //    console.log(values);
@@ -172,6 +196,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   //
   //  console.log('pais');
   //  console.log(pais);
+  //
   //  return pais;
   //}
 
