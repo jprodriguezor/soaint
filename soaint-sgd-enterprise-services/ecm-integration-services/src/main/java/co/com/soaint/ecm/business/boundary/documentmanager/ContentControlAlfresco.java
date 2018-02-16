@@ -796,13 +796,14 @@ public class ContentControlAlfresco implements ContentControl {
             } else {
                 //Obtener documento dado id
                 Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
-                //Obtener el PWC (Private Working copy)
-                Document pwc = (Document) session.getObject(doc.checkOut());
                 properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
                 properties.put(PropertyIds.CONTENT_STREAM_FILE_NAME, metadatosDocumentosDTO.getNombreDocumento());
+                doc.updateProperties(properties, true);
+
+                //Obtener el PWC (Private Working copy)
+                Document pwc = (Document) session.getObject(doc.checkOut());
 
                 ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
-
                 // Check in the pwc
                 try {
                     pwc.checkIn(false, properties, contentStream, "nueva version");
