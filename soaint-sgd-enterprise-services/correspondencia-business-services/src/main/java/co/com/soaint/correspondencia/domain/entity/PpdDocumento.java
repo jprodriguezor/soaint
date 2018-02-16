@@ -41,6 +41,10 @@ import javax.persistence.*;
                 "FROM PpdDocumento p " +
                 "INNER JOIN p.corCorrespondencia co " +
                 "WHERE co.nroRadicado = :NRO_RADICADO"),
+        @NamedQuery(name = "PpdDocumento.findPpdDocumentoByNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO " +
+                "(p.idePpdDocumento, p.codTipoDoc, p.fecDocumento, p.asunto, p.nroFolios, p.nroAnexos, p.codEstDoc, p.ideEcm) " +
+                "FROM PpdDocumento p " +
+                "WHERE TRIM(p.corCorrespondencia.nroRadicado) = TRIM(:NRO_RADICADO)"),
         @NamedQuery(name = "PpdDocumento.updateIdEcm", query = "UPDATE PpdDocumento p " +
                 "SET p.ideEcm = :IDE_ECM " +
                 "WHERE p.idePpdDocumento = :IDE_PPDDOCUMENTO")})

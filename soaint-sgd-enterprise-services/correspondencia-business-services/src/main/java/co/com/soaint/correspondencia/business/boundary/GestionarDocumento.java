@@ -1,8 +1,10 @@
 package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.DocumentoControl;
+import co.com.soaint.correspondencia.business.control.PpdDocumentoControl;
 import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -28,6 +30,9 @@ public class GestionarDocumento {
 
     @Autowired
     DocumentoControl control;
+
+    @Autowired
+    PpdDocumentoControl ppdDocumentoControl;
 
     // ----------------------
 
@@ -60,5 +65,16 @@ public class GestionarDocumento {
      */
     public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws BusinessException, SystemException{
         return control.listarObservacionesDocumento(ideDocumento);
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PpdDocumentoDTO consultarDocumentoByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        return ppdDocumentoControl.consultarDocumentoByNroRadicado(nroRadicado);
     }
 }

@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.integration.service.ws;
 import co.com.soaint.correspondencia.business.boundary.GestionarDocumento;
 import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -60,5 +61,17 @@ public class GestionarDocumenoWS {
     @WebMethod(action = "listarObservacionesDocumento", operationName = "listarObservacionesDocumento")
     public ObservacionesDocumentoDTO listarObservacionesDocumento(@WebParam(name = "ide-documento") final BigInteger ideDocumento) throws BusinessException, SystemException {
         return boundary.listarObservacionesDocumento(ideDocumento);
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @WebMethod(action = "consultarDocumentoByNroRadicado", operationName = "consultarDocumentoByNroRadicado")
+    public PpdDocumentoDTO consultarDocumentoByNroRadicado(@WebParam(name = "nro_radicado")final String nroRadicado) throws BusinessException, SystemException {
+        return boundary.consultarDocumentoByNroRadicado(nroRadicado);
     }
 }

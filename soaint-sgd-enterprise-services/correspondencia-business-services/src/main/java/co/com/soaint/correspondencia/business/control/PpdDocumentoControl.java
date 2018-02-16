@@ -32,7 +32,6 @@ public class PpdDocumentoControl {
     private EntityManager em;
 
     /**
-     *
      * @param idDocumento
      * @return
      * @throws SystemException
@@ -52,7 +51,6 @@ public class PpdDocumentoControl {
     }
 
     /**
-     *
      * @param nroRadicado
      * @return
      * @throws SystemException
@@ -106,6 +104,34 @@ public class PpdDocumentoControl {
                     .withMessage("ppdDocumento.ppdDocumento_not_exist_by_ideDocumento")
                     .withRootException(n)
                     .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PpdDocumentoDTO consultarDocumentoByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            List<PpdDocumentoDTO> ppdDocumentoDTOList = em.createNamedQuery("PpdDocumento.findPpdDocumentoByNroRadicado", PpdDocumentoDTO.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getResultList();
+            if (ppdDocumentoDTOList.isEmpty())
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("ppddocumento.documento_not_exist_by_nroRadicado")
+                        .buildBusinessException();
+            return ppdDocumentoDTOList.get(0);
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

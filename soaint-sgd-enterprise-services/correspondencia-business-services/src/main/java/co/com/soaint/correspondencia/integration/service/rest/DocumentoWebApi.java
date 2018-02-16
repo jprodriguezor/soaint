@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 import co.com.soaint.correspondencia.business.boundary.GestionarDocumento;
 import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -76,5 +77,19 @@ public class DocumentoWebApi {
     public ObservacionesDocumentoDTO listarObservacionesDocumento(@PathParam("ide-documento") final BigInteger ideDocumento) throws BusinessException, SystemException {
         log.info("processing rest request - listar observaciones de un documento");
         return boundary.listarObservacionesDocumento(ideDocumento);
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/documento/{nro_radicado}")
+    public PpdDocumentoDTO consultarDocumentoByNroRadicado(@PathParam("nro_radicado")final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - consultar documento por numero radicado");
+        return boundary.consultarDocumentoByNroRadicado(nroRadicado);
     }
 }
