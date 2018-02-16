@@ -76,6 +76,8 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
     private static final String AVISO_CREA_DOC = "### Se va a crear el documento..";
     private static final String AVISO_CREA_DOC_ID = "### Documento creado con id ";
+    private static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
+    private static final String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
 
 
     /**
@@ -223,12 +225,11 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
         logger.info(metadatosDocumentosDTO.toString());
-        MensajeRespuesta response = new MensajeRespuesta();
         ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
-            File file = null;
+            File file;
 
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
@@ -871,7 +872,7 @@ public class ContentControlAlfresco implements ContentControl {
                         carpetaTarget = produccionDocumental.get();
                     } else {
                         logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
-                        carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());//TODO ver lo del codOrg
+                        carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());
                     }
 
                     logger.info("Se llenan los metadatos del documento a crear");
@@ -892,14 +893,14 @@ public class ContentControlAlfresco implements ContentControl {
                     response.setMensaje("Documento añadido correctamente");
                     logger.info(AVISO_CREA_DOC_ID + idDocumento);
                 } else {
-                    logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
+                    logger.info(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
-                    response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
+                    response.setMensaje(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getSede());
                 }
             } else {
-                logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
+                logger.info(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
                 response.setCodMensaje("4444");
-                response.setMensaje("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
+                response.setMensaje(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
             }
 
         } catch (CmisContentAlreadyExistsException ccaee) {
@@ -1051,14 +1052,14 @@ public class ContentControlAlfresco implements ContentControl {
                     }
                 }
                 if (!existeDependencia) {
-                    logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
+                    logger.info(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
-                    response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
+                    response.setMensaje(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getSede());
                 }
             } else {
-                logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
+                logger.info(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
                 response.setCodMensaje("4444");
-                response.setMensaje("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
+                response.setMensaje(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
             }
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error(ECM_ERROR_DUPLICADO, ccaee);
