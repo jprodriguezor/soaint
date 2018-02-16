@@ -115,7 +115,10 @@ export class PDDatosGeneralesComponent implements OnInit {
 
     attachDocument(event, versionUploader: FileUpload) {
       if (event.files.length === 0) { return false; }
-      const nv = {id: 'none', nombre: event.files[0].name, tipo: 'pdf', version: '', contenido: '', file: event.files[0], size: event.files[0].size};
+      const nv: VersionDocumentoDTO = {id: 'none', nombre: event.files[0].name, tipo: 'pdf', version: '', contenido: '', file: event.files[0], size: event.files[0].size};
+      if (this.listaVersionesDocumento.length > 0) {
+        nv.id = this.listaVersionesDocumento[this.listaVersionesDocumento.length - 1].id;
+      }
       this.uploadVersionDocumento(nv);
       versionUploader.clear();
     }
