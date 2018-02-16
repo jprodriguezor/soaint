@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Subscription} from 'rxjs/Subscription';
@@ -25,7 +25,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   remitenteExterno: AgentDTO;
   listaDestinatariosInternos: DestinatarioDTO[] = [];
 
-  @ViewChild('destinatarioExterno') destinatarioExterno;
+  @ViewChild('datosDestinatarioExterno') datosDestinatarioExterno;
   @ViewChild('destinatarioInterno') destinatarioInterno;
   //@ViewChild('datosRemitente') datosRemitente;
   @Input() taskData: TareaDTO;
@@ -62,9 +62,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
           if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
             this.remitenteExterno = contacto;
+            this.datosDestinatarioExterno.getDestinatarioDefault(this.remitenteExterno);
           }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
             this.listaDestinatariosInternos.push(contacto);
           }
+
         });
       }
     });
@@ -81,7 +83,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
-
+      //this.datosDestinatarioExterno.responseToRem = responderRemitente;
     });
 
   }

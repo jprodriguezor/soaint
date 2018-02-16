@@ -81,9 +81,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   //@ViewChild('datosDireccion') datosDireccion;
 
   @Input() editable = true;
-  @Input() hasNumberRadicado = false;
+  @Input() responseToRem = false;
   @Input() objTipoComunicacion: any;
-
   @Input() destinatario: AgentDTO;
 
   contactsDefault: Array<any> = [];
@@ -104,9 +103,20 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.listenForChanges();
     this.listenForErrors();
     this.visibility['tipoPersona'] = true;
-    this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
-    console.log(this.visibility);
-    console.log(this.destinatario);
+    //
+    //console.log(this.visibility);
+    //console.log(this.destinatario);
+    //
+    //
+    //
+    //console.log(this.objTipoComunicacion);
+    //console.log(this.tipoComunicacion);
+    //console.log(this.destinatario);
+  }
+
+  getDestinatarioDefault(destinatarioDefault){
+
+    this.destinatario = destinatarioDefault;
 
     if(this.destinatario){
 
@@ -139,7 +149,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
           this.contact['pais'] =  null;
           this.paisSuggestions$.subscribe((values) => {
-              this.contact['pais'] = values.find(value => value.codigo == departamentoArrayData.codPais);
+            this.contact['pais'] = values.find(value => value.codigo == departamentoArrayData.codPais);
           });
           //this._departamentoSandbox.loadDispatch({codPais: departamentoArrayData.codPais});
 
@@ -168,11 +178,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
       }
     }
-    this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
 
-    console.log(this.objTipoComunicacion);
-    console.log(this.tipoComunicacion);
-    console.log(this.destinatario);
   }
 
   handleCargarNuevosContactos(contacts){
@@ -260,8 +266,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   onSelectTipoPersona(value) {
 
-    console.log(value);
-
     // const value = event.value;
     if (!this.visibility.tipoPersona) {
       return;
@@ -270,7 +274,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
         tipoPersona: true
       };
     }
-    console.log("paso por aqui");
 
     if (value === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
@@ -319,9 +322,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
         this.visibility['dependenciaGrupo'] = true;
         this.initLoadTipoComunicacionInterna();
       } else {
-
         this.visibility['tipoPersona'] = true;
-        this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
         this.initLoadTipoComunicacionExterna();
       }
     }

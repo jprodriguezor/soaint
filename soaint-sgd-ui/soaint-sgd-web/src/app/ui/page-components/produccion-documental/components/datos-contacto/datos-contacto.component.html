@@ -36,6 +36,6 @@
 
 <!--<app-datos-remitente  #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>-->
 
-<datos-destinatario-externo #destinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'" [destinatario]="remitenteExterno" [editable]="true" [objTipoComunicacion] = "tipoComunicacionSelected" [hasNumberRadicado] = "hasNumberRadicado"></datos-destinatario-externo>
+<datos-destinatario-externo #datosDestinatarioExterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SE'" [destinatario]="remitenteExterno" [editable]="true" [objTipoComunicacion] = "tipoComunicacionSelected" [responseToRem] = "responseToRem" ></datos-destinatario-externo>
 
 <datos-destinatario-interno #destinatarioInterno *ngIf="tipoComunicacionSelected && tipoComunicacionSelected.codigo == 'SI'" [listaDestinatarios]="listaDestinatariosInternos"></datos-destinatario-interno>
