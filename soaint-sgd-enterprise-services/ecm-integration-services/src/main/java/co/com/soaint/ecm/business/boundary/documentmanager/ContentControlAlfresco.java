@@ -813,6 +813,7 @@ public class ContentControlAlfresco implements ContentControl {
                     metadatosDocumentosDTO.setVersionLabel(docAux.getVersionLabel());
                     metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
                     response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+                    logger.info("Documento versionado correctamente con metadatos: ",metadatosDocumentosDTO.toString());
                 } catch (CmisBaseException e) {
                     logger.error("checkin failed, trying to cancel the checkout", e);
                     pwc.cancelCheckOut();
