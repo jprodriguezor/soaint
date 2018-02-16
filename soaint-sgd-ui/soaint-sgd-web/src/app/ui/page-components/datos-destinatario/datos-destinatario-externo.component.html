@@ -1,5 +1,5 @@
 <p-panel header="Datos destinatario" [style]="{border: 'none'}">
-<form [formGroup]="form" name="formDefault">
+<form [formGroup]="form" name="formDefault" *ngIf="visibility.visibleDatosRemitente">
   <div class="ui-fluid">
     <!--<div class="card card-w-title">-->
       <!--<h1>Datos Remitente</h1>-->
@@ -220,6 +220,6 @@
 </form>
 </p-panel>
 
-<div *ngIf="visibility.datosContacto">
+<div>
   <app-datos-direccion [contactsDefault]="contactsDefault" (nuevosContactos) = "handleCargarNuevosContactos($event)" [editable]="editable" ></app-datos-direccion>
 </div>

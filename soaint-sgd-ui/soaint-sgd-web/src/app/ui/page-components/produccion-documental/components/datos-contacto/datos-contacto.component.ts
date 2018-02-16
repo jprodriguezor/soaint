@@ -8,6 +8,7 @@ import {StatusDTO} from '../../models/StatusDTO';
 import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
 import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
 import {AgentDTO} from "../../../../../domain/agentDTO";
+import {destinatarioOriginal} from "../../../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -44,14 +45,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
 
-      if (this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE' && this.taskData.variables.numeroRadicado) {
-
-        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-          nroRadicado: this.taskData.variables.numeroRadicado
-        }).subscribe( contacto => {
-          this.remitenteExterno = contacto;
-        });
-      }
 
     });
 
@@ -64,6 +57,21 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
+
+      if(this.responseToRem && this.taskData.variables.numeroRadicado){
+
+          this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
+            nroRadicado: this.taskData.variables.numeroRadicado
+          }).subscribe( contacto => {
+
+            if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
+              this.remitenteExterno = contacto;
+            }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
+              this.listaDestinatariosInternos.push(contacto);
+            }
+          });
+      }
+
     });
 
   }

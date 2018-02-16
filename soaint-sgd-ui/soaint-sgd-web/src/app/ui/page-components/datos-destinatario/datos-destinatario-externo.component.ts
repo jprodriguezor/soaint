@@ -81,7 +81,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   //@ViewChild('datosDireccion') datosDireccion;
 
   @Input() editable = true;
+  @Input() hasNumberRadicado = false;
   @Input() objTipoComunicacion: any;
+
   @Input() destinatario: AgentDTO;
 
   contactsDefault: Array<any> = [];
@@ -102,7 +104,10 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.listenForChanges();
     this.listenForErrors();
     this.visibility['tipoPersona'] = true;
+    this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
+    console.log(this.visibility);
     console.log(this.destinatario);
+
     if(this.destinatario){
 
       this.setTipoComunicacion(this.objTipoComunicacion);
@@ -163,6 +168,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
       }
     }
+    this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
 
     console.log(this.objTipoComunicacion);
     console.log(this.tipoComunicacion);
@@ -175,14 +181,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
      this._store.dispatch(new LoadDatosRemitenteAction());
-
-    if(this.contactsDefault.length > 0){
-
-      this.contactsDefault.forEach(contact => {
-
-      });
-    }
-
   }
 
 
@@ -314,7 +312,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   setTipoComunicacion(value) {
 
     if (value) {
-      this.visibility = {};
+      //this.visibility = {};
       this.tipoComunicacion = value.codigo;
       if (this.tipoComunicacion === COMUNICACION_INTERNA_ENVIADA) {
         this.visibility['sedeAdministrativa'] = true;
@@ -323,6 +321,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
       } else {
 
         this.visibility['tipoPersona'] = true;
+        this.visibility['visibleDatosRemitente'] = this.hasNumberRadicado;
         this.initLoadTipoComunicacionExterna();
       }
     }
