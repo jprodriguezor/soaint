@@ -42,6 +42,7 @@ import {
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
 
 import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {any} from "codelyzer/util/function";
 
 @Component({
   selector: 'datos-destinatario-externo',
@@ -81,6 +82,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   //@ViewChild('datosDireccion') datosDireccion;
 
   @Input() editable = true;
+  //@Input() test = any;
   @Input() responseToRem = false;
   @Input() objTipoComunicacion: any;
   @Input() destinatario: AgentDTO;
@@ -93,7 +95,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
-              private _municipioSandbox: MunicipioSandbox
+              private _municipioSandbox: MunicipioSandbox,
+              private _changeDetectorRef: ChangeDetectorRef
             ) {
   }
 
@@ -178,7 +181,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
       }
     }
-
+    this.refreshView();
   }
 
   handleCargarNuevosContactos(contacts){
@@ -354,5 +357,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.subscribers.forEach(subscriber => {
       subscriber.unsubscribe();
     });
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
   }
 }

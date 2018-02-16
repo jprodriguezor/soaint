@@ -9,6 +9,7 @@ import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
 import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
 import {AgentDTO} from "../../../../../domain/agentDTO";
 import {destinatarioOriginal} from "../../../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
+import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -21,8 +22,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   validations: any = {};
+  //test: any = { };
 
   remitenteExterno: AgentDTO;
+  defaultDestinatarioInterno: any;
   listaDestinatariosInternos: DestinatarioDTO[] = [];
 
   @ViewChild('datosDestinatarioExterno') datosDestinatarioExterno;
@@ -37,7 +40,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private pdMessageService: PdMessageService) {
+              private pdMessageService: PdMessageService,
+              private _dependenciaSandbox: DependenciaSandbox) {
 
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
@@ -64,7 +68,19 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
             this.remitenteExterno = contacto;
             this.datosDestinatarioExterno.getDestinatarioDefault(this.remitenteExterno);
           }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
-            this.listaDestinatariosInternos.push(contacto);
+            //this.listaDestinatariosInternos.push(contacto);
+            console.log("entro por contacto " + contacto );
+
+            this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
+              console.log(results.dependencias.find((element) => element.codigo === contacto.codDependencia));
+              console.log(results.dependencias.find((element) => element.codSede === contacto.codSede));
+              this.defaultDestinatarioInterno = {
+                sede: results.dependencias.find((element) => element.codigo === contacto.codDependencia),
+                depedencia: results.dependencias.find((element) => element.codSede === contacto.codSede)
+              }
+            });
+
+            this.defaultDestinatarioInterno = contacto;
           }
 
         });
@@ -83,7 +99,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
-      //this.datosDestinatarioExterno.responseToRem = responderRemitente;
+
     });
 
   }
