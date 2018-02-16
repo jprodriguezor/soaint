@@ -862,7 +862,7 @@ public class ContentControlAlfresco implements ContentControl {
                     int year = cal.get(Calendar.YEAR);
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
 
-                    Carpeta carpetaTarget = new Carpeta();
+                    Carpeta carpetaTarget;
 
                     Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
@@ -875,11 +875,10 @@ public class ContentControlAlfresco implements ContentControl {
                     }
 
                     logger.info("Se llenan los metadatos del documento a crear");
-                    VersioningState vs = VersioningState.MAJOR;
                     ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
 
                     logger.info(AVISO_CREA_DOC);
-                    Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, vs);
+                    Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
 
                     idDocumento = newDocument.getId();
                     String[] parts = idDocumento.split(";");
@@ -945,22 +944,22 @@ public class ContentControlAlfresco implements ContentControl {
                 String comunicacionOficial = "";
                 String tipoComunicacionSelector;
                 switch (tipoComunicacion) {
-                    case "IR": {
+                    case "EI": {
                         tipoComunicacionSelector = COMUNICACIONES_INTERNAS_RECIBIDAS;
                         comunicacionOficial = TIPO_COMUNICACION_INTERNA;
                         break;
                     }
-                    case "IE": {
+                    case "SI": {
                         tipoComunicacionSelector = COMUNICACIONES_INTERNAS_ENVIADAS;
                         comunicacionOficial = TIPO_COMUNICACION_INTERNA;
                         break;
                     }
-                    case "ER": {
+                    case "EE": {
                         tipoComunicacionSelector = COMUNICACIONES_EXTERNAS_RECIBIDAS;
                         comunicacionOficial = TIPO_COMUNICACION_EXTERNA;
                         break;
                     }
-                    case "EE": {
+                    case "SE": {
                         tipoComunicacionSelector = COMUNICACIONES_EXTERNAS_ENVIADAS;
                         comunicacionOficial = TIPO_COMUNICACION_EXTERNA;
                         break;
@@ -973,6 +972,7 @@ public class ContentControlAlfresco implements ContentControl {
                 boolean existe = false;
                 boolean existeAux = false;
                 boolean existeDependencia = false;
+
                 for (Carpeta carpetaP : carpetasHijas) {
                     logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
                     if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
@@ -1028,10 +1028,9 @@ public class ContentControlAlfresco implements ContentControl {
 
 
                             logger.info("Se llenan los metadatos del documento a crear");
-                            VersioningState vs = VersioningState.MAJOR;
                             ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
                             logger.info(AVISO_CREA_DOC);
-                            Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, vs);
+                            Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
 
                             idDocumento = newDocument.getId();
                             String[] parts = idDocumento.split(";");
