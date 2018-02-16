@@ -19,6 +19,9 @@ import {ActivatedRoute} from '@angular/router';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {AgentDTO} from '../../../domain/agentDTO';
+import {MessagingService} from '../../../shared/providers/MessagingService';
+import {DocumentVersionRemoved, DocumentVersionUploaded} from './messages/DocumentVersionMessages';
+import {DocumentoEcmDTO} from '../../../domain/documentoEcmDTO';
 
 @Component({
   selector: 'produccion-documental',
@@ -42,6 +45,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   tipoComunicacionSelected: ConstanteDTO;
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
+  docUploadedSubscription: Subscription;
+  docRemovedSubscription: Subscription;
 
   tabIndex = 0;
 
@@ -52,10 +57,21 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               private _taskSandBox: TaskSandBox,
               private route: ActivatedRoute,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
+              private messaging: MessagingService,
               private pdMessageService: PdMessageService) {
-      this.route.params.subscribe( params => {
-          this.status = parseInt(params.status, 10) || 0;
-      } );
+    this.route.params.subscribe( params => {
+      this.status = parseInt(params.status, 10) || 0;
+    } );
+    this.docUploadedSubscription = this.messaging.of(DocumentVersionUploaded).subscribe( document => {
+      console.log(`Decumento subido al ECM`);
+      console.log(this.taskCurrentStatus);
+      this.guardarEstadoTarea()
+    });
+    this.docRemovedSubscription = this.messaging.of(DocumentVersionRemoved).subscribe( document => {
+      console.log(`Documento eliminado del ECM`);
+      console.log(this.taskCurrentStatus);
+      this.guardarEstadoTarea()
+    });
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
     });
@@ -66,54 +82,54 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
-  parseIncomingListaProyector(lista: string) {
-    return lista.match(/([a-z.]+):[0-9]+/g);
+  private initCurrentStatus() {
+      this.taskCurrentStatus = {
+          datosGenerales: {
+              idDocumentoEcm: 'none',
+              tipoComunicacion: null,
+              listaAnexos: []
+          },
+          datosContacto: {
+              distribucion: null,
+              responderRemitente: false,
+              listaDestinatarios: [],
+              remitenteExterno: null
+          },
+          gestionarProduccion: {
+              startIndex: this.gestionarProduccion.listaProyectores.length,
+              listaProyectores: this.gestionarProduccion.listaProyectores
+          }
+      };
   }
 
   ngOnInit(): void {
-      this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+        this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
           this.funcionarioLog = funcionario;
-      });
-    this._store.select(getActiveTask).take(1).subscribe(activeTask => {
-      this.task = activeTask;
-      this._produccionDocumentalApi.obtenerEstadoTarea({
-        idInstanciaProceso: this.task.idInstanciaProceso,
-        idTareaProceso: this.idEstadoTarea
-      }).subscribe(
-          (status: StatusDTO) => {
-          if (status) {
-                this.taskCurrentStatus = status;
-                this.datosGenerales.updateStatus(status);
-                if (status.datosGenerales.tipoComunicacion) {
-                    this.datosContacto.updateStatus(status);
-                }
-                this.gestionarProduccion.updateStatus(status);
-                console.log(status);
-          } else {
-                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
-                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
-                this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaAprobador || '', 'aprobador');
-                this.taskCurrentStatus = {
-                  datosGenerales: {
-                    tipoComunicacion: null,
-                    listaVersionesDocumento: [],
-                    listaAnexos: []
-                  },
-                  datosContacto: {
-                      distribucion: null,
-                      responderRemitente: false,
-                      listaDestinatarios: [],
-                      remitenteExterno: null
-                  },
-                  gestionarProduccion: {
-                    startIndex: this.gestionarProduccion.listaProyectores.length,
-                    listaProyectores: this.gestionarProduccion.listaProyectores
-                  }
-                };
-          }
-        }
-      );
-    });
+        });
+        this._store.select(getActiveTask).take(1).subscribe(activeTask => {
+          this.task = activeTask;
+          this._produccionDocumentalApi.obtenerEstadoTarea({
+            idInstanciaProceso: this.task.idInstanciaProceso,
+            idTareaProceso: this.idEstadoTarea
+          }).subscribe(
+              (status: StatusDTO) => {
+              if (status) {
+                    this.taskCurrentStatus = status;
+                    this.datosGenerales.updateStatus(status);
+                    if (status.datosGenerales.tipoComunicacion) {
+                        this.datosContacto.updateStatus(status);
+                    }
+                    this.gestionarProduccion.updateStatus(status);
+                    console.log(status);
+              } else {
+                    this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
+                    this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaRevisor || '', 'revisor');
+                    this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaAprobador || '', 'aprobador');
+                    this.initCurrentStatus();
+              }
+            }
+          );
+        });
   }
 
   guardarEstadoTarea(currentStatus?: StatusDTO) {
@@ -133,13 +149,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   getCurrentStatus(): StatusDTO {
       this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
-      this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
+      this.taskCurrentStatus.datosGenerales.idDocumentoEcm = this.datosGenerales.idDocumentoEcm;
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
       if (this.datosGenerales.form.get('tipoComunicacion').value) {
           if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
-              this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
+              this.taskCurrentStatus.datosContacto.listaDestinatarios
+                  = this.datosContacto.destinatarioInterno && this.datosContacto.destinatarioInterno.listaDestinatarios || [];
           } else {
               this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
           }
@@ -241,11 +258,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
     }
 
-    esFuncionarioAprobador(funcionario: FuncionarioDTO) {
-        return this.gestionarProduccion.getListaProyectores().filter(
-            (el: ProyectorDTO) => 'aprobador' === el.rol.rol && el.funcionario.loginName === funcionario.loginName
-        ).length > 0;
-    }
 
 
     isValid(): boolean {
@@ -257,6 +269,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     ngOnDestroy(): void {
         this.authPayloadUnsubscriber.unsubscribe();
+        this.docUploadedSubscription.unsubscribe();
     }
 
     save(): Observable<any> {
