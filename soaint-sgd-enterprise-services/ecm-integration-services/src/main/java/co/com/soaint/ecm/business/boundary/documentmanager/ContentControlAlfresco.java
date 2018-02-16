@@ -229,18 +229,16 @@ public class ContentControlAlfresco implements ContentControl {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
             File file = null;
+
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
-                for (Document version : versions) {
-                    if (metadatosDocumentosDTO.getVersionLabel().equals(version.getVersionLabel())) {
-                        file = getFile(metadatosDocumentosDTO, versionesLista, version);
-                        break;
-                    }
-                }
+                //Filtrar la version correcta dentro de las versiones del documento para obtener el file
+                Optional<Document> version = versions.stream()
+                        .filter(p -> p.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())).findFirst();
+                file = getFile(metadatosDocumentosDTO, versionesLista, version.get());
 
             } else {
                 file = convertInputStreamToFile(doc.getContentStream());
-
             }
             logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
             return Response.ok(file)
@@ -266,7 +264,6 @@ public class ContentControlAlfresco implements ContentControl {
         if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
             metadatosDocumentosDTO.setNombreDocumento(version.getName());
             versionesLista.add(metadatosDocumentosDTO);
-
             fileAux = convertInputStreamToFile(version.getContentStream());
         }
         return fileAux;
@@ -662,19 +659,17 @@ public class ContentControlAlfresco implements ContentControl {
                 metadatosDocumentosDTO.setIdDocumento(idDoc);
                 metadatosDocumentosDTO.setTipoDocumento(version.getContentStreamMimeType());
                 versionesLista.add(metadatosDocumentosDTO);
-
             }
-
             response.setCodMensaje("0000");
             response.setMensaje("success");
             response.setMetadatosDocumentosDTOList(versionesLista);
-
         } catch (Exception e) {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: " + e.getMessage());
             response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
             logger.error("Error en la obtención de las versiones del documento: ", e);
         }
+        logger.info("Se devuelven las versiones del documento: ", versionesLista.toString());
         logger.info("Se sale del metodo obtenerVersionesDocumento con respuesta: " + response.toString());
         return response;
 
@@ -706,6 +701,7 @@ public class ContentControlAlfresco implements ContentControl {
             // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
             MultivaluedMap<String, String> headers = inputPart.getHeaders();
             String[] contentDispositionHeader = headers.getFirst(CONTENT_DISPOSITION).split(";");
+
             for (String name : contentDispositionHeader) {
                 if (name.trim().startsWith("filename")) {
                     String[] tmp = name.split("=");
@@ -741,7 +737,7 @@ public class ContentControlAlfresco implements ContentControl {
                 buscarCrearCarpetaRadicacion(session, metadatosDocumentosDTO, response, bytes, properties, selector);
             }
         }
-
+        logger.info("Se sale del metodo subirDocumentoPrincipalAdjunto");
         return response;
     }
 
@@ -816,7 +812,7 @@ public class ContentControlAlfresco implements ContentControl {
                     metadatosDocumentosDTO.setVersionLabel(docAux.getVersionLabel());
                     metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
                     response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
-                    logger.info("Documento versionado correctamente con metadatos: ",metadatosDocumentosDTO.toString());
+                    logger.info("Documento versionado correctamente con metadatos: ", metadatosDocumentosDTO.toString());
                 } catch (CmisBaseException e) {
                     logger.error("checkin failed, trying to cancel the checkout", e);
                     pwc.cancelCheckOut();
@@ -824,9 +820,7 @@ public class ContentControlAlfresco implements ContentControl {
                     response.setMensaje("Error versionando documento: " + e);
                 }
             }
-
         }
-
         return response;
     }
 
@@ -852,66 +846,63 @@ public class ContentControlAlfresco implements ContentControl {
             logger.info("###------------ Se elige la sede donde se va a guardar el documento principal..");
             folderAlfresco = obtenerCarpetaPorNombre(metadatosDocumentosDTO.getSede(), session);
 
-
             if (folderAlfresco.getFolder() != null) {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
-                boolean existeDependencia = false;
-                for (Carpeta carpetaP : carpetasHijas) {
-                    logger.info("Se obtienen la dependencia referente a la sede" + carpetaP.getFolder().getName());
-                    if (carpetaP.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())) {
-                        logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                        existeDependencia = true;
-                        Calendar cal = Calendar.getInstance();
-                        int year = cal.get(Calendar.YEAR);
+                //Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia
+                Optional<Carpeta> dependencia = carpetasHijas.stream()
+                        .filter(p -> p.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())).findFirst();
 
-                        logger.info("Se obtienen todas las carpetas dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                        List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(carpetaP);
+                logger.info("Se obtienen la dependencia referente a la sede" + dependencia);
+                if (dependencia.isPresent()) {
 
-                        boolean existe = false;
-                        Carpeta carpetaTarget = new Carpeta();
-                        for (Carpeta carpetaDependencia : carpetasDeLaDependencia) {
-                            if (carpetaDependencia.getFolder().getName().equals(carpetaCrearBuscar + year)) {
-                                logger.info(EXISTE_CARPETA + carpetaCrearBuscar + year);
-                                carpetaTarget = carpetaDependencia;
-                                existe = true;
-                            }
-                        }
-                        if (!existe) {
-                            logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
-                            carpetaTarget = crearCarpeta(carpetaP, carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, carpetaP);//TODO ver lo del codOrg
-                        }
+                    logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
+                    Calendar cal = Calendar.getInstance();
+                    int year = cal.get(Calendar.YEAR);
+                    List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
 
-                        logger.info("Se llenan los metadatos del documento a crear");
-                        VersioningState vs = VersioningState.MAJOR;
-                        ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
-                        logger.info(AVISO_CREA_DOC);
-                        Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, vs);
+                    Carpeta carpetaTarget = new Carpeta();
 
-                        idDocumento = newDocument.getId();
-                        String[] parts = idDocumento.split(";");
-                        idDocumento = parts[0];
-                        metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
-                        metadatosDocumentosDTO.setIdDocumento(idDocumento);
-                        metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
-                        response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
-                        //Creando el mensaje de respuesta
-                        response.setCodMensaje("0000");
-                        response.setMensaje("Documento añadido correctamente");
-                        logger.info(AVISO_CREA_DOC_ID + idDocumento);
+                    Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
+                            .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
+                    if (produccionDocumental.isPresent()) {
+                        logger.info(EXISTE_CARPETA + carpetaCrearBuscar + year);
+                        carpetaTarget = produccionDocumental.get();
+                    } else {
+                        logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
+                        carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());//TODO ver lo del codOrg
                     }
-                }
-                if (!existeDependencia) {
+
+                    logger.info("Se llenan los metadatos del documento a crear");
+                    VersioningState vs = VersioningState.MAJOR;
+                    ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+
+                    logger.info(AVISO_CREA_DOC);
+                    Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, vs);
+
+                    idDocumento = newDocument.getId();
+                    String[] parts = idDocumento.split(";");
+                    idDocumento = parts[0];
+                    metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
+                    metadatosDocumentosDTO.setIdDocumento(idDocumento);
+                    metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
+                    response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+                    //Creando el mensaje de respuesta
+                    response.setCodMensaje("0000");
+                    response.setMensaje("Documento añadido correctamente");
+                    logger.info(AVISO_CREA_DOC_ID + idDocumento);
+                } else {
                     logger.info("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
                     response.setMensaje("En la estructura no existe la Dependencia: " + metadatosDocumentosDTO.getSede());
                 }
             } else {
                 logger.info("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
-                response.setCodMensaje("2222");
+                response.setCodMensaje("4444");
                 response.setMensaje("En la estructura no existe la sede: " + metadatosDocumentosDTO.getSede());
             }
+
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error(ECM_ERROR_DUPLICADO, ccaee);
             response.setCodMensaje("1111");
