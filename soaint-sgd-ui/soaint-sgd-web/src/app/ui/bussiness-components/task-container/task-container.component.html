@@ -11,9 +11,9 @@
 
       </ng-content>
 
-      <button pButton type="button" class="ui-button-success" label="finalizar" style="width: auto;  margin-bottom: 10px"
+      <button pButton type="button" class="ui-button-success" label="Finalizar" style="width: auto;  margin-bottom: 10px"
               (click)="navigateBack()" *ngIf="!isActive && !hasToContinue"></button>
-      <button pButton type="button" class="ui-button-success" label="continuar"
+      <button pButton type="button" class="ui-button-success" label="Continuar"
               style="width: auto;  margin-bottom: 10px" (click)="navigateToNextTask()" *ngIf="!isActive && hasToContinue"></button>
 
     </div>

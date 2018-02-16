@@ -5,21 +5,21 @@
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"
       ></button>
-      <button pButton type="button" label="Cerrar" *ngIf="task && task.variables || false"
+      <button pButton type="button" label="Cerrar" *ngIf="task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="cancelarTarea()"
       ></button>
-      <button pButton type="button" label="Devolver" *ngIf="status > 1 && task && task.variables || false"
+      <button pButton type="button" label="Devolver" *ngIf="status > 1 && task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="devolverDocumento()"
 
       ></button>
-      <button pButton type="button" label="Aprobar" *ngIf="task && task.variables || false"
+      <button pButton type="button" label="Aprobar" *ngIf="task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="!puedeAprobar()"
               (click)="aprobarDocumento()"
       ></button>
-      <button pButton type="button" label="Continuar" *ngIf="status === 1 && task && task.variables || false"
+      <button pButton type="button" label="Continuar" *ngIf="status === 1 && task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="!isValid()"
               (click)="continuarProceso()"

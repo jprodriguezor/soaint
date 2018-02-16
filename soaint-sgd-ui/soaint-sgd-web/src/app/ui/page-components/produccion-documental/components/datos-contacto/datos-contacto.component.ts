@@ -31,7 +31,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   canInsert = false;
   responseToRem = false;
-  hasNumberRadicado=false;
+  hasNumberRadicado = false;
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
@@ -44,7 +44,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
 
-      if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo == 'SE' && this.taskData.variables.numeroRadicado) {
+      if (this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE' && this.taskData.variables.numeroRadicado) {
 
         this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
           nroRadicado: this.taskData.variables.numeroRadicado
@@ -60,7 +60,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.hasNumberRadicado = (this.taskData.variables.numeroRadicado) ? true: false;
+    this.hasNumberRadicado = !!this.taskData.variables.numeroRadicado;
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;

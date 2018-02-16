@@ -39,6 +39,10 @@ export class ProduccionDocumentalApiService {
     );
   }
 
+  obtenerListaVersionesDocumento(payload: {id: string}) {
+      return this._api.list(`${environment.pd_gestion_documental.obtenerListaVersionesDocumento}/${payload.id}`, {});
+  }
+
   obtenerVersionDocumento(payload: {id: string, version: string}) {
     return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento, {identificadorDoc: payload.id, version: payload.version});
   }
