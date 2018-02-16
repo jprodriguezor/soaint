@@ -232,7 +232,10 @@ public class ContentControlAlfresco implements ContentControl {
             if (metadatosDocumentosDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
                 for (Document version : versions) {
-                    file = getFile(metadatosDocumentosDTO, versionesLista, version);
+                    if (metadatosDocumentosDTO.getVersionLabel().equals(version.getVersionLabel())) {
+                        file = getFile(metadatosDocumentosDTO, versionesLista, version);
+                        break;
+                    }
                 }
 
             } else {
