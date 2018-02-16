@@ -45,7 +45,28 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
 
+      if(this.taskData.variables.numeroRadicado){
 
+        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
+          nroRadicado: this.taskData.variables.numeroRadicado
+        }).subscribe( contacto => {
+          console.log(contacto);
+
+          this.hasNumberRadicado = false;
+
+          if(contacto.codTipoRemite == "EXT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
+            this.hasNumberRadicado = true;
+          }else if(contacto.codTipoRemite == "INT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
+            this.hasNumberRadicado = true;
+          }
+
+          if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
+            this.remitenteExterno = contacto;
+          }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
+            this.listaDestinatariosInternos.push(contacto);
+          }
+        });
+      }
     });
 
     this.initForm();
@@ -53,24 +74,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.hasNumberRadicado = !!this.taskData.variables.numeroRadicado;
+    //this.hasNumberRadicado = !!this.taskData.variables.numeroRadicado;
+
+    console.log("Tarea de entrada");
+    console.log(this.taskData);
 
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
-
-      if(this.responseToRem && this.taskData.variables.numeroRadicado){
-
-          this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-            nroRadicado: this.taskData.variables.numeroRadicado
-          }).subscribe( contacto => {
-
-            if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
-              this.remitenteExterno = contacto;
-            }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
-              this.listaDestinatariosInternos.push(contacto);
-            }
-          });
-      }
 
     });
 
@@ -107,7 +117,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
-
 
 }
 
