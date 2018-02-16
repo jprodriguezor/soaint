@@ -1,19 +1,28 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
     <div customActions>
-      <button pButton type="button" label="Continuar"
-              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              [disabled]="!datosGenerales.isValid()"
-              (click)="completarTarea()"
-      ></button>
-      <button pButton type="button" label="Aprobar"
-              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
-              [disabled]="!aprobar"
-              (click)="completarTarea()"
-      ></button>
       <button pButton type="button" label="Guardar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"
+      ></button>
+      <button pButton type="button" label="Cerrar" *ngIf="task"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="cancelarTarea()"
+      ></button>
+      <button pButton type="button" label="Devolver" *ngIf="status > 1 && task"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              (click)="devolverDocumento()"
+
+      ></button>
+      <button pButton type="button" label="Aprobar" *ngIf="task"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              [disabled]="!puedeAprobar()"
+              (click)="aprobarDocumento()"
+      ></button>
+      <button pButton type="button" label="Continuar" *ngIf="status === 1 && task"
+              style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
+              [disabled]="!isValid()"
+              (click)="continuarProceso()"
       ></button>
     </div>
     <div taskBody>
@@ -26,7 +35,7 @@
           <pd-datos-contacto #datosContacto [taskData]="task"></pd-datos-contacto>
         </p-tabPanel>
         <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
-          <pd-gestionar-produccion #gestionarProduccion></pd-gestionar-produccion>
+          <pd-gestionar-produccion #gestionarProduccion [status]="status"></pd-gestionar-produccion>
         </p-tabPanel>
       </p-tabView>
     </div>

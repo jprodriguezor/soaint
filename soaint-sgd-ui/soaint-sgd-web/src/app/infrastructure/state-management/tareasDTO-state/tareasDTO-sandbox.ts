@@ -171,10 +171,14 @@ export class Sandbox {
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionUnidadDocumental, task]));
         break;
       case TASK_PRODUCIR_DOCUMENTO:
+          this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/1`, task]));
+          break;
       case TASK_REVISAR_DOCUMENTO:
+          this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/2`, task]));
+          break;
       case TASK_APROBAR_DOCUMENTO:
-        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.produccionDocumental, task]));
-        break;
+          this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/3`, task]));
+          break;
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }

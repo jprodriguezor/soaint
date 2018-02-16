@@ -1,28 +1,32 @@
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
-import {AnexoDTO, VersionDocumentoDTO} from './DocumentoDTO';
+import {AnexoDTO} from './DocumentoDTO';
 import {ProyectorDTO} from '../../../../domain/ProyectorDTO';
 import {DestinatarioDTO} from '../../../../domain/destinatarioDTO';
+import {AgentDTO} from '../../../../domain/agentDTO';
+import {DocumentoEcmDTO} from '../../../../domain/documentoEcmDTO';
 
 export interface StatusDTO {
   datosGenerales: {
     tipoComunicacion: ConstanteDTO,
-    listaVersionesDocumento: VersionDocumentoDTO[],
+    idDocumentoEcm: string,
     listaAnexos: AnexoDTO[]
   },
   datosContacto: {
     distribucion: string,
     responderRemitente: boolean,
-    listaDestinatarios: DestinatarioDTO[]
+    listaDestinatarios: DestinatarioDTO[],
+    remitenteExterno: AgentDTO
   },
   gestionarProduccion: {
+    startIndex: number,
     listaProyectores: ProyectorDTO[]
   }
 }
 
 export interface VariablesTareaDTO {
-  aprobado: number,
-  listaProyector: string[],
-  codDependencia?: string,
+  aprobado?: number,
+  requiereAjustes?: number,
+  listaProyector?: string[],
   listaAprobador?: string[],
   listaRevisor?: string[]
 }

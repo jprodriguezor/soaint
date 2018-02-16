@@ -29,6 +29,9 @@
         <property name="generateDdl" value="true"/>
         <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
     </bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
 
     <context:component-scan base-package="co.com.soaint.correspondencia.business"/>
     <context:component-scan base-package="co.com.soaint.correspondencia.integration"/>

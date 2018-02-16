@@ -62,7 +62,7 @@
         </div>
     </p-panel>
 
-    <p-panel header="Radicado asociado" [style]="{border: 'none'}">
+    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="taskData.variables.numeroRadicado">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom style="max-height: 68px">
                 <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
@@ -145,13 +145,14 @@
                                   (click)="mostrarVersionDocumento(-1);"></button>
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
-                            <p-fileUpload mode="basic"
+                            <p-fileUpload #versionUploader
+                                          mode="basic"
                                           auto="true"
                                           [disabled]="listaVersionesDocumento.length > 0"
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
-                                          (onSelect)="attachDocument($event)"
+                                          (onSelect)="attachDocument($event, versionUploader)"
                                           (onError)="onErrorUpload($event)"
                             ></p-fileUpload>
                         </div>
@@ -162,16 +163,15 @@
 
         <div class="ui-g ui-fluid" style="margin-bottom: 16px">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
-                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se encontraron resultados">
+                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se han subido documentos">
                     <p-header> Tabla versiones documento</p-header>
-                    <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
-                    <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
-                    <p-column field="size" header="Tamaño (Kb)" [sortable]="true"></p-column>
-                    <p-column field="version" header="Version" [sortable]="true"></p-column>
+                    <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
+                    <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
+                    <p-column field="tamano" header="Tamaño (Kb)" [sortable]="true"></p-column>
+                    <p-column field="versionLabel" header="Version" [sortable]="true"></p-column>
                     <p-column header="Ver documento" [style]="{'width':'120px','text-align':'center'}">
                         <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                             <button type="button" pButton label="Ver" class="ui-button ui-button-info"
-                                    [disabled]="i !== listaVersionesDocumento.length -1"
                                     (click)="mostrarVersionDocumento(i)"></button>
                         </ng-template>
                     </p-column>
@@ -293,7 +293,7 @@
         Editar Planilla
     </p-header>
 
-    <p-editor [(ngModel)]="pd_currentVersion.contenido"
+    <p-editor [(ngModel)]="pd_currentContent"
               [readonly]="!pd_currentVersionEditable" [style]="{'height':'320px'}"></p-editor>
 
     <p-footer>
@@ -332,7 +332,7 @@
                     <div class="ui-sm-12 ui-g-12 ui-lg-12">
                         <input type="text" pInputText
                                [disabled]="!pd_confirmarVersionado"
-                               [(ngModel)]="pd_currentVersion.nombre" />
+                               [(ngModel)]="pd_currentNombre" />
                     </div>
                 </div>
             </div>

@@ -234,6 +234,18 @@ public class CorrespondenciaGatewayApi {
     }
 
     @GET
+    @Path("/contactos-destinatario-externo/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerContactoDestinatarioExterna(@PathParam("nro_radicado") String nroRadicado ) {
+        log.info("TareaGatewayApi - [trafic] - Obtener Contactos Destinatario Externo");
+        Response response = client.obtenerContactoDestinatarioExterna(nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        log.info("TareaGatewayApi - [content] : " + responseContent);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+
+    @GET
     @Path("/obtener-comunicacion/{nro_radicado}")
     @JWTTokenSecurity
     public Response obtenerComunicacion(@PathParam("nro_radicado") String nroRadicado) {

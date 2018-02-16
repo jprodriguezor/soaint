@@ -27,6 +27,14 @@ public class DependeciaGrupoClient {
                 .get();
     }
 
+    public Response obtenerPorCodigo(String codigo) {
+        log.info("DependeciaGrupo - [trafic] - Get by code with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/dependencia-web-api/dependencia/".concat(codigo))
+                .request()
+                .get();
+    }
+
     public Response obtenerPorDependencias(String codigosDependencia) {
         log.info("DependeciaGrupo - [trafic] - listing DependeciaGrupo with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

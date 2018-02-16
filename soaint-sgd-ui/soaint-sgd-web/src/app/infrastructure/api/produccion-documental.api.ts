@@ -10,6 +10,13 @@ import {PushNotificationAction} from '../state-management/notifications-state/no
 @Injectable()
 export class ProduccionDocumentalApiService {
 
+    roles: RolDTO[] = [
+        {'id': 1, 'rol': 'administrador', 'nombre': 'Administrador'},
+        {'id': 2, 'rol': 'proyector', 'nombre': 'Proyector'},
+        {'id': 3, 'rol': 'revisor', 'nombre': 'Revisor'},
+        {'id': 4, 'rol': 'aprobador', 'nombre': 'Aprobador'}
+    ];
+
   constructor(private _api: ApiBase) {
   }
 
@@ -21,11 +28,19 @@ export class ProduccionDocumentalApiService {
     return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload);
   }
 
+  obtenerContactosDestinatarioExterno(payload: {nroRadicado: string}) {
+    return this._api.list(`${environment.obtenerContactoDestinatarioExterno_endpoint}/${payload.nroRadicado}`, {});
+  }
+
   subirVersionDocumento(formData: FormData, payload: {nombre: string, sede: string, dependencia: string, tipo: string, id: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirDocumentoVersionado, formData,
       [payload.nombre, payload.sede, payload.dependencia, payload.tipo, payload.id, 'PD']
     );
+  }
+
+  obtenerListaVersionesDocumento(payload: {id: string}) {
+      return this._api.post(`${environment.pd_gestion_documental.obtenerListaVersionesDocumento}/${payload.id}`, {});
   }
 
   obtenerVersionDocumento(payload: {id: string, version: string}) {
@@ -43,9 +58,12 @@ export class ProduccionDocumentalApiService {
   subirAnexo(formData: FormData, payload: {nombre: string, sede: string, dependencia: string}) {
     return this._api.sendFile(
       environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.nombre, payload.sede, payload.dependencia]);
+      [payload.nombre, payload.sede, payload.dependencia, 'PD']);
   }
 
+    getFuncionariosByLoginnames(loginnames: string) {
+        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
+    }
 
 
   ejecutarProyeccionMultiple(payload: {}) {
@@ -108,12 +126,11 @@ export class ProduccionDocumentalApiService {
   }
 
   getRoles(payload: {}): Observable<RolDTO[]> {
-    return Observable.of(JSON.parse(`[
-          {"id":1,"rol":"administrador","nombre":"Administrador"},
-          {"id":2,"rol":"proyector","nombre":"Proyector"},
-          {"id":3,"rol":"revisor","nombre":"Revisor"},
-          {"id":4,"rol":"aprobador","nombre":"Aprobador"}
-        ]`));
+    return Observable.of(this.roles);
+  }
+
+  getRoleByRolename(rolname: string): RolDTO {
+    return this.roles.find((el: RolDTO) => el.rol === rolname);
   }
 
 }

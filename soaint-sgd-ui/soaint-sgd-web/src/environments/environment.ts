@@ -78,6 +78,7 @@ export const environment = {
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
@@ -95,16 +96,17 @@ export const environment = {
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
-  // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_gestion_documental : {
-    subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
-    obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
-    //subirAnexo: `${host}/produccion-documental-gateway-api/adjuntar/documento`,
-    subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
-    obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-    eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
-  }
+    // Produccion Documental
+    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+    pd_gestion_documental : {
+        subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
+        obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
+        eliminarAnexo: ``,
+        subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
+        obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+        obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
+        eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
+    }
 
 };
 

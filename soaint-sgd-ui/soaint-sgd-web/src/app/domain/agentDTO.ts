@@ -1,3 +1,4 @@
+import {ContactoDTO} from './contactoDTO';
 export interface AgentDTO {
   ideAgente?: number;
   codTipoRemite?: string;
@@ -17,4 +18,5 @@ export interface AgentDTO {
   indOriginal?: string;
   numRedirecciones?: number;
   numDevoluciones?: number;
+  datosContactoList?: ContactoDTO[]
 }

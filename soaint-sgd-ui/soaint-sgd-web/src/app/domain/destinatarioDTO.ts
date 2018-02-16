@@ -3,6 +3,7 @@ import {FuncionarioDTO} from './funcionarioDTO';
 import {PaisDTO} from './paisDTO';
 import {DepartamentoDTO} from './departamentoDTO';
 import {MunicipioDTO} from './municipioDTO';
+import {ContactoDTO} from './contactoDTO';
 
 export interface DestinatarioDTO {
     interno: boolean,
