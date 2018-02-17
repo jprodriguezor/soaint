@@ -6,10 +6,17 @@ import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
 import {StatusDTO} from '../../models/StatusDTO';
 import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
-import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
-import {AgentDTO} from "../../../../../domain/agentDTO";
-import {destinatarioOriginal} from "../../../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
+import {ProduccionDocumentalApiService} from '../../../../../infrastructure/api/produccion-documental.api';
+import {AgentDTO} from '../../../../../domain/agentDTO';
 import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
+import {LoadAction as DependenciaLoadAction} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-actions';
+import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -22,7 +29,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   validations: any = {};
-  //test: any = { };
 
   remitenteExterno: AgentDTO;
   defaultDestinatarioInterno: any;
@@ -30,14 +36,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   @ViewChild('datosDestinatarioExterno') datosDestinatarioExterno;
   @ViewChild('destinatarioInterno') destinatarioInterno;
-  //@ViewChild('datosRemitente') datosRemitente;
   @Input() taskData: TareaDTO;
 
   canInsert = false;
   responseToRem = false;
   hasNumberRadicado = false;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder, private _store: Store<State>,
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService,
@@ -49,38 +54,37 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       this.responseToRem = false;
       this.form.get('responderRemitente').setValue(false);
 
-      if(this.taskData.variables.numeroRadicado){
+      if (this.taskData.variables.numeroRadicado) {
 
         this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
           nroRadicado: this.taskData.variables.numeroRadicado
-        }).subscribe( contacto => {
-          console.log(contacto);
+        }).subscribe(contacto => {
 
           this.hasNumberRadicado = false;
 
-          if(contacto.codTipoRemite == "EXT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
+          if (contacto.codTipoRemite === 'EXT' && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE') {
             this.hasNumberRadicado = true;
-          }else if(contacto.codTipoRemite == "INT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
+          } else if (contacto.codTipoRemite === 'INT' && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI') {
             this.hasNumberRadicado = true;
           }
 
-          if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
+          if (this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE') {
             this.remitenteExterno = contacto;
             this.datosDestinatarioExterno.getDestinatarioDefault(this.remitenteExterno);
-          }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
-            //this.listaDestinatariosInternos.push(contacto);
-            console.log("entro por contacto " + contacto );
+          } else if (this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI') {
 
-            this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-              console.log(results.dependencias.find((element) => element.codigo === contacto.codDependencia));
-              console.log(results.dependencias.find((element) => element.codSede === contacto.codSede));
-              this.defaultDestinatarioInterno = {
-                sede: results.dependencias.find((element) => element.codigo === contacto.codDependencia),
-                depedencia: results.dependencias.find((element) => element.codSede === contacto.codSede)
-              }
-            });
+            this._store.dispatch(new SedeAdministrativaLoadAction());
+            this._store.dispatch(new DependenciaLoadAction({codigo: contacto.codDependencia}));
 
-            this.defaultDestinatarioInterno = contacto;
+            const sede$ = this._store.select(sedeAdministrativaArrayData)
+              .map(sedes => sedes.find((element) => element.codigo === contacto.codSede));
+
+            const dependencia$ = this._store.select(dependenciaGrupoArrayData)
+              .map(dependencias => dependencias.find((element) => element.codigo === contacto.codDependencia));
+
+            Observable.combineLatest(sede$, dependencia$, (sede, depedencia) => this.defaultDestinatarioInterno = {
+              sede, depedencia
+            }).do(_ => console.log('ESTE ES EL TIPO', this.defaultDestinatarioInterno)).subscribe();
           }
 
         });
@@ -91,27 +95,15 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-    //this.hasNumberRadicado = !!this.taskData.variables.numeroRadicado;
-
-    console.log("Tarea de entrada");
-    console.log(this.taskData);
-
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responseToRem = responderRemitente;
 
     });
-
   }
 
   updateStatus(currentStatus: StatusDTO) {
-
-    console.log('entro en el updateStatus');
-    console.log(currentStatus);
-
     this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
     this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
-
     if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
       this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
     } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
@@ -122,7 +114,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.form = this.formBuilder.group({
-      // Datos destinatario
       'responderRemitente': [null],
       'distribucion': [null],
     });

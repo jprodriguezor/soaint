@@ -1,2 +1,4 @@
-<rs-datos-destinatario-externo #destinatarioExterno [principal]="principal"></rs-datos-destinatario-externo>
-<rs-datos-destinatario-interno #destinatarioInterno [principal]="principal"></rs-datos-destinatario-interno>
+<rs-datos-destinatario-externo #destinatarioExterno [principal]="principal"
+                               (changePrincipal)="changePrincipalParent($event)"></rs-datos-destinatario-externo>
+<rs-datos-destinatario-interno #destinatarioInterno [principal]="principal"
+                               (changePrincipal)="changePrincipalParent($event)"></rs-datos-destinatario-interno>

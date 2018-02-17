@@ -53,9 +53,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   // Unsubscribers
   activeTaskUnsubscriber: Subscription;
-  /*sedeUnsubscriber: Subscription;
-  reqDigitInmediataUnsubscriber: Subscription;
-  validDatosGeneralesUnsubscriber: Subscription;*/
 
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
@@ -63,6 +60,15 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
   tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
+
+
+  formDatosGenerales: any;
+  formDatosRemitentes: any;
+  formDestinatarioInterno: any;
+  formDestinatarioExterno: any;
+
+  destinatariosInternos: any;
+  destinatariosExternos: any;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _coSandbox: ComunicacionOficialSandbox,
@@ -95,7 +101,19 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   radicarSalida() {
-    console.log('RADICAR SALIDA...')
+    this.formDatosGenerales = this.datosGenerales.form.value;
+    this.formDatosRemitentes = this.datosRemitente.form.value;
+
+    this.formDestinatarioExterno =
+      this.datosDestinatario.destinatarioExterno.form.value;
+    this.destinatariosExternos =
+      this.datosDestinatario.destinatarioExterno.listaDestinatarios;
+
+    this.formDestinatarioInterno =
+      this.datosDestinatario.destinatarioInterno.form.value;
+    this.destinatariosInternos =
+      this.datosDestinatario.destinatarioInterno.listaDestinatarios;
+
   }
 
 
@@ -143,7 +161,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   restore() {
-   console.log('RESTORE...')
+    console.log('RESTORE...')
   }
 
   ngOnDestroy() {
