@@ -51,7 +51,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   @Input() destinatario: DestinatarioDTO;
   destinatariosContactos: Array<any> = [];
   @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChild('datosContactos') destinatarioContactosComponent;
+  @ViewChild('destinatarioDatosContactos') destinatarioDatosContactos;
 
 
   @Input('tipoComunicacion') tipoComunicacion: string;
@@ -70,7 +70,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
     this.listenForChanges();
     this.listenForErrors();
-    this.visibility['tipoPersona'] = true;
+    this.visibility['tipoPersona'] = false;
   }
 
   initByTipoComunicacion() {
