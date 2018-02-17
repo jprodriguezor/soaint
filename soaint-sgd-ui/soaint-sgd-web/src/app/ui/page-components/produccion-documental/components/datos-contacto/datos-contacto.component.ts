@@ -232,6 +232,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   addDestinatario(newDestinatario){
 
+    console.log(newDestinatario);
+
     if(newDestinatario.interno){
       this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
     }else{
