@@ -1012,7 +1012,7 @@ public class ContentControlAlfresco implements ContentControl {
                                 carpetaTarget = crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada);
                             }
 
-                        }else{
+                        } else {
                             logger.info(EXISTE_CARPETA + comunicacionOficialInOut.get().getFolder().getName());
 
                             List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(comunicacionOficialInOut.get());
