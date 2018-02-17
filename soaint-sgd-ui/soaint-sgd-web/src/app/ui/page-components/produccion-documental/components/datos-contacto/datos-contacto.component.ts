@@ -13,12 +13,15 @@ import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management
 
 @Component({
   selector: 'pd-datos-contacto',
-  templateUrl: 'datos-contacto.component.html'
+  templateUrl: 'datos-contacto.component.html',
+  styleUrls: ['datos-contacto.component.css'],
 })
 
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  tipoComunicacionSelected: ConstanteDTO;
+
+  tipoComunicacionSelected: string;
+
   subscription: Subscription;
 
   validations: any = {};
@@ -214,10 +217,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   showAddDestinatarioExternoPopup(){
+    this.tipoComunicacionSelected = "EE";
     this.destinatarioExternoDialogVisible = true;
   }
 
   showAddDestinatarioInternoPopup(){
+    this.tipoComunicacionSelected = "EI";
     this.destinatarioInternoDialogVisible = true;
   }
 
@@ -229,17 +234,23 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.destinatarioInternoDialogVisible = false;
   }
 
-  addDestinatarioExterno(){
+  addDestinatario(newDestinatario){
 
-    this.valueRemitente = this.datosRemitentes.form.value;
+    console.log(newDestinatario);
 
-    this.listaDestinatariosExternos = [this.destinatarioExterno, ...this.listaDestinatariosExternos];
+    if(newDestinatario.interno){
+      this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
+    }else{
+      this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
+    }
 
+    //this.valueRemitente = this.datosRemitentes.form.value;
     //this.listaDestinatariosExternos.push(this.destinatarioExterno);
-    console.log("Lo que trae el form ",this.valueRemitente);
 
+    console.log("Lo que trae el form ",this.listaDestinatariosExternos);
   }
 
+  findDestinatarioPrincipal(listDestinatarios){}
 
   ngOnDestroy() {
     //this.subscription.unsubscribe();
