@@ -19,7 +19,10 @@ import {
 } from 'app/shared/bussiness-properties/radicacion-properties';
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {DestinatarioDTO} from "../../../domain/destinatarioDTO";
+import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
+import {isNullOrUndefined} from 'util';
+import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 
 
 @Component({
@@ -57,23 +60,45 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
+    this.initStores();
   }
 
   ngOnInit(): void {
     this.initForm();
-    this.form.disable();
+    this.initByTipoComunicacion();
+    this.initFormByInputDestinatario();
+    //this.form.disable();
     this.listenForChanges();
     this.listenForErrors();
-    this.visibility['tipoPersona'] = false;
+    this.visibility['tipoPersona'] = true;
   }
 
-  initLoadTipoComunicacionExterna() {
+  initByTipoComunicacion() {
+    if (isNullOrUndefined(this.tipoComunicacion)) {
+      this.tipoComunicacion = COMUNICACION_EXTERNA;
+    }
+    if (this.tipoComunicacion === COMUNICACION_INTERNA) {
+      this.visibility['sedeAdministrativa'] = true;
+      this.visibility['dependenciaGrupo'] = true;
+      this.initByTipoComunicacionInterna();
+    } else {
+      this.visibility['tipoPersona'] = true;
+      this.initByTipoComunicacionExterna();
+    }
+  }
+
+  initStores() {
+    this._store.dispatch(new LoadDatosRemitenteAction());
+    this._store.dispatch(new LoadDatosGeneralesAction());
+  }
+
+  initByTipoComunicacionExterna() {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
   }
 
-  initLoadTipoComunicacionInterna() {
+  initByTipoComunicacionInterna() {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
   }
 
@@ -89,6 +114,12 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
     });
+  }
+
+  initFormByInputDestinatario() {
+    if (!isNullOrUndefined(this.destinatario)) {
+      console.log('DestinatarioDTO no es null ->', this.destinatario);
+    }
   }
 
   listenForChanges() {
@@ -154,22 +185,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
         this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
       }).unsubscribe();
 
-    }
-  }
-
-  setTipoComunicacion(value) {
-
-    if (value) {
-      this.visibility = {};
-      this.tipoComunicacion = value.codigo;
-      if (this.tipoComunicacion === COMUNICACION_INTERNA) {
-        this.visibility['sedeAdministrativa'] = true;
-        this.visibility['dependenciaGrupo'] = true;
-        this.initLoadTipoComunicacionInterna();
-      } else {
-        this.visibility['tipoPersona'] = true;
-        this.initLoadTipoComunicacionExterna();
-      }
     }
   }
 

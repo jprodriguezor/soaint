@@ -147,19 +147,19 @@
 
 
 <p-dialog [visible]="destinatarioExternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
-          (onHide)="hideAddDestinatarioExternoPopup()" [width]="800">
+          (onHide)="hideAddDestinatarioExternoPopup()" [width]="800" [height]="auto">
   <p-header>
     Destinatario Externo
   </p-header>
 
-  <app-datos-remitentes  #datosRemitentes [editable]="true" [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioExterno"></app-datos-remitentes>
+  <app-datos-remitentes  #datosRemitentes  [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioExterno"></app-datos-remitentes>
 
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
               label="Cerrar" (click)="hideAddDestinatarioExternoPopup()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="false"
+      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"
               label="Agregar" (click)="addDestinatarioExterno()"></button>
     </div>
   </p-footer>
@@ -167,13 +167,12 @@
 
 
 <p-dialog [visible]="destinatarioInternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
-          (onHide)="hideAddDestinatarioInternoPopup()" [width]="800">
+          (onHide)="hideAddDestinatarioInternoPopup()" [width]="800" [height]="auto">
   <p-header>
     Destinatario Interno
   </p-header>
 
-  <app-datos-remitentes #datosRemitentes [editable]="true" [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioInterno"></app-datos-remitentes>
-
+  <app-datos-remitentes #datosRemitentes [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioInterno"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
