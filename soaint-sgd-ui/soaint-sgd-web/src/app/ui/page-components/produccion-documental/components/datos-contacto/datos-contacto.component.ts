@@ -37,8 +37,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   canInsert = false;
   responderRemitente = false;
   hasNumberRadicado = false;
-  editable = false;
+  editable = true;
   defaultDestinatarioTipoComunicacion = "";
+
+  valueRemitente: any;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -120,15 +122,40 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
             if(agente){
 
-              //transformar
-
               this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
+
+               let tempDestinatario = <DestinatarioDTO> {};
+
+                tempDestinatario.interno = false;
+                tempDestinatario.tipoDestinatario = (agente.indOriginal) ? agente.indOriginal : null;
+                tempDestinatario.tipoPersona = (agente.codTipoPers) ? agente.codTipoPers : null;
+                tempDestinatario.nombre= (agente.nombre) ? agente.nombre : "";
+                tempDestinatario.tipoDocumento=(agente.codTipDocIdent) ? agente.codTipDocIdent : null;
+                tempDestinatario.nit= (agente.nit) ? agente.nit : "";
+                tempDestinatario.actuaCalidad= (agente.codEnCalidad) ? agente.codEnCalidad : null;
+                tempDestinatario.actuaCalidadNombre= (agente.codEnCalidad) ? agente.codEnCalidad : "";
+                tempDestinatario.sede = (agente.codSede) ? agente.codSede : null;
+                tempDestinatario.dependencia = (agente.codDependencia) ? agente.codDependencia : null;
+                tempDestinatario.funcionario = null;
+                tempDestinatario.email = "";
+                tempDestinatario.mobile= "";
+                tempDestinatario.phone= "";
+                tempDestinatario.pais = null;
+                tempDestinatario.departamento= null;
+                tempDestinatario.municipio = null;
+                tempDestinatario.datosContactoList=(agente.datosContactoList) ? agente.datosContactoList : null;
+                tempDestinatario.principal = false;
+
               if(agente.codTipoRemite == "EXT"){
-                this.destinatarioExterno = agente;
+
+                tempDestinatario.interno = false;
+                this.destinatarioExterno = tempDestinatario;
                 this.destinatarioExternoDialogVisible = true;
 
               }else if(agente.codTipoRemite == "INT"){
-                this.destinatarioInterno = agente;
+
+                tempDestinatario.interno= true;
+                this.destinatarioInterno = tempDestinatario;
                 this.destinatarioInternoDialogVisible = true;
               }
             }
@@ -136,11 +163,28 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
             this.refreshView();
           });
         }
+
       }else{
+
+        console.log("le doy al checke ", this.destinatarioExterno);
+
         if(this.defaultDestinatarioTipoComunicacion == "EXT"){
-          //this.listaDestinatariosExternos
+
+          const index: number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
+          if (index !== -1) {
+            this.listaDestinatariosExternos.splice(index, 1);
+          }
+
+        }else if(this.defaultDestinatarioTipoComunicacion == "INT"){
+
+          const index: number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
+          if (index !== -1) {
+            this.listaDestinatariosInternos.splice(index, 1);
+          }
         }
       }
+
+      //this.refreshView();
     });
   }
 
@@ -185,6 +229,18 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   hideAddDestinatarioInternoPopup(){
     this.destinatarioInternoDialogVisible = false;
   }
+
+  addDestinatarioExterno(){
+
+    this.valueRemitente = this.datosRemitentes.form.value;
+
+    this.listaDestinatariosExternos = [this.destinatarioExterno, ...this.listaDestinatariosExternos];
+
+    //this.listaDestinatariosExternos.push(this.destinatarioExterno);
+    console.log("Lo que trae el form ",this.valueRemitente);
+
+  }
+
 
   ngOnDestroy() {
     //this.subscription.unsubscribe();
