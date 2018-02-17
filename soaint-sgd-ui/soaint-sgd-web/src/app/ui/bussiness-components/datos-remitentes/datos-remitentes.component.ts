@@ -42,19 +42,17 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
 
-  // Listas de subscripcion
-  contacts: Array<any> = [];
+
   dependenciasGrupoList: Array<any> = [];
-
   subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
-
   subscribers: Array<Subscription> = [];
-
-  @ViewChild('datosContactos') datosContactos;
 
   @Input() editable = true;
   @Input() destinatario: DestinatarioDTO;
+  destinatariosContactos: Array<any> = [];
   @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild('datosContactos') destinatarioContactosComponent;
+
 
   @Input() tipoComunicacion: any;
   @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
@@ -69,7 +67,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.initForm();
     this.initByTipoComunicacion();
     this.initFormByInputDestinatario();
-    //this.form.disable();
+    /*this.form.disable();*/
+
     this.listenForChanges();
     this.listenForErrors();
     this.visibility['tipoPersona'] = true;
@@ -122,6 +121,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     if (!isNullOrUndefined(this.destinatario)) {
       console.log('DestinatarioDTO no es null ->', this.destinatario);
     }
+  }
+
+  updateDestinatarioContacts(event) {
+    console.log(event);
   }
 
   listenForChanges() {
@@ -219,29 +222,9 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   newRemitente() {
-    console.log('Newwww...');
-    const dest = {
-      interno: true,
-      tipoDestinatario: {},
-      tipoPersona: {},
-      nombre: 'NOMBRE',
-      tipoDocumento: {},
-      nit: 'NIT',
-      actuaCalidad: {},
-      actuaCalidadNombre: 'ACTUA CALIDAD NOMBRE',
-      sede: {},
-      dependencia: {},
-      funcionario: {},
-
-      email: 'EMAIL',
-      mobile: 'MOBILE',
-      phone: 'PHONE',
-      pais: {},
-      departamento: {},
-      municipio: {},
-      datosContactoList: [{}, {}],
-      principal: true
-    }
+    const dest: DestinatarioDTO = this.form.value;
+    dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
+    dest.datosContactoList = this.destinatariosContactos;
     this.destinatarioOutput.emit(dest);
   }
 

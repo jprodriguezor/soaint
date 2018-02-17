@@ -195,7 +195,7 @@
 
 
 <div *ngIf="visibility.datosContacto">
-  <app-datos-direccion #datosContactos [editable]="editable"></app-datos-direccion>
+  <app-datos-direccion #datosContactos [editable]="editable" (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
 </div>
 
 <button pButton type="button" class="ui-button-primary" label="Agregar" (click)="newRemitente()"></button>
