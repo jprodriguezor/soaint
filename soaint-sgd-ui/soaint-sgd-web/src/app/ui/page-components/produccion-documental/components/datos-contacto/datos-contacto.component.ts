@@ -26,9 +26,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   listaDestinatariosInternos: DestinatarioDTO[] = [];
   listaDestinatariosExternos: DestinatarioDTO[] = [];
 
-  destinatarioInterno: DestinatarioDTO;
-  destinatarioExterno: DestinatarioDTO;
-
+  destinatarioInterno: DestinatarioDTO = null;
+  destinatarioExterno: DestinatarioDTO = null;
 
   @ViewChild('datosRemitentes') datosRemitentes;
 
@@ -37,7 +36,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   canInsert = false;
   responderRemitente = false;
   hasNumberRadicado = false;
-  editable = false;
+  editable = true;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
