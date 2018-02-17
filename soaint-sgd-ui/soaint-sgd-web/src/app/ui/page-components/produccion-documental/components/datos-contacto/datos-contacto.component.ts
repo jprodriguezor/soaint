@@ -19,7 +19,9 @@ import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management
 
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  tipoComunicacionSelected: ConstanteDTO;
+
+  tipoComunicacionSelected: string;
+
   subscription: Subscription;
 
   validations: any = {};
@@ -215,10 +217,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   showAddDestinatarioExternoPopup(){
+    this.tipoComunicacionSelected = "EE";
     this.destinatarioExternoDialogVisible = true;
   }
 
   showAddDestinatarioInternoPopup(){
+    this.tipoComunicacionSelected = "EI";
     this.destinatarioInternoDialogVisible = true;
   }
 
@@ -245,6 +249,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     console.log("Lo que trae el form ",this.listaDestinatariosExternos);
   }
+
+  findDestinatarioPrincipal(listDestinatarios){}
 
   ngOnDestroy() {
     //this.subscription.unsubscribe();
