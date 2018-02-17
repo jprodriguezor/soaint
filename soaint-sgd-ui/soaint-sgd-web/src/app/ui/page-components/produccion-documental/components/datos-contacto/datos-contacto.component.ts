@@ -30,7 +30,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   destinatarioExterno: DestinatarioDTO;
 
 
-  @ViewChild('datosRemitente') datosRemitente;
+  @ViewChild('datosRemitentes') datosRemitentes;
 
   @Input() taskData: TareaDTO;
 
