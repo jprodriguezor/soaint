@@ -13,7 +13,8 @@ import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management
 
 @Component({
   selector: 'pd-datos-contacto',
-  templateUrl: 'datos-contacto.component.html'
+  templateUrl: 'datos-contacto.component.html',
+  styleUrls: ['datos-contacto.component.css'],
 })
 
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
@@ -229,17 +230,19 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.destinatarioInternoDialogVisible = false;
   }
 
-  addDestinatarioExterno(){
+  addDestinatario(newDestinatario){
 
-    this.valueRemitente = this.datosRemitentes.form.value;
+    if(newDestinatario.interno){
+      this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
+    }else{
+      this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
+    }
 
-    this.listaDestinatariosExternos = [this.destinatarioExterno, ...this.listaDestinatariosExternos];
-
+    //this.valueRemitente = this.datosRemitentes.form.value;
     //this.listaDestinatariosExternos.push(this.destinatarioExterno);
-    console.log("Lo que trae el form ",this.valueRemitente);
 
+    console.log("Lo que trae el form ",this.listaDestinatariosExternos);
   }
-
 
   ngOnDestroy() {
     //this.subscription.unsubscribe();

@@ -90,8 +90,6 @@
 
 
 
-
-
 <div class="ui-fluid" style="margin-top: 60px">
 
 
@@ -144,26 +142,26 @@
   </p-dataTable>
 </div>
 
-
-
-<p-dialog [visible]="destinatarioExternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
-          (onHide)="hideAddDestinatarioExternoPopup()" [width]="800" [height]="auto">
+<p-dialog [visible]="destinatarioExternoDialogVisible" [modal]="true" modal="modal" [responsive]="true" positionTop="20"
+          (onHide)="hideAddDestinatarioExternoPopup()" [width]="800" [style]="{'overflow': 'scroll','max-height': '100%'}">
   <p-header>
     Destinatario Externo
   </p-header>
 
-  <app-datos-remitentes  #datosRemitentes  [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioExterno"></app-datos-remitentes>
-
+  <app-datos-remitentes  #datosRemitentes  [tipoComunicacion]="tipoComunicacionSelected" (addDestinatario)="destinatarioOutput($event)" [destinatario]="destinatarioExterno"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
-              label="Cerrar" (click)="hideAddDestinatarioExternoPopup()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"
-              label="Agregar" (click)="addDestinatarioExterno()"></button>
+              label="Finalizar" (click)="hideAddDestinatarioExternoPopup()"></button>
+      <!--<button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"-->
+              <!--label="Agregar" (click)="addDestinatarioExterno()"></button>-->
     </div>
   </p-footer>
 </p-dialog>
+
+
+
 
 
 <p-dialog [visible]="destinatarioInternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
@@ -172,7 +170,7 @@
     Destinatario Interno
   </p-header>
 
-  <app-datos-remitentes #datosRemitentes [tipoComunicacion]="tipoComunicacionSelected" [destinatario]="destinatarioInterno"></app-datos-remitentes>
+  <app-datos-remitentes #datosRemitentes [tipoComunicacion]="tipoComunicacionSelected" (addDestinatario)="destinatarioOutput($event)" [destinatario]="destinatarioInterno"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
