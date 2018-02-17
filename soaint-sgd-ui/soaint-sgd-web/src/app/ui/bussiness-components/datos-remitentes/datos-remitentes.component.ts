@@ -54,7 +54,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   @ViewChild('datosContactos') destinatarioContactosComponent;
 
 
-  @Input() tipoComunicacion: any;
+  @Input('tipoComunicacion') tipoComunicacion: string;
   @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
@@ -66,7 +66,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
-    this.initFormByInputDestinatario();
     /*this.form.disable();*/
 
     this.listenForChanges();
@@ -117,14 +116,11 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     });
   }
 
-  initFormByInputDestinatario() {
-    if (!isNullOrUndefined(this.destinatario)) {
+  initFormByDestinatario(destinatario) {
+    if (!isNullOrUndefined(destinatario)) {
+      this.destinatario = destinatario;
       console.log('DestinatarioDTO no es null ->', this.destinatario);
     }
-  }
-
-  updateDestinatarioContacts(event) {
-    console.log(event);
   }
 
   listenForChanges() {
