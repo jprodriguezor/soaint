@@ -148,7 +148,7 @@
     Destinatario Externo
   </p-header>
 
-  <app-datos-remitentes  #datosRemitentes  [tipoComunicacion]="EE" (addDestinatario)="destinatarioOutput($event)" [destinatario]="destinatarioExterno"></app-datos-remitentes>
+  <app-datos-remitentes  #datosRemitentesExterno  [tipoComunicacion]="tipoComunicacionSelected" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
@@ -161,19 +161,22 @@
 </p-dialog>
 
 
+
+
+
 <p-dialog [visible]="destinatarioInternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
           (onHide)="hideAddDestinatarioInternoPopup()" [width]="800" [height]="auto">
   <p-header>
     Destinatario Interno
   </p-header>
 
-  <app-datos-remitentes #datosRemitentes [tipoComunicacion]="EI" (addDestinatario)="destinatarioOutput($event)" [destinatario]="destinatarioInterno"></app-datos-remitentes>
+  <app-datos-remitentes #datosRemitentesInterno [tipoComunicacion]="tipoComunicacionSelected" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
               label="Cerrar" (click)="hideAddDestinatarioInternoPopup()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"
+      <button pButton type="button" class="ui-button-primary"
               label="Agregar" (click)="addDestinatarioInterno()"></button>
     </div>
   </p-footer>

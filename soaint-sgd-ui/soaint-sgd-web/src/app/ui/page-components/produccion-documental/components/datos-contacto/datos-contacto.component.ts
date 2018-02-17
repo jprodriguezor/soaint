@@ -20,7 +20,7 @@ import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
-  tipoComunicacionSelected: string;
+  tipoComunicacionSelected = 'EE';
 
   subscription: Subscription;
 
@@ -32,7 +32,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   destinatarioInterno: DestinatarioDTO = null;
   destinatarioExterno: DestinatarioDTO = null;
 
-  @ViewChild('datosRemitentes') datosRemitentes;
+  @ViewChild('datosRemitentesExterno') datosRemitentesExterno;
+  @ViewChild('datosRemitentesInterno') datosRemitentesInterno;
 
   @Input() taskData: TareaDTO;
 
@@ -217,11 +218,15 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   showAddDestinatarioExternoPopup(){
     this.tipoComunicacionSelected = "EE";
+    this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
+
     this.destinatarioExternoDialogVisible = true;
   }
 
   showAddDestinatarioInternoPopup(){
     this.tipoComunicacionSelected = "EI";
+    this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
+
     this.destinatarioInternoDialogVisible = true;
   }
 
