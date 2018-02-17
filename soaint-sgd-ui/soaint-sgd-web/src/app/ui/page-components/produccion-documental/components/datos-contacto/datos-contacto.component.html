@@ -35,7 +35,7 @@
 </form>
 
 
-<div class="ui-fluid">
+<div class="ui-fluid" style="margin-top: 60px">
   <p-dataTable [value]="listaDestinatariosExternos" selectionMode="single"
                [paginator]="true" [rows]="10" [responsive]="true"
                emptyMessage="No se encontraron resultados"
@@ -86,6 +86,59 @@
 </div>
 
 
+
+<div class="ui-fluid" style="margin-top: 60px">
+  <p-dataTable [value]="listaDestinatariosInternos" selectionMode="single"
+               [paginator]="true" [rows]="10" [responsive]="true"
+               emptyMessage="No se encontraron resultados"
+  >
+    <p-header>
+
+      <div class="ui-helper-clearfix">
+                <span class="ui-panel-title"
+                      style="font-size:16px;display:inline-block;margin-top:8px"> Datos de destinatarios internos </span>
+
+              <span style="float: right">
+                    <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                            (click)="showAddDestinatarioInternoPopup()"></button>
+                </span>
+      </div>
+
+    </p-header>
+
+    <p-column header="">
+      <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+        <!--<div class="ui-g ui-fluid">-->
+        <!---->
+        <!--</div>-->
+        <div class="ui-sm-12 ui-md-12 ui-g-5 ui-lg-5">
+          <div class="ui-g-12" *ngIf="tipoDestinatario">
+            <i class="fa ui-icon-contact-mail"></i>
+                  <span class="table-text-custom">
+                      {{ tipoDestinatario }}
+                    </span>
+
+          </div>
+        </div>
+      </ng-template>
+    </p-column>
+
+    <p-column header="Acciones" [style]="{'width':'100px','text-align':'center'}" *ngIf="editable === true">
+      <ng-template let-contact="rowData" let-i="rowIndex" pTemplate="item">
+
+        <button type="button" icon="ui-icon-mode-edit" pButton (click)="editContact(i)"
+                class="amber-btn ui-button ui-button-icon"></button>
+
+        <button type="button" icon="ui-icon-close" pButton (click)="deleteContact(i)"
+                class="ui-button ui-button-icon ui-button-danger"></button>
+
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</div>
+
+
+
 <p-dialog [visible]="destinatarioExternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
           [contentStyle]="{'overflow':'visible'}"
           (onHide)="hideAddDestinatarioExternoPopup()" [width]="800">
@@ -106,6 +159,26 @@
   </p-footer>
 </p-dialog>
 
+
+<p-dialog [visible]="destinatarioInternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
+          [contentStyle]="{'overflow':'visible'}"
+          (onHide)="hideAddDestinatarioInternoPopup()" [width]="800">
+  <p-header>
+    Destinatario Interno
+  </p-header>
+
+  <app-datos-remitente #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>
+
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" class="ui-button-primary"
+              label="Cerrar" (click)="hideAddDestinatarioInternoPopup()"></button>
+      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitente.form.valid"
+              label="Agregar" (click)="addDestinatarioInterno()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
 
 <!--<app-datos-remitente  #datosRemitente [editable]="true" [tipoComunicacion]="tipoComunicacionSelected"></app-datos-remitente>-->
 

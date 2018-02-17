@@ -37,6 +37,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   canInsert = false;
   responderRemitente = false;
   hasNumberRadicado = false;
+  editable = false;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -107,8 +108,30 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responderRemitente = responderRemitente;
 
-    });
+      if(responderRemitente) {
 
+        if (this.taskData.variables.numeroRadicado) {
+          this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
+            nroRadicado: this.taskData.variables.numeroRadicado
+          }).subscribe(agente => {
+
+            console.log("Objeto que viene del backen ",agente);
+
+            if(agente){
+
+              //transformar
+
+              if(agente.codTipoRemite == "EXT"){
+                this.destinatarioExterno = agente;
+              }else if(agente.codTipoRemite == "INT"){
+                this.destinatarioInterno = agente;
+              }
+            }
+
+          });
+        }
+      }
+    });
   }
 
   //guardar para la base de datos
@@ -147,6 +170,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   hideAddDestinatarioExternoPopup(){
     this.destinatarioExternoDialogVisible = false;
+  }
+
+  hideAddDestinatarioInternoPopup(){
+    this.destinatarioInternoDialogVisible = false;
   }
 
   ngOnDestroy() {
