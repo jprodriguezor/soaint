@@ -18,8 +18,9 @@ import {Subscription} from 'rxjs/Subscription';
 import {StatusDTO} from '../../models/StatusDTO';
 import {WARN_REDIRECTION} from '../../../../../shared/lang/es';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {DocumentoEcmDTO} from "../../../../../domain/documentoEcmDTO";
+import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
+import {environment} from '../../../../../../environments/environment';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -61,6 +62,7 @@ export class PDDatosGeneralesComponent implements OnInit {
                 private _dependenciaSandbox: DependenciaSandbox,
                 private formBuilder: FormBuilder,
                 private _changeDetectorRef: ChangeDetectorRef,
+                private messaging Mess
                 private pdMessageService: PdMessageService) {
 
       this.initForm();
@@ -123,11 +125,17 @@ export class PDDatosGeneralesComponent implements OnInit {
       versionUploader.clear();
     }
 
-    obtenerVersionesDocumento(idDocumento: string) {
-        this._produccionDocumentalApi.obtenerListaVersionesDocumento({id: idDocumento}).subscribe(
+    obtenerDocumentoRadicado() {
+        this._produccionDocumentalApi.obtenerDatosDocXnroRadicado({id: this.taskData.variables.numeroRadicado}).subscribe(
             res => {
-
-            }
+                if (res.ideEcm) {
+                    const url = `${environment.pd_gestion_documental.descargarDocumentoPorId}?identificadorDoc=${res.ideEcm}`;
+                    window.open(url);
+                } else {
+                    this._store.dispatch(new PushNotificationAction({severity: 'error', summary: `No se encontro ningún documento asociado al radicado: ${this.numeroRadicado}`}));
+                }
+            },
+            error => this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: error}))
         );
     }
 
