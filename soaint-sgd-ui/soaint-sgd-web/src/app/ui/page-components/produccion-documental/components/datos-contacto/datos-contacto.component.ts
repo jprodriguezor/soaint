@@ -22,20 +22,25 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   validations: any = {};
-  //test: any = { };
 
-  remitenteExterno: AgentDTO;
-  defaultDestinatarioInterno: any;
   listaDestinatariosInternos: DestinatarioDTO[] = [];
+  listaDestinatariosExternos: DestinatarioDTO[] = [];
 
-  @ViewChild('datosDestinatarioExterno') datosDestinatarioExterno;
-  @ViewChild('destinatarioInterno') destinatarioInterno;
-  //@ViewChild('datosRemitente') datosRemitente;
+  destinatarioInterno: DestinatarioDTO;
+  destinatarioExterno: DestinatarioDTO;
+
+
+  @ViewChild('datosRemitente') datosRemitente;
+
   @Input() taskData: TareaDTO;
 
   canInsert = false;
-  responseToRem = false;
+  responderRemitente = false;
   hasNumberRadicado = false;
+
+  destinatarioExternoDialogVisible = false;
+  destinatarioInternoDialogVisible = false;
+
 
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
@@ -43,7 +48,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private pdMessageService: PdMessageService,
               private _dependenciaSandbox: DependenciaSandbox) {
 
-    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
+    /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
       this.tipoComunicacionSelected = tipoComunicacion;
       this.responseToRem = false;
@@ -85,26 +90,29 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
         });
       }
-    });
+    });*/
 
     this.initForm();
   }
 
   ngOnInit(): void {
 
-    //this.hasNumberRadicado = !!this.taskData.variables.numeroRadicado;
-
     console.log("Tarea de entrada");
     console.log(this.taskData);
 
+    if(this.taskData.variables.numeroRadicado){
+      this.hasNumberRadicado = true;
+    }
+
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
-      this.responseToRem = responderRemitente;
+      this.responderRemitente = responderRemitente;
 
     });
 
   }
 
-  updateStatus(currentStatus: StatusDTO) {
+  //guardar para la base de datos
+  /*updateStatus(currentStatus: StatusDTO) {
 
     console.log('entro en el updateStatus');
     console.log(currentStatus);
@@ -118,7 +126,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       this.remitenteExterno = currentStatus.datosContacto.remitenteExterno;
     }
     this.refreshView();
-  }
+  }*/
 
   initForm() {
     this.form = this.formBuilder.group({
@@ -128,8 +136,21 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  showAddDestinatarioExternoPopup(){
+    this.destinatarioExternoDialogVisible = true;
+  }
+
+  showAddDestinatarioInternoPopup(){
+    this.destinatarioInternoDialogVisible = true;
+  }
+
+  hideAddDestinatarioExternoPopup(){
+    this.destinatarioExternoDialogVisible = false;
+  }
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    //this.subscription.unsubscribe();
   }
 
   refreshView() {
@@ -137,4 +158,3 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
 }
-
