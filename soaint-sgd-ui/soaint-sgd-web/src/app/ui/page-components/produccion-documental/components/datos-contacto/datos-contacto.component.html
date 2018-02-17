@@ -153,7 +153,7 @@
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
               label="Cerrar" (click)="hideAddDestinatarioExternoPopup()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitente.form.valid"
+      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"
               label="Agregar" (click)="addDestinatarioExterno()"></button>
     </div>
   </p-footer>
@@ -174,7 +174,7 @@
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
               label="Cerrar" (click)="hideAddDestinatarioInternoPopup()"></button>
-      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitente.form.valid"
+      <button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"
               label="Agregar" (click)="addDestinatarioInterno()"></button>
     </div>
   </p-footer>
