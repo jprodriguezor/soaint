@@ -216,7 +216,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     });
   }
 
-
   showAddDestinatarioExternoPopup(){
     this.tipoComunicacionSelected = "EE";
     this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
