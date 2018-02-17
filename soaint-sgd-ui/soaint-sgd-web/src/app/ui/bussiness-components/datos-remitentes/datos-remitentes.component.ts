@@ -19,6 +19,7 @@ import {
 } from 'app/shared/bussiness-properties/radicacion-properties';
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
 import {Subscription} from 'rxjs/Subscription';
+import {DestinatarioDTO} from "../../../domain/destinatarioDTO";
 
 
 @Component({
@@ -49,6 +50,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   @ViewChild('datosContactos') datosContactos;
 
   @Input() editable = true;
+  @Input() destinatario: DestinatarioDTO;
   @Input() tipoComunicacion: any;
   @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
