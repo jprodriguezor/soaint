@@ -108,7 +108,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'actuaCalidad': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}],
       'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
-      'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
+      'nombre': [{value: null, disabled: !this.editable}, Validators.required],
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
@@ -163,7 +163,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
-      this.visibility['nombreApellidos'] = true;
+      this.visibility['nombre'] = true;
       this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
       this.visibility['tipoDocumento'] = true;
@@ -173,7 +173,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       }).unsubscribe();
       this.visibility['personaJuridica'] = true;
     } else if (value.codigo === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
-      this.visibility['nombreApellidos'] = true;
+      this.visibility['nombre'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
       this.visibility['datosContacto'] = true;
@@ -214,6 +214,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.subscribers.forEach(subscriber => {
       subscriber.unsubscribe();
     });
+  }
+
+  updateDestinatarioContacts(event) {
+    this.destinatariosContactos = event;
   }
 
   newRemitente() {

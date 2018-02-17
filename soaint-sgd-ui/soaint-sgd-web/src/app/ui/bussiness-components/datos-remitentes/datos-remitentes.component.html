@@ -156,16 +156,16 @@
         </div>
 
         <!--Nombre y Apellidos-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nombreApellidos">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nombre">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nombreApellidos" formControlName="nombreApellidos" [dynamicDisable]="!visibility.nombreApellidos" [clearValidators]="visibility.personaJuridica">
-                <label for="nombreApellidos"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y Apellidos</label>
+              <input type="text" pInputText id="nombre" formControlName="nombre" [dynamicDisable]="!visibility.nombre" [clearValidators]="visibility.personaJuridica">
+                <label for="nombre"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y Apellidos</label>
 
                 <div class="ui-message ui-messages-error"
-                     *ngIf="validations.nombreApellidos">
-                {{ validations.nombreApellidos }}
+                     *ngIf="validations.nombre">
+                {{ validations.nombre }}
               </div>
               </span>
             </div>
