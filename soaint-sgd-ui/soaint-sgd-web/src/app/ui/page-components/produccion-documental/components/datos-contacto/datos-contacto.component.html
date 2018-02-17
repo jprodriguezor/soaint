@@ -148,7 +148,7 @@
     Destinatario Externo
   </p-header>
 
-  <app-datos-remitentes  #datosRemitentesExterno  [tipoComunicacion]="tipoComunicacionSelected" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
+  <app-datos-remitentes  #datosRemitentesExterno  tipoComunicacion="EE" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
@@ -170,7 +170,7 @@
     Destinatario Interno
   </p-header>
 
-  <app-datos-remitentes #datosRemitentesInterno [tipoComunicacion]="tipoComunicacionSelected" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
+  <app-datos-remitentes #datosRemitentesInterno tipoComunicacion="EI" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">

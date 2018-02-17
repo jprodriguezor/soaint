@@ -47,7 +47,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
   subscribers: Array<Subscription> = [];
 
-  @Input() editable = true;
+  editable = true;
   @Input() destinatario: DestinatarioDTO;
   destinatariosContactos: Array<any> = [];
   @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
@@ -66,11 +66,9 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
-    /*this.form.disable();*/
-
+    this.form.disable();
     this.listenForChanges();
     this.listenForErrors();
-    this.visibility['tipoPersona'] = false;
   }
 
   initByTipoComunicacion() {
@@ -78,6 +76,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.tipoComunicacion = COMUNICACION_EXTERNA;
     }
     if (this.tipoComunicacion === COMUNICACION_INTERNA) {
+      this.visibility['tipoPersona'] = false;
       this.visibility['sedeAdministrativa'] = true;
       this.visibility['dependenciaGrupo'] = true;
       this.initByTipoComunicacionInterna();
