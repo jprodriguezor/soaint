@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -9,6 +9,7 @@ import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {getAuthenticatedFuncionario} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {PdMessageService} from '../../providers/PdMessageService';
+import {MessagingService} from 'app/shared/providers/MessagingService';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {VersionDocumentoDTO} from '../../models/DocumentoDTO';
 import {AnexoDTO} from '../../models/DocumentoDTO';
@@ -18,15 +19,17 @@ import {Subscription} from 'rxjs/Subscription';
 import {StatusDTO} from '../../models/StatusDTO';
 import {WARN_REDIRECTION} from '../../../../../shared/lang/es';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {DocumentoEcmDTO} from "../../../../../domain/documentoEcmDTO";
+import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
+import {environment} from '../../../../../../environments/environment';
+import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 
 @Component({
   selector: 'pd-datos-generales',
   templateUrl: './datos-generales.component.html'
 })
 
-export class PDDatosGeneralesComponent implements OnInit {
+export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
     form: FormGroup;
 
@@ -61,6 +64,7 @@ export class PDDatosGeneralesComponent implements OnInit {
                 private _dependenciaSandbox: DependenciaSandbox,
                 private formBuilder: FormBuilder,
                 private _changeDetectorRef: ChangeDetectorRef,
+                private messagingService: MessagingService,
                 private pdMessageService: PdMessageService) {
 
       this.initForm();
@@ -123,12 +127,8 @@ export class PDDatosGeneralesComponent implements OnInit {
       versionUploader.clear();
     }
 
-    obtenerVersionesDocumento(idDocumento: string) {
-        this._produccionDocumentalApi.obtenerListaVersionesDocumento({id: idDocumento}).subscribe(
-            res => {
-
-            }
-        );
+    obtenerDocumentoRadicado() {
+        this.messagingService.publish(new DocumentDownloaded(''));
     }
 
     mostrarVersionDocumento(index: number) {
