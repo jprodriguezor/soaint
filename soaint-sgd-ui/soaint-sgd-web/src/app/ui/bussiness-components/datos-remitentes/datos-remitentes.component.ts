@@ -54,6 +54,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   @Input() editable = true;
   @Input() destinatario: DestinatarioDTO;
+  @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
+
   @Input() tipoComunicacion: any;
   @Output() onChangeSedeAdministrativa: EventEmitter<any> = new EventEmitter();
 
@@ -215,5 +217,33 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       subscriber.unsubscribe();
     });
   }
+
+  newRemitente() {
+    console.log('Newwww...');
+    const dest = {
+      interno: true,
+      tipoDestinatario: {},
+      tipoPersona: {},
+      nombre: 'NOMBRE',
+      tipoDocumento: {},
+      nit: 'NIT',
+      actuaCalidad: {},
+      actuaCalidadNombre: 'ACTUA CALIDAD NOMBRE',
+      sede: {},
+      dependencia: {},
+      funcionario: {},
+
+      email: 'EMAIL',
+      mobile: 'MOBILE',
+      phone: 'PHONE',
+      pais: {},
+      departamento: {},
+      municipio: {},
+      datosContactoList: [{}, {}],
+      principal: true
+    }
+    this.destinatarioOutput.emit(dest);
+  }
+
 }
 
