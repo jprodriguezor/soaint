@@ -38,6 +38,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   responderRemitente = false;
   hasNumberRadicado = false;
   editable = false;
+  defaultDestinatarioTipoComunicacion = "";
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -121,14 +122,23 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
               //transformar
 
+              this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
               if(agente.codTipoRemite == "EXT"){
                 this.destinatarioExterno = agente;
+                this.destinatarioExternoDialogVisible = true;
+
               }else if(agente.codTipoRemite == "INT"){
                 this.destinatarioInterno = agente;
+                this.destinatarioInternoDialogVisible = true;
               }
             }
 
+            this.refreshView();
           });
+        }
+      }else{
+        if(this.defaultDestinatarioTipoComunicacion == "EXT"){
+          //this.listaDestinatariosExternos
         }
       }
     });
