@@ -248,18 +248,23 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (newDestinatario) {
 
       if (!this.hasDestinatarioPrincipal) {
-        this.hasDestinatarioPrincipal = (newDestinatario.principal[0]) ? true : false;
+        this.hasDestinatarioPrincipal = (newDestinatario.principal) ? true : false;
       }
-
       if (newDestinatario.interno) {
         this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
       } else {
         this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
       }
+
+      ///***** Cerrando el pupo ***/
+      //if(newDestinatario.interno){
+      //  this.destinatarioInternoDialogVisible = false;
+      //}else{
+      //  this.destinatarioExternoDialogVisible = false;
+      //}
+
     }
   }
-
-
   editDestinatario(index, op) {
 
     this.datosRemitentesExterno.initFormByDestinatario(this.listaDestinatariosExternos[index]);
@@ -276,14 +281,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (op == 'EXT') {
       const radref = [...this.listaDestinatariosExternos];
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].principal[0]) ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].principal) ? false : true;
 
       radref.splice(index, 1);
       this.listaDestinatariosExternos = radref;
 
     } else if (op == 'INT') {
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].principal[0]) ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].principal) ? false : true;
 
       const radref = [...this.listaDestinatariosInternos];
       radref.splice(index, 1);

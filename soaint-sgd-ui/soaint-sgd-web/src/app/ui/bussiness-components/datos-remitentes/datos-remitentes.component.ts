@@ -98,6 +98,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   initByTipoComunicacionExterna() {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
+    console.log("Tipo de personas ", this.tipoPersonaSuggestions$);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
   }
