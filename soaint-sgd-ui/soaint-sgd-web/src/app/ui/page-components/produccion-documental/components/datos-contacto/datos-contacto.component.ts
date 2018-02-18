@@ -38,6 +38,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   editable = true;
   defaultDestinatarioTipoComunicacion = "";
   hasDestinatarioPrincipal = false;
+  indexSelectExterno: number = -1;
+  indexSelectInterno: number = -1;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -231,11 +233,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   showAddDestinatarioExternoPopup() {
     this.datosRemitentesExterno.reset();
+    this.indexSelectExterno = -1;
     this.destinatarioExternoDialogVisible = true;
   }
 
   showAddDestinatarioInternoPopup() {
     this.datosRemitentesInterno.reset();
+    this.indexSelectInterno = -1;
     this.destinatarioInternoDialogVisible = true;
   }
 
@@ -257,9 +261,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         this.hasDestinatarioPrincipal = (newDestinatario.tipoDestinatario.codigo === 'TP-DESP') ? true : false;
       }
       if (newDestinatario.interno) {
+        this.deleteDestinatario(this.indexSelectInterno, 'INT');
         this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
+        this.destinatarioInternoDialogVisible = !(this.indexSelectInterno > -1);
       } else {
+        this.deleteDestinatario(this.indexSelectExterno, 'EXT');
         this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
+        this.destinatarioExternoDialogVisible = !(this.indexSelectExterno > -1);
       }
 
       ///***** Cerrando el pupo ***/
@@ -273,29 +281,30 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
   editDestinatario(index, op) {
 
-    if (op == "EXT") {
+    if (index > -1 && op === 'EXT') {
+      this.indexSelectExterno = index;
       this.datosRemitentesExterno.initFormByDestinatario(this.listaDestinatariosExternos[index]);
       this.destinatarioExternoDialogVisible = true;
-    } else if (op == "INT") {
+    } else if (index > -1 && op === 'INT') {
+      this.indexSelectInterno = index;
       this.datosRemitentesInterno.initFormByDestinatario(this.listaDestinatariosInternos[index]);
       this.destinatarioInternoDialogVisible = true;
     }
+
   }
 
   deleteDestinatario(index, op) {
 
-    if (op == 'EXT') {
-      const radref = [...this.listaDestinatariosExternos];
+    if (index > -1 && op === 'EXT') {
 
       this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].tipoDestinatario.codigo === 'TP-DESP') ? false : true;
-
+      const radref = [...this.listaDestinatariosExternos];
       radref.splice(index, 1);
       this.listaDestinatariosExternos = radref;
 
-    } else if (op == 'INT') {
+    } else if (index > -1 && op === 'INT') {
 
       this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].tipoDestinatario.codigo === 'TP-DESP') ? false : true;
-
       const radref = [...this.listaDestinatariosInternos];
       radref.splice(index, 1);
       this.listaDestinatariosInternos = radref;

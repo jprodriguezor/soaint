@@ -175,27 +175,31 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     }));
 
     this.subscribers.push(this.form.get('tipoDestinatario').valueChanges.subscribe(tipodestinatario => {
-      if (this.editDestinatario) {
-        if ((this.principal && tipodestinatario.codigo === 'TP-DESP') && (this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')) {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'warn',
-            summary: 'No puede escoger mas de un principal'
-          }));
-          this.form.get('tipoDestinatario').reset();
-        }
-      }
-      else {
-        if (this.principal && tipodestinatario.codigo === 'TP-DESP') {
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'warn',
-            summary: 'No puede escoger mas de un principal'
-          }));
-          this.form.get('tipoDestinatario').reset();
-        }
-      }
+
     }));
   }
+  onchangeTipoDestinatario(event){
+    console.log(event);
+    if (this.editDestinatario) {
+      if ((this.principal && event.value.codigo === 'TP-DESP') && (this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')) {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: 'No puede escoger mas de un principal'
+        }));
+        this.form.get('tipoDestinatario').reset();
+      }
+    }
+    else {
+      if (this.principal && event.value.codigo === 'TP-DESP') {
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: 'No puede escoger mas de un principal'
+        }));
+        this.form.get('tipoDestinatario').reset();
+      }
+    }
 
+  }
 
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');
