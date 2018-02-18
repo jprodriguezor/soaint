@@ -234,6 +234,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     dest.datosContactoList = this.destinatariosContactos;
+    this.destinatarioDatosContactos.form.reset(); this.form.reset();
     this.destinatarioOutput.emit(dest);
   }
 
