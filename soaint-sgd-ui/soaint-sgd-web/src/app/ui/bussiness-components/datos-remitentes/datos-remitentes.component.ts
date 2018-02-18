@@ -99,7 +99,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   initByTipoComunicacionExterna() {
 
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
-    
+
     this.tipoPersonaSuggestions$.subscribe(
       current => current.filter(temp => temp.codigo != PERSONA_ANONIMA )).unsubscribe();
 

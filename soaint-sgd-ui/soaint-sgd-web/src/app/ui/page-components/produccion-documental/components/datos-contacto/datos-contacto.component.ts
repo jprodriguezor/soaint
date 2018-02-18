@@ -224,12 +224,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   showAddDestinatarioExternoPopup() {
-    this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
+    this.datosRemitentesExterno.reset();
     this.destinatarioExternoDialogVisible = true;
   }
 
   showAddDestinatarioInternoPopup() {
-    this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
+    this.datosRemitentesInterno.reset();
     this.destinatarioInternoDialogVisible = true;
   }
 
