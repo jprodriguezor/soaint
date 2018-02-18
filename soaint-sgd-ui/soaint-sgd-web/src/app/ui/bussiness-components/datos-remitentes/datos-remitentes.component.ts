@@ -238,16 +238,20 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
-    this.destinatarioDatosContactos.this.destinatarioOutput.emit(dest);
+    this.destinatarioDatosContactos.contacts = []; this.destinatarioOutput.emit(dest);
     dest.datosContactoList = this.destinatariosContactos; this.reset();
   }
 
   reset() {
     this.destinatarioDatosContactos.contacts = [];
-    this.destinatarioDatosContactos.form.reset();
-    this.visibility['tipoPersona'] = true;
-    this.form.reset();
-    this.internalInit();
+    this.destinatarioDatosContactos.form.reset(); this.form.reset();
+    this.visibility['tipoPersona'] = false; this.visibility['nit'] = false;
+    this.visibility['actuaCalidad'] = false; this.visibility['razonSocial'] = false;
+    this.visibility['nombre'] = false; this.visibility['datosContacto'] = false;
+    this.visibility['inactivo'] = false; this.visibility['tipoDocumento'] = false;
+    this.visibility['nombre'] = false; this.visibility['departamento'] = false;
+    this.visibility['nroDocumentoIdentidad'] = false; this.visibility['datosContacto'] = false;
+    this.visibility['tipoDocumento'] = false; this.internalInit();
   }
 
 }
