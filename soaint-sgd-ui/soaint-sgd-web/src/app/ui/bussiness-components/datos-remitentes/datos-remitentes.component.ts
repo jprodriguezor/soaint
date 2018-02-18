@@ -175,28 +175,24 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     }));
 
     this.subscribers.push(this.form.get('tipoDestinatario').valueChanges.subscribe(tipodestinatario => {
-
-      if (!(this.editDestinatario && this.principal && this.destinatario.tipoDestinatario.codigo === 'TP-DESP')) {
-
-        this._store.dispatch(new PushNotificationAction({
-          severity: 'warn',
-          summary: "No puede escoger mas de un principal"
-        }));
-        this.form.get('tipoDestinatario').reset();
-
-      } else {
-
-        if (tipodestinatario && tipodestinatario.codigo === 'TP-DESP' && this.principal) {
+      if (this.editDestinatario) {
+        if ((this.principal && tipodestinatario.codigo === 'TP-DESP') && (this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')) {
           this._store.dispatch(new PushNotificationAction({
             severity: 'warn',
-            summary: "No puede escoger mas de un principal"
+            summary: 'No puede escoger mas de un principal'
           }));
           this.form.get('tipoDestinatario').reset();
         }
       }
-
-      //if((!isNullOrUndefined(this.destinatario) && this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')){
-
+      else {
+        if (this.principal && tipodestinatario.codigo === 'TP-DESP') {
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'warn',
+            summary: 'No puede escoger mas de un principal'
+          }));
+          this.form.get('tipoDestinatario').reset();
+        }
+      }
     }));
   }
 
