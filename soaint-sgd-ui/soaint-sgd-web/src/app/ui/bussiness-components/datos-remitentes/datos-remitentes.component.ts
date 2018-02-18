@@ -113,6 +113,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
   }
 
+
   initByTipoComunicacionInterna() {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
   }
