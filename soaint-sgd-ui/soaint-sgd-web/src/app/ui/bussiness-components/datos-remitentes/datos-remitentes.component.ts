@@ -97,7 +97,17 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initByTipoComunicacionExterna() {
+
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
+    
+    this.tipoPersonaSuggestions$.subscribe(
+      current => current.filter(temp => temp.codigo != PERSONA_ANONIMA )).unsubscribe();
+
+    //this.tipoPersonaSuggestions$.subscribe(docs => {
+    //  this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
+    //  this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
+    //}).unsubscribe();
+
     console.log("Tipo de personas ", this.tipoPersonaSuggestions$);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
