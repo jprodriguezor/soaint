@@ -10,6 +10,9 @@ import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/
 import {AgentDTO} from "../../../../../domain/agentDTO";
 import {destinatarioOriginal} from "../../../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {Store} from '@ngrx/store';
+import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -48,7 +51,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService,
-              private _dependenciaSandbox: DependenciaSandbox) {
+              private _dependenciaSandbox: DependenciaSandbox,
+              private _store: Store<State>) {
 
     /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
@@ -101,6 +105,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     console.log("Tarea de entrada");
     console.log(this.taskData);
+
+    this._store.dispatch(new SedeAdministrativaLoadAction());
 
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
@@ -267,11 +273,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
   editDestinatario(index, op) {
 
-    this.datosRemitentesExterno.initFormByDestinatario(this.listaDestinatariosExternos[index]);
-
     if (op == "EXT") {
+      this.datosRemitentesExterno.initFormByDestinatario(this.listaDestinatariosExternos[index]);
       this.destinatarioExternoDialogVisible = true;
     } else if (op == "INT") {
+      this.datosRemitentesInterno.initFormByDestinatario(this.listaDestinatariosInternos[index]);
       this.destinatarioInternoDialogVisible = true;
     }
   }

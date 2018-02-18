@@ -23,7 +23,7 @@ import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {isNullOrUndefined} from 'util';
 import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
-
+import {LoadAction as SedeAdministrativaLoadAction} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 
 @Component({
   selector: 'app-datos-remitentes',
@@ -66,6 +66,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.internalInit();
+
   }
 
   internalInit(): void {
@@ -92,8 +93,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initStores() {
+
     this._store.dispatch(new LoadDatosRemitenteAction());
     this._store.dispatch(new LoadDatosGeneralesAction());
+    //this._store.dispatch(new SedeAdministrativaLoadAction());
   }
 
   initByTipoComunicacionExterna() {
@@ -135,7 +138,12 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('nombre').setValue(this.destinatario.nombre);
       this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
       this.form.get('sede').setValue(this.destinatario.sede);
-      this.destinatarioDatosContactos.contacts = (isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
+      this.form.get('dependencia').setValue(this.destinatario.dependencia);
+
+      if(!isNullOrUndefined(this.destinatarioDatosContactos)){
+        this.destinatarioDatosContactos.contacts = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
+      }
+
     }
   }
 
@@ -239,9 +247,14 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
-    dest.datosContactoList = this.destinatarioDatosContactos.contacts;
-    this.destinatarioOutput.emit(dest); this.destinatarioDatosContactos.contacts = [];
-    this.destinatarioDatosContactos.form.reset(); this.form.reset(); this.reset();
+    if(!dest.interno){
+      dest.datosContactoList = this.destinatarioDatosContactos.contacts;
+      this.destinatarioDatosContactos.contacts = [];
+      this.destinatarioDatosContactos.form.reset();
+    }
+    this.destinatarioOutput.emit(dest);
+    this.form.reset();
+    this.reset();
   }
 
   reset() {
@@ -251,7 +264,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.visibility['inactivo'] = false; this.visibility['tipoDocumento'] = false;
     this.visibility['nombre'] = false; this.visibility['departamento'] = false;
     this.visibility['nroDocumentoIdentidad'] = false; this.visibility['datosContacto'] = false;
-    this.visibility['tipoDocumento'] = false; this.internalInit();
+    this.visibility['tipoDocumento'] = false;
+    this.visibility['sede'] = false;
+    this.visibility['dependencia'] = false;
+    this.internalInit();
   }
 
 }

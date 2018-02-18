@@ -29,3 +29,4 @@ export interface DestinatarioDTO {
     datosContactoList?: ContactoDTO[],
     principal?: boolean
 }
+
