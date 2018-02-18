@@ -231,20 +231,20 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value === 'electronico'">
-                        <p-fileUpload
+                        <p-fileUpload #anexoUploader
                           mode="basic"
                           auto="true"
                           accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
                           [disabled]="form.get('soporte').value !== 'electronico'"
-                          (onSelect)="agregarAnexo($event)"
+                          (onSelect)="agregarAnexo($event, anexoUploader)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
                     </div>
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value !== 'electronico'">
                       <button pButton label="Agregar"
-                              [disabled]="!((form.get('soporte').value == 'electronico' && fileContent) || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
+                              [disabled]="!((form.get('soporte').value == 'electronico') || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
                               (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
                       </button>
                     </div>

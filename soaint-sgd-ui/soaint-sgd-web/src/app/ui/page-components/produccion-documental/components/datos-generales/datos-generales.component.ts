@@ -55,7 +55,6 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     fechaCreacion = new Date();
     numeroRadicado = null;
     tipoPlantillaSelected: ConstanteDTO;
-    fileContent: {id: number; file: Blob };
 
     activeTaskUnsubscriber: Subscription;
 
@@ -227,11 +226,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
 
 
-    agregarAnexo(event) {
+    agregarAnexo(event?, anexoUploader?: FileUpload) {
       const anexo: AnexoDTO = { id: (new Date()).toTimeString(), descripcion : this.form.get('descripcion').value,
         soporte: this.form.get('soporte').value, tipo: this.form.get('tipoAnexo').value
       };
-      if (event) {
+      if (event && anexoUploader) {
         anexo.file = event.files[0];
         const formData = new FormData();
         formData.append('documento', anexo.file, anexo.file.name);
@@ -256,6 +255,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           },
           error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
         );
+        anexoUploader.clear();
       } else {
         this.addToList(anexo, 'listaAnexos');
       }
