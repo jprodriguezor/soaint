@@ -65,6 +65,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.internalInit();
+  }
+
+  internalInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
     this.form.enable();
@@ -235,8 +239,16 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
-    dest.datosContactoList = this.destinatariosContactos;
-    this.destinatarioOutput.emit(dest);
+    this.destinatarioDatosContactos.this.destinatarioOutput.emit(dest);
+    dest.datosContactoList = this.destinatariosContactos; this.reset();
+  }
+
+  reset() {
+    this.destinatarioDatosContactos.contacts = [];
+    this.destinatarioDatosContactos.form.reset();
+    this.visibility['tipoPersona'] = true;
+    this.form.reset();
+    this.internalInit();
   }
 
 }
