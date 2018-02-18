@@ -1,14 +1,13 @@
 import {ConstanteDTO} from '../../../../domain/constanteDTO';
-import {AnexoDTO} from './DocumentoDTO';
+import {AnexoDTO, VersionDocumentoDTO} from './DocumentoDTO';
 import {ProyectorDTO} from '../../../../domain/ProyectorDTO';
 import {DestinatarioDTO} from '../../../../domain/destinatarioDTO';
-import {AgentDTO} from '../../../../domain/agentDTO';
-import {DocumentoEcmDTO} from '../../../../domain/documentoEcmDTO';
+import {AgentDTO} from "../../../../domain/agentDTO";
 
 export interface StatusDTO {
   datosGenerales: {
     tipoComunicacion: ConstanteDTO,
-    idDocumentoEcm: string,
+    listaVersionesDocumento: VersionDocumentoDTO[],
     listaAnexos: AnexoDTO[]
   },
   datosContacto: {

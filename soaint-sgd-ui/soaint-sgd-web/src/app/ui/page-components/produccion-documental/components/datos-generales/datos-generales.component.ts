@@ -17,6 +17,7 @@ import {Sandbox as DependenciaSandbox} from '../../../../../infrastructure/state
 import {getActiveTask} from '../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
 import {StatusDTO} from '../../models/StatusDTO';
+import {WARN_REDIRECTION} from '../../../../../shared/lang/es';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
