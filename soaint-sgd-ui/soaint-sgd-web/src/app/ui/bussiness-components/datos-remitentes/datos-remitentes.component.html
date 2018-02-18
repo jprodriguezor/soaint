@@ -9,22 +9,22 @@
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede</label>
+              <label for="sede"><span class="text-danger">*</span>Sede</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
-                          id="sedeAdministrativa"
-                          formControlName="sedeAdministrativa"
+              <p-dropdown [options]="sedeSuggestions$ | async | dropdownItem"
+                          id="sede"
+                          formControlName="sede"
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
-                          [dynamicDisable]="!visibility.sedeAdministrativa"
-                          (onBlur)="listenForBlurEvents('sedeAdministrativa')">
+                          [dynamicDisable]="!visibility.sede"
+                          (onBlur)="listenForBlurEvents('sede')">
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.sedeAdministrativa">
-                {{ validations.sedeAdministrativa }}
+                   *ngIf="validations.sede">
+                {{ validations.sede }}
               </div>
             </div>
           </div>
@@ -33,24 +33,24 @@
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
           <div class="ui-g form-group">
             <div class="ui-g-12">
-              <label for="dependenciaGrupo"><span class="text-danger">*</span>Dependencia / Grupo</label>
+              <label for="dependencia"><span class="text-danger">*</span>Dependencia / Grupo</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
 
               <p-dropdown [options]="dependenciasGrupoList | dropdownItem"
-                          id="dependenciaGrupo"
-                          formControlName="dependenciaGrupo"
+                          id="dependencia"
+                          formControlName="dependencia"
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
-                          [dynamicDisable]="!visibility.dependenciaGrupo"
-                          (onBlur)="listenForBlurEvents('dependenciaGrupo')"
+                          [dynamicDisable]="!visibility.dependencia"
+                          (onBlur)="listenForBlurEvents('dependencia')"
               >
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.dependenciaGrupo">
-                {{ validations.dependenciaGrupo }}
+                   *ngIf="validations.dependencia">
+                {{ validations.dependencia }}
               </div>
             </div>
           </div>

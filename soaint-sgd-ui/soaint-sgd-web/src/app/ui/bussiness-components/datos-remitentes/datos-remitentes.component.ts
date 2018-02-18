@@ -78,8 +78,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     }
     if (this.tipoComunicacion === COMUNICACION_INTERNA) {
       this.visibility['tipoPersona'] = false;
-      this.visibility['sedeAdministrativa'] = true;
-      this.visibility['dependenciaGrupo'] = true;
+      this.visibility['sede'] = true;
+      this.visibility['dependencia'] = true;
       this.initByTipoComunicacionInterna();
     } else {
       this.visibility['tipoPersona'] = true;
@@ -111,23 +111,31 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
       'nombre': [{value: null, disabled: !this.editable}, Validators.required],
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
-      'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
-      'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
-      'principal': null,
+      'sede': [{value: null, disabled: !this.editable}, Validators.required],
+      'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
     });
   }
 
   initFormByDestinatario(destinatario) {
     if (!isNullOrUndefined(destinatario)) {
       this.destinatario = destinatario;
-      console.log('DestinatarioDTO no es null ->', this.destinatario);
+
+      this.form.get('tipoPersona').setValue(this.destinatario.tipoPersona);
+      this.form.get('nit').setValue(this.destinatario.nit);
+      this.form.get('actuaCalidad').setValue(this.destinatario.actuaCalidad);
+      this.form.get('tipoDocumento').setValue(this.destinatario.tipoDocumento);
+
+      this.form.get('razonSocial').setValue(this.destinatario.razonSocial);
+      this.form.get('nombre').setValue(this.destinatario.nombre);
+      this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
+      this.form.get('sede').setValue(this.destinatario.sede);
     }
   }
 
   listenForChanges() {
-    this.subscribers.push(this.form.get('sedeAdministrativa').valueChanges.distinctUntilChanged().subscribe((sede) => {
+    this.subscribers.push(this.form.get('sede').valueChanges.distinctUntilChanged().subscribe((sede) => {
       if (this.editable && sede) {
-        this.form.get('dependenciaGrupo').reset();
+        this.form.get('dependencia').reset();
         const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
           this.dependenciasGrupoList = dependencias.organigrama;
           depedenciaSubscription.unsubscribe();
@@ -143,8 +151,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   listenForErrors() {
-    this.bindToValidationErrorsOf('sedeAdministrativa');
-    this.bindToValidationErrorsOf('dependenciaGrupo');
+    this.bindToValidationErrorsOf('sede');
+    this.bindToValidationErrorsOf('dependencia');
     this.bindToValidationErrorsOf('tipoPersona');
   }
 
