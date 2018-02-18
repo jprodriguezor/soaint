@@ -376,12 +376,9 @@ public class ContentControlAlfresco implements ContentControl {
                     folderReturn = getCarpeta(codFolder, aux, "metadatoCodDependencia");
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SERIE))) {
                     folderReturn = getCarpeta(codFolder, aux, "metadatoCodSerie");
-
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SUBSERIE))) {
                     logger.info("Entro a clase subserie cargando los valores");
                     folderReturn = getCarpeta(codFolder, aux, "metadatoCodSubserie");
-
-
                 }
             }
         }
