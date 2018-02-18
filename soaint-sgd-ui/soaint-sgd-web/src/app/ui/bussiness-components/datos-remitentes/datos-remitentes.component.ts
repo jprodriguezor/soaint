@@ -48,7 +48,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   subscribers: Array<Subscription> = [];
 
   editable = true;
-  @Input() destinatario: DestinatarioDTO;
+  @Input() principal = false;
+  destinatario: DestinatarioDTO;
   destinatariosContactos: Array<any> = [];
   @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('destinatarioDatosContactos') destinatarioDatosContactos;
