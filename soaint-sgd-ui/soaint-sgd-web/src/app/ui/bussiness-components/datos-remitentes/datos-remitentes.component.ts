@@ -24,6 +24,8 @@ import {isNullOrUndefined} from 'util';
 import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 import {LoadAction as SedeAdministrativaLoadAction} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 
 @Component({
   selector: 'app-datos-remitentes',
@@ -41,6 +43,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   tipoDocumentoSuggestions$: Observable<ConstanteDTO[]>;
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
+  tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
 
 
   dependenciasGrupoList: Array<any> = [];
@@ -48,6 +51,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   subscribers: Array<Subscription> = [];
 
   editable = true;
+  editDestinatario = false;
   @Input() principal = false;
   destinatario: DestinatarioDTO;
   destinatariosContactos: Array<any> = [];
@@ -96,18 +100,20 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
     this._store.dispatch(new LoadDatosRemitenteAction());
     this._store.dispatch(new LoadDatosGeneralesAction());
-    //this._store.dispatch(new SedeAdministrativaLoadAction());
+
   }
 
   initByTipoComunicacionExterna() {
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
+    this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
   }
 
 
   initByTipoComunicacionInterna() {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
+    this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
   }
 
   initForm() {
@@ -121,12 +127,14 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sede': [{value: null, disabled: !this.editable}, Validators.required],
       'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
+      'tipoDestinatario': [{value: null, disabled: !this.editable}, Validators.required],
       'principal': null,
     });
   }
 
   initFormByDestinatario(destinatario) {
     if (!isNullOrUndefined(destinatario)) {
+      this.editDestinatario = true;
       this.destinatario = destinatario;
 
       this.form.get('tipoPersona').setValue(this.destinatario.tipoPersona);
@@ -139,6 +147,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
       this.form.get('sede').setValue(this.destinatario.sede);
       this.form.get('dependencia').setValue(this.destinatario.dependencia);
+      this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
 
       if(!isNullOrUndefined(this.destinatarioDatosContactos)){
         this.destinatarioDatosContactos.contacts = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
@@ -163,7 +172,33 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
         this.onSelectTipoPersona(value);
       }
     }));
+
+    this.subscribers.push(this.form.get('tipoDestinatario').valueChanges.subscribe(tipodestinatario => {
+
+      if(!(this.editDestinatario && this.principal && this.destinatario.tipoDestinatario.codigo === 'TP-DESP')) {
+
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: "No puede escoger mas de un principal"
+        }));
+        this.form.get('tipoDestinatario').reset();
+
+      }else{
+
+        if(tipodestinatario && tipodestinatario.codigo === 'TP-DESP' && this.principal ){
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'warn',
+            summary: "No puede escoger mas de un principal"
+          }));
+          this.form.get('tipoDestinatario').reset();
+        }
+      }
+
+      //if((!isNullOrUndefined(this.destinatario) && this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')){
+
+    }));
   }
+
 
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');

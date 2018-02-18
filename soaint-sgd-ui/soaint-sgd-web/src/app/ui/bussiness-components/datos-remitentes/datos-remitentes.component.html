@@ -3,13 +3,38 @@
     <div class="card card-w-title">
       <h1>Datos Destinatario</h1>
 
-      <div class="ui-g ui-fluid">
-        <div class="ui-sm-12 ui-g-12 ui-lg-12">
-          <div class="ui-g form-group text-right" style="float: right">
-            <div class="ui-helper-clearfix">
-              <p-checkbox name="principal" label="Principal" formControlName="principal" value="principal"
-                          [dynamicDisable]="!principal"></p-checkbox>
-            </div>
+      <!--<div class="ui-g ui-fluid">-->
+        <!--<div class="ui-sm-12 ui-g-12 ui-lg-12">-->
+          <!--<div class="ui-g form-group text-right" style="float: right">-->
+            <!--<div class="ui-helper-clearfix">-->
+              <!--<input type="checkbox" id="principal" [(ngModel)]="principal" [disabled]="principal"> <label for="cbox2">Principal</label>-->
+              <!--&lt;!&ndash;<input type="checkbox"  name="principal" formControlName="principal"  value="Principal" disabled="principal" />&ndash;&gt;-->
+              <!--&lt;!&ndash;<p-checkbox name="principal" label="Principal" formControlName="principal" value="principal"&ndash;&gt;-->
+                          <!--&lt;!&ndash;[dynamicDisable]="!principal"></p-checkbox>&ndash;&gt;-->
+
+              <!--<input type="checkbox" [disabled]="principal" (change)="checkSelected(checkBox[0].label)">{{checkBox[0].label}}-->
+              <!--<input type="checkbox" [disabled]="checkBox[1].checked" (change)="checkSelected(checkBox[1].label)">{{checkBox[1].label}}-->
+
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <!--Tipo Destinatario-->
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoDestinatarioSuggestions$ | async | dropdownItem"
+                        id="tipoDestinatario"
+                        formControlName="tipoDestinatario"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
           </div>
         </div>
       </div>
