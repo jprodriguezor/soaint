@@ -884,19 +884,7 @@ public class ContentControlAlfresco implements ContentControl {
                         carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());
                     }
 
-                    logger.info("Se llenan los metadatos del documento a crear");
-                    ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
-
-                    logger.info(AVISO_CREA_DOC);
-                    Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
-
-                    idDocumento = newDocument.getId();
-                    String[] parts = idDocumento.split(";");
-                    idDocumento = parts[0];
-                    metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
-                    metadatosDocumentosDTO.setIdDocumento(idDocumento);
-                    metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
-                    response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+                    idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
@@ -1034,18 +1022,7 @@ public class ContentControlAlfresco implements ContentControl {
                                 carpetaTarget = crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get());
                             }
                         }
-                        logger.info("Se llenan los metadatos del documento a crear");
-                        ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
-                        logger.info(AVISO_CREA_DOC);
-                        Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
-
-                        idDocumento = newDocument.getId();
-                        String[] parts = idDocumento.split(";");
-                        idDocumento = parts[0];
-                        metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
-                        metadatosDocumentosDTO.setIdDocumento(idDocumento);
-                        metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
-                        response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+                        idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
                         //Creando el mensaje de respuesta
                         response.setCodMensaje("0000");
                         response.setMensaje("Documento añadido correctamente");
@@ -1088,6 +1065,23 @@ public class ContentControlAlfresco implements ContentControl {
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
 
+    }
+
+    private String getString(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
+        String idDocumento;
+        logger.info("Se llenan los metadatos del documento a crear");
+        ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+        logger.info(AVISO_CREA_DOC);
+        Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
+
+        idDocumento = newDocument.getId();
+        String[] parts = idDocumento.split(";");
+        idDocumento = parts[0];
+        metadatosDocumentosDTO.setVersionLabel(newDocument.getVersionLabel());
+        metadatosDocumentosDTO.setIdDocumento(idDocumento);
+        metadatosDocumentosDTOList.add(metadatosDocumentosDTO);
+        response.setMetadatosDocumentosDTOList(metadatosDocumentosDTOList);
+        return idDocumento;
     }
 
     /**
