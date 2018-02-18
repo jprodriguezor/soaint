@@ -9,6 +9,8 @@ export interface DestinatarioDTO {
     interno: boolean,
     tipoDestinatario: ConstanteDTO,
     tipoPersona?: ConstanteDTO,
+    razonSocial?: string,
+    nroDocumentoIdentidad?: string,
     nombre?: string,
     tipoDocumento?: ConstanteDTO,
     nit?: string,
