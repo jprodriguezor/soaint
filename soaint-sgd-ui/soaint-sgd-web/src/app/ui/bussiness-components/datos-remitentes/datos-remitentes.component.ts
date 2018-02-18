@@ -113,6 +113,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sede': [{value: null, disabled: !this.editable}, Validators.required],
       'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
+      'principal': null,
     });
   }
 
