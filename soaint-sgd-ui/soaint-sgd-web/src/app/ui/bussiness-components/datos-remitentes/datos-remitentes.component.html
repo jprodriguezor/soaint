@@ -1,9 +1,18 @@
 <form [formGroup]="form" name="formDefault">
   <div class="ui-fluid">
     <div class="card card-w-title">
-      <h1>Datos Remitente</h1>
+      <h1>Datos Destinatario</h1>
 
-      <p-checkbox name="principal" label="Principal" formControlName="principal" value="principal" [dynamicDisable]="!principal"></p-checkbox>
+      <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+          <div class="ui-g form-group text-right" style="float: right">
+            <div class="ui-helper-clearfix">
+              <p-checkbox name="principal" label="Principal" formControlName="principal" value="principal"
+                          [dynamicDisable]="!principal"></p-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="ui-g ui-fluid" [hidden]="!visibility.sedeAdministrativa">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">
@@ -113,13 +122,14 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="razonSocial" formControlName="razonSocial" [dynamicDisable]="!visibility.razonSocial">
+              <input type="text" pInputText id="razonSocial" formControlName="razonSocial"
+                     [dynamicDisable]="!visibility.razonSocial">
               <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
 
                  <div class="ui-message ui-messages-error"
                       *ngIf="validations.razonSocial">
-                 {{ validations.razonSocial }}
-              </div>
+                   {{ validations.razonSocial }}
+                 </div>
               </span>
             </div>
           </div>
@@ -162,13 +172,15 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nombre" formControlName="nombre" [dynamicDisable]="!visibility.nombre" [clearValidators]="visibility.personaJuridica">
-                <label for="nombre"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y Apellidos</label>
+              <input type="text" pInputText id="nombre" formControlName="nombre" [dynamicDisable]="!visibility.nombre"
+                     [clearValidators]="visibility.personaJuridica">
+                <label for="nombre"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y
+                  Apellidos</label>
 
                 <div class="ui-message ui-messages-error"
                      *ngIf="validations.nombre">
-                {{ validations.nombre }}
-              </div>
+                  {{ validations.nombre }}
+                </div>
               </span>
             </div>
           </div>
@@ -179,12 +191,13 @@
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad" [dynamicDisable]="!visibility.nroDocumentoIdentidad">
+              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad"
+                     [dynamicDisable]="!visibility.nroDocumentoIdentidad">
               <label for="nroDocumentoIdentidad">No. Documento identidad</label>
 
                  <div class="ui-message ui-messages-error"
                       *ngIf="validations.nroDocumentoIdentidad">
-                    {{ validations.nroDocumentoIdentidad }}
+                   {{ validations.nroDocumentoIdentidad }}
                  </div>
               </span>
             </div>
@@ -197,13 +210,15 @@
 
 
 <div *ngIf="visibility.datosContacto">
-  <app-datos-direccion #destinatarioDatosContactos [editable]="editable" (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
+  <app-datos-direccion #destinatarioDatosContactos [editable]="editable"
+                       (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
 </div>
 
 <div class="ui-g form-group text-right" style="padding-top: 20px;float: right">
-  <div class="ui-dialog-buttonpane1 ui-helper-clearfix" >
-    <button pButton type="button" class="ui-button-primary" label="Agregar Remitente" (click)="newRemitente()"></button>
-   </div>
+  <div class="ui-dialog-buttonpane1 ui-helper-clearfix">
+    <button pButton type="button" class="ui-button-primary" label="Agregar Destinatario"
+            (click)="newRemitente()"></button>
+  </div>
 </div>
 
 
