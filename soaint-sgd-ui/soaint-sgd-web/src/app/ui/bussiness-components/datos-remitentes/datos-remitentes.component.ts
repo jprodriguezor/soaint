@@ -104,7 +104,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initByTipoComunicacionExterna() {
-    this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
+    this.tipoPersonaSuggestions$ = this._store.select(
+      getTipoPersonaArrayData).map(tps => tps.filter(tp => tp.codigo === PERSONA_ANONIMA));
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
@@ -149,7 +150,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('dependencia').setValue(this.destinatario.dependencia);
       this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
 
-      if(!isNullOrUndefined(this.destinatarioDatosContactos)){
+      if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
         this.destinatarioDatosContactos.contacts = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
       }
 
@@ -175,7 +176,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
     this.subscribers.push(this.form.get('tipoDestinatario').valueChanges.subscribe(tipodestinatario => {
 
-      if(!(this.editDestinatario && this.principal && this.destinatario.tipoDestinatario.codigo === 'TP-DESP')) {
+      if (!(this.editDestinatario && this.principal && this.destinatario.tipoDestinatario.codigo === 'TP-DESP')) {
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
@@ -183,9 +184,9 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
         }));
         this.form.get('tipoDestinatario').reset();
 
-      }else{
+      } else {
 
-        if(tipodestinatario && tipodestinatario.codigo === 'TP-DESP' && this.principal ){
+        if (tipodestinatario && tipodestinatario.codigo === 'TP-DESP' && this.principal) {
           this._store.dispatch(new PushNotificationAction({
             severity: 'warn',
             summary: "No puede escoger mas de un principal"
@@ -282,7 +283,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
-    if(!dest.interno){
+    if (!dest.interno) {
       dest.datosContactoList = this.destinatarioDatosContactos.contacts;
       this.destinatarioDatosContactos.contacts = [];
       this.destinatarioDatosContactos.form.reset();
@@ -293,12 +294,18 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   reset() {
-    this.visibility['tipoPersona'] = false; this.visibility['nit'] = false;
-    this.visibility['actuaCalidad'] = false; this.visibility['razonSocial'] = false;
-    this.visibility['nombre'] = false; this.visibility['datosContacto'] = false;
-    this.visibility['inactivo'] = false; this.visibility['tipoDocumento'] = false;
-    this.visibility['nombre'] = false; this.visibility['departamento'] = false;
-    this.visibility['nroDocumentoIdentidad'] = false; this.visibility['datosContacto'] = false;
+    this.visibility['tipoPersona'] = false;
+    this.visibility['nit'] = false;
+    this.visibility['actuaCalidad'] = false;
+    this.visibility['razonSocial'] = false;
+    this.visibility['nombre'] = false;
+    this.visibility['datosContacto'] = false;
+    this.visibility['inactivo'] = false;
+    this.visibility['tipoDocumento'] = false;
+    this.visibility['nombre'] = false;
+    this.visibility['departamento'] = false;
+    this.visibility['nroDocumentoIdentidad'] = false;
+    this.visibility['datosContacto'] = false;
     this.visibility['tipoDocumento'] = false;
     this.visibility['sede'] = false;
     this.visibility['dependencia'] = false;
