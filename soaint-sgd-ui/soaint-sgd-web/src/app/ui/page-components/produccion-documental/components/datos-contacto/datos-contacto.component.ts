@@ -13,6 +13,10 @@ import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
+import {isNullOrUndefined} from 'util';
+import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
+import { getTipoDocumentoArrayData, getTipoPersonaArrayData, } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -36,7 +40,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   responderRemitente = false;
   hasNumberRadicado = false;
   editable = true;
-  defaultDestinatarioTipoComunicacion = "";
+  defaultDestinatarioTipoComunicacion = '';
   hasDestinatarioPrincipal = false;
   indexSelectExterno: number = -1;
   indexSelectInterno: number = -1;
@@ -105,7 +109,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    console.log("Tarea de entrada");
+    console.log('Tarea de entrada');
     console.log(this.taskData);
 
     this._store.dispatch(new SedeAdministrativaLoadAction());
@@ -123,36 +127,36 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
           this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
             nroRadicado: this.taskData.variables.numeroRadicado
           }).subscribe(agente => {
-            console.log("Objeto que viene del backen ", agente);
+            console.log('Objeto que viene del backen ', agente);
             if (agente) {
               this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
               let tempDestinatario = <DestinatarioDTO> {};
               tempDestinatario.interno = false;
               tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
               tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
-              tempDestinatario.nombre = (agente.nombre) ? agente.nombre : "";
+              tempDestinatario.nombre = (agente.nombre) ? agente.nombre : '';
               tempDestinatario.tipoDocumento = this.searchTipoDocumento(agente.codTipDocIdent);
-              tempDestinatario.nit = (agente.nit) ? agente.nit : "";
+              tempDestinatario.nit = (agente.nit) ? agente.nit : '';
               tempDestinatario.actuaCalidad = (agente.codEnCalidad) ? agente.codEnCalidad : null;
-              tempDestinatario.actuaCalidadNombre = (agente.codEnCalidad) ? agente.codEnCalidad : "";
+              tempDestinatario.actuaCalidadNombre = (agente.codEnCalidad) ? agente.codEnCalidad : '';
               tempDestinatario.sede = this.searchSede(agente.codSede);
               tempDestinatario.dependencia = this.searchDependencia(agente.codDependencia) ? agente.codDependencia : null;
               tempDestinatario.funcionario = null;
-              tempDestinatario.email = "";
-              tempDestinatario.mobile = "";
-              tempDestinatario.phone = "";
+              tempDestinatario.email = '';
+              tempDestinatario.mobile = '';
+              tempDestinatario.phone = '';
               tempDestinatario.pais = null;
               tempDestinatario.departamento = null;
               tempDestinatario.municipio = null;
               tempDestinatario.datosContactoList = (agente.datosContactoList) ? agente.datosContactoList : null;
               tempDestinatario.principal = false;
-              if (agente.codTipoRemite == "EXT") {
+              if (agente.codTipoRemite === 'EXT') {
 
                 tempDestinatario.interno = false;
                 this.destinatarioExterno = tempDestinatario;
                 this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
                 this.destinatarioExternoDialogVisible = true;
-              } else if (agente.codTipoRemite == "INT") {
+              } else if (agente.codTipoRemite === 'INT') {
 
                 tempDestinatario.interno = true;
                 this.destinatarioInterno = tempDestinatario;
@@ -165,12 +169,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         }
 
       } else {
-        if (this.defaultDestinatarioTipoComunicacion == "EXT") {
+        if (this.defaultDestinatarioTipoComunicacion === 'EXT') {
           const index: number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
           if (index !== -1) {
             this.listaDestinatariosExternos.splice(index, 1);
           }
-        } else if (this.defaultDestinatarioTipoComunicacion == "INT") {
+        } else if (this.defaultDestinatarioTipoComunicacion === 'INT') {
           const index: number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
           if (index !== -1) {
             this.listaDestinatariosInternos.splice(index, 1);
@@ -182,46 +186,39 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   seachTipoDestinatario(indOriginal) {
-    console.log(indOriginal);
-    return null;
+    let  result = null;
+    this._store.select(sedeAdministrativaArrayData).subscribe(values => {
+      result = values.find((element) => element.codigo === indOriginal)
+    }); return result
   }
 
   searchTipoPersona(codTipoPers) {
-    console.log(codTipoPers);
-    return null;
+    let  result = null;
+    this._store.select(getTipoPersonaArrayData).subscribe(values => {
+      result = values.find((element) => element.codigo === codTipoPers)
+    }); return result
   }
 
   searchTipoDocumento(codTipDocIdent) {
-    console.log(codTipDocIdent);
-    return null;
+    let  result = null;
+    this._store.select(getTipoDocumentoArrayData).subscribe(values => {
+      result = values.find((element) => element.codigo === codTipDocIdent)
+    }); return result
   }
 
   searchSede(codSede) {
-    console.log(codSede);
-    return null;
+    let  result = null;
+    this._store.select(sedeAdministrativaArrayData).subscribe(values => {
+      result = values.find((element) => element.codigo === codSede)
+    }); return result
   }
 
   searchDependencia(codDependencia) {
-    console.log(codDependencia);
-    return null;
+    let  result = null;
+    this._produccionDocumentalApi.getDependencias({}).subscribe(values => {
+      result = values.find((element) => element.codigo === codDependencia)
+    }); return result
   }
-
-//guardar para la base de datos
-  /*updateStatus(currentStatus: StatusDTO) {
-
-   console.log('entro en el updateStatus');
-   console.log(currentStatus);
-
-   this.form.get('responderRemitente').setValue(currentStatus.datosContacto.responderRemitente);
-   this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
-
-   if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SI') {
-   this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatarios];
-   } else if (currentStatus.datosGenerales.tipoComunicacion.codigo === 'SE') {
-   this.remitenteExterno = currentStatus.datosContacto.remitenteExterno;
-   }
-   this.refreshView();
-   }*/
 
   initForm() {
     this.form = this.formBuilder.group({
@@ -279,6 +276,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
     }
   }
+
   editDestinatario(index, op) {
 
     if (index > -1 && op === 'EXT') {
