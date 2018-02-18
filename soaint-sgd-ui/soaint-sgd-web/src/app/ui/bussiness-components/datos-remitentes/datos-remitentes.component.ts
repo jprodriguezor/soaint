@@ -129,19 +129,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('nombre').setValue(this.destinatario.nombre);
       this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
       this.form.get('sede').setValue(this.destinatario.sede);
-
-      this.form = this.formBuilder.group({
-        'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
-        'nit': [{value: null, disabled: !this.editable}],
-        'actuaCalidad': [{value: null, disabled: !this.editable}],
-        'tipoDocumento': [{value: null, disabled: !this.editable}],
-        'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
-        'nombre': [{value: null, disabled: !this.editable}, Validators.required],
-        'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
-        'sede': [{value: null, disabled: !this.editable}, Validators.required],
-        'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
-      });
-      console.log('DestinatarioDTO no es null ->', this.destinatario);
     }
   }
 
