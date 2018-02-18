@@ -105,7 +105,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   initByTipoComunicacionExterna() {
     this.tipoPersonaSuggestions$ = this._store.select(
-      getTipoPersonaArrayData).map(tps => tps.filter(tp => tp.codigo === PERSONA_ANONIMA));
+      getTipoPersonaArrayData).map(tps => tps.filter(tp => tp.codigo !== PERSONA_ANONIMA));
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
