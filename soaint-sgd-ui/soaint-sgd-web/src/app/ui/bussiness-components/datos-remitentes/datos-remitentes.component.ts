@@ -249,13 +249,11 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
-    this.destinatarioDatosContactos.contacts = []; this.destinatarioOutput.emit(dest);
-    dest.datosContactoList = this.destinatariosContactos; this.reset();
+    this.destinatarioOutput.emit(dest); this.destinatarioDatosContactos.contacts = [];
+    this.destinatarioDatosContactos.form.reset(); this.form.reset();
   }
 
   reset() {
-    this.destinatarioDatosContactos.contacts = [];
-    this.destinatarioDatosContactos.form.reset(); this.form.reset();
     this.visibility['tipoPersona'] = false; this.visibility['nit'] = false;
     this.visibility['actuaCalidad'] = false; this.visibility['razonSocial'] = false;
     this.visibility['nombre'] = false; this.visibility['datosContacto'] = false;
