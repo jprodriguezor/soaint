@@ -26,6 +26,8 @@ import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management
 import {LoadAction as SedeAdministrativaLoadAction} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import {DESTINATARIO_PRINCIPAL} from "../../../shared/bussiness-properties/radicacion-properties";
+import {ConfirmationService} from 'primeng/components/common/api';
 
 @Component({
   selector: 'app-datos-remitentes',
@@ -64,7 +66,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
-              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private confirmationService: ConfirmationService) {
     this.initStores();
   }
 
@@ -174,11 +177,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       }
     }));
 
-    this.subscribers.push(this.form.get('tipoDestinatario').valueChanges.subscribe(tipodestinatario => {
-
-    }));
   }
-  onchangeTipoDestinatario(event){
+  /*onchangeTipoDestinatario(event){
     console.log(event);
     if (this.editDestinatario) {
       if ((this.principal && event.value.codigo === 'TP-DESP') && (this.destinatario.tipoDestinatario.codigo !== 'TP-DESP')) {
@@ -199,7 +199,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       }
     }
 
-  }
+  }*/
 
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');
@@ -284,13 +284,39 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     if (!dest.interno) {
-      dest.datosContactoList = this.destinatarioDatosContactos.contacts;
-      this.destinatarioDatosContactos.contacts = [];
-      this.destinatarioDatosContactos.form.reset();
+      if(isNullOrUndefined(this.destinatarioDatosContactos)) {
+        dest.datosContactoList =  [];
+      }
+      else {
+        dest.datosContactoList = this.destinatarioDatosContactos.contacts;
+        this.destinatarioDatosContactos.contacts = [];
+        this.destinatarioDatosContactos.form.reset();
+      }
     }
-    this.destinatarioOutput.emit(dest);
-    this.form.reset();
-    this.reset();
+    if(dest.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal){
+
+      this.confirmationService.confirm({
+        message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
+        accept: () => {
+
+          this.destinatarioOutput.emit(dest);
+          this.form.reset();
+          this.reset();
+        },
+        reject: () =>{
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'warn',
+            summary: 'Debe cambiar el tipo de Destinatario principal'
+          }));
+
+        }
+      });
+    }else{
+      this.destinatarioOutput.emit(dest);
+      this.form.reset();
+      this.reset();
+    }
+
   }
 
   reset() {

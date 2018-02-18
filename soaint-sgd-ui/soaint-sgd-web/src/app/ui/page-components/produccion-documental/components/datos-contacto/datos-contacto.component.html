@@ -56,6 +56,19 @@
 
     </p-header>
 
+
+
+    <p-column header="Tipo Destinatario">
+      <ng-template let-destinatario="rowData" let-i="rowIndex" pTemplate="item">
+        <div class="ui-g-12" *ngIf="destinatario.tipoDestinatario.nombre">
+                  <span class="table-text-custom">
+                      {{ destinatario.tipoDestinatario.nombre }}
+                    </span>
+        </div>
+      </ng-template>
+    </p-column>
+
+
     <p-column header="Tipo Persona">
       <ng-template let-destinatario="rowData" let-i="rowIndex" pTemplate="item">
         <div class="ui-g-12" *ngIf="destinatario.tipoPersona.nombre">
@@ -65,6 +78,9 @@
         </div>
       </ng-template>
     </p-column>
+
+
+
 
     <p-column header="Nombre">
       <ng-template let-destinatario="rowData" let-i="rowIndex" pTemplate="item">
@@ -123,6 +139,15 @@
 
     </p-header>
 
+    <p-column header="Tipo Destinatario">
+      <ng-template let-destinatario="rowData" let-i="rowIndex" pTemplate="item">
+        <div class="ui-g-12" *ngIf="destinatario.tipoDestinatario.nombre">
+                  <span class="table-text-custom">
+                      {{ destinatario.tipoDestinatario.nombre }}
+                    </span>
+        </div>
+      </ng-template>
+    </p-column>
 
     <p-column header="Sede">
       <ng-template let-destinatario="rowData" let-i="rowIndex" pTemplate="item">

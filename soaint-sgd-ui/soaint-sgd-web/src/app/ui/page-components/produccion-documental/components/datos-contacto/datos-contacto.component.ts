@@ -17,6 +17,7 @@ import {isNullOrUndefined} from 'util';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import { getTipoDocumentoArrayData, getTipoPersonaArrayData, } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
+import {DESTINATARIO_PRINCIPAL} from "../../../../../shared/bussiness-properties/radicacion-properties";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -25,25 +26,25 @@ import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/
 })
 
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
-  form: FormGroup;
+  form:FormGroup;
 
-  subscription: Subscription;
+  subscription:Subscription;
 
-  validations: any = {};
+  validations:any = {};
 
-  listaDestinatariosInternos: DestinatarioDTO[] = [];
-  listaDestinatariosExternos: DestinatarioDTO[] = [];
+  listaDestinatariosInternos:DestinatarioDTO[] = [];
+  listaDestinatariosExternos:DestinatarioDTO[] = [];
 
-  destinatarioInterno: DestinatarioDTO = null;
-  destinatarioExterno: DestinatarioDTO = null;
+  destinatarioInterno:DestinatarioDTO = null;
+  destinatarioExterno:DestinatarioDTO = null;
 
   responderRemitente = false;
   hasNumberRadicado = false;
   editable = true;
   defaultDestinatarioTipoComunicacion = '';
   hasDestinatarioPrincipal = false;
-  indexSelectExterno: number = -1;
-  indexSelectInterno: number = -1;
+  indexSelectExterno:number = -1;
+  indexSelectInterno:number = -1;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -51,14 +52,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   @ViewChild('datosRemitentesExterno') datosRemitentesExterno;
   @ViewChild('datosRemitentesInterno') datosRemitentesInterno;
 
-  @Input() taskData: TareaDTO;
+  @Input() taskData:TareaDTO;
 
-  constructor(private formBuilder: FormBuilder,
-              private _changeDetectorRef: ChangeDetectorRef,
-              private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private pdMessageService: PdMessageService,
-              private _dependenciaSandbox: DependenciaSandbox,
-              private _store: Store<State>) {
+  constructor(private formBuilder:FormBuilder,
+              private _changeDetectorRef:ChangeDetectorRef,
+              private _produccionDocumentalApi:ProduccionDocumentalApiService,
+              private pdMessageService:PdMessageService,
+              private _dependenciaSandbox:DependenciaSandbox,
+              private _store:Store<State>) {
 
     /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
@@ -107,7 +108,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  ngOnInit(): void {
+  ngOnInit():void {
 
     console.log('Tarea de entrada');
     console.log(this.taskData);
@@ -155,12 +156,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
                 tempDestinatario.interno = false;
                 this.destinatarioExterno = tempDestinatario;
                 this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
+                this.indexSelectExterno = -1;
                 this.destinatarioExternoDialogVisible = true;
               } else if (agente.codTipoRemite === 'INT') {
 
                 tempDestinatario.interno = true;
                 this.destinatarioInterno = tempDestinatario;
                 this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
+                this.indexSelectInterno = -1;
                 this.destinatarioInternoDialogVisible = true;
               }
             }
@@ -170,12 +173,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
       } else {
         if (this.defaultDestinatarioTipoComunicacion === 'EXT') {
-          const index: number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
+          const index:number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
           if (index !== -1) {
             this.listaDestinatariosExternos.splice(index, 1);
           }
         } else if (this.defaultDestinatarioTipoComunicacion === 'INT') {
-          const index: number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
+          const index:number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
           if (index !== -1) {
             this.listaDestinatariosInternos.splice(index, 1);
           }
@@ -186,38 +189,43 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
 
   seachTipoDestinatario(indOriginal) {
-    let  result = null;
+    let result = null;
     this._store.select(sedeAdministrativaArrayData).subscribe(values => {
       result = values.find((element) => element.codigo === indOriginal)
-    }); return result
+    });
+    return result
   }
 
   searchTipoPersona(codTipoPers) {
-    let  result = null;
+    let result = null;
     this._store.select(getTipoPersonaArrayData).subscribe(values => {
       result = values.find((element) => element.codigo === codTipoPers)
-    }); return result
+    });
+    return result
   }
 
   searchTipoDocumento(codTipDocIdent) {
-    let  result = null;
+    let result = null;
     this._store.select(getTipoDocumentoArrayData).subscribe(values => {
       result = values.find((element) => element.codigo === codTipDocIdent)
-    }); return result
+    });
+    return result
   }
 
   searchSede(codSede) {
-    let  result = null;
+    let result = null;
     this._store.select(sedeAdministrativaArrayData).subscribe(values => {
       result = values.find((element) => element.codigo === codSede)
-    }); return result
+    });
+    return result
   }
 
   searchDependencia(codDependencia) {
-    let  result = null;
+    let result = null;
     this._produccionDocumentalApi.getDependencias({}).subscribe(values => {
       result = values.find((element) => element.codigo === codDependencia)
-    }); return result
+    });
+    return result
   }
 
   initForm() {
@@ -257,23 +265,40 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       if (!this.hasDestinatarioPrincipal) {
         this.hasDestinatarioPrincipal = (newDestinatario.tipoDestinatario.codigo === 'TP-DESP') ? true : false;
       }
-      if (newDestinatario.interno) {
-        this.deleteDestinatario(this.indexSelectInterno, 'INT');
-        this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
-        this.destinatarioInternoDialogVisible = !(this.indexSelectInterno > -1);
+
+      if (newDestinatario.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
+
+        if (newDestinatario.interno) {
+          this.deleteDestinatario(this.indexSelectInterno, 'INT');
+        }else{
+          this.deleteDestinatario(this.indexSelectExterno, 'EXT');
+        }
+
+        const newList1 = this.listaDestinatariosInternos.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL);
+
+        const newList = this.listaDestinatariosExternos.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL);
+
+        if (newDestinatario.interno) {
+          newList1.unshift(newDestinatario);
+        }else{
+          newList.unshift(newDestinatario);
+        }
+        this.listaDestinatariosInternos = [...newList1];
+        this.listaDestinatariosExternos = [...newList];
+
       } else {
-        this.deleteDestinatario(this.indexSelectExterno, 'EXT');
-        this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
-        this.destinatarioExternoDialogVisible = !(this.indexSelectExterno > -1);
+
+        if (newDestinatario.interno) {
+          this.deleteDestinatario(this.indexSelectInterno, 'INT');
+          this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
+          this.destinatarioInternoDialogVisible = !(this.indexSelectInterno > -1);
+
+        } else {
+          this.deleteDestinatario(this.indexSelectExterno, 'EXT');
+          this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
+          this.destinatarioExternoDialogVisible = !(this.indexSelectExterno > -1);
+        }
       }
-
-      ///***** Cerrando el pupo ***/
-      //if(newDestinatario.interno){
-      //  this.destinatarioInternoDialogVisible = false;
-      //}else{
-      //  this.destinatarioExternoDialogVisible = false;
-      //}
-
     }
   }
 
@@ -310,7 +335,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    //this.subscription.unsubscribe();
   }
 
   refreshView() {
