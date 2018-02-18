@@ -3,8 +3,7 @@
     <div class="card card-w-title">
       <h1>Datos Remitente</h1>
 
-
-      <p-checkbox name="principal" label="Principal" formControlName="principal" id="principal" binary="true" [disabled]="principal"></p-checkbox>
+      <p-checkbox name="principal" label="Principal" formControlName="principal" value="principal" [dynamicDisable]="!principal"></p-checkbox>
 
       <div class="ui-g ui-fluid" [hidden]="!visibility.sedeAdministrativa">
         <div class="ui-sm-12 ui-g-6 ui-lg-6">

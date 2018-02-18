@@ -236,7 +236,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (newDestinatario) {
 
       if (!this.hasDestinatarioPrincipal) {
-        this.hasDestinatarioPrincipal = (newDestinatario.principal) ? true : false;
+        this.hasDestinatarioPrincipal = (newDestinatario.principal[0]) ? true : false;
       }
 
       if (newDestinatario.interno) {
@@ -264,14 +264,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (op == 'EXT') {
       const radref = [...this.listaDestinatariosExternos];
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].principal) ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].principal[0]) ? false : true;
 
       radref.splice(index, 1);
       this.listaDestinatariosExternos = radref;
 
     } else if (op == 'INT') {
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].principal) ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].principal[0]) ? false : true;
 
       const radref = [...this.listaDestinatariosInternos];
       radref.splice(index, 1);

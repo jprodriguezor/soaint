@@ -67,7 +67,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
-    this.form.disable();
+    this.form.enable();
     this.listenForChanges();
     this.listenForErrors();
   }
@@ -113,6 +113,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
       'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
+      'principal': null,
     });
   }
 

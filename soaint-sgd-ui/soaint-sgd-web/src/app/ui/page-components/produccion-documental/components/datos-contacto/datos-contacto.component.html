@@ -147,14 +147,12 @@
     Destinatario Externo
   </p-header>
 
-  <app-datos-remitentes  #datosRemitentesExterno  tipoComunicacion="EE" [hasDestinatarioPrincipal]="principal" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
+  <app-datos-remitentes  #datosRemitentesExterno  tipoComunicacion="EE" [principal]="hasDestinatarioPrincipal" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
               label="Finalizar" (click)="hideAddDestinatarioExternoPopup()"></button>
-      <!--<button pButton type="button" class="ui-button-primary" [disabled]="!datosRemitentes.form.valid"-->
-              <!--label="Agregar" (click)="addDestinatarioExterno()"></button>-->
     </div>
   </p-footer>
 </p-dialog>
@@ -165,7 +163,7 @@
     Destinatario Interno
   </p-header>
 
-  <app-datos-remitentes #datosRemitentesInterno tipoComunicacion="EI" [hasDestinatarioPrincipal]="principal" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
+  <app-datos-remitentes #datosRemitentesInterno tipoComunicacion="EI" [principal]="hasDestinatarioPrincipal" (destinatarioOutput)="addDestinatario($event)"></app-datos-remitentes>
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
