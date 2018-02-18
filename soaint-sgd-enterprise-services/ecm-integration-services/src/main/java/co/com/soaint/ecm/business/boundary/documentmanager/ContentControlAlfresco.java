@@ -252,7 +252,7 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
-     * Metodo para retornal el archivo
+     * Metodo para retornar el archivo
      *
      * @param metadatosDocumentosDTO Objeto que contiene los metadatos
      * @param versionesLista         Listado por el que se va a buscar
@@ -363,6 +363,7 @@ public class ContentControlAlfresco implements ContentControl {
         List<Carpeta> listaCarpeta;
         Conexion conexion = obtenerConexion();
         listaCarpeta = obtenerCarpetasHijasDadoPadre(folderFather);
+
         Iterator<Carpeta> iterator;
         if (listaCarpeta != null) {
             iterator = listaCarpeta.iterator();
@@ -372,23 +373,34 @@ public class ContentControlAlfresco implements ContentControl {
                 Carpeta carpeta = obtenerCarpetaPorNombre(aux.getFolder().getName(), conexion.getSession());
                 String description = carpeta.getFolder().getDescription();
                 if (description.equals(configuracion.getPropiedad(CLASE_DEPENDENCIA))) {
-                    if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodDependencia")) != null &&
-                            aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodDependencia")).equals(codFolder)) {
-                        folderReturn = aux;
-                    }
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodDependencia");
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SERIE))) {
-                    if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodSerie")) != null &&
-                            aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodSerie")).equals(codFolder)) {
-                        folderReturn = aux;
-                    }
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSerie");
+
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SUBSERIE))) {
                     logger.info("Entro a clase subserie cargando los valores");
-                    if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodSubserie")) != null &&
-                            aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad("metadatoCodSubserie")).equals(codFolder)) {
-                        folderReturn = aux;
-                    }
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSubserie");
+
+
                 }
             }
+        }
+        return folderReturn;
+    }
+
+    /**
+     * Metodo auxuliar para devolver la carpeta padre
+     *
+     * @param codFolder Codigo de carpeta
+     * @param aux       Carpeta por la cual se realiza la busqueda
+     * @param metadato  Propiedad por la cual se filtra
+     * @return Carpeta padre
+     */
+    private Carpeta getCarpeta(String codFolder, Carpeta aux, String metadato) {
+        Carpeta folderReturn = null;
+        if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)) != null &&
+                aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)).equals(codFolder)) {
+            folderReturn = aux;
         }
         return folderReturn;
     }
