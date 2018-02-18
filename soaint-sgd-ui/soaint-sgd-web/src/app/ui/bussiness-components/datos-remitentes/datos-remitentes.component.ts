@@ -97,18 +97,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initByTipoComunicacionExterna() {
-
     this.tipoPersonaSuggestions$ = this._store.select(getTipoPersonaArrayData);
-
-    this.tipoPersonaSuggestions$.subscribe(
-      current => current.filter(temp => temp.codigo != PERSONA_ANONIMA )).unsubscribe();
-
-    //this.tipoPersonaSuggestions$.subscribe(docs => {
-    //  this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-    //  this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
-    //}).unsubscribe();
-
-    console.log("Tipo de personas ", this.tipoPersonaSuggestions$);
     this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
     this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
   }
@@ -146,6 +135,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('nombre').setValue(this.destinatario.nombre);
       this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
       this.form.get('sede').setValue(this.destinatario.sede);
+      this.destinatarioDatosContactos.contacts = (null !== this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : [];
     }
   }
 
@@ -206,7 +196,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.visibility['datosContacto'] = true;
       this.visibility['tipoDocumento'] = true;
 
-
       this.tipoDocumentoSuggestions$.subscribe(docs => {
         this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
         this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
@@ -251,7 +240,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     this.destinatarioOutput.emit(dest); this.destinatarioDatosContactos.contacts = [];
-    this.destinatarioDatosContactos.form.reset(); this.form.reset();
+    this.destinatarioDatosContactos.form.reset(); this.form.reset(); this.reset();
   }
 
   reset() {
