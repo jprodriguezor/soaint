@@ -148,12 +148,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
                 tempDestinatario.interno = false;
                 this.destinatarioExterno = tempDestinatario;
+                this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
                 this.destinatarioExternoDialogVisible = true;
 
               } else if (agente.codTipoRemite == "INT") {
 
                 tempDestinatario.interno = true;
                 this.destinatarioInterno = tempDestinatario;
+                this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
                 this.destinatarioInternoDialogVisible = true;
               }
             }
