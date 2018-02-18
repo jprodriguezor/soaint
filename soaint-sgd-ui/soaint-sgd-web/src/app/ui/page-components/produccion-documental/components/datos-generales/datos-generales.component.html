@@ -98,7 +98,8 @@
                 <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData.variables.numeroRadicado">
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
-                            <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;">
+                            <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;"
+                                    (click)="obtenerDocumentoRadicado();">
               </button>
                         </div>
                     </div>
@@ -148,7 +149,6 @@
                             <p-fileUpload #versionUploader
                                           mode="basic"
                                           auto="true"
-                                          [disabled]="listaVersionesDocumento.length > 0"
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"

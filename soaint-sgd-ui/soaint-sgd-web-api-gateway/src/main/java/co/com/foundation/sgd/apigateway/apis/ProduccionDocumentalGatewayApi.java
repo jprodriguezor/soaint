@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
+import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.Data;
@@ -41,9 +42,22 @@ public class ProduccionDocumentalGatewayApi {
 
     @POST
     @Path("/ejecutar-proyeccion-multiple")
-    //@JWTTokenSecurity
+    @JWTTokenSecurity
     public Response ejecutarProyeccionMultiple(EntradaProcesoDTO entrada) {
         Response response = client.ejecutarProyeccionMultiple(entrada);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        log.info("\n\rENDED");
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
+    @Path("/datos-documento/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerDatosDocumento(@PathParam("nro_radicado") String nro_radicado) {
+        Response response = client.obtenerDatosDocumentoPorNroRadicado(nro_radicado);
         String responseObject = response.readEntity(String.class);
         if (response.getStatus() == HttpStatus.NO_CONTENT.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
