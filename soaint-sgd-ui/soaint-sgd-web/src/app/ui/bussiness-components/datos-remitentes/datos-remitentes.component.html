@@ -234,7 +234,7 @@
 </form>
 
 
-<div [hidden]="visibility.datosContacto">
+<div *ngIf="visibility.datosContacto">
   <app-datos-direccion #destinatarioDatosContactos [editable]="editable"
                        (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
 </div>

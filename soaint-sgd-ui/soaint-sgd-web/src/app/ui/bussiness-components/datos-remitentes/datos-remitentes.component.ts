@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -67,7 +67,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
-              private confirmationService: ConfirmationService) {
+              private confirmationService: ConfirmationService,
+              private _changeDetectorRef: ChangeDetectorRef) {
     this.initStores();
   }
 
@@ -152,6 +153,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('sede').setValue(this.destinatario.sede);
       this.form.get('dependencia').setValue(this.destinatario.dependencia);
       this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
+
+      this.visibility['datosContacto'] = true;
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
 
@@ -249,6 +252,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       }).unsubscribe();
 
     }
+    this.refreshView();
   }
 
   listenForBlurEvents(control: string) {
@@ -284,6 +288,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   newRemitente() {
+    this.visibility['datosContacto'] = true;
     const dest: DestinatarioDTO = this.form.value;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     if (!dest.interno) {
@@ -293,8 +298,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       else {
         const newList1 =this.destinatarioDatosContactos.contacts;
         dest.datosContactoList = [...newList1];
-
-        //dest.datosContactoList = this.destinatarioDatosContactos.contacts;
         this.destinatarioDatosContactos.contacts = [];
         this.destinatarioDatosContactos.form.reset();
       }
@@ -341,7 +344,11 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.visibility['sede'] = false;
     this.visibility['dependencia'] = false;
     this.internalInit();
+    this.refreshView();
   }
 
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
+  }
 }
 

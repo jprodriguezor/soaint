@@ -393,18 +393,15 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   addColombiaByDefault() {
 
-    this._paisSandbox.loadDispatch();
     this.paisSuggestions$.take(2).subscribe((values) => {
       this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
     });
-
-
-
     this.visibility.selectedColombia = true;
 
   }
 
   ngAfterViewInit() {
+    this._paisSandbox.loadDispatch();
     this.refreshView();
   }
 
