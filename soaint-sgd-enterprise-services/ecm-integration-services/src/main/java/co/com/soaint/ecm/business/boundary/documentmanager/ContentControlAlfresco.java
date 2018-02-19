@@ -360,9 +360,8 @@ public class ContentControlAlfresco implements ContentControl {
      */
     private Carpeta chequearCapetaPadre(Carpeta folderFather, String codFolder) {
         Carpeta folderReturn = null;
-        List<Carpeta> listaCarpeta;
         Conexion conexion = obtenerConexion();
-        listaCarpeta = obtenerCarpetasHijasDadoPadre(folderFather);
+        List<Carpeta>  listaCarpeta = obtenerCarpetasHijasDadoPadre(folderFather);
 
         Iterator<Carpeta> iterator;
         if (listaCarpeta != null) {
@@ -373,12 +372,12 @@ public class ContentControlAlfresco implements ContentControl {
                 Carpeta carpeta = obtenerCarpetaPorNombre(aux.getFolder().getName(), conexion.getSession());
                 String description = carpeta.getFolder().getDescription();
                 if (description.equals(configuracion.getPropiedad(CLASE_DEPENDENCIA))) {
-                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodDependencia");
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodDependencia",folderReturn);
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SERIE))) {
-                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSerie");
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSerie",folderReturn);
                 } else if (description.equals(configuracion.getPropiedad(CLASE_SUBSERIE))) {
                     logger.info("Entro a clase subserie cargando los valores");
-                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSubserie");
+                    folderReturn = getCarpeta(codFolder, aux, "metadatoCodSubserie",folderReturn);
                 }
             }
         }
@@ -393,8 +392,8 @@ public class ContentControlAlfresco implements ContentControl {
      * @param metadato  Propiedad por la cual se filtra
      * @return Carpeta padre
      */
-    private Carpeta getCarpeta(String codFolder, Carpeta aux, String metadato) {
-        Carpeta folderReturn = null;
+    private Carpeta getCarpeta(String codFolder, Carpeta aux, String metadato, Carpeta folderReturn) {
+
         if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)) != null &&
                 aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)).equals(codFolder)) {
             folderReturn = aux;
@@ -876,13 +875,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                     Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
-                    if (produccionDocumental.isPresent()) {
-                        logger.info(EXISTE_CARPETA + carpetaCrearBuscar + year);
-                        carpetaTarget = produccionDocumental.get();
-                    } else {
-                        logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
-                        carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());
-                    }
+                    carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
                     idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
                     //Creando el mensaje de respuesta
@@ -915,6 +908,18 @@ public class ContentControlAlfresco implements ContentControl {
         }
     }
 
+    private Carpeta getCarpeta(String carpetaCrearBuscar, Optional<Carpeta> dependencia, int year, Optional<Carpeta> produccionDocumental) {
+        Carpeta carpetaTarget;
+        if (produccionDocumental.isPresent()) {
+            logger.info(EXISTE_CARPETA + carpetaCrearBuscar + year);
+            carpetaTarget = produccionDocumental.get();
+        } else {
+            logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
+            carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get());
+        }
+        return carpetaTarget;
+    }
+
     /**
      * Metodo para buscar crear carpetas de radicacion de entrada
      *
@@ -925,8 +930,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param properties             propiedades de carpeta
      */
     private void buscarCrearCarpetaRadicacion(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String tipoComunicacion) {
-        String idDocumento;
-        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
+
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
@@ -941,31 +945,14 @@ public class ContentControlAlfresco implements ContentControl {
 
                 String comunicacionOficial = "";
                 String tipoComunicacionSelector;
-                switch (tipoComunicacion) {
-                    case "EI": {
-                        tipoComunicacionSelector = COMUNICACIONES_INTERNAS_RECIBIDAS;
-                        comunicacionOficial = TIPO_COMUNICACION_INTERNA;
-                        break;
-                    }
-                    case "SI": {
-                        tipoComunicacionSelector = COMUNICACIONES_INTERNAS_ENVIADAS;
-                        comunicacionOficial = TIPO_COMUNICACION_INTERNA;
-                        break;
-                    }
-                    case "EE": {
-                        tipoComunicacionSelector = COMUNICACIONES_EXTERNAS_RECIBIDAS;
-                        comunicacionOficial = TIPO_COMUNICACION_EXTERNA;
-                        break;
-                    }
-                    case "SE": {
-                        tipoComunicacionSelector = COMUNICACIONES_EXTERNAS_ENVIADAS;
-                        comunicacionOficial = TIPO_COMUNICACION_EXTERNA;
-                        break;
-                    }
-                    default:
-                        tipoComunicacionSelector = COMUNICACIONES_INTERNAS_RECIBIDAS;
-                        break;
+                tipoComunicacionSelector = getTipoComunicacionSelector(tipoComunicacion);
+
+                if ("EI".equals(tipoComunicacion) || "SI".equals(tipoComunicacion)) {
+                    comunicacionOficial = TIPO_COMUNICACION_INTERNA;
+                } else if ("EE".equals(tipoComunicacion) || "SE".equals(tipoComunicacion)) {
+                    comunicacionOficial = TIPO_COMUNICACION_EXTERNA;
                 }
+
                 //Se busca si existe la dependencia
                 Optional<Carpeta> dependencia = carpetasHijas.stream()
                         .filter(p -> p.getFolder().getName().equals(metadatosDocumentosDTO.getDependencia())).findFirst();
@@ -974,56 +961,14 @@ public class ContentControlAlfresco implements ContentControl {
                 if (dependencia.isPresent()) {
 
                     logger.info("Se busca si existe la carpeta de Comunicaciones Oficiales dentro de la dependencia " + metadatosDocumentosDTO.getDependencia());
-                    Calendar cal = Calendar.getInstance();
-                    int year = cal.get(Calendar.YEAR);
+
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
 
                     //Obtengo la carpeta de comunicaciones oficiales si existe
                     Optional<Carpeta> comunicacionOficialFolder = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().contains("0231_COMUNICACIONES OFICIALES")).findFirst();
 
-                    Carpeta carpetaTarget;
-
-                    if (comunicacionOficialFolder.isPresent()) {
-                        logger.info(EXISTE_CARPETA + comunicacionOficialFolder.get().getFolder().getName());
-
-                        List<Carpeta> carpetasDeComunicacionOficial = obtenerCarpetasHijasDadoPadre(comunicacionOficialFolder.get());
-
-                        String finalComunicacionOficial = comunicacionOficial;
-                        Optional<Carpeta> comunicacionOficialInOut = carpetasDeComunicacionOficial.stream()
-                                .filter(p -> p.getFolder().getName().contains(finalComunicacionOficial)).findFirst();
-
-
-                        if (!comunicacionOficialInOut.isPresent()) {
-
-                            Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), finalComunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get());
-                            logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
-
-                            List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
-
-                            Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
-                                    .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                            carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada));
-
-                        } else {
-                            logger.info(EXISTE_CARPETA + comunicacionOficialInOut.get().getFolder().getName());
-
-                            List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(comunicacionOficialInOut.get());
-
-                            Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
-                                    .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                            carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
-                        }
-                        idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
-                        //Creando el mensaje de respuesta
-                        response.setCodMensaje("0000");
-                        response.setMensaje("Documento añadido correctamente");
-                        logger.info(AVISO_CREA_DOC_ID + idDocumento);
-
-                    } else {
-                        response.setCodMensaje("3333");
-                        response.setMensaje("En esta sede y dependencia no esta permitido relaizar radicaciones");
-                    }
+                    crearInsertarCarpetaRadicacion(metadatosDocumentosDTO, response, bytes, properties, comunicacionOficial, tipoComunicacionSelector, comunicacionOficialFolder);
                 } else {
                     logger.info(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
@@ -1057,6 +1002,73 @@ public class ContentControlAlfresco implements ContentControl {
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
 
+    }
+
+    private String getTipoComunicacionSelector(String tipoComunicacion) {
+        switch (tipoComunicacion) {
+            case "EI": {
+                return COMUNICACIONES_INTERNAS_RECIBIDAS;
+            }
+            case "SI": {
+                return COMUNICACIONES_INTERNAS_ENVIADAS;
+            }
+            case "EE": {
+                return COMUNICACIONES_EXTERNAS_RECIBIDAS;
+            }
+            case "SE": {
+                return COMUNICACIONES_EXTERNAS_ENVIADAS;
+            }
+            default:
+                return COMUNICACIONES_INTERNAS_RECIBIDAS;
+        }
+    }
+
+    private void crearInsertarCarpetaRadicacion(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String comunicacionOficial, String tipoComunicacionSelector, Optional<Carpeta> comunicacionOficialFolder) {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
+        Carpeta carpetaTarget;
+        String idDocumento;
+        if (comunicacionOficialFolder.isPresent()) {
+            logger.info(EXISTE_CARPETA + comunicacionOficialFolder.get().getFolder().getName());
+
+            List<Carpeta> carpetasDeComunicacionOficial = obtenerCarpetasHijasDadoPadre(comunicacionOficialFolder.get());
+
+            String finalComunicacionOficial = comunicacionOficial;
+            Optional<Carpeta> comunicacionOficialInOut = carpetasDeComunicacionOficial.stream()
+                    .filter(p -> p.getFolder().getName().contains(finalComunicacionOficial)).findFirst();
+
+
+            if (!comunicacionOficialInOut.isPresent()) {
+
+                Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), finalComunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get());
+                logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
+
+                List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
+
+                Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
+                        .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
+                carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada));
+
+            } else {
+                logger.info(EXISTE_CARPETA + comunicacionOficialInOut.get().getFolder().getName());
+
+                List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(comunicacionOficialInOut.get());
+
+                Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
+                        .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
+                carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
+            }
+            idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+            //Creando el mensaje de respuesta
+            response.setCodMensaje("0000");
+            response.setMensaje("Documento añadido correctamente");
+            logger.info(AVISO_CREA_DOC_ID + idDocumento);
+
+        } else {
+            response.setCodMensaje("3333");
+            response.setMensaje("En esta sede y dependencia no esta permitido relaizar radicaciones");
+        }
     }
 
     private String getString(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
@@ -1142,11 +1154,11 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para llenar propiedades para crear carpeta
      *
-     * @param clase       clase de la carpeta
-     * @param props       objeto de propiedades
-     * @param codOrg      codigo
+     * @param clase  clase de la carpeta
+     * @param props  objeto de propiedades
+     * @param codOrg codigo
      */
-    private void llenarPropiedadesCarpeta( String clase, Map<String, String> props, String codOrg) {
+    private void llenarPropiedadesCarpeta(String clase, Map<String, String> props, String codOrg) {
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put("cmcor:CodigoBase", codOrg);

@@ -283,7 +283,7 @@ public class EcmIntegrationServicesClientRest {
     public MensajeRespuesta modificarDocumentoECM(@RequestBody MetadatosDocumentosDTO metadatos) throws IOException {
         logger.info("processing rest request - Modificar Documento ECM " + metadatos.getIdDocumento());
         try {
-            return fEcmManager.modificarDocumento(metadatos);
+            return fEcmManager.modificarMetadatosDocumento(metadatos);
         } catch (IOException e) {
             logger.error("Error en operacion - Modificar Documento ECM ", e);
             throw e;
