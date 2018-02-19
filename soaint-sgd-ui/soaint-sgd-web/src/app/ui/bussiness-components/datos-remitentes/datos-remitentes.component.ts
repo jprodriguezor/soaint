@@ -290,6 +290,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   newRemitente() {
     this.visibility['datosContacto'] = true;
     const dest: DestinatarioDTO = this.form.value;
+    dest.isBacken = !isNullOrUndefined(this.destinatario) && this.destinatario.isBacken ? true : false;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     if (!dest.interno) {
       if(isNullOrUndefined(this.destinatarioDatosContactos)) {
@@ -325,7 +326,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.reset();
       this.reset();
     }
-
+    this.destinatario = null;
   }
 
   reset() {
