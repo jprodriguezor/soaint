@@ -98,6 +98,7 @@ export const environment = {
 
     // Produccion Documental
     pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+    pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
     pd_gestion_documental : {
         subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
         obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
@@ -106,8 +107,9 @@ export const environment = {
         obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
+        descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
     }
-
+    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
 };
 
 export const process_info = {

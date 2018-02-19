@@ -9,10 +9,10 @@ import {TareaDTO} from '../../../../../domain/tareaDTO';
 export class DatosDestinatarioComponent implements OnInit {
 
   @Input() taskData: TareaDTO;
-  principal: Boolean = false;
+  principal = false;
 
-  @ViewChild('destinatarioInterno') destinatarioInterno;
   @ViewChild('destinatarioExterno') destinatarioExterno;
+  @ViewChild('destinatarioInterno') destinatarioInterno;
 
   constructor() {
     console.log('CONSTRUCTOR...');
@@ -20,6 +20,10 @@ export class DatosDestinatarioComponent implements OnInit {
 
   ngOnInit() {
     console.log('ON INIT...');
+  }
+
+  changePrincipalParent(event) {
+    this.principal = event;
   }
 
 }

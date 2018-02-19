@@ -90,7 +90,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
 
     this.contacts = this.contactsDefault;
-    console.log("lista de contactos ");
+
     console.log(this.contacts);
 
     this.addColombiaByDefault();

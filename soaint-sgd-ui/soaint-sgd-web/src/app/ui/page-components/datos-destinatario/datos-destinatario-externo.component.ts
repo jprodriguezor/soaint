@@ -106,21 +106,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.listenForChanges();
     this.listenForErrors();
     this.visibility['tipoPersona'] = true;
-    //
-    //console.log(this.visibility);
-    //console.log(this.destinatario);
-    //
-    //
-    //
-    //console.log(this.objTipoComunicacion);
-    //console.log(this.tipoComunicacion);
-    //console.log(this.destinatario);
-  }
-
-  getDestinatarioDefault(destinatarioDefault){
-
-    this.destinatario = destinatarioDefault;
-
+    console.log(this.destinatario);
     if(this.destinatario){
 
       this.setTipoComunicacion(this.objTipoComunicacion);

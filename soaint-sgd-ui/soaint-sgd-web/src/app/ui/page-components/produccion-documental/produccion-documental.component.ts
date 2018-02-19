@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {createSelector} from 'reselect';
@@ -20,8 +20,8 @@ import {PushNotificationAction} from '../../../infrastructure/state-management/n
 import {DestinatarioDTO} from '../../../domain/destinatarioDTO';
 import {AgentDTO} from '../../../domain/agentDTO';
 import {MessagingService} from '../../../shared/providers/MessagingService';
-import {DocumentVersionRemoved, DocumentVersionUploaded} from './messages/DocumentVersionMessages';
-import {DocumentoEcmDTO} from '../../../domain/documentoEcmDTO';
+import {DocumentDownloaded} from './events/DocumentDownloaded';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'produccion-documental',
@@ -45,33 +45,30 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   tipoComunicacionSelected: ConstanteDTO;
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
-  docUploadedSubscription: Subscription;
-  docRemovedSubscription: Subscription;
+
+  documentUrl: string;
+  pdfViewer = false;
 
   tabIndex = 0;
 
   authPayload: { usuario: string, pass: string } | {};
   authPayloadUnsubscriber: Subscription;
+  documentSubscription: Subscription;
 
   constructor(private _store: Store<RootState>,
               private _taskSandBox: TaskSandBox,
               private route: ActivatedRoute,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
-              private messaging: MessagingService,
+              private _changeDetectorRef: ChangeDetectorRef,
+              private messagingService: MessagingService,
               private pdMessageService: PdMessageService) {
-    this.route.params.subscribe( params => {
-      this.status = parseInt(params.status, 10) || 0;
-    } );
-    this.docUploadedSubscription = this.messaging.of(DocumentVersionUploaded).subscribe( document => {
-      console.log(`Decumento subido al ECM`);
-      console.log(this.taskCurrentStatus);
-      this.guardarEstadoTarea()
-    });
-    this.docRemovedSubscription = this.messaging.of(DocumentVersionRemoved).subscribe( document => {
-      console.log(`Documento eliminado del ECM`);
-      console.log(this.taskCurrentStatus);
-      this.guardarEstadoTarea()
-    });
+      this.route.params.subscribe( params => {
+          this.status = parseInt(params.status, 10) || 0;
+      } );
+      this.documentSubscription = this.messagingService.of(DocumentDownloaded).subscribe(message => {
+          this.tabIndex = 3;
+          this.refreshView();
+      });
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
     });
@@ -85,8 +82,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   private initCurrentStatus() {
       this.taskCurrentStatus = {
           datosGenerales: {
-              idDocumentoEcm: 'none',
               tipoComunicacion: null,
+              listaVersionesDocumento: [],
               listaAnexos: []
           },
           datosContacto: {
@@ -107,7 +104,25 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
           this.funcionarioLog = funcionario;
         });
         this._store.select(getActiveTask).take(1).subscribe(activeTask => {
-          this.task = activeTask;
+      this.task = activeTask;
+
+        if (activeTask.variables && activeTask.variables.numeroRadicado) {
+            console.log('Buscando documento asociado')
+            this._produccionDocumentalApi.obtenerDatosDocXnroRadicado({id: activeTask.variables.numeroRadicado}).subscribe(
+                res => {
+                    if (res.ideEcm) {
+                        console.log('Encontrado documento asociado')
+                        this.documentUrl = `${environment.pd_gestion_documental.descargarDocumentoPorId}?identificadorDoc=${res.ideEcm}`;
+                        this.pdfViewer = true;
+                        this.refreshView();
+                    } else {
+                        this._store.dispatch(new PushNotificationAction({severity: 'error', summary: `No se encontro ningún documento asociado al radicado: ${activeTask.variables.numeroRadicado}`}));
+                    }
+                },
+                error => this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: error}))
+            );
+        }
+
           this._produccionDocumentalApi.obtenerEstadoTarea({
             idInstanciaProceso: this.task.idInstanciaProceso,
             idTareaProceso: this.idEstadoTarea
@@ -116,9 +131,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               if (status) {
                     this.taskCurrentStatus = status;
                     this.datosGenerales.updateStatus(status);
-                    if (status.datosGenerales.tipoComunicacion) {
-                        this.datosContacto.updateStatus(status);
-                    }
+                // if (status.datosGenerales.tipoComunicacion) {
+                //     this.datosContacto.updateStatus(status);
+                // }
                     this.gestionarProduccion.updateStatus(status);
                     console.log(status);
               } else {
@@ -149,21 +164,21 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   getCurrentStatus(): StatusDTO {
       this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
-      this.taskCurrentStatus.datosGenerales.idDocumentoEcm = this.datosGenerales.idDocumentoEcm;
+      this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-      if (this.datosGenerales.form.get('tipoComunicacion').value) {
-          if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
-              this.taskCurrentStatus.datosContacto.listaDestinatarios
-                  = this.datosContacto.destinatarioInterno && this.datosContacto.destinatarioInterno.listaDestinatarios || [];
-          } else {
-              this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
-          }
-      } else {
-          this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
-      }
+      // if (this.datosGenerales.form.get('tipoComunicacion').value) {
+      //     if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
+      //         this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
+      //     } else {
+      //         this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
+      //     }
+      // } else {
+      //     this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
+      // }
       this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
+      this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
       return this.taskCurrentStatus;
   }
 
@@ -269,10 +284,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     ngOnDestroy(): void {
         this.authPayloadUnsubscriber.unsubscribe();
-        this.docUploadedSubscription.unsubscribe();
+        this.documentSubscription.unsubscribe();
     }
 
     save(): Observable<any> {
         return Observable.of(true).delay(5000);
+    }
+
+    refreshView() {
+        this._changeDetectorRef.detectChanges();
     }
 }
