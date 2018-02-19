@@ -5,7 +5,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.uti.SystemParameters;
+import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
@@ -142,7 +142,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             switch (classDocumental) {
                 case CLASE_BASE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoBase", CLASE_BASE, props, codOrg);
+                    llenarPropiedadesCarpeta(CLASE_BASE, props, codOrg);
                     break;
                 case CLASE_DEPENDENCIA:
                     llenarPropiedadesCarpeta(CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg, folderFather);
@@ -1003,11 +1003,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                             Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
                                     .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                            if (comunicacionOficialInOutDentro.isPresent()) {
-                                carpetaTarget = comunicacionOficialInOutDentro.get();
-                            } else {
-                                carpetaTarget = crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada);
-                            }
+                            carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada));
 
                         } else {
                             logger.info(EXISTE_CARPETA + comunicacionOficialInOut.get().getFolder().getName());
@@ -1016,11 +1012,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                             Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
                                     .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                            if (comunicacionOficialInOutDentro.isPresent()) {
-                                carpetaTarget = comunicacionOficialInOutDentro.get();
-                            } else {
-                                carpetaTarget = crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get());
-                            }
+                            carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
                         }
                         idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
                         //Creando el mensaje de respuesta
@@ -1150,15 +1142,14 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para llenar propiedades para crear carpeta
      *
-     * @param tipoCarpeta tipo de carpeta
      * @param clase       clase de la carpeta
      * @param props       objeto de propiedades
      * @param codOrg      codigo
      */
-    private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map<String, String> props, String codOrg) {
+    private void llenarPropiedadesCarpeta( String clase, Map<String, String> props, String codOrg) {
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
-        props.put(tipoCarpeta, codOrg);
+        props.put("cmcor:CodigoBase", codOrg);
     }
 
     /**

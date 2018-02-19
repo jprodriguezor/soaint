@@ -1,4 +1,4 @@
-package co.com.soaint.ecm.uti;
+package co.com.soaint.ecm.util;
 
 /**
  * Clase utilitaria para devolver las constantes

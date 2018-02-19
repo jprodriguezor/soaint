@@ -3,7 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresco;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.uti.SystemParameters;
+import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
