@@ -393,12 +393,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Carpeta padre
      */
     private Carpeta getCarpeta(String codFolder, Carpeta aux, String metadato, Carpeta folderReturn) {
-
+            Carpeta folderAux=folderReturn;
         if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)) != null &&
                 aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)).equals(codFolder)) {
-            folderReturn = aux;
+            folderAux = aux;
         }
-        return folderReturn;
+        return folderAux;
     }
 
     /**
