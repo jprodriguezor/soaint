@@ -90,6 +90,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               distribucion: null,
               responderRemitente: false,
               hasDestinatarioPrincipal: false,
+              issetListDestinatarioBackend: false,
               listaDestinatariosInternos: [],
               listaDestinatariosExternos: []
           },
@@ -169,6 +170,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
 
       this.taskCurrentStatus.datosContacto.hasDestinatarioPrincipal = this.datosContacto.hasDestinatarioPrincipal;
+      this.taskCurrentStatus.datosContacto.issetListDestinatarioBackend = this.datosContacto.issetListDestinatarioBacken;
       this.taskCurrentStatus.datosContacto.listaDestinatariosInternos = this.datosContacto.listaDestinatariosInternos;
       this.taskCurrentStatus.datosContacto.listaDestinatariosExternos = this.datosContacto.listaDestinatariosExternos;
 

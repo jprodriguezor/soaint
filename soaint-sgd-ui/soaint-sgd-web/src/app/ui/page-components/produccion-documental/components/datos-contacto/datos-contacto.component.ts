@@ -48,6 +48,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   editable = true;
   defaultDestinatarioTipoComunicacion = '';
   hasDestinatarioPrincipal = false;
+  responderRemitente = false;
   issetListDestinatarioBacken = false;
   indexSelectExterno:number = -1;
   indexSelectInterno:number = -1;
@@ -131,6 +132,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatariosExternos];
     this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatariosInternos];
     this.hasDestinatarioPrincipal = currentStatus.datosContacto.hasDestinatarioPrincipal;
+    this.responderRemitente = currentStatus.datosContacto.responderRemitente;
+    this.issetListDestinatarioBacken = currentStatus.datosContacto.issetListDestinatarioBackend;
     this.refreshView();
   }
 

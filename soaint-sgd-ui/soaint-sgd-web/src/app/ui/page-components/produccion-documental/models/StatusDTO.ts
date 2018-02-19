@@ -14,6 +14,7 @@ export interface StatusDTO {
     distribucion: string,
     responderRemitente: boolean,
     hasDestinatarioPrincipal: boolean,
+    issetListDestinatarioBackend: boolean,
     listaDestinatariosInternos: DestinatarioDTO[],
     listaDestinatariosExternos: DestinatarioDTO[]
   },

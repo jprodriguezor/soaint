@@ -27,6 +27,7 @@
                       id="responderRemitente"
                       binary="true"
                       [hidden]="!hasNumberRadicado"
+                      [dynamicDisable]="issetListDestinatarioBacken"
                       (onChange) = "onChangeResponderRemitente($event)">
           </p-checkbox>
         </div>
