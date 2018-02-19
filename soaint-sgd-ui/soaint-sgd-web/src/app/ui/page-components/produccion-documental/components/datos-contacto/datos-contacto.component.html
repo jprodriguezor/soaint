@@ -21,13 +21,12 @@
       </div>
       <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
         <div style="padding: 20px 0 0 10px">
-          <p-checkbox name="responseToRem"
+          <p-checkbox name="responderRemitente"
                       label="Responder a remitente"
                       formControlName="responderRemitente"
-                      id="responseToRem"
+                      id="responderRemitente"
                       binary="true"
-                      *ngIf="hasNumberRadicado"
-                      [disabled] = "issetListDestinatarioBacken">
+                      [hidden]="!hasNumberRadicado">
           </p-checkbox>
         </div>
       </div>

@@ -123,6 +123,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
       this.responderRemitente = responderRemitente;
 
+
       if (responderRemitente) {
 
         if (this.taskData.variables.numeroRadicado) {
@@ -232,7 +233,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.formBuilder.group({
       // Datos destinatario
-      'responderRemitente': [null],
+      'responderRemitente': [{value: null, disabled: this.issetListDestinatarioBacken}],
       'distribucion': [null],
     });
   }
@@ -269,6 +270,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
       if (!this.issetListDestinatarioBacken) {
         this.issetListDestinatarioBacken = (newDestinatario.isBacken) ? true : false;
+        this.responderRemitente = true;
       }
 
       if (newDestinatario.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
@@ -305,6 +307,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         }
       }
     }
+
+    this.refreshView();
   }
 
   editDestinatario(index, op) {
