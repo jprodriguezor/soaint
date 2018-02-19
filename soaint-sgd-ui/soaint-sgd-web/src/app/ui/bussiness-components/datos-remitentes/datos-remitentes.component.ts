@@ -154,7 +154,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('dependencia').setValue(this.destinatario.dependencia);
       this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
 
-      this.visibility['datosContacto'] = true;
+      if(!this.destinatario.interno){
+        this.visibility['datosContacto'] = true;
+      }
+
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
 
@@ -288,11 +291,12 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   newRemitente() {
-    this.visibility['datosContacto'] = true;
+
     const dest: DestinatarioDTO = this.form.value;
     dest.isBacken = !isNullOrUndefined(this.destinatario) && this.destinatario.isBacken ? true : false;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     if (!dest.interno) {
+      this.visibility['datosContacto'] = true;
       if(isNullOrUndefined(this.destinatarioDatosContactos)) {
         dest.datosContactoList =  [];
       }
@@ -326,7 +330,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.reset();
       this.reset();
     }
-    this.destinatario = null;
+    //this.destinatario = null;
   }
 
   reset() {
