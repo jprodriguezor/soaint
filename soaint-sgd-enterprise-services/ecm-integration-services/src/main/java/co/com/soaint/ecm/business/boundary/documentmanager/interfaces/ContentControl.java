@@ -101,7 +101,7 @@ public interface ContentControl {
      * @param session     Objeto conexion
      * @return Se retorna el documento
      */
-    Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException;
+    MensajeRespuesta descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException;
 
     /**
      * MOver documento

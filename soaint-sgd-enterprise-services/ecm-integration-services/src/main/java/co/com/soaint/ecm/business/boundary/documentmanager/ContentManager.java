@@ -4,20 +4,17 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
-import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,8 +29,8 @@ public class ContentManager {
     @Autowired
     private
     ContentControl contentControl;
-    private static final String MSGCONEXION="### Estableciendo la conexion..";
-    private static final Logger logger = LogManager.getLogger (ContentManager.class.getName ( ));
+    private static final String MSGCONEXION = "### Estableciendo la conexion..";
+    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
 
 
     /**
@@ -43,30 +40,30 @@ public class ContentManager {
      * @return Mensaje de respuesta
      * @throws InfrastructureException Excepcion que se recoje ante cualquier error
      */
-    public MensajeRespuesta crearEstructuraContent(List <EstructuraTrdDTO> structure) {
-        logger.info ("### Creando estructura content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+    public MensajeRespuesta crearEstructuraContent(List<EstructuraTrdDTO> structure) {
+        logger.info("### Creando estructura content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         Carpeta carpeta;
         try {
 
-            Utilities utils = new Utilities ( );
-            new Conexion ( );
+            Utilities utils = new Utilities();
+            new Conexion();
             Conexion conexion;
             for (EstructuraTrdDTO EstructuraTrdDTO : structure) {
-                utils.ordenarListaOrganigrama (EstructuraTrdDTO.getOrganigramaItemList ( ));
+                utils.ordenarListaOrganigrama(EstructuraTrdDTO.getOrganigramaItemList());
             }
 
-            logger.info ("### Estableciendo Conexion con el ECM..");
-            conexion = contentControl.obtenerConexion ( );
+            logger.info("### Estableciendo Conexion con el ECM..");
+            conexion = contentControl.obtenerConexion();
 
-            carpeta = new Carpeta ( );
-            carpeta.setFolder (conexion.getSession ( ).getRootFolder ( ));
-            response = contentControl.generarArbol (structure, carpeta);
+            carpeta = new Carpeta();
+            carpeta.setFolder(conexion.getSession().getRootFolder());
+            response = contentControl.generarArbol(structure, carpeta);
 
         } catch (Exception e) {
-            response.setCodMensaje ("Error creando estructura");
-            response.setMensaje ("11113");
-            logger.error ("Error creando estructura", e);
+            response.setCodMensaje("Error creando estructura");
+            response.setMensaje("11113");
+            logger.error("Error creando estructura", e);
         }
         return response;
     }
@@ -74,28 +71,28 @@ public class ContentManager {
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param documento        Documento que se va a subir
+     * @param documento              Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
-        logger.info ("### Subiendo documento principal/adjunto al content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Subiendo documento principal/adjunto al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de subir el documento principal/adjunto..");
-            response=contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession ( ), documento, metadatosDocumentosDTO,selector);
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de subir el documento principal/adjunto..");
+            response = contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, metadatosDocumentosDTO, selector);
 
         } catch (Exception e) {
-            logger.error ("Error subiendo documento principal/adjunto", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear el documento principal/adjunto");
+            logger.error("Error subiendo documento principal/adjunto", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al crear el documento principal/adjunto");
             throw e;
         }
         return response;
@@ -105,56 +102,57 @@ public class ContentManager {
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param documento        Documento que se va a subir
+     * @param documento              Documento que se va a subir
      * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
-     * @param selector  parametro que indica donde se va a guardar el documento
+     * @param selector               parametro que indica donde se va a guardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
     public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
-        logger.info ("### Subiendo versionando documento generado al content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Subiendo versionando documento generado al content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de subir/versionar el documento..");
-            response=contentControl.subirVersionarDocumentoGenerado(conexion.getSession ( ), documento, metadatosDocumentosDTO, selector);
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de subir/versionar el documento..");
+            response = contentControl.subirVersionarDocumentoGenerado(conexion.getSession(), documento, metadatosDocumentosDTO, selector);
 
         } catch (Exception e) {
-            logger.error ("Error subiendo/versionando documento", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error al crear/versionar el documento");
+            logger.error("Error subiendo/versionando documento", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al crear/versionar el documento");
             throw e;
         }
         return response;
 
     }
+
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param idDocPrincipal        Documento que se va a subir
+     * @param idDocPrincipal Documento que se va a subir
      * @return Lista de objetos de documentos asociados al idDocPrincipal
      * @throws InfrastructureException Excepcion que se lanza en error
      */
     public MensajeRespuesta obtenerDocumentosAdjuntosContent(String idDocPrincipal) throws IOException {
 
-        logger.info ("### Obtener documento principal y adjunto del content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Obtener documento principal y adjunto del content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de obtener documentos principales y adjuntos..");
-            response=contentControl.obtenerDocumentosAdjuntos(conexion.getSession ( ), idDocPrincipal );
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de obtener documentos principales y adjuntos..");
+            response = contentControl.obtenerDocumentosAdjuntos(conexion.getSession(), idDocPrincipal);
 
         } catch (Exception e) {
-            logger.error ("Error obteniendo documento adjunto y principal", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error obteniendo documento adjunto y principal");
+            logger.error("Error obteniendo documento adjunto y principal", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error obteniendo documento adjunto y principal");
             throw e;
         }
         return response;
@@ -164,56 +162,57 @@ public class ContentManager {
     /**
      * Metodo generico para obtener las versiones de un documento del content
      *
-     * @param idDoc        Id Documento que se va  a pedir Versiones
+     * @param idDoc Id Documento que se va  a pedir Versiones
      * @return Lista de objetos de documentos asociados al idDocPrincipal
      * @throws InfrastructureException Excepcion que se lanza en error
      */
     public MensajeRespuesta obtenerVersionesDocumentoContent(String idDoc) throws IOException {
 
-        logger.info ("### Obtener versiones documento del content..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Obtener versiones documento del content..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de obtener versiones del documento..");
-            response=contentControl.obtenerVersionesDocumento(conexion.getSession ( ), idDoc );
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de obtener versiones del documento..");
+            response = contentControl.obtenerVersionesDocumento(conexion.getSession(), idDoc);
 
         } catch (Exception e) {
-            logger.error ("Error obteniendo versiones del documento", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error obteniendo versiones del documento");
+            logger.error("Error obteniendo versiones del documento", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error obteniendo versiones del documento");
             throw e;
         }
         return response;
 
     }
+
     /**
      * Metodo generico para subir los dccumentos al content
      *
-     * @param metadatosDocumentos  Metadatos del documento a modificar
+     * @param metadatosDocumentos Metadatos del documento a modificar
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
     public MensajeRespuesta modificarMetadatoDocumentoContent(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
 
-        logger.info ("### Modificando metadatos del documento..");
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Modificando metadatos del documento..");
+        MensajeRespuesta response = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
 
-            logger.info ("### Se invoca el metodo de modificar el documento..");
+            logger.info("### Se invoca el metodo de modificar el documento..");
 
-            response=contentControl.modificarMetadatosDocumento (conexion.getSession ( ), metadatosDocumentos.getIdDocumento(),metadatosDocumentos.getNroRadicado(), metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
+            response = contentControl.modificarMetadatosDocumento(conexion.getSession(), metadatosDocumentos.getIdDocumento(), metadatosDocumentos.getNroRadicado(), metadatosDocumentos.getTipologiaDocumental(), metadatosDocumentos.getNombreRemitente());
 
         } catch (Exception e) {
-            logger.error ("Error modificando el documento", e);
-            response.setCodMensaje ("2222");
-            response.setMensaje ("Error al modificar el documento");
+            logger.error("Error modificando el documento", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al modificar el documento");
             throw e;
         }
         return response;
@@ -230,22 +229,22 @@ public class ContentManager {
      */
     public MensajeRespuesta moverDocumento(String documento, String carpetaFuente, String carpetaDestino) {
 
-        logger.info ("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
-        MensajeRespuesta response = new MensajeRespuesta ( );
+        logger.info("### Moviendo Documento " + documento + " desde la carpeta: " + carpetaFuente + " a la carpeta: " + carpetaDestino);
+        MensajeRespuesta response = new MensajeRespuesta();
 
         try {
 
-            logger.info ("###Se va a establecer la conexion");
+            logger.info("###Se va a establecer la conexion");
             Conexion conexion;
-            new Conexion ( );
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("###Conexion establecida");
-            response = contentControl.movDocumento (conexion.getSession ( ), documento, carpetaFuente, carpetaDestino);
+            new Conexion();
+            conexion = contentControl.obtenerConexion();
+            logger.info("###Conexion establecida");
+            response = contentControl.movDocumento(conexion.getSession(), documento, carpetaFuente, carpetaDestino);
 
         } catch (Exception e) {
-            logger.error ("Error moviendo documento", e);
-            response.setCodMensaje ("0003");
-            response.setMensaje ("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
+            logger.error("Error moviendo documento", e);
+            response.setCodMensaje("0003");
+            response.setMensaje("Error moviendo documento, esto puede ocurrir al no existir alguna de las carpetas");
         }
         return response;
     }
@@ -256,25 +255,24 @@ public class ContentManager {
      * @param metadatosDocumentosDTO Metadatos del documento dentro del ECM
      * @return Documento
      */
-    public Response descargarDocumentoContent(MetadatosDocumentosDTO metadatosDocumentosDTO) {
+    public MensajeRespuesta descargarDocumentoContent(MetadatosDocumentosDTO metadatosDocumentosDTO) {
 
-        logger.info ("### Descargando documento del content..");
-        ResponseBuilder response = new ResponseBuilderImpl ( );
-
+        logger.info("### Descargando documento del content..");
+        MensajeRespuesta respuesta = new MensajeRespuesta();
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de descargar el documento..");
-            return contentControl.descargarDocumento (metadatosDocumentosDTO, conexion.getSession ( ));
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de descargar el documento..");
+            respuesta = contentControl.descargarDocumento(metadatosDocumentosDTO, conexion.getSession());
 
         } catch (Exception e) {
-            logger.error ("Error descargando documento", e);
+            logger.error("Error descargando documento", e);
 
         }
-        logger.info ("### Se devuelve el documento del content..");
-        return response.build ( );
+        logger.info("### Se devuelve el documento del content..");
+        return respuesta;
 
     }
 
@@ -286,22 +284,22 @@ public class ContentManager {
      */
     public boolean eliminarDocumento(String idDoc) {
 
-        logger.info ("### Eliminando documento del content..");
+        logger.info("### Eliminando documento del content..");
 
         try {
             Conexion conexion;
-            new Conexion ( );
-            logger.info (MSGCONEXION);
-            conexion = contentControl.obtenerConexion ( );
-            logger.info ("### Se invoca el metodo de eliminar el documento..");
-            if (contentControl.eliminardocumento (idDoc, conexion.getSession ( ))) {
-                logger.info ("Documento eliminado con exito");
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de eliminar el documento..");
+            if (contentControl.eliminardocumento(idDoc, conexion.getSession())) {
+                logger.info("Documento eliminado con exito");
                 return Boolean.TRUE;
             } else
                 return Boolean.FALSE;
 
         } catch (Exception e) {
-            logger.error ("Error eliminando documento", e);
+            logger.error("Error eliminando documento", e);
             return Boolean.FALSE;
         }
     }

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
 public class EcmManager {
 
     private static final Logger logger = LogManager.getLogger(EcmManager.class.getName());
-    private static final String ECM_ERROR="### Error..------";
+    private static final String ECM_ERROR = "### Error..------";
 
     @Autowired
     private
@@ -165,6 +164,7 @@ public class EcmManager {
 
         return response;
     }
+
     /**
      * Metodo que llama el servicio para mover documentos dentro del ECM
      *
@@ -198,14 +198,24 @@ public class EcmManager {
      */
     public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
         logger.info("### Descargando documento del content..");
-        ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl();
+
         try {
-            return contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
+            MensajeRespuesta mensajeRespuesta = contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
+            if ("0000".equals(mensajeRespuesta.getCodMensaje())) {
+                logger.info("### Se devuelve el documento del content..");
+                return Response.ok(mensajeRespuesta.getMetadatosDocumentosDTOList().get(0).getDocumento())
+                        .header("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                        .build();
+            } else {
+                logger.info("### Error al devolver documento del content..");
+                return Response.serverError().build();
+            }
+
         } catch (Exception e) {
             logger.error("Error descargando documento", e);
+            return Response.serverError().build();
         }
-        logger.info("### Se devuelve el documento del content..");
-        return response.build();
+
     }
 
     /**

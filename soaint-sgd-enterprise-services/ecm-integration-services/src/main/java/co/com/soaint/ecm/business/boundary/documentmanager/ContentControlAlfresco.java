@@ -223,9 +223,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Objeto de tipo response que devuleve el documento
      */
     @Override
-    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
+    public MensajeRespuesta descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
         logger.info(metadatosDocumentosDTO.toString());
         ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
+        ArrayList<MetadatosDocumentosDTO> documento = new ArrayList<>();
+        MetadatosDocumentosDTO metadatosDocumentosDTO1 = new MetadatosDocumentosDTO();
+        MensajeRespuesta mensajeRespuesta= new MensajeRespuesta();
         try {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
@@ -242,13 +245,20 @@ public class ContentControlAlfresco implements ContentControl {
                 file = convertInputStreamToFile(doc.getContentStream());
             }
             logger.info("Se procede a devolver el documento" + metadatosDocumentosDTO.getNombreDocumento());
-            return Response.ok(file)
-                    .header(CONTENT_DISPOSITION, "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
-                    .build();
+            metadatosDocumentosDTO1.setDocumento(file);
+
+            mensajeRespuesta.setCodMensaje("0000");
+            mensajeRespuesta.setMensaje("Documento Retornado con exito");
+            documento.add(metadatosDocumentosDTO1);
+            mensajeRespuesta.setMetadatosDocumentosDTOList(documento);
+
         } catch (Exception e) {
             logger.error("Error en la obtención del documento: ", e);
-            return Response.serverError().build();
+            mensajeRespuesta.setCodMensaje("2222");
+            mensajeRespuesta.setMensaje(ECM_ERROR);
+
         }
+        return mensajeRespuesta;
     }
 
     /**

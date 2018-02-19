@@ -3,6 +3,7 @@ package co.com.soaint.foundation.canonical.ecm;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,5 +39,6 @@ public class MetadatosDocumentosDTO implements Serializable {
     private String tamano;
     private String tipoPadreAdjunto;
     private String versionLabel;
+    private File documento;
 
 }
