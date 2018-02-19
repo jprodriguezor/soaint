@@ -15,6 +15,8 @@ import {Store} from '@ngrx/store';
 import {State as RootState} from '../../../../../infrastructure/redux-store/redux-reducers';
 import {isString} from 'util';
 import {DependenciaDTO} from '../../../../../domain/dependenciaDTO';
+import {ObservacionDTO} from '../../models/ObservacionDTO';
+import {getAuthenticatedFuncionario} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 
 @Component({
   selector: 'pd-gestionar-produccion',
@@ -25,10 +27,13 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   validations: any = {};
+  funcionarioLog: FuncionarioDTO;
 
   dependenciaSelected: ConstanteDTO;
 
   listaProyectores: ProyectorDTO[] = [];
+  listaObservaciones: ObservacionDTO[] = [];
+  observacionText: string;
   startIndex = 0;
   @Input() status = 1;
 
@@ -57,6 +62,9 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   }
 
     ngOnInit(): void {
+        this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
+            this.funcionarioLog = funcionario;
+        });
         this.initForm();
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.roles$ = this._produccionDocumentalApi.getRoles({});
@@ -157,6 +165,12 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
     return exists;
   }
 
+    removeFromList(i: any, listname: string) {
+        const list = [...this[listname]];
+        list.splice(i, 1);
+        this[listname] = list;
+    }
+
   listenForChanges() {
       this.subscribers.push(this.form.get('sede').valueChanges.distinctUntilChanged().subscribe((sede) => {
           this.form.get('dependencia').reset();
@@ -209,6 +223,28 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
 
     getListaProyectores(): ProyectorDTO[] {
       return this.listaProyectores;
+    }
+
+    agregarObservacion() {
+        const lista = this.listaObservaciones;
+        const newObservacion = {
+            observaciones: this.observacionText,
+            funcionario: this.funcionarioLog,
+            rol: this._produccionDocumentalApi.getRoleByRolename(this.getRolenameByStatus()),
+            fecha: new Date()
+        };
+        lista.push(newObservacion);
+        this.observacionText = null;
+        this.listaObservaciones = [...lista];
+    }
+
+    getRolenameByStatus() {
+      switch (this.status) {
+          case 1 : { return 'proyector'; }
+          case 2 : { return 'revisor'; }
+          case 3 : { return 'aprobador'; }
+          default : { return null; }
+      }
     }
 
 
