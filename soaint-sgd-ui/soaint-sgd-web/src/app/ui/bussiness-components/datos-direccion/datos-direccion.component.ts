@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit,Output, EventEmitter} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit,Output, EventEmitter} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -37,6 +37,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   form: FormGroup;
   display = false;
   @Input() editable = true;
+
   @Input() contactsDefault: Array<any> = [];
 
   @Output()
@@ -69,7 +70,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
               private _paisSandbox: PaisSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private _changeDetectorRef: ChangeDetectorRef) {
 
     this.initForm();
     this.listenForChanges();
@@ -401,4 +403,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   }
 
+  ngAfterViewInit() {
+    this.refreshView();
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
+  }
 }

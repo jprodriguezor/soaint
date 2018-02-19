@@ -98,7 +98,8 @@
                 <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData.variables.numeroRadicado">
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
-                            <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;">
+                            <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;"
+                                    (click)="obtenerDocumentoRadicado();">
               </button>
                         </div>
                     </div>
@@ -146,7 +147,7 @@
                         </div>
                         <div class="ui-sm-12 ui-g-8 ui-lg-6">
                             <p-fileUpload #versionUploader
-                                            mode="basic"
+                                          mode="basic"
                                           auto="true"
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
@@ -162,7 +163,7 @@
 
         <div class="ui-g ui-fluid" style="margin-bottom: 16px">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
-                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se encontraron resultados">
+                <p-dataTable selectionMode="single" [paginator]="true" [rows]="10" [responsive]="true" [value]="listaVersionesDocumento" emptyMessage="No se han subido documentos">
                     <p-header> Tabla versiones documento</p-header>
                     <p-column field="tipo" header="Tipo" [sortable]="true"></p-column>
                     <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
@@ -230,20 +231,20 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group" style="align-items: flex-end; height: 100%">
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value === 'electronico'">
-                        <p-fileUpload
+                        <p-fileUpload #anexoUploader
                           mode="basic"
                           auto="true"
                           accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
                           [disabled]="form.get('soporte').value !== 'electronico'"
-                          (onSelect)="agregarAnexo($event)"
+                          (onSelect)="agregarAnexo($event, anexoUploader)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
                     </div>
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value !== 'electronico'">
                       <button pButton label="Agregar"
-                              [disabled]="!((form.get('soporte').value == 'electronico' && fileContent) || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
+                              [disabled]="!((form.get('soporte').value == 'electronico') || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
                               (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
                       </button>
                     </div>

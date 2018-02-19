@@ -37,6 +37,12 @@
         <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
           <pd-gestionar-produccion #gestionarProduccion [status]="status"></pd-gestionar-produccion>
         </p-tabPanel>
+
+        <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding *ngIf="pdfViewer">
+          <div style="overflow-y: scroll;max-height: 100%" *ngIf="documentUrl">
+            <pdf-viewer [src]="documentUrl" [show-all]="true" [zoom]="1.5"></pdf-viewer>
+          </div>
+        </p-tabPanel>
       </p-tabView>
     </div>
   </app-task-container>

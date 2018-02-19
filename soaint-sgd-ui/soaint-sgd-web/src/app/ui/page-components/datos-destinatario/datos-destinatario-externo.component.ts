@@ -42,6 +42,7 @@ import {
 import {getActuaCalidadArrayData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/actua-calidad-selectors';
 
 import {LoadDatosRemitenteAction} from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
+import {any} from "codelyzer/util/function";
 
 @Component({
   selector: 'datos-destinatario-externo',
@@ -81,6 +82,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   //@ViewChild('datosDireccion') datosDireccion;
 
   @Input() editable = true;
+  //@Input() test = any;
+  @Input() responseToRem = false;
   @Input() objTipoComunicacion: any;
   @Input() destinatario: AgentDTO;
 
@@ -92,7 +95,8 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private _departamentoSandbox: DepartamentoSandbox,
-              private _municipioSandbox: MunicipioSandbox
+              private _municipioSandbox: MunicipioSandbox,
+              private _changeDetectorRef: ChangeDetectorRef
             ) {
   }
 
@@ -134,7 +138,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
           this.contact['pais'] =  null;
           this.paisSuggestions$.subscribe((values) => {
-              this.contact['pais'] = values.find(value => value.codigo == departamentoArrayData.codPais);
+            this.contact['pais'] = values.find(value => value.codigo == departamentoArrayData.codPais);
           });
           //this._departamentoSandbox.loadDispatch({codPais: departamentoArrayData.codPais});
 
@@ -163,10 +167,7 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
       }
     }
-
-    console.log(this.objTipoComunicacion);
-    console.log(this.tipoComunicacion);
-    console.log(this.destinatario);
+    this.refreshView();
   }
 
   handleCargarNuevosContactos(contacts){
@@ -175,14 +176,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
      this._store.dispatch(new LoadDatosRemitenteAction());
-
-    if(this.contactsDefault.length > 0){
-
-      this.contactsDefault.forEach(contact => {
-
-      });
-    }
-
   }
 
 
@@ -262,8 +255,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
 
   onSelectTipoPersona(value) {
 
-    console.log(value);
-
     // const value = event.value;
     if (!this.visibility.tipoPersona) {
       return;
@@ -272,7 +263,6 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
         tipoPersona: true
       };
     }
-    console.log("paso por aqui");
 
     if (value === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
@@ -314,14 +304,13 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
   setTipoComunicacion(value) {
 
     if (value) {
-      this.visibility = {};
+      //this.visibility = {};
       this.tipoComunicacion = value.codigo;
       if (this.tipoComunicacion === COMUNICACION_INTERNA_ENVIADA) {
         this.visibility['sedeAdministrativa'] = true;
         this.visibility['dependenciaGrupo'] = true;
         this.initLoadTipoComunicacionInterna();
       } else {
-
         this.visibility['tipoPersona'] = true;
         this.initLoadTipoComunicacionExterna();
       }
@@ -354,5 +343,9 @@ export class DatosDestinatarioExternoComponent implements OnInit, OnDestroy {
     this.subscribers.forEach(subscriber => {
       subscriber.unsubscribe();
     });
+  }
+
+  refreshView() {
+    this._changeDetectorRef.detectChanges();
   }
 }
