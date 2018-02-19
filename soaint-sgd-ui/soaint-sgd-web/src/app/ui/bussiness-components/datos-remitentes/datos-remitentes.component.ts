@@ -154,7 +154,9 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
-        this.destinatarioDatosContactos.contacts = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
+
+        const newList1 = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
+        this.destinatarioDatosContactos.contacts = [...newList1];
       }
 
     }
@@ -217,15 +219,17 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       };
     }
 
+    this.visibility['datosContacto'] = true;
+
     if (value.codigo === PERSONA_ANONIMA) {
       this.visibility['tipoPersona'] = true;
+      this.visibility['datosContacto'] = false;
 
     } else if (value.codigo === PERSONA_JURIDICA && this.tipoComunicacion === COMUNICACION_EXTERNA) {
       this.visibility['nit'] = true;
       this.visibility['actuaCalidad'] = true;
       this.visibility['razonSocial'] = true;
       this.visibility['nombre'] = true;
-      this.visibility['datosContacto'] = true;
       this.visibility['inactivo'] = true;
       this.visibility['tipoDocumento'] = true;
       this.tipoDocumentoSuggestions$.subscribe(docs => {
@@ -237,7 +241,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.visibility['nombre'] = true;
       this.visibility['departamento'] = true;
       this.visibility['nroDocumentoIdentidad'] = true;
-      this.visibility['datosContacto'] = true;
       this.visibility['tipoDocumento'] = true;
 
       this.tipoDocumentoSuggestions$.subscribe(docs => {
@@ -288,7 +291,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
         dest.datosContactoList =  [];
       }
       else {
-        dest.datosContactoList = this.destinatarioDatosContactos.contacts;
+        const newList1 =this.destinatarioDatosContactos.contacts;
+        dest.datosContactoList = [...newList1];
+
+        //dest.datosContactoList = this.destinatarioDatosContactos.contacts;
         this.destinatarioDatosContactos.contacts = [];
         this.destinatarioDatosContactos.form.reset();
       }
@@ -331,7 +337,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.visibility['nombre'] = false;
     this.visibility['departamento'] = false;
     this.visibility['nroDocumentoIdentidad'] = false;
-    this.visibility['datosContacto'] = false;
     this.visibility['tipoDocumento'] = false;
     this.visibility['sede'] = false;
     this.visibility['dependencia'] = false;

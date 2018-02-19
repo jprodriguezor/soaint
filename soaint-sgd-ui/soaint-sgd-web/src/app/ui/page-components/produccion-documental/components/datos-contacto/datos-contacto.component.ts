@@ -17,7 +17,7 @@ import {isNullOrUndefined} from 'util';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import { getTipoDocumentoArrayData, getTipoPersonaArrayData, } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
-import {DESTINATARIO_PRINCIPAL} from "../../../../../shared/bussiness-properties/radicacion-properties";
+import {DESTINATARIO_PRINCIPAL, TIPO_REMITENTE_INTERNO, TIPO_REMITENTE_EXTERNO} from "../../../../../shared/bussiness-properties/radicacion-properties";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -43,6 +43,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   editable = true;
   defaultDestinatarioTipoComunicacion = '';
   hasDestinatarioPrincipal = false;
+  issetListDestinatarioBacken = false;
   indexSelectExterno:number = -1;
   indexSelectInterno:number = -1;
 
@@ -150,15 +151,15 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               tempDestinatario.departamento = null;
               tempDestinatario.municipio = null;
               tempDestinatario.datosContactoList = (agente.datosContactoList) ? agente.datosContactoList : null;
-              tempDestinatario.principal = false;
-              if (agente.codTipoRemite === 'EXT') {
+              tempDestinatario.isBacken = true;
+              if (agente.codTipoRemite === TIPO_REMITENTE_EXTERNO) {
 
                 tempDestinatario.interno = false;
                 this.destinatarioExterno = tempDestinatario;
                 this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
                 this.indexSelectExterno = -1;
                 this.destinatarioExternoDialogVisible = true;
-              } else if (agente.codTipoRemite === 'INT') {
+              } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
 
                 tempDestinatario.interno = true;
                 this.destinatarioInterno = tempDestinatario;
@@ -172,17 +173,17 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         }
 
       } else {
-        if (this.defaultDestinatarioTipoComunicacion === 'EXT') {
+        /*if (this.defaultDestinatarioTipoComunicacion === TIPO_REMITENTE_EXTERNO) {
           const index:number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
           if (index !== -1) {
             this.listaDestinatariosExternos.splice(index, 1);
           }
-        } else if (this.defaultDestinatarioTipoComunicacion === 'INT') {
+        } else if (this.defaultDestinatarioTipoComunicacion === TIPO_REMITENTE_INTERNO) {
           const index:number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
           if (index !== -1) {
             this.listaDestinatariosInternos.splice(index, 1);
           }
-        }
+        }*/
       }
     });
   }
@@ -263,15 +264,19 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (newDestinatario) {
 
       if (!this.hasDestinatarioPrincipal) {
-        this.hasDestinatarioPrincipal = (newDestinatario.tipoDestinatario.codigo === 'TP-DESP') ? true : false;
+        this.hasDestinatarioPrincipal = (newDestinatario.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) ? true : false;
+      }
+
+      if (!this.issetListDestinatarioBacken) {
+        this.issetListDestinatarioBacken = (newDestinatario.isBacken) ? true : false;
       }
 
       if (newDestinatario.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
 
         if (newDestinatario.interno) {
-          this.deleteDestinatario(this.indexSelectInterno, 'INT');
+          this.deleteDestinatario(this.indexSelectInterno, TIPO_REMITENTE_INTERNO);
         }else{
-          this.deleteDestinatario(this.indexSelectExterno, 'EXT');
+          this.deleteDestinatario(this.indexSelectExterno, TIPO_REMITENTE_EXTERNO);
         }
 
         const newList1 = this.listaDestinatariosInternos.filter(value => value.tipoDestinatario.codigo !== DESTINATARIO_PRINCIPAL);
@@ -289,12 +294,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       } else {
 
         if (newDestinatario.interno) {
-          this.deleteDestinatario(this.indexSelectInterno, 'INT');
+          this.deleteDestinatario(this.indexSelectInterno, TIPO_REMITENTE_INTERNO);
           this.listaDestinatariosInternos = [newDestinatario, ...this.listaDestinatariosInternos];
           this.destinatarioInternoDialogVisible = !(this.indexSelectInterno > -1);
 
         } else {
-          this.deleteDestinatario(this.indexSelectExterno, 'EXT');
+          this.deleteDestinatario(this.indexSelectExterno, TIPO_REMITENTE_EXTERNO);
           this.listaDestinatariosExternos = [newDestinatario, ...this.listaDestinatariosExternos];
           this.destinatarioExternoDialogVisible = !(this.indexSelectExterno > -1);
         }
@@ -304,11 +309,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   editDestinatario(index, op) {
 
-    if (index > -1 && op === 'EXT') {
+    if (index > -1 && op === TIPO_REMITENTE_EXTERNO) {
       this.indexSelectExterno = index;
       this.datosRemitentesExterno.initFormByDestinatario(this.listaDestinatariosExternos[index]);
       this.destinatarioExternoDialogVisible = true;
-    } else if (index > -1 && op === 'INT') {
+    } else if (index > -1 && op === TIPO_REMITENTE_INTERNO) {
       this.indexSelectInterno = index;
       this.datosRemitentesInterno.initFormByDestinatario(this.listaDestinatariosInternos[index]);
       this.destinatarioInternoDialogVisible = true;
@@ -318,16 +323,18 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   deleteDestinatario(index, op) {
 
-    if (index > -1 && op === 'EXT') {
+    if (index > -1 && op === TIPO_REMITENTE_EXTERNO) {
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].tipoDestinatario.codigo === 'TP-DESP') ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) ? false : true;
+      this.issetListDestinatarioBacken = (this.listaDestinatariosExternos[index].isBacken) ? false : true;
       const radref = [...this.listaDestinatariosExternos];
       radref.splice(index, 1);
       this.listaDestinatariosExternos = radref;
 
-    } else if (index > -1 && op === 'INT') {
+    } else if (index > -1 && op === TIPO_REMITENTE_INTERNO) {
 
-      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].tipoDestinatario.codigo === 'TP-DESP') ? false : true;
+      this.hasDestinatarioPrincipal = (this.listaDestinatariosInternos[index].tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) ? false : true;
+      this.issetListDestinatarioBacken = (this.listaDestinatariosInternos[index].isBacken) ? false : true;
       const radref = [...this.listaDestinatariosInternos];
       radref.splice(index, 1);
       this.listaDestinatariosInternos = radref;

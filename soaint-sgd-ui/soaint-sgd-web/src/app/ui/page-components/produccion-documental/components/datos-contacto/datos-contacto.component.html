@@ -26,7 +26,8 @@
                       formControlName="responderRemitente"
                       id="responseToRem"
                       binary="true"
-                      *ngIf="hasNumberRadicado">
+                      *ngIf="hasNumberRadicado"
+                      [disabled] = "issetListDestinatarioBacken">
           </p-checkbox>
         </div>
       </div>

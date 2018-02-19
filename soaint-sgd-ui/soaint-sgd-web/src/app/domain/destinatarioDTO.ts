@@ -27,6 +27,6 @@ export interface DestinatarioDTO {
     departamento?: DepartamentoDTO,
     municipio?: MunicipioDTO,
     datosContactoList?: ContactoDTO[],
-    principal?: boolean
+    isBacken?: boolean
 }
 
