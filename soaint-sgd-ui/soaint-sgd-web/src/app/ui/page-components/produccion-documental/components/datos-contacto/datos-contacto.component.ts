@@ -194,46 +194,56 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     });
   }
 
-
   seachTipoDestinatario(indOriginal) {
     let result = null;
-    this._store.select(sedeAdministrativaArrayData).subscribe(values => {
-      result = values.find((element) => element.codigo === indOriginal)
-    });
-    return result
+    if (!isNullOrUndefined(indOriginal)) {
+      this._store.select(sedeAdministrativaArrayData).subscribe(values => {
+        result = values.find((element) => element.codigo === indOriginal)
+      });
+    }
+    return isNullOrUndefined(result) ? null : result;
   }
 
   searchTipoPersona(codTipoPers) {
     let result = null;
-    this._store.select(getTipoPersonaArrayData).subscribe(values => {
-      result = values.find((element) => element.codigo === codTipoPers)
-    });
-    return result
+    if (!isNullOrUndefined(codTipoPers)) {
+      this._store.select(getTipoPersonaArrayData).subscribe(values => {
+        result = values.find((element) => element.codigo === codTipoPers)
+      });
+    }
+    return isNullOrUndefined(result) ? null : result;
   }
 
   searchTipoDocumento(codTipDocIdent) {
     let result = null;
-    this._store.select(getTipoDocumentoArrayData).subscribe(values => {
-      result = values.find((element) => element.codigo === codTipDocIdent)
-    });
-    return result
+    if (!isNullOrUndefined(codTipDocIdent)) {
+      this._store.select(getTipoDocumentoArrayData).subscribe(values => {
+        result = values.find((element) => element.codigo === codTipDocIdent)
+      });
+    }
+    return isNullOrUndefined(result) ? null : result;
   }
 
   searchSede(codSede) {
     let result = null;
-    this._store.select(sedeAdministrativaArrayData).subscribe(values => {
-      result = values.find((element) => element.codigo === codSede)
-    });
-    return result
+    if (!isNullOrUndefined(codSede)) {
+      this._store.select(sedeAdministrativaArrayData).subscribe(values => {
+        result = values.find((element) => element.codigo === codSede)
+      });
+    }
+    return isNullOrUndefined(result) ? null : result;
   }
 
   searchDependencia(codDependencia) {
     let result = null;
-    this._produccionDocumentalApi.getDependencias({}).subscribe(values => {
-      result = values.find((element) => element.codigo === codDependencia)
-    });
-    return result
+    if (!isNullOrUndefined(codDependencia)) {
+      this._produccionDocumentalApi.getDependencias({}).subscribe(values => {
+        result = values.find((element) => element.codigo === codDependencia)
+      });
+    }
+    return isNullOrUndefined(result) ? null : result;
   }
+
 
   initForm() {
     this.form = this.formBuilder.group({
