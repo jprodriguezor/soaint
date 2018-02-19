@@ -43,7 +43,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   destinatarioInterno:DestinatarioDTO = null;
   destinatarioExterno:DestinatarioDTO = null;
 
-  responderRemitente = false;
+  //responderRemitente = false;
   hasNumberRadicado = false;
   editable = true;
   defaultDestinatarioTipoComunicacion = '';
@@ -124,76 +124,71 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
     }
-
-    this.form.get('responderRemitente').valueChanges.subscribe(responderRemitente => {
-      this.responderRemitente = responderRemitente;
-
-
-      if (responderRemitente) {
-
-        if (this.taskData.variables.numeroRadicado) {
-          this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-            nroRadicado: this.taskData.variables.numeroRadicado
-          }).subscribe(agente => {
-            console.log('Objeto que viene del backen ', agente);
-            if (agente) {
-              this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
-              let tempDestinatario = <DestinatarioDTO> {};
-              tempDestinatario.interno = false;
-              tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
-              tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
-              tempDestinatario.nombre = (agente.nombre) ? agente.nombre : '';
-              tempDestinatario.tipoDocumento = this.searchTipoDocumento(agente.codTipDocIdent);
-              tempDestinatario.nit = (agente.nit) ? agente.nit : '';
-              tempDestinatario.actuaCalidad = (agente.codEnCalidad) ? agente.codEnCalidad : null;
-              tempDestinatario.actuaCalidadNombre = (agente.codEnCalidad) ? agente.codEnCalidad : '';
-              tempDestinatario.sede = this.searchSede(agente.codSede);
-              tempDestinatario.dependencia = this.searchDependencia(agente.codDependencia) ? agente.codDependencia : null;
-              tempDestinatario.funcionario = null;
-              tempDestinatario.email = '';
-              tempDestinatario.mobile = '';
-              tempDestinatario.phone = '';
-              tempDestinatario.pais = null;
-              tempDestinatario.departamento = null;
-              tempDestinatario.municipio = null;
-              tempDestinatario.datosContactoList = (agente.datosContactoList) ? agente.datosContactoList : null;
-              tempDestinatario.isBacken = true;
-              if (agente.codTipoRemite === TIPO_REMITENTE_EXTERNO) {
-
-                tempDestinatario.interno = false;
-                this.destinatarioExterno = tempDestinatario;
-                this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
-                this.indexSelectExterno = -1;
-                this.destinatarioExternoDialogVisible = true;
-              } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
-
-                tempDestinatario.interno = true;
-                this.destinatarioInterno = tempDestinatario;
-                this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
-                this.indexSelectInterno = -1;
-                this.destinatarioInternoDialogVisible = true;
-              }
-            }
-            this.refreshView();
-          });
-        }
-
-      } else {
-        /*if (this.defaultDestinatarioTipoComunicacion === TIPO_REMITENTE_EXTERNO) {
-          const index:number = this.listaDestinatariosExternos.indexOf(this.destinatarioExterno);
-          if (index !== -1) {
-            this.listaDestinatariosExternos.splice(index, 1);
-          }
-        } else if (this.defaultDestinatarioTipoComunicacion === TIPO_REMITENTE_INTERNO) {
-          const index:number = this.listaDestinatariosInternos.indexOf(this.destinatarioInterno);
-          if (index !== -1) {
-            this.listaDestinatariosInternos.splice(index, 1);
-          }
-        }*/
-      }
-    });
   }
 
+
+  updateStatus(currentStatus: StatusDTO) {
+    this.listaDestinatariosExternos = [...currentStatus.datosContacto.listaDestinatariosExternos];
+    this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatariosInternos];
+    this.hasDestinatarioPrincipal = currentStatus.datosContacto.hasDestinatarioPrincipal;
+    this.refreshView();
+  }
+
+  onChangeResponderRemitente(value){
+
+    if (value) {
+
+      if (this.taskData.variables.numeroRadicado) {
+        this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
+          nroRadicado: this.taskData.variables.numeroRadicado
+        }).subscribe(agente => {
+          console.log('Objeto que viene del backen ', agente);
+          if (agente) {
+
+            this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
+            let tempDestinatario = <DestinatarioDTO> {};
+            tempDestinatario.interno = false;
+            tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
+            tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
+            tempDestinatario.nombre = (agente.nombre) ? agente.nombre : '';
+            tempDestinatario.tipoDocumento = this.searchTipoDocumento(agente.codTipDocIdent);
+            tempDestinatario.nit = (agente.nit) ? agente.nit : '';
+            tempDestinatario.actuaCalidad = (agente.codEnCalidad) ? agente.codEnCalidad : null;
+            tempDestinatario.actuaCalidadNombre = (agente.codEnCalidad) ? agente.codEnCalidad : '';
+            tempDestinatario.sede = this.searchSede(agente.codSede);
+            tempDestinatario.dependencia = this.searchDependencia(agente.codDependencia) ? agente.codDependencia : null;
+            tempDestinatario.funcionario = null;
+            tempDestinatario.email = '';
+            tempDestinatario.mobile = '';
+            tempDestinatario.phone = '';
+            tempDestinatario.pais = null;
+            tempDestinatario.departamento = null;
+            tempDestinatario.municipio = null;
+            tempDestinatario.datosContactoList = (agente.datosContactoList) ? agente.datosContactoList : null;
+            tempDestinatario.isBacken = true;
+            if (agente.codTipoRemite === TIPO_REMITENTE_EXTERNO) {
+
+              tempDestinatario.interno = false;
+              this.destinatarioExterno = tempDestinatario;
+              this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
+              this.indexSelectExterno = -1;
+              this.destinatarioExternoDialogVisible = true;
+            } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
+
+              tempDestinatario.interno = true;
+              this.destinatarioInterno = tempDestinatario;
+              this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
+              this.indexSelectInterno = -1;
+              this.destinatarioInternoDialogVisible = true;
+            }
+          }
+
+        });
+      }
+      this.form.get('responderRemitente').setValue(true);
+    }
+    //this.refreshView();
+  }
 
   seachTipoDestinatario(indOriginal) {
     let result = null;
@@ -238,7 +233,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.formBuilder.group({
       // Datos destinatario
-      'responderRemitente': [{value: null, disabled: this.issetListDestinatarioBacken}],
+      'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
       'distribucion': [null],
     });
   }
@@ -275,7 +270,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
       if (!this.issetListDestinatarioBacken) {
         this.issetListDestinatarioBacken = (newDestinatario.isBacken) ? true : false;
-        this.responderRemitente = true;
       }
 
       if (newDestinatario.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
@@ -313,7 +307,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.refreshView();
+    //this.refreshView();
   }
 
   editDestinatario(index, op) {
@@ -333,7 +327,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   deleteDestinatario(index, op) {
 
     if (index > -1 && op === TIPO_REMITENTE_EXTERNO) {
-
       this.hasDestinatarioPrincipal = (this.listaDestinatariosExternos[index].tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) ? false : true;
       this.issetListDestinatarioBacken = (this.listaDestinatariosExternos[index].isBacken) ? false : true;
       const radref = [...this.listaDestinatariosExternos];

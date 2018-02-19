@@ -26,7 +26,8 @@
                       formControlName="responderRemitente"
                       id="responderRemitente"
                       binary="true"
-                      [hidden]="!hasNumberRadicado">
+                      [hidden]="!hasNumberRadicado"
+                      (onChange) = "onChangeResponderRemitente($event)">
           </p-checkbox>
         </div>
       </div>

@@ -13,8 +13,9 @@ export interface StatusDTO {
   datosContacto: {
     distribucion: string,
     responderRemitente: boolean,
-    listaDestinatarios: DestinatarioDTO[],
-    remitenteExterno: AgentDTO
+    hasDestinatarioPrincipal: boolean,
+    listaDestinatariosInternos: DestinatarioDTO[],
+    listaDestinatariosExternos: DestinatarioDTO[]
   },
   gestionarProduccion: {
     startIndex: number,
