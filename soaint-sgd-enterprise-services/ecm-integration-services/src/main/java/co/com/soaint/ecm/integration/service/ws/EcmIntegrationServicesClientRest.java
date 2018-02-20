@@ -69,7 +69,6 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/subirDocumentoRelacionECM/{selector}")
-    @Consumes("multipart/form-data")
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestBody DocumentoDTO documento,
                                                               @PathParam("selector") String selector) throws IOException {
 
