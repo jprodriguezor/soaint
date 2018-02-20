@@ -307,7 +307,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
         this.destinatarioDatosContactos.form.reset();
       }
     }
-    if(dest.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal){
+    if(dest.tipoDestinatario  && dest.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal){
 
       this.confirmationService.confirm({
         message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
