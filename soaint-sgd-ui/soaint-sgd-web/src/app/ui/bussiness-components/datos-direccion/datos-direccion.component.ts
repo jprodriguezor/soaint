@@ -1,4 +1,7 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit,Output, EventEmitter} from '@angular/core';
+import {
+  ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter,
+  AfterViewInit
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -32,7 +35,7 @@ enum FormContextEnum {
   selector: 'app-datos-direccion',
   templateUrl: './datos-direccion.component.html',
 })
-export class DatosDireccionComponent implements OnInit, OnDestroy {
+export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   form: FormGroup;
   display = false;
@@ -90,7 +93,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
 
     this.contacts = this.contactsDefault;
-
+    console.log("lista de contactos ");
     console.log(this.contacts);
 
     this.addColombiaByDefault();
@@ -396,14 +399,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.paisSuggestions$.take(2).subscribe((values) => {
       this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
     });
-
-    this._paisSandbox.loadDispatch();
-
     this.visibility.selectedColombia = true;
 
   }
 
   ngAfterViewInit() {
+    this._paisSandbox.loadDispatch();
     this.refreshView();
   }
 
