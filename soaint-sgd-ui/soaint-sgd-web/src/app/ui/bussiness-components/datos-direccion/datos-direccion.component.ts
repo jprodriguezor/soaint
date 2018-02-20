@@ -179,6 +179,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const pais = this.form.get('pais').value;
     if (pais) {
       this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+      this.form.get('municipio').reset();
     }
   }
 
