@@ -3,7 +3,7 @@ package co.com.soaint.ecm.business.boundary.mediator;
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +60,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
         logger.info("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
@@ -84,7 +84,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
         logger.info("### Subiendo/Versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
@@ -150,7 +150,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO metadatosDocumentos) throws IOException {
+    public MensajeRespuesta modificarMetadatosDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
@@ -173,7 +173,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta modificarDocumento(DocumentoDTO metadatosDocumentos) throws IOException {
+    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
@@ -219,7 +219,7 @@ public class EcmManager {
      * @param metadatosDocumentosDTO Objeto que contiene los metadatos
      * @return Documento
      */
-    public Response descargarDocumento(DocumentoDTO metadatosDocumentosDTO) {
+    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
         logger.info("### Descargando documento del content..");
         ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl();
         try {

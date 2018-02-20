@@ -223,9 +223,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Objeto de tipo response que devuleve el documento
      */
     @Override
-    public Response descargarDocumento(DocumentoDTO metadatosDocumentosDTO, Session session) throws IOException {
+    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException {
         logger.info(metadatosDocumentosDTO.toString());
-        ArrayList<DocumentoDTO> versionesLista = new ArrayList<>();
+        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(metadatosDocumentosDTO.getIdDocumento());
@@ -260,7 +260,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Objeto file
      * @throws IOException
      */
-    private File getFile(DocumentoDTO metadatosDocumentosDTO, ArrayList<DocumentoDTO> versionesLista, Document version) throws IOException {
+    private File getFile(MetadatosDocumentosDTO metadatosDocumentosDTO, ArrayList<MetadatosDocumentosDTO> versionesLista, Document version) throws IOException {
         File fileAux = null;
         if (version.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())) {
             metadatosDocumentosDTO.setNombreDocumento(version.getName());
@@ -592,10 +592,10 @@ public class ContentControlAlfresco implements ContentControl {
                     " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
 
             ItemIterable<QueryResult> resultsPrincipalAdjunto = session.query(principalAdjuntos, false);
-            ArrayList<DocumentoDTO> documentosLista = new ArrayList<>();
+            ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<>();
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 
-                DocumentoDTO metadatosDocumentosDTO = new DocumentoDTO();
+                MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
 
                 String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
                 String idDocumento = parts[0];
@@ -624,7 +624,7 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de los documentos adjuntos: " + e.getMessage());
             logger.error("Error en la obtención de los documentos adjuntos: ", e);
-            response.setMetadatosDocumentosDTOList(new ArrayList<DocumentoDTO>());
+            response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
         }
         logger.info("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: " + response.toString());
         return response;
@@ -647,13 +647,13 @@ public class ContentControlAlfresco implements ContentControl {
 
         MensajeRespuesta response = new MensajeRespuesta();
 
-        ArrayList<DocumentoDTO> versionesLista = new ArrayList<>();
+        ArrayList<MetadatosDocumentosDTO> versionesLista = new ArrayList<>();
         try {
             //Obtener documento dado id
             Document doc = (Document) session.getObject(idDoc);
             List<Document> versions = doc.getAllVersions();
             for (Document version : versions) {
-                DocumentoDTO metadatosDocumentosDTO = new DocumentoDTO();
+                MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
                 metadatosDocumentosDTO.setNombreDocumento(version.getName());
                 metadatosDocumentosDTO.setVersionLabel(version.getVersionLabel());
                 metadatosDocumentosDTO.setTamano(String.valueOf(version.getContentStreamLength()));
@@ -667,7 +667,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (Exception e) {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: " + e.getMessage());
-            response.setMetadatosDocumentosDTOList(new ArrayList<DocumentoDTO>());
+            response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
             logger.error("Error en la obtención de las versiones del documento: ", e);
         }
         logger.info("Se devuelven las versiones del documento: ", versionesLista.toString());
@@ -688,7 +688,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
@@ -753,12 +753,12 @@ public class ContentControlAlfresco implements ContentControl {
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info("Se entra al metodo subirVersionarDocumentoGenerado");
 
         MensajeRespuesta response = new MensajeRespuesta();
-        List<DocumentoDTO> metadatosDocumentosDTOList = new ArrayList<>();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get(DOCUMENTO);
         Map<String, Object> properties = new HashMap<>();
@@ -835,10 +835,10 @@ public class ContentControlAlfresco implements ContentControl {
      * @param properties             propiedades de carpeta
      * @param carpetaCrearBuscar     Carpeta
      */
-    private void buscarCrearCarpeta(Session session, DocumentoDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
+    private void buscarCrearCarpeta(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
         logger.info("MetaDatos: " + metadatosDocumentosDTO.toString());
         String idDocumento;
-        List<DocumentoDTO> metadatosDocumentosDTOList = new ArrayList<>();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
@@ -927,9 +927,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param bytes                  Contenido del documento
      * @param properties             propiedades de carpeta
      */
-    private void buscarCrearCarpetaRadicacion(Session session, DocumentoDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String tipoComunicacion) {
+    private void buscarCrearCarpetaRadicacion(Session session, MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String tipoComunicacion) {
         String idDocumento;
-        List<DocumentoDTO> metadatosDocumentosDTOList = new ArrayList<>();
+        List<MetadatosDocumentosDTO> metadatosDocumentosDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
             new Carpeta();
