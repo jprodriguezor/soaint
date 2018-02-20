@@ -39,6 +39,6 @@ public class DocumentoDTO implements Serializable {
     private String tamano;
     private String tipoPadreAdjunto;
     private String versionLabel;
-    private File documento;
+    private byte[] documento;
 
 }

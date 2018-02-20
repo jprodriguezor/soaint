@@ -55,16 +55,15 @@ public class EcmManager {
      * Metodo que llama el servicio para subir documentos de producción documental y los documentos adjuntos al ECM.
      *
      * @param documento              Documento que se va a subir
-     * @param documentoDTO Objeto que contiene los datos de los metadatos de los documentos.
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto( DocumentoDTO documento, String selector) throws IOException {
         logger.info("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, documentoDTO, selector);
+            response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, selector);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
@@ -79,16 +78,15 @@ public class EcmManager {
      * Metodo que llama el servicio para subir versionar documentos generado de producción documental al ECM.
      *
      * @param documento              Documento que se va a subir
-     * @param documentoDTO Objeto que contiene los datos de los metadatos de los documentos.
      * @param selector               parametro que indica donde se va a guardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(DocumentoDTO documento, String selector) throws IOException {
         logger.info("### Subiendo/Versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.subirVersionarDocumentoGeneradoContent(documento, documentoDTO, selector);
+            response = contentManager.subirVersionarDocumentoGeneradoContent(documento, selector);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");

@@ -38,25 +38,23 @@ public interface ContentControl {
      * Subir documento Principal Adjuntos al ECM
      *
      * @param session                Objeto conexion
-     * @param documento              documento a subir
      * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws IOException;
 
     /**
      * Subir Versionar documento Generado al ECM
      *
      * @param session                Objeto conexion
      * @param documento              documento a subir/versionar
-     * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @param selector               parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session,  DocumentoDTO documento, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
