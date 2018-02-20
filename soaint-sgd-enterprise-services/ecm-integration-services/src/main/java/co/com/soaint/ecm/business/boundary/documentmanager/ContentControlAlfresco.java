@@ -642,7 +642,7 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de los documentos adjuntos: " + e.getMessage());
             logger.error("Error en la obtención de los documentos adjuntos: ", e);
-            response.setMetadatosDocumentosDTOList(new ArrayList<MetadatosDocumentosDTO>());
+            response.setMetadatosDocumentosDTOList(new ArrayList<>());
         }
         logger.info("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: " + response.toString());
         return response;
