@@ -27,7 +27,7 @@ public class MensajeRespuesta {
 
     private String codMensaje;
     private String mensaje;
-    private List<MetadatosDocumentosDTO> metadatosDocumentosDTOList;
+    private List<DocumentoDTO> documentoDTOList;
 
     public MensajeRespuesta() {
         //Constructor por defecto de la clase
@@ -35,24 +35,26 @@ public class MensajeRespuesta {
 
     /**
      * Constructor para los parametros mensaje y codigo de mensaje
-     * @param mensaje
-     * @param codMensaje
+     *
+     * @param mensaje    Mensaje que devuelve el servicio
+     * @param codMensaje Codigo de mensaje que devuelve el servicio
      */
     public MensajeRespuesta(String mensaje, String codMensaje) {
-       this.codMensaje = codMensaje;
-       this.mensaje = mensaje;
-       this.metadatosDocumentosDTOList = null;
+        this.codMensaje = codMensaje;
+        this.mensaje = mensaje;
+        this.documentoDTOList = null;
     }
 
     /**
      * Constructor para los parametros mensaje ,codigo de mensaje y contenido del objeto de respuesta
-     * @param codMensaje Codigo del mensaje de repsuesta
-     * @param mensaje Mensaje de respuesta
-     * @param metadatosDocumentosDTOList Lista de objetos de metadatos
+     *
+     * @param codMensaje       Codigo del mensaje de respuesta
+     * @param mensaje          Mensaje de respuesta
+     * @param documentoDTOList Lista de objetos de metadatos
      */
-    public MensajeRespuesta(String codMensaje, String mensaje, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList) {
+    public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> documentoDTOList) {
         this.codMensaje = codMensaje;
         this.mensaje = mensaje;
-        this.metadatosDocumentosDTOList = metadatosDocumentosDTOList;
+        this.documentoDTOList = documentoDTOList;
     }
 }

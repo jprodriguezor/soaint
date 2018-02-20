@@ -6,7 +6,7 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import lombok.NoArgsConstructor;
@@ -72,12 +72,12 @@ public class ContentManager {
      * Metodo generico para subir los dccumentos adjuntos al content
      *
      * @param documento              Documento que se va a subir
-     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @param documentoDTO Objeto que contiene los datos de los metadatos de los documentos
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException {
 
         logger.info("### Subiendo documento principal/adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
@@ -87,7 +87,7 @@ public class ContentManager {
             logger.info(MSGCONEXION);
             conexion = contentControl.obtenerConexion();
             logger.info("### Se invoca el metodo de subir el documento principal/adjunto..");
-            response = contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, metadatosDocumentosDTO, selector);
+            response = contentControl.subirDocumentoPrincipalAdjunto(conexion.getSession(), documento, documentoDTO, selector);
 
         } catch (Exception e) {
             logger.error("Error subiendo documento principal/adjunto", e);
@@ -103,12 +103,12 @@ public class ContentManager {
      * Metodo generico para subir los dccumentos adjuntos al content
      *
      * @param documento              Documento que se va a subir
-     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos
+     * @param documentoDTO Objeto que contiene los datos de los metadatos de los documentos
      * @param selector               parametro que indica donde se va a guardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException {
 
         logger.info("### Subiendo versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
@@ -118,7 +118,7 @@ public class ContentManager {
             logger.info(MSGCONEXION);
             conexion = contentControl.obtenerConexion();
             logger.info("### Se invoca el metodo de subir/versionar el documento..");
-            response = contentControl.subirVersionarDocumentoGenerado(conexion.getSession(), documento, metadatosDocumentosDTO, selector);
+            response = contentControl.subirVersionarDocumentoGenerado(conexion.getSession(), documento, documentoDTO, selector);
 
         } catch (Exception e) {
             logger.error("Error subiendo/versionando documento", e);
@@ -195,7 +195,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta modificarMetadatoDocumentoContent(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws IOException {
 
         logger.info("### Modificando metadatos del documento..");
         MensajeRespuesta response = new MensajeRespuesta();
@@ -252,10 +252,10 @@ public class ContentManager {
     /**
      * Metodo generico para descargar los documentos del ECM
      *
-     * @param metadatosDocumentosDTO Metadatos del documento dentro del ECM
+     * @param documentoDTO Metadatos del documento dentro del ECM
      * @return Documento
      */
-    public MensajeRespuesta descargarDocumentoContent(MetadatosDocumentosDTO metadatosDocumentosDTO) {
+    public MensajeRespuesta descargarDocumentoContent(DocumentoDTO documentoDTO) {
 
         logger.info("### Descargando documento del content..");
         MensajeRespuesta respuesta = new MensajeRespuesta();
@@ -265,7 +265,7 @@ public class ContentManager {
             logger.info(MSGCONEXION);
             conexion = contentControl.obtenerConexion();
             logger.info("### Se invoca el metodo de descargar el documento..");
-            respuesta = contentControl.descargarDocumento(metadatosDocumentosDTO, conexion.getSession());
+            respuesta = contentControl.descargarDocumento(documentoDTO, conexion.getSession());
 
         } catch (Exception e) {
             logger.error("Error descargando documento", e);

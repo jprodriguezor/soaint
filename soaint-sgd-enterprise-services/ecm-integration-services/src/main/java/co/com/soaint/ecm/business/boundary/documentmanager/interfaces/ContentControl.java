@@ -4,7 +4,7 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.stereotype.Service;
@@ -39,24 +39,24 @@ public interface ContentControl {
      *
      * @param session                Objeto conexion
      * @param documento              documento a subir
-     * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
+     * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException;
 
     /**
      * Subir Versionar documento Generado al ECM
      *
      * @param session                Objeto conexion
      * @param documento              documento a subir/versionar
-     * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
+     * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @param selector               parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, MultipartFormDataInput documento, DocumentoDTO documentoDTO, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
@@ -95,11 +95,11 @@ public interface ContentControl {
     /**
      * Descargar documento
      *
-     * @param metadatosDocumentosDTO Objeto que contiene metadatos del documento en el ECM
+     * @param documentoDTO Objeto que contiene metadatos del documento en el ECM
      * @param session                Objeto conexion
      * @return Se retorna el documento
      */
-    MensajeRespuesta descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException;
+    MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException;
 
     /**
      * MOver documento

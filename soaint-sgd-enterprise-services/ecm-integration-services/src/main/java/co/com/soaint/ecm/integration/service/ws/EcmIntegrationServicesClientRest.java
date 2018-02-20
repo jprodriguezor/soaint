@@ -3,7 +3,7 @@ package co.com.soaint.ecm.integration.service.ws;
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -83,12 +83,12 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Subir Documento Adjunto al ECM " + nombreDocumento);
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
-            metadatosDocumentosDTO.setSede(sede);
-            metadatosDocumentosDTO.setDependencia(dependencia);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setNombreDocumento(nombreDocumento);
+            documentoDTO.setSede(sede);
+            documentoDTO.setDependencia(dependencia);
 
-            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO, selector);
+            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, documentoDTO, selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
@@ -119,14 +119,14 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Subir Documento Adjunto al ECM " + nombreDocumento);
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
-            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
-            metadatosDocumentosDTO.setSede(sede);
-            metadatosDocumentosDTO.setDependencia(dependencia);
-            metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setNombreDocumento(nombreDocumento);
+            documentoDTO.setIdDocumentoPadre(idDocPadre);
+            documentoDTO.setSede(sede);
+            documentoDTO.setDependencia(dependencia);
+            documentoDTO.setIdDocumentoPadre(idDocPadre);
 
-            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, metadatosDocumentosDTO, selector);
+            return fEcmManager.subirDocumentoPrincipalAdjunto(documento, documentoDTO, selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
@@ -158,13 +158,13 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Subir Versionar Documento Generado al ECM " + nombreDocumento);
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
-            metadatosDocumentosDTO.setSede(sede);
-            metadatosDocumentosDTO.setDependencia(dependencia);
-            metadatosDocumentosDTO.setTipoDocumento(tipoDocumento);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setNombreDocumento(nombreDocumento);
+            documentoDTO.setSede(sede);
+            documentoDTO.setDependencia(dependencia);
+            documentoDTO.setTipoDocumento(tipoDocumento);
 
-            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO, selector);
+            return fEcmManager.subirVersionarDocumentoGenerado(documento, documentoDTO, selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
@@ -198,14 +198,14 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Subir Versionar Documento Generado al ECM " + nombreDocumento);
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setNombreDocumento(nombreDocumento);
-            metadatosDocumentosDTO.setSede(sede);
-            metadatosDocumentosDTO.setDependencia(dependencia);
-            metadatosDocumentosDTO.setTipoDocumento(tipoDocumento);
-            metadatosDocumentosDTO.setIdDocumento(idDoc);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setNombreDocumento(nombreDocumento);
+            documentoDTO.setSede(sede);
+            documentoDTO.setDependencia(dependencia);
+            documentoDTO.setTipoDocumento(tipoDocumento);
+            documentoDTO.setIdDocumento(idDoc);
 
-            return fEcmManager.subirVersionarDocumentoGenerado(documento, metadatosDocumentosDTO, selector);
+            return fEcmManager.subirVersionarDocumentoGenerado(documento, documentoDTO, selector);
         } catch (IOException e) {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
@@ -261,7 +261,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/modificarMetadatosDocumentoECM/")
-    public MensajeRespuesta modificarMetadatosDocumentoECM(@RequestBody MetadatosDocumentosDTO metadatos) throws IOException {
+    public MensajeRespuesta modificarMetadatosDocumentoECM(@RequestBody DocumentoDTO metadatos) throws IOException {
         logger.info("processing rest request - Subir Documento ECM " + metadatos.getIdDocumento());
         try {
             return fEcmManager.modificarMetadatosDocumento(metadatos);
@@ -280,7 +280,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/modificarDocumentoECM/")
-    public MensajeRespuesta modificarDocumentoECM(@RequestBody MetadatosDocumentosDTO metadatos) throws IOException {
+    public MensajeRespuesta modificarDocumentoECM(@RequestBody DocumentoDTO metadatos) throws IOException {
         logger.info("processing rest request - Modificar Documento ECM " + metadatos.getIdDocumento());
         try {
             return fEcmManager.modificarMetadatosDocumento(metadatos);
@@ -327,9 +327,9 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Descargar Documento ECM");
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setIdDocumento(identificadorDoc);
-            return fEcmManager.descargarDocumento(metadatosDocumentosDTO);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setIdDocumento(identificadorDoc);
+            return fEcmManager.descargarDocumento(documentoDTO);
         } catch (RuntimeException e) {
             logger.error("Error servicio descargando documento ", e);
             throw e;
@@ -351,10 +351,10 @@ public class EcmIntegrationServicesClientRest {
 
         logger.info("processing rest request - Descargar Documento ECM");
         try {
-            MetadatosDocumentosDTO metadatosDocumentosDTO = new MetadatosDocumentosDTO();
-            metadatosDocumentosDTO.setIdDocumento(identificadorDoc);
-            metadatosDocumentosDTO.setVersionLabel(version);
-            return fEcmManager.descargarDocumento(metadatosDocumentosDTO);
+            DocumentoDTO documentoDTO = new DocumentoDTO();
+            documentoDTO.setIdDocumento(identificadorDoc);
+            documentoDTO.setVersionLabel(version);
+            return fEcmManager.descargarDocumento(documentoDTO);
         } catch (RuntimeException e) {
             logger.error("Error servicio descargando documento ", e);
             throw e;
