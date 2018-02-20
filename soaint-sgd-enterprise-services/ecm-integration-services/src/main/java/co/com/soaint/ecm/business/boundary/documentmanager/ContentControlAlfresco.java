@@ -1015,18 +1015,17 @@ public class ContentControlAlfresco implements ContentControl {
 
     private String getTipoComunicacionSelector(String tipoComunicacion) {
         switch (tipoComunicacion) {
-            case "EI": {
+            case "EI":
                 return COMUNICACIONES_INTERNAS_RECIBIDAS;
-            }
-            case "SI": {
+
+            case "SI":
                 return COMUNICACIONES_INTERNAS_ENVIADAS;
-            }
-            case "EE": {
+
+            case "EE":
                 return COMUNICACIONES_EXTERNAS_RECIBIDAS;
-            }
-            case "SE": {
+
+            case "SE":
                 return COMUNICACIONES_EXTERNAS_ENVIADAS;
-            }
             default:
                 return COMUNICACIONES_INTERNAS_RECIBIDAS;
         }
