@@ -140,7 +140,8 @@
 </form>
 
     <br/>
-    <p-panel header="Observaciones" [style]="{border: 'none'}" *ngIf="status > 0 || listaObservaciones.length > 0">
+
+    <p-panel header="Observaciones" [style]="{border: 'none'}" *ngIf="status > 1 || listaObservaciones.length > 0">
 
         <div class="ui-g ui-fluid">
             <div class="ui-sm-12 ui-g-12 ui-lg-12">
@@ -169,11 +170,16 @@
                   <p-column field="rol.nombre" header="Rol" [sortable]="true"></p-column>
                   <p-column field="funcionario.nombre" header="Fencionario" [sortable]="true"></p-column>
                   <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
-                  <p-column field="fecha" header="Fecha y hora" [sortable]="true"></p-column>
+                  <p-column header="Fecha y hora" [sortable]="true" >
+                      <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+                          <span>{{rdata.fecha | dateFormat}}</span>
+                      </ng-template>
+                  </p-column>
                   <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
                     <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
                       <button type="button" icon="ui-icon-close" pButton
                               class="ui-button ui-button-icon ui-button-danger"
+                              [disabled]="rindex < cantObservaciones"
                               (click)="removeFromList(rindex, 'listaObservaciones')"
                       ></button>
                     </ng-template>
