@@ -238,6 +238,7 @@ public class ContentControlAlfresco implements ContentControl {
                 //Filtrar la version correcta dentro de las versiones del documento para obtener el file
                 Optional<Document> version = versions.stream()
                         .filter(p -> p.getVersionLabel().equals(metadatosDocumentosDTO.getVersionLabel())).findFirst();
+
                 file = getFile(metadatosDocumentosDTO, versionesLista, version.get());
 
             } else {
@@ -886,7 +887,7 @@ public class ContentControlAlfresco implements ContentControl {
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
-                    idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+                    idDocumento = crearDocumentoDevolverId(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
@@ -1067,7 +1068,7 @@ public class ContentControlAlfresco implements ContentControl {
                         .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
                 carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
             }
-            idDocumento = getString(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+            idDocumento = crearDocumentoDevolverId(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
             //Creando el mensaje de respuesta
             response.setCodMensaje("0000");
             response.setMensaje("Documento añadido correctamente");
@@ -1079,7 +1080,7 @@ public class ContentControlAlfresco implements ContentControl {
         }
     }
 
-    private String getString(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
+    private String crearDocumentoDevolverId(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
         String idDocumento;
         logger.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(metadatosDocumentosDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), metadatosDocumentosDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
