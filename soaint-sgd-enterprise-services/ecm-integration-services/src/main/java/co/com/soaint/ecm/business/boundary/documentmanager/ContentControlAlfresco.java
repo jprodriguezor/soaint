@@ -979,14 +979,14 @@ public class ContentControlAlfresco implements ContentControl {
 
                     crearInsertarCarpetaRadicacion(metadatosDocumentosDTO, response, bytes, properties, comunicacionOficial, tipoComunicacionSelector, comunicacionOficialFolder);
                 } else {
-                    logger.info(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
+                    response.setMensaje(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
                     response.setCodMensaje("4445");
-                    response.setMensaje(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getSede());
+                    logger.info(NO_EXISTE_DEPENDENCIA + metadatosDocumentosDTO.getDependencia());
                 }
             } else {
-                logger.info(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
-                response.setCodMensaje("4444");
                 response.setMensaje(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
+                response.setCodMensaje("4444");
+                logger.info(NO_EXISTE_SEDE + metadatosDocumentosDTO.getSede());
             }
         } catch (
                 CmisContentAlreadyExistsException ccaee)
