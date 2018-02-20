@@ -2,9 +2,9 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.stereotype.Service;
@@ -33,27 +33,27 @@ public interface ContentControl {
      * @param folder         carpeta padre
      * @return mensaje respuesta
      */
-    MensajeRespuesta generarArbol(List <EstructuraTrdDTO> estructuraList, Carpeta folder);
+    MensajeRespuesta generarArbol(List<EstructuraTrdDTO> estructuraList, Carpeta folder);
 
     /**
      * Subir documento Principal Adjuntos al ECM
      *
-     * @param session          Objeto conexion
-     * @param documento        documento a subir
+     * @param session                Objeto conexion
+     * @param documento              documento a subir
      * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException;
 
     /**
      * Subir Versionar documento Generado al ECM
      *
-     * @param session          Objeto conexion
-     * @param documento        documento a subir/versionar
+     * @param session                Objeto conexion
+     * @param documento              documento a subir/versionar
      * @param metadatosDocumentosDTO Objeto qeu contiene los metadatos de los documentos ECM
-     * @param selector  parametro que indica donde se va a guardar el documento
+     * @param selector               parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
@@ -62,43 +62,42 @@ public interface ContentControl {
     /**
      * Obtener documento Adjunto dado id Documento Principal
      *
-     * @param session          Objeto conexion
-     * @param idDocPrincipal        documento a subir
+     * @param session        Objeto conexion
+     * @param idDocPrincipal documento a subir
      * @return Lista de documentos adjuntos
      * @throws IOException exception
      */
-    MensajeRespuesta obtenerDocumentosAdjuntos(Session session,String idDocPrincipal) throws IOException;
+    MensajeRespuesta obtenerDocumentosAdjuntos(Session session, String idDocPrincipal) throws IOException;
 
     /**
      * Obtener versiones del documento dado id Documento
      *
-     * @param session          Objeto conexion
-     * @param idDoc        documento a subir
+     * @param session Objeto conexion
+     * @param idDoc   documento a subir
      * @return Lista de documentos adjuntos
      * @throws IOException exception
      */
-    MensajeRespuesta obtenerVersionesDocumento(Session session,String idDoc) throws IOException;
+    MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc) throws IOException;
 
     /**
      * Modificar documento Content
      *
-     * @param session          Objeto conexion
-     * @param idDocumento  nombre de documento
-     * @param nroRadicado        número de radicado del documento
+     * @param session             Objeto conexion
+     * @param idDocumento         nombre de documento
+     * @param nroRadicado         número de radicado del documento
      * @param tipologiaDocumental tipologia documental
-     * @param nombreRemitente Nombre del remitente
+     * @param nombreRemitente     Nombre del remitente
      * @return MensajeRespuesta
      * @throws IOException exception
      */
-    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental,String nombreRemitente) throws IOException;
-
+    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws IOException;
 
 
     /**
      * Descargar documento
      *
      * @param metadatosDocumentosDTO Objeto que contiene metadatos del documento en el ECM
-     * @param session     Objeto conexion
+     * @param session                Objeto conexion
      * @return Se retorna el documento
      */
     Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO, Session session) throws IOException;
