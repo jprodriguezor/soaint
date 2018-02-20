@@ -4,7 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
@@ -80,7 +80,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO,String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjuntoContent(MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info ("### Subiendo documento principal/adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -111,7 +111,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(MultipartFormDataInput documento, DocumentoDTO metadatosDocumentosDTO, String selector) throws IOException {
 
         logger.info ("### Subiendo versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -196,7 +196,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta modificarMetadatoDocumentoContent(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+    public MensajeRespuesta modificarMetadatoDocumentoContent(DocumentoDTO metadatosDocumentos) throws IOException {
 
         logger.info ("### Modificando metadatos del documento..");
         MensajeRespuesta response = new MensajeRespuesta ( );
@@ -256,7 +256,7 @@ public class ContentManager {
      * @param metadatosDocumentosDTO Metadatos del documento dentro del ECM
      * @return Documento
      */
-    public Response descargarDocumentoContent(MetadatosDocumentosDTO metadatosDocumentosDTO) {
+    public Response descargarDocumentoContent(DocumentoDTO metadatosDocumentosDTO) {
 
         logger.info ("### Descargando documento del content..");
         ResponseBuilder response = new ResponseBuilderImpl ( );

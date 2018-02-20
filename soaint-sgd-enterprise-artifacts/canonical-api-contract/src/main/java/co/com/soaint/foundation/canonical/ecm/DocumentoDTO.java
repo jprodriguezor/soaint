@@ -3,7 +3,6 @@ package co.com.soaint.foundation.canonical.ecm;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,7 +22,7 @@ import java.util.Date;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
 @ToString
-public class MetadatosDocumentosDTO implements Serializable {
+public class DocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String idDocumento;
@@ -39,6 +38,6 @@ public class MetadatosDocumentosDTO implements Serializable {
     private String tamano;
     private String tipoPadreAdjunto;
     private String versionLabel;
-    private File documento;
+    private byte[] documento;
 
 }
