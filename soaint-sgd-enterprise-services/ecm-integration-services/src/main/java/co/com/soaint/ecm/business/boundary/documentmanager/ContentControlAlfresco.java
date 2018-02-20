@@ -722,7 +722,7 @@ public class ContentControlAlfresco implements ContentControl {
         if ("PD".equals(selector)) {
             buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, PRODUCCION_DOCUMENTAL);
         } else {
-            buscarCrearCarpetaRadicacion(session, documento, response, documento.getDocumento(), properties, selector);
+            buscarCrearCarpetaRadicacion(session, documento, response, properties, selector);
         }
 
         logger.info("Se sale del metodo subirDocumentoPrincipalAdjunto");
@@ -766,7 +766,7 @@ public class ContentControlAlfresco implements ContentControl {
             if ("PD".equals(selector)) {
                 buscarCrearCarpeta(session, documento, response, bytes, properties, PRODUCCION_DOCUMENTAL);
             } else {
-                buscarCrearCarpetaRadicacion(session, documento, response, bytes, properties, selector);
+                buscarCrearCarpetaRadicacion(session, documento, response, properties, selector);
             }
         } else {
             //Obtener documento dado id
@@ -891,12 +891,11 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo para buscar crear carpetas de radicacion de entrada
      *
      * @param session      Objeto session
-     * @param documentoDTO Objeto qeu contiene los metadatos
+     * @param documento Objeto qeu contiene los metadatos
      * @param response     Mensaje de respuesta
-     * @param bytes        Contenido del documento
      * @param properties   propiedades de carpeta
      */
-    private void buscarCrearCarpetaRadicacion(Session session, DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String tipoComunicacion) {
+    private void buscarCrearCarpetaRadicacion(Session session, DocumentoDTO documento, MensajeRespuesta response, Map<String, Object> properties, String tipoComunicacion) {
 
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
@@ -904,7 +903,7 @@ public class ContentControlAlfresco implements ContentControl {
             Carpeta folderAlfresco;
             logger.info("### Se elige la carpeta donde se va a guardar el documento radicado..");
             logger.info("###------------ Se elige la sede donde se va a guardar el documento radicado..");
-            folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
+            folderAlfresco = obtenerCarpetaPorNombre(documento.getSede(), session);
 
             if (folderAlfresco.getFolder() != null) {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
@@ -922,12 +921,12 @@ public class ContentControlAlfresco implements ContentControl {
 
                 //Se busca si existe la dependencia
                 Optional<Carpeta> dependencia = carpetasHijas.stream()
-                        .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();
+                        .filter(p -> p.getFolder().getName().equals(documento.getDependencia())).findFirst();
 
-                logger.info("Se obtienen la dependencia referente a la sede: " + documentoDTO.getSede());
+                logger.info("Se obtienen la dependencia referente a la sede: " + documento.getSede());
                 if (dependencia.isPresent()) {
 
-                    logger.info("Se busca si existe la carpeta de Comunicaciones Oficiales dentro de la dependencia " + documentoDTO.getDependencia());
+                    logger.info("Se busca si existe la carpeta de Comunicaciones Oficiales dentro de la dependencia " + documento.getDependencia());
 
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
 
@@ -935,16 +934,16 @@ public class ContentControlAlfresco implements ContentControl {
                     Optional<Carpeta> comunicacionOficialFolder = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().contains("0231_COMUNICACIONES OFICIALES")).findFirst();
 
-                    crearInsertarCarpetaRadicacion(documentoDTO, response, bytes, properties, comunicacionOficial, tipoComunicacionSelector, comunicacionOficialFolder);
+                    crearInsertarCarpetaRadicacion(documento, response, documento.getDocumento(), properties, comunicacionOficial, tipoComunicacionSelector, comunicacionOficialFolder);
                 } else {
-                    response.setMensaje(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+                    response.setMensaje(NO_EXISTE_DEPENDENCIA + documento.getDependencia());
                     response.setCodMensaje("4445");
-                    logger.info(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+                    logger.info(NO_EXISTE_DEPENDENCIA + documento.getDependencia());
                 }
             } else {
-                response.setMensaje(NO_EXISTE_SEDE + documentoDTO.getSede());
+                response.setMensaje(NO_EXISTE_SEDE + documento.getSede());
                 response.setCodMensaje("4444");
-                logger.info(NO_EXISTE_SEDE + documentoDTO.getSede());
+                logger.info(NO_EXISTE_SEDE + documento.getSede());
             }
         } catch (
                 CmisContentAlreadyExistsException ccaee)

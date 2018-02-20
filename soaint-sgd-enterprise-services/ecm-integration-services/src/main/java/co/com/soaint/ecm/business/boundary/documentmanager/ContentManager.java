@@ -72,7 +72,6 @@ public class ContentManager {
      * Metodo generico para subir los dccumentos adjuntos al content
      *
      * @param documento              Documento que se va a subir
-     * @param documentoDTO Objeto que contiene los datos de los metadatos de los documentos
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
