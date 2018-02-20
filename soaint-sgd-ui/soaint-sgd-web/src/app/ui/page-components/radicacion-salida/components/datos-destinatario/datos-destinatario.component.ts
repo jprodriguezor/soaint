@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {TareaDTO} from "../../../../../domain/tareaDTO";
+import {TareaDTO} from '../../../../../domain/tareaDTO';
 
 @Component({
   selector: 'rs-datos-destinatario',
