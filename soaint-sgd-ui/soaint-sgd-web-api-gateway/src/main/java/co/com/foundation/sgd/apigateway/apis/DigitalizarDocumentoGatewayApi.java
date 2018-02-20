@@ -4,7 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClien
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -50,16 +50,16 @@ public class DigitalizarDocumentoGatewayApi {
         Response response = client.uploadDocument(sede, dependencia, tipoComunicacion,principalFileName, parent, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); _files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            List<DocumentoDTO> metadatosDocumentosDTO =
-                    (List<DocumentoDTO>) parentResponse.getMetadatosDocumentosDTOList();
+            List<MetadatosDocumentosDTO> metadatosDocumentosDTO =
+                    (List<MetadatosDocumentosDTO>) parentResponse.getMetadatosDocumentosDTOList();
             if(null != metadatosDocumentosDTO && !metadatosDocumentosDTO.isEmpty()) {
                 ecmIds.add(metadatosDocumentosDTO.get(0).getIdDocumento());
                 if(!_files.isEmpty()){
                     client.uploadDocumentsAsociates(metadatosDocumentosDTO.
                             get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
                         if("0000".equals(mensajeRespuesta.getCodMensaje())){
-                            List<DocumentoDTO> metadatosDocumentosDTO1 =
-                                    (List<DocumentoDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
+                            List<MetadatosDocumentosDTO> metadatosDocumentosDTO1 =
+                                    (List<MetadatosDocumentosDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
                             ecmIds.add(metadatosDocumentosDTO1.get(0).getIdDocumento());
                         }
                     });
