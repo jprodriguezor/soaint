@@ -27,7 +27,7 @@ public class MensajeRespuesta {
 
     private String codMensaje;
     private String mensaje;
-    private List<DocumentoDTO> metadatosDocumentosDTOList;
+    private List<MetadatosDocumentosDTO> metadatosDocumentosDTOList;
 
     public MensajeRespuesta() {
         //Constructor por defecto de la clase
@@ -50,7 +50,7 @@ public class MensajeRespuesta {
      * @param mensaje Mensaje de respuesta
      * @param metadatosDocumentosDTOList Lista de objetos de metadatos
      */
-    public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> metadatosDocumentosDTOList) {
+    public MensajeRespuesta(String codMensaje, String mensaje, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList) {
         this.codMensaje = codMensaje;
         this.mensaje = mensaje;
         this.metadatosDocumentosDTOList = metadatosDocumentosDTOList;
