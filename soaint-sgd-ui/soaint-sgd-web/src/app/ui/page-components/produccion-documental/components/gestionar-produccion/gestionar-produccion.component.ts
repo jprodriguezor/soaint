@@ -13,7 +13,6 @@ import {StatusDTO} from '../../models/StatusDTO';
 import {ProyectorDTO} from '../../../../../domain/ProyectorDTO';
 import {Store} from '@ngrx/store';
 import {State as RootState} from '../../../../../infrastructure/redux-store/redux-reducers';
-import {isString} from 'util';
 import {DependenciaDTO} from '../../../../../domain/dependenciaDTO';
 import {ObservacionDTO} from '../../models/ObservacionDTO';
 import {getAuthenticatedFuncionario} from '../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
@@ -35,6 +34,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   listaObservaciones: ObservacionDTO[] = [];
   observacionText: string;
   startIndex = 0;
+  cantObservaciones = 0;
   @Input() status = 1;
 
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
@@ -43,6 +43,8 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   funcionarios$: Observable<FuncionarioDTO[]>;
 
   subscribers: Array<Subscription> = [];
+
+  fecha: Date;
 
   constructor(private _store: Store<RootState>,
               private formBuilder: FormBuilder,
@@ -70,6 +72,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
         this.roles$ = this._produccionDocumentalApi.getRoles({});
         this.listenForErrors();
         this.listenForChanges();
+        this.fecha = new Date();
     }
 
 
@@ -109,6 +112,8 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
     this.startIndex = currentStatus.gestionarProduccion.startIndex;
+    this.listaObservaciones = [...currentStatus.gestionarProduccion.listaObservaciones];
+    this.cantObservaciones = currentStatus.gestionarProduccion.cantObservaciones;
   }
 
   dependenciaChange(event) {
