@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarAgente;
 import co.com.soaint.correspondencia.business.control.AgenteControl;
+import co.com.soaint.correspondencia.business.control.PpdTrazDocumentoControl;
 import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DestinatarioDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
@@ -33,27 +34,41 @@ public class GestionarAgenteTest {
     @Autowired
     private AgenteControl control;
 
+    @Autowired
+    PpdTrazDocumentoControl ppdTrazDocumentoControl;
+
     @Test
     @Transactional
     public void test_actualizar_estado_agente_success() throws SystemException, BusinessException {
-        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente (new BigInteger("200"));
+        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente(new BigInteger("200"));
         agenteDTO.setCodEstado("DT");
         boundary.actualizarEstadoAgente(agenteDTO);
         AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("200"));
-        assertEquals("DT",agenteObtenido.getCodEstado());
+        assertEquals("DT", agenteObtenido.getCodEstado());
     }
 
-    //TODO: test_redireccionar_correspondencia_success pendiente de Asignacion y PpdTrazDocumentoControl
-    //TODO: test_devolver_correspondencia_success pendiente de Asignacion
+    //TODO: test_redireccionar_correspondencia_success
     /*@Test
     @Transactional
     public void test_redireccionar_correspondencia_success() throws SystemException, BusinessException {
         RedireccionDTO redireccion = new RedireccionDTO();
         redireccion.setAgentes(new ArrayList<>());
         redireccion.getAgentes().add(control.consultarAgenteByIdeAgente (new BigInteger("100")));
-        redireccion.setTraza(new PpdTrazDocumentoDTO());
+        PpdTrazDocumentoDTO ppdTrazDocumentoDTO = ppdTrazDocumentoControl.listarTrazasDocumento(new BigInteger("836")).getObservaciones().get(0);
+        redireccion.setTraza(ppdTrazDocumentoDTO);
         boundary.redireccionarCorrespondencia(redireccion);
         AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("100"));
+        assertEquals("DT",agenteObtenido.getCodEstado());
+    }/*
+
+    //TODO: test_redireccionar_correspondencia_success pendiente de Asignacion y PpdTrazDocumentoControl
+    /*@Test
+    @Transactional
+    public void test_devolver_correspondencia_success() throws SystemException, BusinessException {
+        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente (new BigInteger("200"));
+        agenteDTO.setCodEstado("DT");
+        boundary.actualizarEstadoAgente(agenteDTO);
+        AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("200"));
         assertEquals("DT",agenteObtenido.getCodEstado());
     }*/
 
