@@ -4,7 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresc
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
 import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
-import co.com.soaint.ecm.uti.SystemParameters;
+import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -93,13 +93,6 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
 
-
-    /**
-     * Permite crear la estructura en record a partir de la informacion enviada de instrumento
-     * @param structure Objeto  que contiene la estructura
-     * @return mesaje respuesta para notificar la correcta creacion
-     * @throws SystemException
-     */
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
         log.info("iniciar - Crear estructura en record: {}");
@@ -132,13 +125,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permiete crear carpetas en el record
-     * @param entrada Objeto que contiende la informacion necesaria para buscar la carpeta con nombre de sede, dependeicia, serie
-     *                y subserie ademas del nombre de la carpeta a crear
-     * @return respuesta de la operacion satisfactria cuando se creo la carpeta
-     * * @throws SystemException
-     */
     @Override
     public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
         log.info("iniciar - Crear carpeta record: {}", entrada);
@@ -175,12 +161,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permite buscar la el id de la ruta necesaria de los nodos para poder realizar las operaciones en el record
-     * @param entrada objeto json con los parametros necesarios par apoder efectua la operacion
-     * @return el id de la ruta que se esta buscando
-     * @throws SystemException
-     */
     public String buscarRuta(JSONObject entrada) throws SystemException {
         log.info("iniciar - buscar ruta: {}", entrada);
         try {
@@ -218,11 +198,6 @@ public class RecordServices implements IRecordServices {
 
     }
 
-    /**
-     * Permite obtener el id del plan de ficheros
-     * @return el id del plan de ficheros
-     * @throws SystemException
-     */
     public String obtenerIdFilePlan() throws SystemException {
         log.info("iniciar - obtener id file plan: {}");
         try {
@@ -260,12 +235,7 @@ public class RecordServices implements IRecordServices {
 
     }
 
-    /**
-     * Permite crear el root category
-     * @param entrada objeto json con los paramtreos necesario para la creacion de la categoria
-     * @return el id de la categoria
-     * @throws SystemException
-     */
+
     public String crearRootCategory(JSONObject entrada) throws SystemException {
         log.info("iniciar - Crear categoria padre: {}", entrada);
         try {
@@ -303,13 +273,6 @@ public class RecordServices implements IRecordServices {
 
     }
 
-    /**
-     * Permite crear nodo partiendo del tipo de categoria
-     * @param entrada objeto json con la informacion necesaria para crear el nodo
-     * @param idSerie identificardor del nodo padre
-     * @return el id del nodo creado
-     * @throws SystemException
-     */
     public String crearNodo(JSONObject entrada, String idSerie) throws SystemException {
         log.info("iniciar - Crear categoria hija: {}", entrada.toString());
         try {
@@ -345,13 +308,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permite crear los tiempos de retencion asociado a series y subseries
-     * @param entrada objeto json con lo paramtros necesarios para crear las los tiempos
-     * @param idPadre id del nodo al que se le aplicaran los tiempos de retencion
-     * @return
-     * @throws SystemException
-     */
     public String crearTiempoRetencion(Map<String, Object> entrada, String idPadre) throws SystemException {
         log.info("iniciar - Crear tiempo retencion: {}", entrada.toString());
         try {
@@ -398,11 +354,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permite obtner el id del objeto json de respuesta
-     * @param respuestaJson objeto json que contiene el mensaje de repuesta para procesar
-     * @return el valor del campo id en la respusta json
-     */
     private String obtenerIdPadre(JSONObject respuestaJson) {
         String codigoId = "";
         Iterator keys = respuestaJson.keys();
@@ -416,12 +367,6 @@ public class RecordServices implements IRecordServices {
         return codigoId;
     }
 
-    /**
-     * Permite generar el organigrama a partir de l estructura enviada
-     * @param organigramaList objeto que contiene la lista de organigrama
-     * @param idNodosPadre identificador del nodo padre
-     * @throws SystemException
-     */
     private void generarOrganigrama(List<OrganigramaDTO> organigramaList, Map<String, String> idNodosPadre) throws SystemException {
         propiedades = new HashMap<>();
 
@@ -455,11 +400,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permite generar las dependencias
-     * @param trdList objeto que contiene la lista de dependencias
-     * @throws SystemException
-     */
     private void generarDependencia(List<ContenidoDependenciaTrdDTO> trdList) throws SystemException {
         codigosSubseries = new HashMap<>();
         Map<String, String> codigoSeries = new HashMap<>();
@@ -493,12 +433,6 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    /**
-     * Permite crear las series
-     * @param trd objeto que contiene los parametros necesarios para crear la series
-     * @return identifador de la serie creada
-     * @throws SystemException
-     */
     private String crearSerie(ContenidoDependenciaTrdDTO trd) throws SystemException {
         JSONObject serie = new JSONObject();
         String nombreSerie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat("_").concat(trd.getNomSerie());
@@ -527,13 +461,6 @@ public class RecordServices implements IRecordServices {
 
     }
 
-    /**
-     * Permite crear subseries
-     * @param trd objeto que contiene la informacion necesaria para crear las subseries
-     * @param idSerie identificador de la series a la que esta asociada la subserie
-     * @return identificador de la subserie creada
-     * @throws SystemException
-     */
     private String crearSubserie(ContenidoDependenciaTrdDTO trd, String idSerie) throws SystemException {
         String idSubSerie = "";
         int archivoCentral = (int) (trd.getRetArchivoGestion()+ trd.getRetArchivoCentral());
@@ -561,13 +488,6 @@ public class RecordServices implements IRecordServices {
         return idSubSerie;
     }
 
-    /**
-     * Permite obtener id de la ruta
-     * @param respuestaJson  objeto json con las informacion necesaria para obtener el id de la ruta
-     * @param nodo
-     * @param nombreNodo
-     * @return
-     */
     private String obtenerIdRuta(JSONObject respuestaJson, String nodo, String nombreNodo) {
         String codigoId = "";
         Iterator keys = respuestaJson.keys();
@@ -587,13 +507,6 @@ public class RecordServices implements IRecordServices {
         return codigoId;
     }
 
-    /**
-     * Permite obtener el id del nodo
-     * @param respuestaJson objeto json con los paramtros necesarios para obtener el id del nodo
-     * @param nodo tipo de nodo a manejar
-     * @param nombreNodo nombre del nodo
-     * @return id del nodo
-     */
     private String obtenerIdNodo(JSONObject respuestaJson, String nodo, String nombreNodo) {
         String nodoId = "";
         Iterator keys1 = respuestaJson.keys();

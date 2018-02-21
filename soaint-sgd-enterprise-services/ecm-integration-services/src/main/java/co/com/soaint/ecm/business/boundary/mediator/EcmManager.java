@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,6 +23,7 @@ import java.util.List;
 public class EcmManager {
 
     private static final Logger logger = LogManager.getLogger(EcmManager.class.getName());
+    private static final String ECM_ERROR = "### Error..------";
 
     @Autowired
     private
@@ -66,7 +66,7 @@ public class EcmManager {
         try {
             response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO, selector);
         } catch (Exception e) {
-            logger.error("### Error..------", e);
+            logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
             response.setMensaje("Error ECM Subiendo documento adjunto al content");
             throw e;
@@ -90,7 +90,7 @@ public class EcmManager {
         try {
             response = contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO, selector);
         } catch (Exception e) {
-            logger.error("### Error..------", e);
+            logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
             response.setMensaje("Error ECM Subiendo/Versionando documento generado al content");
             throw e;
@@ -112,9 +112,9 @@ public class EcmManager {
         try {
             response = contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
         } catch (Exception e) {
-            logger.error("### Error..------", e);
+            logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
+            response.setMensaje(ECM_ERROR);
             throw e;
         }
 
@@ -136,7 +136,7 @@ public class EcmManager {
         } catch (Exception e) {
             logger.error("### Error ECM..------", e);
             response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
+            response.setMensaje(ECM_ERROR);
             throw e;
         }
 
@@ -156,32 +156,9 @@ public class EcmManager {
         try {
             response = contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
         } catch (Exception e) {
-            logger.error("### Error..------", e);
+            logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
-            throw e;
-        }
-
-        return response;
-    }
-
-
-    /**
-     * Metodo que llama el servicio para modificar metadatos del documento en el ECM
-     *
-     * @param metadatosDocumentos DTO que contiene los metadatos del documento
-     * @return Identificador del documento creado
-     * @throws InfrastructureException Excepcion ante errores del metodo
-     */
-    public MensajeRespuesta modificarDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
-        logger.info("### Subiendo documento al content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-            response = contentManager.modificarMetadatoDocumentoContent(metadatosDocumentos);
-        } catch (Exception e) {
-            logger.error("### Error..------", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error ECM");
+            response.setMensaje(ECM_ERROR);
             throw e;
         }
 
@@ -207,7 +184,7 @@ public class EcmManager {
         } catch (Exception e) {
             response.setCodMensaje("000002");
             response.setMensaje("Error al mover documento");
-            logger.error("### Error..------", e);
+            logger.error(ECM_ERROR, e);
         }
 
         return response;
@@ -221,14 +198,24 @@ public class EcmManager {
      */
     public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
         logger.info("### Descargando documento del content..");
-        ResponseBuilder response = new com.sun.jersey.core.spi.factory.ResponseBuilderImpl();
+
         try {
-            return contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
+            MensajeRespuesta mensajeRespuesta = contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
+            if ("0000".equals(mensajeRespuesta.getCodMensaje())) {
+                logger.info("### Se devuelve el documento del content..");
+                return Response.ok(mensajeRespuesta.getMetadatosDocumentosDTOList().get(0).getDocumento())
+                        .header("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                        .build();
+            } else {
+                logger.info("### Error al devolver documento del content..");
+                return Response.serverError().build();
+            }
+
         } catch (Exception e) {
             logger.error("Error descargando documento", e);
+            return Response.serverError().build();
         }
-        logger.info("### Se devuelve el documento del content..");
-        return response.build();
+
     }
 
     /**

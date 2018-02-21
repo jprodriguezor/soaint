@@ -14,20 +14,9 @@ import java.util.List;
 @Service
 public interface IRecordServices {
 
-    /**
-     * Permite crear la estructura en el record
-     * @param structure objeto que contiene la estructura
-     * @return respuesta satisfactoria para la creacion del estructura
-     * @throws SystemException
-     */
+
     MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException;
 
-    /**
-     * permite crear carpeta en el record
-     * @param entrada objeto que contiene la informacion necesaria para crear la carpeta
-     * @return respuesta satisfactoria para la creacion de la carpeta
-     * @throws SystemException
-     */
     MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 
 }
