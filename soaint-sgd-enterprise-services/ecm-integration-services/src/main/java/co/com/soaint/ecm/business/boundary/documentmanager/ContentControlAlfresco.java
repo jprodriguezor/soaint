@@ -590,19 +590,18 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo para obtener documentos asociados a un documento principal en Alfresco
      *
      * @param session    Objeto de conexion a Alfresco
-     * @param idDocPadre Documento que se va a subir
+     * @param documento DTO que contiene los metadatos el documento que se va a buscar
      * @return Devuelve el listado de documentos asociados al id de documento padre
      * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta obtenerDocumentosAdjuntos(Session session, String idDocPadre) throws IOException {
+    public MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento) throws IOException {
 
         logger.info("Se entra al metodo obtenerDocumentosAdjuntos");
 
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDocPadre);
-
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
             ArrayList<DocumentoDTO> documentosLista = new ArrayList<>();
             for (QueryResult qResult : resultsPrincipalAdjunto) {
@@ -614,7 +613,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 documentoDTO.setIdDocumento(idDocumento);
                 if (qResult.getPropertyValueByQueryName("cmcor:xIdentificadorDocPrincipal") != null) {
-                    documentoDTO.setIdDocumentoPadre(idDocPadre);
+                    documentoDTO.setIdDocumentoPadre(documento.getIdDocumento());
                     documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
                 } else {
                     documentoDTO.setTipoPadreAdjunto("Principal");
@@ -624,6 +623,9 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setFechaCreacion(newGregCal.getTime());
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
+                documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
+                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+                documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString());
 
                 documentosLista.add(documentoDTO);
 
@@ -644,11 +646,13 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
-    private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, String idDocPadre) {
+    private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, DocumentoDTO documento) {
         //Obtener el documentosAdjuntos
         String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
-                " WHERE( cmis:objectId = '" + idDocPadre + "'" +
-                " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
+                " WHERE( cmis:objectId = '" + documento.getIdDocumento() + "'" +
+                " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento()+ "'" +
+                " OR cmcor:NroRadicado = '" + documento.getNroRadicado()
+                + "')";
 
         return session.query(principalAdjuntos, false);
     }
@@ -1153,7 +1157,9 @@ public class ContentControlAlfresco implements ContentControl {
         try {
 
             logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
-            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDoc);
+            DocumentoDTO documento=new DocumentoDTO();
+            documento.setIdDocumento(idDoc);
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 

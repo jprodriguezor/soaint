@@ -131,11 +131,11 @@ public class ContentManager {
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param idDocPrincipal Documento que se va a subir
+     * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de objetos de documentos asociados al idDocPrincipal
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta obtenerDocumentosAdjuntosContent(String idDocPrincipal) throws IOException {
+    public MensajeRespuesta obtenerDocumentosAdjuntosContent(DocumentoDTO documento) throws IOException {
 
         logger.info("### Obtener documento principal y adjunto del content..");
         MensajeRespuesta response = new MensajeRespuesta();
@@ -145,7 +145,7 @@ public class ContentManager {
             logger.info(MSGCONEXION);
             conexion = contentControl.obtenerConexion();
             logger.info("### Se invoca el metodo de obtener documentos principales y adjuntos..");
-            response = contentControl.obtenerDocumentosAdjuntos(conexion.getSession(), idDocPrincipal);
+            response = contentControl.obtenerDocumentosAdjuntos(conexion.getSession(), documento);
 
         } catch (Exception e) {
             logger.error("Error obteniendo documento adjunto y principal", e);

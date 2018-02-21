@@ -60,11 +60,11 @@ public interface ContentControl {
      * Obtener documento Adjunto dado id Documento Principal
      *
      * @param session        Objeto conexion
-     * @param idDocPrincipal documento a subir
+     * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de documentos adjuntos
      * @throws IOException exception
      */
-    MensajeRespuesta obtenerDocumentosAdjuntos(Session session, String idDocPrincipal) throws IOException;
+    MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento) throws IOException;
 
     /**
      * Obtener versiones del documento dado id Documento

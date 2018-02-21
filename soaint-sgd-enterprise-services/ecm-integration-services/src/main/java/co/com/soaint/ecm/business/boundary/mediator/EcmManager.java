@@ -100,15 +100,15 @@ public class EcmManager {
     /**
      * Metodo que llama el servicio para buscar los documentos adjuntos al ECM dado el Id del documento Principal.
      *
-     * @param idDocPrincipal Identificador del documento Principal para obtener los documentos Adjuntos.
+     * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de objetos de documentos adjuntos.
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta obtenerDocumentosAdjuntos(String idDocPrincipal) throws IOException {
+    public MensajeRespuesta obtenerDocumentosAdjuntos(DocumentoDTO documento) throws IOException {
         logger.info("### Obteniendo los documentos adjuntos dado id de doc Principal..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
+            response = contentManager.obtenerDocumentosAdjuntosContent(documento);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
