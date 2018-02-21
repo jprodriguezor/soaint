@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ObservacionesDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -11,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.List;
@@ -92,5 +94,33 @@ public class DocumentoControl {
      */
     public ObservacionesDocumentoDTO listarObservacionesDocumento(BigInteger ideDocumento) throws BusinessException, SystemException{
         return ppdTrazDocumentoControl.listarTrazasDocumento(ideDocumento);
+    }
+
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PpdDocumentoDTO consultarDocumentoPorIdeDocumento(BigInteger ideDocumento) throws BusinessException, SystemException {
+        try {
+            PpdDocumentoDTO documentoDTO = em.createNamedQuery("PpdDocumento.findByIdeDocumento", PpdDocumentoDTO.class)
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getSingleResult();
+            return documentoDTO;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("documento.documento_not_exist_by_ideDocumento")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }
