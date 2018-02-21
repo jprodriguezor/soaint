@@ -92,4 +92,18 @@ public class DocumentoWebApi {
         log.info("processing rest request - consultar documento por numero radicado");
         return boundary.consultarDocumentoByNroRadicado(nroRadicado);
     }
+
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/documento/obtener-documento/{ide-documento}")
+    public PpdDocumentoDTO consultarDocumentoPorIdeDocumento(@PathParam("ide-documento") final BigInteger ideDocumento) throws BusinessException, SystemException {
+        log.info("processing rest request - listar observaciones de un documento");
+        return boundary.consultarDocumentoPorIdeDocumento(ideDocumento);
+    }
 }
