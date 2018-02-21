@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -603,13 +602,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         MensajeRespuesta response = new MensajeRespuesta();
         try {
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDocPadre);
 
-            //Obtener el documentosAdjuntos
-            String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
-                    " WHERE( cmis:objectId = '" + idDocPadre + "'" +
-                    " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
 
-            ItemIterable<QueryResult> resultsPrincipalAdjunto = session.query(principalAdjuntos, false);
             ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<>();
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 
@@ -648,6 +643,15 @@ public class ContentControlAlfresco implements ContentControl {
         return response;
 
 
+    }
+
+    private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, String idDocPadre) {
+        //Obtener el documentosAdjuntos
+        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
+                " WHERE( cmis:objectId = '" + idDocPadre + "'" +
+                " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
+
+        return session.query(principalAdjuntos, false);
     }
 
     /**
@@ -1184,14 +1188,27 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public boolean eliminardocumento(String idDoc, Session session) {
         try {
-            logger.info("Se procede a eliminar");
-            ObjectId a = new ObjectIdImpl(idDoc);
-            CmisObject object = session.getObject(a);
-            Document delDoc = (Document) object;
-            //Se borra el documento pero no todas las versiones solo la ultima
-            delDoc.delete(false);
-            logger.info("Se logro eliminar el documento");
+
+            logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDoc);
+
+            for (QueryResult qResult : resultsPrincipalAdjunto) {
+
+                String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
+                String idDocumento = parts[0];
+
+                logger.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName("cmis:name").getValues().get(0).toString());
+                ObjectId a = new ObjectIdImpl(idDocumento);
+                CmisObject object = session.getObject(a);
+                Document delDoc = (Document) object;
+                //Se borra el documento pero no todas las versiones solo la ultima
+                delDoc.delete(false);
+                logger.info("Se logro eliminar el documento");
+
+            }
             return Boolean.TRUE;
+
+
         } catch (CmisObjectNotFoundException e) {
             logger.error("No se pudo eliminar el documento :", e);
             return Boolean.FALSE;
