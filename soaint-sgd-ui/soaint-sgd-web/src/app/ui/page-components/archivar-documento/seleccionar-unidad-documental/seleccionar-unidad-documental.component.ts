@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../../shared/validation-messages';
+import {ConfirmationService} from "primeng/primeng";
 
 @Component({
   selector: 'app-seleccionar-unidad-documental',
   templateUrl: './seleccionar-unidad-documental.component.html',
-  styleUrls: ['./seleccionar-unidad-documental.component.scss']
+  styleUrls: ['./seleccionar-unidad-documental.component.scss'],
+  providers:[ConfirmationService]
 })
 export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
@@ -15,9 +17,15 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   subseries: Array<any> = [];
 
+  documentos: any[];
+
   validations: any = {};
 
-  constructor(private formBuilder: FormBuilder) {
+  visiblePopup:boolean = false;
+
+  currentPage:number = 1;
+
+   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService) {
     this.initForm();
   }
 
@@ -29,7 +37,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
       'nombre': [null, Validators.required],
       'descriptor1': [null],
       'descriptor2': [null],
-      'observaciones': [null]
+      'observaciones': [null,Validators.required],
+      'operation'  :["bUnidadDocumental"],
     });
   }
 
@@ -72,5 +81,64 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  currentSection():string{
+   return this.form.controls['operation'].value;
+   }
+
+   buscarUnidadDocumental(){
+
+     this.visiblePopup = true;
+   }
+
+   next(){
+
+     this.currentPage++;
+   }
+
+   prev(){
+
+     this.currentPage --;
+   }
+
+   closePopup(){
+     this.visiblePopup = false;
+     this.form.controls['operation'].setValue("solicitarUnidadDocumental");
+   }
+   confirmArchivarDocumentos(){
+
+     this.confirmationService.confirm({
+       message: '¿Está seguro de archivar el documento en la carpeta XXXXX?',
+       header: 'Confirmacion',
+       icon: 'fa fa-question-circle',
+       accept: () => {
+
+
+       },
+       reject: () => {
+
+       }
+     });
+   }
+
+   private clearValue(control:string){
+
+     const ac = this.form.get(control);
+
+     ac.setValue(null);
+   }
+
+   clearFilters(){
+
+     this.clearValue("serie");
+     this.clearValue("subserie");
+     this.clearValue("identificador");
+     this.clearValue("nombre");
+     this.clearValue("descriptor1");
+     this.clearValue("descriptor2");
+     this.clearValue("observaciones");
+   }
+
+
 }
 
