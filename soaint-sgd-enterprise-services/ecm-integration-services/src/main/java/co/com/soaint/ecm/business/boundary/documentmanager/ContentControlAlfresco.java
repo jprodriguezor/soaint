@@ -727,8 +727,10 @@ public class ContentControlAlfresco implements ContentControl {
             //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
             if (metadatosDocumentosDTO.getIdDocumentoPadre() != null) {
                 properties.put("cmcor:xIdentificadorDocPrincipal", metadatosDocumentosDTO.getIdDocumentoPadre());
-                properties.put("cmcor:xTipo", "Anexo");
+                properties.put("cmcor:TipologiaDocumental", "Anexo");
             }
+           
+
 
             properties.put(PropertyIds.NAME, metadatosDocumentosDTO.getNombreDocumento());
 
