@@ -37,7 +37,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   status: UploadStatus;
   previewWasRefreshed = false;
   uploadUrl: string;
+  uploadDisabled = false;
   principalFile: string;
+  principalFileId: null;
   correspondencia: CorrespondenciaDTO;
   comunicacion: ComunicacionOficialDTO = {};
 
@@ -83,7 +85,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     this.comunicacion.anexoList.forEach(value => {
       console.log('anexos');
       console.log(value);
-      if (value.codTipoSoporte == 'TP-SOPE') {
+      if (value.codTipoSoporte === 'TP-SOPE') {
         this.tipoSoporteElectronico = true;
       }
     });
@@ -106,7 +108,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
 
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
-          console.log(result); _dependencia = result[0];
+          _dependencia = result[0];
           return this._api.sendFile(
             this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,
               this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
@@ -127,6 +129,8 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             this._store.dispatch(new PushNotificationAction({
               severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
             }));
+            this.uploadDisabled = true;
+            this.principalFileId = data[0];
           }
         } else {
           switch (data.codMensaje) {
@@ -134,6 +138,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
+              this.uploadDisabled = true;
               break;
             case '3333':
               this._store.dispatch(new PushNotificationAction({
@@ -142,12 +147,14 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               break;
             case '4444':
               this._store.dispatch(new PushNotificationAction({
-                severity: 'error', summary: 'LA SEDE ' + _dependencia.nomSede + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
+                severity: 'error',
+                summary: 'LA SEDE ' + _dependencia.nomSede + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
               }));
               break;
             case '4445':
               this._store.dispatch(new PushNotificationAction({
-                severity: 'error', summary: 'LA DEPENDENCIA ' + _dependencia.nombre + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
+                severity: 'error',
+                summary: 'LA DEPENDENCIA ' + _dependencia.nombre + ' NO SE ENCUENTRA EN EL REPOSITORIO DOCUEMENTAL'
               }));
               break;
             default:
@@ -182,38 +189,16 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   onClear(event) {
     this.changeDetection.detectChanges();
     this.status = UploadStatus.CLEAN;
+    this.uploadDisabled = false;
+    console.log('DOCUMENTO PRINCIPAL ELIMINADO...');
+    this.principalFileId = null;
   }
 
   onSelect(event) {
-
-    console.log(event.files);
-
     this.previewWasRefreshed = false;
-
     for (const file of event.files) {
       this.uploadFiles.push(file);
     }
-    console.log(this.uploadFiles);
-
-    /*if (this.uploader.files.length === 2) {
-      this.uploader.remove(0);
-    } else if (this.uploader.files.length > 2) {
-      let index = 0;
-      while (this.uploader.files.length !== 1) {
-        if (this.uploader.files[index] !== this.uploadFile) {
-          this.uploader.remove(index);
-          index--;
-        } else if (this.uploader.files[index].lastModified !== this.uploadFile.lastModified) {
-          this.uploader.remove(index);
-          index--;
-        } else {
-          index++;
-          if (index === this.uploader.files.length) {
-            break;
-          }
-        }
-      }
-    }*/
     this.changeDetection.detectChanges();
     this.status = UploadStatus.LOADED;
   }
