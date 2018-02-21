@@ -895,10 +895,10 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para buscar crear carpetas de radicacion de entrada
      *
-     * @param session      Objeto session
-     * @param documento Objeto qeu contiene los metadatos
-     * @param response     Mensaje de respuesta
-     * @param properties   propiedades de carpeta
+     * @param session    Objeto session
+     * @param documento  Objeto qeu contiene los metadatos
+     * @param response   Mensaje de respuesta
+     * @param properties propiedades de carpeta
      */
     private void buscarCrearCarpetaRadicacion(Session session, DocumentoDTO documento, MensajeRespuesta response, Map<String, Object> properties, String tipoComunicacion) {
 
@@ -1045,6 +1045,13 @@ public class ContentControlAlfresco implements ContentControl {
         String idDocumento;
         logger.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+
+        if (documentoDTO.getNroRadicado() != null) {
+            properties.put("cmcor:NroRadicado", documentoDTO.getNroRadicado());
+        }
+        if (documentoDTO.getNombreRemitente() != null) {
+            properties.put("cmcor:NombreRemitente", documentoDTO.getNombreRemitente());
+        }
         logger.info(AVISO_CREA_DOC);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
 
@@ -1148,21 +1155,21 @@ public class ContentControlAlfresco implements ContentControl {
             logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
             ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDoc);
 
-                for (QueryResult qResult : resultsPrincipalAdjunto) {
+            for (QueryResult qResult : resultsPrincipalAdjunto) {
 
-                    String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
-                    String idDocumento = parts[0];
+                String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
+                String idDocumento = parts[0];
 
-                    logger.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName("cmis:name").getValues().get(0).toString());
-                    ObjectId a = new ObjectIdImpl(idDocumento);
-                    CmisObject object = session.getObject(a);
-                    Document delDoc = (Document) object;
-                    //Se borra el documento pero no todas las versiones solo la ultima
-                    delDoc.delete(false);
-                    logger.info("Se logro eliminar el documento");
+                logger.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName("cmis:name").getValues().get(0).toString());
+                ObjectId a = new ObjectIdImpl(idDocumento);
+                CmisObject object = session.getObject(a);
+                Document delDoc = (Document) object;
+                //Se borra el documento pero no todas las versiones solo la ultima
+                delDoc.delete(false);
+                logger.info("Se logro eliminar el documento");
 
-                }
-                return Boolean.TRUE;
+            }
+            return Boolean.TRUE;
 
 
         } catch (CmisObjectNotFoundException e) {
