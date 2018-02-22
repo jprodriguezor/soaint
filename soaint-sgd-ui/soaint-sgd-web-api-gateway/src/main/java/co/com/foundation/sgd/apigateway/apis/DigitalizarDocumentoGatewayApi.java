@@ -94,7 +94,7 @@ public class DigitalizarDocumentoGatewayApi {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response deleteDocumentById(@PathParam("documentId") String documentId) {
         Response response = client.deleteDocumentById(documentId);
-        Boolean removed = response.readEntity(Boolean.class);
+        String removed = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(removed).build();
     }
 
