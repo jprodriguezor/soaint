@@ -190,10 +190,12 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     if (null !== this.principalFileId) {
       const deleteUrl = environment.digitalizar_doc_upload_endpoint + '/eliminarprincipal/' + this.principalFileId;
       this._api.post(deleteUrl, {}).subscribe(data => {
-        if (data) {
+        if (data.ok) {
           this.principalFileId = null;
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'success', summary: 'DOCUMENTOS ELIMINADOS CORRECTAMENTE'
+          }));
         }
-        console.log('ELIMINANDO ->', data);
       });
     }
   }
