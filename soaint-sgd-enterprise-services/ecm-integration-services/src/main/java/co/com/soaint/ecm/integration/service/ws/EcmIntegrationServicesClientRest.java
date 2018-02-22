@@ -91,7 +91,6 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/subirVersionarDocumentoGeneradoECM/{selector}")
-    @Consumes("multipart/form-data")
     public MensajeRespuesta subirVersionarDocumentoGeneradoECM(@RequestBody DocumentoDTO documento,
                                                                @PathParam("selector") String selector
     ) throws IOException {
