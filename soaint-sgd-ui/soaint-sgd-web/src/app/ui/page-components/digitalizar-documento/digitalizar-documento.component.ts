@@ -79,12 +79,8 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     for (const file of event.files) {
       formData.append('files', file, file.name);
     }
-    console.log('datos subida');
-    console.log(formData);
 
     this.comunicacion.anexoList.forEach(value => {
-      console.log('anexos');
-      console.log(value);
       if (value.codTipoSoporte === 'TP-SOPE') {
         this.tipoSoporteElectronico = true;
       }
@@ -191,7 +187,15 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     this.status = UploadStatus.CLEAN;
     this.uploadDisabled = false;
     console.log('DOCUMENTO PRINCIPAL ELIMINADO...');
-    this.principalFileId = null;
+    if (null !== this.principalFileId) {
+      const deleteUrl = environment.digitalizar_doc_upload_endpoint + 'eliminarprincipal/' + this.principalFileId;
+      this._api.post(deleteUrl, {}).subscribe(data => {
+        if (data) {
+          this.principalFileId = null;
+        }
+        console.log('ELIMINANDO ->', data);
+      });
+    }
   }
 
   onSelect(event) {
