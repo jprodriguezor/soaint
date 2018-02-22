@@ -96,8 +96,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.contacts = this.contactsDefault;
 
-    console.log(this.contacts);
-
     this.addColombiaByDefault();
 
     this.paisSuggestions$ = this.paisAutoComplete.completeMethod
@@ -180,7 +178,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
 
-  onDropdownClickPais() {
+  onDropdownClickPais(event?) {
     this._paisSandbox.loadDispatch();
   }
 

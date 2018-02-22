@@ -1,0 +1,250 @@
+<form [formGroup]="form" name="formDefault">
+  <div class="ui-fluid">
+    <div class="card card-w-title">
+      <h1>Datos Destinatario</h1>
+
+      <!--<div class="ui-g ui-fluid">-->
+        <!--<div class="ui-sm-12 ui-g-12 ui-lg-12">-->
+          <!--<div class="ui-g form-group text-right" style="float: right">-->
+            <!--<div class="ui-helper-clearfix">-->
+              <!--<input type="checkbox" id="principal" [(ngModel)]="principal" [disabled]="principal"> <label for="cbox2">Principal</label>-->
+              <!--&lt;!&ndash;<input type="checkbox"  name="principal" formControlName="principal"  value="Principal" disabled="principal" />&ndash;&gt;-->
+              <!--&lt;!&ndash;<p-checkbox name="principal" label="Principal" formControlName="principal" value="principal"&ndash;&gt;-->
+                          <!--&lt;!&ndash;[dynamicDisable]="!principal"></p-checkbox>&ndash;&gt;-->
+
+              <!--<input type="checkbox" [disabled]="principal" (change)="checkSelected(checkBox[0].label)">{{checkBox[0].label}}-->
+              <!--<input type="checkbox" [disabled]="checkBox[1].checked" (change)="checkSelected(checkBox[1].label)">{{checkBox[1].label}}-->
+
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <!--Tipo Destinatario-->
+      <div class="ui-sm-12 ui-g-4 ui-lg-4">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
+          </div>
+          <div class="ui-g-12 md-dropdownfield">
+            <p-dropdown [options]="tipoDestinatarioSuggestions$ | async | dropdownItem"
+                        id="tipoDestinatario"
+                        formControlName="tipoDestinatario"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-g ui-fluid" [hidden]="!visibility.sede">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="sede"><span class="text-danger">*</span>Sede</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="sedeAdministrativaSuggestions$ | async | dropdownItem"
+                          id="sede"
+                          formControlName="sede"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.sede"
+                          (onBlur)="listenForBlurEvents('sede')">
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.sede">
+                {{ validations.sede }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.dependencia">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="dependencia"><span class="text-danger">*</span>Dependencia / Grupo</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+
+              <p-dropdown [options]="dependenciasGrupoList | dropdownItem"
+                          id="dependencia"
+                          formControlName="dependencia"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.dependencia"
+                          (onBlur)="listenForBlurEvents('dependencia')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.dependencia">
+                {{ validations.dependencia }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-g ui-fluid" [hidden]="!visibility.tipoPersona">
+
+        <!--Tipo Persona-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoPersona"><span class="text-danger">*</span>Tipo de persona</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="tipoPersonaSuggestions$ | async | dropdownItem"
+                          id="tipoPersona"
+                          formControlName="tipoPersona"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.tipoPersona"
+                          (onBlur)="listenForBlurEvents('tipoPersona')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.tipoPersona">
+                {{ validations.tipoPersona }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Tipo Documento-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.tipoDocumento">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoDocumento">Tipo documento</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="subscriptionTipoDocumentoPersona | dropdownItem"
+                          id="tipoDocumento"
+                          formControlName="tipoDocumento"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.tipoDocumento"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.tipoDocumento">
+                {{ validations.tipoDocumento }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Razon Social-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.razonSocial">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="razonSocial" formControlName="razonSocial"
+                     [dynamicDisable]="!visibility.razonSocial">
+              <label for="razonSocial"><span class="text-danger">*</span>Razon social</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.razonSocial">
+                   {{ validations.razonSocial }}
+                 </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Nit-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nit">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="nit" formControlName="nit" [dynamicDisable]="!visibility.nit">
+              <label for="nit">No Identificacion Tributario</label>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Actua en Calidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.actuaCalidad">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="actuaCalidad">Actua en calidad</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="actuaCalidadSuggestions$ | async | dropdownItem"
+                          id="actuaCalidad"
+                          formControlName="actuaCalidad"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.actuaCalidad"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <!--Nombre y Apellidos-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nombre">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="nombre" formControlName="nombre" [dynamicDisable]="!visibility.nombre"
+                     [clearValidators]="visibility.personaJuridica">
+                <label for="nombre"><span class="text-danger" [hidden]="visibility.personaJuridica">*</span>Nombre y
+                  Apellidos</label>
+
+                <div class="ui-message ui-messages-error"
+                     *ngIf="validations.nombre">
+                  {{ validations.nombre }}
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Nro Documento Identidad-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.nroDocumentoIdentidad">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText id="nroDocumentoIdentidad" formControlName="nroDocumentoIdentidad"
+                     [dynamicDisable]="!visibility.nroDocumentoIdentidad">
+              <label for="nroDocumentoIdentidad">No. Documento identidad</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="validations.nroDocumentoIdentidad">
+                   {{ validations.nroDocumentoIdentidad }}
+                 </div>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<div *ngIf="visibility.datosContacto">
+  <app-datos-direccion #destinatarioDatosContactos [editable]="editable"
+                       (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
+</div>
+
+<div class="ui-g form-group text-right" style="padding-top: 20px;float: right">
+  <div class="ui-dialog-buttonpane1 ui-helper-clearfix">
+    <button pButton type="button" class="ui-button-primary" label="Guardar Destinatario"
+            (click)="newRemitente()"></button>
+  </div>
+</div>
+
+
+
