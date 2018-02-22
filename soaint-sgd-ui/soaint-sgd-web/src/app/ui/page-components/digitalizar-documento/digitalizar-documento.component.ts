@@ -39,7 +39,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   uploadUrl: string;
   uploadDisabled = false;
   principalFile: string;
-  principalFileId: null;
+  principalFileId = null;
   correspondencia: CorrespondenciaDTO;
   comunicacion: ComunicacionOficialDTO = {};
 
