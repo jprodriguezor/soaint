@@ -30,6 +30,12 @@ public class ECMClient {
         super();
     }
 
+    public Response uploadVersionDocumento(
+            String parentId, String fileName, String sede, String dependencia, byte[] file) {
+
+
+    }
+
     public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
