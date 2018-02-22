@@ -367,7 +367,7 @@ public class EcmIntegrationServicesClientRest {
      * @param idDocumento Identificador del documento
      * @return True en exito false en error
      */
-    @POST
+    @DELETE
     @Path("/eliminarDocumentoECM/{idDocumento}")
     public boolean eliminarDocumentoECM(@PathParam("idDocumento") String idDocumento) {
 
