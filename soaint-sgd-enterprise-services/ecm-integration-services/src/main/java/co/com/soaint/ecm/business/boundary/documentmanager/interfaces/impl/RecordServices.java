@@ -323,7 +323,7 @@ public class RecordServices implements IRecordServices {
             events.put(entrada.get("events"));
             jsonPostDataretencion.put(evento, events);
 
-            WebTarget wt = ClientBuilder.newClient().target(apiServiceAlfresco);
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.API_SERVICE_ALFRESCO));
             Response response = wt.path("/" + idPadre + "/dispositionschedule/dispositionactiondefinitions")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
