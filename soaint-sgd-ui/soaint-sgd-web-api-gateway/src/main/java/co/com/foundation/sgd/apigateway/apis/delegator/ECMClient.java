@@ -73,9 +73,15 @@ public class ECMClient {
                 .get();
     }
 
+    public Response deleteDocumentById(String documentId) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/eliminarDocumentoECM/" + documentId).request()
+                .delete();
+    }
+
     public Response findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
+        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().delete();
     }
 
 }
