@@ -206,7 +206,7 @@
 </p-dialog>
 
 <p-dialog [visible]="destinatarioInternoDialogVisible" modal="modal" [responsive]="true" positionTop="20"
-          (onHide)="hideAddDestinatarioInternoPopup()" [width]="800" [height]="auto">
+          (onHide)="hideAddDestinatarioInternoPopup()" [width]="800" [style]="{'overflow': 'scroll','max-height': '100%'}">
   <p-header>
     Destinatario Interno
   </p-header>
