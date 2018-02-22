@@ -145,9 +145,9 @@
                           (click)="showDetailsDialog(correspondencia['correspondencia'].nroRadicado)"></button>
                 </ng-template>
               </p-column>
-              <p-column header="Agregar observación" [style]="{'text-align':'center','width':'200px'}">
+              <p-column header="Observación" [style]="{'text-align':'center','width':'200px'}">
                 <ng-template let-correspondencia="rowData" let-i="rowIndex" pTemplate="item">
-                  <button pButton type="button" label="Agregar observaciones"
+                  <button pButton type="button" label="Observaciones"
                           style="width: auto;"
                           (click)="showAddObservationsDialog(correspondencia['correspondencia']['ideDocumento'])"></button>
                 </ng-template>
@@ -210,7 +210,7 @@
             [style]="{'position':'absolute'}"
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
-      Agregar observaciones
+      Observaciones
     </p-header>
     <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
 

@@ -3,7 +3,7 @@ package co.com.soaint.ecm.business.boundary.mediator;
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,16 +55,15 @@ public class EcmManager {
      * Metodo que llama el servicio para subir documentos de producción documental y los documentos adjuntos al ECM.
      *
      * @param documento              Documento que se va a subir
-     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
      * @param selector               Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto( DocumentoDTO documento, String selector) throws IOException {
         logger.info("### Subiendo documento adjunto al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, metadatosDocumentosDTO, selector);
+            response = contentManager.subirDocumentoPrincipalAdjuntoContent(documento, selector);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
@@ -79,16 +78,15 @@ public class EcmManager {
      * Metodo que llama el servicio para subir versionar documentos generado de producción documental al ECM.
      *
      * @param documento              Documento que se va a subir
-     * @param metadatosDocumentosDTO Objeto que contiene los datos de los metadatos de los documentos.
      * @param selector               parametro que indica donde se va a guardar el documento
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta subirVersionarDocumentoGenerado(MultipartFormDataInput documento, MetadatosDocumentosDTO metadatosDocumentosDTO, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(DocumentoDTO documento, String selector) throws IOException {
         logger.info("### Subiendo/Versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.subirVersionarDocumentoGeneradoContent(documento, metadatosDocumentosDTO, selector);
+            response = contentManager.subirVersionarDocumentoGeneradoContent(documento, selector);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
@@ -102,15 +100,15 @@ public class EcmManager {
     /**
      * Metodo que llama el servicio para buscar los documentos adjuntos al ECM dado el Id del documento Principal.
      *
-     * @param idDocPrincipal Identificador del documento Principal para obtener los documentos Adjuntos.
+     * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de objetos de documentos adjuntos.
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta obtenerDocumentosAdjuntos(String idDocPrincipal) throws IOException {
+    public MensajeRespuesta obtenerDocumentosAdjuntos(DocumentoDTO documento) throws IOException {
         logger.info("### Obteniendo los documentos adjuntos dado id de doc Principal..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
-            response = contentManager.obtenerDocumentosAdjuntosContent(idDocPrincipal);
+            response = contentManager.obtenerDocumentosAdjuntosContent(documento);
         } catch (Exception e) {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
@@ -150,7 +148,7 @@ public class EcmManager {
      * @return Identificador del documento creado
      * @throws InfrastructureException Excepcion ante errores del metodo
      */
-    public MensajeRespuesta modificarMetadatosDocumento(MetadatosDocumentosDTO metadatosDocumentos) throws IOException {
+    public MensajeRespuesta modificarMetadatosDocumento(DocumentoDTO metadatosDocumentos) throws IOException {
         logger.info("### Subiendo documento al content..");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
@@ -193,18 +191,18 @@ public class EcmManager {
     /**
      * Metodo generico para descargar los documentos del ECM
      *
-     * @param metadatosDocumentosDTO Objeto que contiene los metadatos
+     * @param documentoDTO Objeto que contiene los metadatos
      * @return Documento
      */
-    public Response descargarDocumento(MetadatosDocumentosDTO metadatosDocumentosDTO) {
+    public Response descargarDocumento(DocumentoDTO documentoDTO) {
         logger.info("### Descargando documento del content..");
 
         try {
-            MensajeRespuesta mensajeRespuesta = contentManager.descargarDocumentoContent(metadatosDocumentosDTO);
+            MensajeRespuesta mensajeRespuesta = contentManager.descargarDocumentoContent(documentoDTO);
             if ("0000".equals(mensajeRespuesta.getCodMensaje())) {
                 logger.info("### Se devuelve el documento del content..");
-                return Response.ok(mensajeRespuesta.getMetadatosDocumentosDTOList().get(0).getDocumento())
-                        .header("Content-Disposition", "attachment; filename=" + metadatosDocumentosDTO.getNombreDocumento()) //optional
+                return Response.ok(mensajeRespuesta.getDocumentoDTOList().get(0).getDocumento())
+                        .header("Content-Disposition", "attachment; filename=" + documentoDTO.getNombreDocumento()) //optional
                         .build();
             } else {
                 logger.info("### Error al devolver documento del content..");
