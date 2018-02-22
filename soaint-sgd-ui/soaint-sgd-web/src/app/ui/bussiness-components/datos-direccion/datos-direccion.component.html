@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <form [formGroup]="form" novalidate name="formContacto" *ngIf="showContactForm === true" class="fadein-down">
+  <form [formGroup]="form" novalidate name="formContacto" [hidden]="showContactForm !== true" class="fadein-down">
 
     <div class="card card-w-title">
       <h1>Datos de contacto</h1>
@@ -179,7 +179,8 @@
               <label for="pais">País</label>
             </div>
             <div class="ui-g-12">
-              <p-autoComplete id="pais"
+              <p-autoComplete #paisAutoComplete
+                              id="pais"
                               [suggestions]="paisSuggestions$ | async"
                               field="nombre"
                               formControlName="pais"
