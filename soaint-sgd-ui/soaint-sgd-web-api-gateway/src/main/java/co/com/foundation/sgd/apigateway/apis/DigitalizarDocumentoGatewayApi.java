@@ -83,7 +83,7 @@ public class DigitalizarDocumentoGatewayApi {
 
     @GET
     @Path("/obtenerdocumentosasociados/{idDocumento}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
        return client.findDocumentosAsociados(idDocumento);
