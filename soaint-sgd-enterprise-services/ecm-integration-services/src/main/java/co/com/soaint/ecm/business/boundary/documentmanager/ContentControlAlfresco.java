@@ -764,7 +764,7 @@ public class ContentControlAlfresco implements ContentControl {
             documento.setTipoDocumento(APPLICATION_PDF);
         }
 
-        if ("none".equals(documento.getIdDocumento())) {
+        if (documento.getIdDocumento()==null) {
 
             //Se definen las propiedades del documento a subir
 
