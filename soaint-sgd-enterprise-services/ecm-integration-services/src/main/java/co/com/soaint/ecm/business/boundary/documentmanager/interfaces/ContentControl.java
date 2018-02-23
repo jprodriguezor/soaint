@@ -2,6 +2,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
@@ -119,5 +120,12 @@ public interface ContentControl {
      */
     boolean eliminardocumento(String idDoc, Session session);
 
-
+    /**
+     * Servicio que devuelve el listado de las Series y de las Dependencias del ECM
+     *
+     * @param dependenciaTrdDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
+     * @param session           Objeto de conexion
+     * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
+     */
+     MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) ;
 }
