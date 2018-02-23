@@ -1,7 +1,4 @@
-import {
-  ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter,
-  AfterViewInit
-} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -25,7 +22,8 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-
+import "rxjs/add/operator/filter";
+import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -35,7 +33,7 @@ enum FormContextEnum {
   selector: 'app-datos-direccion',
   templateUrl: './datos-direccion.component.html',
 })
-export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   form: FormGroup;
   display = false;
@@ -45,6 +43,8 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
 
   @Output()
   nuevosContactos = new EventEmitter();
+
+  @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
 
   validations: any = {};
   visibility: any = {};
@@ -57,8 +57,10 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
+  paises$: Observable<PaisDTO[]>;
 
   contacts: Array<any> = [];
+  paises: Array<any> = [];
   contactPrincial = false;
   showDireccionForm = false;
   showCheckDireccionForm = false;
@@ -88,15 +90,17 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
     this.bisSuggestons$ = this._store.select(getBisArrayData);
     this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
-    this.paisSuggestions$ = this._store.select(paisArrayData);
     this.municipioSuggestions$ = this._store.select(municipioArrayData);
     this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+    this.paises$ = this._store.select(paisArrayData);
 
     this.contacts = this.contactsDefault;
-    console.log("lista de contactos ");
-    console.log(this.contacts);
 
     this.addColombiaByDefault();
+
+    this.paisSuggestions$ = this.paisAutoComplete.completeMethod
+      .combineLatest(this.paises$, (event: any, paises) => paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
   }
 
   initForm() {
@@ -149,7 +153,7 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
 
     paisControl.valueChanges.subscribe(value => {
       this.visibility.selectedColombia = true;
-      if (value && (value.codigo.toUpperCase() !== 'CO')) {
+      if (value && value.codigo &&(value.codigo.toUpperCase() !== 'CO')) {
         this.visibility.selectedColombia = false;
         this.showCheckDireccionForm = false;
         departamentoControl.reset();
@@ -174,7 +178,7 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
 
-  onDropdownClickPais() {
+  onDropdownClickPais(event?) {
     this._paisSandbox.loadDispatch();
   }
 
@@ -182,6 +186,7 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
     const pais = this.form.get('pais').value;
     if (pais) {
       this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+      this.form.get('municipio').reset();
     }
   }
 
@@ -366,7 +371,17 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onFilterPais(event) {
+
+    //this.paisSuggestions$.getResults(event.query).then(data => {
+      //this.results = data;
+    //});
+    /*this.paisSuggestions$.take(2).subscribe((values) => {
+      console.log(values);
+    })
+    console.log("Lista ", this.paisSuggestions$);
+    console.log(event);*/
   }
+
 
   save() {
     if (this.form.valid) {
@@ -394,19 +409,27 @@ export class DatosDireccionComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  addColombiaByDefault() {
-
-    this.paisSuggestions$.take(2).subscribe((values) => {
-      this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
-    });
-    this.visibility.selectedColombia = true;
-
-  }
-
   ngAfterViewInit() {
-    this._paisSandbox.loadDispatch();
     this.refreshView();
   }
+
+  addColombiaByDefault() {
+    const subscription = this.paises$
+
+     .filter(values => values.length > 0)
+
+     .subscribe((values) => {
+     this.paises = values;
+     this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
+
+     setTimeout(() => subscription.unsubscribe());
+     });
+
+    this._paisSandbox.loadDispatch();
+
+    this.visibility.selectedColombia = true;
+  }
+
 
   refreshView() {
     this._changeDetectorRef.detectChanges();

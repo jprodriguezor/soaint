@@ -13,6 +13,8 @@ import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radic
 import {ConfirmationService} from 'primeng/components/common/api';
 import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {Subscription} from 'rxjs/Subscription';
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {WARN_DESTINATARIOS_REPETIDOS} from "../../../shared/lang/es";
 
 
 @Component({
@@ -91,13 +93,19 @@ export class DatosDestinatarioComponent implements OnInit {
 
   addAgentesDestinatario() {
     const tipo = this.form.get('tipoDestinatario');
+    const sede = this.form.get('sedeAdministrativa');
+    const grupo = this.form.get('dependenciaGrupo');
+
+    if(this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sede.value.codigo && value.dependenciaGrupo.codigo === grupo.value.codigo).length > 0){
+      return  this._store.dispatch(new PushNotificationAction({
+        severity: 'warn',
+        summary: WARN_DESTINATARIOS_REPETIDOS
+      }));
+    }
 
     if (tipo.value.codigo === DESTINATARIO_PRINCIPAL && this.agentesDestinatario.filter(value => value.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL).length > 0) {
       return this.confirmSubstitucionDestinatarioPrincipal();
     }
-
-    const sede = this.form.get('sedeAdministrativa');
-    const grupo = this.form.get('dependenciaGrupo');
 
     const insertVal = [
       {

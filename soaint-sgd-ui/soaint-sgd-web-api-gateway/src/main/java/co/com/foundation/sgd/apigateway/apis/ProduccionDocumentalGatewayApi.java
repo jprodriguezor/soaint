@@ -11,10 +11,13 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -75,37 +78,38 @@ public class ProduccionDocumentalGatewayApi {
     @Path("/versionar-documento")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response versionarDocumento(
-            @RequestParam("nombreDocumento") String nombreDocumento, @RequestParam("idDocumento") String idDocumento,
-            @RequestParam("sede") String sede, @RequestParam("dependencia") String dependencia,
-            @RequestParam("nroRadicado") String nroRadicado, @RequestParam("tipoDocumento") String tipoDocumento,
-            MultipartFormDataInput formDataInput) {
+    public Response versionarDocumento(MultipartFormDataInput formDataInput) {
+
         log.info("ProduccionDocumentalGatewayApi - [content] : Subir version documento");
 
         Response response = null;
-        DocumentoDTO documentoDTO = null;
+        DocumentoDTO documentoDTO = new DocumentoDTO();
+        try {
+            InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
+            documentoDTO.setDocumento(IOUtils.toByteArray(inputStream));
 
-        Map<String, List<InputPart>> uploadForm = formDataInput.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("documento");
-
-        for (InputPart inputPart : inputParts) {
-            try {
-                log.info("ProduccionDocumentalGatewayApi - [content] : convert the uploaded file to inputstream");
-                log.info("ProduccionDocumentalGatewayApi - [content] : ".concat(idDocumento).concat(" : ").concat(nombreDocumento));
-
-                InputStream inputStream = inputPart.getBody(InputStream.class,null);
-                byte [] bytes = IOUtils.toByteArray(inputStream);
-//                documentoDTO = new DocumentoDTO(
-//                        idDocumento, nroRadicado, null, null, sede, dependencia, nombreDocumento, null,
-//                        new Date(), tipoDocumento, null, null, null, bytes);
-//
-//                log.info(documentoDTO);
-
- //               response = clientECM.uploadVersionDocumento(documentoDTO);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-                return Response.status(200).entity(ioe.getMessage()).build();
+            if (null != formDataInput.getFormDataPart("idDocumento", String.class, null)) {
+                documentoDTO.setIdDocumento(formDataInput.getFormDataPart("idDocumento", String.class, null));
             }
+
+            documentoDTO.setNombreDocumento(formDataInput.getFormDataPart("nombreDocumento", String.class, null));
+            documentoDTO.setTipoDocumento(formDataInput.getFormDataPart("tipoDocumento", String.class, null));
+            documentoDTO.setSede(formDataInput.getFormDataPart("sede", String.class, null));
+            documentoDTO.setDependencia(formDataInput.getFormDataPart("dependencia", String.class, null));
+
+            if (0 < formDataInput.getFormDataPart("nroRadicado", String.class, null).length()) {
+                documentoDTO.setNroRadicado(formDataInput.getFormDataPart("nroRadicado", String.class, null));
+            }
+
+            log.info(documentoDTO);
+            response = this.clientECM.uploadVersionDocumento(documentoDTO);
+            log.info(response);
+        } catch (Exception ex) {
+            JSONObject json = new JSONObject();
+            json.put("codMensaje","9999");
+            json.put("mensaje",ex.getMessage());
+            log.debug(json.toJSONString());
+            response = Response.status(Response.Status.BAD_REQUEST).entity(json.toJSONString()).build();
         }
 
         return response;

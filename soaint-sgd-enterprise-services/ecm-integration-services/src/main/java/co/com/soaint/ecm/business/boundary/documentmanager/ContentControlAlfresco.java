@@ -28,6 +28,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+<<<<<<< HEAD
+=======
+import javax.ws.rs.core.MultivaluedMap;
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -401,7 +405,11 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Carpeta padre
      */
     private Carpeta getCarpeta(String codFolder, Carpeta aux, String metadato, Carpeta folderReturn) {
+<<<<<<< HEAD
         Carpeta folderAux = folderReturn;
+=======
+        Carpeta folderAux=folderReturn;
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
         if (aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)) != null &&
                 aux.getFolder().getPropertyValue(CMCOR + configuracion.getPropiedad(metadato)).equals(codFolder)) {
             folderAux = aux;
@@ -601,9 +609,16 @@ public class ContentControlAlfresco implements ContentControl {
 
         MensajeRespuesta response = new MensajeRespuesta();
         try {
+<<<<<<< HEAD
             ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
             ArrayList<DocumentoDTO> documentosLista = new ArrayList<>();
+=======
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDocPadre);
+
+
+            ArrayList<MetadatosDocumentosDTO> documentosLista = new ArrayList<>();
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 
                 DocumentoDTO documentoDTO = new DocumentoDTO();
@@ -613,8 +628,13 @@ public class ContentControlAlfresco implements ContentControl {
 
                 documentoDTO.setIdDocumento(idDocumento);
                 if (qResult.getPropertyValueByQueryName("cmcor:xIdentificadorDocPrincipal") != null) {
+<<<<<<< HEAD
                     documentoDTO.setIdDocumentoPadre(documento.getIdDocumento());
                     documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+=======
+                    metadatosDocumentosDTO.setIdDocumentoPadre(idDocPadre);
+                    metadatosDocumentosDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
                 } else {
                     documentoDTO.setTipoPadreAdjunto("Principal");
                 }
@@ -646,6 +666,7 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
+<<<<<<< HEAD
     private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, DocumentoDTO documento) {
         //Obtener el documentosAdjuntos
         String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
@@ -653,6 +674,13 @@ public class ContentControlAlfresco implements ContentControl {
                 " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento()+ "'" +
                 " OR cmcor:NroRadicado = '" + documento.getNroRadicado()
                 + "')";
+=======
+    private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, String idDocPadre) {
+        //Obtener el documentosAdjuntos
+        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
+                " WHERE( cmis:objectId = '" + idDocPadre + "'" +
+                " OR cmcor:xIdentificadorDocPrincipal = '" + idDocPadre + "')";
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
 
         return session.query(principalAdjuntos, false);
     }
@@ -717,6 +745,7 @@ public class ContentControlAlfresco implements ContentControl {
         logger.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
         MensajeRespuesta response = new MensajeRespuesta();
+<<<<<<< HEAD
         //Se definen las propiedades del documento a subir
         Map<String, Object> properties = new HashMap<>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
@@ -725,6 +754,44 @@ public class ContentControlAlfresco implements ContentControl {
             properties.put("cmcor:xIdentificadorDocPrincipal", documento.getIdDocumentoPadre());
             properties.put("cmcor:TipologiaDocumental", "Anexo");
         }
+=======
+        Map<String, List<InputPart>> uploadForm = documento.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get(DOCUMENTO);
+        String fileName;
+        metadatosDocumentosDTO.setTipoDocumento(APPLICATION_PDF);
+        for (InputPart inputPart : inputParts) {
+
+            // Retrieve headers, read the Content-Disposition header to obtain the original name of the file
+            MultivaluedMap<String, String> headers = inputPart.getHeaders();
+            String[] contentDispositionHeader = headers.getFirst(CONTENT_DISPOSITION).split(";");
+
+            for (String name : contentDispositionHeader) {
+                if (name.trim().startsWith("filename")) {
+                    String[] tmp = name.split("=");
+                    fileName = tmp[1].trim().replaceAll("\"", "");
+                    logger.info("El nombre del fichero principal/adjunto es: " + fileName);
+                }
+            }
+
+            InputStream inputStream = null;
+            try {
+                inputStream = inputPart.getBody(InputStream.class, null);
+
+            } catch (IOException e) {
+                logger.error(ERROR_TIPO_IO, e);
+            }
+
+            assert inputStream != null;
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            //Se definen las propiedades del documento a subir
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+            //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
+            if (metadatosDocumentosDTO.getIdDocumentoPadre() != null) {
+                properties.put("cmcor:xIdentificadorDocPrincipal", metadatosDocumentosDTO.getIdDocumentoPadre());
+                properties.put("cmcor:TipologiaDocumental", "Anexo");
+            }
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
 
         properties.put(PropertyIds.NAME, documento.getNombreDocumento());
 
@@ -853,7 +920,11 @@ public class ContentControlAlfresco implements ContentControl {
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
+<<<<<<< HEAD
                     idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
+=======
+                    idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
@@ -1033,7 +1104,11 @@ public class ContentControlAlfresco implements ContentControl {
                         .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
                 carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
             }
+<<<<<<< HEAD
             idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
+=======
+            idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
             //Creando el mensaje de respuesta
             response.setCodMensaje("0000");
             response.setMensaje("Documento añadido correctamente");
@@ -1045,7 +1120,11 @@ public class ContentControlAlfresco implements ContentControl {
         }
     }
 
+<<<<<<< HEAD
     private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) {
+=======
+    private String creaDocumentoDevuelveIdDoc(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
         String idDocumento;
         logger.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
@@ -1157,9 +1236,13 @@ public class ContentControlAlfresco implements ContentControl {
         try {
 
             logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
+<<<<<<< HEAD
             DocumentoDTO documento=new DocumentoDTO();
             documento.setIdDocumento(idDoc);
             ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
+=======
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, idDoc);
+>>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
 
             for (QueryResult qResult : resultsPrincipalAdjunto) {
 

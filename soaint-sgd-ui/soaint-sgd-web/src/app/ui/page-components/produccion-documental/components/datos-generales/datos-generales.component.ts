@@ -47,7 +47,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     pd_confirmarVersionadoVisible = false;
     pd_confirmarVersionado = false;
     pd_currentVersionEditable = false;
-    pd_currentVersion: VersionDocumentoDTO = {id: 'none', nombre: '', tipo: 'html', version: '', contenido: '', file: null, size: 0};
+    pd_currentVersion: VersionDocumentoDTO = {id: null, nombre: '', tipo: 'html', version: '', contenido: '', file: null, size: 0};
 
     listaVersionesDocumento: VersionDocumentoDTO[] = [];
     listaAnexos: AnexoDTO[] = [];
@@ -124,6 +124,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       }
       this.uploadVersionDocumento(nv);
       versionUploader.clear();
+      versionUploader.basicFileInput.nativeElement.value = '';
     }
 
     obtenerDocumentoRadicado() {
@@ -190,12 +191,17 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
     uploadVersionDocumento(doc: VersionDocumentoDTO) {
       const formData = new FormData();
-      formData.append('documento', doc.file, doc.nombre);
-      const payload = {nombre: doc.nombre, sede: this.taskData.variables.nombreSede, dependencia: this.taskData.variables.nombreDependencia,
-        tipo: doc.tipo, id: doc.id
-      };
+        formData.append('documento', doc.file, doc.nombre);
+        if (this.pd_currentVersion.id) {
+            formData.append('idDocumento', doc.id);
+        }
+        formData.append('nombreDocumento', doc.nombre);
+        formData.append('tipoDocumento', doc.tipo);
+        formData.append('sede', this.taskData.variables.nombreSede);
+        formData.append('dependencia', this.taskData.variables.nombreDependencia);
+        formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
       let docEcmResp: DocumentoEcmDTO = null;
-      this._produccionDocumentalApi.subirVersionDocumentoV2(formData, payload).subscribe(
+      this._produccionDocumentalApi.subirVersionDocumentoV2(formData).subscribe(
         resp => {
           if ('0000' === resp.codMensaje) {
             docEcmResp = resp.metadatosDocumentosDTOList[0];
@@ -256,6 +262,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
         );
         anexoUploader.clear();
+        anexoUploader.basicFileInput.nativeElement.value = '';
       } else {
         this.addToList(anexo, 'listaAnexos');
       }
