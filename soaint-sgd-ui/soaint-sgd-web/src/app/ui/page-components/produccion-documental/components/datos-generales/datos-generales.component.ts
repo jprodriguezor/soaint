@@ -124,6 +124,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       }
       this.uploadVersionDocumento(nv);
       versionUploader.clear();
+      versionUploader.basicFileInput.nativeElement.value = '';
     }
 
     obtenerDocumentoRadicado() {
@@ -256,6 +257,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
         );
         anexoUploader.clear();
+        anexoUploader.basicFileInput.nativeElement.value = '';
       } else {
         this.addToList(anexo, 'listaAnexos');
       }
