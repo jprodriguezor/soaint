@@ -36,5 +36,5 @@ public class UnidadDocumentalDTO {
     private String codigoSede;
     private String nombreSede;
     private String codigoDependencia;
-    private String nombreDependencia;   
+    private String nombreDependencia;
 }

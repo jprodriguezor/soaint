@@ -314,7 +314,7 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
-     * Metodo que obtiene la carpeta dado el nombre
+     * Metodo que obtiene la carpeta dado sus metadatos
      *
      * @param unidadDocumental DTO que contiene los metadatos de las unidades documentales
      * @param session       objeto de conexion al Alfresco
@@ -324,19 +324,25 @@ public class ContentControlAlfresco implements ContentControl {
         Carpeta folder = new Carpeta();
         List<Carpeta> unidadesDocumentales= new ArrayList<>();
         try {
-            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE ";
-            if (unidadDocumental.get)
+            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
+            if (unidadDocumental.getCodigoDependencia()!=null){
+                queryString += " and cmcor:CodigoDependencia= '" + unidadDocumental.getCodigoDependencia() + "'";
+            }
+            if (unidadDocumental.getCodigoSerie()!=null){
+                queryString += " and cmcor:CodigoSerie = '" + unidadDocumental.getCodigoSerie() + "'";
+            }
+            if (unidadDocumental.getCodigoSerie()!=null){
+                queryString += " and cmcor:CodigoSubserie = '" + unidadDocumental.getCodigoSerie() + "'";
+            }
 
-             cmis:name = '" + unidadDocumental.getNombreUnidadDocumental() + "'" +
-                    " " +
-                    " and (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
             ItemIterable<QueryResult> results = session.query(queryString, false);
             for (QueryResult qResult : results) {
                 String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
                 folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
+                unidadesDocumentales.add(folder);
             }
         } catch (Exception e) {
-            logger.error("*** Error al obtenerCarpetas *** ", e);
+            logger.error("*** Error al obtener las unidades documentales *** ", e);
         }
 
         return unidadesDocumentales;
