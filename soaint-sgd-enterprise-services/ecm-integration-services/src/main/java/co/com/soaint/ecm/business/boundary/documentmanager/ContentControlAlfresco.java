@@ -314,6 +314,36 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo que obtiene la carpeta dado el nombre
+     *
+     * @param unidadDocumental DTO que contiene los metadatos de las unidades documentales
+     * @param session       objeto de conexion al Alfresco
+     * @return Retorna la Carpeta que se busca
+     */
+    private List<Carpeta> obtenerCarpetaPorMetadatos(UnidadDocumentalDTO unidadDocumental, Session session) {
+        Carpeta folder = new Carpeta();
+        List<Carpeta> unidadesDocumentales= new ArrayList<>();
+        try {
+            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE ";
+            if (unidadDocumental.get)
+
+             cmis:name = '" + unidadDocumental.getNombreUnidadDocumental() + "'" +
+                    " " +
+                    " and (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
+            ItemIterable<QueryResult> results = session.query(queryString, false);
+            for (QueryResult qResult : results) {
+                String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
+                folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
+            }
+        } catch (Exception e) {
+            logger.error("*** Error al obtenerCarpetas *** ", e);
+        }
+
+        return unidadesDocumentales;
+
+    }
+
+    /**
      * Metodo que devuelve las carpetas hijas de una carpeta
      *
      * @param carpetaPadre Carpeta a la cual se le van a buscar las carpetas hijas

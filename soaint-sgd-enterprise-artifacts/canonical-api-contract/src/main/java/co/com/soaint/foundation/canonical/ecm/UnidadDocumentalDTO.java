@@ -33,4 +33,8 @@ public class UnidadDocumentalDTO {
     private String nombreSerie;
     private String codigoSubSerie;
     private String nombreSubSerie;
+    private String codigoSede;
+    private String nombreSede;
+    private String codigoDependencia;
+    private String nombreDependencia;   
 }
