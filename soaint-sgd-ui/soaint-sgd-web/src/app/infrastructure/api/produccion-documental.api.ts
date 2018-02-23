@@ -39,6 +39,15 @@ export class ProduccionDocumentalApiService {
     );
   }
 
+  subirVersionDocumentoV2(formData: FormData, payload: {nombre: string, sede: string, dependencia: string, tipo: string, id: string}) {
+      for (let k in payload) {
+          formData.append(k, payload[k]);
+      }
+      return this._api.sendFile(
+          environment.pd_gestion_documental.subirDocumentoVersionado2, formData, []
+      );
+  }
+
   obtenerDatosDocXnroRadicado(payload: {id: string}) {
       return this._api.list(`${environment.pd_obtenerDatosDocXnroRadicado}/${payload.id}`, {});
   }

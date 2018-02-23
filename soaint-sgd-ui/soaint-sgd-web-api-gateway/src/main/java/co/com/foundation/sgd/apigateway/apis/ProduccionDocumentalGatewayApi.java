@@ -5,8 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
@@ -76,23 +75,33 @@ public class ProduccionDocumentalGatewayApi {
     @Path("/versionar-documento")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response versionarDocumento(@RequestParam("nombreDocumento") String nombreDocumento, @RequestParam("idDocumento") String idDocumento,
-                                @RequestParam("sede") String sede, @RequestParam("dependencia") String dependencia,
-                                @RequestParam("nroRadicado") String nroRadicado, MultipartFormDataInput formDataInput) {
+    public Response versionarDocumento(
+            @RequestParam("nombreDocumento") String nombreDocumento, @RequestParam("idDocumento") String idDocumento,
+            @RequestParam("sede") String sede, @RequestParam("dependencia") String dependencia,
+            @RequestParam("nroRadicado") String nroRadicado, @RequestParam("tipoDocumento") String tipoDocumento,
+            MultipartFormDataInput formDataInput) {
         log.info("ProduccionDocumentalGatewayApi - [content] : Subir version documento");
 
         Response response = null;
+        DocumentoDTO documentoDTO = null;
 
         Map<String, List<InputPart>> uploadForm = formDataInput.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("documento");
 
         for (InputPart inputPart : inputParts) {
             try {
-                //convert the uploaded file to inputstream
+                log.info("ProduccionDocumentalGatewayApi - [content] : convert the uploaded file to inputstream");
+                log.info("ProduccionDocumentalGatewayApi - [content] : ".concat(idDocumento).concat(" : ").concat(nombreDocumento));
+
                 InputStream inputStream = inputPart.getBody(InputStream.class,null);
                 byte [] bytes = IOUtils.toByteArray(inputStream);
+//                documentoDTO = new DocumentoDTO(
+//                        idDocumento, nroRadicado, null, null, sede, dependencia, nombreDocumento, null,
+//                        new Date(), tipoDocumento, null, null, null, bytes);
+//
+//                log.info(documentoDTO);
 
-                response = clientECM.uploadVersionDocumento(idDocumento,nombreDocumento,sede,dependencia,bytes);
+ //               response = clientECM.uploadVersionDocumento(documentoDTO);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 return Response.status(200).entity(ioe.getMessage()).build();

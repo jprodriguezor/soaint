@@ -195,7 +195,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         tipo: doc.tipo, id: doc.id
       };
       let docEcmResp: DocumentoEcmDTO = null;
-      this._produccionDocumentalApi.subirVersionDocumento(formData, payload).subscribe(
+      this._produccionDocumentalApi.subirVersionDocumentoV2(formData, payload).subscribe(
         resp => {
           if ('0000' === resp.codMensaje) {
             docEcmResp = resp.metadatosDocumentosDTOList[0];

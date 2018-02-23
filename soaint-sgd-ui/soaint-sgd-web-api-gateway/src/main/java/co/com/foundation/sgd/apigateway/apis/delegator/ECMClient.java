@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -30,10 +31,12 @@ public class ECMClient {
         super();
     }
 
-    public Response uploadVersionDocumento(
-            String parentId, String fileName, String sede, String dependencia, byte[] file) {
+    public Response uploadVersionDocumento(DocumentoDTO documentoDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-
+        return wt.path("/subirVersionarDocumentoGeneradoECM/PD/")
+                .request()
+                .post(Entity.json(documentoDTO));
     }
 
     public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {

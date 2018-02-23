@@ -103,6 +103,7 @@ export const environment = {
         subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
         obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
         eliminarAnexo: ``,
+        subirDocumentoVersionado2 : `${host}/produccion-documental-gateway-api/versionar-documento`,
         subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
         obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
