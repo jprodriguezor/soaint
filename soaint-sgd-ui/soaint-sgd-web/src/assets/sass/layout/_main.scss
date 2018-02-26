@@ -511,6 +511,10 @@ body {
     color: $accentColor;
 }
 
+button[pButton]{
+  width: auto;
+}
+
 @media (min-width: 1025px) {
 
     .layout-container {

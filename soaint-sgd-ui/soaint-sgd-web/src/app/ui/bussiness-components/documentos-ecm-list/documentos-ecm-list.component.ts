@@ -28,10 +28,14 @@ export class DocumentosECMListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+   // this.loadDocumentos();
   }
 
   loadDocumentos() {
+
     console.log(this.comunicacion);
+
     const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
     console.log('ID del ecm');
     console.log(this.comunicacion.ppdDocumentoList);
@@ -42,6 +46,10 @@ export class DocumentosECMListComponent implements OnInit {
       console.log(value);
     });
 
+   /* if(this.comunicacion !==null){
+
+
+    }*/
   }
 
   setDataDocument(data: any) {

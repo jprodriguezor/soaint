@@ -125,7 +125,10 @@ export class DetallesAsignacionComponent implements OnInit {
     this.comunicacion.datosContactoList.forEach((item) => {
       result += item.codMunicipio + ',';
     });
-    return result;
+
+    console.log(result);
+
+     return result;
   }
 
   loadConstantsByCodes() {

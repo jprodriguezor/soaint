@@ -1,6 +1,6 @@
 import {
   ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter,
-  AfterViewInit
+  AfterViewInit,ViewChild
 } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';

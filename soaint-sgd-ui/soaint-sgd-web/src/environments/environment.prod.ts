@@ -1,4 +1,4 @@
-// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+ //const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';

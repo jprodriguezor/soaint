@@ -1,179 +1,312 @@
 <div class="page-title">
-  <h2>Archivar documento</h2>
+
+  <div class="ui-g">
+    <div class="ui-sm-6 ui-g-6">
+      <h2>Archivar documento</h2>
+    </div>
+
+    <div class="ui-sm-6 ui-g-6 text-right">
+      <button class="ui-button" pButton label="Guardar" style="width: auto;  margin-bottom: 10px"></button>
+      <button pButton type="button" class="ui-button" label="Finalizar" style="width: auto;  margin-bottom: 10px"></button>
+    </div>
+
+  </div>
 </div>
 
 <div class="ui-g ui-fluid">
   <div class="ui-g-12" [formGroup]="form">
     <div class="card card-w-title">
-      <p-panel header="Datos unidad documental" [style]="{border: 'none'}">
-        <div class="ui-g ui-fluid">
-          <div class="ui-g-12">
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="serie">Serie</label>
+      <ng-template [ngIf]="currentPage==1" [ngIfElse]="page2">
+        <p-panel header="Datos unidad documental" [style]="{border: 'none'}">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+              <p-radioButton #bud  name="section" label="Buscar unidad documental" formControlName="operation" value="bUnidadDocumental"  ></p-radioButton>
+              <p-radioButton #scud name="section" label="Solicitar creeacion de unidad documental" formControlName="operation" value="solicitarUnidadDocumental" ></p-radioButton>
+            </div>
+            <div class="ui-g-12">
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="serie">Serie</label>
+                  </div>
+                  <div class="ui-g-12">
+                    <p-dropdown [options]="series" id="serie" [autoWidth]="false" formControlName="serie"
+                                (blur)="listenForBlurEvents('serie')">
+
+                    </p-dropdown>
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.serie">
+                      {{ validations.serie }}
+                    </div>
+                  </div>
                 </div>
-                <div class="ui-g-12">
-                  <p-dropdown [options]="series" id="serie" [autoWidth]="false" formControlName="serie"
-                              (blur)="listenForBlurEvents('serie')"></p-dropdown>
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.serie">
-                    {{ validations.serie }}
+              </div>
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="subserie">Subserie</label>
+                  </div>
+                  <div class="ui-g-12">
+                    <p-dropdown [options]="subseries" id="subserie" [autoWidth]="false"
+                                formControlName="subserie" (blur)="listenForBlurEvents('subserie')">
+                    </p-dropdown>
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.subserie">
+                      {{ validations.subserie }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="identificador">Identificador unidad documental</label>
+                  </div>
+                  <div class="ui-g-12 md-inputfield">
+                    <input type="text" pInputText id="identificador" formControlName="identificador"
+                           (blur)="listenForBlurEvents('identificador')"/>
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.identificador">
+                      {{ validations.identificador }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="nombre">Nombre unidad documental</label>
+                  </div>
+                  <div class="ui-g-12 md-inputfield">
+                    <input type="text" pInputText id="nombre" formControlName="nombre"
+                           (blur)="listenForBlurEvents('nombre')">
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.nombre">
+                      {{ validations.nombre }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="subserie">Subserie</label>
-                </div>
-                <div class="ui-g-12">
-                  <p-dropdown [options]="subseries" id="subserie" [autoWidth]="false"
-                              formControlName="subserie" (blur)="listenForBlurEvents('subserie')">
-                  </p-dropdown>
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.subserie">
-                    {{ validations.subserie }}
+            <div class="ui-g-12">
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="descriptor1">Descriptor 1</label>
+                  </div>
+                  <div class="ui-g-12 md-inputfield">
+                    <input type="text" pInputText id="descriptor1" formControlName="descriptor1"
+                           (blur)="listenForBlurEvents('descriptor1')">
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.descriptor1">
+                      {{ validations.descriptor1 }}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="identificador">Identificador unidad documental</label>
-                </div>
-                <div class="ui-g-12 md-inputfield">
-                  <input type="text" pInputText id="identificador" formControlName="identificador"
-                         (blur)="listenForBlurEvents('identificador')"/>
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.identificador">
-                    {{ validations.identificador }}
+              <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                    <label for="descriptor2">Descriptor 2</label>
+                  </div>
+                  <div class="ui-g-12 md-inputfield">
+                    <input type="text" pInputText id="descriptor2" formControlName="descriptor2"
+                           (blur)="listenForBlurEvents('descriptor2')">
+                    <div class="ui-message ui-messages-error"
+                         *ngIf="validations.descriptor2">
+                      {{ validations.descriptor2 }}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <ng-template [ngIf]="currentSection()=='bUnidadDocumental'">
+                <div class="ui-g-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
+                  <button pButton type="button" label="Limpiar" (click)="clearFilters()"
+                          style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right" >
+                  </button>
+                  <button pButton type="button" label="Buscar" (click)="buscarUnidadDocumental()"
+                          style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right">
+                  </button>
+                </div>
+              </ng-template>
             </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="nombre">Nombre unidad documental</label>
-                </div>
-                <div class="ui-g-12 md-inputfield">
-                  <input type="text" pInputText id="nombre" formControlName="nombre"
-                         (blur)="listenForBlurEvents('nombre')">
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.nombre">
-                    {{ validations.nombre }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="ui-g-12">
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="descriptor1">Descriptor 1</label>
-                </div>
-                <div class="ui-g-12 md-inputfield">
-                  <input type="text" pInputText id="descriptor1" formControlName="descriptor1"
-                         (blur)="listenForBlurEvents('descriptor1')">
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.descriptor1">
-                    {{ validations.descriptor1 }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="ui-sm-12 ui-g-3 ui-lg-3">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="descriptor2">Descriptor 2</label>
-                </div>
-                <div class="ui-g-12 md-inputfield">
-                  <input type="text" pInputText id="descriptor2" formControlName="descriptor2"
-                         (blur)="listenForBlurEvents('descriptor2')">
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.descriptor2">
-                    {{ validations.descriptor2 }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="ui-g-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
-              <button pButton type="button" label="Limpiar"
-                      style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right">
-              </button>
-              <button pButton type="button" label="Buscar"
-                      style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right">
-              </button>
-            </div>
-          </div>
-          <div class="ui-g-12">
-            <div class="ui-sm-12 ui-g-10 ui-lg-10">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="observaciones">Observaciones</label>
-                </div>
-                <div class="ui-g-12 md-inputfield">
+
+            <ng-template [ngIf] = "currentSection()=='solicitarUnidadDocumental'">
+              <div class="ui-g-12">
+                <div class="ui-sm-12 ui-g-10 ui-lg-10">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label for="observaciones">Observaciones</label>
+                    </div>
+                    <div class="ui-g-12 md-inputfield">
                   <textarea [rows]="3" pInputTextarea placeholder="Observaciones" id="observaciones"
                             autoResize="true" formControlName="observaciones"
                             (blur)="listenForBlurEvents('observaciones')">
                   </textarea>
-                  <div class="ui-message ui-messages-error"
-                       *ngIf="validations.observaciones">
-                    {{ validations.observaciones }}
+                      <div class="ui-message ui-messages-error"
+                           *ngIf="validations.observaciones">
+                        {{ validations.observaciones }}
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <div class="ui-g-12 ui-g-2 ui-lg-2" [style.padding-top]="'75px'">
+                  <button pButton type="button" label="Agregar" [disabled]="form.controls['observaciones'].hasError('required')"
+                          style="width: 120px; margin-right: 15px;float: right">
+                  </button>
+                </div>
               </div>
+            </ng-template>
+          </div>
+        </p-panel>
+        <p-panel header="Resultados" [style]="{border: 'none'}">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+              <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                           [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+                <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+                <p-column header="Identificador unidad documental" [sortable]="true">
+                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                    {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                  </ng-template>
+                </p-column>
+                <p-column header="Nombre unidad documental" [sortable]="true">
+                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                    {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                  </ng-template>
+                </p-column>
+                <p-column header="Descriptor 1" [sortable]="true"></p-column>
+                <p-column header="Descriptor 2" [sortable]="true"
+                          [style]="{'width':'110px'}">
+                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                    {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                  </ng-template>
+                </p-column>
+                <p-column header="Observaciones" [sortable]="true"></p-column>
+                <p-column header="Estado" [sortable]="true"></p-column>
+              </p-dataTable>
             </div>
-            <div class="ui-g-12 ui-g-2 ui-lg-2" [style.padding-top]="'75px'">
-              <button pButton type="button" label="Agregar"
-                      style="width: 120px; margin-right: 15px;float: right">
+            <div class="ui-g-12" style="padding-top: 20px">
+              <button pButton type="button" label="Siguiente"  [disabled]="currentSection()=='solicitarUnidadDocumental'" (click)="next()"
+                      style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
               </button>
             </div>
           </div>
-        </div>
-      </p-panel>
-      <p-panel header="Resultados" [style]="{border: 'none'}">
+        </p-panel>
+      </ng-template>
+
+      <ng-template #page2>
+        <p-panel header="Adjuntar documentos para archivar" [style]="{border: 'none'}">
+          <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+
+              <p-fileUpload chooseLabel="Buscar" uploadLabel="Subir" cancelLabel="Cancelar"></p-fileUpload>
+              <div class="text-right padding-top">
+                <button type="button" label="Refrescar" pButton style="width: auto"></button>
+              </div>
+              <div class="padding-top">
+                <p-dataTable  emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                              [responsive]="true" [value]="[]">
+                  <p-column header="ID"></p-column>
+                  <p-column header="Nombre"></p-column>
+                  <p-column >
+                    <ng-template pTemplate="body">
+                      <button type="button" pButton label="Ver Detalles"></button>
+                      <button type="button" pButton label="Eliminar"></button>
+                    </ng-template>
+                  </p-column>
+                </p-dataTable>
+              </div>
+              <div class="text-right padding-top">
+                  <button type="button" pButton label="Agregar" class="text-right" style="width: auto" ></button>
+                </div>
+            </div>
+          </div>
+        </p-panel>
+           <div  class="ui-g ui-fluid">
+            <div class="ui-g-12 padding-top">
+              <p-panel header="Documentos para archivar">
+                <label class="ui-float-label" style="margin: 10px 5px;" >
+                  No. Solicitud
+                  <input type="text" pInputText placeholder="Probando" size="30" style="width: auto">
+                </label>
+                <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                             [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                  <p-column >
+                    <ng-template  pTemplate="body">
+                      <p-checkbox></p-checkbox>
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
+                  <p-column header="Identificador de documento" [sortable]="true"></p-column>
+                  <p-column header="Nombre/asunto documento" [sortable]="true"></p-column>
+                  <p-column header="Ver" >
+                    <ng-template pTemplate="body">
+                      <a href="">Ver</a>
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Tipologia Documental" >
+                    <ng-template pTemplate="body">
+                      <p-dropdown [options]="[]" placeholder="Seleccione" ></p-dropdown>
+                    </ng-template>
+                  </p-column>
+
+                </p-dataTable>
+              </p-panel>
+              <div class="text-right">
+                <p-confirmDialog #cd>
+                  <p-footer>
+                    <button type="button" pButton icon="fa-close" label="No" (click)="cd.reject()"></button>
+                    <button type="button" pButton icon="fa-check" label="Si" (click)="cd.accept()"></button>
+                  </p-footer>
+                </p-confirmDialog>
+                <div class="padding-top">
+                  <button type="button" label="Archivar Documentos" pButton style="width:auto" (click)="confirmArchivarDocumentos()"></button>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-12 padding-top">
+              <p-panel header="Documentos archivados">
+                <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                             [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                  <p-column >
+                    <ng-template  pTemplate="body" let-index="rowIndex">
+                      {{index}}
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Numero de Solicitud" [sortable]="true"></p-column>
+                  <p-column header="Identificador de unidad documental" [sortable]="true"></p-column>
+                  <p-column header="Nombre de unidad documental" [sortable]="true"></p-column>
+                  <p-column header="Serie/subserie" [sortable]="true"></p-column>
+                  <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
+                  <p-column header="identificacion documento" [sortable]="true"></p-column>
+                  <p-column header="Tipologia documental" [sortable]="true"></p-column>
+                  <p-column header="Nombre/ Asunto Documento" [sortable]="true"></p-column>
+                </p-dataTable>
+              </p-panel>
+            </div>
+          </div>
         <div class="ui-g ui-fluid">
-          <div class="ui-g-12">
-            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
-              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
-              <p-column header="Identificador unidad documental" [sortable]="true">
-                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
-                </ng-template>
-              </p-column>
-              <p-column header="Nombre unidad documental" [sortable]="true">
-                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
-                </ng-template>
-              </p-column>
-              <p-column header="Descriptor 1" [sortable]="true"></p-column>
-              <p-column header="Descriptor 2" [sortable]="true"
-                        [style]="{'width':'110px'}">
-                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
-                </ng-template>
-              </p-column>
-              <p-column header="Observaciones" [sortable]="true"></p-column>
-              <p-column header="Estado" [sortable]="true"></p-column>
-            </p-dataTable>
-          </div>
-          <div class="ui-g-12" style="padding-top: 20px">
-            <button pButton type="button" label="Siguiente"
-                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
-            </button>
+          <div class="ui-g-12 text-right padding-top">
+            <button type="button" pButton label="Anterior" (click)="prev()"   style="width: auto"></button>
           </div>
         </div>
-      </p-panel>
+
+      </ng-template>
     </div>
   </div>
 </div>
+<p-dialog header="Alerta" [(visible)]="visiblePopup" modal="modal" >
+  <div class="text-center">
+    El sistema no encuentra la unidad documental que está buscando. <br>
+    Por favor, solicite su creación
+  </div>
+  <p-footer>
+    <button type="button" pButton  (click)="closePopup()" label="Aceptar"></button>
+  </p-footer>
+</p-dialog>
 
 
 

@@ -1,3 +1,448 @@
-<p>
-  unidades-documentales works!
-</p>
+<div class="page-title">
+
+  <div class="ui-g">
+    <div class="ui-sm-6 ui-g-6">
+      <h2>Crear Unidad Documental</h2>
+    </div>
+
+    <div class="ui-sm-6 ui-g-6 text-right">
+      <button class="ui-button" pButton label="Guardar" style="width: auto;  margin-bottom: 10px"></button>
+      <button pButton type="button" class="ui-button" label="Finalizar" style="width: auto;  margin-bottom: 10px"></button>
+    </div>
+
+  </div>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Informacion solicitud crear unidad documental">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-6 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Sede Administrativa</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-6 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Dependencia:</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXX">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Fecha Inicio</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-calendar dateFormat="yyyy-mm-dd"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Fecha Fin:</label>
+                </div>
+                <div class="ui-g-12">
+                 <p-calendar dateFormat="yyyy-mm-dd"></p-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <button type="button" pButton label="Filtrar"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+      <p-panel header="Unidades documentales solicitadas">
+        <p-dataTable  emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                      [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+          <p-column pTemplate="body">
+            <ng-template>
+             <p-radioButton></p-radioButton>
+            </ng-template>
+          </p-column>
+          <p-column header="Fecha y hora solicitud"></p-column>
+          <p-column header="No solicitud creacion UD"></p-column>
+          <p-column header="Usuario solicitante"></p-column>
+          <p-column header="Nombre serie/subserie"></p-column>
+          <p-column header="Identificador unidad documental"></p-column>
+          <p-column header="Nombre unidad documental"></p-column>
+          <p-column header="Descriptor 1"></p-column>
+          <p-column header="Descriptor 2"></p-column>
+          <p-column header="Observaciones"></p-column>
+          <p-column header="Accion" pTemplate="body">
+            <ng-template>
+              <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </p-panel>
+      <p-panel header="No tramitar solicitud creacion UD">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Identificador de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Nombre de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Descriptor 1</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Descriptor 2</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-6 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Motivo no tramite solicitud</label>
+                </div>
+                <div class="ui-g-12">
+                 <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label >Observaciones</label>
+                <ul>
+                  <li>Si ya existe la unidad documental, porfavor espicifique cual es el identificador principal</li>
+                </ul>
+              </div>
+              <div class="ui-g-12">
+                <textarea  pInputTextarea></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="text-right">
+              <button type="button" label="Aceptar" pButton style="width: auto;"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+      <p-panel header="Crear unidad documental">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Serie</label>
+                </div>
+                <div class="ui-g-12">
+                 <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Subserie</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Identificador de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Nombre de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Descriptor 1</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Descriptor 2</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" pInputText placeholder="XXXXX">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label >Observaciones</label>
+              </div>
+              <div class="ui-g-12">
+                <textarea name="" id="" cols="30" rows="10" pInputTextarea></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g form-group">
+              <div class="ui-g-12">
+                <label >La unidad fisica esta registrada en el sistema?</label>
+              </div>
+              <div class="ui-g-12">
+               <p-radioButton value="yes" label="Si"></p-radioButton>
+               <p-radioButton value="no" label="No"></p-radioButton>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <p-panel header="Relacionar unidad documental fisica">
+              <div class="ui-g-12">
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Serie</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Subserie</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Identificador de unidad documental</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <input type="text" pInputText placeholder="XXXXX">
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Nombre de unidad documental</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <input type="text" pInputText placeholder="XXXXX">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-g-12">
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Descriptor 1</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <input type="text" pInputText placeholder="XXXXX">
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                      <label >Descriptor 2</label>
+                    </div>
+                    <div class="ui-g-12">
+                      <input type="text" pInputText placeholder="XXXXX">
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                  <div class="text-right">
+                    <button type="button" pButton label="Buscar"></button>
+                    <button type="button" pButton label="Limpiar"></button>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-g-12">
+                <p-dataTable  emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                              [responsive]="true" [value]="[]">
+                  <p-column pTemplate="body">
+                    <ng-template>
+                      <p-radioButton></p-radioButton>
+                    </ng-template>
+                  </p-column>
+                  <p-column >
+                    <ng-template  pTemplate="body" let-index="rowIndex">
+                      {{index}}
+                    </ng-template>
+                  </p-column>
+                  <p-column header="Nombre serie/subserie"></p-column>
+                  <p-column header="Identificador unidad documental"></p-column>
+                  <p-column header="Nombre unidad documental"></p-column>
+                  <p-column header="Descriptor 1"></p-column>
+                  <p-column header="Descriptor 2"></p-column>
+                </p-dataTable>
+              </div>
+              <div class="ui-g-12">
+                <div class="text-right">
+                  <button type="button" pButton label="Relacionar UD" style="width: auto"></button>
+                </div>
+              </div>
+              <div class="ui-g-12">
+                <p-panel header="Asignar ubicacion topografica">
+                  <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                          <div class="ui-g-12">
+                            <label >Bodega</label>
+                          </div>
+                          <div class="ui-g-12">
+                            <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                          <div class="ui-g-12">
+                            <label >Piso</label>
+                          </div>
+                          <div class="ui-g-12">
+                            <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                          <div class="ui-g-12">
+                            <label >Caja</label>
+                          </div>
+                          <div class="ui-g-12">
+                            <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                          <div class="ui-g-12">
+                            <label >Carpeta</label>
+                          </div>
+                          <div class="ui-g-12">
+                            <p-dropdown placeholder="--Seleccione--"></p-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ui-g-12">
+                      <div class="text-right">
+                        <button type="button" label="Crear UD" pButton style="width: auto"></button>
+                      </div>
+                    </div>
+                  </div>
+
+                </p-panel>
+              </div>
+            </p-panel>
+          </div>
+          <div class="ui-g-12">
+            <p-panel header="Unidades documentales tramitadas">
+              <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                                 [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                      <p-column header="Nombre serie/subserie" [sortable]="true"></p-column>
+                      <p-column header="Identificador de unidad documental" [sortable]="true"></p-column>
+                      <p-column header="Nombre de unidad documental" [sortable]="true"></p-column>
+                      <p-column header="Descriptor 1" [sortable]="true"></p-column>
+                      <p-column header="Descriptor 2" [sortable]="true"></p-column>
+                      <p-column header="Observaciones" ></p-column>
+                      <p-column header="Caja" [sortable]="true"></p-column>
+                      <p-column header="Carpeta" [sortable]="true"></p-column>
+                      <p-column header="Unidad fisica relacionada" [sortable]="true"></p-column>
+                      <p-column header="Accion" ></p-column>
+                    </p-dataTable>
+                </div>
+              </div>
+            </p-panel>
+          </div>
+        </div>
+      </p-panel>
+
+    </div>
+  </div>
+</div>
+<p-dialog header="Alerta" [(visible)]="visiblePopup" modal="modal" >
+  <div class="text-center">
+    El sistema no encuentra la unidad documental que está buscando. <br>
+    Por favor, solicite su creación
+  </div>
+  <p-footer>
+    <button type="button" pButton  (click)="closePopup()" label="Aceptar"></button>
+  </p-footer>
+</p-dialog>
+
+
+
