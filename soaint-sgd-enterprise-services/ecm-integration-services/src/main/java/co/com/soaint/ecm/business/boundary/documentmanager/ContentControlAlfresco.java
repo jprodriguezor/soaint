@@ -359,28 +359,28 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) {
         Carpeta folder = new Carpeta();
-        List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
         ContenidoDependenciaTrdDTO dependenciaTrdDTOSalida;
-        SerieDTO serie = new SerieDTO();
         List<SerieDTO> serieLista = new ArrayList<>();
         List<SubSerieDTO> subSerieLista = new ArrayList<>();
-        SubSerieDTO subSerie = new SubSerieDTO();
         MensajeRespuesta respuesta = new MensajeRespuesta();
 
         try {
             String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
             if (dependenciaTrdDTO.getIdOrgOfc() != null && !"".equals(dependenciaTrdDTO.getIdOrgOfc())) {
-                queryString = "SELECT cmis:objectId FROM cmcor:CM_Serie WHERE cmcor:CodigoUnidadAdminPadre =  '" + dependenciaTrdDTO.getIdOrgOfc() + "'";
+                queryString = "SELECT cmis:objectId FROM cmcor:CM_Serie WHERE cmcor:CodigoDependencia =  '" + dependenciaTrdDTO.getIdOrgOfc() + "'";
             }
-            if (dependenciaTrdDTO.getCodSerie() != null && !"".equals(dependenciaTrdDTO.getCodSerie())) {
-                queryString += " and F:cmcor:CodigoSerie = '" + dependenciaTrdDTO.getCodSerie() + "'";
+            if (dependenciaTrdDTO.getIdOrgOfc() != null && dependenciaTrdDTO.getCodSerie() != null && !"".equals(dependenciaTrdDTO.getCodSerie())) {
+                queryString += " and cmcor:CodigoUnidadAdminPadre = '" + dependenciaTrdDTO.getCodSerie() + "'";
             }
-            if (dependenciaTrdDTO.getCodSubSerie() != null && !"".equals(dependenciaTrdDTO.getCodSubSerie())) {
-                queryString += " and F:cmcor:CodigoSubserie = '" + dependenciaTrdDTO.getCodSubSerie() + "'";
-            }
+//            if (dependenciaTrdDTO.getCodSubSerie() != null && !"".equals(dependenciaTrdDTO.getCodSubSerie())) {
+//                queryString += " and F:cmcor:CodigoSubserie = '" + dependenciaTrdDTO.getCodSubSerie() + "'";
+//            }
 
             ItemIterable<QueryResult> results = session.query(queryString, false);
             for (QueryResult qResult : results) {
+                SerieDTO serie = new SerieDTO();
+                SubSerieDTO subSerie = new SubSerieDTO();
+                List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
                 String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
                 folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
                 if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie")!=null) {
@@ -391,7 +391,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie")!=null) {
                     subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSubserie"));
-                    subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue("cmis:name"));
+                    subSerie.setNombreSubSerie(folder.getFolder().getPropertyValue("cmis:name"));
                     subSerieLista.add(subSerie);
                 }
                 dependenciaTrdDTOSalida = dependenciaTrdDTO;
