@@ -1217,7 +1217,7 @@ public class ContentControlAlfresco implements ContentControl {
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put(tipoCarpeta, codOrg);
-
+        props.put(CMCOR_CODIGODEPENDENCIA,codOrg);
         if ("cmcor:CodigoSubserie".equals(tipoCarpeta)) {
             if (folderFather != null) {
                 props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue("cmcor:CodigoSerie"));
@@ -1227,6 +1227,7 @@ public class ContentControlAlfresco implements ContentControl {
                 props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue(CMCOR_CODIGODEPENDENCIA));
             } else {
                 props.put(CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
+
             }
         }
     }
