@@ -6,6 +6,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ProduccionDocumentalClien
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
@@ -82,7 +83,7 @@ public class ProduccionDocumentalGatewayApi {
 
         log.info("ProduccionDocumentalGatewayApi - [content] : Subir version documento");
 
-        Response response = null;
+        MensajeRespuesta response = null;
         DocumentoDTO documentoDTO = new DocumentoDTO();
         try {
             InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
@@ -109,10 +110,10 @@ public class ProduccionDocumentalGatewayApi {
             json.put("codMensaje","9999");
             json.put("mensaje",ex.getMessage());
             log.debug(json.toJSONString());
-            response = Response.status(Response.Status.BAD_REQUEST).entity(json.toJSONString()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(json.toJSONString()).build();
         }
 
-        return response;
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
 
