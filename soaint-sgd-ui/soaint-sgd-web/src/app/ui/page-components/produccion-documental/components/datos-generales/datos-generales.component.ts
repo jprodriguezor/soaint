@@ -23,6 +23,7 @@ import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
 import {environment} from '../../../../../../environments/environment';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
+import {DocumentUploaded} from '../../events/DocumentUploaded';
 
 @Component({
   selector: 'pd-datos-generales',
