@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
@@ -236,5 +237,26 @@ public class EcmManager {
             logger.error("Error eliminando documento", e);
             return Boolean.FALSE;
         }
+    }
+
+    /**
+     * Metodo para devolver las series o subseries
+     * @param contenidoDependenciaTrdDTO Objeto que contiene los parametro de búsqueda
+     * @return contenidoDependenciaTrdDTO
+     */
+    public MensajeRespuesta devolverSerieSubserie(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
+        logger.info("### Obteniendo las series o subseries dada la dependencia del content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+
+            response = contentManager.devolverSeriesSubseries(contenidoDependenciaTrdDTO);
+
+        } catch (Exception e) {
+            response.setCodMensaje("22222");
+            response.setMensaje("Error al obtener las series o subseries documento");
+            logger.error(ECM_ERROR, e);
+        }
+
+        return response;
     }
 }

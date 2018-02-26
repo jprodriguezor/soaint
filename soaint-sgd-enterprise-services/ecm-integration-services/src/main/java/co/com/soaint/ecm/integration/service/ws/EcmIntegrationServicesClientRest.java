@@ -1,16 +1,15 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -64,7 +63,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Subir documento Principal al ECM
      *
-     * @param selector        Selector que dice donde se va a gauardar el documento
+     * @param selector Selector que dice donde se va a gauardar el documento
      * @return identificador del documento en el ecm
      */
     @POST
@@ -82,11 +81,11 @@ public class EcmIntegrationServicesClientRest {
 
     }
 
-     /**
+    /**
      * Subir versionar documento Generado al ECM
      *
-     * @param documento       documento a subir
-     * @param selector        parametro que indica donde se va a guardar el documento
+     * @param documento documento a subir
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return identificador del documento en el ecm
      */
     @POST
@@ -281,28 +280,22 @@ public class EcmIntegrationServicesClientRest {
 
 
     /**
-     * Operacion para eliminar documentos
+     * Operacion para devolver series o subseries
      *
-     * @param idDocumento Identificador del documento
-     * @return True en exito false en error
+     * @param dependenciaTrdDTO Objeto que contiene los datos de filtrado
+     * @return dependenciaTrdDTO
      */
-    @DELETE
-    @Path("/eliminarDocumentoECM/{idDocumento}")
-    public boolean eliminarDocumentoECMDel(@PathParam("idDocumento") String idDocumento) {
-
-        logger.info("processing rest request - Eliminar Documento ECM");
+    @POST
+    @Path("/devolverSerieOSubserieECM/")
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws Exception {
+        logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
-            boolean respuesta;
-            respuesta = fEcmManager.eliminarDocumentoECM(idDocumento);
-            if (respuesta)
-                logger.info("Documento eliminado con exito");
-            else
-                logger.info("No se pudo eliminar el documento");
-            return respuesta;
-        } catch (RuntimeException e) {
-            logger.error("Error servicio eliminando documento ", e);
+            return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
             throw e;
         }
+
     }
 
 }

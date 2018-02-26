@@ -4,15 +4,15 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -71,8 +71,8 @@ public class ContentManager {
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param documento              Documento que se va a subir
-     * @param selector               Selector que dice donde se va a gauardar el documento
+     * @param documento Documento que se va a subir
+     * @param selector  Selector que dice donde se va a gauardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
@@ -101,12 +101,12 @@ public class ContentManager {
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
      *
-     * @param documento              Documento que se va a subir
-     * @param selector               parametro que indica donde se va a guardar el documento
+     * @param documento Documento que se va a subir
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(DocumentoDTO documento,  String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGeneradoContent(DocumentoDTO documento, String selector) throws IOException {
 
         logger.info("### Subiendo versionando documento generado al content..");
         MensajeRespuesta response = new MensajeRespuesta();
@@ -300,6 +300,34 @@ public class ContentManager {
             logger.error("Error eliminando documento", e);
             return Boolean.FALSE;
         }
+    }
+
+    /**
+     * Metodo generico para devolver series o subseries
+     *
+     * @param contenidoDependenciaTrdDTO Objeto que contiene los datos para realizar la busqueda
+     * @return Objeto response
+     */
+    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
+        MensajeRespuesta response = new MensajeRespuesta();
+        logger.info("### Eliminando documento del content..");
+
+        try {
+            Conexion conexion;
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo de devolver serie o subserie..");
+            response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
+            logger.info("Series o subseries devueltas exitosamente");
+
+        } catch (Exception e) {
+            logger.error("Error obteniendo las series o subseries", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error obteniendo las series o subseries");
+
+        }
+        return response;
     }
 
 }
