@@ -921,10 +921,14 @@ public class ContentControlAlfresco implements ContentControl {
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                     idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
 =======
                     idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
 >>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
+=======
+                    idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+>>>>>>> 10f2f7e1d21ccc6356a028b8c2c749e60e24a4b7
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
@@ -1105,10 +1109,14 @@ public class ContentControlAlfresco implements ContentControl {
                 carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, comunicacionOficialInOut.get()));
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
 =======
             idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
 >>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
+=======
+            idDocumento = creaDocumentoDevuelveIdDoc(metadatosDocumentosDTO, response, bytes, properties, metadatosDocumentosDTOList, carpetaTarget);
+>>>>>>> 10f2f7e1d21ccc6356a028b8c2c749e60e24a4b7
             //Creando el mensaje de respuesta
             response.setCodMensaje("0000");
             response.setMensaje("Documento añadido correctamente");
@@ -1121,10 +1129,14 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private String crearDocumentoDevolverId(DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<DocumentoDTO> documentoDTOList, Carpeta carpetaTarget) {
 =======
     private String creaDocumentoDevuelveIdDoc(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
 >>>>>>> 99a062f663fb293cbb6423ab9c5de91ca4808e9f
+=======
+    private String creaDocumentoDevuelveIdDoc(MetadatosDocumentosDTO metadatosDocumentosDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, List<MetadatosDocumentosDTO> metadatosDocumentosDTOList, Carpeta carpetaTarget) {
+>>>>>>> 10f2f7e1d21ccc6356a028b8c2c749e60e24a4b7
         String idDocumento;
         logger.info("Se llenan los metadatos del documento a crear");
         ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
