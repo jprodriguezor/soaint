@@ -38,9 +38,6 @@ public class ECMClient {
                 .request()
                 .post(Entity.json(documentoDTO));
 
-        log.info("Respuesta directa del ECM: ===========");
-        log.info(response);
-
         return response.readEntity(MensajeRespuesta.class);
     }
 

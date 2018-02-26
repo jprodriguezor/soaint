@@ -102,9 +102,7 @@ public class ProduccionDocumentalGatewayApi {
                 documentoDTO.setNroRadicado(formDataInput.getFormDataPart("nroRadicado", String.class, null));
             }
 
-            log.info(documentoDTO);
             response = this.clientECM.uploadVersionDocumento(documentoDTO);
-            log.info(response);
         } catch (Exception ex) {
             JSONObject json = new JSONObject();
             json.put("codMensaje","9999");
