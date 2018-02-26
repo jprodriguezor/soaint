@@ -23,6 +23,7 @@ import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
 import {environment} from '../../../../../../environments/environment';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
+import {DocumentUploaded} from '../../events/DocumentUploaded';
 
 @Component({
   selector: 'pd-datos-generales',
@@ -216,7 +217,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         },
         error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error})),
         () => {
-          this.refreshView();
+          this.messagingService.publish(new DocumentUploaded());
         }
       );
     }
@@ -249,12 +250,14 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
                 const versiones = [...this.listaAnexos];
                 versiones.push(anexo);
                 this.listaAnexos = [...versiones];
-                this.refreshView();
             } else {
                 this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
             }
           },
-          error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
+          error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error})),
+            () => {
+                this.messagingService.publish(new DocumentUploaded());
+            }
         );
         anexoUploader.clear();
         anexoUploader.basicFileInput.nativeElement.value = '';
