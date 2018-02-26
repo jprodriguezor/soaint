@@ -15,7 +15,16 @@ export class Sandbox {
 
   loadData(payload: any) {
     const departamento_endpoint = `${environment.departamento_endpoint}/${payload.codPais}`;
-    return this._api.list(departamento_endpoint, payload);
+    return this._api.list(departamento_endpoint, payload)
+      .map((response) => {
+        return {
+          departamentos: response.departamentos.sort((departamento1, departamento2):number => {
+            if (departamento1.nombre < departamento2.nombre) return -1;
+            if (departamento1.nombre > departamento2.nombre) return 1;
+            return 0;
+          })
+        }
+      });
   }
 
   filterDispatch(query) {
