@@ -18,7 +18,6 @@
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding *ngIf="ideEcm">
         <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
           <app-documentos-ecm-list [idDocumentECM]="comunicacion.ppdDocumentoList[0].ideEcm"></app-documentos-ecm-list>
-          <!--<pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>-->
         </div>
       </p-tabPanel>
     </p-tabView>

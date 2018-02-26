@@ -51,10 +51,7 @@ export class DocumentosECMListComponent implements OnChanges {
 
       });
 
-      /*map(value => {
-        console.log(value);
-      });*/
-    }
+      }
   }
 
   setDataDocument(data: any) {
@@ -68,7 +65,6 @@ export class DocumentosECMListComponent implements OnChanges {
   }
 
   hideDocument(){
-
     this.docSrc = '';
   }
 
