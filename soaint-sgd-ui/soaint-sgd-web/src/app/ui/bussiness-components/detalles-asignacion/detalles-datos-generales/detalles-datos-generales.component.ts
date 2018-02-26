@@ -21,6 +21,7 @@ export class DetallesDatosGeneralesComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('DETALLES COMUNICACIÓN', this.comunicacion);
   }
 
 }
