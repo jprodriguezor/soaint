@@ -5,6 +5,7 @@ import 'rxjs/add/operator/single';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
+import {LoadingService} from "../../../infrastructure/utils/loading.service";
 
 
 @Component({
@@ -27,7 +28,7 @@ export class DocumentosECMListComponent implements OnChanges {
   uploadUrl: String;
   editable = true;
 
-  constructor(private _store: Store<State>, private _api: ApiBase) {
+  constructor(private _store: Store<State>, private _api: ApiBase,public loadingService:LoadingService) {
   }
 
    ngOnChanges(): void {
@@ -64,9 +65,9 @@ export class DocumentosECMListComponent implements OnChanges {
 
   showDocument(idDocumento:string){
 
-    this.isLoading =true;
+    this.loadingService.presentLoading();
 
-   this.docSrc =  environment.obtenerDocumento + idDocumento;
+    this.docSrc =  environment.obtenerDocumento + idDocumento;
   }
 
   hideDocument(){
@@ -74,7 +75,8 @@ export class DocumentosECMListComponent implements OnChanges {
   }
 
   docLoaded(){
-    this.isLoading = false;
+
+    this.loadingService.dismissLoading();
   }
 
 }
