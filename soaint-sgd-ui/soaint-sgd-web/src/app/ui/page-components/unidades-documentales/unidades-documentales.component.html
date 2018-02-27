@@ -1,3 +1,138 @@
-<p>
-  unidades-documentales works!
-</p>
+<div class="ui-fluid produccion-documental-multiple">
+  <app-task-container>
+    <div customActions>
+
+    </div>
+
+    <div taskBody>
+      <p-panel header="Gestión a seguir" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid">         
+         
+        </div>
+      </p-panel>
+
+      <p-panel header="Buscar unidad documental" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid">         
+         
+        </div>
+        <form 
+         [formGroup]="State.formBuscar" 
+         novalidate 
+         (ngSubmit)="State.Buscar(State.formBuscar)"
+         >
+          <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="State.ListadoSeries | async | dropdownItem"
+                              id="serie"
+                              formControlName="serie"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="State.OnBlurEvents('serie')"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="State.ListadoSubseries | async | dropdownItem"
+                              id="serie"
+                              formControlName="subserie"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="State.OnBlurEvents('subserie')"
+                  >
+                  </p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                      <label for="idunidaddocumental">Identificador principal unidad documental</label>
+                  </div>
+                  <div class="ui-g-12">
+                      <input type="text" pInputText   id="idunidaddocumental" formControlName="identificador" />
+                  </div>
+              </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                    <label for="nombre">Nombre unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                    <input type="text" pInputText   id="nombre" formControlName="nombre" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <label for="descriptor1">Descriptor 1</label>
+              </div>
+              <div class="ui-g-12">
+                  <input type="text" pInputText   id="descriptor1" formControlName="descriptor1" />
+              </div>
+          </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+            <div class="ui-g-12">
+                <label for="descriptor2">Descriptor 2</label>
+            </div>
+            <div class="ui-g-12">
+                <input type="text" pInputText   id="descriptor2" formControlName="descriptor2" />
+            </div>
+        </div>
+    </div>
+           
+          </div>
+        </form>
+      </p-panel>
+
+      <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
+        <div class="ui-fluid">
+          <p-dataTable selectionMode="single"
+                       [paginator]="true"
+                       [rows]="10"
+                       [responsive]="true"
+                       [value]="State.ListadoUnidadDocumental"
+                       emptyMessage="No se encontraron resultados ">
+            <p-column field="State.ListadoUnidadDocumental.seleccionado" header=""></p-column>
+            <p-column field="State.ListadoUnidadDocumental.nombreSerieSubserie" header="Nombre serie/subserie"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.identificadorUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.nombre" header="Nombre unidad documental"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.estado" header="Estado"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaExtremaFinal" header="Fecha extrema final"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaCierreTramite" header="Fecha cierre trámite"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
+            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+              <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+                <button type="button" pButton label="Ver" (click)="State.VerDetalleUnidadConservacion(rindex)"
+                        class="ui-button ui-button-icon ui-button-success"
+                ></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+      </p-panel>
+    </div>
+  </app-task-container>
+</div>
+
+
+

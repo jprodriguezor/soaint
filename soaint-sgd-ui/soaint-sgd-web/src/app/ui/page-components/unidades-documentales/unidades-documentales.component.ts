@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { StateUnidadDocumental } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
+import { FormBuilder } from '@angular/forms';
+import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 
 @Component({
   selector: 'app-unidades-documentales',
@@ -7,10 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UnidadesDocumentalesComponent implements OnInit {
 
-  constructor() { }
+  State: StateUnidadDocumental;
+
+  constructor(
+    private fb: FormBuilder,
+    private unidadDocumentalApiService: UnidadDocumentalApiService
+  ) {
+    this.State = new StateUnidadDocumental(
+      this.fb,
+      this.unidadDocumentalApiService
+    );
+  }
 
   ngOnInit() {
-    console.log('Hello Documents...!');
+    this.State.InitForm();
   }
 
 }
