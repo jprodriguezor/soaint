@@ -450,7 +450,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-    this._paisSandbox.loadDispatch();
     this.refreshView();
   }
 
