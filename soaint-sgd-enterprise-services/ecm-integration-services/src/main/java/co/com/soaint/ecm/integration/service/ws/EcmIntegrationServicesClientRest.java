@@ -386,5 +386,31 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
+
+    /**
+     * Operacion para eliminar documentos
+     *
+     * @param idDocumento Identificador del documento
+     * @return True en exito false en error
+     */
+    @DELETE
+    @Path("/eliminarDocumentoECM/{idDocumento}")
+    public boolean eliminarDocumentoECMDel(@PathParam("idDocumento") String idDocumento) {
+
+        logger.info("processing rest request - Eliminar Documento ECM");
+        try {
+            boolean respuesta;
+            respuesta = fEcmManager.eliminarDocumentoECM(idDocumento);
+            if (respuesta)
+                logger.info("Documento eliminado con exito");
+            else
+                logger.info("No se pudo eliminar el documento");
+            return respuesta;
+        } catch (RuntimeException e) {
+            logger.error("Error servicio eliminando documento ", e);
+            throw e;
+        }
+    }
+
 }
 

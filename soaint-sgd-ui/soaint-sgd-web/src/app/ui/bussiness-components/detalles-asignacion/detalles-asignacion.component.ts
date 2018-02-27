@@ -52,7 +52,6 @@ export class DetallesAsignacionComponent implements OnInit {
   ngOnInit() {
 
   }
-
   loadDocumento() {
     this.ideEcm = this.comunicacion.ppdDocumentoList[0].ideEcm;
     this.docSrc = environment.obtenerDocumento + this.ideEcm;
