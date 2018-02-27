@@ -9,12 +9,9 @@ export class UnidadDocumentalApiService {
   constructor(private _api: ApiBase) {
   }
 
-  guardarEstadoTarea(payload: any) {
-    return this._api.post(environment.taskStatus_endpoint, payload).map(response => response);
-  }
-
-  obtenerEstadoTarea(payload: {idInstanciaProceso: string, idTareaProceso: string}) {
-    return this._api.list(`${environment.taskStatus_endpoint}/${payload.idInstanciaProceso}/${payload.idTareaProceso}`, {}).map(response => response.payload);
-  }
+  Listar(payload: any) {
+    // return this._api.post(environment.listar_unidad_documental, payload).map(response => response);
+    return Observable.empty<Response>();
+    }
 
 }

@@ -6,6 +6,7 @@ import {ProduccionDocumentalApiService} from './api/produccion-documental.api';
 import {PdMessageService} from '../ui/page-components/produccion-documental/providers/PdMessageService';
 import {MessagingService} from '../shared/providers/MessagingService';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
+import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.api';
 
 export const API_SERVICES = [
   ApiBase,
@@ -15,7 +16,8 @@ export const API_SERVICES = [
   ProduccionDocumentalApiService,
   MessagingService,
   PdMessageService,
-  UnidadDocumentalApiService
+  UnidadDocumentalApiService,
+  SerieSubserieApiService,
 ];
 
 export {

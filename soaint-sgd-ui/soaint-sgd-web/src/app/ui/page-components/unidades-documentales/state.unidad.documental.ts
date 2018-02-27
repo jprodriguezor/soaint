@@ -3,20 +3,29 @@ import { FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { State } from 'app/infrastructure/state-management/procesoDTO-state/procesoDTO-reducers';
+import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.api';
+import { SerieDTO } from 'app/domain/serieDTO';
+import { SubserieDTO } from 'app/domain/subserieDTO';
+import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-documentales/models/enums/unidad.documental.accion.enum';
 
 
 
 export class StateUnidadDocumental {
 
     ListadoUnidadDocumental: ListadoUnidadDocumentalModel[] = [];
-    ListadoSeries: Observable<any>;
-    ListadoSubseries: Observable<any>;
+    ListadoSeries: Observable<SerieDTO[]>;
+    ListadoSubseries: Observable<SubserieDTO[]>;
+    OpcionSeleccionada: number;
 
     formBuscar: FormGroup;
 
     constructor(
         private fb: FormBuilder,
-        private unidadDocumentalApiService: UnidadDocumentalApiService
+        private unidadDocumentalApiService: UnidadDocumentalApiService,
+        private serieSubserieApiService: SerieSubserieApiService,
+        private _store: Store<State>
     ) {
         this.InitForm();
     }
@@ -35,6 +44,7 @@ export class StateUnidadDocumental {
     InitData() {
         this.InitForm();
         this.GetListadosSeries();
+        this.OpcionSeleccionada = 1 // abrir
     }
 
     InitForm() {
@@ -50,15 +60,31 @@ export class StateUnidadDocumental {
     }
 
     GetListadosSeries() {
-        this.ListadoSeries = Observable.empty<Response>();
-        this.ListadoSubseries = Observable.empty<Response>();
+        this.ListadoSeries = this.serieSubserieApiService.ListarSerie({});
+        this.ListadoSubseries = Observable.empty<SubserieDTO[]>();
     }
 
     GetSubSeries(serie: string) {
-        this.ListadoSubseries = Observable.empty<Response>();
+        this.ListadoSubseries = this.serieSubserieApiService.ListarSubserie({});
     }
 
     Buscar(form: FormControl) {
+
+    }
+
+    Abrir() {
+
+    }
+
+    Cerrar() {
+
+    }
+
+    Reactivar() {
+
+    }
+
+    Finalizar() {
 
     }
 

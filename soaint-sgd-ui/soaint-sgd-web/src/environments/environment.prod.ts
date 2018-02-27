@@ -98,7 +98,12 @@ export const environment = {
         obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
-    }
+    },
+ // serie-subserie
+    listar_serie: `${host}/listar-serie`,
+    listar_subserie: `${host}/listar-subserie`,
+     // unidad documental
+    listar_unidad_documental: `${host}/listar-unidad-documental`,
 
 };
 
