@@ -89,6 +89,33 @@
             </div>
           </div>
         </div>
+
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.funcionario">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="funcionario"><span class="text-danger">*</span>Funcionario</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+
+              <p-dropdown [options]="funcionariosSuggestions$ | async | dropdownItem"
+                          id="funcionario"
+                          formControlName="funcionario"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          [dynamicDisable]="!visibility.funcionario"
+                          (onBlur)="listenForBlurEvents('funcionario')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="validations.funcionario">
+                {{ validations.funcionario }}
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="ui-g ui-fluid" [hidden]="!visibility.tipoPersona">

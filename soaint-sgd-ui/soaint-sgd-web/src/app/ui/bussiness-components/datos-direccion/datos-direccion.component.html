@@ -199,11 +199,14 @@
               <label for="departamento">Departamento</label>
             </div>
             <div class="ui-g-12">
-              <p-autoComplete id="departamento"
+              <p-autoComplete
+                              #departamentoAutoComplete
+                              id="departamento"
                               [suggestions]="departamentoSuggestions$ | async"
                               field="nombre"
                               formControlName="departamento"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (completeMethod)="onFilterDepartamento($event)"
                               (onDropdownClick)="onDropdownClickDepartamento($event)">
               </p-autoComplete>
             </div>
@@ -217,11 +220,13 @@
               <label for="municipio">Municipio</label>
             </div>
             <div class="ui-g-12">
-              <p-autoComplete id="municipio"
+              <p-autoComplete #municipioAutoComplete
+                              id="municipio"
                               [suggestions]="municipioSuggestions$ | async"
                               field="nombre"
                               formControlName="municipio"
                               [minLength]="1" placeholder="Seleccione" [dropdown]="true"
+                              (completeMethod)="onFilterMinicipio($event)"
                               (onDropdownClick)="onDropdownClickMunicipio($event)">
               </p-autoComplete>
             </div>
@@ -446,7 +451,7 @@
         <div class="ui-sm-6 ui-md-4 ui-g-3 ui-lg-3">
           <div style="padding: 55px 0 0 10px">
             <p-checkbox name="cg" label="Principal"
-                        formControlName="principal" [disabled]="contactPrincial" id="reqDigit" binary="true"></p-checkbox>
+                        formControlName="principal" id="principal" binary="true"></p-checkbox>
           </div>
         </div>
       </div>

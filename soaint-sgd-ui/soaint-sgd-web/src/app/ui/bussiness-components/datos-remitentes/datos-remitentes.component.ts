@@ -26,8 +26,11 @@ import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management
 import {LoadAction as SedeAdministrativaLoadAction} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {DESTINATARIO_PRINCIPAL} from "../../../shared/bussiness-properties/radicacion-properties";
+import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
 import {ConfirmationService} from 'primeng/components/common/api';
+import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 
 @Component({
   selector: 'app-datos-remitentes',
@@ -46,6 +49,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
   sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
+  funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
 
 
   dependenciasGrupoList: Array<any> = [];
@@ -67,6 +71,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private _funcionarioSandbox: FuncionariosSandbox,
               private confirmationService: ConfirmationService,
               private _changeDetectorRef: ChangeDetectorRef) {
     this.initStores();
@@ -93,6 +98,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.visibility['tipoPersona'] = false;
       this.visibility['sede'] = true;
       this.visibility['dependencia'] = true;
+      this.visibility['funcionario'] = true;
       this.initByTipoComunicacionInterna();
     } else {
       this.visibility['tipoPersona'] = true;
@@ -101,10 +107,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initStores() {
-
     this._store.dispatch(new LoadDatosRemitenteAction());
     this._store.dispatch(new LoadDatosGeneralesAction());
-
   }
 
   initByTipoComunicacionExterna() {
@@ -119,6 +123,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   initByTipoComunicacionInterna() {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
+    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
   }
 
   initForm() {
@@ -132,6 +137,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
       'sede': [{value: null, disabled: !this.editable}, Validators.required],
       'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
+      'funcionario': [{value: null, disabled: !this.editable}, Validators.required],
       'tipoDestinatario': [{value: null, disabled: !this.editable}, Validators.required],
       'principal': null,
     });
@@ -152,9 +158,10 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       this.form.get('nroDocumentoIdentidad').setValue(this.destinatario.nroDocumentoIdentidad);
       this.form.get('sede').setValue(this.destinatario.sede);
       this.form.get('dependencia').setValue(this.destinatario.dependencia);
+      this.form.get('funcionario').setValue(this.destinatario.funcionario);
       this.form.get('tipoDestinatario').setValue(this.destinatario.tipoDestinatario);
 
-      if(!this.destinatario.interno){
+      if (!this.destinatario.interno) {
         this.visibility['datosContacto'] = true;
       }
 
@@ -179,6 +186,13 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       }
     }));
 
+    this.subscribers.push(this.form.get('dependencia').valueChanges.subscribe((value) => {
+      if (value) {
+        this.form.get('funcionario').reset();
+        this._funcionarioSandbox.loadAllFuncionariosDispatch({codDependencia: value.codigo});
+      }
+    }));
+
     this.subscribers.push(this.form.get('tipoPersona').valueChanges.distinctUntilChanged().subscribe(value => {
       if (value !== null) {
         this.onSelectTipoPersona(value);
@@ -186,6 +200,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     }));
 
   }
+
   /*onchangeTipoDestinatario(event){
     console.log(event);
     if (this.editDestinatario) {
@@ -212,6 +227,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   listenForErrors() {
     this.bindToValidationErrorsOf('sede');
     this.bindToValidationErrorsOf('dependencia');
+    this.bindToValidationErrorsOf('funcionario');
     this.bindToValidationErrorsOf('tipoPersona');
   }
 
@@ -291,23 +307,22 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   newRemitente() {
-
     const dest: DestinatarioDTO = this.form.value;
     dest.isBacken = !isNullOrUndefined(this.destinatario) && this.destinatario.isBacken ? true : false;
     dest.interno = this.tipoComunicacion === COMUNICACION_INTERNA ? true : false;
     if (!dest.interno) {
       this.visibility['datosContacto'] = true;
-      if(isNullOrUndefined(this.destinatarioDatosContactos)) {
-        dest.datosContactoList =  [];
+      if (isNullOrUndefined(this.destinatarioDatosContactos)) {
+        dest.datosContactoList = [];
       }
       else {
-        const newList1 =this.destinatarioDatosContactos.contacts;
+        const newList1 = this.destinatarioDatosContactos.contacts;
         dest.datosContactoList = [...newList1];
         this.destinatarioDatosContactos.contacts = [];
         this.destinatarioDatosContactos.form.reset();
       }
     }
-    if(dest.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal){
+    if (dest.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL && this.principal) {
 
       this.confirmationService.confirm({
         message: `<p style="text-align: center">¿Está seguro desea substituir el destinatario principal?</p>`,
@@ -317,7 +332,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
           this.form.reset();
           this.reset();
         },
-        reject: () =>{
+        reject: () => {
           this._store.dispatch(new PushNotificationAction({
             severity: 'warn',
             summary: 'Debe cambiar el tipo de Destinatario principal'
@@ -325,7 +340,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
         }
       });
-    }else{
+    } else {
       this.destinatarioOutput.emit(dest);
       this.form.reset();
       this.reset();
@@ -348,6 +363,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     this.visibility['tipoDocumento'] = false;
     this.visibility['sede'] = false;
     this.visibility['dependencia'] = false;
+    this.visibility['funcionario'] = false;
     this.internalInit();
     this.refreshView();
   }
