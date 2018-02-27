@@ -21,7 +21,7 @@ export class DocumentosECMListComponent implements OnChanges {
   idDocumentECM: string;
 
   docSrc:string="";
-
+  isLoading:boolean = false;
 
   documentsList: any;
   uploadUrl: String;
@@ -42,6 +42,9 @@ export class DocumentosECMListComponent implements OnChanges {
       // const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
       // console.log('ID del ecm');
       // console.log(this.comunicacion.ppdDocumentoList);
+
+
+
       const endpoint = `${environment.pd_gestion_documental.obtenerAnexo}` + '/' + this.idDocumentECM;
       console.log(endpoint);
 
@@ -61,11 +64,17 @@ export class DocumentosECMListComponent implements OnChanges {
 
   showDocument(idDocumento:string){
 
+    this.isLoading =true;
+
    this.docSrc =  environment.obtenerDocumento + idDocumento;
   }
 
   hideDocument(){
     this.docSrc = '';
+  }
+
+  docLoaded(){
+    this.isLoading = false;
   }
 
 }
