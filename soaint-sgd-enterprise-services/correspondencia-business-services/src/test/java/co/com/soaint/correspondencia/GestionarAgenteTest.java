@@ -47,45 +47,4 @@ public class GestionarAgenteTest {
         assertEquals("DT", agenteObtenido.getCodEstado());
     }
 
-    //TODO: test_redireccionar_correspondencia_success
-    /*@Test
-    @Transactional
-    public void test_redireccionar_correspondencia_success() throws SystemException, BusinessException {
-        RedireccionDTO redireccion = new RedireccionDTO();
-        redireccion.setAgentes(new ArrayList<>());
-        redireccion.getAgentes().add(control.consultarAgenteByIdeAgente (new BigInteger("100")));
-        PpdTrazDocumentoDTO ppdTrazDocumentoDTO = ppdTrazDocumentoControl.listarTrazasDocumento(new BigInteger("836")).getObservaciones().get(0);
-        redireccion.setTraza(ppdTrazDocumentoDTO);
-        boundary.redireccionarCorrespondencia(redireccion);
-        AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("100"));
-        assertEquals("DT",agenteObtenido.getCodEstado());
-    }/*
-
-    //TODO: test_redireccionar_correspondencia_success pendiente de Asignacion y PpdTrazDocumentoControl
-    /*@Test
-    @Transactional
-    public void test_devolver_correspondencia_success() throws SystemException, BusinessException {
-        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente (new BigInteger("200"));
-        agenteDTO.setCodEstado("DT");
-        boundary.actualizarEstadoAgente(agenteDTO);
-        AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("200"));
-        assertEquals("DT",agenteObtenido.getCodEstado());
-    }*/
-
-    //TODO: test_actualizar_destinatario_success pendiente de Asignacion
-    /*@Test
-    @Transactional
-    public void test_actualizar_destinatario_success() throws SystemException, BusinessException {
-        AgenteDTO agenteDTO = control.consultarAgenteByIdeAgente (new BigInteger("200"));
-        agenteDTO.setCodSede("1000");
-        agenteDTO.setCodDependencia("10001040");
-        DestinatarioDTO destinatarioDTO = new DestinatarioDTO();
-        destinatarioDTO.setAgenteDestinatario(agenteDTO);
-        destinatarioDTO.setIdeFuncionarioCreaModifica(BigInteger.ONE);
-        boundary.actualizarDestinatario(destinatarioDTO);
-        AgenteDTO agenteObtenido = control.consultarAgenteByIdeAgente(new BigInteger("200"));
-        assertEquals("1000",agenteObtenido.getCodSede());
-    }*/
-
-
 }
