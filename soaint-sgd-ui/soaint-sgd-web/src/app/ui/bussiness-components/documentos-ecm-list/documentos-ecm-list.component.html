@@ -12,9 +12,17 @@
                        emptyMessage="No tiene documentos asociados">
             <!--<p-header>Redirecciones / Devoluciones Fallidas</p-header>-->
             <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
-            <p-column field="tamano" header="Tamaño" [sortable]="true"></p-column>
+            <p-column field="tamano" header="Tamaño" [sortable]="true">
+              <ng-template let-col let-row="rowData" pTemplate="body">
+                {{(row.tamano/1024)|number:'1.0-0'}}KB
+              </ng-template>
+            </p-column>
             <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
-            <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true"></p-column>
+            <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true">
+              <ng-template let-col let-row="rowData" pTemplate="body">
+                {{row.fechaCreacion|date:'dd/mm/yyyy'}}
+              </ng-template>
+            </p-column>
             <p-column  header="Ver Documento">
               <ng-template pTemplate="item" let-row="rowData"  >
                 <button type="button" pButton label="Ver Documento" (click)="showDocument(row.idDocumento)"></button>
