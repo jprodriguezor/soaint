@@ -1,7 +1,4 @@
-import {
-  ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter,
-  AfterViewInit,ViewChild
-} from '@angular/core';
+
 import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
