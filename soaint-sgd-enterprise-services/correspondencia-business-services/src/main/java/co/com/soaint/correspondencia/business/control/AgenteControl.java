@@ -426,11 +426,9 @@ public class AgenteControl {
         try {
             if (!verificarByIdeAgente(destinatarioDTO.getAgenteDestinatario().getIdeAgente()))
                 return "0";
-            log.error("Actualizando destinatario");
             CorAgente destinatario = em.getReference(CorAgente.class, destinatarioDTO.getAgenteDestinatario().getIdeAgente());
             destinatario.setCodDependencia(destinatarioDTO.getAgenteDestinatario().getCodDependencia());
             destinatario.setCodSede(destinatarioDTO.getAgenteDestinatario().getCodSede());
-            log.error("Actualizando Asignaciones");
             asignacionControl.actualizarAsignacion(destinatario.getIdeAgente(), destinatario.getCorCorrespondencia().getIdeDocumento(),
                     destinatario.getCodDependencia(), destinatarioDTO.getIdeFuncionarioCreaModifica());
 

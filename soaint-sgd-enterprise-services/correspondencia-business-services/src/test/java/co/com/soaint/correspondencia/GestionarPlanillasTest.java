@@ -31,14 +31,14 @@ public class GestionarPlanillasTest {
 
     @Test
     @Transactional
-    public void test_planillas_listar_planillas_by_nro_planilla() throws SystemException, BusinessException {
+    public void test_planillas_listar_planillas_by_nro_planilla_success() throws SystemException, BusinessException {
         PlanillaDTO planillaObtenida = boundary.listarPlanillasByNroPlanilla("104000000000002");
         assertEquals(new BigInteger("200"), planillaObtenida.getIdePlanilla());
     }
 
     @Test
     @Transactional
-    public void test_planillas_generar_planillas() throws SystemException, BusinessException {
+    public void test_planillas_generar_planillas_success() throws SystemException, BusinessException {
         PlanillaDTO planillaDTO = new PlanillaDTO();
         PlanAgentesDTO planAgentesDTO = new PlanAgentesDTO();
         planAgentesDTO.setPAgente(new ArrayList<>());
@@ -51,7 +51,7 @@ public class GestionarPlanillasTest {
 
     @Test
     @Transactional
-    public void test_planillas_cargar_planilla() throws SystemException, BusinessException {
+    public void test_planillas_cargar_planilla_success() throws SystemException, BusinessException {
         PlanillaDTO planillaDTO = new PlanillaDTO();
         PlanAgentesDTO planAgentesDTO = new PlanAgentesDTO();
         planAgentesDTO.setPAgente(new ArrayList<>());
