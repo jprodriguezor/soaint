@@ -36,7 +36,7 @@ export class GestionarComunicacionComponent implements OnInit {
 
   justificationDialogVisible = false;
 
-  hideCheckBox = true;
+  //hideCheckBox = true;
 
   @ViewChild('popupjustificaciones') popupjustificaciones;
 
@@ -69,7 +69,7 @@ export class GestionarComunicacionComponent implements OnInit {
 
   gestionarProceso() {
     console.log(this.form.get('proceso').value);
-    console.log(this.form.get('responseToRem').value);
+    //console.log(this.form.get('responseToRem').value);
     switch (this.form.get('proceso').value.id) {
       case 1 : {
         this.procesoSeguir = 2;
@@ -132,23 +132,23 @@ export class GestionarComunicacionComponent implements OnInit {
   }
 
   onChange() {
-    this.form.get('responseToRem').disable();
-    this.hideCheckBox = true;
-    if (this.form.get('proceso').value.id === 4) {
-      this.hideCheckBox = false;
-      this.form.get('responseToRem').enable();
-    }
+    //this.form.get('responseToRem').disable();
+    //this.hideCheckBox = true;
+    //if (this.form.get('proceso').value.id === 4) {
+    //  this.hideCheckBox = false;
+      //this.form.get('responseToRem').enable();
+    //}
   }
 
   initForm() {
     this.form = this.formBuilder.group({
       'proceso': [{value: null, disabled: false}, Validators.required],
-      'responseToRem': [{value: false, disabled: true}, Validators.required]
+      //'responseToRem': [{value: false, disabled: true}, Validators.required]
     });
   }
 
   listenForErrors() {
-    this.bindToValidationErrorsOf('responseToRem');
+    //this.bindToValidationErrorsOf('responseToRem');
     this.bindToValidationErrorsOf('proceso');
   }
 

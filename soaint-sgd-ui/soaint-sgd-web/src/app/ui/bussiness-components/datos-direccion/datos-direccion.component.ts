@@ -24,6 +24,8 @@ import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-ma
 import {Subscription} from 'rxjs/Subscription';
 import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
+import {isNullOrUndefined} from 'util';
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -45,6 +47,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   nuevosContactos = new EventEmitter();
 
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
+  @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
+  @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
 
   validations: any = {};
   visibility: any = {};
@@ -58,6 +62,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   bisSuggestons$: Observable<ConstanteDTO[]>;
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
   paises$: Observable<PaisDTO[]>;
+  departamentos$: Observable<DepartamentoDTO[]>;
+  municipios$: Observable<MunicipioDTO[]>;
 
   contacts: Array<any> = [];
   paises: Array<any> = [];
@@ -90,8 +96,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
     this.bisSuggestons$ = this._store.select(getBisArrayData);
     this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
-    this.municipioSuggestions$ = this._store.select(municipioArrayData);
-    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+    this.municipios$ = this._store.select(municipioArrayData);
+    this.departamentos$ = this._store.select(departamentoArrayData);
     this.paises$ = this._store.select(paisArrayData);
 
     this.contacts = this.contactsDefault;
@@ -100,6 +106,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.paisSuggestions$ = this.paisAutoComplete.completeMethod
       .combineLatest(this.paises$, (event: any, paises) => paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+    this.departamentoSuggestions$ = this.departamentoAutoComplete.completeMethod
+      .combineLatest(this.departamentos$, (event: any, departamentos) => departamentos.filter(departamento => departamento.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+    this.municipioSuggestions$ = this.municipioAutoComplete.completeMethod
+      .combineLatest(this.municipios$, (event: any, municipios) => municipios.filter(municipio => municipio.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
 
   }
 
@@ -241,7 +253,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       provinciaEstado: provinciaEstado.value,
       ciudad: ciudad.value,
       direccionText: direccionText.value,
-      principal: (principal.value === null ? false : true)
+      principal: (principal.value === true ? true : false)
     }, this.saveDireccionData());
 
     pais.reset();
@@ -363,18 +375,28 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.showContactForm = true;
     this.formContext = FormContextEnum.CREATE;
     this.addColombiaByDefault();
-    this.contacts.forEach(value => {
-      if (value.principal) {
-        this.contactPrincial = true;
-      }
-    });
   }
 
+  hasDireccionPrincipal(){
+    let result = false;
+    if(this.contacts.length > 0){
+      this.contacts.forEach(values => {
+        if (values.principal === true) {
+          result = true;
+        }
+      });
+    }
+    return result;
+  }
   onFilterPais(event) {
 
-    //this.paisSuggestions$.getResults(event.query).then(data => {
-      //this.results = data;
-    //});
+    //this.paisSuggestions$ = this.paisAutoComplete.completeMethod
+    //  .combineLatest(this.paises$, (event: any, paises) => paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+
+    //this.paisSuggestions$.map(paises => {
+    //  paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 );
+    //})
     /*this.paisSuggestions$.take(2).subscribe((values) => {
       console.log(values);
     })
@@ -382,20 +404,38 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     console.log(event);*/
   }
 
+  onFilterDepartamento(event){
+
+  }
+
+  onFilterMinicipio(event){
+
+  }
 
   save() {
     if (this.form.valid) {
-      if (this.formContext === FormContextEnum.CREATE) {
-        this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
-      } else {
-        const temp = [...this.contacts];
-        temp[this.editIndexContext] = this.saveAndRetriveContact();
-        this.contacts = temp;
-      }
-      this.formContext = null;
-      this.editIndexContext = null;
 
-      this.nuevosContactos.emit(this.contacts);
+      const principal = this.form.get('principal');
+      if(principal.value === true && this.hasDireccionPrincipal() === true ){
+
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: 'Recuerde que únicamente puede existir una dirección principal'
+        }));
+
+      }else {
+        if (this.formContext === FormContextEnum.CREATE) {
+          this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
+        } else {
+          const temp = [...this.contacts];
+          temp[this.editIndexContext] = this.saveAndRetriveContact();
+          this.contacts = temp;
+        }
+        this.formContext = null;
+        this.editIndexContext = null;
+
+        this.nuevosContactos.emit(this.contacts);
+      }
     }
   }
 
@@ -419,10 +459,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
      .filter(values => values.length > 0)
 
      .subscribe((values) => {
-     this.paises = values;
-     this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
+       this.paises = values;
+       this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
 
-     setTimeout(() => subscription.unsubscribe());
+       setTimeout(() => subscription.unsubscribe());
      });
 
     this._paisSandbox.loadDispatch();
