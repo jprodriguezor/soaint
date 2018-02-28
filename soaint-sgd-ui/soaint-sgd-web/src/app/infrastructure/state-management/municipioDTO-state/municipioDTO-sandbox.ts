@@ -16,7 +16,16 @@ export class Sandbox {
 
   loadData(payload: any) {
     const _endpoint = `${environment.municipio_endpoint}/${payload.codDepar}`;
-    return this._api.list(_endpoint, payload);
+    return this._api.list(_endpoint, payload)
+        .map((response) => {
+          return {
+            municipios: response.municipios.sort((municipio1, municipio2):number => {
+              if (municipio1.nombre < municipio2.nombre) return -1;
+              if (municipio1.nombre > municipio2.nombre) return 1;
+              return 0;
+            })
+          }
+        });
   }
 
   filterDispatch(query) {

@@ -90,6 +90,7 @@ export const environment = {
 
   // Produccion Documental
     pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+    pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
     pd_gestion_documental : {
         subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
         obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
@@ -98,7 +99,8 @@ export const environment = {
         obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
-    },
+        descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
+   },
   // serie-subserie
     listar_serie: `${host}/unidad-documental-gateway-api/listado-serie`,
     listar_subserie: `${host}/unidad-documental-gateway-api/listado-subserie`,
