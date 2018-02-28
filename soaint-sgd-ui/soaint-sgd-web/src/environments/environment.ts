@@ -108,7 +108,14 @@ export const environment = {
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
         descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
-    }
+    },
+
+ // serie-subserie
+ listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
+
+ // unidad documental
+ listar_unidad_documental: `${host}/unidad-documental-gateway-api`,
+
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
 };
 
@@ -143,7 +150,6 @@ export const process_info = {
   },
   'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
-    show: false
-  }
-
+    show: true
+  },
 };

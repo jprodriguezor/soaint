@@ -101,12 +101,11 @@ export const environment = {
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
         descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
    },
-  // serie-subserie
-    listar_serie: `${host}/unidad-documental-gateway-api/listado-serie`,
-    listar_subserie: `${host}/unidad-documental-gateway-api/listado-subserie`,
+ // serie-subserie
+ listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
 
-  // unidad documental
-    listar_unidad_documental: `${host}/unidad-documental-gateway-api`,
+ // unidad documental
+ listar_unidad_documental: `${host}/unidad-documental-gateway-api`,
 
 };
 
