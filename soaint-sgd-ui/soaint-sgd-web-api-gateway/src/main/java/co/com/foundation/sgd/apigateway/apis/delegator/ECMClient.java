@@ -4,10 +4,12 @@ import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -30,6 +32,34 @@ public class ECMClient {
     public ECMClient() {
         super();
     }
+
+    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+                .request()
+                .post(Entity.json(documentoDTO));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
+    public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/obtenerVersionesDocumentos/" + documentId).request()
+                .post(Entity.json(""));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
+    public boolean eliminarVersionDocumento(String idDocumento) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/eliminarDocumentoECM/" + idDocumento).request()
+                .delete();
+
+        return response.readEntity(Boolean.class);
+    }
+
+
 
     public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -91,4 +121,5 @@ public class ECMClient {
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
     }
+
 }

@@ -167,12 +167,19 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
-
         const newList1 = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
-        this.destinatarioDatosContactos.contacts = [...newList1];
+        const newList2 = this.transformToDestinatarioContacts(newList1);
+        this.destinatarioDatosContactos.contacts = [...newList2];
       }
 
     }
+  }
+
+  transformToDestinatarioContacts(contacts) {
+    console.log(contacts);
+    return contacts.map(c => {
+      return { pais: isNullOrUndefined(c.pais) ? '' : c.pais, departamento: isNullOrUndefined(c.departamento) ? null : c.departamento, municipio: isNullOrUndefined(c.municipio) ? null : c.municipio,
+        numeroTel: isNullOrUndefined(c.numeroTel) ? '' : c.numeroTel, celular: isNullOrUndefined(c.celular) ? '' : c.celular, correoEle: isNullOrUndefined(c.correoEle) ? '' : c.correoEle}; });
   }
 
   listenForChanges() {
