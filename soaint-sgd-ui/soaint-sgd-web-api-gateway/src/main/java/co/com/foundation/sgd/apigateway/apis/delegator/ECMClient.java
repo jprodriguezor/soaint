@@ -8,6 +8,7 @@ import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -118,7 +119,7 @@ public class ECMClient {
         return wt.path("/devolverSerieOSubserieECM/")
                 .queryParam("idOrgOfc", codDependencia)
                 .request()
-                .post();
+                .get();
     }
 
     public Response listarSubseriesPorSerie(String codDependencia, String codSerie) {
@@ -127,7 +128,7 @@ public class ECMClient {
                 .queryParam("idOrgOfc", codDependencia)
                 .queryParam("codSerie", codSerie)    
                 .request()
-                .post();
+                .get();
     }
 
 }
