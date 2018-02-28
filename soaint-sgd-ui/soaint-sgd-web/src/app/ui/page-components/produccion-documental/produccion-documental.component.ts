@@ -121,7 +121,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentUrl = `${environment.pd_gestion_documental.descargarDocumentoPorId}?identificadorDoc=${res.ideEcm}`;
+                        this.documentUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {
