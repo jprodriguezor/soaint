@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
@@ -114,21 +115,11 @@ public class ECMClient {
         return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().delete();
     }
 
-    public Response listarSeriesPorDependencia(String codDependencia) {
+    public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/devolverSerieOSubserieECM/")
-                .queryParam("idOrgOfc", codDependencia)
                 .request()
-                .get();
-    }
-
-    public Response listarSubseriesPorSerie(String codDependencia, String codSerie) {
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/devolverSerieOSubserieECM/")
-                .queryParam("idOrgOfc", codDependencia)
-                .queryParam("codSerie", codSerie)    
-                .request()
-                .get();
+                .post(Entity.json(contenidoDependenciaTrdDTO));
     }
 
 }
