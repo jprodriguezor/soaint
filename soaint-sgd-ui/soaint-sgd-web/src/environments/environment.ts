@@ -84,6 +84,7 @@ export const environment = {
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
   obtenerMunicipiosPorCodigo_endpoint: `${host}/municipio-gateway-api/municipios`,
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
+  obtenerDocumentosAdjuntos: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
