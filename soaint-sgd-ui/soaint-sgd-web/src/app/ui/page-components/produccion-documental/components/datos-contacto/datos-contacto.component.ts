@@ -20,9 +20,16 @@ import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
 import {isNullOrUndefined} from 'util';
-import { getTipoDocumentoArrayData, getTipoPersonaArrayData, } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {
+  getTipoDocumentoArrayData,
+  getTipoPersonaArrayData,
+} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
-import {DESTINATARIO_PRINCIPAL, TIPO_REMITENTE_INTERNO, TIPO_REMITENTE_EXTERNO} from "../../../../../shared/bussiness-properties/radicacion-properties";
+import {
+  DESTINATARIO_PRINCIPAL,
+  TIPO_REMITENTE_INTERNO,
+  TIPO_REMITENTE_EXTERNO
+} from "../../../../../shared/bussiness-properties/radicacion-properties";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -31,17 +38,17 @@ import {DESTINATARIO_PRINCIPAL, TIPO_REMITENTE_INTERNO, TIPO_REMITENTE_EXTERNO} 
 })
 
 export class PDDatosContactoComponent implements OnInit, OnDestroy {
-  form:FormGroup;
+  form: FormGroup;
 
-  subscription:Subscription;
+  subscription: Subscription;
 
-  validations:any = {};
+  validations: any = {};
 
-  listaDestinatariosInternos:DestinatarioDTO[] = [];
-  listaDestinatariosExternos:DestinatarioDTO[] = [];
+  listaDestinatariosInternos: DestinatarioDTO[] = [];
+  listaDestinatariosExternos: DestinatarioDTO[] = [];
 
-  destinatarioInterno:DestinatarioDTO = null;
-  destinatarioExterno:DestinatarioDTO = null;
+  destinatarioInterno: DestinatarioDTO = null;
+  destinatarioExterno: DestinatarioDTO = null;
 
   //responderRemitente = false;
   hasNumberRadicado = false;
@@ -50,8 +57,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   hasDestinatarioPrincipal = false;
   responderRemitente = false;
   issetListDestinatarioBacken = false;
-  indexSelectExterno:number = -1;
-  indexSelectInterno:number = -1;
+  indexSelectExterno: number = -1;
+  indexSelectInterno: number = -1;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -59,14 +66,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   @ViewChild('datosRemitentesExterno') datosRemitentesExterno;
   @ViewChild('datosRemitentesInterno') datosRemitentesInterno;
 
-  @Input() taskData:TareaDTO;
+  @Input() taskData: TareaDTO;
 
-  constructor(private formBuilder:FormBuilder,
-              private _changeDetectorRef:ChangeDetectorRef,
-              private _produccionDocumentalApi:ProduccionDocumentalApiService,
-              private pdMessageService:PdMessageService,
-              private _dependenciaSandbox:DependenciaSandbox,
-              private _store:Store<State>) {
+  constructor(private formBuilder: FormBuilder,
+              private _changeDetectorRef: ChangeDetectorRef,
+              private _produccionDocumentalApi: ProduccionDocumentalApiService,
+              private pdMessageService: PdMessageService,
+              private _dependenciaSandbox: DependenciaSandbox,
+              private _store: Store<State>) {
 
     /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
 
@@ -115,13 +122,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  ngOnInit():void {
-
-    console.log('Tarea de entrada');
-    console.log(this.taskData);
-
+  ngOnInit(): void {
     this._store.dispatch(new SedeAdministrativaLoadAction());
-
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
     }
@@ -137,7 +139,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.refreshView();
   }
 
-  onChangeResponderRemitente(value){
+  onChangeResponderRemitente(value) {
 
     if (value) {
 
@@ -149,7 +151,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
           if (agente) {
 
             this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
-            let tempDestinatario = <DestinatarioDTO> {};
+            const tempDestinatario = <DestinatarioDTO> {};
             tempDestinatario.interno = false;
             tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
             tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
@@ -290,7 +292,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
         if (newDestinatario.interno) {
           this.deleteDestinatario(this.indexSelectInterno, TIPO_REMITENTE_INTERNO);
-        }else{
+        } else {
           this.deleteDestinatario(this.indexSelectExterno, TIPO_REMITENTE_EXTERNO);
         }
 
@@ -300,7 +302,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
         if (newDestinatario.interno) {
           newList1.unshift(newDestinatario);
-        }else{
+        } else {
           newList.unshift(newDestinatario);
         }
         this.listaDestinatariosInternos = [...newList1];
@@ -366,4 +368,3 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
 }
-

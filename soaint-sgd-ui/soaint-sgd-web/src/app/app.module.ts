@@ -51,6 +51,7 @@ import { DatosDestinatarioComponent } from './ui/page-components/radicacion-sali
 import { DatosDestinatarioExternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-externo/datos-destinatario-externo.component';
 import { DatosDestinatarioInternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-interno/datos-destinatario-interno.component';
 import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remitentes/datos-remitentes.component';
+import { DetalleUnidadConservacionComponent } from './ui/page-components/unidades-documentales/components/detalle-unidad-conservacion/detalle-unidad-conservacion.component';
 
 
 @NgModule({
@@ -145,7 +146,8 @@ import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remite
     DatosDestinatarioComponent,
     DatosDestinatarioExternoComponent,
     DatosDestinatarioInternoComponent,
-    DatosRemitentesComponent
+    DatosRemitentesComponent,
+    DetalleUnidadConservacionComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

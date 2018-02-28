@@ -112,7 +112,7 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
   updateStatus(currentStatus: StatusDTO) {
     this.listaProyectores = [...currentStatus.gestionarProduccion.listaProyectores];
     this.startIndex = currentStatus.gestionarProduccion.startIndex;
-    this.listaObservaciones = [...currentStatus.gestionarProduccion.listaObservaciones];
+    this.listaObservaciones = currentStatus.gestionarProduccion.listaObservaciones && [...currentStatus.gestionarProduccion.listaObservaciones] || [];
     this.cantObservaciones = currentStatus.gestionarProduccion.cantObservaciones;
   }
 
