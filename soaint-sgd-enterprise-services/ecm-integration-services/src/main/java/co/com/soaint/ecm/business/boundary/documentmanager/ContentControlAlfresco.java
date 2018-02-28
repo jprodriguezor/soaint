@@ -750,7 +750,7 @@ public class ContentControlAlfresco implements ContentControl {
         //Obtener el documentosAdjuntos
         String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado  ";
         if (documento.getIdDocumento() != null) {
-            principalAdjuntos += " WHERE(cmis:objectId = '" + documento.getIdDocumento() + "'";
+            principalAdjuntos += " WHERE(cmis:objectId = '" + documento.getIdDocumento() + "'" + " OR cmcor:xIdentificadorDocPrincipal = '"+documento.getIdDocumento()+"'";
         }
         if (documento.getNroRadicado() != null) {
             if (documento.getIdDocumento() != null) {
