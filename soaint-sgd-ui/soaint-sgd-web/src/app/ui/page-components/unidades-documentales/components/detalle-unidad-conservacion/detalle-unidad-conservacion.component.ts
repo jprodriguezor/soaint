@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { StateUnidadDocumental } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
 
 @Component({
   selector: 'app-detalle-unidad-conservacion',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetalleUnidadConservacionComponent implements OnInit {
 
+  @Input() State: StateUnidadDocumental;
+
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

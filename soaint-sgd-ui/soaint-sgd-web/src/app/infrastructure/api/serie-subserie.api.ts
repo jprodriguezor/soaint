@@ -12,13 +12,11 @@ export class SerieSubserieApiService {
   }
 
   ListarSerie(payload: any) {
-   // return this._api.post(environment.listar_serie, payload).map(response => response);
-    return Observable.empty<SerieDTO[]>();
+    return this._api.post(environment.listar_serie, payload).map(response => response);
   }
 
   ListarSubserie(payload: any) {
-   // return this._api.post(environment.listar_subserie, payload).map(response => response);
-    return Observable.empty<SubserieDTO[]>();
+    return this._api.post(environment.listar_subserie, payload).map(response => response);
   }
 
 }

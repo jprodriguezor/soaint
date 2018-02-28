@@ -84,4 +84,21 @@ public class ECMClient {
         return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().delete();
     }
 
+    public Response listarSeriesPorDependencia(String codDependencia) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/devolverSerieOSubserieECM/")
+                .queryParam("idOrgOfc", codDependencia)
+                .request()
+                .post();
+    }
+
+    public Response listarSubseriesPorSerie(String codDependencia, String codSerie) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/devolverSerieOSubserieECM/")
+                .queryParam("idOrgOfc", codDependencia)
+                .queryParam("codSerie", codSerie)    
+                .request()
+                .post();
+    }
+
 }

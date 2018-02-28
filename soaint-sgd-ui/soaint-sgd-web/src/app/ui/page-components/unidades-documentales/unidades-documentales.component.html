@@ -1,13 +1,13 @@
 <div class="ui-fluid produccion-documental-multiple">
   <app-task-container>
     <div customActions>
-      <button pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
+      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
               (click)="State.Abrir()"></button>
 
-      <button pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
+      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
               (click)="State.Cerrar()"></button>
 
-      <button pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
+      <button [disabled]="!State.HabilitarOpcion(3)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
               (click)="State.Reactivar()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
@@ -123,7 +123,7 @@
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="State.ListadoUnidadDocumental"
+                       [value]="State.ListadoUnidadDocumental | async"
                        emptyMessage="No se encontraron resultados ">
             <p-column field="State.ListadoUnidadDocumental.seleccionado" header=""></p-column>
             <p-column field="State.ListadoUnidadDocumental.nombreSerieSubserie" header="Nombre serie/subserie"></p-column>
@@ -139,7 +139,7 @@
             <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
             <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
-                <button type="button" pButton label="Ver" (click)="State.VerDetalleUnidadConservacion(rindex)"
+                <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(rindex)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>
@@ -151,13 +151,18 @@
   </app-task-container>
 </div>
 
-<p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
+<p-dialog 
+[visible]="State.AbrirDetalle | async" 
+modal="modal" 
+[responsive]="true" 
+[closable]="true"
+positionTop="20"
 [style]="{'position':'absolute'}"
-(onHide)="hideAddObservationsPopup()" [width]="800">
+[width]="800"
+(onHide)="State.CerrarDetalle()">
 <p-header>
-Observaciones
-</p-header>
-<app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
 
+</p-header>
+<app-detalle-unidad-conservacion [State]="State"></app-detalle-unidad-conservacion>
 </p-dialog>
 
