@@ -108,7 +108,12 @@ export const environment = {
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
         descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
-    }
+    },
+
+
+  //Archivar Documento
+
+  ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
 };
 
