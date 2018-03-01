@@ -713,7 +713,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setIdDocumento(idDocumento);
                 if (qResult.getPropertyValueByQueryName("cmcor:xIdentificadorDocPrincipal") != null) {
                     documentoDTO.setIdDocumentoPadre(documento.getIdDocumento());
-                    documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+                    documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
                 } else {
                     documentoDTO.setTipoPadreAdjunto("Principal");
                 }
@@ -723,7 +723,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
-                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente")!=null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : null);
 
                 documentosLista.add(documentoDTO);
@@ -833,7 +833,7 @@ public class ContentControlAlfresco implements ContentControl {
         //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
         if (documento.getIdDocumentoPadre() != null) {
             properties.put("cmcor:xIdentificadorDocPrincipal", documento.getIdDocumentoPadre());
-            properties.put("cmcor:TipologiaDocumental", "Anexo");
+            properties.put("cmcor:xTipo", "Anexo");
         }
 
         properties.put(PropertyIds.NAME, documento.getNombreDocumento());
@@ -1200,7 +1200,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> updateProperties = new HashMap<>();
             updateProperties.put("cmcor:NroRadicado", nroRadicado);
             updateProperties.put("cmcor:NombreRemitente", nombreRemitente);
-            updateProperties.put("cmcor:TipologiaDocumental", tipologiaDocumental);
+            updateProperties.put("cmcor:xTipo", tipologiaDocumental);
 
             CmisObject object = session.getObject(idDoc);
             object.updateProperties(updateProperties);
