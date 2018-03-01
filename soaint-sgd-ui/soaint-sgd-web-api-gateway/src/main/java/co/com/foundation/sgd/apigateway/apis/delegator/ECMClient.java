@@ -117,7 +117,8 @@ public class ECMClient {
 
     public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/devolverSerieOSubserieECM/")
+
+        return wt.path("/devolverSerieOSubserieECM")
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
     }

@@ -26,6 +26,7 @@ export class StateUnidadDocumental implements TaskForm {
     OpcionSeleccionada: number;
     AbrirDetalle: boolean;
     task: TareaDTO;
+    FechaExtremaInicial: Date;
 
     formBuscar: FormGroup;
 
@@ -90,7 +91,8 @@ export class StateUnidadDocumental implements TaskForm {
     GetListadosSeries(codDependencia: string) {
         this.ListadoSeries = this.serieSubserieApiService.ListarSerieSubserie({
             idOrgOfc: codDependencia,
-        });
+        })
+        .map(map => map.listaSerie);
         this.ListadoSubseries = Observable.empty<SubserieDTO[]>();
     }
 
@@ -98,7 +100,8 @@ export class StateUnidadDocumental implements TaskForm {
         this.ListadoSubseries = this.serieSubserieApiService.ListarSerieSubserie({
             idOrgOfc: this.task.variables.codDependencia,
             codSerie: serie,
-        });
+        })
+        .map(map => map.listaSubSerie);
     }
 
     HabilitarOpcion(opcion: number) {
@@ -113,6 +116,10 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     Buscar(form: FormControl) {
+
+    }
+
+    Agregar() {
 
     }
 

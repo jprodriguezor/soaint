@@ -116,11 +116,11 @@
     <div class="ui-sm-12 ui-g-3 ui-lg-6">
       <div class="ui-g btn-content">
         <button pButton type="button" label="Buscar"
-        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right; vertical-align: bottom;"
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
         (click)="State.GetListadoUnidadesDocumentales()"></button>
 
         <button pButton type="button" label="Limpiar"
-        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right; vertical-align: bottom;"
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
         (click)="State.ResetForm()"></button>
       </div>      
     </div>
@@ -131,6 +131,27 @@
 
       <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
         <div class="ui-fluid">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="descriptor2">Fecha extrema final:</label>
+                    </div>
+                    <div class="ui-g-12">
+                        <p-calendar [showIcon]="true" dateFormat="yy/mm/dd" [showIcon]="true" [(ngModel)]="State.FechaExtremaInicial"
+                        id="FechaExtremaInicial" ></p-calendar>
+                      </div>
+                </div>                       
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">               
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <button pButton type="button" label="Agregar"
+                        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
+                        (click)="State.Agregar()"></button>                    
+                      </div>                    
+                </div>        
+            </div>
+
           <p-dataTable selectionMode="single"
                        [paginator]="true"
                        [rows]="10"
