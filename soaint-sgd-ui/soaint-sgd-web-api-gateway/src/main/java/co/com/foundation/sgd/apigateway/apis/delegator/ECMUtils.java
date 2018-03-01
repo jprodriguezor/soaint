@@ -37,16 +37,4 @@ public class ECMUtils {
         return fileName;
     }
 
-//    public static byte[] readByteArray(InputPart inputPart) throws Exception {
-//        Field f = inputPart.getClass().getDeclaredField("bodyPart");
-//        f.setAccessible(true);
-//        BodyPart bodyPart = (BodyPart) f.get(inputPart);
-//        SingleBody body = (SingleBody)bodyPart.getBody();
-//
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        body.writeTo(os);
-//        byte[] fileBytes = os.toByteArray();
-//        return fileBytes;
-//    }
-
 }
