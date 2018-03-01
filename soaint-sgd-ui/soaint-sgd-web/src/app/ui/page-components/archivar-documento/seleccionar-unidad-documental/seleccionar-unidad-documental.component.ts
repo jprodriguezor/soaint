@@ -3,6 +3,11 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../../shared/validation-messages';
 import {ConfirmationService} from "primeng/primeng";
 import {Observable} from "rxjs/Observable";
+import {State} from "../../../../infrastructure/redux-store/redux-reducers";
+import {ApiBase} from "../../../../infrastructure/api/api-base";
+import {Store} from "@ngrx/store";
+import {environment} from "../../../../../environments/environment";
+import {SerieSubserieApiService} from "../../../../infrastructure/api/serie-subserie.api";
 
 @Component({
   selector: 'app-seleccionar-unidad-documental',
@@ -15,6 +20,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   series: Array<any> = [];
+
+  operation:string = "bUnidadDocumental";
 
   seriesObservable$:Observable<any[]>;
 
@@ -30,7 +37,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   currentPage:number = 1;
 
-   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService) {
+   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieSubserieApiService) {
     this.initForm();
   }
 
@@ -43,8 +50,10 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
       'descriptor1': [null],
       'descriptor2': [null],
       'observaciones': [null,Validators.required],
-      'operation'  :["bUnidadDocumental"],
+     // 'operation'  :["bUnidadDocumental"],
     });
+
+    this.seriesObservable$ = this.serieSubSerieService.ListarSerieSubserie('');
   }
 
   ngOnDestroy(): void {
@@ -52,6 +61,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+
 
      //Load Series Numbers
 
@@ -90,7 +101,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   }
 
   currentSection():string{
-   return this.form.controls['operation'].value;
+   return this.operation;
    }
 
    buscarUnidadDocumental(){
