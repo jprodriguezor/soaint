@@ -1,5 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
+import org.apache.james.mime4j.message.BodyPart;
+import org.apache.james.mime4j.message.SingleBody;
 import org.apache.james.mime4j.message.SingleBody;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -52,4 +54,5 @@ public class ECMUtils {
         byte[] fileBytes = os.toByteArray();
         return fileBytes;
     }
+
 }
