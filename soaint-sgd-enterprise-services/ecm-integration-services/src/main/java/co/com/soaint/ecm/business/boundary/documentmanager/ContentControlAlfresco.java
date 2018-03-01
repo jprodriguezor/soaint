@@ -383,13 +383,13 @@ public class ContentControlAlfresco implements ContentControl {
                 List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
                 String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
                 folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
-                if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie")!=null) {
+                if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie") != null) {
                     serie.setCodigoSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSerie"));
                     serie.setNombreSerie(folder.getFolder().getPropertyValue("cmis:name"));
                     serieLista.add(serie);
 
                 }
-                if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie")!=null) {
+                if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie") != null) {
                     subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSubserie"));
                     subSerie.setNombreSubSerie(folder.getFolder().getPropertyValue("cmis:name"));
                     subSerieLista.add(subSerie);
@@ -723,8 +723,8 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
-                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
-                documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString());
+                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
+                documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente")!=null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString():"");
 
                 documentosLista.add(documentoDTO);
 
@@ -747,12 +747,18 @@ public class ContentControlAlfresco implements ContentControl {
 
     private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, DocumentoDTO documento) {
         //Obtener el documentosAdjuntos
-        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
-                " WHERE( cmis:objectId = '" + documento.getIdDocumento() + "'" +
-                " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento() + "'" +
-                " OR cmcor:NroRadicado = '" + documento.getNroRadicado()
-                + "')";
 
+        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado ";
+        if (documento.getIdDocumento() != null) {
+            principalAdjuntos += "WHERE(  cmis:objectId = '" + documento.getIdDocumento() + "'" + " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento() + "')";
+            if (documento.getNroRadicado() != null) {
+                principalAdjuntos += " AND cmcor:NroRadicado = '" + documento.getNroRadicado();
+            }
+        } else {
+            if (documento.getNroRadicado() != null) {
+                principalAdjuntos += " WHERE  cmcor:NroRadicado = '" + documento.getNroRadicado() + "'";
+            }
+        }
         return session.query(principalAdjuntos, false);
     }
 
@@ -1217,7 +1223,7 @@ public class ContentControlAlfresco implements ContentControl {
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put(tipoCarpeta, codOrg);
-        props.put(CMCOR_CODIGODEPENDENCIA,codOrg);
+        props.put(CMCOR_CODIGODEPENDENCIA, codOrg);
         if ("cmcor:CodigoSubserie".equals(tipoCarpeta)) {
             if (folderFather != null) {
                 props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue("cmcor:CodigoSerie"));
