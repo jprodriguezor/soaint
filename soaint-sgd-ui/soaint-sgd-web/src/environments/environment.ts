@@ -109,7 +109,12 @@ export const environment = {
       // ECM Endpoints
       obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
       obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
-  }
+  },
+ // serie-subserie
+ listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
+
+ // unidad documental
+ listar_unidad_documental: `${host}/unidad-documental-gateway-api`,
 };
 
 export const process_info = {

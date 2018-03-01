@@ -60,30 +60,40 @@ public class ECMClient {
     }
 
 
-
-    public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
+    public Response uploadDocument(DocumentoDTO documentoDTO, String tipoComunicacion){
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        MultipartFormDataOutput multipart = new MultipartFormDataOutput();
-        InputStream inputStream = null;
-        try {
-            inputStream = part.getBody(InputStream.class, null);
-        } catch (IOException e) {
-            log.error("Se ha generado un error del tipo IO:", e);
-        }
-        multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
-        GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
+        Response response = wt.path("/subirDocumentoRelacionECM/" + tipoComunicacion)
+                .request()
+                .post(Entity.json(documentoDTO));
 
-        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
-
-        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
-                (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
-                .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+        return response.readEntity(Response.class);
     }
+
+
+//    public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
+//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+//
+//        MultipartFormDataOutput multipart = new MultipartFormDataOutput();
+//        InputStream inputStream = null;
+//        try {
+//            inputStream = part.getBody(InputStream.class, null);
+//        } catch (IOException e) {
+//            log.error("Se ha generado un error del tipo IO:", e);
+//        }
+//        multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
+//        GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
+//
+//        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
+//
+//        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
+//                (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
+//                .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+//    }
 
     public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
-        try {
+        /*try {
             files.forEach((key, part) -> {
                 Response _response = this.uploadDocument(sede, dependencia, tipoComunicacion, key, part, parentId);
                 MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
@@ -91,7 +101,7 @@ public class ECMClient {
             });
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
-        }
+        }*/
         return mensajeRespuestas;
     }
 
