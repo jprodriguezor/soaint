@@ -28,7 +28,6 @@ public class MensajeRespuesta {
     private String codMensaje;
     private String mensaje;
     private List<DocumentoDTO> documentoDTOList;
-    private List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS;
 
     public MensajeRespuesta() {
         //Constructor por defecto de la clase
@@ -44,7 +43,7 @@ public class MensajeRespuesta {
         this.codMensaje = codMensaje;
         this.mensaje = mensaje;
         this.documentoDTOList = null;
-        this.contenidoDependenciaTrdDTOS = null;
+
     }
 
     /**
@@ -54,10 +53,10 @@ public class MensajeRespuesta {
      * @param mensaje          Mensaje de respuesta
      * @param documentoDTOList Lista de objetos de metadatos
      */
-    public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> documentoDTOList, List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS) {
+    public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> documentoDTOList) {
         this.codMensaje = codMensaje;
         this.mensaje = mensaje;
         this.documentoDTOList = documentoDTOList;
-        this.contenidoDependenciaTrdDTOS = contenidoDependenciaTrdDTOS;
+
     }
 }
