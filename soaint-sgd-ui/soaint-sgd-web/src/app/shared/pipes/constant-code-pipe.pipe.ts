@@ -16,8 +16,7 @@ export class ConstantCodePipe implements PipeTransform {
       if (finded) {
         if (!isSede) {
           result = finded.nombre;
-        }
-        else {
+        } else {
           result = finded.nomSede;
         }
       }

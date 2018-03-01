@@ -12,6 +12,7 @@ public class SystemParameters {
     public static final String BUSINESS_PLATFORM_RECORD = "record-endpoint";
     public static final String API_SEARCH_ALFRESCO = "search-endpoint";
     public static final String API_CORE_ALFRESCO = "core-endpoint";
+    public static final String API_SERVICE_ALFRESCO = "service-endpoint";
 
     private SystemParameters() {
     }
