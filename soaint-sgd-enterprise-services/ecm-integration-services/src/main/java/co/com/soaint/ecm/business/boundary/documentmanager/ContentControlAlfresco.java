@@ -328,7 +328,7 @@ public class ContentControlAlfresco implements ContentControl {
         MensajeRespuesta respuesta = new MensajeRespuesta();
 
         try {
-            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
+            String queryString = "";
             if (dependenciaTrdDTO.getIdOrgOfc() != null && !"".equals(dependenciaTrdDTO.getIdOrgOfc())) {
                 queryString = "SELECT cmis:objectId FROM cmcor:CM_Serie WHERE cmcor:CodigoDependencia =  '" + dependenciaTrdDTO.getIdOrgOfc() + "'";
             }
