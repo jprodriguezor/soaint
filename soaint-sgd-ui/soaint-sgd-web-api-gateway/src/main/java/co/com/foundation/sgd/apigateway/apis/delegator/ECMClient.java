@@ -72,7 +72,8 @@ public class ECMClient {
         multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
 
-        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
+        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
+        (parentId == null || "".equals(parentId) ? "" : "/" + parentId ));
 
         return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
                 (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
