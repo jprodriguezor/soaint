@@ -67,13 +67,11 @@ public class DigitalizarDocumentoGatewayApi {
         Response response = client.uploadDocument(documentoECMDTO, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); _files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            List<DocumentoDTO> documentoDTO =
-                    (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
+            List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
             if(null != documentoDTO && !documentoDTO.isEmpty()) {
                 ecmIds.add(documentoDTO.get(0).getIdDocumento());
                 if(!_files.isEmpty()){
-                    client.uploadDocumentsAsociates(documentoDTO.
-                            get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
+                    client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
                         if("0000".equals(mensajeRespuesta.getCodMensaje())){
                             List<DocumentoDTO> documentoDTO1 =
                                     (List<DocumentoDTO>) mensajeRespuesta.getDocumentoDTOList();

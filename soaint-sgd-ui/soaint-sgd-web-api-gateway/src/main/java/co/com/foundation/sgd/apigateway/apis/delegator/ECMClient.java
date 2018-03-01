@@ -93,15 +93,29 @@ public class ECMClient {
 
     public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
-        /*try {
+        try {
             files.forEach((key, part) -> {
-                Response _response = this.uploadDocument(sede, dependencia, tipoComunicacion, key, part, parentId);
+
+                DocumentoDTO documentoAsociadoECMDTO = new DocumentoDTO();
+                try {
+                    documentoAsociadoECMDTO.setDependencia(dependencia);
+                    documentoAsociadoECMDTO.setSede(sede);
+                    documentoAsociadoECMDTO.setDocumento( ECMUtils.readByteArray(part));
+                    documentoAsociadoECMDTO.setNombreDocumento(key);
+                    documentoAsociadoECMDTO.setIdDocumentoPadre(parentId);
+
+                }catch (Exception e){
+                    log.info("Error generando el documento ",e);
+                }
+
+                Response _response = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
                 MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
                 mensajeRespuestas.add(asociadoResponse);
+
             });
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
-        }*/
+        }
         return mensajeRespuestas;
     }
 
