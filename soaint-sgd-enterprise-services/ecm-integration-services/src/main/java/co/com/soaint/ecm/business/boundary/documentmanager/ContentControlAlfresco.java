@@ -747,11 +747,21 @@ public class ContentControlAlfresco implements ContentControl {
 
     private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, DocumentoDTO documento) {
         //Obtener el documentosAdjuntos
-        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado" +
-                " WHERE( cmis:objectId = '" + documento.getIdDocumento() + "'" +
-                " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento() + "'" +
-                " OR cmcor:NroRadicado = '" + documento.getNroRadicado()
-                + "')";
+        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado  ";
+        if (documento.getIdDocumento() != null) {
+            principalAdjuntos += " WHERE(cmis:objectId = '" + documento.getIdDocumento() + "'";
+        }
+        if (documento.getNroRadicado() != null) {
+            if (documento.getIdDocumento() != null) {
+                principalAdjuntos += " AND";
+            } else {
+                principalAdjuntos += " WHERE(";
+            }
+            principalAdjuntos += " cmcor:NroRadicado = '" + documento.getNroRadicado() + "'";
+        }
+        if (documento.getIdDocumento() != null || documento.getNroRadicado() != null) {
+            principalAdjuntos += ")";
+        }
 
         return session.query(principalAdjuntos, false);
     }
