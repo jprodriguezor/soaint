@@ -14,6 +14,7 @@ import { TaskForm } from 'app/shared/interfaces/task-form.interface';
 import { TareaDTO } from 'app/domain/tareaDTO';
 import { Sandbox } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import { getActiveTask } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import { async } from '@angular/core/testing';
 
 
 
@@ -97,15 +98,30 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     GetSubSeries(serie: string) {
-        this.ListadoSubseries = this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: this.task.variables.codDependencia,
-            codSerie: serie,
-        })
-        .map(map => map.listaSubSerie);
+        if (serie) {
+            this.ListadoSubseries = this.serieSubserieApiService.ListarSerieSubserie({
+                idOrgOfc: this.task.variables.codDependencia,
+                codSerie: serie,
+            })
+            .map(map => map.listaSubSerie);
+        }
     }
 
     HabilitarOpcion(opcion: number) {
         if (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[opcion]) {
+            return true;
+        }
+        return false;
+    }
+
+    EsRequerido() {
+        let length = 0;
+        this.ListadoSubseries
+            .subscribe(result => {
+                   length = result.length;
+        });
+        if (length) {
+            this.formBuscar.controls['subserie'].setErrors({incorrect: true});
             return true;
         }
         return false;
