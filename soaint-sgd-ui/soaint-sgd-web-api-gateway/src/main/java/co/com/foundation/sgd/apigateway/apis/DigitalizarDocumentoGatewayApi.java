@@ -88,4 +88,14 @@ public class DigitalizarDocumentoGatewayApi {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
        return client.findDocumentosAsociados(idDocumento);
     }
+
+    @POST
+    @Path("/eliminarprincipal/{documentId}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response deleteDocumentById(String documentId){
+        Response response = client.deleteDocumentById(documentId);
+        Boolean removed = response.readEntity(Boolean.class);
+        return Response.status(response.getStatus()).entity(removed).build();
+    }
+
 }

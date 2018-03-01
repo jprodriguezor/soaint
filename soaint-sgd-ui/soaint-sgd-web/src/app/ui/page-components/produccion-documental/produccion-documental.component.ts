@@ -89,12 +89,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
           datosContacto: {
               distribucion: null,
               responderRemitente: false,
-              listaDestinatarios: [],
-              remitenteExterno: null
+              hasDestinatarioPrincipal: false,
+              issetListDestinatarioBackend: false,
+              listaDestinatariosInternos: [],
+              listaDestinatariosExternos: []
           },
           gestionarProduccion: {
               startIndex: this.gestionarProduccion.listaProyectores.length,
-              listaProyectores: this.gestionarProduccion.listaProyectores
+              listaProyectores: this.gestionarProduccion.listaProyectores,
+              cantObservaciones: this.gestionarProduccion.listaObservaciones.length,
+              listaObservaciones: this.gestionarProduccion.listaObservaciones
           }
       };
   }
@@ -131,9 +135,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               if (status) {
                     this.taskCurrentStatus = status;
                     this.datosGenerales.updateStatus(status);
-                // if (status.datosGenerales.tipoComunicacion) {
-                //     this.datosContacto.updateStatus(status);
-                // }
+                    this.datosContacto.updateStatus(status);
                     this.gestionarProduccion.updateStatus(status);
                     console.log(status);
               } else {
@@ -159,6 +161,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   updateEstadoTarea() {
       const currentStatus = this.getCurrentStatus();
       currentStatus.gestionarProduccion.startIndex = currentStatus.gestionarProduccion.listaProyectores.length;
+      currentStatus.gestionarProduccion.cantObservaciones = currentStatus.gestionarProduccion.listaObservaciones.length;
       this.guardarEstadoTarea(currentStatus);
   }
 
@@ -168,17 +171,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-      // if (this.datosGenerales.form.get('tipoComunicacion').value) {
-      //     if (this.datosGenerales.form.get('tipoComunicacion').value.codigo === 'SI') {
-      //         this.taskCurrentStatus.datosContacto.listaDestinatarios = this.datosContacto.destinatarioInterno.listaDestinatarios;
-      //     } else {
-      //         this.taskCurrentStatus.datosContacto.remitenteExterno = this.datosContacto.remitenteExterno;
-      //     }
-      // } else {
-      //     this.taskCurrentStatus.datosContacto.listaDestinatarios = [];
-      // }
+
+      this.taskCurrentStatus.datosContacto.hasDestinatarioPrincipal = this.datosContacto.hasDestinatarioPrincipal;
+      this.taskCurrentStatus.datosContacto.issetListDestinatarioBackend = this.datosContacto.issetListDestinatarioBacken;
+      this.taskCurrentStatus.datosContacto.listaDestinatariosInternos = this.datosContacto.listaDestinatariosInternos;
+      this.taskCurrentStatus.datosContacto.listaDestinatariosExternos = this.datosContacto.listaDestinatariosExternos;
+
       this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
       this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
+      this.taskCurrentStatus.gestionarProduccion.listaObservaciones = this.gestionarProduccion.listaObservaciones;
+      this.taskCurrentStatus.gestionarProduccion.cantObservaciones = this.gestionarProduccion.cantObservaciones;
       return this.taskCurrentStatus;
   }
 

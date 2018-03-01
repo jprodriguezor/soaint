@@ -2,7 +2,7 @@ import {ConstanteDTO} from '../../../../domain/constanteDTO';
 import {AnexoDTO, VersionDocumentoDTO} from './DocumentoDTO';
 import {ProyectorDTO} from '../../../../domain/ProyectorDTO';
 import {DestinatarioDTO} from '../../../../domain/destinatarioDTO';
-import {AgentDTO} from "../../../../domain/agentDTO";
+import {ObservacionDTO} from './ObservacionDTO';
 
 export interface StatusDTO {
   datosGenerales: {
@@ -13,12 +13,16 @@ export interface StatusDTO {
   datosContacto: {
     distribucion: string,
     responderRemitente: boolean,
-    listaDestinatarios: DestinatarioDTO[],
-    remitenteExterno: AgentDTO
+    hasDestinatarioPrincipal: boolean,
+    issetListDestinatarioBackend: boolean,
+    listaDestinatariosInternos: DestinatarioDTO[],
+    listaDestinatariosExternos: DestinatarioDTO[]
   },
   gestionarProduccion: {
     startIndex: number,
-    listaProyectores: ProyectorDTO[]
+    cantObservaciones: number,
+    listaProyectores: ProyectorDTO[],
+    listaObservaciones: ObservacionDTO[]
   }
 }
 
