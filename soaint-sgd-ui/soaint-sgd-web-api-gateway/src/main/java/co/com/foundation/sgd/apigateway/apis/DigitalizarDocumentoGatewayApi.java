@@ -4,8 +4,9 @@ import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClien
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.MetadatosDocumentosDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,24 +44,38 @@ public class DigitalizarDocumentoGatewayApi {
     public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName,
                                 @PathParam("principalFileName") String principalFileName, @PathParam("sede") String sede,
                                 @PathParam("dependencia") String dependencia, MultipartFormDataInput files) {
+
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
+
         List<String> ecmIds = new ArrayList<>();
         Map<String,InputPart> _files = ECMUtils.findFiles(files);
         InputPart parent = _files.get(principalFileName);
-        Response response = client.uploadDocument(sede, dependencia, tipoComunicacion,principalFileName, parent, "");
+        DocumentoDTO documentoECMDTO = new DocumentoDTO();
+        try {
+
+            documentoECMDTO.setDependencia(dependencia);
+            documentoECMDTO.setSede(sede);
+            documentoECMDTO.setDocumento(ECMUtils.readByteArray(parent));
+            documentoECMDTO.setNombreDocumento(principalFileName);
+
+        }catch (Exception e){
+
+        }
+
+
+
+        Response response = client.uploadDocument(documentoECMDTO, "");
         MensajeRespuesta parentResponse = response.readEntity(MensajeRespuesta.class); _files.remove(fileName);
         if (response.getStatus() == HttpStatus.OK.value() && "0000".equals(parentResponse.getCodMensaje())){
-            List<MetadatosDocumentosDTO> metadatosDocumentosDTO =
-                    (List<MetadatosDocumentosDTO>) parentResponse.getMetadatosDocumentosDTOList();
-            if(null != metadatosDocumentosDTO && !metadatosDocumentosDTO.isEmpty()) {
-                ecmIds.add(metadatosDocumentosDTO.get(0).getIdDocumento());
+            List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
+            if(null != documentoDTO && !documentoDTO.isEmpty()) {
+                ecmIds.add(documentoDTO.get(0).getIdDocumento());
                 if(!_files.isEmpty()){
-                    client.uploadDocumentsAsociates(metadatosDocumentosDTO.
-                            get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
+                    client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
                         if("0000".equals(mensajeRespuesta.getCodMensaje())){
-                            List<MetadatosDocumentosDTO> metadatosDocumentosDTO1 =
-                                    (List<MetadatosDocumentosDTO>) mensajeRespuesta.getMetadatosDocumentosDTOList();
-                            ecmIds.add(metadatosDocumentosDTO1.get(0).getIdDocumento());
+                            List<DocumentoDTO> documentoDTO1 =
+                                    (List<DocumentoDTO>) mensajeRespuesta.getDocumentoDTOList();
+                            ecmIds.add(documentoDTO1.get(0).getIdDocumento());
                         }
                     });
                 }
@@ -86,6 +101,7 @@ public class DigitalizarDocumentoGatewayApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
+
         return client.findDocumentosAsociados(idDocumento);
     }
 
