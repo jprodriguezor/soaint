@@ -54,13 +54,17 @@ export class StateUnidadDocumental implements TaskForm {
     InitForm() {
        this.formBuscar = this.fb.group({
         serie: ['', [Validators.required]],
-        subserie: ['', [Validators.required]],
+        subserie: [''],
         identificador: [''],
         nombre: [''],
         descriptor1: [''],
         descriptor2: [''],
         accion: [''],
        });
+    }
+
+    ResetForm() {
+        this.formBuscar.reset();
     }
 
     InitPropiedadesTarea() {
@@ -84,14 +88,14 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     GetListadosSeries(codDependencia: string) {
-        this.ListadoSeries = this.serieSubserieApiService.ListarSerie({
+        this.ListadoSeries = this.serieSubserieApiService.ListarSerieSubserie({
             idOrgOfc: codDependencia,
         });
         this.ListadoSubseries = Observable.empty<SubserieDTO[]>();
     }
 
     GetSubSeries(serie: string) {
-        this.ListadoSubseries = this.serieSubserieApiService.ListarSubserie({
+        this.ListadoSubseries = this.serieSubserieApiService.ListarSerieSubserie({
             idOrgOfc: this.task.variables.codDependencia,
             codSerie: serie,
         });

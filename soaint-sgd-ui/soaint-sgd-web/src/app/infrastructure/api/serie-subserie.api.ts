@@ -11,12 +11,7 @@ export class SerieSubserieApiService {
   constructor(private _api: ApiBase) {
   }
 
-  ListarSerie(payload: any) {
-    return this._api.post(environment.listar_serie, payload).map(response => response);
+  ListarSerieSubserie(payload: any) {
+    return this._api.post(environment.listar_serie_subserie, payload).map(response => response);
   }
-
-  ListarSubserie(payload: any) {
-    return this._api.post(environment.listar_subserie, payload).map(response => response);
-  }
-
 }

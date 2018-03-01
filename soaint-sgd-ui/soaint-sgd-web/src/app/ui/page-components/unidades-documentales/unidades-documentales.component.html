@@ -111,6 +111,18 @@
                 <input type="text" pInputText   id="descriptor2" formControlName="descriptor2" />
             </div>
         </div>
+
+    </div>
+    <div class="ui-sm-12 ui-g-3 ui-lg-6">
+      <div class="ui-g btn-content">
+        <button pButton type="button" label="Buscar"
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right; vertical-align: bottom;"
+        (click)="State.GetListadoUnidadesDocumentales()"></button>
+
+        <button pButton type="button" label="Limpiar"
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right; vertical-align: bottom;"
+        (click)="State.ResetForm()"></button>
+      </div>      
     </div>
            
           </div>
