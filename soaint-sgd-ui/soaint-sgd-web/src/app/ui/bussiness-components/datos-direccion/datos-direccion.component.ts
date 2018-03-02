@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit,Output, EventEmitter} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -22,7 +22,10 @@ import {getArrayData as municipioArrayData} from 'app/infrastructure/state-manag
 import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
 import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-
+import "rxjs/add/operator/filter";
+import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
+import {isNullOrUndefined} from 'util';
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -32,7 +35,7 @@ enum FormContextEnum {
   selector: 'app-datos-direccion',
   templateUrl: './datos-direccion.component.html',
 })
-export class DatosDireccionComponent implements OnInit, OnDestroy {
+export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   form: FormGroup;
   display = false;
@@ -42,6 +45,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
   @Output()
   nuevosContactos = new EventEmitter();
+
+  @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
+  @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
+  @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
 
   validations: any = {};
   visibility: any = {};
@@ -54,8 +61,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   orientacionSuggestions$: Observable<ConstanteDTO[]>;
   bisSuggestons$: Observable<ConstanteDTO[]>;
   tipoComplementoSuggestions$: Observable<ConstanteDTO[]>;
+  paises$: Observable<PaisDTO[]>;
+  departamentos$: Observable<DepartamentoDTO[]>;
+  municipios$: Observable<MunicipioDTO[]>;
 
   contacts: Array<any> = [];
+  paises: Array<any> = [];
   contactPrincial = false;
   showDireccionForm = false;
   showCheckDireccionForm = false;
@@ -85,15 +96,23 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
     this.bisSuggestons$ = this._store.select(getBisArrayData);
     this.tipoComplementoSuggestions$ = this._store.select(getTipoComplementoArrayData);
-    this.paisSuggestions$ = this._store.select(paisArrayData);
-    this.municipioSuggestions$ = this._store.select(municipioArrayData);
-    this.departamentoSuggestions$ = this._store.select(departamentoArrayData);
+    this.municipios$ = this._store.select(municipioArrayData);
+    this.departamentos$ = this._store.select(departamentoArrayData);
+    this.paises$ = this._store.select(paisArrayData);
 
     this.contacts = this.contactsDefault;
 
-    console.log(this.contacts);
-
     this.addColombiaByDefault();
+
+    this.paisSuggestions$ = this.paisAutoComplete.completeMethod
+      .combineLatest(this.paises$, (event: any, paises) => paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+    this.departamentoSuggestions$ = this.departamentoAutoComplete.completeMethod
+      .combineLatest(this.departamentos$, (event: any, departamentos) => departamentos.filter(departamento => departamento.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+    this.municipioSuggestions$ = this.municipioAutoComplete.completeMethod
+      .combineLatest(this.municipios$, (event: any, municipios) => municipios.filter(municipio => municipio.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
   }
 
   initForm() {
@@ -146,7 +165,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
 
     paisControl.valueChanges.subscribe(value => {
       this.visibility.selectedColombia = true;
-      if (value && (value.codigo.toUpperCase() !== 'CO')) {
+      if (value && value.codigo &&(value.codigo.toUpperCase() !== 'CO')) {
         this.visibility.selectedColombia = false;
         this.showCheckDireccionForm = false;
         departamentoControl.reset();
@@ -171,7 +190,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
   }
 
 
-  onDropdownClickPais() {
+  onDropdownClickPais(event?) {
     this._paisSandbox.loadDispatch();
   }
 
@@ -179,6 +198,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     const pais = this.form.get('pais').value;
     if (pais) {
       this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+      this.form.get('municipio').reset();
     }
   }
 
@@ -233,7 +253,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
       provinciaEstado: provinciaEstado.value,
       ciudad: ciudad.value,
       direccionText: direccionText.value,
-      principal: (principal.value === null ? false : true)
+      principal: (principal.value === true ? true : false)
     }, this.saveDireccionData());
 
     pais.reset();
@@ -355,29 +375,67 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     this.showContactForm = true;
     this.formContext = FormContextEnum.CREATE;
     this.addColombiaByDefault();
-    this.contacts.forEach(value => {
-      if (value.principal) {
-        this.contactPrincial = true;
-      }
-    });
   }
 
+  hasDireccionPrincipal(){
+    let result = false;
+    if(this.contacts.length > 0){
+      this.contacts.forEach(values => {
+        if (values.principal === true) {
+          result = true;
+        }
+      });
+    }
+    return result;
+  }
   onFilterPais(event) {
+
+    //this.paisSuggestions$ = this.paisAutoComplete.completeMethod
+    //  .combineLatest(this.paises$, (event: any, paises) => paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+
+    //this.paisSuggestions$.map(paises => {
+    //  paises.filter(pais => pais.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 );
+    //})
+    /*this.paisSuggestions$.take(2).subscribe((values) => {
+      console.log(values);
+    })
+    console.log("Lista ", this.paisSuggestions$);
+    console.log(event);*/
+  }
+
+  onFilterDepartamento(event){
+
+  }
+
+  onFilterMinicipio(event){
+
   }
 
   save() {
     if (this.form.valid) {
-      if (this.formContext === FormContextEnum.CREATE) {
-        this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
-      } else {
-        const temp = [...this.contacts];
-        temp[this.editIndexContext] = this.saveAndRetriveContact();
-        this.contacts = temp;
-      }
-      this.formContext = null;
-      this.editIndexContext = null;
 
-      this.nuevosContactos.emit(this.contacts);
+      const principal = this.form.get('principal');
+      if(principal.value === true && this.hasDireccionPrincipal() === true ){
+
+        this._store.dispatch(new PushNotificationAction({
+          severity: 'warn',
+          summary: 'Recuerde que únicamente puede existir una dirección principal'
+        }));
+
+      }else {
+        if (this.formContext === FormContextEnum.CREATE) {
+          this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
+        } else {
+          const temp = [...this.contacts];
+          temp[this.editIndexContext] = this.saveAndRetriveContact();
+          this.contacts = temp;
+        }
+        this.formContext = null;
+        this.editIndexContext = null;
+
+        this.nuevosContactos.emit(this.contacts);
+      }
     }
   }
 
@@ -391,21 +449,27 @@ export class DatosDireccionComponent implements OnInit, OnDestroy {
     });
   }
 
-  addColombiaByDefault() {
+  ngAfterViewInit() {
+    this.refreshView();
+  }
 
-    this.paisSuggestions$.take(2).subscribe((values) => {
-      this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
-    });
+  addColombiaByDefault() {
+    const subscription = this.paises$
+
+     .filter(values => values.length > 0)
+
+     .subscribe((values) => {
+       this.paises = values;
+       this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
+
+       setTimeout(() => subscription.unsubscribe());
+     });
 
     this._paisSandbox.loadDispatch();
 
     this.visibility.selectedColombia = true;
-
   }
 
-  ngAfterViewInit() {
-    this.refreshView();
-  }
 
   refreshView() {
     this._changeDetectorRef.detectChanges();

@@ -13,7 +13,18 @@ export class Sandbox {
   }
 
   loadData(payload: any) {
-    return this._api.list(environment.pais_endpoint, payload);
+
+    return this._api.list(environment.pais_endpoint, payload)
+
+      .map((response) => {
+        return {
+          paises: response.paises.sort((pais1, pais2):number => {
+              if (pais1.nombre < pais2.nombre) return -1;
+              if (pais1.nombre > pais2.nombre) return 1;
+              return 0;
+            })
+        }
+      });
   }
 
   filterDispatch(query) {

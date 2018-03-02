@@ -77,4 +77,15 @@ public class GestionarDocumento {
     public PpdDocumentoDTO consultarDocumentoByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         return ppdDocumentoControl.consultarDocumentoByNroRadicado(nroRadicado);
     }
+
+    /**
+     *
+     * @param ideDocumento
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public PpdDocumentoDTO consultarDocumentoPorIdeDocumento(BigInteger ideDocumento) throws BusinessException, SystemException{
+        return control.consultarDocumentoPorIdeDocumento(ideDocumento);
+    }
 }

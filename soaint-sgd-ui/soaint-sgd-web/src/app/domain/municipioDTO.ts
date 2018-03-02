@@ -1,6 +1,6 @@
 export interface MunicipioDTO {
   id: number;
-  nombre: number;
+  nombre: string;
   codigo: string;
   codDepar: string;
 }
