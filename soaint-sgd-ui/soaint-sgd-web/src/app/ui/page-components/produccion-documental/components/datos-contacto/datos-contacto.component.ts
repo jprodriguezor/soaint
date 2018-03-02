@@ -1,35 +1,38 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ConstanteDTO} from 'app/domain/constanteDTO';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
 import {StatusDTO} from '../../models/StatusDTO';
 import {DestinatarioDTO} from '../../../../../domain/destinatarioDTO';
-import {ProduccionDocumentalApiService} from "../../../../../infrastructure/api/produccion-documental.api";
-import {AgentDTO} from "../../../../../domain/agentDTO";
-import {destinatarioOriginal} from "../../../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
+import {ProduccionDocumentalApiService} from '../../../../../infrastructure/api/produccion-documental.api';
 import {Sandbox as DependenciaSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-
-import {getArrayData as dependenciaGrupoArrayData} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import {LoadAction as DependenciaLoadAction} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-actions';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 
+import {getArrayData as municipioArrayData} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-selectors';
+import {LoadAction as LoadMunicipioAction} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-actions';
+import {getArrayData as paisArrayData} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-selectors';
+import {LoadAction as LoadPaisAction} from 'app/infrastructure/state-management/paisDTO-state/paisDTO-actions';
+import {getArrayData as departamentoArrayData} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-selectors';
+import {LoadAction as LoadDepartamentoAction} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-actions';
+
+import {Sandbox as DepartamentoSandbox} from 'app/infrastructure/state-management/departamentoDTO-state/departamentoDTO-sandbox';
+import {Sandbox as MunicipioSandbox} from 'app/infrastructure/state-management/municipioDTO-state/municipioDTO-sandbox';
+
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs/Observable';
 import {isNullOrUndefined} from 'util';
 import {
   getTipoDocumentoArrayData,
   getTipoPersonaArrayData,
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
-import {getTipoDestinatarioArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import {
   DESTINATARIO_PRINCIPAL,
-  TIPO_REMITENTE_INTERNO,
-  TIPO_REMITENTE_EXTERNO
-} from "../../../../../shared/bussiness-properties/radicacion-properties";
+  TIPO_REMITENTE_EXTERNO,
+  TIPO_REMITENTE_INTERNO
+} from '../../../../../shared/bussiness-properties/radicacion-properties';
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -50,15 +53,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   destinatarioInterno: DestinatarioDTO = null;
   destinatarioExterno: DestinatarioDTO = null;
 
-  //responderRemitente = false;
   hasNumberRadicado = false;
   editable = true;
   defaultDestinatarioTipoComunicacion = '';
   hasDestinatarioPrincipal = false;
   responderRemitente = false;
   issetListDestinatarioBacken = false;
-  indexSelectExterno: number = -1;
-  indexSelectInterno: number = -1;
+  indexSelectExterno: -1;
+  indexSelectInterno: -1;
 
   destinatarioExternoDialogVisible = false;
   destinatarioInternoDialogVisible = false;
@@ -73,6 +75,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private pdMessageService: PdMessageService,
               private _dependenciaSandbox: DependenciaSandbox,
+              private _departamentoSandbox: DepartamentoSandbox,
+              private _municipioSandbox: MunicipioSandbox,
               private _store: Store<State>) {
 
     /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
@@ -124,6 +128,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._store.dispatch(new SedeAdministrativaLoadAction());
+    this._store.dispatch(new LoadPaisAction());
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
     }
@@ -169,30 +174,58 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
             tempDestinatario.pais = null;
             tempDestinatario.departamento = null;
             tempDestinatario.municipio = null;
-            tempDestinatario.datosContactoList = (agente.datosContactoList) ? agente.datosContactoList : null;
             tempDestinatario.isBacken = true;
-            if (agente.codTipoRemite === TIPO_REMITENTE_EXTERNO) {
-
-              tempDestinatario.interno = false;
-              this.destinatarioExterno = tempDestinatario;
-              this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
-              this.indexSelectExterno = -1;
-              this.destinatarioExternoDialogVisible = true;
-            } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
-
-              tempDestinatario.interno = true;
-              this.destinatarioInterno = tempDestinatario;
-              this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
-              this.indexSelectInterno = -1;
-              this.destinatarioInternoDialogVisible = true;
-            }
+            const contactos = [];
+            this.transformToDestinatarioContacts(agente.datosContactoList || [])
+              .subscribe(contact => {
+                console.log('contact', contact);
+                contactos.push(contact);
+              }, null, () => {
+                tempDestinatario.datosContactoList = contactos;
+                if (agente.codTipoRemite === TIPO_REMITENTE_EXTERNO) {
+                  tempDestinatario.interno = false;
+                  this.destinatarioExterno = tempDestinatario;
+                  this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
+                  this.indexSelectExterno = -1;
+                  this.destinatarioExternoDialogVisible = true;
+                } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
+                  tempDestinatario.interno = true;
+                  this.destinatarioInterno = tempDestinatario;
+                  this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
+                  this.indexSelectInterno = -1;
+                  this.destinatarioInternoDialogVisible = true;
+                }
+              })
           }
-
         });
       }
       this.form.get('responderRemitente').setValue(true);
     }
-    //this.refreshView();
+  }
+
+  transformToDestinatarioContacts(contacts): Observable<any[]> {
+    return Observable.create(obs => {
+        contacts.forEach(contact => obs.next(contact));
+        obs.complete();
+      })
+      .flatMap(contact => {
+        return Observable.combineLatest(
+          Observable.of(contact),
+          this.searchPais(contact.codPais).take(1),
+          this.searchDepartamento(contact.codDepartamento).skip(1).take(1),
+          this.searchMunicipio(contact.codMunicipio).skip(1).take(1)
+        )
+      })
+      .map(([contact, pais, dpto, mncpio]) => {
+        return {
+          pais: pais,
+          departamento: dpto,
+          municipio: mncpio,
+          numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
+          celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
+          correoEle: isNullOrUndefined(contact.correoEle) ? '' : contact.correoEle
+        };
+      });
   }
 
   seachTipoDestinatario(indOriginal) {
@@ -245,6 +278,26 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     return isNullOrUndefined(result) ? null : result;
   }
 
+  searchPais(codPais) {
+    if (isNullOrUndefined(codPais)) return Observable.of(null);
+    this._departamentoSandbox.loadDispatch({codPais: codPais});
+    return this._store.select(paisArrayData)
+      .map(values => values.find((element) => element.codigo === codPais));
+  }
+
+  searchDepartamento(codDepto) {
+    if (isNullOrUndefined(codDepto)) return Observable.of(null);
+    this._municipioSandbox.loadDispatch({codDepar: codDepto});
+    return this._store.select(departamentoArrayData).map(values =>
+      values.find((element) => element.codigo === codDepto)
+    );
+  }
+
+  searchMunicipio(codMunicipio) {
+    if (isNullOrUndefined(codMunicipio)) return Observable.of(null)
+    return this._store.select(municipioArrayData).map(values =>
+      values.find((element) => element.codigo === codMunicipio));
+  }
 
   initForm() {
     this.form = this.formBuilder.group({
@@ -322,8 +375,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         }
       }
     }
-
-    //this.refreshView();
   }
 
   editDestinatario(index, op) {
@@ -360,7 +411,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    //this.subscription.unsubscribe();
   }
 
   refreshView() {
