@@ -3,11 +3,23 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../../shared/validation-messages';
 import {ConfirmationService} from "primeng/primeng";
 import {Observable} from "rxjs/Observable";
-import {State} from "../../../../infrastructure/redux-store/redux-reducers";
+import {State as RootState} from "../../../../infrastructure/redux-store/redux-reducers";
 import {ApiBase} from "../../../../infrastructure/api/api-base";
 import {Store} from "@ngrx/store";
 import {environment} from "../../../../../environments/environment";
 import {SerieSubserieApiService} from "../../../../infrastructure/api/serie-subserie.api";
+import {SerieService} from "../../../../infrastructure/api/serie.service";
+
+import {Sandbox as DependenciaSandbox} from "../../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox" ;
+
+import {
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
+} from "../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+import {DependenciaDTO} from "../../../../domain/dependenciaDTO";
+import {SelectDependencyGroupAction}  from "../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions";
+import {Subscription} from "rxjs/Subscription";
+
 
 @Component({
   selector: 'app-seleccionar-unidad-documental',
@@ -25,9 +37,15 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   seriesObservable$:Observable<any[]>;
 
+  globalDependencySubscriptor:Subscription;
+
   subseries: Array<any> = [];
 
   subseriesObservable$:Observable<any[]>;
+
+  dependenciaSelected$ : Observable<any>;
+
+  dependenciaSelected : DependenciaDTO;
 
   documentos: any[];
 
@@ -37,8 +55,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   currentPage:number = 1;
 
-   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieSubserieApiService) {
-    this.initForm();
+   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _dependenciaSanbox:DependenciaSandbox,private _store:Store<RootState>) {
+
+    this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
+
+     this.initForm();
   }
 
   initForm() {
@@ -52,19 +73,18 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
       'observaciones': [null,Validators.required],
      // 'operation'  :["bUnidadDocumental"],
     });
-
-    this.seriesObservable$ = this.serieSubSerieService.ListarSerieSubserie('');
   }
 
   ngOnDestroy(): void {
 
+     this.globalDependencySubscriptor.unsubscribe();
   }
 
   ngOnInit(): void {
 
-
-
-     //Load Series Numbers
+   this.globalDependencySubscriptor =  this.dependenciaSelected$.subscribe(result =>{
+        this.seriesObservable$ = this.serieSubSerieService.getSeriePorDependencia(result.codigo);
+    });
 
   }
 
