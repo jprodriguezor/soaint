@@ -86,7 +86,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
         this.seriesObservable$ = this
           .serieSubSerieService
           .getSeriePorDependencia(result.codigo)
-          .map(series =>  series.map(serie => { return {label:serie.nombreSerie,value:serie.codigoSerie}})) ;
+         // .map(series =>  series.map(serie => { return {label:serie.nombreSerie,value:serie.codigoSerie}})) ;
     });
 
   }

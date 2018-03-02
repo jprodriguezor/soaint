@@ -11,7 +11,7 @@ export class SerieService {
     return this
       .serieSubserieService
       .ListarSerieSubserie({idOrgOfc:codDependencia})
-      .map(response =>  response[0].listaSerie);
+      .map(response =>  response.listaSerie);
   }
 
   getSubseriePorDependenciaSerie(codDependencia,codSerie){
@@ -19,7 +19,7 @@ export class SerieService {
     return this
       .serieSubserieService
       .ListarSerieSubserie({idOrgOfc:codDependencia,codSerie:codSerie})
-      .map(response => response[0].listaSubSerie);
+      .map(response => response.listaSubSerie);
   }
 
 

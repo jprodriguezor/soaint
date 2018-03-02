@@ -31,7 +31,7 @@
                       <label for="serie">Serie</label>
                     </div>
                     <div class="ui-g-12">
-                      <p-dropdown [options]="(seriesObservable$ |async)" id="serie" [autoWidth]="false" formControlName="serie"
+                      <p-dropdown [options]="(seriesObservable$ |async|dropdownItemSerie)" id="serie" [autoWidth]="false" formControlName="serie"
                                   (blur)="listenForBlurEvents('serie')">
 
                       </p-dropdown>
