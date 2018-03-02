@@ -39,7 +39,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                                <label style="color: inherit">{{taskData.variables.codigoSede}}</label>
+                                <label style="color: inherit; position: relative">{{taskData.variables.nombreDependencia}}</label>
                             </span>
                         </div>
                     </div>
@@ -52,8 +52,8 @@
                             </span>
                         </div>
                         <div class="ui-g-12">
-                            <span class="md-inputfield">
-                                <label style="color: inherit">{{taskData.variables.codDependencia}}</label>
+                            <span class="md-inputfield" >
+                                <label style="color: inherit; position: relative">{{taskData.variables.nombreSede}}</label>
                             </span>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
                                           accept="application/pdf"
                                           chooseLabel="Adjuntar"
                                           customUpload="true"
-                                          (onSelect)="attachDocument($event, versionUploader)"
+                                          (uploadHandler)="attachDocument($event,versionUploader)"
                                           (onError)="onErrorUpload($event)"
                             ></p-fileUpload>
                         </div>
@@ -238,7 +238,7 @@
                           chooseLabel="Adjuntar"
                           customUpload="true"
                           [disabled]="form.get('soporte').value !== 'electronico'"
-                          (onSelect)="agregarAnexo($event, anexoUploader)"
+                          (uploadHandler)="agregarAnexo($event, anexoUploader)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
                     </div>
@@ -294,14 +294,13 @@
     </p-header>
 
     <p-editor [(ngModel)]="pd_currentVersion.contenido"
-              [readonly]="!pd_currentVersionEditable" [style]="{'height':'320px'}"></p-editor>
+              [style]="{'height':'320px'}"></p-editor>
 
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
             <button type="button" pButton class="ui-button ui-button-danger" label="Cerrar"
                     (click)="pd_editarPlantillaVisible = false;"></button>
             <button pButton type="button" label="Versionar"
-                    [disabled]="!pd_currentVersionEditable" style="width: auto; margin-bottom: 10px;margin-left: 12px"
                     (click)="pd_confirmarVersionadoVisible= true"></button>
         </div>
     </p-footer>
@@ -344,6 +343,34 @@
             <button pButton type="button" label="Guardar"
                     [disabled]="!pd_confirmarVersionado" style="width: auto; margin-bottom: 10px;margin-left: 12px"
                     (click)="confirmarVersionDocumento()"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+
+<p-dialog [visible]="documentPreview" modal="modal" [responsive]="true" positionTop="20"
+          (onHide)="hidePdf()" [width]="1024">
+    <p-header>
+        Visor de PDF
+    </p-header>
+
+    <div class="ui-g ui-fluid">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+            <div style="overflow-y: scroll;max-height:500px">
+                <pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"
+                            (after-load-complete)="afterLoadComplete($event)"
+                ></pdf-viewer>
+            </div>
+        </div>
+    </div>
+
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+                    (click)="hidePdf()"></button>
+            <!--<button pButton type="button" label="Descargar" style="width: auto; margin-bottom: 10px;margin-left: 12px"-->
+                    <!--[disabled]="!documentLoaded"-->
+                    <!--(click)="downloadPdf()"></button>-->
         </div>
     </p-footer>
 </p-dialog>

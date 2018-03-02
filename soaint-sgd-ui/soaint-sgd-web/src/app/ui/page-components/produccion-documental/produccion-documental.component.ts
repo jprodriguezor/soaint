@@ -22,6 +22,7 @@ import {AgentDTO} from '../../../domain/agentDTO';
 import {MessagingService} from '../../../shared/providers/MessagingService';
 import {DocumentDownloaded} from './events/DocumentDownloaded';
 import {environment} from '../../../../environments/environment';
+import {DocumentUploaded} from './events/DocumentUploaded';
 
 @Component({
   selector: 'produccion-documental',
@@ -68,6 +69,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.documentSubscription = this.messagingService.of(DocumentDownloaded).subscribe(message => {
           this.tabIndex = 3;
           this.refreshView();
+      });
+      this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
+          this.refreshView();
+          this.guardarEstadoTarea();
       });
     this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
       this.tipoComunicacionSelected = tipoComunicacion;
@@ -116,7 +121,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentUrl = `${environment.pd_gestion_documental.descargarDocumentoPorId}?identificadorDoc=${res.ideEcm}`;
+                        this.documentUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {

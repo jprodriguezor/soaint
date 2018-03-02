@@ -3,10 +3,14 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -19,6 +23,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Stream;
 
 @ApiDelegator
 @Log4j2
@@ -30,33 +35,67 @@ public class ECMClient {
         super();
     }
 
-    public Response uploadDocument(String sede, String dependencia, String tipoComunicacion, String fileName, InputPart part, String parentId) {
+    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        MultipartFormDataOutput multipart = new MultipartFormDataOutput();
-        InputStream inputStream = null;
-        try {
-            inputStream = part.getBody(InputStream.class, null);
-        } catch (IOException e) {
-            log.error("Se ha generado un error del tipo IO:", e);
-        }
-        multipart.addFormData("documento", inputStream, MediaType.MULTIPART_FORM_DATA_TYPE);
-        GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(multipart) {};
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+                .request()
+                .post(Entity.json(documentoDTO));
 
-        log.info("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia);
-
-        return wt.path("/subirDocumentoRelacionECM/" + fileName + "/" + sede + "/" + dependencia  + "/" + tipoComunicacion +
-                (parentId == null || "".equals(parentId) ? "" : "/" + parentId ))
-                .request().post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
+        return response.readEntity(MensajeRespuesta.class);
     }
+
+    public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/obtenerVersionesDocumentos/" + documentId).request()
+                .post(Entity.json(""));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
+    public boolean eliminarVersionDocumento(String idDocumento) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/eliminarDocumentoECM/" + idDocumento).request()
+                .delete();
+
+        return response.readEntity(Boolean.class);
+    }
+
+
+    public MensajeRespuesta uploadDocument(DocumentoDTO documentoDTO, String tipoComunicacion){
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        Response response = wt.path("/subirDocumentoRelacionECM/" + tipoComunicacion)
+                .request()
+                .post(Entity.json(documentoDTO));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
+
 
     public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
             files.forEach((key, part) -> {
-                Response _response = this.uploadDocument(sede, dependencia, tipoComunicacion, key, part, parentId);
-                MensajeRespuesta asociadoResponse = _response.readEntity(MensajeRespuesta.class);
+
+                DocumentoDTO documentoAsociadoECMDTO = new DocumentoDTO();
+                try {
+                    documentoAsociadoECMDTO.setDependencia(dependencia);
+                    documentoAsociadoECMDTO.setSede(sede);
+                    InputStream result = part.getBody(InputStream.class, null);
+                    documentoAsociadoECMDTO.setDocumento( IOUtils.toByteArray(result));
+                    documentoAsociadoECMDTO.setTipoDocumento("application/pdf");
+                    documentoAsociadoECMDTO.setNombreDocumento(key);
+                    documentoAsociadoECMDTO.setIdDocumentoPadre(parentId);
+
+                }catch (Exception e){
+                    log.info("Error generando el documento ",e);
+                }
+
+                MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
                 mensajeRespuestas.add(asociadoResponse);
+
             });
         }catch (Exception e){
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
@@ -82,6 +121,14 @@ public class ECMClient {
     public Response findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().delete();
+    }
+
+    public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/devolverSerieOSubserieECM")
+                .request()
+                .post(Entity.json(contenidoDependenciaTrdDTO));
     }
 
 }
