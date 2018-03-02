@@ -193,20 +193,14 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   reassignComunications() {
-
-    console.log(this.asignationType);
-
-    console.log(this._asignacionSandbox.reassignDispatch(tassign({
+    this._asignacionSandbox.reassignDispatch(tassign({
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()
       },
       idFunc: this.funcionarioLog.id
-      //logueado: this.funcionarioLog
-
-    }, this.authPayload)));
+    }, this.authPayload));
 
     this.selectedComunications.forEach((value, index) => {
-
       this._store.dispatch(new PushNotificationAction({
         severity: 'success',
         summary: SUCCESS_REASIGNACION + value.correspondencia.nroRadicado

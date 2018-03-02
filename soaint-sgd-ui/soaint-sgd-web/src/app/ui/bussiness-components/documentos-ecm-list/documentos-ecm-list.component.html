@@ -11,17 +11,50 @@
                        inmutable="false"
                        emptyMessage="No tiene documentos asociados">
             <!--<p-header>Redirecciones / Devoluciones Fallidas</p-header>-->
-            <p-column field="nroDocuIdentidad" header="Número Radicado" [sortable]="true"></p-column>
-            <p-column field="nombre" header="Asunto" [sortable]="true"></p-column>
-            <p-column field="numRedirecciones" header="Número de Redirecciones" [sortable]="true"></p-column>
-            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable">
-              <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-                <button type="button" label="Continuar" pButton (click)="ejecutarRedireccionOrigen(i)"
+            <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
+            <p-column field="tamano" header="Tamaño" [sortable]="true">
+              <ng-template let-col let-row="rowData" pTemplate="body">
+                {{(row.tamano/1024)|number:'1.0-0'}}KB
+              </ng-template>
+            </p-column>
+            <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
+            <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true">
+              <ng-template let-col let-row="rowData" pTemplate="body">
+                {{row.fechaCreacion|date:'dd/mm/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column  header="Ver Documento">
+              <ng-template pTemplate="item" let-row="rowData"  >
+                <button type="button" pButton label="Ver Documento" (click)="showDocument(row.idDocumento)"></button>
+              </ng-template>
+            </p-column>
+            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="versionar" >
+              <ng-template let-row="rowData"  pTemplate="item" [ngIf]="row.tipoPadreAdjunto==='Principal'">
+                <button type="button" label="Versionar" pButton (click)="ejecutarRedireccionOrigen(i)"
                         class="ui-button ui-button-icon ui-button-danger"
                 ></button>
               </ng-template>
             </p-column>
           </p-dataTable>
+
+        </div>
+        <div class="ui-g-12 padding-top" *ngIf="docSrc!==''">
+          <p-panel>
+            <p-header>
+              <div class="ui-g ui-fluid">
+                <div class="ui-g-6">
+                  Documento
+                </div>
+                <div class="ui-g-6 text-right">
+                  <button type="button" label="Cerrar" pButton (click)="hideDocument()" style="width: auto" class="ui-button-danger"></button>
+                </div>
+              </div>
+            </p-header>
+            <p-blockUI [(blocked)]="isLoading" ></p-blockUI>
+            <div class="pdf-container" >
+              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5" (after-load-complete)="docLoaded()"></pdf-viewer>
+            </div>
+          </p-panel>
         </div>
         </div>
       </p-panel>

@@ -9,6 +9,8 @@ export interface DestinatarioDTO {
     interno: boolean,
     tipoDestinatario: ConstanteDTO,
     tipoPersona?: ConstanteDTO,
+    razonSocial?: string,
+    nroDocumentoIdentidad?: string,
     nombre?: string,
     tipoDocumento?: ConstanteDTO,
     nit?: string,
@@ -24,4 +26,7 @@ export interface DestinatarioDTO {
     pais?: PaisDTO,
     departamento?: DepartamentoDTO,
     municipio?: MunicipioDTO,
+    datosContactoList?: ContactoDTO[],
+    isBacken?: boolean
 }
+

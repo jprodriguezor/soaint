@@ -310,7 +310,7 @@ public class ContentManager {
      */
     public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
         MensajeRespuesta response = new MensajeRespuesta();
-        logger.info("### Eliminando documento del content..");
+        logger.info("### Obteniendo las series y subseries del content..");
 
         try {
             Conexion conexion;

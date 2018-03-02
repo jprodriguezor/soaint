@@ -1,5 +1,4 @@
 <form [formGroup]="form">
-
     <p-panel header="Gestionar producción" [style]="{border: 'none'}">
 
         <div class="ui-g ui-fluid">
@@ -116,7 +115,7 @@
                          [rows]="10"
                          [responsive]="true"
                          [value]="listaProyectores"
-                         emptyMessage="No se encontraron resultados"
+                         emptyMessage="No se han agregado proyectores"
             >
               <p-column field="sede.nombre" header="Sede Administrativa" [sortable]="true"></p-column>
               <p-column field="dependencia.nombre" header="Dependencia" [sortable]="true"></p-column>
@@ -138,5 +137,57 @@
         </div>
 
     </p-panel>
-
 </form>
+
+    <br/>
+
+    <p-panel header="Observaciones" [style]="{border: 'none'}" *ngIf="status > 1 || listaObservaciones.length > 0">
+
+        <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <p>&nbsp;</p>
+              <textarea pInputTextarea [(ngModel)]="observacionText" style="resize:vertical"></textarea>
+            </div>
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+              <button pButton type="button" label="Agregar" style="width:auto;margin-bottom:10px;float:right"
+                      [disabled]="!observacionText || observacionText.length < 4"
+                      (click)="agregarObservacion()"
+              ></button>
+            </div>
+        </div>
+        <br/>
+        <div class="ui-g ui-fluid">
+
+            <div class="ui-sm-12 ui-g-12 ui-lg-12">
+
+                <p-dataTable selectionMode="single"
+                             [paginator]="true"
+                             [rows]="10"
+                             [responsive]="true"
+                             [value]="listaObservaciones"
+                             emptyMessage="No se han agregado observaciones"
+                >
+                  <p-column field="rol.nombre" header="Rol" [sortable]="true"></p-column>
+                  <p-column field="funcionario.nombre" header="Fencionario" [sortable]="true"></p-column>
+                  <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
+                  <p-column header="Fecha y hora" [sortable]="true" >
+                      <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+                          <span>{{rdata.fecha | dateFormat}}</span>
+                      </ng-template>
+                  </p-column>
+                  <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">
+                    <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+                      <button type="button" icon="ui-icon-close" pButton
+                              class="ui-button ui-button-icon ui-button-danger"
+                              [disabled]="rindex < cantObservaciones"
+                              (click)="removeFromList(rindex, 'listaObservaciones')"
+                      ></button>
+                    </ng-template>
+                  </p-column>
+                </p-dataTable>
+
+            </div>
+
+        </div>
+
+    </p-panel>
