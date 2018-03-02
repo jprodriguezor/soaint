@@ -5,7 +5,7 @@ import 'rxjs/add/operator/single';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
-import {LoadingService} from "../../../infrastructure/utils/loading.service";
+import {LoadingService} from '../../../infrastructure/utils/loading.service';
 
 
 @Component({
@@ -21,8 +21,8 @@ export class DocumentosECMListComponent implements OnChanges {
   @Input()
   idDocumentECM: string;
 
-  docSrc: string = "";
-  isLoading: boolean = false;
+  docSrc = '';
+  isLoading = false;
 
   documentsList: any;
   uploadUrl: String;
