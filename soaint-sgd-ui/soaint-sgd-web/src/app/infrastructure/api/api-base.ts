@@ -22,10 +22,6 @@ export class ApiBase {
     return this._http.put(endpoint, payload);
   }
 
-  public delete(endpoint: string, payload = {}): Observable<any> {
-      return this._http.delete(endpoint, payload);
-  }
-
   public sendFile(endpoint: string, formData: FormData, pathParams: Array<string>): Observable<any> {
 
     let fullEndpoint = `${endpoint}`;

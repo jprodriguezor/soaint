@@ -177,7 +177,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
 
     if ('pdf' === this.pd_currentVersion.tipo) {
-        this.documentPreviewUrl = this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version});
+     //   this.documentPreviewUrl = this._produccionDocumentalApi.obtenerVersionDocumento({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version});
         this.documentPreview = true;
     } else {
         this.loadHtmlVersion();
@@ -226,7 +226,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
       formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
       let docEcmResp: DocumentoEcmDTO = null;
-      this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
+      this._produccionDocumentalApi.subirVersionDocumento(formData,{nombre:'',sede:'',dependencia:'',tipo:'',id:''}).subscribe(
       resp => {
         if ('0000' === resp.codMensaje) {
           docEcmResp = resp.documentoDTOList[0];
@@ -267,7 +267,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('sede', this.taskData.variables.nombreSede);
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
       let docEcmResp: DocumentoEcmDTO = null;
-      this._produccionDocumentalApi.subirAnexo(formData).subscribe(
+      this._produccionDocumentalApi.subirAnexo(formData,{nombre:'',sede:'',dependencia:''}).subscribe(
         resp => {
           if ('0000' === resp.codMensaje) {
             docEcmResp = resp.documentoDTOList[0];
@@ -292,7 +292,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   mostrarAnexo(index: number) {
     const anexo = this.listaAnexos[index];
-    this.documentPreviewUrl = this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id});
+   // this.documentPreviewUrl = this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id});
     this.documentPreview = true;
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
@@ -302,13 +302,13 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     if (anexo.soporte === 'fisico') {
       this.removeFromList(i, 'listaAnexos');
     } else {
-      this._produccionDocumentalApi.eliminarAnexo({id: anexo.id}).subscribe(
-        res => {
-          this.removeFromList(i, 'listaAnexos');
-          this.refreshView();
-        },
-        error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
-      );
+      // this._produccionDocumentalApi.eliminarAnexo({id: anexo.id}).subscribe(
+      //   res => {
+      //     this.removeFromList(i, 'listaAnexos');
+      //     this.refreshView();
+      //   },
+      //   error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
+      // );
     }
   }
 

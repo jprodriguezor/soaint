@@ -83,7 +83,10 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
    this.globalDependencySubscriptor =  this.dependenciaSelected$.subscribe(result =>{
-        this.seriesObservable$ = this.serieSubSerieService.getSeriePorDependencia(result.codigo);
+        this.seriesObservable$ = this
+          .serieSubSerieService
+          .getSeriePorDependencia(result.codigo)
+          .map(series =>  series.map(serie => { return {label:serie.nombreSerie,value:serie.codigoSerie}})) ;
     });
 
   }

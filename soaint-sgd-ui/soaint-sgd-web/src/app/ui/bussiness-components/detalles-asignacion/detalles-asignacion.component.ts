@@ -72,6 +72,7 @@ export class DetallesAsignacionComponent implements OnInit {
 
   loadComunication() {
     this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.nroRadicado).subscribe((result) => {
+      console.log(result);
       this.comunicacion = result;
       this.loadDocumento();
       this.loadConstantsByCodes();

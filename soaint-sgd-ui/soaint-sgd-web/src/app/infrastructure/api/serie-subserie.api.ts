@@ -13,7 +13,7 @@ export class SerieSubserieApiService {
   }
 
   ListarSerieSubserie(payload: any): Observable<ContenidoDependenciaTrdDTO> {
-    const resp = this._api.post(environment.listar_serie_subserie, payload).map(response => response);
+    const resp = this._api.post(environment.listar_serie_subserie, payload).map(response => response.contenidoDependenciaTrdDTOS);
     return resp
   }
 
