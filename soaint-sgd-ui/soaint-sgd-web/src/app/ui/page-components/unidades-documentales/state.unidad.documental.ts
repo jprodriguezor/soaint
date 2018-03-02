@@ -15,6 +15,7 @@ import { TareaDTO } from 'app/domain/tareaDTO';
 import { Sandbox } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import { getActiveTask } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { async } from '@angular/core/testing';
+import { SelectItem } from 'primeng/components/common/selectitem';
 
 
 
@@ -55,8 +56,8 @@ export class StateUnidadDocumental implements TaskForm {
 
     InitForm() {
        this.formBuscar = this.fb.group({
-        serie: ['', [Validators.required]],
-        subserie: [''],
+        serie: [null, [Validators.required]],
+        subserie: [null],
         identificador: [''],
         nombre: [''],
         descriptor1: [''],

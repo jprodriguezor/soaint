@@ -1,7 +1,7 @@
 // import {NgModule} from '@angular/core';
 //
 import {EllipsisPipe} from './ellipsis';
-import {DropdownItemPipe, DropdownItemPipeFullName} from './dropdown-item';
+import {DropdownItemPipe, DropdownItemPipeFullName, DropdownItemPipeSerie, DropdownItemPipeSubserie} from './dropdown-item';
 import {DropdownSingleItemPipe} from './dropdown-single-item';
 import {ConstantCodePipe} from './constant-code-pipe.pipe';
 import { CountryPhonePipe } from './countryPhone-input.pipe';
@@ -16,7 +16,9 @@ export const PIPES = [
     ConstantCodePipe,
     CountryPhonePipe,
     MobilePhonePipe,
-    DateFormatPipe
+    DateFormatPipe,
+    DropdownItemPipeSerie,
+    DropdownItemPipeSubserie,
 ];
 
 export const PIPES_AS_PROVIDERS = [
