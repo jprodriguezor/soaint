@@ -145,16 +145,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   onChangeResponderRemitente(value) {
-
     if (value) {
-
       if (this.taskData.variables.numeroRadicado) {
         this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
           nroRadicado: this.taskData.variables.numeroRadicado
         }).subscribe(agente => {
           console.log('Objeto que viene del backen ', agente);
           if (agente) {
-
             this.defaultDestinatarioTipoComunicacion = agente.codTipoRemite;
             const tempDestinatario = <DestinatarioDTO> {};
             tempDestinatario.interno = false;
@@ -223,7 +220,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
           municipio: mncpio,
           numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
           celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-          correoEle: isNullOrUndefined(contact.correoEle) ? '' : contact.correoEle
+          correoEle: isNullOrUndefined(contact.correoEle) ? '' : contact.correoEle,
+          direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion
         };
       });
   }
