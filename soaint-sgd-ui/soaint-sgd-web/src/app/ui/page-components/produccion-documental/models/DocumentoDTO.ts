@@ -6,7 +6,7 @@ export interface AnexoDTO {
     soporte: string,
     tipo: ConstanteDTO,
     descripcion?: string,
-    file?: any,
+    file?: File,
 }
 
 export interface VersionDocumentoDTO {

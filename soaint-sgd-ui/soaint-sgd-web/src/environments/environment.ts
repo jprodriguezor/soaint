@@ -85,6 +85,7 @@ export const environment = {
   obtenerDependenciasPorCodigo_endpoint: `${host}/dependencia-grupo-gateway-api/dependencias`,
   obtenerMunicipiosPorCodigo_endpoint: `${host}/municipio-gateway-api/municipios`,
   obtenerDocumento: `${ecmHost}/descargarDocumentoECM/?identificadorDoc=`,
+  obtenerDocumentosAdjuntos: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
   obtenerVariablesTarea: `${host}/proceso-gateway-api/tareas/obtener-variables`,
   listarDistrubucion_endpoint: `${host}/correspondencia-gateway-api/listar-distribucion`,
   listarPlanillas_endpoint: `${host}/correspondencia-gateway-api/listar-planillas`,
@@ -97,20 +98,19 @@ export const environment = {
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
-    // Produccion Documental
-    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-    pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
-    pd_gestion_documental : {
-        subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
-        obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
-        eliminarAnexo: ``,
-        subirDocumentoVersionado : `${ecmHost}/subirVersionarDocumentoGeneradoECM`,
-        obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-        obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
-        eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
-        descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
-    }
-    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
+  // Produccion Documental
+  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
+  pd_gestion_documental : {
+      subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
+      eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
+      obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
+      subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
+      eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
+      // ECM Endpoints
+      obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
+  }
 };
 
 export const process_info = {
@@ -144,7 +144,7 @@ export const process_info = {
   },
   'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
-    show: false
+    show: true
   }
 
 };

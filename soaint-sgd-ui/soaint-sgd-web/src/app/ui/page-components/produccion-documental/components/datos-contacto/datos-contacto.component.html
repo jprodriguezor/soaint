@@ -28,7 +28,8 @@
                       binary="true"
                       [hidden]="!hasNumberRadicado"
                       [dynamicDisable]="issetListDestinatarioBacken"
-                      (onChange) = "onChangeResponderRemitente($event)">
+                      (onChange) = "onChangeResponderRemitente($event)"
+                      checked = "responderRemitente">
           </p-checkbox>
         </div>
       </div>
@@ -199,7 +200,7 @@
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
-              label="Finalizar" (click)="hideAddDestinatarioExternoPopup()"></button>
+              label="Cerrar" (click)="hideAddDestinatarioExternoPopup()"></button>
     </div>
   </p-footer>
 
@@ -216,7 +217,7 @@
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button pButton type="button" class="ui-button-primary"
-              label="Finalizar" (click)="hideAddDestinatarioInternoPopup()"></button>
+              label="Cerrar" (click)="hideAddDestinatarioInternoPopup()"></button>
       <!--<button pButton type="button" class="ui-button-primary"-->
               <!--label="Agregar" (click)="addDestinatarioInterno()"></button>-->
     </div>

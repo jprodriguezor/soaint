@@ -93,7 +93,6 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
 
-
     /**
      * Permite crear la estructura en record a partir de la informacion enviada de instrumento
      * @param structure Objeto  que contiene la estructura
@@ -367,7 +366,7 @@ public class RecordServices implements IRecordServices {
             events.put(entrada.get("events"));
             jsonPostDataretencion.put(evento, events);
 
-            WebTarget wt = ClientBuilder.newClient().target(apiServiceAlfresco);
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.API_SERVICE_ALFRESCO));
             Response response = wt.path("/" + idPadre + "/dispositionschedule/dispositionactiondefinitions")
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)

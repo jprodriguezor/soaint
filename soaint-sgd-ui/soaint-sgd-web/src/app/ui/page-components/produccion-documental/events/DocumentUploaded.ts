@@ -1,3 +1,3 @@
 export class DocumentUploaded {
-    constructor() { }
+    constructor(public documentoDTO: any) { }
 }

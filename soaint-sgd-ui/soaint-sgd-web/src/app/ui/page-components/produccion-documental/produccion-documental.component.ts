@@ -101,7 +101,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
           },
           gestionarProduccion: {
               startIndex: this.gestionarProduccion.listaProyectores.length,
-              listaProyectores: this.gestionarProduccion.listaProyectores
+              listaProyectores: this.gestionarProduccion.listaProyectores,
+              cantObservaciones: this.gestionarProduccion.listaObservaciones.length,
+              listaObservaciones: this.gestionarProduccion.listaObservaciones
           }
       };
   }
@@ -119,7 +121,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentUrl = `${environment.pd_gestion_documental.descargarDocumentoPorId}?identificadorDoc=${res.ideEcm}`;
+                        this.documentUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {
@@ -139,7 +141,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                     this.taskCurrentStatus = status;
                     this.datosGenerales.updateStatus(status);
                     this.datosContacto.updateStatus(status);
-                   this.gestionarProduccion.updateStatus(status);
+                    this.gestionarProduccion.updateStatus(status);
                     console.log(status);
               } else {
                     this.gestionarProduccion.initProyeccionLista(activeTask.variables.listaProyector || '', 'proyector');
@@ -164,6 +166,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   updateEstadoTarea() {
       const currentStatus = this.getCurrentStatus();
       currentStatus.gestionarProduccion.startIndex = currentStatus.gestionarProduccion.listaProyectores.length;
+      currentStatus.gestionarProduccion.cantObservaciones = currentStatus.gestionarProduccion.listaObservaciones.length;
       this.guardarEstadoTarea(currentStatus);
   }
 
@@ -181,6 +184,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
       this.taskCurrentStatus.gestionarProduccion.listaProyectores = this.gestionarProduccion.listaProyectores;
       this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
+      this.taskCurrentStatus.gestionarProduccion.listaObservaciones = this.gestionarProduccion.listaObservaciones;
+      this.taskCurrentStatus.gestionarProduccion.cantObservaciones = this.gestionarProduccion.cantObservaciones;
       return this.taskCurrentStatus;
   }
 

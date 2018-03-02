@@ -3,7 +3,10 @@ package co.com.soaint.correspondencia.business.control;
 import co.com.soaint.correspondencia.domain.entity.CorPlanAgen;
 import co.com.soaint.correspondencia.domain.entity.CorPlanillas;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoPlanillaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.FormatoDocEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -90,7 +93,7 @@ public class PlanillasControl {
         try {
             CorPlanillas corPlanillas = corPlanillasTransform(planilla);
             corPlanillas.setFecGeneracion(new Date());
-            corPlanillas.setNroPlanilla(generarNumeroPlanilla(corPlanillas.getCodSedeOrigen()));
+            corPlanillas.setNroPlanilla(generarNumeroPlanilla(corPlanillas.getCodSedeOrigen(), corPlanillas.getFecGeneracion()));
             corPlanillas.setCorPlanAgenList(new ArrayList<>());
             for (PlanAgenDTO planAgenDTO : planilla.getPAgentes().getPAgente()) {
                 CorPlanAgen corPlanAgen = planAgenControl.corPlanAgenTransform(planAgenDTO);
@@ -311,21 +314,28 @@ public class PlanillasControl {
                 .build();
     }
 
-    private String generarNumeroPlanilla(String codSede) {
+    private String generarNumeroPlanilla(String codSede, Date fechaGeneracion) {
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fechaGeneracion);
+        String anno = String.valueOf(calendario.get(Calendar.YEAR));
+
         String nroPlanilla = em.createNamedQuery("CorPlanillas.findMaxNroPlanillaByCodSede", String.class)
                 .setParameter("COD_SEDE", codSede)
                 .getSingleResult();
+
         int consecutivo = 0;
-        if (nroPlanilla != null)
-            consecutivo = Integer.parseInt(nroPlanilla.substring(nroPlanilla.length() - codSede.length()));
+        if (nroPlanilla != null) {
+            String annoP = nroPlanilla.substring(codSede.length(), codSede.length() + anno.length());
+            if (anno.equals(annoP))
+                consecutivo = Integer.parseInt(nroPlanilla.substring(codSede.length() + annoP.length(), nroPlanilla.length()));
+        }
         consecutivo++;
-        return conformarNroPlanilla(codSede, consecutivo);
+        return conformarNroPlanilla(codSede, anno, consecutivo);
     }
 
-    private String conformarNroPlanilla(String codSede, int consecutivo) {
-        String nro = codSede;
-        int relleno = 16 - (codSede.length() + String.valueOf(consecutivo).length());
-        String formato = "%0" + relleno + "d";
+    private String conformarNroPlanilla(String codSede, String anno, int consecutivo) {
+        String nro = codSede + anno;
+        String formato = "%0" + 6 + "d";
         return nro.concat(String.format(formato, consecutivo));
     }
 }
