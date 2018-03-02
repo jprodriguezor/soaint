@@ -39,6 +39,7 @@ import java.util.*;
 @BusinessControl
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
+    public static final String SEPARADOR = "---";
     @Autowired
     Configuracion configuracion;
 
@@ -1136,7 +1137,7 @@ public class ContentControlAlfresco implements ContentControl {
             //Se concatenan los numeros de radicado referidos para guardarlos como string porque Alfresco no permite salvar listas
             String nroRadicadoReferidoConcat = "";
             for (String nroRadicadoReferido : documentoDTO.getNroRadicadoReferido()) {
-                nroRadicadoReferidoConcat = nroRadicadoReferidoConcat + nroRadicadoReferido + "---";
+                nroRadicadoReferidoConcat = nroRadicadoReferidoConcat + nroRadicadoReferido + SEPARADOR;
             }
             properties.put("cmcor:xNumeroReferido", nroRadicadoReferidoConcat);
         }
