@@ -313,42 +313,6 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
-//    /**
-//     * Metodo que obtiene la carpeta dado sus metadatos
-//     *
-//     * @param unidadDocumental DTO que contiene los metadatos de las unidades documentales
-//     * @param session          objeto de conexion al Alfresco
-//     * @return Retorna la Carpeta que se busca
-//     */
-//    private List<Carpeta> obtenerCarpetaPorMetadatos(UnidadDocumentalDTO unidadDocumental, Session session) {
-//        Carpeta folder = new Carpeta();
-//        List<Carpeta> unidadesDocumentales = new ArrayList<>();
-//        try {
-//            String queryString = "SELECT cmis:objectId FROM cmis:folder WHERE (cmis:objectTypeId = 'F:cmcor:CM_Unidad_Base' or cmis:objectTypeId = 'F:cmcor:CM_Serie' or cmis:objectTypeId = 'F:cmcor:CM_Subserie' or cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa')";
-//            if (unidadDocumental.getCodigoDependencia() != null) {
-//                queryString += " and cmcor:CodigoDependencia= '" + unidadDocumental.getCodigoDependencia() + "'";
-//            }
-//            if (unidadDocumental.getCodigoSerie() != null) {
-//                queryString += " and cmcor:CodigoSerie = '" + unidadDocumental.getCodigoSerie() + "'";
-//            }
-//            if (unidadDocumental.getCodigoSerie() != null) {
-//                queryString += " and cmcor:CodigoSubserie = '" + unidadDocumental.getCodigoSerie() + "'";
-//            }
-//
-//            ItemIterable<QueryResult> results = session.query(queryString, false);
-//            for (QueryResult qResult : results) {
-//                String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
-//                folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
-//                unidadesDocumentales.add(folder);
-//            }
-//        } catch (Exception e) {
-//            logger.error("*** Error al obtener las unidades documentales *** ", e);
-//        }
-//
-//        return unidadesDocumentales;
-//
-//    }
-
     /**
      * Servicio que devuelve el listado de las Series y de las Dependencias
      *
@@ -1167,6 +1131,14 @@ public class ContentControlAlfresco implements ContentControl {
         }
         if (documentoDTO.getNombreRemitente() != null) {
             properties.put("cmcor:NombreRemitente", documentoDTO.getNombreRemitente());
+        }
+        if (documentoDTO.getNroRadicadoReferido() != null) {
+            //Se concatenan los numeros de radicado referidos para guardarlos como string porque Alfresco no permite salvar listas
+            String nroRadicadoReferidoConcat = "";
+            for (String nroRadicadoReferido : documentoDTO.getNroRadicadoReferido()) {
+                nroRadicadoReferidoConcat = nroRadicadoReferidoConcat + nroRadicadoReferido + "---";
+            }
+            properties.put("cmcor:xNumeroReferido", nroRadicadoReferidoConcat);
         }
         logger.info(AVISO_CREA_DOC);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
