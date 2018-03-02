@@ -13,6 +13,7 @@ public class Configuracion {
     private String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
     private String aformatoNombreSubserie;
+
     @Value("${claseSubserie}")
     private String aclaseSubserie;
     @Value("${claseSerie}")
@@ -21,6 +22,9 @@ public class Configuracion {
     private String aclaseDependencia;
     @Value("${claseBase}")
     private String aclaseBase;
+    @Value("${claseUnidadDocumental}")
+    private String aclaseUnidadDocumental;
+
     @Value("${metadatoCodBase}")
     private String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
@@ -31,6 +35,7 @@ public class Configuracion {
     private String ametadatoCodSerie;
     @Value("${metadatoCodUnidadAdminParent}")
     private String ametadatoCodUnidadAdminParent;
+
     @Value("${ecm}")
     private String aecm;
     @Value("${REPOSITORY_ID}")
@@ -76,6 +81,9 @@ public class Configuracion {
                 return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";
             case "claseBase":
                 return aclaseBase != null ? aclaseBase : "CM_Unidad_Base";
+
+            case "claseUnidadDocumental":
+                return aclaseUnidadDocumental != null ? aclaseUnidadDocumental : "CM_Unidad_Documental";
 
             case "metadatoCodDependencia":
                 return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";

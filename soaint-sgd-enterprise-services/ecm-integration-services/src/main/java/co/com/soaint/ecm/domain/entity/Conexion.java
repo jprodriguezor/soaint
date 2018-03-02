@@ -7,6 +7,6 @@ import org.apache.chemistry.opencmis.client.api.Session;
  * Created by Dasiel
  */
 @Data
-public class  Conexion {
+public class Conexion {
     Session session= null;
 }

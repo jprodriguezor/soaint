@@ -36,6 +36,7 @@ public class RecordServices implements IRecordServices {
     String idSubCategoria = "";
     @Autowired
     ContentControlAlfresco conexionCMIS;
+
     private String idPadre = "";
     @Value("${protocolo}")
     private String protocolo = "";
@@ -578,9 +579,7 @@ public class RecordServices implements IRecordServices {
                 for (int i = 0; i < listaNodosJson.length(); i++) {
                     JSONObject valorJson = (JSONObject) listaNodosJson.get(i);
                     codigoId = obtenerIdNodo(valorJson, nodo, nombreNodo);
-
                 }
-
             }
         }
         return codigoId;

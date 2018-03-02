@@ -52,6 +52,8 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
+    private static final String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
+
     private static final String CMCOR = "cmcor:";
     private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
@@ -148,7 +150,9 @@ public class ContentControlAlfresco implements ContentControl {
                     break;
                 case CLASE_SUBSERIE:
                     llenarPropiedadesCarpeta("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg, folderFather);
-
+                    break;
+                case CLASE_UNIDAD_DOCUMENTAL:
+                    //llenarPropiedadesCarpeta("cmcor:CodigoSubserie", CLASE_UNIDAD_DOCUMENTAL, props, codOrg, folderFather);
                     break;
                 default:
                     break;
@@ -312,6 +316,7 @@ public class ContentControlAlfresco implements ContentControl {
         return folder;
 
     }
+
     /**
      * Servicio que devuelve el listado de las Series y de las Dependencias
      *
@@ -346,13 +351,13 @@ public class ContentControlAlfresco implements ContentControl {
                 List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
                 String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
                 folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
-                if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie")!=null) {
+                if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie") != null) {
                     serie.setCodigoSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSerie"));
                     serie.setNombreSerie(folder.getFolder().getPropertyValue("cmis:name"));
                     serieLista.add(serie);
 
                 }
-                if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie")!=null) {
+                if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie") != null) {
                     subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSubserie"));
                     subSerie.setNombreSubSerie(folder.getFolder().getPropertyValue("cmis:name"));
                     subSerieLista.add(subSerie);
@@ -687,7 +692,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
-                documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente")!=null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString():"");
+                documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente") != null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : "");
 
                 documentosLista.add(documentoDTO);
 
@@ -891,13 +896,14 @@ public class ContentControlAlfresco implements ContentControl {
      * @param properties         propiedades de carpeta
      * @param carpetaCrearBuscar Carpeta
      */
-    private void buscarCrearCarpeta(Session session, DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
+    private void buscarCrearCarpeta(Session session, DocumentoDTO documentoDTO, MensajeRespuesta response,
+                                    byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
         logger.info("MetaDatos: " + documentoDTO.toString());
         String idDocumento;
         List<DocumentoDTO> documentoDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-            new Carpeta();
+            //new Carpeta();
             Carpeta folderAlfresco;
             logger.info("### Se elige la carpeta donde se va a guardar el documento principal..");
             logger.info("###------------ Se elige la sede donde se va a guardar el documento principal..");
@@ -919,10 +925,11 @@ public class ContentControlAlfresco implements ContentControl {
                     int year = cal.get(Calendar.YEAR);
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
 
-                    Carpeta carpetaTarget;
+                    final Carpeta carpetaTarget;
 
                     Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
+
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
                     idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
@@ -1190,7 +1197,7 @@ public class ContentControlAlfresco implements ContentControl {
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put(tipoCarpeta, codOrg);
-        props.put(CMCOR_CODIGODEPENDENCIA,codOrg);
+        props.put(CMCOR_CODIGODEPENDENCIA, codOrg);
         if ("cmcor:CodigoSubserie".equals(tipoCarpeta)) {
             if (folderFather != null) {
                 props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue("cmcor:CodigoSerie"));
