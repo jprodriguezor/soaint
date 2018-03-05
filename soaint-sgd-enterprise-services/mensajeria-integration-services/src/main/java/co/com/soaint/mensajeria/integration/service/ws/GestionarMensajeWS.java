@@ -5,11 +5,12 @@ package co.com.soaint.mensajeria.integration.service.ws;
  */
 
 import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
-import co.com.soaint.mensajeria.business.boundary.GestionarMensaje;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import co.com.soaint.mensajeria.business.boundary.IGestionarMensaje;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.jws.WebMethod;
@@ -20,7 +21,8 @@ import javax.jws.WebService;
 @Log4j2
 public class GestionarMensajeWS {
     @Autowired
-    GestionarMensaje boundary;
+    @Qualifier("rabbitMensajeControl")
+    IGestionarMensaje boundary;
 
     /**
      * Constructor

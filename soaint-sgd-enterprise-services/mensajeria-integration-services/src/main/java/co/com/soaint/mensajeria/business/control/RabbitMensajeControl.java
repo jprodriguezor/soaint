@@ -9,6 +9,7 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import co.com.soaint.mensajeria.business.boundary.IGestionarMensaje;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @BusinessControl
 @Log4j2
-public class MensajeControl {
+public class RabbitMensajeControl implements IGestionarMensaje {
 
     /**
      * @param mensajeGenericoQueueDTO
@@ -36,7 +37,7 @@ public class MensajeControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String producirMensaje(MensajeGenericoQueueDTO mensajeGenericoQueueDTO) throws SystemException {
         try {
-            return "";
+            return "OK";
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
