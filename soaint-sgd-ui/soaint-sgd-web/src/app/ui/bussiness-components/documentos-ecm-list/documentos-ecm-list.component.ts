@@ -6,6 +6,7 @@ import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
 import {LoadingService} from "../../../infrastructure/utils/loading.service";
+import {FileUpload} from "primeng/primeng";
 
 
 @Component({
@@ -27,6 +28,8 @@ export class DocumentosECMListComponent implements OnChanges {
   documentsList: any;
   uploadUrl: String;
   editable = true;
+
+  selectedFile:string = '';
 
   constructor(private _store: Store<State>, private _api: ApiBase,public loadingService:LoadingService) {
   }
@@ -77,6 +80,18 @@ export class DocumentosECMListComponent implements OnChanges {
   docLoaded(){
 
     this.loadingService.dismissLoading();
+  }
+
+  selectFile(uploader:FileUpload){
+
+    uploader.showUploadButton = true;
+    uploader.styleClass = "doc-selected";
+  }
+
+  clearFileList(uploader:FileUpload){
+
+    uploader.showUploadButton = false;
+    uploader.styleClass = "";
   }
 
 }

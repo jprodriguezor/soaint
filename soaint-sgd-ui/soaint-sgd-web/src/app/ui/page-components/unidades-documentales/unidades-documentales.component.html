@@ -1,3 +1,208 @@
-<p>
-  unidades-documentales works!
-</p>
+<div class="ui-fluid">
+  <app-task-container>
+    <div customActions>
+      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
+              (click)="State.Abrir()"></button>
+
+      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
+              (click)="State.Cerrar()"></button>
+
+      <button [disabled]="!State.HabilitarOpcion(3)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
+              (click)="State.Reactivar()"></button>
+
+     <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
+              (click)="State.Finalizar()"></button>
+    </div>
+
+    <div taskBody>
+      <p-panel header="Gestión a seguir" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid">   
+            <div class="ui-sm-12 ui-g-6 ui-lg-12">
+                <div class="ui-g form-group">
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="3" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
+               
+                </div>
+              </div>      
+           </div>
+      </p-panel>
+
+      <p-panel header="Buscar unidad documental" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid">         
+         
+        </div>
+        <form 
+         [formGroup]="State.formBuscar" 
+         novalidate 
+         (ngSubmit)="State.Buscar(State.formBuscar)"
+         >
+          <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="(State.ListadoSeries | async | dropdownItemSerie)"
+                              id="serie"
+                              formControlName="serie"
+                              placeholder="Seleccione"
+                              [autoWidth]="false"
+                              (onBlur)="State.OnBlurEvents('serie')"
+                  >
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                    *ngIf="State.formBuscar.get('serie').touched && State.formBuscar.get('serie').hasError('required')">
+                    Este campo es obligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                </div>
+                <div class="ui-g-12 md-dropdownfield">
+                  <p-dropdown [options]="(State.ListadoSubseries | dropdownItemSubserie)"
+                              id="subserie"
+                              formControlName="subserie"
+                              placeholder="Seleccione"
+                              [autoWidth]="false">
+                  </p-dropdown>
+                  <div class="ui-message ui-messages-error"
+                  *ngIf="State.EsRequerido()">
+                  Este campo es obligatorio
+                </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+              <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                      <label for="idunidaddocumental">Identificador principal unidad documental</label>
+                  </div>
+                  <div class="ui-g-12">
+                      <input type="text" pInputText   id="idunidaddocumental" formControlName="identificador" />
+                  </div>
+              </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                    <label for="nombre">Nombre unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                    <input type="text" pInputText   id="nombre" formControlName="nombre" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <label for="descriptor1">Descriptor 1</label>
+              </div>
+              <div class="ui-g-12">
+                  <input type="text" pInputText   id="descriptor1" formControlName="descriptor1" />
+              </div>
+          </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+            <div class="ui-g-12">
+                <label for="descriptor2">Descriptor 2</label>
+            </div>
+            <div class="ui-g-12">
+                <input type="text" pInputText   id="descriptor2" formControlName="descriptor2" />
+            </div>
+        </div>
+
+    </div>
+    <div class="ui-sm-12 ui-g-3 ui-lg-6" style="position: relative;">
+      <div class="ui-g btn-content">
+        <button pButton type="button" label="Buscar" [disabled]="State.formBuscar.invalid" 
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
+        (click)="State.GetListadoUnidadesDocumentales()"></button>
+
+        <button pButton type="button" label="Limpiar"
+        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
+        (click)="State.ResetForm()"></button>
+      </div>      
+    </div>
+           
+          </div>
+        </form>
+      </p-panel>
+
+      <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
+        <div class="ui-fluid" style="display: inline-table; width: 100%;">
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <label for="descriptor2">Fecha extrema final:</label>
+                    </div>
+                    <div class="ui-g-12">
+                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" [(ngModel)]="State.FechaExtremaInicial"
+                        id="FechaExtremaInicial" ></p-calendar>
+                      </div>
+                </div>                       
+            </div>
+            <div class="ui-sm-12 ui-g-3 ui-lg-3">               
+                <div class="ui-g form-group">
+                    <div class="ui-g-12">
+                        <button pButton type="button" label="Agregar"
+                        style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
+                        (click)="State.Agregar()"></button>                    
+                      </div>                    
+                </div>        
+            </div>
+         </div>
+        <div class="ui-fluid">
+          <p-dataTable selectionMode="single"
+                       [paginator]="true"
+                       [rows]="10"
+                       [responsive]="true"
+                       [value]="State.ListadoUnidadDocumental | async"
+                       emptyMessage="No se encontraron resultados ">
+            <p-column field="State.ListadoUnidadDocumental.seleccionado" header=""></p-column>
+            <p-column field="State.ListadoUnidadDocumental.nombreSerieSubserie" header="Nombre serie/subserie"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.identificadorUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.nombre" header="Nombre unidad documental"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.estado" header="Estado"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaExtremaFinal" header="Fecha extrema final"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.fechaCierreTramite" header="Fecha cierre trámite"></p-column>
+            <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
+            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+              <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
+                <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(rindex)"
+                        class="ui-button ui-button-icon ui-button-success"
+                ></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+      </p-panel>
+    </div>
+  </app-task-container>
+</div>
+
+<p-dialog 
+[visible]="State.AbrirDetalle | async" 
+modal="modal" 
+[responsive]="true" 
+[closable]="true"
+positionTop="20"
+[style]="{'position':'absolute'}"
+[width]="800"
+(onHide)="State.CerrarDetalle()">
+<p-header>
+
+</p-header>
+<app-detalle-unidad-conservacion [State]="State"></app-detalle-unidad-conservacion>
+</p-dialog>
+

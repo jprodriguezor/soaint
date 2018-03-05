@@ -3,12 +3,11 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
-
-const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
  // const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
  // const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
@@ -99,6 +98,7 @@ export const environment = {
     // Produccion Documental
     pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
     pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
+    pd_obtener_documentos_asociados: `${host}/obtenerdocumentosasociados`,
     pd_gestion_documental : {
         subirAnexo: `${ecmHost}/subirDocumentoRelacionECM`,
         obtenerAnexo: `${ecmHost}/obtenerDocumentosAdjuntosECM`,
@@ -108,7 +108,13 @@ export const environment = {
         obtenerListaVersionesDocumento : `${ecmHost}/obtenerVersionesDocumentos`,
         eliminarVersionDocumento : `${ecmHost}/eliminarDocumentoECM`,
         descargarDocumentoPorId : `${ecmHost}/descargarDocumentoECM`,
-    }
+      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
+    },
+  listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
+
+  //Archivar Documento
+
+  ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
 };
 

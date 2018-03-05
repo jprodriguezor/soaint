@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UnidadesDocumentalesComponent implements OnInit {
 
+  solicitudActual:Object = null;
+
   constructor() { }
 
   ngOnInit() {
