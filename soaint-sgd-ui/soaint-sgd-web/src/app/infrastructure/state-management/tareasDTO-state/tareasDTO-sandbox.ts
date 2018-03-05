@@ -179,7 +179,7 @@ export class Sandbox {
       case TASK_APROBAR_DOCUMENTO:
           this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/3`, task]));
           break;
-      default:
+          default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }
   }

@@ -5,7 +5,8 @@ import 'rxjs/add/operator/single';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
-import {LoadingService} from '../../../infrastructure/utils/loading.service';
+import {LoadingService} from "../../../infrastructure/utils/loading.service";
+import {FileUpload} from "primeng/primeng";
 
 
 @Component({
@@ -21,14 +22,16 @@ export class DocumentosECMListComponent implements OnChanges {
   @Input()
   idDocumentECM: string;
 
-  docSrc= '';
-  isLoading = false;
+  docSrc:string="";
+  isLoading:boolean = false;
 
   documentsList: any;
   uploadUrl: String;
   editable = true;
 
-  constructor(private _store: Store<State>, private _api: ApiBase, public loadingService: LoadingService) {
+  selectedFile:string = '';
+
+  constructor(private _store: Store<State>, private _api: ApiBase,public loadingService:LoadingService) {
   }
 
    ngOnChanges(): void {
@@ -39,14 +42,14 @@ export class DocumentosECMListComponent implements OnChanges {
   loadDocumentos() {
     console.log(this.idDocumentECM);
 
-    if (this.idDocumentECM !== undefined) {
+    if(this.idDocumentECM!== undefined){
       // const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
       // console.log('ID del ecm');
       // console.log(this.comunicacion.ppdDocumentoList);
 
 
 
-      const endpoint = `${environment.obtenerDocumentosAdjuntos}` + '/' + this.idDocumentECM;
+      const endpoint = `${environment.pd_gestion_documental.obtenerAnexo}` + '/' + this.idDocumentECM;
       console.log(endpoint);
 
       this._api.post(endpoint).subscribe(response => {
@@ -63,20 +66,32 @@ export class DocumentosECMListComponent implements OnChanges {
     this.versionar = data.versionar;
   }
 
-  showDocument(idDocumento: string) {
+  showDocument(idDocumento:string){
 
     this.loadingService.presentLoading();
 
     this.docSrc =  environment.obtenerDocumento + idDocumento;
   }
 
-  hideDocument() {
+  hideDocument(){
     this.docSrc = '';
   }
 
-  docLoaded() {
+  docLoaded(){
 
     this.loadingService.dismissLoading();
+  }
+
+  selectFile(uploader:FileUpload){
+
+    uploader.showUploadButton = true;
+    uploader.styleClass = "doc-selected";
+  }
+
+  clearFileList(uploader:FileUpload){
+
+    uploader.showUploadButton = false;
+    uploader.styleClass = "";
   }
 
 }

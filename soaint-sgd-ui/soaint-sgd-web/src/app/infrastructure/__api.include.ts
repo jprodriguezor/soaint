@@ -7,6 +7,7 @@ import {PdMessageService} from '../ui/page-components/produccion-documental/prov
 import {MessagingService} from '../shared/providers/MessagingService';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.api';
+import {SerieService} from "./api/serie.service";
 
 export const API_SERVICES = [
   ApiBase,
@@ -18,6 +19,7 @@ export const API_SERVICES = [
   PdMessageService,
   UnidadDocumentalApiService,
   SerieSubserieApiService,
+  SerieService
 ];
 
 export {
@@ -27,5 +29,6 @@ export {
   DroolsRedireccionarCorrespondenciaApi,
   ProduccionDocumentalApiService,
   MessagingService,
-  PdMessageService
+  PdMessageService,
+
 };
