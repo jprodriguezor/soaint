@@ -1,4 +1,4 @@
-<div class="ui-fluid produccion-documental-multiple">
+<div class="ui-fluid">
   <app-task-container>
     <div customActions>
       <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
@@ -65,7 +65,7 @@
                   <label for="serie"><span class="text-danger">*</span>Serie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="(State.ListadoSubseries | async | dropdownItemSubserie)"
+                  <p-dropdown [options]="(State.ListadoSubseries | dropdownItemSubserie)"
                               id="subserie"
                               formControlName="subserie"
                               placeholder="Seleccione"

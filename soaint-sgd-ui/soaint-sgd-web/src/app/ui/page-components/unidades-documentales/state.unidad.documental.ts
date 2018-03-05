@@ -23,12 +23,13 @@ export class StateUnidadDocumental implements TaskForm {
 
     ListadoUnidadDocumental: Observable<ListadoUnidadDocumentalModel[]>;
     ListadoSeries: Observable<SerieDTO[]>;
-    ListadoSubseries: Observable<SubserieDTO[]>;
+    ListadoSubseries: SubserieDTO[];
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
     OpcionSeleccionada: number;
     AbrirDetalle: boolean;
     task: TareaDTO;
     FechaExtremaInicial: Date;
+    EsSubserieRequerido: boolean;
 
     formBuscar: FormGroup;
 
@@ -95,16 +96,19 @@ export class StateUnidadDocumental implements TaskForm {
             idOrgOfc: codDependencia,
         })
         .map(map => map.listaSerie);
-        this.ListadoSubseries = Observable.empty<SubserieDTO[]>();
+        this.ListadoSubseries = [];
     }
 
     GetSubSeries(serie: string) {
         if (serie) {
-            this.ListadoSubseries = this.serieSubserieApiService.ListarSerieSubserie({
+            this.serieSubserieApiService.ListarSerieSubserie({
                 idOrgOfc: this.task.variables.codDependencia,
                 codSerie: serie,
             })
-            .map(map => map.listaSubSerie);
+            .map(map => map.listaSubSerie)
+            .subscribe(result => {
+                this.ListadoSubseries =  result;
+            })
         }
     }
 
@@ -115,17 +119,18 @@ export class StateUnidadDocumental implements TaskForm {
         return false;
     }
 
+    SubscribirSubserie() {
+         const length = (this.ListadoSubseries) ? this.ListadoSubseries.length : 0;
+         if ((length) && (!this.formBuscar.controls['subserie'].value)) {
+           this.formBuscar.controls['subserie'].setErrors({incorrect: true});
+           this.EsSubserieRequerido = true;
+         } else {
+           this.EsSubserieRequerido = false;
+         }
+    }
+
     EsRequerido() {
-        let length = 0;
-        this.ListadoSubseries
-            .subscribe(result => {
-                   length = result.length;
-        });
-        if (length) {
-            this.formBuscar.controls['subserie'].setErrors({incorrect: true});
-            return true;
-        }
-        return false;
+        return this.EsSubserieRequerido;
     }
 
     CerrarDetalle() {
