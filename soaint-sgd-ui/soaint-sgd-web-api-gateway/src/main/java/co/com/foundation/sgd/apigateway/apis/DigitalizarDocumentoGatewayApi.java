@@ -37,10 +37,10 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @POST
-    @Path("/{tipoComunicacion}/{fileName}/{principalFileName}/{sede}/{dependencia}")
+    @Path("/{tipoComunicacion}/{fileName}/{referidoList}/{principalFileName}/{sede}/{dependencia}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName,
+    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName, @PathParam("referidoList") String[] referidoList,
                                 @PathParam("principalFileName") String principalFileName, @PathParam("sede") String sede,
                                 @PathParam("dependencia") String dependencia, MultipartFormDataInput files) {
 
@@ -58,18 +58,20 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
             documentoECMDTO.setNombreDocumento(principalFileName);
+            documentoECMDTO.setNroRadicado(fileName);
+            documentoECMDTO.setNroRadicadoReferido(referidoList);
 
         }catch (Exception e){
 
         }
         MensajeRespuesta parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
-        _files.remove(fileName);
+        _files.remove(principalFileName);
         if ("0000".equals(parentResponse.getCodMensaje())){
             List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
             if(null != documentoDTO && !documentoDTO.isEmpty()) {
                 ecmIds.add(documentoDTO.get(0).getIdDocumento());
                 if(!_files.isEmpty()){
-                    client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
+                    client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName,referidoList).forEach(mensajeRespuesta -> {
                         if("0000".equals(mensajeRespuesta.getCodMensaje())){
                             List<DocumentoDTO> documentoDTO1 =
                                     (List<DocumentoDTO>) mensajeRespuesta.getDocumentoDTOList();
