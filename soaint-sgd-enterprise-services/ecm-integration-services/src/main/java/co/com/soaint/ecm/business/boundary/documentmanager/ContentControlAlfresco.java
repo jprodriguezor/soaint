@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -713,25 +714,40 @@ public class ContentControlAlfresco implements ContentControl {
 
     }
 
+    /**
+     * Metodo para realizar búsquedas de documentos por metadatos
+     *
+     * @param session   Objeto de conexion
+     * @param documento Objeto Documento
+     * @return QueryResult
+     */
     private ItemIterable<QueryResult> getPrincipalAdjuntosQueryResults(Session session, DocumentoDTO documento) {
         //Obtener el documentosAdjuntos
-        String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado  ";
-        if (documento.getIdDocumento() != null) {
-            principalAdjuntos += " WHERE(cmis:objectId = '" + documento.getIdDocumento() + "'";
+        String query = "SELECT * FROM cmcor:CM_DocumentoPersonalizado  ";
+        boolean where = false;
+
+        if (!StringUtils.isEmpty(documento.getIdDocumento())) {
+            where = true;
+            query += " WHERE cmis:objectId = '" + documento.getIdDocumento() + "'";
         }
-        if (documento.getNroRadicado() != null) {
-            if (documento.getIdDocumento() != null) {
-                principalAdjuntos += " AND";
-            } else {
-                principalAdjuntos += " WHERE(";
+        if (!StringUtils.isEmpty(documento.getNroRadicado())) {
+
+            query += (where ? " AND " : " WHERE ") + "cmcor:NroRadicado = '" + documento.getNroRadicado() + "'";
+            where = true;
+        }
+        if (!StringUtils.isEmpty(documento.getNroRadicadoReferido())) {
+            String[] nroRadicadoReferidoArray = documento.getNroRadicadoReferido();
+            String radicadoReferido = null;
+            for (String nroRadRef : nroRadicadoReferidoArray
+                    ) {
+                radicadoReferido = nroRadRef;
+                break;
             }
-            principalAdjuntos += " cmcor:NroRadicado = '" + documento.getNroRadicado() + "'";
-        }
-        if (documento.getIdDocumento() != null || documento.getNroRadicado() != null) {
-            principalAdjuntos += ")";
+            query += (where ? " AND " : " WHERE ") + "(cmcor:xNumeroReferido LIKE '" + radicadoReferido + SEPARADOR + "%' " + "OR cmcor:xNumeroReferido LIKE '" + SEPARADOR + radicadoReferido + SEPARADOR + "%' OR" + " cmcor:xNumeroReferido LIKE '" + SEPARADOR + radicadoReferido + "%')";
+
         }
 
-        return session.query(principalAdjuntos, false);
+        return session.query(query, false);
     }
 
     /**
@@ -1135,11 +1151,7 @@ public class ContentControlAlfresco implements ContentControl {
         }
         if (documentoDTO.getNroRadicadoReferido() != null) {
             //Se concatenan los numeros de radicado referidos para guardarlos como string porque Alfresco no permite salvar listas
-            String nroRadicadoReferidoConcat = "";
-            for (String nroRadicadoReferido : documentoDTO.getNroRadicadoReferido()) {
-                nroRadicadoReferidoConcat = nroRadicadoReferidoConcat + nroRadicadoReferido + SEPARADOR;
-            }
-            properties.put("cmcor:xNumeroReferido", nroRadicadoReferidoConcat);
+            properties.put("cmcor:xNumeroReferido", String.join(SEPARADOR, documentoDTO.getNroRadicadoReferido()));
         }
         logger.info(AVISO_CREA_DOC);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
