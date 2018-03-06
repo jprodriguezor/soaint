@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,16 @@ public class MensajeRespuesta {
     private String mensaje;
     private List<DocumentoDTO> documentoDTOList;
     private List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS;
+    private Map<String, Object> response = new HashMap<>();
+
+    public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> documentoDTOList,
+                            List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS, Map<String, Object> response) {
+        this.codMensaje = codMensaje;
+        this.mensaje = mensaje;
+        this.documentoDTOList = documentoDTOList;
+        this.contenidoDependenciaTrdDTOS = contenidoDependenciaTrdDTOS;
+        this.response = response;
+    }
 
     public MensajeRespuesta() {
         //Constructor por defecto de la clase

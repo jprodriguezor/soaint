@@ -41,6 +41,7 @@ import java.util.*;
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
     public static final String SEPARADOR = "---";
+
     @Autowired
     Configuracion configuracion;
 
@@ -54,6 +55,8 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
+    private static final String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
+
     private static final String CMCOR = "cmcor:";
     private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
@@ -389,48 +392,126 @@ public class ContentControlAlfresco implements ContentControl {
     @Override
     public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) {
 
-        MensajeRespuesta response = new MensajeRespuesta();
+        logger.info("Executing crearUnidadDocumental method");
 
-        try {
+        final MensajeRespuesta response = new MensajeRespuesta();
 
-            Carpeta tmpCarpeta = null;
+        final String dependenciaCode = unidadDocumentalDTO.getCodigoDependencia();
 
-            if (!StringUtils.isEmpty(unidadDocumentalDTO.getNombreSede())){
-                Carpeta carpeta = obtenerCarpetaPorNombre(unidadDocumentalDTO.getNombreSede(), session);
+        if (StringUtils.isEmpty(dependenciaCode)){
+            logger.error("La Unidad Documental {} no contiene el codigo de la Dependencia", unidadDocumentalDTO);
+            response.setMensaje("La Unidad Documental no contiene el codigo de la Dependencia");
+            response.setCodMensaje("22223");
+            return response;
+        }
 
-                if (carpeta.getFolder() != null) {
+        final String nombreUnidadDocumental = unidadDocumentalDTO.getNombreUnidadDocumental();
 
-                    if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoSubSerie())){
-                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
-                                unidadDocumentalDTO.getCodigoSubSerie(), CLASE_SUBSERIE, carpeta, null);
-                    }else if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoSerie())){
-                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
-                                unidadDocumentalDTO.getCodigoSerie(), CLASE_SERIE, carpeta, null);
-                    }else if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoDependencia())){
-                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
-                                unidadDocumentalDTO.getCodigoDependencia(), CLASE_DEPENDENCIA, carpeta, null);
-                    }
+        if (StringUtils.isEmpty(nombreUnidadDocumental)){
+            logger.error("La Unidad Documental no contiene Nombre");
+            response.setMensaje("La Unidad Documental no contiene Nombre");
+            response.setCodMensaje("22223");
+            return response;
+        }
+
+        final String dependenciaQuery = "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_DEPENDENCIA) +
+                " WHERE cmcor:CodigoDependencia = '" + dependenciaCode + "'";
+
+        final ItemIterable<QueryResult> dependenciaQueryQueryResults
+                = session.query(dependenciaQuery, false);
+
+        if (dependenciaQueryQueryResults.getPageNumItems() == 0) {
+            logger.error("No existe la dependencia {} en el ECM", dependenciaCode);
+            response.setCodMensaje("1111");
+            response.setMensaje("No existe la dependencia '" + dependenciaCode + "' en el ECM");
+            return response;
+        }
+
+        final String codigoSerie = unidadDocumentalDTO.getCodigoSerie();
+        final String codigoSubSerie = unidadDocumentalDTO.getCodigoSubSerie();
+
+        final String queryUnidadDocumentalExist;
+
+        queryUnidadDocumentalExist = "SELECT * FROM " +
+                CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) + " " +
+                "WHERE cmis:name = '"             + nombreUnidadDocumental + "'" +
+                "AND cmcor:CodigoSerie = '"       + codigoSerie + "' " +
+                "AND cmcor:CodigoSubserie = '"    + codigoSubSerie + "' " +
+                "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
+
+        final ItemIterable<QueryResult> queryResultUnidadDocumentalExist =
+                session.query(queryUnidadDocumentalExist, false);
+
+        if (queryResultUnidadDocumentalExist.getPageNumItems() >= 1) {
+            logger.error("Ya existe la Unidad Documental");
+            response.setCodMensaje("2222");
+            response.setMensaje("Ya existe la Unidad Documental");
+
+            return response;
+        }
+
+        if ((StringUtils.isEmpty(codigoSerie) && StringUtils.isEmpty(codigoSubSerie)) ||
+                (!StringUtils.isEmpty(codigoSerie) && (!StringUtils.isEmpty(codigoSubSerie) ||
+                        StringUtils.isEmpty(codigoSubSerie)))) {
+
+            Folder folder = null;
+
+            for (QueryResult queryResult :
+                    dependenciaQueryQueryResults) {
+                logger.info("Iterando queryResult");
+                String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
+                logger.info("MOstrando objectId encontrado {} ", objectId);
+                folder = (Folder) session.getObject(session.getObject(objectId));
+                if (folder != null) {
+                    break;
                 }
             }
 
-            if (tmpCarpeta == null){
-                response.setMensaje("Carpeta no encontrada");
-                response.setCodMensaje("00006");
-            }else {
-                response.setMensaje("Unidad Documental creada satisfactoriamente");
-                response.setCodMensaje("00000");
+            if (folder == null) {
+                logger.error("Error al crear la Unidad Documental Folder = null");
+                response.setCodMensaje("2222");
+                response.setMensaje("Error al crear la Unidad Documental Folder = null");
+
+                return response;
             }
 
-        }catch (CmisObjectNotFoundException e) {
-            logger.error("*** Error al crear la unidad documental *** ", e);
-            response.setMensaje("Carpeta no encontrada");
-            response.setCodMensaje("00006");
+            /*boolean
+            if (!isCodigoSerieEmpty){
+                Carpeta carpeta = new Carpeta();
+                carpeta.setFolder(folder);
+                final List<Carpeta> carpetas = obtenerCarpetasHijasDadoPadre(carpeta);
+                carpetas.stream().filter(find -> {
+                    session.getObject(find.getFolder().getId())
+                }).findFirst();
+            }*/
+
+            final Map<String, String> props = new HashMap<>();
+            //Se define como nombre de la carpeta nameOrg
+            props.put(PropertyIds.NAME, nombreUnidadDocumental);
+
+            props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+            props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+            props.put("cmcor:CodigoSerie", codigoSerie);
+            props.put("cmcor:CodigoSubserie", codigoSubSerie);
+
+            props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
+            props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
+
+            folder = folder.createFolder(props);
+
+            response.setCodMensaje("0000");
+            response.setMensaje("Unidad Documental creada con exito");
+
+            final Map<String, Object> responsMap = new HashMap<>();
+
+            responsMap.put("unidadDocumental", unidadDocumentalDTO);
+            //response.setResponse(responsMap);
+
+            return response;
         }
 
-
-        //Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather, String idOrgOfc)
-
-        //String query = "SELECT * FROM cmis:document WHERE  cmis:name = 'hello world'";
+        response.setCodMensaje("111111");
+        response.setMensaje("Se debe especificar el codigo de la serie cuando se especifica el de la sub serie");
         return response;
     }
 
