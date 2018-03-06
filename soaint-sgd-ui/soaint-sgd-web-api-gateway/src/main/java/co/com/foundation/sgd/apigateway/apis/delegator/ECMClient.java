@@ -74,7 +74,7 @@ public class ECMClient {
 
 
 
-    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
+    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
             files.forEach((key, part) -> {
@@ -88,6 +88,8 @@ public class ECMClient {
                     documentoAsociadoECMDTO.setTipoDocumento("application/pdf");
                     documentoAsociadoECMDTO.setNombreDocumento(key);
                     documentoAsociadoECMDTO.setIdDocumentoPadre(parentId);
+                    documentoAsociadoECMDTO.setNroRadicado(numero);
+                    documentoAsociadoECMDTO.setNroRadicadoReferido(referidoList);
 
                 }catch (Exception e){
                     log.info("Error generando el documento ",e);
