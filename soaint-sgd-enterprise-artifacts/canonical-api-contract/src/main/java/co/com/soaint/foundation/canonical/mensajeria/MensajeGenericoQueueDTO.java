@@ -27,5 +27,8 @@ import java.util.Map;
 public class MensajeGenericoQueueDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    String colaEntrada;
+    String colaSalida;
     Map<String, Object> mensajeData;
 }
