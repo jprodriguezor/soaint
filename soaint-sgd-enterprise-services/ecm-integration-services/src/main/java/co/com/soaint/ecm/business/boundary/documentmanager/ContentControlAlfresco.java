@@ -984,11 +984,11 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
-                //Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia
+                //Se busca si existe la dependencia
                 Optional<Carpeta> dependencia = carpetasHijas.stream()
                         .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();
 
-                logger.info("Se obtienen la dependencia referente a la sede" + dependencia);
+                logger.info("Se obtienen la dependencia referente a la sede: " + documentoDTO.getSede());
                 if (dependencia.isPresent()) {
 
                     logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + documentoDTO.getDependencia());
