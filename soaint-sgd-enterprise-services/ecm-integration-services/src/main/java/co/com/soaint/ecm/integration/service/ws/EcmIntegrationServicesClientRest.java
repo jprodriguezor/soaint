@@ -1,10 +1,7 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +51,24 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Crear Estructura ECM");
         try {
             return fEcmManager.crearEstructuraECM(structure);
+        } catch (RuntimeException e) {
+            logger.error("Error servicio creando estructura ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Crear unidad documental en el ECM
+     *
+     * @param unidadDocumentalDTO Unidad a crear
+     * @return Mensaje de respuesta
+     */
+    @POST
+    @Path("/crearUnidadDocumentalECM/")
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Crear Unidad Documental ECM");
+        try {
+            return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
         } catch (RuntimeException e) {
             logger.error("Error servicio creando estructura ", e);
             throw e;

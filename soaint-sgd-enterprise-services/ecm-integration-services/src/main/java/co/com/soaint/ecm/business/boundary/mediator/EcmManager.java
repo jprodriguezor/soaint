@@ -1,10 +1,7 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -254,6 +251,27 @@ public class EcmManager {
         } catch (Exception e) {
             response.setCodMensaje("22222");
             response.setMensaje("Error al obtener las series o subseries documento");
+            logger.error(ECM_ERROR, e);
+        }
+
+        return response;
+    }
+
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+
+            response = contentManager.crearUnidadDocumental(unidadDocumentalDTO);
+
+        } catch (Exception e) {
+            response.setCodMensaje("22222");
+            response.setMensaje("Error al crear la Unidad Documental");
             logger.error(ECM_ERROR, e);
         }
 

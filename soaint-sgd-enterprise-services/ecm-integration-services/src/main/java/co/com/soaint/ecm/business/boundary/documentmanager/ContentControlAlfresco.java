@@ -379,6 +379,62 @@ public class ContentControlAlfresco implements ContentControl {
         return respuesta;
     }
 
+    /**
+     * Servicio que crea las unidades documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
+     * @param session           Objeto de conexion
+     * @return MensajeRespuesta
+     */
+    @Override
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) {
+
+        MensajeRespuesta response = new MensajeRespuesta();
+
+        try {
+
+            Carpeta tmpCarpeta = null;
+
+            if (!StringUtils.isEmpty(unidadDocumentalDTO.getNombreSede())){
+                Carpeta carpeta = obtenerCarpetaPorNombre(unidadDocumentalDTO.getNombreSede(), session);
+
+                if (carpeta.getFolder() != null) {
+
+                    if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoSubSerie())){
+                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
+                                unidadDocumentalDTO.getCodigoSubSerie(), CLASE_SUBSERIE, carpeta, null);
+                    }else if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoSerie())){
+                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
+                                unidadDocumentalDTO.getCodigoSerie(), CLASE_SERIE, carpeta, null);
+                    }else if (!StringUtils.isEmpty(unidadDocumentalDTO.getCodigoDependencia())){
+                        tmpCarpeta = crearCarpeta(carpeta, unidadDocumentalDTO.getNombreUnidadDocumental(),
+                                unidadDocumentalDTO.getCodigoDependencia(), CLASE_DEPENDENCIA, carpeta, null);
+                    }
+                }
+            }
+
+            if (tmpCarpeta == null){
+                response.setMensaje("Carpeta no encontrada");
+                response.setCodMensaje("00006");
+            }else {
+                response.setMensaje("Unidad Documental creada satisfactoriamente");
+                response.setCodMensaje("00000");
+            }
+
+        }catch (CmisObjectNotFoundException e) {
+            logger.error("*** Error al crear la unidad documental *** ", e);
+            response.setMensaje("Carpeta no encontrada");
+            response.setCodMensaje("00006");
+        }
+
+
+        //Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather, String idOrgOfc)
+
+        //String query = "SELECT * FROM cmis:document WHERE  cmis:name = 'hello world'";
+        return response;
+    }
+
+
 
     /**
      * Metodo que devuelve las carpetas hijas de una carpeta
