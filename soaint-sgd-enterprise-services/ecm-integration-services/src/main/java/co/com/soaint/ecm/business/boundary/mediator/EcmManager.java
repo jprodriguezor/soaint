@@ -277,4 +277,26 @@ public class EcmManager {
 
         return response;
     }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales() {
+
+        logger.info("### Listando las Unidades Documentales");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+
+            response = contentManager.listarUnidadesDocumentales();
+
+        } catch (Exception e) {
+            response.setCodMensaje("22222");
+            response.setMensaje("Error al Listar las Unidades Documentales");
+            logger.error(ECM_ERROR, e);
+        }
+
+        return response;
+    }
 }

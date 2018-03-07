@@ -383,7 +383,7 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
-     * Servicio que crea las unidades documentales del ECM
+     * Metodo que crea las unidades documentales del ECM
      *
      * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
      * @param session           Objeto de conexion
@@ -528,7 +528,92 @@ public class ContentControlAlfresco implements ContentControl {
         return response;
     }
 
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    @Override
+    public MensajeRespuesta listarUnidadesDocumentales(final Session session) {
 
+        final MensajeRespuesta respuesta = new MensajeRespuesta();
+
+        try {
+
+            final List<UnidadDocumentalDTO> unidadDocumentalDTOS;
+            unidadDocumentalDTOS = new ArrayList<>();
+
+            final String query;
+            query = "SELECT * FROM " +
+                    CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
+
+            final ItemIterable<QueryResult> queryResults = session.query(query, false);
+
+            queryResults.forEach(queryResult -> {
+
+                String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
+                Folder folder = (Folder)
+                        session.getObject(session.getObject(objectId));
+
+                final String folderName = folder.getName();
+                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValuesAsString();
+                final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValuesAsString();
+                final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValuesAsString();
+                final String xFechaCierre = folder.getProperty("cmcor:xFechaCierre").getValuesAsString();
+                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValuesAsString();
+                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValuesAsString();
+                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValuesAsString();
+                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValuesAsString();
+                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValuesAsString();
+
+                logger.info("******************************************************");
+                logger.info("**************** |Folder Properties | ****************");
+                logger.info("******************************************************");
+                logger.info("* Name: {}", folderName);
+                logger.info("* xDescriptor1: {}", xDescriptor1);
+                logger.info("* xDescriptor2: {}", xDescriptor2);
+                logger.info("* xUbicacionTopografica: {}", xUbicacionTopografica);
+                logger.info("* xFechaCierre: {}", xFechaCierre);
+                logger.info("* xFaseArchivo: {}", xFaseArchivo);
+                logger.info("* CodigoSubserie: {}", CodigoSubserie);
+                logger.info("* CodigoSerie: {}", CodigoSerie);
+                logger.info("* CodigoDependencia: {}", CodigoDependencia);
+                logger.info("* CodigoUnidadAdminPadre: {}", CodigoUnidadAdminPadre);
+                logger.info("******************************************************");
+                logger.info("");
+
+                final UnidadDocumentalDTO dto = UnidadDocumentalDTO.newInstance()
+                        .descriptor1(eliminaCorchetes(xDescriptor1))
+                        .descriptor2(eliminaCorchetes(xDescriptor2))
+                        .codigoSede(eliminaCorchetes(CodigoSerie))
+                        .codigoSubSerie(eliminaCorchetes(CodigoSubserie))
+                        .codigoDependencia(eliminaCorchetes(CodigoDependencia))
+                        .build();
+
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), dto);
+
+            });
+
+            respuesta.setMensaje("Listado seleccionado correctamente");
+            respuesta.setCodMensaje("00000");
+            Map<String, Object> map = new HashMap<>();
+            map.put("unidadDocumental", unidadDocumentalDTOS);
+            respuesta.setResponse(map);
+            return respuesta;
+
+        }catch (Exception e){
+            respuesta.setMensaje("Error al Listar las Unidades Documentales");
+            respuesta.setCodMensaje("111111");
+            return respuesta;
+        }
+    }
+
+    private String eliminaCorchetes(String cadena){
+
+        return  (cadena != null) ?
+            cadena.replace("[", "").
+                    replace("]", "") : "";
+    }
 
     /**
      * Metodo que devuelve las carpetas hijas de una carpeta

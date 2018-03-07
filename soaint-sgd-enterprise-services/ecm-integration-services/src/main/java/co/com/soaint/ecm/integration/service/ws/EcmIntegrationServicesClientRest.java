@@ -70,7 +70,24 @@ public class EcmIntegrationServicesClientRest {
         try {
             return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
         } catch (RuntimeException e) {
-            logger.error("Error servicio creando estructura ", e);
+            logger.error("Error servicio creando Unidad Documental ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    @GET
+    @Path("/listarUnidadesDocumentalesECM/")
+    public MensajeRespuesta listarUnidadesDocumentales() {
+        logger.info("processing rest request - Listar Unidades Documentales ECM");
+        try {
+            return fEcmManager.listarUnidadesDocumentales();
+        } catch (RuntimeException e) {
+            logger.error("Error servicio Listar las Unidades Documentales ", e);
             throw e;
         }
     }
