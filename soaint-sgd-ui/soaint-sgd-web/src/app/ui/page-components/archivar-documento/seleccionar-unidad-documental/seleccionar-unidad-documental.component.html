@@ -7,7 +7,7 @@
 
     <div class="ui-sm-6 ui-g-6 text-right">
       <button class="ui-button" pButton label="Guardar" style="width: auto;  margin-bottom: 10px"></button>
-      <button pButton type="button" class="ui-button" label="Finalizar" style="width: auto;  margin-bottom: 10px"></button>
+      <button pButton type="button" class="ui-button" label="Finalizar" (click)="finalizarTarea()" style="width: auto;  margin-bottom: 10px"></button>
     </div>
 
   </div>
@@ -31,8 +31,8 @@
                       <label for="serie">Serie</label>
                     </div>
                     <div class="ui-g-12">
-                      <p-dropdown [options]="(seriesObservable$ |async|dropdownItemSerie)" id="serie" [autoWidth]="false" formControlName="serie"
-                                  (blur)="listenForBlurEvents('serie')">
+                      <p-dropdown #seriedropdown [options]="(seriesObservable$ |async|dropdownItemSerie)" id="serie" [autoWidth]="false" formControlName="serie"
+                                  (blur)="listenForBlurEvents('serie')" (onChange)="selectSerie($event)" (update)="selectSerie($event)" >
 
                       </p-dropdown>
                       <div class="ui-message ui-messages-error"
@@ -48,7 +48,7 @@
                       <label for="subserie">Subserie</label>
                     </div>
                     <div class="ui-g-12">
-                      <p-dropdown [options]="subseries" id="subserie" [autoWidth]="false"
+                      <p-dropdown [options]="(subseriesObservable$|async|dropdownItemSubserie)" id="subserie" [autoWidth]="false"
                                   formControlName="subserie" (blur)="listenForBlurEvents('subserie')">
                       </p-dropdown>
                       <div class="ui-message ui-messages-error"
@@ -123,7 +123,7 @@
 
                 <ng-template [ngIf]="currentSection()=='bUnidadDocumental'">
                   <div class="ui-g-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
-                    <button pButton type="button" label="Limpiar" (click)="clearFilters()"
+                    <button pButton type="button" label="Limpiar" (click)="form.reset()"
                             style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right" >
                     </button>
                     <button pButton type="button" label="Buscar" (click)="buscarUnidadDocumental()"
@@ -152,7 +152,7 @@
                     </div>
                   </div>
                   <div class="ui-g-12 ui-g-2 ui-lg-2" [style.padding-top]="'75px'">
-                    <button pButton type="button" label="Agregar" [disabled]="form.controls['observaciones'].hasError('required')"
+                    <button pButton type="button" label="Agregar" [disabled]="!form.valid" (click)="addSolicitud()"
                             style="width: 120px; margin-right: 15px;float: right">
                     </button>
                   </div>
@@ -165,28 +165,24 @@
           <div class="ui-g ui-fluid">
             <div class="ui-g-12">
               <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                           [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
-                <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
-                <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
-                <p-column header="Identificador unidad documental" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                           [paginator]="true" [rows]="10" [responsive]="true" [(value)]="solicitudes">
+                <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
+                <p-column  header="Item" [style]="{'width':'50px'}">
+                  <ng-template pTemplate="body" let-index="rowIndex">
+                    {{index + 1}}
                   </ng-template>
                 </p-column>
-                <p-column header="Nombre unidad documental" [sortable]="true">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                <p-column header="Nombre Serie/Subserie" [sortable]="true" >
+                  <ng-template pTemplate="body" let-row="rowData">
+                    {{row.codSerie}}/{{row.codSubserie}}
                   </ng-template>
                 </p-column>
-                <p-column header="Descriptor 1" [sortable]="true"></p-column>
-                <p-column header="Descriptor 2" [sortable]="true"
-                          [style]="{'width':'110px'}">
-                  <ng-template let-col let-correspondencia="rowData" pTemplate="body">
-                    {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
-                  </ng-template>
-                </p-column>
-                <p-column header="Observaciones" [sortable]="true"></p-column>
-                <p-column header="Estado" [sortable]="true"></p-column>
+                <p-column header="Identificador unidad documental" [sortable]="true" field="identificadorUD"> </p-column>
+                <p-column header="Nombre unidad documental" [sortable]="true" field="nombreUD"></p-column>
+                <p-column header="Descriptor 1" [sortable]="true" field="descriptor1"></p-column>
+                <p-column header="Descriptor 2" [sortable]="true" [style]="{'width':'110px'}" field="descriptor2"></p-column>
+                <p-column header="Observaciones" [sortable]="true" field="observaciones"></p-column>
+                <p-column header="Estado" [sortable]="true" field="estado"></p-column>
               </p-dataTable>
             </div>
             <div class="ui-g-12" style="padding-top: 20px">
@@ -269,24 +265,7 @@
               </div>
             </div>
             <div class="ui-g-12 padding-top">
-              <p-panel header="Documentos archivados">
-                <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                             [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
-                  <p-column >
-                    <ng-template  pTemplate="body" let-index="rowIndex">
-                      {{index}}
-                    </ng-template>
-                  </p-column>
-                  <p-column header="Numero de Solicitud" [sortable]="true"></p-column>
-                  <p-column header="Identificador de unidad documental" [sortable]="true"></p-column>
-                  <p-column header="Nombre de unidad documental" [sortable]="true"></p-column>
-                  <p-column header="Serie/subserie" [sortable]="true"></p-column>
-                  <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
-                  <p-column header="identificacion documento" [sortable]="true"></p-column>
-                  <p-column header="Tipologia documental" [sortable]="true"></p-column>
-                  <p-column header="Nombre/ Asunto Documento" [sortable]="true"></p-column>
-                </p-dataTable>
-              </p-panel>
+              <app-lista-documentos-archivados></app-lista-documentos-archivados>
             </div>
           </div>
         <div class="ui-g ui-fluid">

@@ -3,11 +3,11 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
  // const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
  // const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
@@ -114,8 +114,9 @@ export const environment = {
 
   //Archivar Documento
 
-  ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`
+  ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`,
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
+  crear_unbidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
 };
 
 export const process_info = {
@@ -150,6 +151,10 @@ export const process_info = {
   'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
     show: false
+  },
+  "process.archivar-documento":{
+    displayValue : 'Organización y Archivo',
+    show: true,
   }
 
 };

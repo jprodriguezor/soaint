@@ -19,6 +19,10 @@ import {
 import {DependenciaDTO} from "../../../../domain/dependenciaDTO";
 import {SelectDependencyGroupAction}  from "../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-actions";
 import {Subscription} from "rxjs/Subscription";
+import {SolicitudCreacionUDDto} from "../../../../domain/solicitudCreacionUDDto";
+import {SolicitudCreacionUdService} from "../../../../infrastructure/api/solicitud-creacion-ud.service";
+import {SerieDTO} from "../../../../domain/serieDTO";
+import {UnidadDocumentalDTO} from "../../../../domain/unidadDocumentalDTO";
 
 
 @Component({
@@ -35,11 +39,21 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   operation:string = "bUnidadDocumental";
 
-  seriesObservable$:Observable<any[]>;
+  seriesObservable$:Observable<SerieDTO[]>;
+
+  unidadesDocumentales$:Observable<UnidadDocumentalDTO[]>;
+
+  unidadesDocumentales:UnidadDocumentalDTO[];
+
+  unidadDocumentalSelected:UnidadDocumentalDTO;
+
+  documentos$:Observable<any[]>;
 
   globalDependencySubscriptor:Subscription;
 
   subseries: Array<any> = [];
+
+  solicitudes:SolicitudCreacionUDDto[] = [];
 
   subseriesObservable$:Observable<any[]>;
 
@@ -55,7 +69,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   currentPage:number = 1;
 
-   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _dependenciaSanbox:DependenciaSandbox,private _store:Store<RootState>) {
+   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _dependenciaSanbox:DependenciaSandbox,private _store:Store<RootState>,private _solicitudUDService:SolicitudCreacionUdService) {
 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -86,9 +100,33 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
         this.seriesObservable$ = this
           .serieSubSerieService
           .getSeriePorDependencia(result.codigo)
-         // .map(series =>  series.map(serie => { return {label:serie.nombreSerie,value:serie.codigoSerie}})) ;
+          .map(list => {list.unshift({
+            codigoSerie:null,nombreSerie:"Seleccione"});
+          return list});
+        this.dependenciaSelected = result.codigo;
     });
+  }
 
+  addSolicitud(){
+
+     if(this.form.valid) {
+       this.solicitudes.push({
+         codSerie: this.getControlValue("serie"),
+         codSubserie: this.getControlValue("subserie"),
+         descriptor1: this.getControlValue("descriptor1"),
+         descriptor2: this.getControlValue("descriptor2"),
+         identificadorUD: this.getControlValue("identificador"),
+         nombreUD: this.getControlValue("nombre"),
+         observaciones: this.getControlValue("observaciones"),
+         estado: ""
+       });
+     }
+
+  }
+
+  private getControlValue(identificador:string):string{
+
+     return this.form.controls[identificador].value.toString();
   }
 
   listenForErrors() {
@@ -162,23 +200,46 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
      });
    }
 
-   private clearValue(control:string){
 
-     const ac = this.form.get(control);
+   finalizarTarea(){
 
-     ac.setValue(null);
+     switch (this.operation){
+       case 'bUnidadDocumental' :
+
+          this.archivarDocumento();
+         break;
+
+       case 'solicitarUnidadDocumental' :
+
+         this.crearSolicitudCreacionUD();
+         break;
+     }
    }
 
-   clearFilters(){
+  selectSerie(evt)
+  {
 
-     this.clearValue("serie");
-     this.clearValue("subserie");
-     this.clearValue("identificador");
-     this.clearValue("nombre");
-     this.clearValue("descriptor1");
-     this.clearValue("descriptor2");
-     this.clearValue("observaciones");
+    this.subseriesObservable$ = evt ?
+      this
+        .serieSubSerieService
+        .getSubseriePorDependenciaSerie(this.dependenciaSelected,evt.value)
+        .map(list => {
+          list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
+          return list;
+        })
+      : Observable.empty();
+  }
+
+   private crearSolicitudCreacionUD(){
+
+     if(this.solicitudes.length > 0){
+       this._solicitudUDService.solicitarUnidadDocumental(this.solicitudes);
+     }
    }
+
+    private archivarDocumento(){
+
+    }
 
 
 }
