@@ -69,7 +69,9 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
         });
         this.initForm();
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
-        this.roles$ = this._produccionDocumentalApi.getRoles({});
+        this.roles$ = this._produccionDocumentalApi.getRoles({}).map( roles => {
+          return roles.filter(role => role.rol !== 'administrador').concat();
+        });
         this.listenForErrors();
         this.listenForChanges();
         this.fecha = new Date();
