@@ -30,5 +30,6 @@ public class MensajeGenericoQueueDTO implements Serializable {
 
     String colaEntrada;
     String colaSalida;
+    String operacion;
     Map<String, Object> mensajeData;
 }

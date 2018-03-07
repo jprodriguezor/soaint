@@ -48,7 +48,7 @@ public class WebApiConfig extends Application {
             beanConfig.setSchemes(new String[]{"http"});
             beanConfig.setHost(host + ":" + port);
             beanConfig.setBasePath("/mensajeria-integration-services/services");
-            beanConfig.setResourcePackage("co.com.soaint.correspondencia.integration.service.rest");
+            beanConfig.setResourcePackage("co.com.soaint.mensajeria.service.rest");
             beanConfig.setScan(true);
         } catch (Exception ex) {
             log.error("Rest Api - a system error has occurred", ex);
@@ -62,7 +62,7 @@ public class WebApiConfig extends Application {
         return resources;
     }
 
-    public SimpleMessageListenerContainer listenerContainer() {
+    /*public SimpleMessageListenerContainer listenerContainer() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(SystemParameters.getParameter(SystemParameters.BROKER_HOST));
         connectionFactory.setUsername(SystemParameters.getParameter(SystemParameters.BROKER_USER));
         connectionFactory.setPassword(SystemParameters.getParameter(SystemParameters.BROKER_PASS));
@@ -74,5 +74,5 @@ public class WebApiConfig extends Application {
         listenerContainer.setMessageListener(new RabbitMensajeConsumer());
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
-    }
+    }*/
 }
