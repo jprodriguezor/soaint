@@ -5,6 +5,7 @@ import co.com.soaint.correspondencia.apis.delegator.CorrespondenciaApiClient;
 import co.com.soaint.correspondencia.apis.delegator.EcmApiClient;
 import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -59,10 +60,12 @@ public class DigitalizacionControl {
 
             bytes = Base64.getDecoder().decode(encodedFile);
 
+            DependenciaDTO dependencia = correspondenciaApiClient.consultarDependenciaByCodigo(comunicacionOficial.getCorrespondencia().getCodDependencia());
+
             DocumentoDTO documento = DocumentoDTO.newInstance()
                     .nroRadicado(comunicacionOficial.getCorrespondencia().getNroRadicado())
-                    .sede(comunicacionOficial.getCorrespondencia().getCodSede())
-                    .dependencia(comunicacionOficial.getCorrespondencia().getCodDependencia())
+                    .sede(dependencia.getNomSede())
+                    .dependencia(dependencia.getNomDependencia())
                     .nombreDocumento(fileName)
                     .documento(bytes)
                     .tipoDocumento(fileType)
@@ -71,11 +74,11 @@ public class DigitalizacionControl {
 
             Map<String, Object> parametros = new HashMap<String, Object>();
             parametros.put("nombreSennal", "estadoDigitalizacion");
-            parametros.put("idInstancia", comunicacionOficial.getCorrespondencia().getIdeInstancia());
             parametros.put("ideEcm", respuestaEcm.getDocumentoDTOList().get(0).getIdDocumento());
 
             EntradaProcesoDTO entradaProceso = EntradaProcesoDTO.newInstance()
-                    .idDespliegue("co.com.soaint.sgd.process:proceso-gestor-devoluciones:1.0.0-SNAPSHOT")
+                    .idDespliegue("co.com.soaint.sgd.process:proceso-correspondencia-entrada:1.3.1-SNAPSHOT")
+                    .instanciaProceso(new Long(comunicacionOficial.getCorrespondencia().getIdeInstancia()))
                     .parametros(parametros)
                     .build();
 
