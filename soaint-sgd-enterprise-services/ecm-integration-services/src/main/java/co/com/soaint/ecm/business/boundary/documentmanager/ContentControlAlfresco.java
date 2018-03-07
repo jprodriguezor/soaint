@@ -40,7 +40,6 @@ import java.util.*;
 @BusinessControl
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
-    public static final String SEPARADOR = "---";
 
     @Autowired
     Configuracion configuracion;
@@ -79,7 +78,9 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String AVISO_CREA_DOC_ID = "### Documento creado con id ";
     private static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     private static final String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
-
+    public static final String SEPARADOR = "---";
+    public static final String CMCOR_CODIGO_SUBSERIE = "cmcor:CodigoSubserie";
+    public static final String CMCOR_CODIGO_SERIE = "cmcor:CodigoSerie";
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -149,10 +150,10 @@ public class ContentControlAlfresco implements ContentControl {
                     llenarPropiedadesCarpeta(CMCOR_CODIGODEPENDENCIA, CLASE_DEPENDENCIA, props, codOrg, folderFather, idOrgOfc);
                     break;
                 case CLASE_SERIE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoSerie", CLASE_SERIE, props, codOrg, folderFather, idOrgOfc);
+                    llenarPropiedadesCarpeta(CMCOR_CODIGO_SERIE, CLASE_SERIE, props, codOrg, folderFather, idOrgOfc);
                     break;
                 case CLASE_SUBSERIE:
-                    llenarPropiedadesCarpeta("cmcor:CodigoSubserie", CLASE_SUBSERIE, props, codOrg, folderFather, idOrgOfc);
+                    llenarPropiedadesCarpeta(CMCOR_CODIGO_SUBSERIE, CLASE_SUBSERIE, props, codOrg, folderFather, idOrgOfc);
 
                     break;
                 default:
@@ -350,14 +351,14 @@ public class ContentControlAlfresco implements ContentControl {
                     List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
                     String objectId = qResult.getPropertyValueByQueryName("cmis:objectId");
                     folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
-                    if (folder.getFolder().getPropertyValue("cmcor:CodigoSerie") != null) {
-                        serie.setCodigoSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSerie"));
+                    if (folder.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE) != null) {
+                        serie.setCodigoSerie(folder.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE));
                         serie.setNombreSerie(folder.getFolder().getPropertyValue("cmis:name"));
                         serieLista.add(serie);
 
                     }
-                    if (folder.getFolder().getPropertyValue("cmcor:CodigoSubserie") != null) {
-                        subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue("cmcor:CodigoSubserie"));
+                    if (folder.getFolder().getPropertyValue(CMCOR_CODIGO_SUBSERIE) != null) {
+                        subSerie.setCodigoSubSerie(folder.getFolder().getPropertyValue(CMCOR_CODIGO_SUBSERIE));
                         subSerie.setNombreSubSerie(folder.getFolder().getPropertyValue("cmis:name"));
                         subSerieLista.add(subSerie);
                     }
@@ -1454,7 +1455,8 @@ public class ContentControlAlfresco implements ContentControl {
 
         if ("cmcor:CodigoSubserie".equals(tipoCarpeta)) {
             if (folderFather != null) {
-                props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue("cmcor:CodigoSerie"));
+                props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE));
+                props.put(CMCOR_CODIGO_SERIE, folderFather.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE));
                 props.put(CMCOR_CODIGODEPENDENCIA, idOrgOfc);
             }
         } else if ("cmcor:CodigoSerie".equals(tipoCarpeta)) {
