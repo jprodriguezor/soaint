@@ -1,6 +1,8 @@
 package co.com.soaint.mensajeria.config;
 
+import co.com.soaint.mensajeria.business.control.RabbitMensajeConsumer;
 import co.com.soaint.mensajeria.integration.service.rest.*;
+import co.com.soaint.mensajeria.util.SystemParameters;
 import io.swagger.jaxrs.config.BeanConfig;
 import lombok.extern.log4j.Log4j2;
 import javax.management.ObjectName;
@@ -9,6 +11,12 @@ import javax.ws.rs.core.Application;
 import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,5 +60,19 @@ public class WebApiConfig extends Application {
         Set<Class<?>> resources = new HashSet<>();
         resources.add(MensajeWebApi.class);
         return resources;
+    }
+
+    public SimpleMessageListenerContainer listenerContainer() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(SystemParameters.getParameter(SystemParameters.BROKER_HOST));
+        connectionFactory.setUsername(SystemParameters.getParameter(SystemParameters.BROKER_USER));
+        connectionFactory.setPassword(SystemParameters.getParameter(SystemParameters.BROKER_PASS));
+
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory);
+        listenerContainer.setQueues(new Queue("simple.queue.name"));
+        listenerContainer.setMessageConverter(new JsonMessageConverter());
+        listenerContainer.setMessageListener(new RabbitMensajeConsumer());
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
     }
 }

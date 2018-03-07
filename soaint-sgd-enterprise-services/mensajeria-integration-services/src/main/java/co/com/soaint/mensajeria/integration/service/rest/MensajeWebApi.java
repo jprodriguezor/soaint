@@ -1,9 +1,11 @@
 package co.com.soaint.mensajeria.integration.service.rest;
 
+import co.com.soaint.foundation.canonical.correspondencia.constantes.CodigoTipoUbicacion;
 import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.mensajeria.business.boundary.IGestionarMensaje;
+import co.com.soaint.mensajeria.util.SystemParameters;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ import javax.ws.rs.Produces;
 @Log4j2
 @Api(value = "MensajeWebApi")
 public class MensajeWebApi {
+
+    //public static final String broker = SystemParameters.getParameter(SystemParameters.BROKER_IMPLEMENTATION);
 
     @Autowired
     @Qualifier("rabbitMensajeControl")
