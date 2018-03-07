@@ -415,21 +415,54 @@ public class ContentControlAlfresco implements ContentControl {
             return response;
         }
 
-        final String dependenciaQuery = "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_DEPENDENCIA) +
+        String query = "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_DEPENDENCIA) +
                 " WHERE cmcor:CodigoDependencia = '" + dependenciaCode + "'";
-
-        final ItemIterable<QueryResult> dependenciaQueryQueryResults
-                = session.query(dependenciaQuery, false);
-
-        if (dependenciaQueryQueryResults.getPageNumItems() == 0) {
-            logger.error("No existe la dependencia {} en el ECM", dependenciaCode);
-            response.setCodMensaje("1111");
-            response.setMensaje("No existe la dependencia '" + dependenciaCode + "' en el ECM");
-            return response;
-        }
 
         final String codigoSerie = unidadDocumentalDTO.getCodigoSerie();
         final String codigoSubSerie = unidadDocumentalDTO.getCodigoSubSerie();
+
+        ItemIterable<QueryResult> queryResults;
+
+        boolean flag = false;
+
+        if (StringUtils.isEmpty(codigoSerie) && StringUtils.isEmpty(codigoSubSerie)) {
+
+            queryResults = session.query(query, false);
+
+            if (queryResults.getPageNumItems() == 0) {
+                logger.error("No existe la dependencia {} en el ECM", dependenciaCode);
+                response.setCodMensaje("1111");
+                response.setMensaje("No existe la dependencia '" + dependenciaCode + "' en el ECM");
+                return response;
+            }
+
+            flag = true;
+
+        }
+        if (!flag && !StringUtils.isEmpty(codigoSerie) && StringUtils.isEmpty(codigoSubSerie)) {
+
+            query = "SELECT * FROM " +
+                    CMCOR + "" + configuracion.getPropiedad(CLASE_SERIE) + " " +
+                    "WHERE cmcor:CodigoSerie = '"       + codigoSerie + "' " +
+                    "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
+            flag = true;
+
+        }
+        if (!flag && !StringUtils.isEmpty(codigoSerie) && !StringUtils.isEmpty(codigoSubSerie)) {
+
+            query = "SELECT * FROM " +
+                    CMCOR + "" + configuracion.getPropiedad(CLASE_SUBSERIE) + " " +
+                    "WHERE cmcor:CodigoSerie = '"       + codigoSerie + "' " +
+                    "AND cmcor:CodigoSubserie = '"    + codigoSubSerie + "' " +
+                    "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
+            flag = true;
+        }
+
+        if (!flag) {
+            response.setCodMensaje("111111");
+            response.setMensaje("Se debe especificar el codigo de la serie cuando se especifica el de la sub serie");
+            return response;
+        }
 
         final String queryUnidadDocumentalExist;
 
@@ -451,68 +484,48 @@ public class ContentControlAlfresco implements ContentControl {
             return response;
         }
 
-        if ((StringUtils.isEmpty(codigoSerie) && StringUtils.isEmpty(codigoSubSerie)) ||
-                (!StringUtils.isEmpty(codigoSerie) && (!StringUtils.isEmpty(codigoSubSerie) ||
-                        StringUtils.isEmpty(codigoSubSerie)))) {
+        Folder folder = null;
 
-            Folder folder = null;
+        queryResults = session.query(query, false);
 
-            for (QueryResult queryResult :
-                    dependenciaQueryQueryResults) {
-                logger.info("Iterando queryResult");
-                String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
-                logger.info("MOstrando objectId encontrado {} ", objectId);
-                folder = (Folder) session.getObject(session.getObject(objectId));
-                if (folder != null) {
-                    break;
-                }
+        for (QueryResult queryResult :
+                queryResults) {
+            String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
+            folder = (Folder) session.getObject(session.getObject(objectId));
+            if (folder != null) {
+                break;
             }
+        }
 
-            if (folder == null) {
-                logger.error("Error al crear la Unidad Documental Folder = null");
-                response.setCodMensaje("2222");
-                response.setMensaje("Error al crear la Unidad Documental Folder = null");
-
-                return response;
-            }
-
-            /*boolean
-            if (!isCodigoSerieEmpty){
-                Carpeta carpeta = new Carpeta();
-                carpeta.setFolder(folder);
-                final List<Carpeta> carpetas = obtenerCarpetasHijasDadoPadre(carpeta);
-                carpetas.stream().filter(find -> {
-                    session.getObject(find.getFolder().getId())
-                }).findFirst();
-            }*/
-
-            final Map<String, String> props = new HashMap<>();
-            //Se define como nombre de la carpeta nameOrg
-            props.put(PropertyIds.NAME, nombreUnidadDocumental);
-
-            props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-            props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-            props.put("cmcor:CodigoSerie", codigoSerie);
-            props.put("cmcor:CodigoSubserie", codigoSubSerie);
-
-            props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
-            props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
-
-            folder = folder.createFolder(props);
-
-            response.setCodMensaje("0000");
-            response.setMensaje("Unidad Documental creada con exito");
-
-            final Map<String, Object> responsMap = new HashMap<>();
-
-            responsMap.put("unidadDocumental", unidadDocumentalDTO);
-            //response.setResponse(responsMap);
+        if (folder == null) {
+            logger.error("Error al crear la Unidad Documental Folder = null");
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al crear la Unidad Documental Folder = null");
 
             return response;
         }
 
-        response.setCodMensaje("111111");
-        response.setMensaje("Se debe especificar el codigo de la serie cuando se especifica el de la sub serie");
+        final Map<String, String> props = new HashMap<>();
+        //Se define como nombre de la carpeta nameOrg
+        props.put(PropertyIds.NAME, nombreUnidadDocumental);
+
+        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+        props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+        props.put("cmcor:CodigoSerie", codigoSerie);
+        props.put("cmcor:CodigoSubserie", codigoSubSerie);
+        props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
+        props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
+
+        folder.createFolder(props);
+
+        response.setCodMensaje("0000");
+        response.setMensaje("Unidad Documental creada con exito");
+
+        final Map<String, Object> responsMap = new HashMap<>();
+
+        responsMap.put("unidadDocumental", unidadDocumentalDTO);
+        response.setResponse(responsMap);
+
         return response;
     }
 
@@ -1369,7 +1382,6 @@ public class ContentControlAlfresco implements ContentControl {
             props.put(CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
             props.put(CMCOR_CODIGODEPENDENCIA, codOrg);
         }
-
     }
 
     /**
@@ -1459,7 +1471,3 @@ public class ContentControlAlfresco implements ContentControl {
         return file;
     }
 }
-
-
-
-
