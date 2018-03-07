@@ -52,6 +52,10 @@ import { DatosDestinatarioExternoComponent } from './ui/page-components/radicaci
 import { DatosDestinatarioInternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-interno/datos-destinatario-interno.component';
 import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remitentes/datos-remitentes.component';
 import { DetalleUnidadConservacionComponent } from './ui/page-components/unidades-documentales/components/detalle-unidad-conservacion/detalle-unidad-conservacion.component';
+import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component';
+import {ProcesoService} from "./infrastructure/api/proceso.service";
+import {SolicitudCreacionUdService} from "./infrastructure/api/solicitud-creacion-ud.service";
+import { ListaDocumentosArchivadosComponent } from './ui/page-components/archivar-documento/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
 
 
 @NgModule({
@@ -147,7 +151,9 @@ import { DetalleUnidadConservacionComponent } from './ui/page-components/unidade
     DatosDestinatarioExternoComponent,
     DatosDestinatarioInternoComponent,
     DatosRemitentesComponent,
-    DetalleUnidadConservacionComponent
+    DetalleUnidadConservacionComponent,
+    RedirectSeleccionarDocumentoComponent,
+    ListaDocumentosArchivadosComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -158,6 +164,8 @@ import { DetalleUnidadConservacionComponent } from './ui/page-components/unidade
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
     ConfirmationService,
+    ProcesoService,
+    SolicitudCreacionUdService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

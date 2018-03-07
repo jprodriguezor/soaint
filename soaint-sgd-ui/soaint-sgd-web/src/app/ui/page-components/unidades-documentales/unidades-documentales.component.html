@@ -143,7 +143,7 @@
                         <label for="descriptor2">Fecha extrema final:</label>
                     </div>
                     <div class="ui-g-12">
-                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" [(ngModel)]="State.FechaExtremaInicial"
+                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" [(ngModel)]="State.FechaExtremaFinal"
                         id="FechaExtremaInicial" ></p-calendar>
                       </div>
                 </div>                       
@@ -165,7 +165,14 @@
                        [responsive]="true"
                        [value]="State.ListadoUnidadDocumental | async"
                        emptyMessage="No se encontraron resultados ">
-            <p-column field="State.ListadoUnidadDocumental.seleccionado" header=""></p-column>
+            <p-column field="State.ListadoUnidadDocumental.seleccionado" header="">
+              <ng-template pTemplate="header">
+                <p-checkbox name="seleccionartodos"  (onChange)="State.SeleccionarTodos($event)"></p-checkbox>
+              </ng-template>
+              <ng-template let-col let-unidad="rowData" pTemplate="editor">
+                <p-checkbox [(ngModel)]="unidad[col.field]"></p-checkbox>
+              </ng-template>
+            </p-column>
             <p-column field="State.ListadoUnidadDocumental.nombreSerieSubserie" header="Nombre serie/subserie"></p-column>
             <p-column field="State.ListadoUnidadDocumental.identificadorUnidadDocumental" header="Identificar unidad documental"></p-column>
             <p-column field="State.ListadoUnidadDocumental.nombre" header="Nombre unidad documental"></p-column>
@@ -178,8 +185,8 @@
             <p-column field="State.ListadoUnidadDocumental.fechaCierreTramite" header="Fecha cierre trámite"></p-column>
             <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
             <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
-              <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
-                <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(rindex)"
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>

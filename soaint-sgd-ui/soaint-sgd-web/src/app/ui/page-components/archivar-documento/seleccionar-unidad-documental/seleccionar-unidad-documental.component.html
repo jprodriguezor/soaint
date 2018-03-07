@@ -7,7 +7,7 @@
 
     <div class="ui-sm-6 ui-g-6 text-right">
       <button class="ui-button" pButton label="Guardar" style="width: auto;  margin-bottom: 10px"></button>
-      <button pButton type="button" class="ui-button" label="Finalizar" style="width: auto;  margin-bottom: 10px"></button>
+      <button pButton type="button" class="ui-button" label="Finalizar" (click)="finalizarTarea()" style="width: auto;  margin-bottom: 10px"></button>
     </div>
 
   </div>
@@ -123,7 +123,7 @@
 
                 <ng-template [ngIf]="currentSection()=='bUnidadDocumental'">
                   <div class="ui-g-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
-                    <button pButton type="button" label="Limpiar" (click)="clearFilters()"
+                    <button pButton type="button" label="Limpiar" (click)="form.reset()"
                             style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: right" >
                     </button>
                     <button pButton type="button" label="Buscar" (click)="buscarUnidadDocumental()"
@@ -265,24 +265,7 @@
               </div>
             </div>
             <div class="ui-g-12 padding-top">
-              <p-panel header="Documentos archivados">
-                <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                             [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
-                  <p-column >
-                    <ng-template  pTemplate="body" let-index="rowIndex">
-                      {{index}}
-                    </ng-template>
-                  </p-column>
-                  <p-column header="Numero de Solicitud" [sortable]="true"></p-column>
-                  <p-column header="Identificador de unidad documental" [sortable]="true"></p-column>
-                  <p-column header="Nombre de unidad documental" [sortable]="true"></p-column>
-                  <p-column header="Serie/subserie" [sortable]="true"></p-column>
-                  <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
-                  <p-column header="identificacion documento" [sortable]="true"></p-column>
-                  <p-column header="Tipologia documental" [sortable]="true"></p-column>
-                  <p-column header="Nombre/ Asunto Documento" [sortable]="true"></p-column>
-                </p-dataTable>
-              </p-panel>
+              <app-lista-documentos-archivados></app-lista-documentos-archivados>
             </div>
           </div>
         <div class="ui-g ui-fluid">
