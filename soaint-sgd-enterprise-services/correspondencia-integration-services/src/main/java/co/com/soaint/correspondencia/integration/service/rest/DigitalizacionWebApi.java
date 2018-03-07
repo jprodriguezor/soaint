@@ -1,6 +1,7 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarDigitalizacion;
+import co.com.soaint.foundation.canonical.integration.DigitalizacionDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
@@ -37,8 +38,8 @@ public class DigitalizacionWebApi {
 
     @POST
     @Path("/digitalizacion")
-    public void digitalizarDocumento()throws SystemException {
+    public void digitalizarDocumento(DigitalizacionDTO digitalizacionDTO)throws SystemException {
         log.info("processing rest request - digitalizar documento");
-        boundary.digitalizarDocumento();
+        boundary.digitalizarDocumento(digitalizacionDTO);
     }
 }

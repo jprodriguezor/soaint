@@ -8,16 +8,12 @@ import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.integration.DigitalizacionDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,23 +38,11 @@ public class DigitalizacionControl {
     @Autowired
     BpmApiClient bpmApiClient;
 
-    public void digitalizarDocumento()throws SystemException{
-        String nroRadicado = "1000EE2018000011";
+    public void digitalizarDocumento(DigitalizacionDTO digitalizacionDTO)throws SystemException{
         try {
-            ComunicacionOficialDTO comunicacionOficial = correspondenciaApiClient.obtenerCorrespondenciaPorNroRadicado(nroRadicado);
+            ComunicacionOficialDTO comunicacionOficial = correspondenciaApiClient.obtenerCorrespondenciaPorNroRadicado(digitalizacionDTO.getNroRadicado());
 
-            //------------- Dummy -------------------
-            Path docPath = Paths.get("/home/tmp/presentacion_contenidos_empresa_alfresco.pdf");
-
-            String fileName = docPath.toFile().getName();
-            String fileType = Files.probeContentType(docPath);
-
-            byte[] bytes = Files.readAllBytes(docPath);
-            String encodedFile = Base64.getEncoder().encodeToString(bytes);
-
-            //-------------------------------------------
-
-            bytes = Base64.getDecoder().decode(encodedFile);
+            byte[] bytes = Base64.getDecoder().decode(digitalizacionDTO.getEncodedFile());
 
             DependenciaDTO dependencia = correspondenciaApiClient.consultarDependenciaByCodigo(comunicacionOficial.getCorrespondencia().getCodDependencia());
 
@@ -66,9 +50,9 @@ public class DigitalizacionControl {
                     .nroRadicado(comunicacionOficial.getCorrespondencia().getNroRadicado())
                     .sede(dependencia.getNomSede())
                     .dependencia(dependencia.getNomDependencia())
-                    .nombreDocumento(fileName)
+                    .nombreDocumento(digitalizacionDTO.getFileName())
                     .documento(bytes)
-                    .tipoDocumento(fileType)
+                    .tipoDocumento(digitalizacionDTO.getFileType())
                     .build();
             MensajeRespuesta respuestaEcm = ecmApiClient.uploadDocument(documento, comunicacionOficial.getCorrespondencia().getCodTipoCmc());
 
@@ -83,7 +67,7 @@ public class DigitalizacionControl {
                     .build();
 
             bpmApiClient.enviarSennal(entradaProceso);
-        } catch (IOException io){
+        } catch (Exception io){
             System.out.print(io.getMessage());
         }
     }
