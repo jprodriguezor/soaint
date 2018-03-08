@@ -80,12 +80,12 @@ public class EcmIntegrationServicesClientRest {
      *
      * @return Mensaje de respuesta
      */
-    @GET
+    @POST
     @Path("/listarUnidadesDocumentalesECM/")
-    public MensajeRespuesta listarUnidadesDocumentales() {
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
         logger.info("processing rest request - Listar Unidades Documentales ECM");
         try {
-            return fEcmManager.listarUnidadesDocumentales();
+            return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
         } catch (RuntimeException e) {
             logger.error("Error servicio Listar las Unidades Documentales ", e);
             throw e;

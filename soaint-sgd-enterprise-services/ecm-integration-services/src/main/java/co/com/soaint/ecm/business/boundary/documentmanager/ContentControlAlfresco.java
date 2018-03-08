@@ -507,8 +507,47 @@ public class ContentControlAlfresco implements ContentControl {
 
         final Map<String, String> props = new HashMap<>();
         //Se define como nombre de la carpeta nameOrg
-        props.put(PropertyIds.NAME, nombreUnidadDocumental);
 
+        /*final String identificador = folder.getProperty("").getValue();
+                final String udName = folder.getName();
+                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValue();
+                final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValue();
+                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValue();
+                final String estadoUD = folder.getProperty("cmcor:xEstadoUD").getValue();
+                final Date fechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
+                final Date fechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
+                final Date fechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
+                final String soporte = folder.getProperty("cmcor:xSoporte").getValue();
+                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValue();
+                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValue();
+                final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
+                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValue();
+                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
+
+
+                props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
+        props.put(PropertyIds.NAME, nombreUnidadDocumental);
+        props.put("cmcor:xDescriptor1", unidadDocumentalDTO.getDescriptor1());
+        props.put("cmcor:xDescriptor2", unidadDocumentalDTO.getDescriptor2());
+        props.put("cmcor:xFaseArchivo", unidadDocumentalDTO.getFaseArchivo());
+        props.put("cmcor:xEstadoUD", unidadDocumentalDTO.getEstado());
+        props.put("cmcor:xFechaExtremaInicial", unidadDocumentalDTO.getFechaExtremaInicial());
+        props.put("cmcor:xFechaExtremaFinal", unidadDocumentalDTO.getFechaExtremaFinal());
+        props.put("cmcor:xFechaCierre", unidadDocumentalDTO.getFechaCierre());
+        props.put("cmcor:xSoporte", unidadDocumentalDTO.getSoporte());
+        props.put("cmcor:CodigoSerie", codigoSerie);
+        props.put("cmcor:CodigoSubserie", codigoSubSerie);
+        props.put("cmcor:xUbicacionTopografica", unidadDocumentalDTO.getUbicacionTopografica());
+        props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
+        props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
+        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+        props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+
+                */
+
+
+
+        props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
         props.put("cmcor:CodigoSerie", codigoSerie);
@@ -535,20 +574,50 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Mensaje de respuesta
      */
     @Override
-    public MensajeRespuesta listarUnidadesDocumentales(final Session session) {
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO dto,
+                                                       final Session session) {
 
         final MensajeRespuesta respuesta = new MensajeRespuesta();
 
         try {
 
+            String query =
+                    "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
+                    " WHERE cmcor:xAbierta = 'false'" +
+                    " AND cmcor:xFechaExtremaInicial IS NOT NULL" +
+                    " AND cmcor:xFechaExtremaFinal IS NOT NULL" +
+                    " AND cmcor:xFechaCierre IS NOT NULL" +
+                    " AND cmcor:xSoporte IS NOT NULL" +
+                    " AND cmcor:xEstadoUD = 'Inactivo'";
+
+            if (!StringUtils.isEmpty(dto.getCodigoSerie())) {
+                query += " AND cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "'";
+            }
+            if (!StringUtils.isEmpty(dto.getCodigoSubSerie())) {
+                query += " AND cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie() + "'";
+            }
+            if (!StringUtils.isEmpty(dto.getId())) {
+                query += " AND cmcor:xIdentificador = '" + dto.getId() + "'";
+            }
+            if (!StringUtils.isEmpty(dto.getNombreUnidadDocumental())) {
+                query += " AND cmis:name LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
+            }
+            if (!StringUtils.isEmpty(dto.getDescriptor1())) {
+                query += " AND cmcor:xDescriptor1 = '" + dto.getDescriptor1() + "'";
+            }
+            if (!StringUtils.isEmpty(dto.getDescriptor2())) {
+                query += " AND cmcor:xDescriptor2 = '" + dto.getDescriptor2() + "'";
+            }
+            if (!StringUtils.isEmpty(dto.getCodigoDependencia())) {
+                query += " AND cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "'";
+            }
+
+            logger.info("Executing query {}", query);
+            final ItemIterable<QueryResult> queryResults;
+            queryResults = session.query(query, false);
+
             final List<UnidadDocumentalDTO> unidadDocumentalDTOS;
             unidadDocumentalDTOS = new ArrayList<>();
-
-            final String query;
-            query = "SELECT * FROM " +
-                    CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
-
-            final ItemIterable<QueryResult> queryResults = session.query(query, false);
 
             queryResults.forEach(queryResult -> {
 
@@ -556,25 +625,31 @@ public class ContentControlAlfresco implements ContentControl {
                 Folder folder = (Folder)
                         session.getObject(session.getObject(objectId));
 
-                final String folderName = folder.getName();
-                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValuesAsString();
-                final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValuesAsString();
-                final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValuesAsString();
-                final String xFechaCierre = folder.getProperty("cmcor:xFechaCierre").getValuesAsString();
-                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValuesAsString();
-                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValuesAsString();
-                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValuesAsString();
-                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValuesAsString();
-                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValuesAsString();
+                final String nombrePadre = folder.getFolderParent().getName();
+                final String identificador = folder.getProperty("cmcor:xIdentificador").getValue();
+                final String udName = folder.getName();
+                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValue();
+                final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValue();
+                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValue();
+                final String estadoUD = folder.getProperty("cmcor:xEstadoUD").getValue();
+                final Date fechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
+                final Date fechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
+                final Date fechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
+                final String soporte = folder.getProperty("cmcor:xSoporte").getValue();
+                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValue();
+                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValue();
+                final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
+                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValue();
+                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
 
                 logger.info("******************************************************");
                 logger.info("**************** |Folder Properties | ****************");
                 logger.info("******************************************************");
-                logger.info("* Name: {}", folderName);
+                logger.info("* Name: {}", udName);
                 logger.info("* xDescriptor1: {}", xDescriptor1);
                 logger.info("* xDescriptor2: {}", xDescriptor2);
                 logger.info("* xUbicacionTopografica: {}", xUbicacionTopografica);
-                logger.info("* xFechaCierre: {}", xFechaCierre);
+                logger.info("* xFechaCierre: {}", fechaCierre);
                 logger.info("* xFaseArchivo: {}", xFaseArchivo);
                 logger.info("* CodigoSubserie: {}", CodigoSubserie);
                 logger.info("* CodigoSerie: {}", CodigoSerie);
@@ -583,15 +658,25 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info("******************************************************");
                 logger.info("");
 
-                final UnidadDocumentalDTO dto = UnidadDocumentalDTO.newInstance()
-                        .descriptor1(eliminaCorchetes(xDescriptor1))
-                        .descriptor2(eliminaCorchetes(xDescriptor2))
-                        .codigoSede(eliminaCorchetes(CodigoSerie))
-                        .codigoSubSerie(eliminaCorchetes(CodigoSubserie))
-                        .codigoDependencia(eliminaCorchetes(CodigoDependencia))
+                final UnidadDocumentalDTO tmp_dto = UnidadDocumentalDTO.newInstance()
+                        .nombreSerie(nombrePadre)
+                        .nombreSubSerie(nombrePadre)
+                        .id(identificador)
+                        .nombreUnidadDocumental(udName)
+                        .descriptor1(xDescriptor1)
+                        .descriptor2(xDescriptor2)
+                        .faseArchivo(xFaseArchivo)
+                        .estado(estadoUD)
+                        .fechaExtremaInicial(fechaExtremaInicial)
+                        .fechaExtremaFinal(fechaExtremaFinal)
+                        .fechaCierre(fechaCierre)
+                        .soporte(soporte)
+                        .codigoSerie(CodigoSerie)
+                        .codigoSubSerie(CodigoSubserie)
+                        .codigoDependencia(CodigoDependencia)
                         .build();
 
-                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), dto);
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), tmp_dto);
 
             });
 
@@ -607,13 +692,6 @@ public class ContentControlAlfresco implements ContentControl {
             respuesta.setCodMensaje("111111");
             return respuesta;
         }
-    }
-
-    private String eliminaCorchetes(String cadena){
-
-        return  (cadena != null) ?
-            cadena.replace("[", "").
-                    replace("]", "") : "";
     }
 
     /**

@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.ecm;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,11 +26,16 @@ import java.util.Date;
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
 public class UnidadDocumentalDTO {
 
-    private String ideUnidadDocumental;
+    private String id;
     private String descriptor2;
+
+    @JsonFormat(pattern = "DD/MM/YYYY")
     private Date fechaCierre;
+    @JsonFormat(pattern = "DD/MM/YYYY")
     private Date fechaExtremaInicial;
+    @JsonFormat(pattern = "DD/MM/YYYY")
     private Date fechaExtremaFinal;
+
     private String soporte;
     private String estado;
     private String ubicacionTopografica;
@@ -45,6 +51,7 @@ public class UnidadDocumentalDTO {
     private String nombreDependencia;
     private String codigoSede;
     private String nombreSede;
+    private boolean abierta;
 
     private String accion;
 }
