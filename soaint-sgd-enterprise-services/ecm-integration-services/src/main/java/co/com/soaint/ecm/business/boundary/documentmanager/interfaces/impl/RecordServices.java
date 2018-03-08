@@ -664,6 +664,102 @@ public class RecordServices implements IRecordServices {
     }
 
     /**
+     * Permite Completar Records
+     *
+     * @param idRecord       Identificador del documento en record
+     * @return identificador de la subserie creada
+     * @throws SystemException
+     */
+    private String completeRecord(String idRecord, String idRecordFolder) throws SystemException {
+        log.info("Se entra al metodo completeRecord para el record de id: {}", idRecord);
+        try {
+            if (!idRecord.isEmpty()) {
+
+                WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+                Response response = wt.path("/records/" + idRecord + "/complete")
+                        .request()
+                        .header(headerAuthorization, valueAuthorization + " " + encoding)
+                        .header(headerAccept, valueApplicationType)
+                        .post(Entity.json(idRecord));
+                if (response.getStatus() != 201) {
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                            .buildBusinessException();
+                } else {
+                    return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+                }
+            }
+            return null;
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Completar record ");
+        }
+
+    }
+
+
+    /**
+     * Permite Abrir/Cerrar Record Folder
+     *
+     * @param abrirCerrar       Valor boolenao para abrir cerrar la unidad documental
+     * @return identificador de la subserie creada
+     * @throws SystemException
+     */
+    private MensajeRespuesta abrirCerrarRecordFolder(String idRecordFolder, Boolean abrirCerrar) throws SystemException {
+        log.info("Se entra al metodo abrirCerrarRecordFolder para cerrar la unidad documental con id: {}", idRecordFolder);
+        try {
+            JSONObject isClosed = new JSONObject();
+            JSONObject properties = new JSONObject();
+            if ( !idRecordFolder.isEmpty()) {
+                propiedades.put(isClosed, abrirCerrar.toString());
+                WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+                Response response = wt.path("/record-folder/" + idRecordFolder)
+                        .request()
+                        .header(headerAuthorization, valueAuthorization + " " + encoding)
+                        .header(headerAccept, valueApplicationType)
+                        .put(Entity.json(properties.toString()));
+                if (response.getStatus() != 201) {
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                            .buildBusinessException();
+                } else {
+                    return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+                }
+            }
+            return null;
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Guardar record en su record folder ");
+        }
+
+    }
+
+
+    /**
      * Permite obtener id de la ruta
      *
      * @param respuestaJson objeto json con las informacion necesaria para obtener el id de la ruta
