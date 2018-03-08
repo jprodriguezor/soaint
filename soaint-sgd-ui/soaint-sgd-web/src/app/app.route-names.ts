@@ -19,8 +19,9 @@ export const ROUTES_PATH = {
   cargarPlanillas: 'cargar-planillas',
   produccionDocumentalMultiple: 'produccion-documental-multiple',
   produccionDocumental: 'producir-documento',
-  seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
+  archivarDocumento: 'archivar-documento',
   seleccionarDocumentos: 'seleccionar-documentos',
   securityRole: 'security-role',
-  gestionUnidadDocumental: 'gestion-unidad-documental'
+  gestionUnidadDocumental: 'gestion-unidad-documental',
+  crearUnidadDocumental: 'crear-unidad-documental',
 };

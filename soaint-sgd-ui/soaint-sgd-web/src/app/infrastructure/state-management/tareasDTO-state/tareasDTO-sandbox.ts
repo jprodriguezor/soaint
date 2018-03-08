@@ -14,7 +14,7 @@ import {
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
-  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA
+  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -179,6 +179,9 @@ export class Sandbox {
       case TASK_APROBAR_DOCUMENTO:
           this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/3`, task]));
           break;
+      case TASK_ARCHIVAR_DOCUMENTO :
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.archivarDocumento}`, task]));
+        break;
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }

@@ -24,6 +24,7 @@ import {SecurityRoleComponent} from './ui/page-components/security-role/security
 import {UnidadesDocumentalesComponent} from './ui/page-components/unidades-documentales/unidades-documentales.component';
 import {GestionarDevolucionesComponent} from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
 import {CorregirRadicacionComponent} from './ui/page-components/corregir-radicacion/corregir-radicacion.component';
+import {RedirectSeleccionarDocumentoComponent} from "./ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -89,6 +90,11 @@ export const routes: Routes = [
         path: ROUTES_PATH.gestionUnidadDocumental,
         component: UnidadesDocumentalesComponent,
         canActivate: [AuthenticatedGuard]
+      },
+      {
+        path: ROUTES_PATH.archivarDocumento,
+        component: SeleccionarUnidadDocumentalComponent,
+        canActivate:[AuthenticatedGuard]
       }
     ]
   },
@@ -120,8 +126,8 @@ export const routes: Routes = [
     canActivate: [AuthenticatedGuard]
   },
   {
-    path: ROUTES_PATH.seleccionarUnidadDocumental,
-    component: SeleccionarUnidadDocumentalComponent,
+    path: ROUTES_PATH.archivarDocumento,
+    component: RedirectSeleccionarDocumentoComponent,
     canActivate: [AuthenticatedGuard]
   },
   {
