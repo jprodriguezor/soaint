@@ -23,12 +23,11 @@ import java.util.List;
 @BusinessBoundary
 @NoArgsConstructor
 public class ContentManager {
+    private static final String MSGCONEXION = "### Estableciendo la conexion..";
+    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
     @Autowired
     private
     ContentControl contentControl;
-    private static final String MSGCONEXION = "### Estableciendo la conexion..";
-    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
-
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -343,12 +342,38 @@ public class ContentManager {
             Conexion conexion = contentControl.obtenerConexion();
             logger.info("### Invocando metodo para crear Unidad Documental..");
             response = contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
-            logger.info("Series o subseries devueltas exitosamente");
+            logger.info("Unidad Documental creada exitosamente");
 
         } catch (Exception e) {
             logger.error("Error al crear la Unidad Documental ", e);
             response.setCodMensaje("2222");
             response.setMensaje("Error al crear la Unidad Documental");
+
+        }
+        return response;
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales() {
+
+        MensajeRespuesta response = new MensajeRespuesta();
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+
+        try {
+
+            logger.info(MSGCONEXION);
+            Conexion conexion = contentControl.obtenerConexion();
+            response = contentControl.listarUnidadesDocumentales(conexion.getSession());
+            logger.info("Series o subseries devueltas exitosamente");
+
+        } catch (Exception e) {
+            logger.error("Error al Listar las Unidades Documentales ", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al Listar las Unidades Documentales");
 
         }
         return response;

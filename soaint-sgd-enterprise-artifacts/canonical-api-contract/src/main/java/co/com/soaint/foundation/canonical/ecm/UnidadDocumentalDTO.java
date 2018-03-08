@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,18 +26,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UnidadDocumentalDTO {
 
     private String ideUnidadDocumental;
-    private String codigoUnidadDocumental;
-    private String nombreUnidadDocumental;
-    private String descriptor1;
     private String descriptor2;
-    private String codigoSerie;
-    private String nombreSerie;
+    private Date fechaCierre;
+    private Date fechaExtremaInicial;
+    private Date fechaExtremaFinal;
+    private String soporte;
+    private String estado;
+    private String ubicacionTopografica;
+    private String faseArchivo;
+    private String descriptor1;
     private String codigoSubSerie;
     private String nombreSubSerie;
-    private String codigoSede;
-    private String nombreSede;
+    private String codigoSerie;
+    private String nombreSerie;
+    private String nombreUnidadDocumental;
+    private String codigoUnidadDocumental;
     private String codigoDependencia;
     private String nombreDependencia;
-    private String estado;
+    private String codigoSede;
+    private String nombreSede;
+
     private String accion;
 }
