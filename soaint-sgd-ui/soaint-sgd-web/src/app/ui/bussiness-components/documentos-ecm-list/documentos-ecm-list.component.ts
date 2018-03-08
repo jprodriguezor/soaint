@@ -12,7 +12,7 @@ import {LoadingService} from '../../../infrastructure/utils/loading.service';
   selector: 'app-documentos-ecm-list',
   templateUrl: './documentos-ecm-list.component.html'
 })
-export class DocumentosECMListComponent implements OnChanges {
+export class DocumentosECMListComponent implements OnInit, OnChanges {
 
 
   @Input()
@@ -29,6 +29,10 @@ export class DocumentosECMListComponent implements OnChanges {
   editable = true;
 
   constructor(private _store: Store<State>, private _api: ApiBase, public loadingService: LoadingService) {
+  }
+
+  ngOnInit() {
+    this.loadDocumentos();
   }
 
   ngOnChanges(): void {
