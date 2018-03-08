@@ -10,6 +10,7 @@
 	<module>mock-productos-business-services</module>
     <module>bpm-integration-services</module>
     <module>funcionario-integration-services</module>
+    <module>digitalizacion-integration-services</module>
   </modules>
   <packaging>pom</packaging>
   <name>soaint-sgd-enterprise-services</name>
