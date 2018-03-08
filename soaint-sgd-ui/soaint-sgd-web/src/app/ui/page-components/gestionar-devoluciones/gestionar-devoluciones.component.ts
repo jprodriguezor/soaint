@@ -28,9 +28,6 @@ export class GestionarDevolucionesComponent implements OnInit {
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
 
-  @ViewChild('documentosECMList') documentosECMList;
-
-
   causalDevolucion: any;
   usuariodevuelve: any;
   sedeAdministrativa: any;
@@ -44,6 +41,7 @@ export class GestionarDevolucionesComponent implements OnInit {
   dependencias: DependenciaDTO[] = [];
   disabledDevolucionRechazar: Boolean = false;
   disabledDevolucionAction: Boolean = false;
+  hasDocumnts: Boolean = false;
 
   comunicacion: ComunicacionOficialDTO = {};
 
@@ -117,6 +115,7 @@ export class GestionarDevolucionesComponent implements OnInit {
 
         if(this.comunicacion){
 
+            this.hasDocumnts = (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
             this.popupAgregarObservaciones.form.reset();
             this.popupAgregarObservaciones.setData({
               idDocumento: this.comunicacion.correspondencia.ideDocumento,
@@ -127,11 +126,11 @@ export class GestionarDevolucionesComponent implements OnInit {
             this.popupAgregarObservaciones.loadObservations();
 
             //para la lista de documentos
-            this.documentosECMList.setDataDocument({
-              comunicacion: this.comunicacion,
-              versionar: false,
-            });
-            this.documentosECMList.loadDocumentos();
+            //this.documentosECMList.setDataDocument({
+            //  comunicacion: this.comunicacion,
+            //  versionar: false,
+            //});
+            //this.documentosECMList.loadDocumentos();
         }
 
 
