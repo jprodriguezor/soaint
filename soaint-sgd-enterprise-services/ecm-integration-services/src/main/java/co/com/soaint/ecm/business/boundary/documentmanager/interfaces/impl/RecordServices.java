@@ -158,7 +158,6 @@ public class RecordServices implements IRecordServices {
             carpeta.put(tipoNodo, recordCarpeta);
             crearNodo(carpeta, buscarRuta(parametro));
 
-
             return MensajeRespuesta.newInstance()
                     .codMensaje("0000")
                     .mensaje("Carpeta creda en ".concat(codigoBusqueda))
@@ -303,6 +302,47 @@ public class RecordServices implements IRecordServices {
     }
 
     /**
+     * Permite declarar un documento como record
+     * @param idDocumentoContent Identificador del documento dentro del content
+     * @return el id del record creado
+     * @throws SystemException
+     */
+
+    public String declararRecord( String idDocumentoContent) throws SystemException {
+        log.info("iniciar - Declarar como record el documento con id: {}", idDocumentoContent);
+        try {
+
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+            Response response = wt.path("/files/" + idDocumentoContent + "/declare")
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header(headerAccept, valueApplicationType)
+                    .post(Entity.json(idDocumentoContent));
+            if (response.getStatus() != 201) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                        .buildBusinessException();
+            } else {
+                return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+            }
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Declarar como record el documento ");
+        }
+    }
+    /**
      * Permite crear nodo partiendo del tipo de categoria
      * @param entrada objeto json con la informacion necesaria para crear el nodo
      * @param idSerie identificardor del nodo padre
@@ -343,7 +383,6 @@ public class RecordServices implements IRecordServices {
             log.info("fin - crear categoria hija ");
         }
     }
-
     /**
      * Permite crear los tiempos de retencion asociado a series y subseries
      * @param entrada objeto json con lo paramtros necesarios para crear las los tiempos
