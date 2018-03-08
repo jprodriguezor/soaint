@@ -25,7 +25,7 @@ private task:TareaDTO;
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
-          creacionUD: true,
+          creacionUD: 1,
           listaSolicitudes: listaSolicitudes,
         }
       });
