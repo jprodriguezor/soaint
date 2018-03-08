@@ -44,4 +44,17 @@ public class UnidadDocumentalGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @POST
+    @Path("/crear-unidad-documental")
+    @JWTTokenSecurity
+    public Response crearUnidadDocumental(@RequestBody ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO ) {
+
+        log.info("UnidadDocumentalGatewayApi - [trafic] - creating unidad documental");
+        Response response = ecmClient.listarSeriesSubseriePorDependencia(contenidoDependenciaTrdDTO);
+        String responseContent = response.readEntity(String.class);
+        log.info("UnidadDocumentalGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }
