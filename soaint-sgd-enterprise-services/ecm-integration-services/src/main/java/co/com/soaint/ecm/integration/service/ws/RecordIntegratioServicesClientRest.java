@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -70,6 +67,24 @@ public class RecordIntegratioServicesClientRest {
             return record.crearCarpetaRecord(entrada);
         } catch (RuntimeException e) {
             logger.error("Error servicio creando estructura ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Crear carpeta en el Record
+     *
+     * @param id documento a declarar como record
+     * @return IdRecord
+     */
+    @POST
+    @Path("/declararRecord/{id}")
+    public String declararRecord(@PathParam("id") String id) throws SystemException {
+        logger.info("processing rest request - Declarar Record");
+        try {
+            return record.declararRecord(id);
+        } catch (RuntimeException e) {
+            logger.error("Error servicio declarar record ", e);
             throw e;
         }
     }
