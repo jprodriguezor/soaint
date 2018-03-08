@@ -176,9 +176,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   transformToDestinatarioContacts(contacts) {
-    console.log(contacts);
     return contacts.map(c => {
-      return { pais: isNullOrUndefined(c.pais) ? '' : c.pais, departamento: isNullOrUndefined(c.departamento) ? null : c.departamento, municipio: isNullOrUndefined(c.municipio) ? null : c.municipio,
+      return {direccion: isNullOrUndefined(c.direccion) ? '' : c.direccion, pais: isNullOrUndefined(c.pais) ? '' : c.pais, departamento: isNullOrUndefined(c.departamento) ? null : c.departamento, municipio: isNullOrUndefined(c.municipio) ? null : c.municipio,
         numeroTel: isNullOrUndefined(c.numeroTel) ? '' : c.numeroTel, celular: isNullOrUndefined(c.celular) ? '' : c.celular, correoEle: isNullOrUndefined(c.correoEle) ? '' : c.correoEle}; });
   }
 
