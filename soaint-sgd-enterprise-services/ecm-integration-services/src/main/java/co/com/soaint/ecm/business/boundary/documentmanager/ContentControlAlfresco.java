@@ -435,9 +435,7 @@ public class ContentControlAlfresco implements ContentControl {
                 response.setMensaje("No existe la dependencia '" + dependenciaCode + "' en el ECM");
                 return response;
             }
-
             flag = true;
-
         }
         if (!flag && !StringUtils.isEmpty(codigoSerie) && StringUtils.isEmpty(codigoSubSerie)) {
 
@@ -505,56 +503,33 @@ public class ContentControlAlfresco implements ContentControl {
             return response;
         }
 
-        final Map<String, String> props = new HashMap<>();
+        final Map<String, Object> props = new HashMap<>();
         //Se define como nombre de la carpeta nameOrg
 
-        /*final String identificador = folder.getProperty("").getValue();
-                final String udName = folder.getName();
-                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValue();
-                final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValue();
-                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValue();
-                final String estadoUD = folder.getProperty("cmcor:xEstadoUD").getValue();
-                final Date fechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
-                final Date fechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
-                final Date fechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
-                final String soporte = folder.getProperty("cmcor:xSoporte").getValue();
-                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValue();
-                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValue();
-                final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
-                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValue();
-                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
-
-
-                props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
-        props.put(PropertyIds.NAME, nombreUnidadDocumental);
-        props.put("cmcor:xDescriptor1", unidadDocumentalDTO.getDescriptor1());
+        logger.info("Creating props to make the folder");
+        props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
         props.put("cmcor:xDescriptor2", unidadDocumentalDTO.getDescriptor2());
-        props.put("cmcor:xFaseArchivo", unidadDocumentalDTO.getFaseArchivo());
-        props.put("cmcor:xEstadoUD", unidadDocumentalDTO.getEstado());
+        props.put("cmcor:xCerrada", unidadDocumentalDTO.isCerrada());
+        props.put("cmcor:xFechaCierre", unidadDocumentalDTO.getFechaCierre());
         props.put("cmcor:xFechaExtremaInicial", unidadDocumentalDTO.getFechaExtremaInicial());
         props.put("cmcor:xFechaExtremaFinal", unidadDocumentalDTO.getFechaExtremaFinal());
-        props.put("cmcor:xFechaCierre", unidadDocumentalDTO.getFechaCierre());
         props.put("cmcor:xSoporte", unidadDocumentalDTO.getSoporte());
-        props.put("cmcor:CodigoSerie", codigoSerie);
-        props.put("cmcor:CodigoSubserie", codigoSubSerie);
+        props.put("cmcor:xEstadoUD", unidadDocumentalDTO.getEstado());
         props.put("cmcor:xUbicacionTopografica", unidadDocumentalDTO.getUbicacionTopografica());
-        props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
-        props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
-        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-        props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-
-                */
-
-
-        props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
-        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-        props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+        props.put("cmcor:xFaseArchivo", unidadDocumentalDTO.getFaseArchivo());
+        props.put("cmcor:xDescriptor1", unidadDocumentalDTO.getDescriptor1());
         props.put("cmcor:CodigoSerie", codigoSerie);
         props.put("cmcor:CodigoSubserie", codigoSubSerie);
         props.put(CMCOR_CODIGODEPENDENCIA, dependenciaCode);
         props.put(CMCOR_CODIGOUNIDADAMINPADRE, folder.getPropertyValue(CMCOR_CODIGODEPENDENCIA));
 
+        props.put(PropertyIds.NAME, nombreUnidadDocumental);
+        props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+
+        logger.info("Making the folder!!!");
         folder.createFolder(props);
+        logger.info("Make success");
 
         response.setCodMensaje("0000");
         response.setMensaje("Unidad Documental creada con exito");
@@ -629,6 +604,7 @@ public class ContentControlAlfresco implements ContentControl {
             }
             if (!StringUtils.isEmpty(dto.getNombreUnidadDocumental())) {
                 query += (!where ? " WHERE " : " AND ") + "cmis:name LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
+                where = true;
             }
             if (!StringUtils.isEmpty(dto.getCodigoDependencia())) {
                 query += (!where ? " WHERE " : " AND ") + "cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "'";
@@ -712,42 +688,6 @@ public class ContentControlAlfresco implements ContentControl {
                         .codigoDependencia(xCodigoDependencia)
                         .nombreUnidadDocumental(xNombreUnidadDocumental)
                         .build();
-
-                        /*
-
-
-                final Date  = folder.getProperty("cmcor:xFechaCierre").getValue();
-                final Date  = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
-                final Date  = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
-                final String  = folder.getProperty("cmcor:xSoporte").getValue();
-                final String  = folder.getProperty("cmcor:xEstadoUD").getValue();
-                final String  = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
-                final String  = folder.getProperty("cmcor:xFaseArchivo").getValue();
-                final String  = folder.getProperty("cmcor:xDescriptor1").getValue();
-                final String  = folder.getProperty("cmcor:CodigoSerie").getValue();
-                final String  = folder.getProperty("cmcor:CodigoSubserie").getValue();
-                final String  = folder.getProperty("cmcor:CodigoDependencia").getValue();
-                final String  = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
-
-                final String xNombreUnidadDocumental = folder.getName();*/
-
-
-                        /*.nombreSerie(nombrePadre)
-                        .nombreSubSerie(nombrePadre)
-                        .id(xIdentificador)
-                        .nombreUnidadDocumental(udName)
-                        .descriptor1(xDescriptor1)
-                        .descriptor2(xDescriptor2)
-                        .faseArchivo(xFaseArchivo)
-                        .estado(estadoUD)
-                        .fechaExtremaInicial(xFechaExtremaInicial)
-                        .fechaExtremaFinal(xFechaExtremaFinal)
-                        .fechaCierre(xFechaCierre)
-                        .soporte(soporte)
-                        .codigoSerie(xCodigoSerie)
-                        .codigoSubSerie(xCodigoSubserie)
-                        .codigoDependencia(xCodigoDependencia)
-                        .build();*/
 
                 unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), tmp_dto);
 
