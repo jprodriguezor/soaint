@@ -1,10 +1,10 @@
 package co.com.soaint.mensajeria.apis.delegator;
 
 import co.com.soaint.foundation.canonical.integration.DigitalizacionDTO;
-import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.mensajeria.infrastructure.ApiDelegator;
+import co.com.soaint.mensajeria.util.SystemParameters;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 @NoArgsConstructor
 public class CorrespondenciaIntegrationClient {
 
-    private String endpoint = "http://192.168.1.154:28080/correspondencia-integration-services/services";
+    private String endpoint = SystemParameters.getParameter(SystemParameters.CORRESPONDENCIA_INTEGRATION_SERVICE_ENDPOINT);
 
     public void digitalizarDocumento(DigitalizacionDTO digitalizacionDTO) throws SystemException {
         log.info("Correspondencia - [trafic] - digitalizar documento with endpoint: " + endpoint);
