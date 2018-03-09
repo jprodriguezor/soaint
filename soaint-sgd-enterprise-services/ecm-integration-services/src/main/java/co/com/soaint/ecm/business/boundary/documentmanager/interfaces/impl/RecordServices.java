@@ -445,7 +445,27 @@ public class RecordServices implements IRecordServices {
             log.info("fin - crear categoria hija ");
         }
     }
-
+    /**
+     * Permite obtner el DTO UnidadDocumental a partir del objeto json de respuesta
+     *
+     * @param respuestaJson objeto json que contiene el mensaje de repuesta para procesar
+     * @return el valor del campo id en la respusta json
+     */
+    private UnidadDocumentalDTO obtenerUnidadDocumental(JSONObject respuestaJson) {
+        String codigoId = "";
+        UnidadDocumentalDTO unidadDocumentalDTO=new UnidadDocumentalDTO();
+        Iterator keys = respuestaJson.keys();
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            if ("entry".equalsIgnoreCase(key.toString())) {
+                JSONObject valor = respuestaJson.getJSONObject((String) key);
+                unidadDocumentalDTO.setIdeUnidadDocumental(valor.getString("id"));
+                unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("nombre"));
+                unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("isClosed"));
+            }
+        }
+        return unidadDocumentalDTO;
+    }
     /**
      * Permite obtner el id del objeto json de respuesta
      *
@@ -666,7 +686,7 @@ public class RecordServices implements IRecordServices {
     /**
      * Permite Completar Records
      *
-     * @param idRecord       Identificador del documento en record
+     * @param idRecord Identificador del documento en record
      * @return identificador de la subserie creada
      * @throws SystemException
      */
@@ -709,11 +729,51 @@ public class RecordServices implements IRecordServices {
 
     }
 
+    /**
+     * Permite obtener Record Folder dado parámetros
+     *
+     * @param idRecordFolder Identificador por el cual se va a realizar el filtrado para obtener el record folder
+     * @return Objeto UnidadDocumentalDTO
+     * @throws SystemException
+     */
+    private UnidadDocumentalDTO obtenerRecordFolder(String idRecordFolder) throws SystemException {
+        log.info("Se obtienen los Record Folders que con Id: {}", idRecordFolder);
+        try {
+
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+            Response response = wt.path("/record-folders/" + idRecordFolder)
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header(headerAccept, valueApplicationType)
+                    .put(Entity.json(idRecordFolder.toString()));
+            if (response.getStatus() != 201) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                        .buildBusinessException();
+            } else {
+                return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+            }
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Guardar record en su record folder ");
+        }
+    }
 
     /**
      * Permite Abrir/Cerrar Record Folder
      *
-     * @param abrirCerrar       Valor boolenao para abrir cerrar la unidad documental
+     * @param abrirCerrar Valor boolenao para abrir cerrar la unidad documental
      * @return identificador de la subserie creada
      * @throws SystemException
      */
@@ -722,10 +782,12 @@ public class RecordServices implements IRecordServices {
         try {
             JSONObject isClosed = new JSONObject();
             JSONObject properties = new JSONObject();
-            if ( !idRecordFolder.isEmpty()) {
+            if (!idRecordFolder.isEmpty()) {
+
+
                 propiedades.put(isClosed, abrirCerrar.toString());
                 WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-                Response response = wt.path("/record-folder/" + idRecordFolder)
+                Response response = wt.path("/record-folders/" + idRecordFolder)
                         .request()
                         .header(headerAuthorization, valueAuthorization + " " + encoding)
                         .header(headerAccept, valueApplicationType)
