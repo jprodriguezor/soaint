@@ -692,7 +692,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    private String completeRecord(String idRecord, String idRecordFolder) throws SystemException {
+    public String completeRecord(String idRecord, String idRecordFolder) throws SystemException {
         log.info("Se entra al metodo completeRecord para el record de id: {}", idRecord);
         try {
             if (!idRecord.isEmpty()) {
@@ -779,7 +779,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    private Boolean abrirCerrarRecordFolder(String idRecordFolder, Boolean abrirCerrar) throws SystemException {
+    public Boolean abrirCerrarRecordFolder(String idRecordFolder, Boolean abrirCerrar) throws SystemException {
         log.info("Se entra al metodo abrirCerrarRecordFolder para cerrar la unidad documental con id: {}", idRecordFolder);
         try {
 
