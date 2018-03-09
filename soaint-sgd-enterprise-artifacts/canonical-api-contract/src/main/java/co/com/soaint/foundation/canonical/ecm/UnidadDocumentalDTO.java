@@ -51,7 +51,7 @@ public class UnidadDocumentalDTO {
     private String nombreDependencia;
     private String codigoSede;
     private String nombreSede;
-    private boolean abierta;
+    private boolean cerrada;
 
     private String accion;
 }
