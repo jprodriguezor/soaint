@@ -29,11 +29,11 @@ public class UnidadDocumentalDTO {
     private String id;
     private String descriptor2;
 
-    @JsonFormat(pattern = "DD/MM/YYYY")
+    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaCierre;
-    @JsonFormat(pattern = "DD/MM/YYYY")
+    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaExtremaInicial;
-    @JsonFormat(pattern = "DD/MM/YYYY")
+    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaExtremaFinal;
 
     private String soporte;

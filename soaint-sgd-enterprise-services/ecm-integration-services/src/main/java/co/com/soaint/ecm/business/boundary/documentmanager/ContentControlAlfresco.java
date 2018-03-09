@@ -387,7 +387,7 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo que crea las unidades documentales del ECM
      *
      * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
-     * @param session           Objeto de conexion
+     * @param session             Objeto de conexion
      * @return MensajeRespuesta
      */
     @Override
@@ -399,7 +399,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         final String dependenciaCode = unidadDocumentalDTO.getCodigoDependencia();
 
-        if (StringUtils.isEmpty(dependenciaCode)){
+        if (StringUtils.isEmpty(dependenciaCode)) {
             logger.error("La Unidad Documental {} no contiene el codigo de la Dependencia", unidadDocumentalDTO);
             response.setMensaje("La Unidad Documental no contiene el codigo de la Dependencia");
             response.setCodMensaje("22223");
@@ -408,7 +408,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         final String nombreUnidadDocumental = unidadDocumentalDTO.getNombreUnidadDocumental();
 
-        if (StringUtils.isEmpty(nombreUnidadDocumental)){
+        if (StringUtils.isEmpty(nombreUnidadDocumental)) {
             logger.error("La Unidad Documental no contiene Nombre");
             response.setMensaje("La Unidad Documental no contiene Nombre");
             response.setCodMensaje("22223");
@@ -443,7 +443,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             query = "SELECT * FROM " +
                     CMCOR + "" + configuracion.getPropiedad(CLASE_SERIE) + " " +
-                    "WHERE cmcor:CodigoSerie = '"       + codigoSerie + "' " +
+                    "WHERE cmcor:CodigoSerie = '" + codigoSerie + "' " +
                     "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
             flag = true;
 
@@ -452,8 +452,8 @@ public class ContentControlAlfresco implements ContentControl {
 
             query = "SELECT * FROM " +
                     CMCOR + "" + configuracion.getPropiedad(CLASE_SUBSERIE) + " " +
-                    "WHERE cmcor:CodigoSerie = '"       + codigoSerie + "' " +
-                    "AND cmcor:CodigoSubserie = '"    + codigoSubSerie + "' " +
+                    "WHERE cmcor:CodigoSerie = '" + codigoSerie + "' " +
+                    "AND cmcor:CodigoSubserie = '" + codigoSubSerie + "' " +
                     "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
             flag = true;
         }
@@ -468,9 +468,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         queryUnidadDocumentalExist = "SELECT * FROM " +
                 CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) + " " +
-                "WHERE cmis:name = '"             + nombreUnidadDocumental + "'" +
-                "AND cmcor:CodigoSerie = '"       + codigoSerie + "' " +
-                "AND cmcor:CodigoSubserie = '"    + codigoSubSerie + "' " +
+                "WHERE cmis:name = '" + nombreUnidadDocumental + "'" +
+                "AND cmcor:CodigoSerie = '" + codigoSerie + "' " +
+                "AND cmcor:CodigoSubserie = '" + codigoSubSerie + "' " +
                 "AND cmcor:CodigoDependencia = '" + dependenciaCode + "'";
 
         final ItemIterable<QueryResult> queryResultUnidadDocumentalExist =
@@ -546,7 +546,6 @@ public class ContentControlAlfresco implements ContentControl {
                 */
 
 
-
         props.put("cmcor:xIdentificador", unidadDocumentalDTO.getId());
         props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
@@ -581,17 +580,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         try {
 
-            /*String query =
-                    "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
-                    " WHERE cmcor:xAbierta = 'false'" +
-                    " AND cmcor:xFechaExtremaInicial IS NOT NULL" +
-                    " AND cmcor:xFechaExtremaFinal IS NOT NULL" +
-                    " AND cmcor:xFechaCierre IS NOT NULL" +
-                    " AND cmcor:xSoporte IS NOT NULL" +
-                    " AND cmcor:xEstadoUD = 'Inactivo'";*/
-
             String query = "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
-
             boolean where = false;
 
             if (!StringUtils.isEmpty(dto.getId())) {
@@ -599,37 +588,50 @@ public class ContentControlAlfresco implements ContentControl {
                 where = true;
             }
             if (!StringUtils.isEmpty(dto.getDescriptor2())) {
-                query += (!where ? " WHERE " : " AND ") + "cmcor:xDescriptor2 = '" + dto.getDescriptor2() + "'";
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xDescriptor2 LIKE '%" + dto.getDescriptor2() + "%'";
                 where = true;
             }
             if (dto.getFechaCierre() != null) {
-                query += " AND cmcor:xFechaCierre = '" + dto.getCodigoSerie() + "'";
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xFechaCierre = '" + dto.getFechaCierre() + "'";
                 where = true;
             }
-
-
-
-
-
-
+            if (dto.getFechaExtremaInicial() != null) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xFechaExtremaInicial = '" + dto.getFechaExtremaInicial() + "'";
+                where = true;
+            }
+            if (dto.getFechaExtremaFinal() != null) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xFechaExtremaFinal = '" + dto.getFechaExtremaFinal() + "'";
+                where = true;
+            }
+            if (!StringUtils.isEmpty(dto.getSoporte())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xSoporte = '" + dto.getSoporte() + "'";
+                where = true;
+            }
+            if (!StringUtils.isEmpty(dto.getEstado())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xEstadoUD = '" + dto.getEstado() + "'";
+                where = true;
+            }
+            if (!StringUtils.isEmpty(dto.getDescriptor1())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xDescriptor1 LIKE '%" + dto.getDescriptor1() + "%'";
+                where = true;
+            }
+            if (!StringUtils.isEmpty(dto.isAbierta())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xAbierta = '" + dto.isAbierta() + "'";
+                where = true;
+            }
             if (!StringUtils.isEmpty(dto.getCodigoSerie())) {
-                query += " AND cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "'";
+                query += (!where ? " WHERE " : " AND ") + "cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "'";
                 where = true;
             }
             if (!StringUtils.isEmpty(dto.getCodigoSubSerie())) {
-                query += " AND cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie() + "'";
+                query += (!where ? " WHERE " : " AND ") + "cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie() + "'";
                 where = true;
             }
-
             if (!StringUtils.isEmpty(dto.getNombreUnidadDocumental())) {
-                query += " AND cmis:name LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
+                query += (!where ? " WHERE " : " AND ") + "cmis:name LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
             }
-            if (!StringUtils.isEmpty(dto.getDescriptor1())) {
-                query += " AND cmcor:xDescriptor1 = '" + dto.getDescriptor1() + "'";
-            }
-
             if (!StringUtils.isEmpty(dto.getCodigoDependencia())) {
-                query += " AND cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "'";
+                query += (!where ? " WHERE " : " AND ") + "cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "'";
             }
 
             logger.info("Executing query {}", query);
@@ -645,56 +647,107 @@ public class ContentControlAlfresco implements ContentControl {
                 Folder folder = (Folder)
                         session.getObject(session.getObject(objectId));
 
-                final String nombrePadre = folder.getFolderParent().getName();
-                final String identificador = folder.getProperty("cmcor:xIdentificador").getValue();
-                final String udName = folder.getName();
-                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValue();
+                final String xIdentificador = folder.getProperty("cmcor:xIdentificador").getValue();
                 final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValue();
-                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValue();
-                final String estadoUD = folder.getProperty("cmcor:xEstadoUD").getValue();
-                final Date fechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
-                final Date fechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
-                final Date fechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
-                final String soporte = folder.getProperty("cmcor:xSoporte").getValue();
-                final String CodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValue();
-                final String CodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValue();
+                final boolean xAbierta = folder.getProperty("cmcor:xAbierta").getValue();
+                final Date xFechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
+                final Date xFechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
+                final Date xFechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
+                final String xSoporte = folder.getProperty("cmcor:xSoporte").getValue();
+                final String xEstadoUD = folder.getProperty("cmcor:xEstadoUD").getValue();
                 final String xUbicacionTopografica = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
-                final String CodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValue();
-                final String CodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
+                final String xFaseArchivo = folder.getProperty("cmcor:xFaseArchivo").getValue();
+                final String xDescriptor1 = folder.getProperty("cmcor:xDescriptor1").getValue();
+                final String xCodigoSerie = folder.getProperty("cmcor:CodigoSerie").getValue();
+                final String xCodigoSubserie = folder.getProperty("cmcor:CodigoSubserie").getValue();
+                final String xCodigoDependencia = folder.getProperty("cmcor:CodigoDependencia").getValue();
+                final String xCodigoUnidadAdminPadre = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
+
+                final String xNombreUnidadDocumental = folder.getName();
+
 
                 logger.info("******************************************************");
                 logger.info("**************** |Folder Properties | ****************");
                 logger.info("******************************************************");
-                logger.info("* Name: {}", udName);
-                logger.info("* xDescriptor1: {}", xDescriptor1);
-                logger.info("* xDescriptor2: {}", xDescriptor2);
-                logger.info("* xUbicacionTopografica: {}", xUbicacionTopografica);
-                logger.info("* xFechaCierre: {}", fechaCierre);
-                logger.info("* xFaseArchivo: {}", xFaseArchivo);
-                logger.info("* CodigoSubserie: {}", CodigoSubserie);
-                logger.info("* CodigoSerie: {}", CodigoSerie);
-                logger.info("* CodigoDependencia: {}", CodigoDependencia);
-                logger.info("* CodigoUnidadAdminPadre: {}", CodigoUnidadAdminPadre);
+                logger.info("* Name: {}", xNombreUnidadDocumental);
+                if (!StringUtils.isEmpty(xDescriptor1))
+                    logger.info("* xDescriptor1: {}", xDescriptor1);
+                if (!StringUtils.isEmpty(xDescriptor2))
+                    logger.info("* xDescriptor2: {}", xDescriptor2);
+                if (!StringUtils.isEmpty(xUbicacionTopografica))
+                    logger.info("* xUbicacionTopografica: {}", xUbicacionTopografica);
+                if (xFechaCierre != null)
+                    logger.info("* xFechaCierre: {}", xFechaCierre);
+                if (xFechaExtremaInicial != null)
+                    logger.info("* xFechaExtremaInicial: {}", xFechaExtremaInicial);
+                if (xFechaExtremaFinal != null)
+                    logger.info("* xFechaExtremaFinal: {}", xFechaExtremaFinal);
+                if (!StringUtils.isEmpty(xFaseArchivo))
+                    logger.info("* xFaseArchivo: {}", xFaseArchivo);
+                if (!StringUtils.isEmpty(xCodigoSubserie))
+                    logger.info("* CodigoSubserie: {}", xCodigoSubserie);
+                if (!StringUtils.isEmpty(xCodigoSerie))
+                    logger.info("* CodigoSerie: {}", xCodigoSerie);
+                if (!StringUtils.isEmpty(xCodigoDependencia))
+                    logger.info("* CodigoDependencia: {}", xCodigoDependencia);
+                if (!StringUtils.isEmpty(xCodigoUnidadAdminPadre))
+                    logger.info("* CodigoUnidadAdminPadre: {}", xCodigoUnidadAdminPadre);
                 logger.info("******************************************************");
                 logger.info("");
 
                 final UnidadDocumentalDTO tmp_dto = UnidadDocumentalDTO.newInstance()
-                        .nombreSerie(nombrePadre)
+                        .id(xIdentificador)
+                        .descriptor2(xDescriptor2)
+                        .abierta(xAbierta)
+                        .fechaCierre(xFechaCierre)
+                        .fechaExtremaInicial(xFechaExtremaInicial)
+                        .fechaExtremaFinal(xFechaExtremaFinal)
+                        .soporte(xSoporte)
+                        .estado(xEstadoUD)
+                        .ubicacionTopografica(xUbicacionTopografica)
+                        .faseArchivo(xFaseArchivo)
+                        .descriptor1(xDescriptor1)
+                        .codigoSerie(xCodigoSerie)
+                        .codigoSubSerie(xCodigoSubserie)
+                        .codigoDependencia(xCodigoDependencia)
+                        .nombreUnidadDocumental(xNombreUnidadDocumental)
+                        .build();
+
+                        /*
+
+
+                final Date  = folder.getProperty("cmcor:xFechaCierre").getValue();
+                final Date  = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
+                final Date  = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
+                final String  = folder.getProperty("cmcor:xSoporte").getValue();
+                final String  = folder.getProperty("cmcor:xEstadoUD").getValue();
+                final String  = folder.getProperty("cmcor:xUbicacionTopografica").getValue();
+                final String  = folder.getProperty("cmcor:xFaseArchivo").getValue();
+                final String  = folder.getProperty("cmcor:xDescriptor1").getValue();
+                final String  = folder.getProperty("cmcor:CodigoSerie").getValue();
+                final String  = folder.getProperty("cmcor:CodigoSubserie").getValue();
+                final String  = folder.getProperty("cmcor:CodigoDependencia").getValue();
+                final String  = folder.getProperty("cmcor:CodigoUnidadAdminPadre").getValue();
+
+                final String xNombreUnidadDocumental = folder.getName();*/
+
+
+                        /*.nombreSerie(nombrePadre)
                         .nombreSubSerie(nombrePadre)
-                        .id(identificador)
+                        .id(xIdentificador)
                         .nombreUnidadDocumental(udName)
                         .descriptor1(xDescriptor1)
                         .descriptor2(xDescriptor2)
                         .faseArchivo(xFaseArchivo)
                         .estado(estadoUD)
-                        .fechaExtremaInicial(fechaExtremaInicial)
-                        .fechaExtremaFinal(fechaExtremaFinal)
-                        .fechaCierre(fechaCierre)
+                        .fechaExtremaInicial(xFechaExtremaInicial)
+                        .fechaExtremaFinal(xFechaExtremaFinal)
+                        .fechaCierre(xFechaCierre)
                         .soporte(soporte)
-                        .codigoSerie(CodigoSerie)
-                        .codigoSubSerie(CodigoSubserie)
-                        .codigoDependencia(CodigoDependencia)
-                        .build();
+                        .codigoSerie(xCodigoSerie)
+                        .codigoSubSerie(xCodigoSubserie)
+                        .codigoDependencia(xCodigoDependencia)
+                        .build();*/
 
                 unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), tmp_dto);
 
@@ -707,7 +760,7 @@ public class ContentControlAlfresco implements ContentControl {
             respuesta.setResponse(map);
             return respuesta;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             respuesta.setMensaje("Error al Listar las Unidades Documentales");
             respuesta.setCodMensaje("111111");
             return respuesta;
