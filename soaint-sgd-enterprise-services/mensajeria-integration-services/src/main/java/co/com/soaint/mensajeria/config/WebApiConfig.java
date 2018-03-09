@@ -1,8 +1,6 @@
 package co.com.soaint.mensajeria.config;
 
-import co.com.soaint.mensajeria.business.control.RabbitMensajeConsumer;
 import co.com.soaint.mensajeria.integration.service.rest.*;
-import co.com.soaint.mensajeria.util.SystemParameters;
 import io.swagger.jaxrs.config.BeanConfig;
 import lombok.extern.log4j.Log4j2;
 import javax.management.ObjectName;
@@ -11,12 +9,6 @@ import javax.ws.rs.core.Application;
 import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.support.converter.JsonMessageConverter;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
