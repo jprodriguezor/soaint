@@ -615,8 +615,8 @@ public class ContentControlAlfresco implements ContentControl {
                 query += (!where ? " WHERE " : " AND ") + "cmcor:xDescriptor1 LIKE '%" + dto.getDescriptor1() + "%'";
                 where = true;
             }
-            if (!StringUtils.isEmpty(dto.isAbierta())) {
-                query += (!where ? " WHERE " : " AND ") + "cmcor:xAbierta = '" + dto.isAbierta() + "'";
+            if (!StringUtils.isEmpty(dto.isCerrada())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xCerrada = '" + dto.isCerrada() + "'";
                 where = true;
             }
             if (!StringUtils.isEmpty(dto.getCodigoSerie())) {
@@ -649,7 +649,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 final String xIdentificador = folder.getProperty("cmcor:xIdentificador").getValue();
                 final String xDescriptor2 = folder.getProperty("cmcor:xDescriptor2").getValue();
-                final boolean xAbierta = folder.getProperty("cmcor:xAbierta").getValue();
+                final boolean xCerrada = folder.getProperty("cmcor:xCerrada").getValue();
                 final Date xFechaCierre = folder.getProperty("cmcor:xFechaCierre").getValue();
                 final Date xFechaExtremaInicial = folder.getProperty("cmcor:xFechaExtremaInicial").getValue();
                 final Date xFechaExtremaFinal = folder.getProperty("cmcor:xFechaExtremaFinal").getValue();
@@ -698,7 +698,7 @@ public class ContentControlAlfresco implements ContentControl {
                 final UnidadDocumentalDTO tmp_dto = UnidadDocumentalDTO.newInstance()
                         .id(xIdentificador)
                         .descriptor2(xDescriptor2)
-                        .abierta(xAbierta)
+                        .cerrada(xCerrada)
                         .fechaCierre(xFechaCierre)
                         .fechaExtremaInicial(xFechaExtremaInicial)
                         .fechaExtremaFinal(xFechaExtremaFinal)

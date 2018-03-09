@@ -462,7 +462,7 @@ public class RecordServices implements IRecordServices {
                 JSONObject valor = respuestaJson.getJSONObject((String) key);
                 unidadDocumentalDTO.setId(valor.getString("id"));
                 unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("nombre"));
-                unidadDocumentalDTO.setAbierta(Boolean.parseBoolean(valor.getString("isClosed")));
+                unidadDocumentalDTO.setCerrada(Boolean.parseBoolean(valor.getString("isClosed")));
             }
         }
         return unidadDocumentalDTO;
@@ -790,7 +790,7 @@ public class RecordServices implements IRecordServices {
 
             UnidadDocumentalDTO unidadDocumentalDTO = obtenerRecordFolder(idRecordFolder);
 
-            if (!unidadDocumentalDTO.isAbierta() == abrirCerrar) {
+            if (!unidadDocumentalDTO.isCerrada() == abrirCerrar) {
                 WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
                 Response response = wt.path("/record-folders/" + idRecordFolder)
                         .request()
