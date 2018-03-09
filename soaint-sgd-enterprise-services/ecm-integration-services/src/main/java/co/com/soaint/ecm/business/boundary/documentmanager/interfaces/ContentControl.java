@@ -139,5 +139,5 @@ public interface ContentControl {
      *
      * @return Mensaje de respuesta
      */
-    MensajeRespuesta listarUnidadesDocumentales(Session session);
+    MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
 }

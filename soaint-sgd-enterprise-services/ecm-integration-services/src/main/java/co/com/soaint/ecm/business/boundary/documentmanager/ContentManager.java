@@ -358,7 +358,7 @@ public class ContentManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales() {
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
 
         MensajeRespuesta response = new MensajeRespuesta();
         logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
@@ -367,7 +367,7 @@ public class ContentManager {
 
             logger.info(MSGCONEXION);
             Conexion conexion = contentControl.obtenerConexion();
-            response = contentControl.listarUnidadesDocumentales(conexion.getSession());
+            response = contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
             logger.info("Series o subseries devueltas exitosamente");
 
         } catch (Exception e) {

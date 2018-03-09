@@ -283,13 +283,13 @@ public class EcmManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales() {
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
 
         logger.info("### Listando las Unidades Documentales");
         MensajeRespuesta response = new MensajeRespuesta();
         try {
 
-            response = contentManager.listarUnidadesDocumentales();
+            response = contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
 
         } catch (Exception e) {
             response.setCodMensaje("22222");
