@@ -120,9 +120,10 @@ public class ECMClient {
                 .delete();
     }
 
-    public Response findDocumentosAsociados(String idDocumento) {
+    public MensajeRespuesta findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
+        Response response = wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
+        return response.readEntity(MensajeRespuesta.class);
     }
 
     public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
