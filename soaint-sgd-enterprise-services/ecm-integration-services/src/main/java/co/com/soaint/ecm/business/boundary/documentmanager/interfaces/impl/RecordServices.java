@@ -33,6 +33,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Log4j2
 public class RecordServices implements IRecordServices {
+    public static final String ENTRY = "entry";
     String idSubCategoria = "";
     @Autowired
     ContentControlAlfresco conexionCMIS;
@@ -98,7 +99,7 @@ public class RecordServices implements IRecordServices {
      *
      * @param structure Objeto  que contiene la estructura
      * @return mesaje respuesta para notificar la correcta creacion
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     @Override
     public MensajeRespuesta crearEstructuraRecord(List<EstructuraTrdDTO> structure) throws SystemException {
@@ -147,7 +148,7 @@ public class RecordServices implements IRecordServices {
             Map<String, String> query = new HashMap<>();
             JSONObject parametro = new JSONObject();
             String queryPrincipal = "select * from rmc:rmarecordCategoryCustomProperties where rmc:xSeccion = '" + entrada.getDependencia() + "' and  rmc:xCodSerie = '" + entrada.getSerie() + "' ";
-            if (!entrada.getSubSerie().equals("")) {
+            if (!"".equals(entrada.getSubSerie())) {
                 String condicionSubserie = " and  rmc:xCodSubSerie = '" + entrada.getSubSerie() + "' ";
                 queryPrincipal = queryPrincipal.concat(condicionSubserie);
             }
@@ -180,9 +181,9 @@ public class RecordServices implements IRecordServices {
      *
      * @param entrada objeto json con los parametros necesarios par apoder efectua la operacion
      * @return el id de la ruta que se esta buscando
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
-    public String buscarRuta(JSONObject entrada) throws SystemException {
+    private String buscarRuta(JSONObject entrada) throws SystemException {
         log.info("iniciar - buscar ruta: {}", entrada);
         try {
 
@@ -223,9 +224,9 @@ public class RecordServices implements IRecordServices {
      * Permite obtener el id del plan de ficheros
      *
      * @return el id del plan de ficheros
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
-    public String obtenerIdFilePlan() throws SystemException {
+    private String obtenerIdFilePlan() throws SystemException {
         log.info("iniciar - obtener id file plan: {}");
         try {
 
@@ -267,9 +268,9 @@ public class RecordServices implements IRecordServices {
      *
      * @param entrada objeto json con los paramtreos necesario para la creacion de la categoria
      * @return el id de la categoria
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
-    public String crearRootCategory(JSONObject entrada) throws SystemException {
+    private String crearRootCategory(JSONObject entrada) throws SystemException {
         log.info("iniciar - Crear categoria padre: {}", entrada);
         try {
 
@@ -311,7 +312,7 @@ public class RecordServices implements IRecordServices {
      *
      * @param idDocumentoContent Identificador del documento dentro del content
      * @return el id del record creado
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     @Override
     public String declararRecord(String idDocumentoContent) throws SystemException {
@@ -355,9 +356,9 @@ public class RecordServices implements IRecordServices {
      * @param entrada objeto json con la informacion necesaria para crear el nodo
      * @param idSerie identificardor del nodo padre
      * @return el id del nodo creado
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
-    public String crearNodo(JSONObject entrada, String idSerie) throws SystemException {
+    private String crearNodo(JSONObject entrada, String idSerie) throws SystemException {
         log.info("iniciar - Crear categoria hija: {}", entrada.toString());
         try {
 
@@ -397,10 +398,10 @@ public class RecordServices implements IRecordServices {
      *
      * @param entrada objeto json con lo paramtros necesarios para crear las los tiempos
      * @param idPadre id del nodo al que se le aplicaran los tiempos de retencion
-     * @return
-     * @throws SystemException
+     * @return Id del padre
+     * @throws SystemException SystemException
      */
-    public String crearTiempoRetencion(Map<String, Object> entrada, String idPadre) throws SystemException {
+    private String crearTiempoRetencion(Map<String, Object> entrada, String idPadre) throws SystemException {
         log.info("iniciar - Crear tiempo retencion: {}", entrada.toString());
         try {
 
@@ -447,6 +448,27 @@ public class RecordServices implements IRecordServices {
     }
 
     /**
+     * Permite obtner el DTO UnidadDocumental a partir del objeto json de respuesta
+     *
+     * @param respuestaJson objeto json que contiene el mensaje de repuesta para procesar
+     * @return el valor del campo id en la respusta json
+     */
+    private UnidadDocumentalDTO obtenerUnidadDocumental(JSONObject respuestaJson) {
+        UnidadDocumentalDTO unidadDocumentalDTO = new UnidadDocumentalDTO();
+        Iterator keys = respuestaJson.keys();
+        while (keys.hasNext()) {
+            Object key = keys.next();
+            if (ENTRY.equalsIgnoreCase(key.toString())) {
+                JSONObject valor = respuestaJson.getJSONObject((String) key);
+                unidadDocumentalDTO.setId(valor.getString("id"));
+                unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("nombre"));
+                unidadDocumentalDTO.setAbierta(Boolean.parseBoolean(valor.getString("isClosed")));
+            }
+        }
+        return unidadDocumentalDTO;
+    }
+
+    /**
      * Permite obtner el id del objeto json de respuesta
      *
      * @param respuestaJson objeto json que contiene el mensaje de repuesta para procesar
@@ -457,7 +479,7 @@ public class RecordServices implements IRecordServices {
         Iterator keys = respuestaJson.keys();
         while (keys.hasNext()) {
             Object key = keys.next();
-            if ("entry".equalsIgnoreCase(key.toString())) {
+            if (ENTRY.equalsIgnoreCase(key.toString())) {
                 JSONObject valor = respuestaJson.getJSONObject((String) key);
                 codigoId = valor.getString("id");
             }
@@ -470,7 +492,7 @@ public class RecordServices implements IRecordServices {
      *
      * @param organigramaList objeto que contiene la lista de organigrama
      * @param idNodosPadre    identificador del nodo padre
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     private void generarOrganigrama(List<OrganigramaDTO> organigramaList, Map<String, String> idNodosPadre) throws SystemException {
         propiedades = new HashMap<>();
@@ -509,7 +531,7 @@ public class RecordServices implements IRecordServices {
      * Permite generar las dependencias
      *
      * @param trdList objeto que contiene la lista de dependencias
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     private void generarDependencia(List<ContenidoDependenciaTrdDTO> trdList) throws SystemException {
         codigosSubseries = new HashMap<>();
@@ -524,17 +546,17 @@ public class RecordServices implements IRecordServices {
             disposicion.put(propiedadPeriodo, "rma:dispositionAsOf");
             disposicion.put(eventoCompletar, true);
             disposicion.put(evento, "case_closed");
-            if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) && !codigoSeries.containsKey(trd.getIdOrgOfc())) {
+            if (codigoOrgAUX.equalsIgnoreCase(trd.getIdOrgOfc()) && (trd.getCodSubSerie() == null || "".equals(trd.getCodSubSerie())) && !codigoSeries.containsKey(trd.getIdOrgOfc())) {
                 idSerie = crearSerie(trd);
                 codigoSeries.put(trd.getIdOrgOfc(), idSerie);
 
             } else {
-                if (codigoSerieAUX.equals("") || !codigoSerieAUX.equals(trd.getCodSerie())) {
+                if ("".equals(codigoSerieAUX) || !codigoSerieAUX.equals(trd.getCodSerie())) {
                     idSerie = crearSerie(trd);
                     codigoSerieAUX = trd.getCodSerie();
                     codigoSeries.put(trd.getIdOrgOfc(), idSerie);
                 }
-                if (trd.getCodSubSerie() != null && !trd.getCodSubSerie().equals("")) {
+                if (trd.getCodSubSerie() != null && !"".equals(trd.getCodSubSerie())) {
                     crearSubserie(trd, idSerie);
 
                 }
@@ -549,7 +571,7 @@ public class RecordServices implements IRecordServices {
      *
      * @param trd objeto que contiene los parametros necesarios para crear la series
      * @return identifador de la serie creada
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     private String crearSerie(ContenidoDependenciaTrdDTO trd) throws SystemException {
         JSONObject serie = new JSONObject();
@@ -560,7 +582,7 @@ public class RecordServices implements IRecordServices {
         serie.put(tagPropiedades, propiedades);
         serie.put("name", nombreSerie);
         serie.put(tipoNodo, recordCategoria);
-        if (trd.getCodSubSerie() == null || trd.getCodSubSerie().equals("")) {
+        if (trd.getCodSubSerie() == null || "".equals(trd.getCodSubSerie())) {
             serie.put("aspectNames", "rma:scheduled");
             idSerie = crearNodo(serie, idSubCategoria);
             crearTiempoRetencion(disposicion, idSerie);
@@ -586,13 +608,13 @@ public class RecordServices implements IRecordServices {
      * @param trd     objeto que contiene la informacion necesaria para crear las subseries
      * @param idSerie identificador de la series a la que esta asociada la subserie
      * @return identificador de la subserie creada
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     private String crearSubserie(ContenidoDependenciaTrdDTO trd, String idSerie) throws SystemException {
-        String idSubSerie = "";
+        String idSubSerie;
         int archivoCentral = (int) (trd.getRetArchivoGestion() + trd.getRetArchivoCentral());
         JSONObject subSerie = new JSONObject();
-        if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !trd.getCodSubSerie().equals("")) {
+        if ((!codigosSubseries.containsKey(trd.getCodSubSerie()) || !codigosSubseries.get(trd.getCodSubSerie()).equalsIgnoreCase(trd.getNomSubSerie())) && !"".equals(trd.getCodSubSerie())) {
             String nombreSubserie = trd.getIdOrgOfc().concat(".").concat(trd.getCodSerie()).concat(".").concat(trd.getCodSubSerie()).concat("_").concat(trd.getNomSubSerie());
             subSerie.put("name", nombreSubserie);
             subSerie.put(tipoNodo, recordCategoria);
@@ -621,7 +643,7 @@ public class RecordServices implements IRecordServices {
      * @param idRecord       Identificador del documento en record
      * @param idRecordFolder identificador de la unidad Documental a donde se va a llevar el documento
      * @return identificador de la subserie creada
-     * @throws SystemException
+     * @throws SystemException SystemException
      */
     private String fileRecord(String idRecord, String idRecordFolder) throws SystemException {
         log.info("Se entra al metodo fileRecord para archivar el documento de id: {}", idRecord);
@@ -664,12 +686,155 @@ public class RecordServices implements IRecordServices {
     }
 
     /**
+     * Permite Completar Records
+     *
+     * @param idRecord Identificador del documento en record
+     * @return identificador de la subserie creada
+     * @throws SystemException SystemException
+     */
+    private String completeRecord(String idRecord, String idRecordFolder) throws SystemException {
+        log.info("Se entra al metodo completeRecord para el record de id: {}", idRecord);
+        try {
+            if (!idRecord.isEmpty()) {
+
+                WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+                Response response = wt.path("/records/" + idRecord + "/complete")
+                        .request()
+                        .header(headerAuthorization, valueAuthorization + " " + encoding)
+                        .header(headerAccept, valueApplicationType)
+                        .post(Entity.json(idRecord));
+                if (response.getStatus() != 201) {
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                            .buildBusinessException();
+                } else {
+                    return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+                }
+            }
+            return null;
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Completar record ");
+        }
+
+    }
+
+    /**
+     * Permite obtener Record Folder dado parámetros
+     *
+     * @param idRecordFolder Identificador por el cual se va a realizar el filtrado para obtener el record folder
+     * @return Objeto UnidadDocumentalDTO
+     * @throws SystemException SystemException
+     */
+    private UnidadDocumentalDTO obtenerRecordFolder(String idRecordFolder) throws SystemException {
+        log.info("Se obtienen los Record Folders con Id: {}", idRecordFolder);
+        try {
+
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+            Response response = wt.path("/record-folders/" + idRecordFolder)
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header(headerAccept, valueApplicationType)
+                    .put(Entity.json(idRecordFolder));
+            if (response.getStatus() != 201) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                        .buildBusinessException();
+            } else {
+                return obtenerUnidadDocumental(new JSONObject(response.readEntity(String.class)));
+            }
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Obtener Record Folder ");
+        }
+    }
+
+    /**
+     * Permite Abrir/Cerrar Record Folder
+     *
+     * @param abrirCerrar Valor boolenao para abrir cerrar la unidad documental
+     * @return identificador de la subserie creada
+     * @throws SystemException SystemException
+     */
+    private Boolean abrirCerrarRecordFolder(String idRecordFolder, Boolean abrirCerrar) throws SystemException {
+        log.info("Se entra al metodo abrirCerrarRecordFolder para cerrar la unidad documental con id: {}", idRecordFolder);
+        try {
+
+            JSONObject properties = new JSONObject();
+            Map<String, Object> nombreMap = new HashMap<>();
+            nombreMap.put("rma:isClosed", true); // Añade un elemento al Mapç
+            properties.put("properties", nombreMap);
+
+            UnidadDocumentalDTO unidadDocumentalDTO = obtenerRecordFolder(idRecordFolder);
+
+            if (!unidadDocumentalDTO.isAbierta() == abrirCerrar) {
+                WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+                Response response = wt.path("/record-folders/" + idRecordFolder)
+                        .request()
+                        .header(headerAuthorization, valueAuthorization + " " + encoding)
+                        .header(headerAccept, valueApplicationType)
+                        .put(Entity.json(properties.toString()));
+                if (response.getStatus() != 201) {
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                            .buildBusinessException();
+                } else {
+                    return abrirCerrar;
+                }
+            } else {
+                return abrirCerrar;
+            }
+
+
+        } catch (BusinessException e) {
+            log.error(e.getMessage());
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
+        } catch (Exception ex) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(ex)
+                    .buildSystemException();
+        } finally {
+            log.info("fin - Abrir o cerrar el record folder ");
+        }
+
+    }
+
+
+    /**
      * Permite obtener id de la ruta
      *
      * @param respuestaJson objeto json con las informacion necesaria para obtener el id de la ruta
-     * @param nodo
-     * @param nombreNodo
-     * @return
+     * @param nodo Tipo de nodo
+     * @param nombreNodo Nombre de nodo
+     * @return String
      */
     private String obtenerIdRuta(JSONObject respuestaJson, String nodo, String nombreNodo) {
         String codigoId = "";
@@ -703,7 +868,7 @@ public class RecordServices implements IRecordServices {
         Iterator keys1 = respuestaJson.keys();
         while (keys1.hasNext()) {
             Object key1 = keys1.next();
-            if ("entry".equalsIgnoreCase(key1.toString())) {
+            if (ENTRY.equalsIgnoreCase(key1.toString())) {
                 JSONObject valor1 = respuestaJson.getJSONObject((String) key1);
                 if (valor1.getString(nodo).equalsIgnoreCase(nombreNodo))
                     nodoId = valor1.getString("id");
