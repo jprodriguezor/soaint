@@ -1,6 +1,5 @@
 package co.com.soaint.mensajeria.business.control;
 
-import co.com.soaint.foundation.canonical.integration.DigitalizacionDTO;
 import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
 import co.com.soaint.mensajeria.apis.delegator.CorrespondenciaIntegrationClient;
 import com.google.gson.Gson;
@@ -8,9 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
 
 /**
  * Created by Tulkas on 06/03/2018.

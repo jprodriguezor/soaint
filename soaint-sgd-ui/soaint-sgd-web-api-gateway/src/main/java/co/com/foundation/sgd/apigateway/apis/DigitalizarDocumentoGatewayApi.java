@@ -3,6 +3,7 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -62,10 +64,12 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setNroRadicadoReferido(referidoList);
 
         }catch (Exception e){
-
+            log.info("Error generando el documento ",e);
         }
+
+
         MensajeRespuesta parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
-        _files.remove(principalFileName);
+        _files.remove(fileName);
         if ("0000".equals(parentResponse.getCodMensaje())){
             List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
             if(null != documentoDTO && !documentoDTO.isEmpty()) {
@@ -97,12 +101,12 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @GET
-    @Path("/obtenerdocumentosasociados/{idDocumento}")
+    @Path("/obtener-documentos-asociados/{idDocumento}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
-
-        return client.findDocumentosAsociados(idDocumento);
+        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociados(idDocumento);
+        return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
     }
 
     @POST
