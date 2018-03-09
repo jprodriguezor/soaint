@@ -120,7 +120,8 @@ public class ECMClient {
 
     public MensajeRespuesta findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        Response response = wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
+        DocumentoDTO dto = DocumentoDTO.newInstance().idDocumento(idDocumento).build();
+        Response response = wt.path("/obtenerDocumentosAdjuntosECM").request().post(Entity.json(dto));
         return response.readEntity(MensajeRespuesta.class);
     }
 
