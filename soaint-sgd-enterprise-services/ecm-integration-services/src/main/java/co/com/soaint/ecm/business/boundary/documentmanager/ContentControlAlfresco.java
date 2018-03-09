@@ -574,40 +574,60 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Mensaje de respuesta
      */
     @Override
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO dto,
+    public MensajeRespuesta listarUnidadesDocumentales(final UnidadDocumentalDTO dto,
                                                        final Session session) {
 
         final MensajeRespuesta respuesta = new MensajeRespuesta();
 
         try {
 
-            String query =
+            /*String query =
                     "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
                     " WHERE cmcor:xAbierta = 'false'" +
                     " AND cmcor:xFechaExtremaInicial IS NOT NULL" +
                     " AND cmcor:xFechaExtremaFinal IS NOT NULL" +
                     " AND cmcor:xFechaCierre IS NOT NULL" +
                     " AND cmcor:xSoporte IS NOT NULL" +
-                    " AND cmcor:xEstadoUD = 'Inactivo'";
+                    " AND cmcor:xEstadoUD = 'Inactivo'";*/
+
+            String query = "SELECT * FROM " + CMCOR + "" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
+
+            boolean where = false;
+
+            if (!StringUtils.isEmpty(dto.getId())) {
+                query += " WHERE cmcor:xIdentificador = '" + dto.getId() + "'";
+                where = true;
+            }
+            if (!StringUtils.isEmpty(dto.getDescriptor2())) {
+                query += (!where ? " WHERE " : " AND ") + "cmcor:xDescriptor2 = '" + dto.getDescriptor2() + "'";
+                where = true;
+            }
+            if (dto.getFechaCierre() != null) {
+                query += " AND cmcor:xFechaCierre = '" + dto.getCodigoSerie() + "'";
+                where = true;
+            }
+
+
+
+
+
 
             if (!StringUtils.isEmpty(dto.getCodigoSerie())) {
                 query += " AND cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "'";
+                where = true;
             }
             if (!StringUtils.isEmpty(dto.getCodigoSubSerie())) {
                 query += " AND cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie() + "'";
+                where = true;
             }
-            if (!StringUtils.isEmpty(dto.getId())) {
-                query += " AND cmcor:xIdentificador = '" + dto.getId() + "'";
-            }
+
             if (!StringUtils.isEmpty(dto.getNombreUnidadDocumental())) {
                 query += " AND cmis:name LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
             }
             if (!StringUtils.isEmpty(dto.getDescriptor1())) {
                 query += " AND cmcor:xDescriptor1 = '" + dto.getDescriptor1() + "'";
             }
-            if (!StringUtils.isEmpty(dto.getDescriptor2())) {
-                query += " AND cmcor:xDescriptor2 = '" + dto.getDescriptor2() + "'";
-            }
+
             if (!StringUtils.isEmpty(dto.getCodigoDependencia())) {
                 query += " AND cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "'";
             }
