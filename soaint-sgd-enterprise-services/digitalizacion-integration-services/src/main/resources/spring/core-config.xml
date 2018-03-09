@@ -14,8 +14,10 @@
       Purpose: define generic configurations
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     -->
-
     <context:component-scan base-package="co.com.soaint.digitalizacion.services"/>
+    <context:component-scan base-package="co.com.soaint.digitalizacion.services.util"/>
+    <context:component-scan base-package="co.com.soaint.digitalizacion.services.integration.services"/>
+    <context:component-scan base-package="co.com.soaint.digitalizacion.services.apis.delegator"/>
     <context:property-placeholder location="classpath:sgd-service.properties"/>
     <!--<context:property-placeholder location="classpath:messages.properties" />-->
 

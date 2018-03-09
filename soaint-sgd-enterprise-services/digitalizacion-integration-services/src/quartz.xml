@@ -30,7 +30,7 @@
         <job>
             <name>TareaParaLeerFicheros</name>
             <group>MYJOB_GROUP</group>
-            <job-class>co.com.soaint.digitalizacion.services.util.Cron</job-class>
+            <job-class>co.com.soaint.digitalizacion.services.integration.services.Cron</job-class>
         </job>
         <trigger>
             <cron>

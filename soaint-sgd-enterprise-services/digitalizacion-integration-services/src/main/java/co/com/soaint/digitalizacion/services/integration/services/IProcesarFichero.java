@@ -1,7 +1,9 @@
 package co.com.soaint.digitalizacion.services.integration.services;
 
+import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.io.IOException;
 /**
  * Created by amartinez on 01/03/2018.
  */
+
 public interface IProcesarFichero {
 
     String getImgText(String imagen);

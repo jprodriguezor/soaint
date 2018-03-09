@@ -1,25 +1,17 @@
 package co.com.soaint.digitalizacion.services;
 
 
+import co.com.soaint.digitalizacion.services.integration.services.Cron;
 import co.com.soaint.digitalizacion.services.integration.services.IProcesarFichero;
-import co.com.soaint.digitalizacion.services.integration.services.impl.ProcesarFichero;
-import co.com.soaint.digitalizacion.services.util.Cron;
-import co.com.soaint.digitalizacion.services.util.SystemParameters;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.expression.ParseException;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
-
-import javax.resource.spi.AuthenticationMechanism;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 
 /**
@@ -28,10 +20,9 @@ import javax.servlet.ServletContextListener;
 @Component
 @Log4j2
 public  class Main   {
-
     @EventListener(ContextRefreshedEvent.class)
-    public void contextRefreshedEvent() {
 
+    public void contextRefreshedEvent() {
 
         try {
             JobDetail job = JobBuilder.newJob(Cron.class)
@@ -69,7 +60,7 @@ public  class Main   {
     }
 
 
-//    public static void main(String[] args) throws ParseException {
+//    public static void main(String[] args)  {
 //
 //        try {
 //            JobDetail job = JobBuilder.newJob(Cron.class)
@@ -87,7 +78,7 @@ public  class Main   {
 //            scheduler.scheduleJob(job, trigger);
 //        } catch (SchedulerException se) {
 //            se.printStackTrace();
-//        }
+////        }
 //
 //    }
 }
