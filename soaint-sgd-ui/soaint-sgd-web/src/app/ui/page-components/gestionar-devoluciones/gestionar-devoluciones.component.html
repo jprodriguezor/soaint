@@ -85,9 +85,9 @@
 
       </p-panel>
 
-      <p-panel header="Documentos Asociados" [style]="{ border: 'none'}" *ngIf="hasDocumnts">
+     <div *ngIf="hasDocumnts">
             <app-documentos-ecm-list [idDocumentECM]="comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="false"></app-documentos-ecm-list>
-      </p-panel>
+     </div>
 
     </div>
   </app-task-container>
