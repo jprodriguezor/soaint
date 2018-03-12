@@ -5,8 +5,7 @@ import {TareaDTO} from "../../domain/tareaDTO";
 import {State as RootState} from "../redux-store/redux-reducers";
 import {Store} from "@ngrx/store";
 import {SolicitudCreacionUDDto} from "../../domain/solicitudCreacionUDDto";
-import {go} from "@ngrx/router-store";
-import {ROUTES_PATH} from "../../app.route-names";
+
 
 
 @Injectable()
@@ -15,7 +14,9 @@ export class SolicitudCreacionUdService {
 private task:TareaDTO;
 
   constructor(private _taskSandbox:TaskSandbox,private _store:Store<RootState>) {
-    this._store.select(getActiveTask).subscribe(activeTask =>{console.log(activeTask); this.task = activeTask;})
+
+    this._store.select(getActiveTask).subscribe(activeTask => {this.task = activeTask});
+
   }
   solicitarUnidadDocumental(listaSolicitudes:SolicitudCreacionUDDto[]){
 
@@ -26,12 +27,9 @@ private task:TareaDTO;
         idTarea: this.task.idTarea,
         parametros: {
           creacionUD: 1,
-          listaSolicitudes: listaSolicitudes,
+          listaSolicitudes: JSON.stringify(listaSolicitudes),
         }
       });
-      this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
     }
-
   }
-
 }

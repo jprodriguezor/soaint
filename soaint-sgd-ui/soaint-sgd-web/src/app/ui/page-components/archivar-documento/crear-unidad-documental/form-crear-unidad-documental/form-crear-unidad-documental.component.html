@@ -1,0 +1,271 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" >
+    <div class="card card-w-title">
+      <p-panel header="Crear Unidad Documental" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid" [formGroup] = "form">
+          <div class="ui-g-12">
+            <div class="ui-g-4 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Serie</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options] = "(seriesObservable$|async|dropdownItemSerie)" (onChange)="selectSerie($event)" formControlName="serie"></p-dropdown>
+                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['serie'].invalid && form.controls['serie'].touched">
+                   <p *ngIf="form.controls['serie'].hasError('required')">
+                     Debe  de Seleccionar un numero de serie
+                   </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-4 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Subserie</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown [options] = (subseriesObservable$|async|dropdownItemSubserie)  formControlName="subserie"></p-dropdown>
+                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">
+                    <p *ngIf="form.controls['subserie'].hasError('required')">
+                      Debe  de Seleccionar un numero de serie
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-4 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="fcu-identificador">Identificador de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="fcu-identificador" pInputText formControlName="identificador">
+                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['identificador'].invalid && form.controls['identificador'].touched">
+                    <p *ngIf="form.controls['identificador'].hasError('required')">
+                      Debe  de Seleccionar un numero de serie
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="fcu-nombre">Nombre de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="fcu-nombre" pInputText formControlName="nombre">
+                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['nombre'].invalid && form.controls['nombre'].touched">
+                    <p *ngIf="form.controls['nombre'].hasError('required')">
+                      Debe  de Seleccionar un numero de serie
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="fcu-descriptor1">Descriptor</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="fcu-descriptor1" pInputText formControlName="descriptor1">
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="fcu-descriptor2">Descriptor</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="fcu-descriptor2" pInputText formControlName="descriptor2">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="fcu-observaciones">Observaciones</label>
+                </div>
+                <div class="ui-g-12">
+                  <textarea name="" id="fcu-observaciones" cols="30" rows="10" pInputTextarea formControlName="observaciones"></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g form-group">
+                <div class="ui-g-3">
+                  <label>La unidad documental esta en el sistema</label>
+                </div>
+                <div class="ui-g-9">
+                  <p-radioButton value="1" label="Si" name="creada" formControlName="creada"></p-radioButton>
+                  <p-radioButton value="0" label="No" name="creada" formControlName="creada"></p-radioButton>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12 margin-20" *ngIf="form.controls['creada'].value == 1">
+            <p-panel header="Relacionar unidad documental fisica" [style]="{border: 'none'}">
+              <div class="ui-g ui-fluid" [formGroup]="filterUDForm">
+                <div class="ui-g-12">
+                  <div class="ui-g-4 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label >Serie</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <p-dropdown [options] = "(seriesObservable$|async|dropdownItemSerie)" (onChange)="selectSerie2($event)" ></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-4 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label >Subserie</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <p-dropdown [options] = (subserieObservable2$|async|dropdownItemSubserie)></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-4 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="rud-identificador">Identificador de unidad documental</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" id="rud-identificador" pInputText>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-g-12">
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="rud-nombre">Nombre de unidad documental</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" id="rud-nombre" pInputText>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="rud-descriptor1">Descriptor</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" id="rud-descriptor1" pInputText>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="rud-descriptor2">Descriptor</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" id="rud-descriptor2" pInputText>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-12">
+                    <div style="height: 70px; position: relative">
+                     <div style="position: absolute;bottom: 0; left: 10px;">
+                       <button type="button" pButton style="width: auto" label="Buscar"></button>
+                       <button type="button" pButton style="width: auto" label="Limpiar"></button>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                  <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
+                               [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                    <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
+                    <p-column  header="Item" [style]="{'width':'50px'}">
+                      <ng-template pTemplate="body" let-index="rowIndex">
+                        {{index + 1}}
+                      </ng-template>
+                    </p-column>
+                    <p-column header="Nombre Serie/Subserie" [sortable]="true" >
+                      <ng-template pTemplate="body" let-row="rowData">
+                        {{row.codSerie}}/{{row.codSubserie}}
+                      </ng-template>
+                    </p-column>
+                    <p-column header="Identificador unidad documental" [sortable]="true" field="identificadorUD"> </p-column>
+                    <p-column header="Nombre unidad documental" [sortable]="true" field="nombreUD"></p-column>
+                    <p-column header="Descriptor 1" [sortable]="true" field="descriptor1"></p-column>
+                    <p-column header="Descriptor 2" [sortable]="true" [style]="{'width':'110px'}" field="descriptor2"></p-column>
+                  </p-dataTable>
+                </div>
+                <div class="ui-g-12 text-right" style="padding-top: 20px">
+                  <button pButton type="button" label="Relacionar UD" style="width: auto"></button>
+                </div>
+              </div>
+            </p-panel>
+          </div>
+          <div class="ui-g-12" *ngIf="form.controls['creada'].value == 0">
+            <p-panel header="Asignar ubicacion topografica" [style]="{border: 'none'}">
+              <div class="ui-g ui-fluid" [formGroup]="formAsignarUT">
+                <div class="ui-g-12">
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-3">
+                        <label >Bodega</label>
+                      </div>
+                      <div class="ui-g-9">
+                        <p-dropdown></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-3">
+                        <label >Piso</label>
+                      </div>
+                      <div class="ui-g-9">
+                        <p-dropdown></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-3">
+                        <label >Caja</label>
+                      </div>
+                      <div class="ui-g-9">
+                        <p-dropdown></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-3">
+                        <label >Carpeta</label>
+                      </div>
+                      <div class="ui-g-9">
+                        <p-dropdown></p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-panel>
+          </div>
+          <div class="ui-g-12 text-right">
+            <button type="button" label="Crear UD" pButton style="width: auto"></button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</div>
