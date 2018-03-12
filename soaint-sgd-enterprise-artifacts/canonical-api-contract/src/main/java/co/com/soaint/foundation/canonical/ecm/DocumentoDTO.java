@@ -40,5 +40,4 @@ public class DocumentoDTO implements Serializable {
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
-
 }

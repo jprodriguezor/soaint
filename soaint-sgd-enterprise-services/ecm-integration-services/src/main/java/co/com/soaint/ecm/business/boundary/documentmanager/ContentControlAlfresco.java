@@ -5,6 +5,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.LocalConexion;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -15,6 +16,7 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
@@ -27,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -392,6 +395,10 @@ public class ContentControlAlfresco implements ContentControl {
      */
     @Override
     public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) {
+
+        logger.info("Mostrando la fechaCierre {}", unidadDocumentalDTO.getFechaCierre());
+        logger.info("Mostrando la fechaInicial {}", unidadDocumentalDTO.getFechaExtremaInicial());
+        logger.info("Mostrando la fechaFinal {}", unidadDocumentalDTO.getFechaExtremaFinal());
 
         logger.info("Executing crearUnidadDocumental method");
 
@@ -1531,6 +1538,17 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo que devuelve una lista de documentosDTO de una unidad documental
+     *
+     * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
+     * @param session             Objeto de conexion
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta listarDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session){
+        return null;
+    }
+
+    /**
      * Metodo para llenar propiedades para crear carpeta
      *
      * @param tipoCarpeta tipo de carpeta
@@ -1647,4 +1665,107 @@ public class ContentControlAlfresco implements ContentControl {
         file.deleteOnExit();
         return file;
     }
+
+    private static UnidadDocumentalDTO transformar(Folder folder) {
+        /*String query = "SELECT * FROM F:cmcor:CM_Unidad_Documental";
+
+        query += " WHERE " + "cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "' AND " +
+                "cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "' and cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie();
+
+        final ItemIterable<QueryResult> query1 = session.query(query, false);
+
+        if (query1.iterator().hasNext()){
+            return (Folder) query1.iterator().next();
+        }*/
+        UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
+        dto.setCodigoDependencia(folder.getPropertyValue("cmcor:CodigoDependencia"));
+        dto.setCodigoSerie(folder.getPropertyValue("cmcor:CodigoSerie"));
+        dto.setCodigoSubSerie(folder.getPropertyValue("cmcor:CodigoSubserie"));
+        return dto;
+    }
+
+    private static DocumentoDTO transformar(Document document) {
+        DocumentoDTO documentoDTO = new DocumentoDTO();
+        documentoDTO.setTipoDocumento(document.getPropertyValue("cmcor:xTipo"));
+        documentoDTO.setNroRadicado(document.getPropertyValue("cmcor:NroRadicado"));
+        documentoDTO.setTipologiaDocumental(document.getPropertyValue("cmcor:TipologiaDocumental"));
+        documentoDTO.setNombreRemitente(document.getPropertyValue("cmcor:NombreRemitente"));
+        //documentoDTO.setNroRadicadoReferido(document.getPropertyValue("cmcor:xTipo"));
+        return documentoDTO;
+    }
+
+    private static void listarUnidadesDocumentalesA(Folder folder, final List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) {
+
+        if (folder != null) {
+            final ItemIterable<CmisObject> children = folder.getChildren();
+
+            children.forEach(item -> {
+
+                switch (item.getBaseTypeId()) {
+                    case CMIS_FOLDER:
+                        Folder folderTmp = (Folder) item;
+                        if (folderTmp.getType().getId().equals("F:cmcor:CM_Unidad_Documental")) {
+                            final ItemIterable<CmisObject> children1 = folderTmp.getChildren();
+                            System.out.println(folderTmp.getName());
+                            UnidadDocumentalDTO dto = transformar(folderTmp);
+                            dto.setListaDocumentos(new ArrayList<>());
+                            System.out.println(dto);
+                            System.out.println(children1.getPageNumItems() + " Hijos");
+                            children1.forEach(item1 -> {
+                                switch (item1.getBaseTypeId()) {
+                                    case CMIS_DOCUMENT:
+                                        Document documentTmp = (Document) item1;
+                                        if (documentTmp.getType().getId().equals("D:cmcor:CM_DocumentoPersonalizado")) {
+                                            System.out.println("Documento de: " + folder);
+                                            System.out.println(documentTmp.getName());
+                                            DocumentoDTO documentoDTO = transformar((Document) item1);
+                                            dto.getListaDocumentos().add(documentoDTO);
+                                        }
+                                        break;
+                                }
+                            });
+                            if (dto.getListaDocumentos().isEmpty()) {
+                                unidadDocumentalDTOS.add(dto);
+                            }
+                        }
+                        listarUnidadesDocumentalesA(folderTmp, unidadDocumentalDTOS, session);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    }
+
+    public static void main(String[] args) {
+
+        LocalConexion conexion = new LocalConexion();
+        final Conexion conexion1 = conexion.obtenerConexion();
+        final List<UnidadDocumentalDTO> unidadDocumentalDTOS = new ArrayList<>();
+
+        listarUnidadesDocumentalesA(conexion1.getSession().getRootFolder(), unidadDocumentalDTOS, conexion1.getSession());
+
+        System.out.println(unidadDocumentalDTOS.size());
+        /*TestLocalConexion conexion = new TestLocalConexion();
+
+        Folder folder = conexion.getSession().getRootFolder();
+        System.out.println("******************* Root Name ****************");
+        System.out.println(folder.getName());
+        System.out.println("**********************************************");
+        System.out.println("***************** Children name **************");
+        listFolder(0, folder);
+        System.out.println("**********************************************");*/
+    }
+
+    /*private static void listFolder(int depth, Folder target) {
+        //String indent = StringUtils.repeat(" ", depth);
+        for (CmisObject o : target.getChildren()) {
+            if (BaseTypeId.CMIS_DOCUMENT.equals(o.getBaseTypeId())) {
+                System.out.println(indent + "[Docment] " + o.getName());
+            } else if (BaseTypeId.CMIS_FOLDER.equals(o.getBaseTypeId())) {
+                System.out.println(indent + "[Folder] " + o.getName() + " ID: " + o.getId());
+                listFolder(++depth, (Folder) o);
+            }
+        }
+    }*/
 }
