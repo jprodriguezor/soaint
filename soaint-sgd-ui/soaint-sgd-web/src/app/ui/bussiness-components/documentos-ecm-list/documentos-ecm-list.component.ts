@@ -13,7 +13,7 @@ import {FileUpload} from "primeng/primeng";
   selector: 'app-documentos-ecm-list',
   templateUrl: './documentos-ecm-list.component.html'
 })
-export class DocumentosECMListComponent implements OnChanges {
+export class DocumentosECMListComponent implements OnInit, OnChanges {
 
 
   @Input()
@@ -22,7 +22,7 @@ export class DocumentosECMListComponent implements OnChanges {
   @Input()
   idDocumentECM: string;
 
-  docSrc:string="";
+  docSrc = '';
   isLoading:boolean = false;
 
   documentsList: any;
@@ -34,31 +34,27 @@ export class DocumentosECMListComponent implements OnChanges {
   constructor(private _store: Store<State>, private _api: ApiBase,public loadingService:LoadingService) {
   }
 
-   ngOnChanges(): void {
+  ngOnInit() {
+    this.loadDocumentos();
+  }
 
+  ngOnChanges(): void {
     this.loadDocumentos();
   }
 
   loadDocumentos() {
-    console.log(this.idDocumentECM);
-
-    if(this.idDocumentECM!== undefined){
+    if (this.idDocumentECM !== undefined) {
       // const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
       // console.log('ID del ecm');
       // console.log(this.comunicacion.ppdDocumentoList);
-
-
-
-      const endpoint = `${environment.pd_gestion_documental.obtenerAnexo}` + '/' + this.idDocumentECM;
-      console.log(endpoint);
-
+      const endpoint = `${environment.obtenerDocumento_asociados_endpoint}` + '/' + this.idDocumentECM;
       this._api.post(endpoint).subscribe(response => {
-
-        this.documentsList = response.metadatosDocumentosDTOList;
-
+        this.documentsList = [];
+        if (response.codMensaje === '0000') {
+          this.documentsList = response.documentoDTOList;
+        }
       });
-
-      }
+    }
   }
 
   setDataDocument(data: any) {
@@ -66,19 +62,17 @@ export class DocumentosECMListComponent implements OnChanges {
     this.versionar = data.versionar;
   }
 
-  showDocument(idDocumento:string){
-
+  showDocument(idDocumento: string) {
     this.loadingService.presentLoading();
-
-    this.docSrc =  environment.obtenerDocumento + idDocumento;
+    this.docSrc = environment.obtenerDocumento + idDocumento;
   }
 
   hideDocument(){
     this.docSrc = '';
   }
 
-  docLoaded(){
 
+  docLoaded() {
     this.loadingService.dismissLoading();
   }
 

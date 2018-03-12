@@ -1,21 +1,18 @@
-package co.com.soaint.mensajeria.business.control;
+package co.com.soaint.mensajeria.business.boundary.impl;
 
 import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
-import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import co.com.soaint.mensajeria.business.boundary.IGestionarMensaje;
 import co.com.soaint.mensajeria.util.SystemParameters;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,9 +24,9 @@ import org.springframework.amqp.support.converter.JsonMessageConverter;
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  */
 
-@BusinessControl
+@BusinessBoundary
 @Log4j2
-public class RabbitMensajeControl implements IGestionarMensaje {
+public class GestionarMensaje implements IGestionarMensaje {
 
     /**
      * @param mensajeGenericoQueueDTO
