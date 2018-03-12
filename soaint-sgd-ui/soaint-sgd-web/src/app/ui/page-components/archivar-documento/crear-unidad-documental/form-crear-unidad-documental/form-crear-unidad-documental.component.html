@@ -189,7 +189,7 @@
               <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                   <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
-                               [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+                               [paginator]="true" [rows]="10" [responsive]="true" [value]="(unidadesDocumentales$|async)">
                     <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
                     <p-column  header="Item" [style]="{'width':'50px'}">
                       <ng-template pTemplate="body" let-index="rowIndex">
@@ -208,7 +208,7 @@
                   </p-dataTable>
                 </div>
                 <div class="ui-g-12 text-right" style="padding-top: 20px">
-                  <button pButton type="button" label="Relacionar UD" style="width: auto"></button>
+                  <button pButton type="button" label="Relacionar UD" style="width: auto" (click)="relacionarUD()"></button>
                 </div>
               </div>
             </p-panel>
@@ -261,8 +261,8 @@
               </div>
             </p-panel>
           </div>
-          <div class="ui-g-12 text-right">
-            <button type="button" label="Crear UD" pButton style="width: auto"></button>
+          <div class="ui-g-12 text-right" *ngIf="form.controls['creada'].value == 0">
+            <button type="button" label="Crear UD" pButton style="width: auto" (click)="crearUD()"></button>
           </div>
         </div>
       </p-panel>

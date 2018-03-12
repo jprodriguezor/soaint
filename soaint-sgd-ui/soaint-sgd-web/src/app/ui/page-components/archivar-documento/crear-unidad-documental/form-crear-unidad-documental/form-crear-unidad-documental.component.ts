@@ -5,6 +5,8 @@ import  {State as RootState} from "../../../../../infrastructure/redux-store/red
 import {Store} from "@ngrx/store";
 import {SerieService} from "../../../../../infrastructure/api/serie.service";
 import {Observable} from "rxjs/Observable";
+import {ConfirmationService} from "primeng/primeng";
+import {UnidadDocumentalDTO} from "../../../../../domain/unidadDocumentalDTO";
 
 
 @Component({
@@ -21,8 +23,11 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
 
   subserieObservable2$:Observable<any[]>;
 
+  UDSelected:UnidadDocumentalDTO;
 
-  constructor(private fb:FormBuilder,store:Store<RootState>,serieService:SerieService) {
+  unidadesDocumentales$:Observable<UnidadDocumentalDTO[]>;
+
+  constructor(private fb:FormBuilder,store:Store<RootState>,serieService:SerieService,private confirmationService:ConfirmationService) {
 
     super(store,serieService);
 
@@ -84,4 +89,38 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
 
 
     }
+
+  relacionarUD(){
+
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea relacionar esta unidad documental?',
+      header: 'Confirmacion',
+      icon: 'fa fa-question-circle',
+      accept: () => {
+
+
+      },
+      reject: () => {
+
+      }
+    });
+
+  }
+
+  crearUD(){
+
+    this.confirmationService.confirm({
+      message: '¿Está seguro que desea crear esta unidad documental?',
+      header: 'Confirmacion',
+      icon: 'fa fa-question-circle',
+      accept: () => {
+
+
+      },
+      reject: () => {
+
+      }
+    });
+
+  }
 }
