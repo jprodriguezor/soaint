@@ -16,7 +16,6 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
@@ -44,21 +43,12 @@ import java.util.*;
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
 
-    @Autowired
-    Configuracion configuracion;
-
-
-    @Value("${claseSubserie}")
-    private static String aclaseSubserie;
-
     private static final Logger logger = LogManager.getLogger(ContentControlAlfresco.class.getName());
-
     private static final String CLASE_BASE = "claseBase";
     private static final String CLASE_DEPENDENCIA = "claseDependencia";
     private static final String CLASE_SERIE = "claseSerie";
     private static final String CLASE_SUBSERIE = "claseSubserie";
     private static final String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
-
     private static final String CMCOR = "cmcor:";
     private static final String CMCOR_CODIGOUNIDADAMINPADRE = "cmcor:CodigoUnidadAdminPadre";
     private static final String CMCOR_CODIGODEPENDENCIA = "cmcor:CodigoDependencia";
@@ -81,9 +71,14 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String AVISO_CREA_DOC_ID = "### Documento creado con id ";
     private static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     private static final String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
-    public static final String SEPARADOR = "---";
-    public static final String CMCOR_CODIGO_SUBSERIE = "cmcor:CodigoSubserie";
-    public static final String CMCOR_CODIGO_SERIE = "cmcor:CodigoSerie";
+    private static final String SEPARADOR = "---";
+    private static final String CMCOR_CODIGO_SUBSERIE = "cmcor:CodigoSubserie";
+    private static final String CMCOR_CODIGO_SERIE = "cmcor:CodigoSerie";
+    @Value("${claseSubserie}")
+    private static String aclaseSubserie;
+    @Autowired
+    Configuracion configuracion;
+
 
     /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
@@ -122,7 +117,6 @@ public class ContentControlAlfresco implements ContentControl {
 
         return conexion;
     }
-
 
     /**
      * Metodo que crea carpetas dentro de Alfresco
@@ -286,7 +280,6 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return fileAux;
     }
-
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
@@ -1435,14 +1428,13 @@ public class ContentControlAlfresco implements ContentControl {
 
             List<Carpeta> carpetasDeComunicacionOficial = obtenerCarpetasHijasDadoPadre(comunicacionOficialFolder.get());
 
-            String finalComunicacionOficial = comunicacionOficial;
             Optional<Carpeta> comunicacionOficialInOut = carpetasDeComunicacionOficial.stream()
-                    .filter(p -> p.getFolder().getName().contains(finalComunicacionOficial)).findFirst();
+                    .filter(p -> p.getFolder().getName().contains(comunicacionOficial)).findFirst();
 
 
             if (!comunicacionOficialInOut.isPresent()) {
 
-                Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), finalComunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
+                Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), comunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
                 logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
 
                 List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
@@ -1538,17 +1530,6 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
-     * Metodo que devuelve una lista de documentosDTO de una unidad documental
-     *
-     * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
-     * @param session             Objeto de conexion
-     * @return MensajeRespuesta
-     */
-    public MensajeRespuesta listarDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session){
-        return null;
-    }
-
-    /**
      * Metodo para llenar propiedades para crear carpeta
      *
      * @param tipoCarpeta tipo de carpeta
@@ -1593,42 +1574,75 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
-     * Eliminar documento del Alfresco
+     * Metodo para listar los documentos de una Unidad Documental
      *
-     * @param idDoc   Identificador del documento a borrar
-     * @param session Objeto de conexion al Alfresco
-     * @return Retorna true si borró con exito y false si no
+     * @param dto     La unidad
+     * @param session Objeto conexion de Alfresco
      */
     @Override
-    public boolean eliminardocumento(String idDoc, Session session) {
-        try {
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session) {
 
-            logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
-            DocumentoDTO documento = new DocumentoDTO();
-            documento.setIdDocumento(idDoc);
-            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
+        String query = "SELECT * FROM cmcor:CM_Unidad_Documental";
 
-            for (QueryResult qResult : resultsPrincipalAdjunto) {
-
-                String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
-                String idDocumento = parts[0];
-
-                logger.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName("cmis:name").getValues().get(0).toString());
-                ObjectId a = new ObjectIdImpl(idDocumento);
-                CmisObject object = session.getObject(a);
-                Document delDoc = (Document) object;
-                //Se borra el documento pero no todas las versiones solo la ultima
-                delDoc.delete(false);
-                logger.info("Se logro eliminar el documento");
-
-            }
-            return Boolean.TRUE;
-
-
-        } catch (CmisObjectNotFoundException e) {
-            logger.error("No se pudo eliminar el documento :", e);
-            return Boolean.FALSE;
+        if (!ObjectUtils.isEmpty(dto.getId())) {
+            query += " WHERE cmcor:xIdentificador = " + "'" + dto.getId() + "'";
+        } else {
+            query += " WHERE cmcor:CodigoDependencia = " + "'" + dto.getCodigoDependencia() + "'" +
+                    " AND cmcor:CodigoSerie = " + "'" + dto.getCodigoSerie() + "'" +
+                    " AND cmcor:CodigoSubserie = " + "'" + dto.getCodigoSubSerie() + "'" +
+                    " AND cmcor:xCerrada = false" +
+                    ((!ObjectUtils.isEmpty(dto.getNombreUnidadDocumental())) ? " " +
+                            "AND cmis:name = " + "'" + dto.getNombreUnidadDocumental() + "'" : "");
         }
+
+        final MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
+
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+
+        if (queryResults.getPageNumItems() == 0) {
+
+            mensajeRespuesta.setMensaje("Ningun resultado coincide con el criterio de busqueda");
+            mensajeRespuesta.setCodMensaje("11111");
+            return mensajeRespuesta;
+        }
+        if (queryResults.getPageNumItems() > 1) {
+            mensajeRespuesta.setMensaje("Existen varios resultados para dado criterio de busqueda");
+            mensajeRespuesta.setCodMensaje("11111");
+            return mensajeRespuesta;
+        }
+
+        final Iterator<QueryResult> iterator = queryResults.iterator();
+
+        if (iterator.hasNext()) {
+
+            QueryResult queryResult = iterator.next();
+            String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
+            Folder folder = (Folder) session.getObject(session.getObject(objectId));
+
+            final ItemIterable<CmisObject> folderChildren = folder.getChildren();
+
+            final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
+            dto.setListaDocumentos(documentoDTOS);
+            folderChildren.forEach(cmisObject -> {
+                switch (cmisObject.getBaseTypeId()) {
+                    case CMIS_DOCUMENT:
+                        Document document = (Document) cmisObject;
+                        if (document.getType().getId().equals("D:cmcor:CM_DocumentoPersonalizado")) {
+                            documentoDTOS.add(documentoDTOS.size(), transformarDocumento(document));
+                        }
+                        break;
+                }
+            });
+            mensajeRespuesta.setCodMensaje("00000");
+            mensajeRespuesta.setMensaje("OK");
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("unidadDocumentalDTO", dto);
+            mensajeRespuesta.setResponse(responseMap);
+            return mensajeRespuesta;
+        }
+        mensajeRespuesta.setCodMensaje("11111");
+        mensajeRespuesta.setMensaje("Hubo un error en el servidor");
+        return mensajeRespuesta;
     }
 
     /**
@@ -1666,106 +1680,65 @@ public class ContentControlAlfresco implements ContentControl {
         return file;
     }
 
-    private static UnidadDocumentalDTO transformar(Folder folder) {
-        /*String query = "SELECT * FROM F:cmcor:CM_Unidad_Documental";
+    /**
+     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
+     *
+     * @param document Objeto a transformar
+     * @return DocumentoDTO
+     */
+    private static DocumentoDTO transformarDocumento(Document document) {
 
-        query += " WHERE " + "cmcor:CodigoDependencia = '" + dto.getCodigoDependencia() + "' AND " +
-                "cmcor:CodigoSerie = '" + dto.getCodigoSerie() + "' and cmcor:CodigoSubserie = '" + dto.getCodigoSubSerie();
-
-        final ItemIterable<QueryResult> query1 = session.query(query, false);
-
-        if (query1.iterator().hasNext()){
-            return (Folder) query1.iterator().next();
-        }*/
-        UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
-        dto.setCodigoDependencia(folder.getPropertyValue("cmcor:CodigoDependencia"));
-        dto.setCodigoSerie(folder.getPropertyValue("cmcor:CodigoSerie"));
-        dto.setCodigoSubSerie(folder.getPropertyValue("cmcor:CodigoSubserie"));
-        return dto;
-    }
-
-    private static DocumentoDTO transformar(Document document) {
         DocumentoDTO documentoDTO = new DocumentoDTO();
         documentoDTO.setTipoDocumento(document.getPropertyValue("cmcor:xTipo"));
         documentoDTO.setNroRadicado(document.getPropertyValue("cmcor:NroRadicado"));
         documentoDTO.setTipologiaDocumental(document.getPropertyValue("cmcor:TipologiaDocumental"));
         documentoDTO.setNombreRemitente(document.getPropertyValue("cmcor:NombreRemitente"));
-        //documentoDTO.setNroRadicadoReferido(document.getPropertyValue("cmcor:xTipo"));
+        final String nroRadicado = document.getPropertyValue("cmcor:xNumeroReferido");
+
+        if (ObjectUtils.isEmpty(nroRadicado)) {
+            String[] splitRadicado = nroRadicado.split(SEPARADOR);
+            documentoDTO.setNroRadicadoReferido(splitRadicado);
+        }
+
         return documentoDTO;
     }
 
-    private static void listarUnidadesDocumentalesA(Folder folder, final List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) {
+    /**
+     * Eliminar documento del Alfresco
+     *
+     * @param idDoc   Identificador del documento a borrar
+     * @param session Objeto de conexion al Alfresco
+     * @return Retorna true si borró con exito y false si no
+     */
+    @Override
+    public boolean eliminardocumento(String idDoc, Session session) {
+        try {
 
-        if (folder != null) {
-            final ItemIterable<CmisObject> children = folder.getChildren();
+            logger.info("Se buscan los documentos Anexos al documento que se va a borrar");
+            DocumentoDTO documento = new DocumentoDTO();
+            documento.setIdDocumento(idDoc);
+            ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
-            children.forEach(item -> {
+            for (QueryResult qResult : resultsPrincipalAdjunto) {
 
-                switch (item.getBaseTypeId()) {
-                    case CMIS_FOLDER:
-                        Folder folderTmp = (Folder) item;
-                        if (folderTmp.getType().getId().equals("F:cmcor:CM_Unidad_Documental")) {
-                            final ItemIterable<CmisObject> children1 = folderTmp.getChildren();
-                            System.out.println(folderTmp.getName());
-                            UnidadDocumentalDTO dto = transformar(folderTmp);
-                            dto.setListaDocumentos(new ArrayList<>());
-                            System.out.println(dto);
-                            System.out.println(children1.getPageNumItems() + " Hijos");
-                            children1.forEach(item1 -> {
-                                switch (item1.getBaseTypeId()) {
-                                    case CMIS_DOCUMENT:
-                                        Document documentTmp = (Document) item1;
-                                        if (documentTmp.getType().getId().equals("D:cmcor:CM_DocumentoPersonalizado")) {
-                                            System.out.println("Documento de: " + folder);
-                                            System.out.println(documentTmp.getName());
-                                            DocumentoDTO documentoDTO = transformar((Document) item1);
-                                            dto.getListaDocumentos().add(documentoDTO);
-                                        }
-                                        break;
-                                }
-                            });
-                            if (dto.getListaDocumentos().isEmpty()) {
-                                unidadDocumentalDTOS.add(dto);
-                            }
-                        }
-                        listarUnidadesDocumentalesA(folderTmp, unidadDocumentalDTOS, session);
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }
-    }
+                String[] parts = qResult.getPropertyValueByQueryName("cmis:objectId").toString().split(";");
+                String idDocumento = parts[0];
 
-    public static void main(String[] args) {
+                logger.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName("cmis:name").getValues().get(0).toString());
+                ObjectId a = new ObjectIdImpl(idDocumento);
+                CmisObject object = session.getObject(a);
+                Document delDoc = (Document) object;
+                //Se borra el documento pero no todas las versiones solo la ultima
+                delDoc.delete(false);
+                logger.info("Se logro eliminar el documento");
 
-        LocalConexion conexion = new LocalConexion();
-        final Conexion conexion1 = conexion.obtenerConexion();
-        final List<UnidadDocumentalDTO> unidadDocumentalDTOS = new ArrayList<>();
-
-        listarUnidadesDocumentalesA(conexion1.getSession().getRootFolder(), unidadDocumentalDTOS, conexion1.getSession());
-
-        System.out.println(unidadDocumentalDTOS.size());
-        /*TestLocalConexion conexion = new TestLocalConexion();
-
-        Folder folder = conexion.getSession().getRootFolder();
-        System.out.println("******************* Root Name ****************");
-        System.out.println(folder.getName());
-        System.out.println("**********************************************");
-        System.out.println("***************** Children name **************");
-        listFolder(0, folder);
-        System.out.println("**********************************************");*/
-    }
-
-    /*private static void listFolder(int depth, Folder target) {
-        //String indent = StringUtils.repeat(" ", depth);
-        for (CmisObject o : target.getChildren()) {
-            if (BaseTypeId.CMIS_DOCUMENT.equals(o.getBaseTypeId())) {
-                System.out.println(indent + "[Docment] " + o.getName());
-            } else if (BaseTypeId.CMIS_FOLDER.equals(o.getBaseTypeId())) {
-                System.out.println(indent + "[Folder] " + o.getName() + " ID: " + o.getId());
-                listFolder(++depth, (Folder) o);
             }
+            return Boolean.TRUE;
+
+
+        } catch (CmisObjectNotFoundException e) {
+            logger.error("No se pudo eliminar el documento :", e);
+            return Boolean.FALSE;
         }
-    }*/
+    }
 }

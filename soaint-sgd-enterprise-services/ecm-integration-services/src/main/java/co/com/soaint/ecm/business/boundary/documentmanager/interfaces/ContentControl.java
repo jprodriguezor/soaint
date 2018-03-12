@@ -140,4 +140,12 @@ public interface ContentControl {
      * @return Mensaje de respuesta
      */
     MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto     La unidad
+     * @param session Objeto conexion de Alfresco
+     */
+    MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session);
 }
