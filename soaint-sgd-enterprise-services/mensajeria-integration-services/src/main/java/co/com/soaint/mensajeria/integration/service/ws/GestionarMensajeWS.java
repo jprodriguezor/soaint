@@ -21,7 +21,7 @@ import javax.jws.WebService;
 @Log4j2
 public class GestionarMensajeWS {
     @Autowired
-    @Qualifier("rabbitMensajeControl")
+    @Qualifier("gestionarMensaje")
     IGestionarMensaje boundary;
 
     /**
