@@ -1,7 +1,10 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +15,37 @@ public class RecordControlAlfresco {
     @Autowired
     RecordServices recordServices;
 
-    public MensajeRespuesta cerrarUnidadDocumentalRecord(MensajeRespuesta mensajeRespuesta){
-        MensajeRespuesta respuesta= new MensajeRespuesta();
+    public MensajeRespuesta cerrarUnidadDocumentalRecord(UnidadDocumentalDTO unidadDocumentalDTO) {
+        MensajeRespuesta respuesta = new MensajeRespuesta();
         try {
-            if("0000".equals(mensajeRespuesta.getCodMensaje())){
-                if
+            if (!unidadDocumentalDTO.getId().isEmpty()) {
+                EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
+                entradaRecordDTO.setSede(unidadDocumentalDTO.getCodigoSede());
+                entradaRecordDTO.setDependencia(unidadDocumentalDTO.getCodigoDependencia());
+                entradaRecordDTO.setSerie(unidadDocumentalDTO.getCodigoSerie());
+                entradaRecordDTO.setSubSerie(unidadDocumentalDTO.getCodigoSubSerie());
+                entradaRecordDTO.setNombreCarpeta(unidadDocumentalDTO.getNombreUnidadDocumental());
+                //Se crea la unidad documental en el record
+                MensajeRespuesta mensajeRespuestaAux = recordServices.crearCarpetaRecord(entradaRecordDTO);
+
+
+                if (mensajeRespuestaAux.getCodMensaje() == "0000") {
+                    if (!unidadDocumentalDTO.getListaDocumentos().isEmpty()) {
+                        for (DocumentoDTO documentoDTO : unidadDocumentalDTO.getListaDocumentos()) {
+                            //Se declara el record
+                            recordServices.declararRecord(documentoDTO.getIdDocumento());
+                            //Se completa el record
+                            recordServices.completeRecord(documentoDTO.getIdDocumento());
+                            //Se archiva el record
+                            recordServices.fileRecord(documentoDTO.getIdDocumento(),mensajeRespuestaAux.getResponse().get("idUnidadDocumental").toString());
+
+                        }
+                    }
+                    //Se cierra la carpeta
+                    recordServices.abrirCerrarRecordFolder(unidadDocumentalDTO.getId(),true);
+                }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return respuesta;

@@ -159,11 +159,14 @@ public class RecordServices implements IRecordServices {
             JSONObject carpeta = new JSONObject();
             carpeta.put("name", entrada.getNombreCarpeta());
             carpeta.put(tipoNodo, recordCarpeta);
-            crearNodo(carpeta, buscarRuta(parametro));
+
+            Map<String,Object> respuesta=new HashMap<>();
+            respuesta.put("idUnidadDocumental",crearNodo(carpeta, buscarRuta(parametro)));
 
             return MensajeRespuesta.newInstance()
                     .codMensaje("0000")
                     .mensaje("Carpeta creda en ".concat(codigoBusqueda))
+                    .response(respuesta)
                     .build();
         } catch (Exception e) {
             log.error(errorSistema);
@@ -453,7 +456,7 @@ public class RecordServices implements IRecordServices {
      * @param respuestaJson objeto json que contiene el mensaje de repuesta para procesar
      * @return el valor del campo id en la respusta json
      */
-    private UnidadDocumentalDTO obtenerUnidadDocumental(JSONObject respuestaJson) {
+    public UnidadDocumentalDTO obtenerUnidadDocumental(JSONObject respuestaJson) {
         UnidadDocumentalDTO unidadDocumentalDTO = new UnidadDocumentalDTO();
         Iterator keys = respuestaJson.keys();
         while (keys.hasNext()) {
@@ -645,7 +648,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    private String fileRecord(String idRecord, String idRecordFolder) throws SystemException {
+    public String fileRecord(String idRecord, String idRecordFolder) throws SystemException {
         log.info("Se entra al metodo fileRecord para archivar el documento de id: {}", idRecord);
         try {
             JSONObject recordFolder = new JSONObject();
@@ -692,7 +695,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    public String completeRecord(String idRecord, String idRecordFolder) throws SystemException {
+    public String completeRecord(String idRecord) throws SystemException {
         log.info("Se entra al metodo completeRecord para el record de id: {}", idRecord);
         try {
             if (!idRecord.isEmpty()) {
