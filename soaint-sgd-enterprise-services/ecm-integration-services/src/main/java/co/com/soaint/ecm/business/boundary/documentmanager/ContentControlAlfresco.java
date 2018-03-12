@@ -1576,12 +1576,13 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para listar los documentos de una Unidad Documental
      *
-     * @param dto     La unidad
+     * @param dto     La unidad documental
      * @param session Objeto conexion de Alfresco
      */
     @Override
     public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session) {
 
+        logger.info("Ejecutando el metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session)");
         String query = "SELECT * FROM cmcor:CM_Unidad_Documental";
 
         if (!ObjectUtils.isEmpty(dto.getId())) {
@@ -1600,12 +1601,13 @@ public class ContentControlAlfresco implements ContentControl {
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
 
         if (queryResults.getPageNumItems() == 0) {
-
+            logger.info("Ningun resultado coincide con el criterio de busqueda");
             mensajeRespuesta.setMensaje("Ningun resultado coincide con el criterio de busqueda");
             mensajeRespuesta.setCodMensaje("11111");
             return mensajeRespuesta;
         }
         if (queryResults.getPageNumItems() > 1) {
+            logger.info("Existen varios resultados para dado criterio de busqueda");
             mensajeRespuesta.setMensaje("Existen varios resultados para dado criterio de busqueda");
             mensajeRespuesta.setCodMensaje("11111");
             return mensajeRespuesta;

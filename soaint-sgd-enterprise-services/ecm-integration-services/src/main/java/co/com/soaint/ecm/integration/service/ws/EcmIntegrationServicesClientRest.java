@@ -2,6 +2,7 @@ package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
 import co.com.soaint.foundation.canonical.ecm.*;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -328,6 +329,23 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
 
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto     La unidad documntal
+     */
+    @POST
+    @Path("/listaDocumentoDTODadoUnidadDocumental/")
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return fEcmManager.listaDocumentoDTO(dto);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            throw e;
+        }
     }
 
 }

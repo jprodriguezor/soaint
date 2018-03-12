@@ -299,4 +299,20 @@ public class EcmManager {
 
         return response;
     }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto     La unidad documntal
+     */
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+        logger.info("### Listando las Unidades Documentales");
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return contentManager.listaDocumentoDTO(dto);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            throw e;
+        }
+    }
 }

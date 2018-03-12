@@ -378,4 +378,21 @@ public class ContentManager {
         }
         return response;
     }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto     La unidad documntal
+     */
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+        logger.info("### Listando las Unidades Documentales");
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            Conexion conexion = contentControl.obtenerConexion();
+            return contentControl.listaDocumentoDTO(dto, conexion.getSession());
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            throw e;
+        }
+    }
 }
