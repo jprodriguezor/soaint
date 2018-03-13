@@ -74,22 +74,20 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _coSandbox: ComunicacionOficialSandbox,
               private _store: Store<RootState>,
-              private _taskSandBox: TaskSandBox,
               private _dependenciaSandbox: DependenciaSandbox,
               private _paisSandbox: PaisSandbox,
               private _funcionarioSandbox: FuncionariosSandbox,
               private _changeDetectorRef: ChangeDetectorRef) {
+    this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
+    this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
+    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
+    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
     this._dependenciaSandbox.loadDependencies({});
     this._paisSandbox.loadDispatch();
     this._funcionarioSandbox.loadAllFuncionariosDispatch();
   }
 
   ngOnInit() {
-    /*this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
-    this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
-    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
-    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);*/
-
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
       this.restore();
