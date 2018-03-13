@@ -3,6 +3,7 @@ import {tassign} from 'tassign';
 import {TareaDTO} from 'app/domain/tareaDTO';
 import {LoadNextTaskPayload} from '../../../shared/interfaces/start-process-payload,interface';
 import {loadDataReducer} from '../../redux-store/redux-util';
+import {EventEmitter} from "@angular/core";
 
 
 export interface State {
@@ -27,6 +28,10 @@ const initialState: State = {
  * @param {State} state Current state
  * @param {Actions} action Incoming action
  */
+
+export const  afterTaskComplete:EventEmitter<any> = new EventEmitter;
+
+
 export function reducer(state = initialState, action: Actions) {
   switch (action.type) {
 
@@ -88,6 +93,8 @@ export function reducer(state = initialState, action: Actions) {
       const task = action.payload;
       const cloneEntities = tassign({}, state.entities);
       delete cloneEntities[state.activeTask.idTarea];
+
+      afterTaskComplete.emit();
 
       return tassign(state, {
         ids: state.ids.filter(value => value !== state.activeTask.idTarea),

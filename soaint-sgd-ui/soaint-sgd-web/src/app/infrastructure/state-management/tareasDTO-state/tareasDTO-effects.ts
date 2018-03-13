@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable,Output} from '@angular/core';
 import {Actions, Effect, toPayload} from '@ngrx/effects';
 import {Action, Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
@@ -25,9 +25,11 @@ import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/fun
 @Injectable()
 export class Effects {
 
+
   constructor(private actions$: Actions,
               private _store$: Store<RootState>,
               private _sandbox: Sandbox) {
+
   }
 
   @Effect()

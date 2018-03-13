@@ -14,7 +14,7 @@ import {
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
-  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO
+  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -22,11 +22,14 @@ import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/funcionarioDTO-selectors';
 import {Observable} from 'rxjs/Observable';
+import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
 
   routingStartState = false;
+
+
 
   authPayload: { usuario: string, pass: string } | any;
   authPayloadUnsubscriber: Subscription;
@@ -38,6 +41,8 @@ export class Sandbox {
     })).subscribe((value) => {
       this.authPayload = value;
     });
+
+
   }
 
   loadData(payload: any, dependency?: any) {
@@ -137,7 +142,7 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction(query));
   }
 
-  initTaskDispatch(task: TareaDTO): any {
+  initTaskDispatch(task: TareaDTO): any { console.log(task.nombre);
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
@@ -182,6 +187,11 @@ export class Sandbox {
       case TASK_ARCHIVAR_DOCUMENTO :
         this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.archivarDocumento}`, task]));
         break;
+
+      case TASK_CREAR_UNIDAD_DOCUMENTAL :
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.crearUnidadDocumental}`, task]));
+        break;
+
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }
@@ -218,6 +228,7 @@ export class Sandbox {
   loadDispatch(payload?) {
     this._store.dispatch(new actions.LoadAction(payload));
   }
+
 
 
 }
