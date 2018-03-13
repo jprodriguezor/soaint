@@ -23,6 +23,10 @@ import {SolicitudCreacionUDDto} from "../../../../domain/solicitudCreacionUDDto"
 import {SolicitudCreacionUdService} from "../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SerieDTO} from "../../../../domain/serieDTO";
 import {UnidadDocumentalDTO} from "../../../../domain/unidadDocumentalDTO";
+import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {go} from "@ngrx/router-store";
+import {ROUTES_PATH} from "../../../../app.route-names";
+import {Guid} from "../../../../infrastructure/utils/guid-generator";
 
 
 @Component({
@@ -51,6 +55,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   globalDependencySubscriptor:Subscription;
 
+  afterTaskCompleteSubscriptor:Subscription;
+
   subseries: Array<any> = [];
 
   solicitudes:SolicitudCreacionUDDto[] = [];
@@ -69,7 +75,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   currentPage:number = 1;
 
-   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _dependenciaSanbox:DependenciaSandbox,private _store:Store<RootState>,private _solicitudUDService:SolicitudCreacionUdService) {
+   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _store:Store<RootState>,private _solicitudUDService:SolicitudCreacionUdService) {
 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -92,6 +98,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
      this.globalDependencySubscriptor.unsubscribe();
+
+     this.afterTaskCompleteSubscriptor.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -103,13 +111,18 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
           .map(list => {list.unshift({
             codigoSerie:null,nombreSerie:"Seleccione"});
           return list});
-        this.dependenciaSelected = result.codigo;
+        this.dependenciaSelected = result;
     });
+
+   this.afterTaskCompleteSubscriptor =  afterTaskComplete.subscribe( t => this._store.dispatch(go(['/' + ROUTES_PATH.workspace])));
   }
 
   addSolicitud(){
 
      if(this.form.valid) {
+
+       let nro = this.solicitudes.length;
+
        this.solicitudes.push({
          codSerie: this.getControlValue("serie"),
          codSubserie: this.getControlValue("subserie"),
@@ -118,9 +131,12 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
          identificadorUD: this.getControlValue("identificador"),
          nombreUD: this.getControlValue("nombre"),
          observaciones: this.getControlValue("observaciones"),
-         estado: ""
+         fechaHora: new Date().getTime(),
+         nro: nro,
+         estado: "",
        });
      }
+
 
   }
 
@@ -184,6 +200,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
      this.visiblePopup = false;
      this.form.controls['operation'].setValue("solicitarUnidadDocumental");
    }
+
    confirmArchivarDocumentos(){
 
      this.confirmationService.confirm({
@@ -222,7 +239,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
     this.subseriesObservable$ = evt ?
       this
         .serieSubSerieService
-        .getSubseriePorDependenciaSerie(this.dependenciaSelected,evt.value)
+        .getSubseriePorDependenciaSerie(this.dependenciaSelected.codigo,evt.value)
         .map(list => {
           list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
           return list;
@@ -233,6 +250,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
    private crearSolicitudCreacionUD(){
 
      if(this.solicitudes.length > 0){
+
+       console.log(this.solicitudes);
        this._solicitudUDService.solicitarUnidadDocumental(this.solicitudes);
      }
    }

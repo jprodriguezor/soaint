@@ -56,6 +56,11 @@ import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/arch
 import {ProcesoService} from "./infrastructure/api/proceso.service";
 import {SolicitudCreacionUdService} from "./infrastructure/api/solicitud-creacion-ud.service";
 import { ListaDocumentosArchivadosComponent } from './ui/page-components/archivar-documento/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
+import { CrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component';
+import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/lista-solicitud-crear-ud/lista-solicitud-crear-ud.component';
+import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
+import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
+import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
 
 
 @NgModule({
@@ -153,7 +158,12 @@ import { ListaDocumentosArchivadosComponent } from './ui/page-components/archiva
     DatosRemitentesComponent,
     DetalleUnidadConservacionComponent,
     RedirectSeleccionarDocumentoComponent,
-    ListaDocumentosArchivadosComponent
+    ListaDocumentosArchivadosComponent,
+    CrearUnidadDocumentalComponent,
+    ListaSolicitudCrearUdComponent,
+    NoTramitarCreacionUdComponent,
+    FormCrearUnidadDocumentalComponent,
+    UdTramitadasComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
