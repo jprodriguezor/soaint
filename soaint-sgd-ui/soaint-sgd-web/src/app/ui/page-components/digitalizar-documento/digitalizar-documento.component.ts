@@ -106,7 +106,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           _dependencia = result[0];
 
-          const listRef = [""];
+          const listRef = ["-1"];
           this.comunicacion.referidoList.forEach((data) => {
             listRef.push(data.nroRadRef);
           });
