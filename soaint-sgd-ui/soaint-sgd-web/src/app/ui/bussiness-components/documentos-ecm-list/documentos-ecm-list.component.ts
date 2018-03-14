@@ -48,7 +48,7 @@ export class DocumentosECMListComponent implements OnInit, OnChanges {
       // console.log('ID del ecm');
       // console.log(this.comunicacion.ppdDocumentoList);
       const endpoint = `${environment.obtenerDocumento_asociados_endpoint}` + '/' + this.idDocumentECM;
-      this._api.post(endpoint).subscribe(response => {
+      this._api.list(endpoint).subscribe(response => {
         this.documentsList = [];
         if (response.codMensaje === '0000') {
           this.documentsList = response.documentoDTOList;

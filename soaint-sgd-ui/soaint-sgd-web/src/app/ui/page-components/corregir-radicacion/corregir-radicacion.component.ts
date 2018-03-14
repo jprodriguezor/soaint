@@ -128,6 +128,7 @@ export class CorregirRadicacionComponent implements OnInit {
     console.log(this.comunicacion);
 
 
+
     this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
 
     this._taskSandBox.completeTaskDispatch({
