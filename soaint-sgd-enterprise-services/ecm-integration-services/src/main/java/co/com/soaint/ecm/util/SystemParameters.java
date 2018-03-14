@@ -21,7 +21,7 @@ public class SystemParameters {
      * Metodo que devuelve el valor de las constantes
      *
      * @param parameterName Numbre del parametro que se va a devolver
-     * @return
+     * @return String
      */
     public static String getParameter(final String parameterName) {
         return System.getProperty(parameterName);
