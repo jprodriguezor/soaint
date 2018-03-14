@@ -33,11 +33,7 @@ PendingRequestInterceptor extends HttpInterceptor {
 
     return this.requestQueuee.some(e => {
 
-
-
-    return ObjectHelper.similar(request,e);
-
-
+      return ObjectHelper.similar(request,e);
     });
   }
 
