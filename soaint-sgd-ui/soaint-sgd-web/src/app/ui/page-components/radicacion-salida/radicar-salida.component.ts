@@ -78,26 +78,28 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
               private _paisSandbox: PaisSandbox,
               private _funcionarioSandbox: FuncionariosSandbox,
               private _changeDetectorRef: ChangeDetectorRef) {
-    this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
-    this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
-    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
-    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
-    this._dependenciaSandbox.loadDependencies({});
-    this._paisSandbox.loadDispatch();
-    this._funcionarioSandbox.loadAllFuncionariosDispatch();
+   // this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
+  //  this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
+   // this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
+  //  this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
+    //this._dependenciaSandbox.loadDependencies({});
+   // this._paisSandbox.loadDispatch();
+   // this._funcionarioSandbox.loadAllFuncionariosDispatch();
   }
 
   ngOnInit() {
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
+
       this.restore();
     });
-    this._changeDetectorRef.detectChanges();
+   this._changeDetectorRef.detectChanges();
   }
 
   ngAfterContentInit() {
-    this.formsTabOrder.push(this.datosGenerales);
-    this.formsTabOrder.push(this.datosContacto);
+   this.formsTabOrder.push(this.datosGenerales);
+   this.formsTabOrder.push(this.datosContacto);
+    console.log('AFTER VIEW INIT...');
   }
 
   ngAfterViewInit() {
