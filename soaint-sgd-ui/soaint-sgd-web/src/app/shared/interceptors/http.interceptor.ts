@@ -14,8 +14,9 @@ export abstract class HttpInterceptor {
   }
 
   processRequestInterception(url, options?: RequestOptionsArgs): RequestOptionsArgs {
+
     return (!this._successor) ? this.requestIntercept(url, options) :
-      this._successor.processRequestInterception(this.requestIntercept(options));
+      this._successor.processRequestInterception(this.requestIntercept(url,options));
   }
 
   processResponseInterception(url: string | Request, response: Observable<Response>): Observable<Response> {
