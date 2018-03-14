@@ -7,6 +7,7 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -384,7 +385,7 @@ public class ContentManager {
      *
      * @param dto     La unidad documntal
      */
-    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) throws SystemException {
         logger.info("### Listando las Unidades Documentales");
         logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
         try {

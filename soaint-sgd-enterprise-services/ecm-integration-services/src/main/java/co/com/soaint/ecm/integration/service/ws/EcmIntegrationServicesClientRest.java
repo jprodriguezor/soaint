@@ -83,7 +83,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/listarUnidadesDocumentalesECM/")
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+    public MensajeRespuesta listarUnidadesDocumentales(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
         logger.info("processing rest request - Listar Unidades Documentales ECM");
         try {
             return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
@@ -344,7 +344,10 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.listaDocumentoDTO(dto);
         } catch (Exception e) {
             logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
-            throw e;
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
         }
     }
 

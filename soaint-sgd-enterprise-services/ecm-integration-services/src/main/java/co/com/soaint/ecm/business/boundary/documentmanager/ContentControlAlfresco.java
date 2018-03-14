@@ -5,10 +5,10 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.domain.entity.LocalConexion;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -78,6 +78,9 @@ public class ContentControlAlfresco implements ContentControl {
     private static String aclaseSubserie;
     @Autowired
     Configuracion configuracion;
+
+    @Autowired
+    RecordControlAlfresco recordControlAlfresco;
 
 
     /**
@@ -1015,10 +1018,11 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setNombreDocumento(qResult.getPropertyValueByQueryName("cmis:name"));
                 GregorianCalendar newGregCal = qResult.getPropertyValueByQueryName("cmis:creationDate");
                 documentoDTO.setFechaCreacion(newGregCal.getTime());
-                documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
+                documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType"));
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
-                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
+                String tipo = qResult.getPropertyValueByQueryName("cmcor:xTipo");
+                documentoDTO.setTipologiaDocumental(ObjectUtils.isEmpty(tipo) ? "" : tipo);
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente") != null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : null);
 
                 documentosLista.add(documentoDTO);
@@ -1580,7 +1584,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session Objeto conexion de Alfresco
      */
     @Override
-    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session) {
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session) throws SystemException {
 
         logger.info("Ejecutando el metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session)");
         String query = "SELECT * FROM cmcor:CM_Unidad_Documental";
@@ -1619,6 +1623,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             QueryResult queryResult = iterator.next();
             String objectId = queryResult.getPropertyValueByQueryName("cmis:objectId");
+            System.out.println("ID: " + objectId);
             Folder folder = (Folder) session.getObject(session.getObject(objectId));
 
             final ItemIterable<CmisObject> folderChildren = folder.getChildren();
@@ -1635,6 +1640,11 @@ public class ContentControlAlfresco implements ContentControl {
                         break;
                 }
             });
+
+            if (ObjectUtils.isEmpty(dto.getId())) {
+                dto.setId(objectId);
+            }
+            recordControlAlfresco.cerrarUnidadDocumentalRecord(dto);
             mensajeRespuesta.setCodMensaje("00000");
             mensajeRespuesta.setMensaje("OK");
             Map<String, Object> responseMap = new HashMap<>();
@@ -1691,6 +1701,7 @@ public class ContentControlAlfresco implements ContentControl {
     private static DocumentoDTO transformarDocumento(Document document) {
 
         DocumentoDTO documentoDTO = new DocumentoDTO();
+        documentoDTO.setIdDocumento(document.getId());
         documentoDTO.setTipoDocumento(document.getPropertyValue("cmcor:xTipo"));
         documentoDTO.setNroRadicado(document.getPropertyValue("cmcor:NroRadicado"));
         documentoDTO.setTipologiaDocumental(document.getPropertyValue("cmcor:TipologiaDocumental"));

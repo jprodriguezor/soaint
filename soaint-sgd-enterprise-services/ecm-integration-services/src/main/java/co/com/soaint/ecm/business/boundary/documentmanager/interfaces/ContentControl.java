@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.stereotype.Service;
 
@@ -147,5 +148,5 @@ public interface ContentControl {
      * @param dto     La unidad documental
      * @param session Objeto conexion de Alfresco
      */
-    MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session);
+    MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto, Session session) throws SystemException;
 }

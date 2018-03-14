@@ -6,19 +6,22 @@ import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 @BusinessControl
 @NoArgsConstructor
 public class RecordControlAlfresco {
+
     @Autowired
     RecordServices recordServices;
 
-    public MensajeRespuesta cerrarUnidadDocumentalRecord(UnidadDocumentalDTO unidadDocumentalDTO) {
+    public MensajeRespuesta cerrarUnidadDocumentalRecord(UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
         MensajeRespuesta respuesta = new MensajeRespuesta();
         try {
-            if (!unidadDocumentalDTO.getId().isEmpty()) {
+            if (!ObjectUtils.isEmpty(unidadDocumentalDTO.getId())) {
                 EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
                 entradaRecordDTO.setSede(unidadDocumentalDTO.getCodigoSede());
                 entradaRecordDTO.setDependencia(unidadDocumentalDTO.getCodigoDependencia());
@@ -28,8 +31,7 @@ public class RecordControlAlfresco {
                 //Se crea la unidad documental en el record
                 MensajeRespuesta mensajeRespuestaAux = recordServices.crearCarpetaRecord(entradaRecordDTO);
 
-
-                if (mensajeRespuestaAux.getCodMensaje() == "0000") {
+                if (mensajeRespuestaAux.getCodMensaje().equals("0000")) {
                     if (!unidadDocumentalDTO.getListaDocumentos().isEmpty()) {
                         for (DocumentoDTO documentoDTO : unidadDocumentalDTO.getListaDocumentos()) {
                             //Se declara el record
@@ -37,8 +39,7 @@ public class RecordControlAlfresco {
                             //Se completa el record
                             recordServices.completeRecord(documentoDTO.getIdDocumento());
                             //Se archiva el record
-                            recordServices.fileRecord(documentoDTO.getIdDocumento(),mensajeRespuestaAux.getResponse().get("idUnidadDocumental").toString());
-
+                            recordServices.fileRecord(documentoDTO.getIdDocumento(), mensajeRespuestaAux.getResponse().get("idUnidadDocumental").toString());
                         }
                     }
                     //Se cierra la carpeta
@@ -46,7 +47,7 @@ public class RecordControlAlfresco {
                 }
             }
         } catch (Exception e) {
-
+            throw e;
         }
         return respuesta;
     }

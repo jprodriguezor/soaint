@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.mediator;
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -305,7 +306,7 @@ public class EcmManager {
      *
      * @param dto     La unidad documntal
      */
-    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) throws SystemException {
         logger.info("### Listando las Unidades Documentales");
         logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
         try {
