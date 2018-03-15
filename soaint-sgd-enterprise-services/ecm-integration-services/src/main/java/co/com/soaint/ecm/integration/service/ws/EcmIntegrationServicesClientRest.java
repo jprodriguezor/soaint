@@ -1,10 +1,7 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +25,18 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
 public class EcmIntegrationServicesClientRest {
-    @Autowired
-    private
-    EcmManager fEcmManager;
+
+    private final EcmManager fEcmManager;
 
     private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
 
     /**
      * Constructor de la clase
      */
-    public EcmIntegrationServicesClientRest() {
+    @Autowired
+    public EcmIntegrationServicesClientRest(EcmManager fEcmManager) {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        this.fEcmManager = fEcmManager;
     }
 
 
@@ -287,15 +285,83 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/devolverSerieOSubserieECM/")
-    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws Exception {
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
         } catch (Exception e) {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
-            throw e;
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setMensaje("Error en operacion - Devolver Serie Subserie ECM");
+            respuesta.setCodMensaje("2222");
+            return respuesta;
         }
 
+    }
+
+    /* *************************************
+     * * Servicios de la Unidad Documental *
+     * *************************************
+     */
+
+    /**
+     * Operacion para crear las unidades documentales en el ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/crearUnidadDocumentalECM/")
+    public MensajeRespuesta crearUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("Ejecutando metodo crearUnidadDocumental");
+        try {
+            return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
+        } catch (Exception e) {
+            logger.error("Al crear la unidad documental en el ECM", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setMensaje("Error al crear la Unidad Documental");
+            respuesta.setCodMensaje("2222");
+            return respuesta;
+        }
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    @POST
+    @Path("/listarUnidadesDocumentalesECM/")
+    public MensajeRespuesta listarUnidadesDocumentales(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Listar Unidades Documentales ECM");
+        try {
+            return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+        } catch (RuntimeException e) {
+            logger.error("Error servicio Listar las Unidades Documentales ", e);
+            throw e;
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    @POST
+    @Path("/listaDocumentoDTODadoUnidadDocumental/")
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) {
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return fEcmManager.listaDocumentoDTO(dto);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
     }
 
 }

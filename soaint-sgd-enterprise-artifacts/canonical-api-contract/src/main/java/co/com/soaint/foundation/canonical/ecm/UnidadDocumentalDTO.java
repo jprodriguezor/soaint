@@ -1,6 +1,5 @@
 package co.com.soaint.foundation.canonical.ecm;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,11 +29,8 @@ public class UnidadDocumentalDTO {
     private String id;
     private String descriptor2;
 
-    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaCierre;
-    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaExtremaInicial;
-    @JsonFormat(pattern = "dd/mm/yyyy")
     private Date fechaExtremaFinal;
 
     private String soporte;
@@ -54,4 +51,6 @@ public class UnidadDocumentalDTO {
     private boolean cerrada;
 
     private String accion;
+
+    private List<DocumentoDTO> listaDocumentos;
 }

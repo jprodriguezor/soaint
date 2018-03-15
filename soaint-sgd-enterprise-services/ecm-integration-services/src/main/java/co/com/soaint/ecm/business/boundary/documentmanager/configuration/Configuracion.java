@@ -19,6 +19,8 @@ public class Configuracion {
     private String aclaseSerie;
     @Value("${claseDependencia}")
     private String aclaseDependencia;
+    @Value("${claseUnidadDocumental}")
+    private String aclaseUnidadDocumental;
     @Value("${claseBase}")
     private String aclaseBase;
     @Value("${metadatoCodBase}")
@@ -71,6 +73,9 @@ public class Configuracion {
 
             case "claseSerie":
                 return aclaseSerie != null ? aclaseSerie : "CM_Serie";
+
+            case "claseUnidadDocumental":
+                return aclaseUnidadDocumental != null ? aclaseUnidadDocumental : "CM_Unidad_Documental";
 
             case "claseDependencia":
                 return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";

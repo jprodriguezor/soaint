@@ -1,11 +1,9 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -258,5 +256,35 @@ public class EcmManager {
         }
 
         return response;
+    }
+
+    /**
+     * Operacion para crear las unidades documentales en el ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        return contentManager.crearUnidadDocumntal(unidadDocumentalDTO);
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto) throws SystemException {
+        return contentManager.listarDocumentoDTO(dto);
     }
 }

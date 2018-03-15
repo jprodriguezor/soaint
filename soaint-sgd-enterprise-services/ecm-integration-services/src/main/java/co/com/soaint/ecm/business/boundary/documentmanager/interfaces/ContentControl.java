@@ -2,12 +2,9 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,9 +35,9 @@ public interface ContentControl {
     /**
      * Subir documento Principal Adjuntos al ECM
      *
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
-     * @param selector               Selector que dice donde se va a gauardar el documento
+     * @param selector     Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
@@ -49,18 +46,18 @@ public interface ContentControl {
     /**
      * Subir Versionar documento Generado al ECM
      *
-     * @param session                Objeto conexion
-     * @param documento              documento a subir/versionar
-     * @param selector               parametro que indica donde se va a guardar el documento
+     * @param session   Objeto conexion
+     * @param documento documento a subir/versionar
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session,  DocumentoDTO documento, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
      *
-     * @param session        Objeto conexion
+     * @param session   Objeto conexion
      * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de documentos adjuntos
      * @throws IOException exception
@@ -95,7 +92,7 @@ public interface ContentControl {
      * Descargar documento
      *
      * @param documentoDTO Objeto que contiene metadatos del documento en el ECM
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @return Se retorna el documento
      */
     MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException;
@@ -127,5 +124,31 @@ public interface ContentControl {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-     MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) ;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session);
+
+    /**
+     * Operacion para crear las unidades documentales en el ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @param session Objeto de Conexion
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @param session
+     * @return Mensaje de respuesta
+     */
+    MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    MensajeRespuesta listarDocumentoDTO(UnidadDocumentalDTO dto, Session session) throws SystemException;
 }

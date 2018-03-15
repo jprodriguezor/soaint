@@ -4,12 +4,10 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -330,4 +328,36 @@ public class ContentManager {
         return response;
     }
 
+    /**
+     * Operacion para crear las unidades documentales en el ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumntal(UnidadDocumentalDTO unidadDocumentalDTO) {
+        Conexion conexion = new Conexion();
+        return contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        Conexion conexion = new Conexion();
+        return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param dto Objeto que contiene los datos de filtrado
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarDocumentoDTO(UnidadDocumentalDTO dto) throws SystemException {
+        Conexion conexion = new Conexion();
+        return contentControl.listarDocumentoDTO(dto, conexion.getSession());
+    }
 }

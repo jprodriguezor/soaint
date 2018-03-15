@@ -30,4 +30,11 @@ public interface IRecordServices {
      */
     MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 
+    String declararRecord(String id) throws SystemException;
+
+    String completeRecord(String idRecord) throws SystemException;
+
+    String fileRecord(String idRecord, String idRecordFolder) throws SystemException;
+
+    Boolean abrirCerrarRecordFolder(String idRecordFolder, Boolean abrirCerrar) throws SystemException;
 }
