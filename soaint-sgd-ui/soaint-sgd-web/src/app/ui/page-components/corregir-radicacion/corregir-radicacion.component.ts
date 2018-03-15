@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -26,17 +26,17 @@ import { CorregirRadicacionStateService } from './corregir-radication.state.serv
   templateUrl: './corregir-radicacion.component.html',
   styleUrls: ['./corregir-radicacion.component.scss'],
 })
-export class CorregirRadicacionComponent implements OnInit {
+export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
 
-  @ViewChild('datosGenerales') actualizarDatosGenerales;
+  @ViewChild('datosGenerales') datosGenerales;
 
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
 
-  editable = false;
-
   tabIndex = 0;
+
+  formsTabOrder: Array<any> = [];
 
   state: CorregirRadicacionStateService
 
@@ -46,6 +46,24 @@ export class CorregirRadicacionComponent implements OnInit {
 
   ngOnInit() {
     this.state.Init();
+  }
+
+  ngAfterContentInit() {
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
+  }
+
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
+  }
+
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(event) {
+    this.tabIndex = event.index;
   }
 
 

@@ -45,6 +45,16 @@ public class ECMClient {
         return response.readEntity(MensajeRespuesta.class);
     }
 
+    public MensajeRespuesta uploadVersionDocumentoComunicacion(DocumentoDTO documentoDTO, String tipoComunicacion) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+                .request()
+                .post(Entity.json(documentoDTO));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
     public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         Response response = wt.path("/obtenerVersionesDocumentos/" + documentId).request()

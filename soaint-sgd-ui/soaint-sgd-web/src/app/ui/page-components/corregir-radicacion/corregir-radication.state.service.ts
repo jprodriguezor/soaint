@@ -34,6 +34,7 @@ radicacion: ComunicacionOficialDTO;
 radicacionEntradaDTV: any;
 comunicacion: ComunicacionOficialDTO = {};
 
+
 destinatario: any = null;
 generales: any = null;
 remitente: any = null;
@@ -57,18 +58,6 @@ agentesDestinatario: any;
         this.task = activeTask;
         this.restore();
     });
-  }
-
-  openNext() {
-    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
-  }
-
-  openPrev() {
-    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
-  }
-
-  updateTabIndex(event) {
-    this.tabIndex = event.index;
   }
 
   abort() {
@@ -124,6 +113,13 @@ agentesDestinatario: any;
       }
     });
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+  }
+
+  HasDocuments() {
+    if (this.comunicacion && this.comunicacion.ppdDocumentoList) {
+      return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
+    }
+    return false;
   }
 
 }

@@ -15,9 +15,9 @@
     </div>
     <div taskBody>
 
-      <p-tabView [activeIndex]="tabIndex" (onChange)="state.updateTabIndex($event)">
+      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales *ngIf="state.generales" [_dataform] ="state.generales"  #datosGenerales [editable]="state.readonly"
+          <app-datos-generales [_dataform]="state.generales"  #datosGenerales
                                [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
                                (onChangeTipoComunicacion)="setTipoComunicacion($event)">
           </app-datos-generales>
@@ -36,15 +36,20 @@
                                   <!--[sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"-->
           <!--&gt;</app-datos-destinatario>-->
         </p-tabPanel>
+        <p-tabPanel header="Adjuntar documentos" leftIcon="ui-icon-assignment">
+          <div style="overflow-y: scroll;max-height: 700px" *ngIf="state.HasDocuments()">
+            <app-documentos-ecm-list [idDocumentECM]="state.comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="true"></app-documentos-ecm-list>
+          </div>
+        </p-tabPanel>
 
       </p-tabView>
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
         <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
-                (click)="state.openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
+                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
                 [disabled]="!formsTabOrder[tabIndex].form.valid">
         </button>
         <button pButton label="Anterior" style="width: 150px; float: left"
-                (click)="state.openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
+                (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
         </button>
       </div>
     </div>

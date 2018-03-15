@@ -33,6 +33,8 @@
                 <p-fileUpload *ngIf="row.tipoPadreAdjunto==='Principal'" #uploader
                               (onSelect)="selectFile(uploader)"
                               (onRemove)="clearFileList(uploader)"
+                              (onUpload)="onUpload($event)" 
+                              (uploadHandler)="uploadHandler($event)"
                               [styleClass]="selectedFile"
                               [showUploadButton]="false"
                               [showCancelButton]="false"
