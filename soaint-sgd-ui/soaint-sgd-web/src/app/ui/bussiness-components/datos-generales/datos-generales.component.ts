@@ -60,13 +60,16 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   mediosRecepcionInput: ConstanteDTO = null;
 
+  @Input()
+  _dataform: any = null;
+
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
   validations: any = {};
   //
-  //@ViewChild('dropDownThing')
-  //dropDownThing: Dropdown;
+  // @ViewChild('dropDownThing')
+  // dropDownThing: Dropdown;
 
 
   constructor(private _store: Store<State>, private _apiDatosGenerales: DatosGeneralesApiService, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder) {
@@ -74,27 +77,51 @@ export class DatosGeneralesComponent implements OnInit {
 
   initForm() {
 
-    this.form = this.formBuilder.group({
-      'fechaRadicacion': [null],
-      'nroRadicado': [null],
-      'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
-      'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
-      'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
-      'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-      'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
-      'unidadTiempo': [{value: null, disabled: !this.editable}],
-      'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
-      'inicioConteo': [null],
-      'reqDistFisica': [{value: null, disabled: !this.editable}],
-      'reqDigit': [{value: "1", disabled: !this.editable}],
-      'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-      'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-      'radicadoReferido': [{value: null, disabled: !this.editable}],
-      'tipoAnexos': [{value: null, disabled: !this.editable}],
-      'soporteAnexos': [{value: null, disabled: !this.editable}],
-      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
-      'hasAnexos': [{value: null, disabled: !this.editable}]
-    });
+    if (this._dataform) { // corregir
+      this.form = this.formBuilder.group({
+        'fechaRadicacion': [this._dataform.fechaRadicacion],
+        'nroRadicado': [this._dataform.nroRadicado],
+        'tipoComunicacion': [{value: this._dataform.tipoComunicacion, disabled: this.editable}, Validators.required],
+        'medioRecepcion': [{value: this._dataform.medioRecepcion, disabled: this.editable}, Validators.required],
+        'empresaMensajeria': [{value: this._dataform.empresaMensajeria, disabled: true}, Validators.required],
+        'numeroGuia': [{value: this._dataform.numeroGuia, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'tipologiaDocumental': [{value: this._dataform.tipologiaDocumental, disabled: !this.editable}, Validators.required],
+        'unidadTiempo': [{value: this._dataform.unidadTiempo, disabled: this.editable}],
+        'numeroFolio': [{value: this._dataform.numeroFolio, disabled: this.editable}, Validators.required],
+        'inicioConteo': [this._dataform.inicioConteo],
+        'reqDistFisica': [{value: this._dataform.reqDistFisica, disabled: this.editable}],
+        'reqDigit': [{value: this._dataform.reqDigit, disabled: this.editable}],
+        'tiempoRespuesta': [{value: this._dataform.tiempoRespuesta, disabled: this.editable}],
+        'asunto': [{value: this._dataform.asunto, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: this._dataform.radicadoReferido, disabled: !this.editable}],
+        'tipoAnexos': [{value: this._dataform.tipoAnexos, disabled: this.editable}],
+        'soporteAnexos': [{value: this._dataform.soporteAnexos, disabled: this.editable}],
+        'tipoAnexosDescripcion': [{value: this._dataform.tipoAnexosDescripcion, disabled: this.editable}, Validators.maxLength(300)],
+        'hasAnexos': [{value: this._dataform.hasAnexos, disabled: this.editable}]
+      });
+    } else {
+      this.form = this.formBuilder.group({
+        'fechaRadicacion': [null],
+        'nroRadicado': [null],
+        'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
+        'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
+        'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
+        'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
+        'unidadTiempo': [{value: null, disabled: !this.editable}],
+        'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
+        'inicioConteo': [null],
+        'reqDistFisica': [{value: null, disabled: !this.editable}],
+        'reqDigit': [{value: '1', disabled: !this.editable}],
+        'tiempoRespuesta': [{value: null, disabled: !this.editable}],
+        'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: null, disabled: !this.editable}],
+        'tipoAnexos': [{value: null, disabled: !this.editable}],
+        'soporteAnexos': [{value: null, disabled: !this.editable}],
+        'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
+        'hasAnexos': [{value: null, disabled: !this.editable}]
+      });
+    }
   }
 
   listenForErrors() {

@@ -15,17 +15,12 @@
     </div>
     <div taskBody>
 
-      <p-tabView [activeIndex]="tabIndex">
+      <p-tabView [activeIndex]="tabIndex" (onChange)="state.updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <!--<app-actualizar-datos-generales #actualizarDatosGenerales-->
-                               <!--[comunicacion] = "comunicacion"-->
-                               <!--[mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"-->
-                               <!--(onChangeTipoComunicacion)="setTipoComunicacion($event)">-->
-          <!--</app-actualizar-datos-generales>-->
-          <!--<app-datos-generales #datosGenerales [editable]="editable"-->
-                               <!--[mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"-->
-                               <!--(onChangeTipoComunicacion)="setTipoComunicacion($event)"></app-datos-generales>-->
-
+          <app-datos-generales *ngIf="state.generales" [_dataform] ="state.generales"  #datosGenerales [editable]="state.readonly"
+                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
+                               (onChangeTipoComunicacion)="setTipoComunicacion($event)">
+          </app-datos-generales>
         </p-tabPanel>
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
@@ -43,7 +38,15 @@
         </p-tabPanel>
 
       </p-tabView>
-
+      <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
+        <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
+                (click)="state.openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
+                [disabled]="!formsTabOrder[tabIndex].form.valid">
+        </button>
+        <button pButton label="Anterior" style="width: 150px; float: left"
+                (click)="state.openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
+        </button>
+      </div>
     </div>
   </app-task-container>
 </div>

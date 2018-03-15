@@ -28,7 +28,7 @@ import { CorregirRadicacionStateService } from './corregir-radication.state.serv
 })
 export class CorregirRadicacionComponent implements OnInit {
 
-  @ViewChild('actualizarDatosGenerales') actualizarDatosGenerales;
+  @ViewChild('datosGenerales') actualizarDatosGenerales;
 
   @ViewChild('datosRemitente') datosRemitente;
 

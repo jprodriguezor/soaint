@@ -27,14 +27,16 @@ export class CorregirRadicacionStateService {
 
 task: TareaDTO;
 activeTaskUnsubscriber: Subscription;
+readonly = false;
+tabIndex = 0;
 
 radicacion: ComunicacionOficialDTO;
 radicacionEntradaDTV: any;
 comunicacion: ComunicacionOficialDTO = {};
 
-destinatario: any;
-generales: any;
-remitente: any;
+destinatario: any = null;
+generales: any = null;
+remitente: any = null;
 descripcionAnexos: any;
 radicadosReferidos: any;
 agentesDestinatario: any;
@@ -55,6 +57,18 @@ agentesDestinatario: any;
         this.task = activeTask;
         this.restore();
     });
+  }
+
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
+  }
+
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(event) {
+    this.tabIndex = event.index;
   }
 
   abort() {
@@ -90,14 +104,13 @@ agentesDestinatario: any;
 
   restore() {
     if (this.task) {
-      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
+      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado)
+      .subscribe((result) => {
         this.comunicacion = result;
-        console.log(this.comunicacion);
-
         this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
-        console.log(this.radicacionEntradaDTV);
-        this.remitente.form.patchValue(this.radicacionEntradaDTV.getDatosRemitente());
-        this.generales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
+        this.destinatario = this.radicacionEntradaDTV.getDatosDestinatarios();
+        this.remitente = this.radicacionEntradaDTV.getDatosRemitente();
+        this.generales = this.radicacionEntradaDTV.getRadicacionEntradaFormData();
       });
     }
   }
