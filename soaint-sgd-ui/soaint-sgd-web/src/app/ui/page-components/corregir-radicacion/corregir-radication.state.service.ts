@@ -20,6 +20,13 @@ import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import { ProduccionDocumentalApiService } from '../../../infrastructure/api/produccion-documental.api';
+import { VersionDocumentoDTO } from '../produccion-documental/models/DocumentoDTO';
+import { DocumentoEcmDTO } from '../../../domain/documentoEcmDTO';
+import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import { DocumentUploaded } from '../produccion-documental/events/DocumentUploaded';
+import { MessageService } from 'primeng/components/common/messageservice';
+import { MessagingService } from '../../../infrastructure/__api.include';
 
 
 @Injectable()
@@ -48,7 +55,9 @@ agentesDestinatario: any;
       private _asiganacionSandbox: AsiganacionDTOSandbox,
       private _comunicacionOficialApi: CominicacionOficialSandbox,
       private _taskSandBox: TaskSandBox,
-      private formBuilder: FormBuilder
+      private formBuilder: FormBuilder,
+      private _produccionDocumentalApi: ProduccionDocumentalApiService,
+      private messagingService: MessagingService
     ) {
 
   }
@@ -121,5 +130,31 @@ agentesDestinatario: any;
     }
     return false;
   }
+
+  uploadVersionDocumento(doc: VersionDocumentoDTO) {
+    const formData = new FormData();
+    formData.append('documento', doc.file, doc.nombre);
+    if (doc.id) {
+        formData.append('idDocumento', doc.id);
+    }
+    formData.append('selector', 'PD');
+    formData.append('nombreDocumento', doc.nombre);
+    formData.append('tipoDocumento', doc.tipo);
+    formData.append('sede', this.task.variables.nombreSede);
+    formData.append('dependencia', this.task.variables.nombreDependencia);
+    formData.append('nroRadicado', this.task.variables && this.task.variables.numeroRadicado || null);
+    this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
+    resp => {
+      if ('0000' === resp.codMensaje) {
+        this._store.dispatch(new PushNotificationAction({severity: 'success', summary: resp.mensaje}))
+        return resp.documentoDTOList[0];
+      } else {
+        this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
+        return doc
+      }
+    },
+    error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
+  );
+}
 
 }

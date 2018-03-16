@@ -4,11 +4,12 @@
     <p-panel header="Documentos Asociados" [style]="{border: 'none'}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
-          <p-dataTable selectionMode="single"
+          <p-progressBar mode="indeterminate" *ngIf="loading"></p-progressBar>
+          <p-dataTable selectionMode="single" *ngIf="!loading"
                        [paginator]="true" [rows]="10"
                        [responsive]="true"
                        [value]="documentsList"
-                       inmutable="false"
+                       inmutable="true"
                        emptyMessage="No tiene documentos asociados">
             <!--<p-header>Redirecciones / Devoluciones Fallidas</p-header>-->
             <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
@@ -34,7 +35,8 @@
                               (onSelect)="selectFile(uploader)"
                               (onRemove)="clearFileList(uploader)"
                               (onUpload)="onUpload($event)" 
-                              (uploadHandler)="uploadHandler($event)"
+                              customUpload="true"
+                              (uploadHandler)="uploadHandler($event, uploader)"
                               [styleClass]="selectedFile"
                               [showUploadButton]="false"
                               [showCancelButton]="false"

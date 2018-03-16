@@ -126,7 +126,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
-
   ngOnInit(): void {
     this._store.dispatch(new SedeAdministrativaLoadAction());
     this._store.dispatch(new LoadPaisAction());

@@ -2,5 +2,5 @@ import { CorregirRadicacionStateService } from './page-components/corregir-radic
 
 
 export const STATE_SERVICES = [
-    CorregirRadicacionStateService
+    CorregirRadicacionStateService,
 ]
