@@ -17,13 +17,13 @@ export const ROUTES_PATH = {
   cargaMasivaDetails: 'carga-masiva/record/:id',
   distribucionFisica: 'distribucion-fisica',
   cargarPlanillas: 'cargar-planillas',
-  crearUnidadDocumental: '',
-  archivarDocumento: '',
   produccionDocumentalMultiple: 'produccion-documental-multiple',
   produccionDocumental: 'producir-documento',
+  archivarDocumento: 'archivar-documento',
   seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
   seleccionarDocumentos: 'seleccionar-documentos',
   securityRole: 'security-role',
   gestionUnidadDocumental: 'gestion-unidad-documental',
+  crearUnidadDocumental: 'crear-unidad-documental',
   disposicionFinal: 'disposicion-final'
 };
