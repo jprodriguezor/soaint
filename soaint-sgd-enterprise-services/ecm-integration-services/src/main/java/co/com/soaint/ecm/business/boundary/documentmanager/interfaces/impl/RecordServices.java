@@ -1,6 +1,5 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresco;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
 import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
@@ -10,11 +9,9 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -30,14 +27,16 @@ import java.util.Map;
  * Created by amartinez on 24/01/2018.
  */
 @BusinessControl
-@NoArgsConstructor
 @Log4j2
 public class RecordServices implements IRecordServices {
-    public static final String ENTRY = "entry";
-    String idSubCategoria = "";
-    @Autowired
-    ContentControlAlfresco conexionCMIS;
+
+    private static final String ENTRY = "entry";
+
+    //private final ContentControlAlfresco conexionCMIS;
+
+    private String idSubCategoria = "";
     private String idPadre = "";
+
     @Value("${protocolo}")
     private String protocolo = "";
     @Value("${mensaje.error.sistema}")
@@ -93,6 +92,11 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> propiedades = new HashMap<>();
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
+
+    /*@Autowired
+    public RecordServices(ContentControlAlfresco conexionCMIS) {
+        this.conexionCMIS = conexionCMIS;
+    }*/
 
     /**
      * Permite crear la estructura en record a partir de la informacion enviada de instrumento

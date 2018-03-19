@@ -27,37 +27,34 @@ import java.util.List;
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
 public class UnidadDocumentalDTO {
 
-    private String id;
-    private String descriptor2;
-
-    //@JsonSerialize(using = DateStringSerializer.class)
-    //@JsonProperty
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private Date fechaCierre;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private Date fechaExtremaInicial;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private Date fechaExtremaFinal;
-
-
-    private String soporte;
-    private String estado;
+    private String accion;
+    private boolean inactivo;
     private String ubicacionTopografica;
+    private Date fechaCierre;
+    private String id;
     private String faseArchivo;
-    private String descriptor1;
-    private String codigoSubSerie;
-    private String nombreSubSerie;
-    private String codigoSerie;
-    private String nombreSerie;
-    private String nombreUnidadDocumental;
+    private Date fechaExtremaInicial;
+    private String soporte;
     private String codigoUnidadDocumental;
-    private String codigoDependencia;
-    private String nombreDependencia;
-    private String codigoSede;
-    private String nombreSede;
+    private String nombreUnidadDocumental;
+    private String descriptor2;
+    private String descriptor1;
+    private Date fechaExtremaFinal;
     private boolean cerrada;
 
-    private String accion;
+    //heredadas
+    private String codigoSubSerie;
+    private String nombreSubSerie;
 
+    private String codigoSerie;
+    private String nombreSerie;
+
+    private String codigoDependencia;
+    private String nombreDependencia;
+
+    private String codigoSede;
+    private String nombreSede;
+
+    //Agregacion
     private List<DocumentoDTO> listaDocumentos;
 }

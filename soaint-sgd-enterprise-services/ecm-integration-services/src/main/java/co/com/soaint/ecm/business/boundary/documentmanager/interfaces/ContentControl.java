@@ -16,6 +16,78 @@ import java.util.List;
 @Service
 public interface ContentControl {
 
+    // Class Properties ECM
+    String CLASE_BASE = "claseBase";
+    String CLASE_DEPENDENCIA = "claseDependencia";
+    String CLASE_SERIE = "claseSerie";
+    String CLASE_SUBSERIE = "claseSubserie";
+    String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
+    String CMCOR = "cmcor:";
+
+    //******************
+    //* properties ECM *
+    //******************
+
+    //cmcor: CM_Unidad_Administrativa
+    String CMCOR_DEP_CODIGO = "cmcor:codigoDependencia";
+    String CMCOR_DEP_CODIGO_UAP = "cmcor:codigoUnidadAdminPadre";
+
+    //cmcor:CM_Unidad_Documental
+    String CMCOR_UD_ACCION = "cmcor:accion";
+    String CMCOR_UD_FECHA_INICIAL = "cmcor:fechaInicial";
+    String CMCOR_UD_INACTIVO = "cmcor:inactivo";
+    String CMCOR_UD_UBICACION_TOPOGRAFICA = "cmcor:ubicacionTopografica";
+    String CMCOR_UD_FECHA_FINAL = "cmcor:fechaFinal";
+    String CMCOR_UD_FECHA_CIERRE = "cmcor:fechaCierre";
+    String CMCOR_UD_ID = "cmcor:id";
+    String CMCOR_UD_FASE_ARCHIVO = "cmcor:faseArchivo";
+    String CMCOR_UD_SOPORTE = "cmcor:soporte";
+    String CMCOR_UD_CODIGO = "cmcor:codigoUnidadDocumental";
+    String CMCOR_UD_DESCRIPTOR_2 = "cmcor:descriptor2";
+    String CMCOR_UD_DESCRIPTOR_1 = "cmcor:descriptor1";
+    String CMCOR_UD_CERRADA = "cmcor:cerrada";
+
+    //cmcor:CM_Unidad_Base
+    String CMCOR_UB_CODIGO = "cmcor:codigoBase";
+
+    //cmcor:CM_Serie
+    String CMCOR_SER_CODIGO = "cmcor:codigoSerie";
+
+    //cmcor:CM_SubSerie
+    String CMCOR_SS_CODIGO = "cmcor:codigoSubSerie";
+
+    //CM_DocumentoPersonalizado
+    String CMCOR_NRO_RADICADO = "cmcor:nroRadicado";
+    String CMCOR_NOMBRE_REMITENTE = "cmcor:nombreRemitente";
+    String CMCOR_TIPOLOGIA_DOCUMENTAL = "cmcor:tipologiaDocumental";
+    String CMCOR_TIPO_DOCUMENTO = "cmcor:tipoDocumento";
+    String CMCOR_NUMERO_REFERIDO = "cmcor:numeroReferido";
+    String CMCOR_ID_DOC_PRINCIPAL = "cmcor:identificadorDocPrincipal";
+
+    // ECM sms Error
+    String ECM_ERROR = "ECM_ERROR";
+    String ECM_ERROR_DUPLICADO = "ECM ERROR DUPLICADO";
+    String EXISTE_CARPETA = "Existe la Carpeta: ";
+
+    // ECM sms
+    String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
+    String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
+    String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
+    String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
+    String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
+    String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
+    String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
+    String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
+    String CONTENT_DISPOSITION = "Content-Disposition";
+    String DOCUMENTO = "documento";
+    String APPLICATION_PDF = "application/pdf";
+    String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
+    String AVISO_CREA_DOC = "### Se va a crear el documento..";
+    String AVISO_CREA_DOC_ID = "### Documento creado con id ";
+    String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
+    String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
+    String SEPARADOR = "---";
+
     /**
      * Obtener objeto conexion
      *

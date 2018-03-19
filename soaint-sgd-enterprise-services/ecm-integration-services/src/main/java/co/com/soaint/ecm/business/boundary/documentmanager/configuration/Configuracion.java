@@ -71,7 +71,7 @@ public class Configuracion {
                 return aformatoNombreSubserie != null ? aformatoNombreSubserie : "1.2.4_5";
 
             case "claseSubserie":
-                return aclaseSubserie != null ? aclaseSubserie : "CM_Subserie";
+                return aclaseSubserie != null ? aclaseSubserie : "CM_SubSerie";
 
             case "claseSerie":
                 return aclaseSerie != null ? aclaseSerie : "CM_Serie";
@@ -87,16 +87,16 @@ public class Configuracion {
                 return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
 
             case "metadatoCodBase":
-                return ametadatoCodBase != null ? ametadatoCodBase : "CodigoBase";
+                return ametadatoCodBase != null ? ametadatoCodBase : "codigoBase";
 
             case "metadatoCodSubserie":
-                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "CodigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "codigoSubserie";
 
             case "metadatoCodSerie":
-                return ametadatoCodSerie != null ? ametadatoCodSerie : "CodigoSerie";
+                return ametadatoCodSerie != null ? ametadatoCodSerie : "codigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
+                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "codUnidadPadre";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
             case "ECM_ERROR":
