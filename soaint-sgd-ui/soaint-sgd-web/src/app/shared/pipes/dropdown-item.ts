@@ -27,3 +27,35 @@ export class DropdownItemPipeFullName implements PipeTransform {
     }
   }
 }
+
+@
+  Pipe({name: 'dropdownItemSerie'})
+export class DropdownItemPipeSerie implements PipeTransform {
+  transform(value, args?) {
+    // ES6 array destructuring
+    console.log(value);
+    if (value) {
+      return value.map(item => {
+        return {
+          label: item.nombreSerie,
+          value: item.codigoSerie
+        };
+      });
+    }
+  }
+}
+
+@Pipe({name: 'dropdownItemSubserie'})
+export class DropdownItemPipeSubserie implements PipeTransform {
+  transform(value, args?) {
+    // ES6 array destructuring
+    if (value) {
+      return value.map(item => {
+        return {
+          label: item.nombreSubSerie,
+          value: item.codigoSubSerie
+        };
+      });
+    }
+  }
+}

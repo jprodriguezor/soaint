@@ -1,4 +1,4 @@
-// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+ //const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
@@ -101,7 +101,12 @@ export const environment = {
       // ECM Endpoints
       obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
       obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
-  }
+   },
+ // serie-subserie
+ listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
+
+ // unidad documental
+ listar_unidad_documental: `${host}/unidad-documental-gateway-api`,
 
 };
 

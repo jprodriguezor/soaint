@@ -10,7 +10,10 @@ export const ActionTypes = {
 
 export class LoadAction implements Action {
   type = ActionTypes.LOAD;
-  constructor(public payload?: any) { }
+
+  constructor(public payload?: any) { console.log('Dispatched activity');
+
+  }
 }
 
 export class LoadSuccessAction implements Action {

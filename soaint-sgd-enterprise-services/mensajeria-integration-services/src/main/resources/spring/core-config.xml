@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/rabbit
+	  http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+
+    <!--
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      Soaint Configuration Artifact
+      Created: 3O-Abr-2017
+      Author:  jprodriguez
+      Type: spring configuration file
+      Purpose: define generic configurations
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
+
+
+    <context:component-scan base-package="co.com.soaint.mensajeria.business"/>
+    <context:component-scan base-package="co.com.soaint.mensajeria.apis"/>
+
+    <rabbit:connection-factory id="connectionFactory" host="localhost"
+                               username="admin" password="admin"/>
+
+    <rabbit:admin connection-factory="connectionFactory"/>
+    <rabbit:queue id="simple.queue.name"/>
+
+    <rabbit:topic-exchange id="tpExchange" name="tpExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="simple.queue.name" pattern="tp.routingkey.1">
+            </rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <bean id="asyncListener" class="co.com.soaint.mensajeria.business.control.RabbitMensajeConsumer"/>
+    <rabbit:listener-container id="myListenerContainer" connection-factory="connectionFactory">
+        <rabbit:listener ref="asyncListener" queue-names="simple.queue.name"/>
+    </rabbit:listener-container>
+
+</beans>

@@ -3,29 +3,24 @@
     <div customActions>
 
       <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="abort()"></button>
+              (click)="state.abort()"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="save().subscribe()"></button>
+              (click)="state.save().subscribe()"></button>
 
       <button pButton type="button" label="Actualizar" style="width: auto; margin-bottom: 10px"
               [disabled]="false"
-              (click)="actualizarComunicacion()"></button>
+              (click)="state.actualizarComunicacion()"></button>
 
     </div>
     <div taskBody>
 
-      <p-tabView [activeIndex]="tabIndex">
+      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <!--<app-actualizar-datos-generales #actualizarDatosGenerales-->
-                               <!--[comunicacion] = "comunicacion"-->
-                               <!--[mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"-->
-                               <!--(onChangeTipoComunicacion)="setTipoComunicacion($event)">-->
-          <!--</app-actualizar-datos-generales>-->
-          <!--<app-datos-generales #datosGenerales [editable]="editable"-->
-                               <!--[mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"-->
-                               <!--(onChangeTipoComunicacion)="setTipoComunicacion($event)"></app-datos-generales>-->
-
+          <app-datos-generales [_dataform]="state.generales"  #datosGenerales
+                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
+                               (onChangeTipoComunicacion)="setTipoComunicacion($event)">
+          </app-datos-generales>
         </p-tabPanel>
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
@@ -41,9 +36,22 @@
                                   <!--[sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"-->
           <!--&gt;</app-datos-destinatario>-->
         </p-tabPanel>
+        <p-tabPanel header="Adjuntar documentos" leftIcon="ui-icon-assignment">
+          <div style="overflow-y: scroll;max-height: 700px" *ngIf="state.HasDocuments()">
+            <app-documentos-ecm-list [idDocumentECM]="state.comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="true"></app-documentos-ecm-list>
+          </div>
+        </p-tabPanel>
 
       </p-tabView>
-
+      <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
+        <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
+                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
+                [disabled]="!formsTabOrder[tabIndex].form.valid">
+        </button>
+        <button pButton label="Anterior" style="width: 150px; float: left"
+                (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
+        </button>
+      </div>
     </div>
   </app-task-container>
 </div>

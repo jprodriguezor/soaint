@@ -14,3 +14,6 @@ export const TASK_GESTIONAR_DEVOLUCIONES = 'Gestionar Devoluciones';
 export const TASK_CORREGIR_RADICACION = 'Corregir Radicacion';
 export const TASK_RADICACION_SALIDA = 'Radicar COF Salida';
 export const TASK_RADICACION_DOCUMENTO_SALIDA = 'Radicar Documento Producido';
+export const TASK_ARCHIVAR_DOCUMENTO = 'Archivar Documento';
+export const TASK_CREAR_UNIDAD_DOCUMENTAL = 'Crear Unidad Documental';
+

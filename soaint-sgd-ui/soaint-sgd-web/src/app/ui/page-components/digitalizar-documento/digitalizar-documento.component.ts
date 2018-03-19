@@ -105,8 +105,14 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           _dependencia = result[0];
+
+          const listRef = ["-1"];
+          this.comunicacion.referidoList.forEach((data) => {
+            listRef.push(data.nroRadRef);
+          });
+
           return this._api.sendFile(
-            this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,
+            this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,listRef,
               this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
         }
       ).subscribe(response => {

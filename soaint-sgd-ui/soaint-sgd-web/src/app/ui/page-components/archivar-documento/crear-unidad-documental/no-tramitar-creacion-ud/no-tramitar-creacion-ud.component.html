@@ -1,0 +1,81 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" >
+    <div class="card card-w-title">
+      <p-panel header="No tramitar creacion UD" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid" [formGroup]="form" >
+          <div class="ui-g-12">
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="nt-identificador">Identificador de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="nt-identificador" pInputText formControlName="identificador">
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="nt-nombre">Nombre de unidad documental</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="nt-nombre" pInputText formControlName="nombre">
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="nt-descriptor1">Descriptor</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="nt-descriptor1" pInputText formControlName="descriptor1">
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-3 ui-sm-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="nt-descriptor2">Descriptor</label>
+                </div>
+                <div class="ui-g-12">
+                  <input type="text" id="nt-descriptor2" pInputText formControlName="descriptor2">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-9 ui-sm-12">
+            <div class="ui-g-7 ui-sm-7">
+              <div class="ui-g form-group">
+                <div class="ui-g-3 ui-sm-3">
+                  <label >Motivo del tramite</label>
+                </div>
+                <div class="ui-g-9 ui-sm-9">
+                  <p-dropdown formControlName="motivo" ></p-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12">
+            <div class="ui-g-12">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label for="nt-observaciones">Observaciones</label> <br>
+                  <i>*Si ya existe la unidad documental, por favor espcifique  el dientificador principal</i>
+                </div>
+                <div class="ui-g-12">
+                  <textarea name="" id="nt-observaciones" cols="30" rows="10" pInputTextarea formControlName="observaciones"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="ui-g-12 text-right">
+            <button type="button" label="Aceptar" pButton style="width: auto" (click)="sendRequest()"></button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</div>

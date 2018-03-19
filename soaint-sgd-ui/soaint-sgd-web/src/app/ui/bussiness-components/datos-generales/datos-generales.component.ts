@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output,ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -13,7 +13,7 @@ import {
   getSoporteAnexoArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import { Dropdown } from "primeng/components/dropdown/dropdown";
+import { Dropdown } from 'primeng/components/dropdown/dropdown';
 import 'rxjs/add/operator/single';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-generales.api';
@@ -60,13 +60,16 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   mediosRecepcionInput: ConstanteDTO = null;
 
+  @Input()
+  _dataform: any = null;
+
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
   validations: any = {};
   //
-  //@ViewChild('dropDownThing')
-  //dropDownThing: Dropdown;
+  // @ViewChild('dropDownThing')
+  // dropDownThing: Dropdown;
 
 
   constructor(private _store: Store<State>, private _apiDatosGenerales: DatosGeneralesApiService, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder) {
@@ -74,27 +77,51 @@ export class DatosGeneralesComponent implements OnInit {
 
   initForm() {
 
-    this.form = this.formBuilder.group({
-      'fechaRadicacion': [null],
-      'nroRadicado': [null],
-      'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
-      'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
-      'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
-      'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-      'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
-      'unidadTiempo': [{value: null, disabled: !this.editable}],
-      'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
-      'inicioConteo': [null],
-      'reqDistFisica': [{value: null, disabled: !this.editable}],
-      'reqDigit': [{value: "1", disabled: !this.editable}],
-      'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-      'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-      'radicadoReferido': [{value: null, disabled: !this.editable}],
-      'tipoAnexos': [{value: null, disabled: !this.editable}],
-      'soporteAnexos': [{value: null, disabled: !this.editable}],
-      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
-      'hasAnexos': [{value: null, disabled: !this.editable}]
-    });
+    if (this._dataform) { // corregir
+      this.form = this.formBuilder.group({
+        'fechaRadicacion': [this._dataform.generales.fechaRadicacion],
+        'nroRadicado': [this._dataform.generales.nroRadicado],
+        'tipoComunicacion': [{value: this._dataform.generales.tipoComunicacion, disabled: this.editable}, Validators.required],
+        'medioRecepcion': [{value: this._dataform.generales.medioRecepcion, disabled: this.editable}, Validators.required],
+        'empresaMensajeria': [{value: this._dataform.generales.empresaMensajeria, disabled: true}, Validators.required],
+        'numeroGuia': [{value: this._dataform.generales.numeroGuia, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'tipologiaDocumental': [{value: this._dataform.generales.tipologiaDocumental, disabled: !this.editable}, Validators.required],
+        'unidadTiempo': [{value: this._dataform.generales.unidadTiempo, disabled: this.editable}],
+        'numeroFolio': [{value: this._dataform.generales.numeroFolio, disabled: this.editable}, Validators.required],
+        'inicioConteo': [this._dataform.generales.inicioConteo],
+        'reqDistFisica': [{value: this._dataform.generales.reqDistFisica, disabled: this.editable}],
+        'reqDigit': [{value: this._dataform.generales.reqDigit, disabled: this.editable}],
+        'tiempoRespuesta': [{value: this._dataform.generales.tiempoRespuesta, disabled: this.editable}],
+        'asunto': [{value: this._dataform.generales.asunto, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: this._dataform.generales.radicadoReferido, disabled: !this.editable}],
+        'tipoAnexos': [{value: this._dataform.generales.tipoAnexos, disabled: this.editable}],
+        'soporteAnexos': [{value: this._dataform.generales.soporteAnexos, disabled: this.editable}],
+        'tipoAnexosDescripcion': [{value: this._dataform.generales.tipoAnexosDescripcion, disabled: this.editable}, Validators.maxLength(300)],
+        'hasAnexos': [{value: this._dataform.generales.hasAnexos, disabled: this.editable}]
+      });
+    } else {
+      this.form = this.formBuilder.group({
+        'fechaRadicacion': [null],
+        'nroRadicado': [null],
+        'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
+        'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
+        'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
+        'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'tipologiaDocumental': [{value: null, disabled: !this.editable}, Validators.required],
+        'unidadTiempo': [{value: null, disabled: !this.editable}],
+        'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
+        'inicioConteo': [null],
+        'reqDistFisica': [{value: null, disabled: !this.editable}],
+        'reqDigit': [{value: '1', disabled: !this.editable}],
+        'tiempoRespuesta': [{value: null, disabled: !this.editable}],
+        'asunto': [{value: null, disabled: !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: null, disabled: !this.editable}],
+        'tipoAnexos': [{value: null, disabled: !this.editable}],
+        'soporteAnexos': [{value: null, disabled: !this.editable}],
+        'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
+        'hasAnexos': [{value: null, disabled: !this.editable}]
+      });
+    }
   }
 
   listenForErrors() {
@@ -208,10 +235,10 @@ export class DatosGeneralesComponent implements OnInit {
       this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
   }
-  //resetCarFilter() {
+  // resetCarFilter() {
   //  console.log(this.dropDownThing);
   //  this.dropDownThing.selectedOption = null;
-  //}
+  // }
 
   bindToValidationErrorsOf(control: string) {
     const ac = this.form.get(control);
