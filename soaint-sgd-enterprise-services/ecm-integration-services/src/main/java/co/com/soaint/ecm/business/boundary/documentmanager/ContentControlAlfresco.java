@@ -28,6 +28,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 
 import java.io.*;
@@ -73,7 +75,7 @@ public class ContentControlAlfresco implements ContentControl {
             // configuracion de conexion
             parameter.put(SessionParameter.ATOMPUB_URL, SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_ENDPOINT));
             parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-            parameter.put(SessionParameter.REPOSITORY_ID, configuracion.getPropiedad("REPOSITORY_ID"));
+            parameter.put(SessionParameter.REPOSITORY_ID, /*configuracion.getPropiedad("REPOSITORY_ID")*/ "-default-");
 
             // Object factory de Alfresco
             parameter.put(SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
@@ -1007,8 +1009,6 @@ public class ContentControlAlfresco implements ContentControl {
         }
         logger.info("Se sale del metodo obtenerDocumentosAdjuntos con respuesta: " + response.toString());
         return response;
-
-
     }
 
     /**
@@ -1593,6 +1593,8 @@ public class ContentControlAlfresco implements ContentControl {
 
             QueryResult queryResult = iterator.next();
             String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            dto.setId(objectId);
+            dto.setNombreUnidadDocumental(queryResult.getPropertyValueByQueryName(PropertyIds.NAME));
             System.out.println("ID: " + objectId);
             Folder folder = (Folder) session.getObject(session.getObject(objectId));
 
@@ -1600,6 +1602,7 @@ public class ContentControlAlfresco implements ContentControl {
 
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             dto.setListaDocumentos(documentoDTOS);
+
             folderChildren.forEach(cmisObject -> {
                 switch (cmisObject.getBaseTypeId()) {
                     case CMIS_DOCUMENT:
@@ -1611,9 +1614,6 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             });
 
-            if (ObjectUtils.isEmpty(dto.getId())) {
-                dto.setId(objectId);
-            }
             recordControlAlfresco.cerrarUnidadDocumentalRecord(dto);
             mensajeRespuesta.setCodMensaje("00000");
             mensajeRespuesta.setMensaje("OK");
@@ -1671,14 +1671,15 @@ public class ContentControlAlfresco implements ContentControl {
     private static DocumentoDTO transformarDocumento(Document document) {
 
         DocumentoDTO documentoDTO = new DocumentoDTO();
-        documentoDTO.setIdDocumento(document.getId());
+        String idDoc = document.getId();
+        documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(";")) : idDoc);
         documentoDTO.setTipoDocumento(document.getPropertyValue(CMCOR_TIPO_DOCUMENTO));
         documentoDTO.setNroRadicado(document.getPropertyValue(CMCOR_NRO_RADICADO));
         documentoDTO.setTipologiaDocumental(document.getPropertyValue(CMCOR_TIPOLOGIA_DOCUMENTAL));
         documentoDTO.setNombreRemitente(document.getPropertyValue(CMCOR_NOMBRE_REMITENTE));
         final String nroRadicado = document.getPropertyValue(CMCOR_NUMERO_REFERIDO);
 
-        if (ObjectUtils.isEmpty(nroRadicado)) {
+        if (!ObjectUtils.isEmpty(nroRadicado)) {
             String[] splitRadicado = nroRadicado.split(SEPARADOR);
             documentoDTO.setNroRadicadoReferido(splitRadicado);
         }
@@ -1723,5 +1724,23 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error("No se pudo eliminar el documento :", e);
             return Boolean.FALSE;
         }
+    }
+
+    public static void main(String[] args) throws SystemException {
+
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring/core-config.xml");
+        ContentControlAlfresco contentControl = context.getBean(ContentControlAlfresco.class);
+
+        Conexion conexion = contentControl.obtenerConexion();
+        Session session = conexion.getSession();
+
+        UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
+        dto.setId("");
+        dto.setCodigoSerie("10000");
+        dto.setCodigoDependencia("100100");
+        dto.setCodigoSubSerie("345");
+
+        final MensajeRespuesta respuesta = contentControl.listaDocumentoDTO(dto, session);
+        System.out.println(respuesta);
     }
 }

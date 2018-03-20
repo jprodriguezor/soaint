@@ -2,7 +2,6 @@ package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
 import co.com.soaint.foundation.canonical.ecm.*;
-import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
 public class EcmIntegrationServicesClientRest {
+
     @Autowired
     private
     EcmManager fEcmManager;

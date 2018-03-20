@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -467,9 +468,14 @@ public class RecordServices implements IRecordServices {
             Object key = keys.next();
             if (ENTRY.equalsIgnoreCase(key.toString())) {
                 JSONObject valor = respuestaJson.getJSONObject((String) key);
+
                 unidadDocumentalDTO.setId(valor.getString("id"));
-                unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("nombre"));
-                unidadDocumentalDTO.setCerrada(Boolean.parseBoolean(valor.getString("isClosed")));
+                unidadDocumentalDTO.setNombreUnidadDocumental(valor.getString("name"));
+                if (valor.get("properties") instanceof Map) {
+                    final Map properties = (Map)valor.get("properties");
+                    unidadDocumentalDTO.setCerrada(Boolean.parseBoolean(properties.get("rma:isClosed") + ""));
+                }
+
             }
         }
         return unidadDocumentalDTO;
@@ -754,8 +760,8 @@ public class RecordServices implements IRecordServices {
                     .request()
                     .header(headerAuthorization, valueAuthorization + " " + encoding)
                     .header(headerAccept, valueApplicationType)
-                    .put(Entity.json(idRecordFolder));
-            if (response.getStatus() != 201) {
+                    .get();
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
                         .buildBusinessException();
@@ -794,7 +800,7 @@ public class RecordServices implements IRecordServices {
             Map<String, Object> nombreMap = new HashMap<>();
             nombreMap.put("rma:isClosed", true); // Añade un elemento al Mapç
             properties.put("properties", nombreMap);
-
+//aki
             UnidadDocumentalDTO unidadDocumentalDTO = obtenerRecordFolder(idRecordFolder);
 
             if (!unidadDocumentalDTO.isCerrada() == abrirCerrar) {
@@ -804,7 +810,7 @@ public class RecordServices implements IRecordServices {
                         .header(headerAuthorization, valueAuthorization + " " + encoding)
                         .header(headerAccept, valueApplicationType)
                         .put(Entity.json(properties.toString()));
-                if (response.getStatus() != 201) {
+                if (response.getStatus() != HttpStatus.OK.value()) {
                     throw ExceptionBuilder.newBuilder()
                             .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
                             .buildBusinessException();
@@ -814,7 +820,6 @@ public class RecordServices implements IRecordServices {
             } else {
                 return abrirCerrar;
             }
-
 
         } catch (BusinessException e) {
             log.error(e.getMessage());

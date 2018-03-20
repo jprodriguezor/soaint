@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Map;
+
 @BusinessControl
 @NoArgsConstructor
 public class RecordControlAlfresco {
@@ -43,10 +45,17 @@ public class RecordControlAlfresco {
                         }
                     }
                     //Se cierra la carpeta
-                    recordServices.abrirCerrarRecordFolder(unidadDocumentalDTO.getId(),true);
+                    Map<String, Object> response = mensajeRespuestaAux.getResponse();
+
+                    String idRecordFolder = unidadDocumentalDTO.getId();
+                    if (response.containsKey("idUnidadDocumental")) {
+                        idRecordFolder = (String) response.get("idUnidadDocumental");
+                    }
+                    recordServices.abrirCerrarRecordFolder(idRecordFolder,true);
                 }
             }
         } catch (Exception e) {
+            System.out.println("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             throw e;
         }
         return respuesta;
