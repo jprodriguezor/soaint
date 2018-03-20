@@ -1,7 +1,9 @@
 package co.com.soaint.foundation.canonical.ecm;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,6 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
 public class OrganigramaDTO {
@@ -24,14 +28,4 @@ public class OrganigramaDTO {
     private String codOrg;
     private String nomOrg;
     private String tipo;
-
-    public OrganigramaDTO() {
-    }
-
-    public OrganigramaDTO(Long ideOrgaAdmin, String codOrg, String nomOrg, String tipo) {
-        this.ideOrgaAdmin = ideOrgaAdmin;
-        this.codOrg = codOrg;
-        this.nomOrg = nomOrg;
-        this.tipo = tipo;
-    }
 }
