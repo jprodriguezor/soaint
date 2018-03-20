@@ -17,7 +17,7 @@
 
       <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding *ngIf="ideEcm">
         <div style="overflow-y: scroll;max-height: 700px" *ngIf="docSrc">
-          <app-documentos-ecm-list [idDocumentECM]="comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="true"></app-documentos-ecm-list>
+          <app-documentos-ecm-list [idDocumentECM]="comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="false"></app-documentos-ecm-list>
         </div>
       </p-tabPanel>
     </p-tabView>

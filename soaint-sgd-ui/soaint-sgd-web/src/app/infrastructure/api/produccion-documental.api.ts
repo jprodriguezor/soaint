@@ -32,38 +32,42 @@ export class ProduccionDocumentalApiService {
     return this._api.list(`${environment.obtenerContactoDestinatarioExterno_endpoint}/${payload.nroRadicado}`, {});
   }
 
-  subirVersionDocumento(formData: FormData, payload: {nombre: string, sede: string, dependencia: string, tipo: string, id: string}) {
-    return this._api.sendFile(
-      environment.pd_gestion_documental.subirDocumentoVersionado, formData,
-      [payload.nombre, payload.sede, payload.dependencia, payload.tipo, payload.id, 'PD']
-    );
-  }
-
   obtenerDatosDocXnroRadicado(payload: {id: string}) {
       return this._api.list(`${environment.pd_obtenerDatosDocXnroRadicado}/${payload.id}`, {});
+  }
+
+  subirVersionDocumento(formData: FormData) {
+      return this._api.sendFile( environment.pd_gestion_documental.subirDocumentoVersionado, formData, [] );
   }
 
   obtenerVersionDocumento(payload: {id: string, version: string}) {
     return this._api.list(environment.pd_gestion_documental.obtenerVersionDocumento, {identificadorDoc: payload.id, version: payload.version});
   }
 
+  obtenerVersionDocumentoUrl(payload: {id: string, version: string}) {
+      return `${environment.pd_gestion_documental.obtenerVersionDocumento}?identificadorDoc=${payload.id}&version=${payload.version}`;
+  }
+
   eliminarVersionDocumento(payload: {id: string}) {
-    return this._api.post(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${payload.id}`, {});
+    return this._api.delete(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${payload.id}`, {});
   }
 
-  obtenerAnexo(payload: {id: string}) {
-    return this._api.post(`${environment.pd_gestion_documental.obtenerAnexo}/${payload.id}`);
+  obtenerDocumentoUrl(payload: {id: string}) {
+    return `${environment.pd_gestion_documental.obtenerDocumentoPorId}?identificadorDoc=${payload.id}`;
   }
 
-  subirAnexo(formData: FormData, payload: {nombre: string, sede: string, dependencia: string}) {
-    return this._api.sendFile(
-      environment.pd_gestion_documental.subirAnexo, formData,
-      [payload.nombre, payload.sede, payload.dependencia, 'PD']);
+  subirAnexo(formData: FormData) {
+    return this._api.sendFile( environment.pd_gestion_documental.subirAnexo, formData, []);
   }
 
-    getFuncionariosByLoginnames(loginnames: string) {
-        return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
-    }
+  eliminarAnexo(payload: {id: string}) {
+      return this._api.delete(`${environment.pd_gestion_documental.eliminarAnexo}/${payload.id}`, {});
+  }
+
+
+  getFuncionariosByLoginnames(loginnames: string) {
+      return this._api.list(`${environment.obtenerFuncionario_endpoint}/funcionarios/listar-by-loginnames/`, {loginNames: loginnames}).map(res => res.funcionarios);
+  }
 
 
   ejecutarProyeccionMultiple(payload: {}) {

@@ -35,15 +35,16 @@ public class ECMClient {
         super();
     }
 
-    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO) {
+    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO, String selector) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/" + selector)
                 .request()
                 .post(Entity.json(documentoDTO));
 
         return response.readEntity(MensajeRespuesta.class);
     }
+
 
     public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

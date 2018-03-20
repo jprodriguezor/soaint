@@ -14,7 +14,8 @@ import {
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
-  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL
+  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL, 
+  TASK_APROBAR_DISPOSICION_FINAL
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -29,8 +30,6 @@ export class Sandbox {
 
   routingStartState = false;
 
-
-
   authPayload: { usuario: string, pass: string } | any;
   authPayloadUnsubscriber: Subscription;
 
@@ -41,8 +40,6 @@ export class Sandbox {
     })).subscribe((value) => {
       this.authPayload = value;
     });
-
-
   }
 
   loadData(payload: any, dependency?: any) {
@@ -142,7 +139,7 @@ export class Sandbox {
     this._store.dispatch(new actions.FilterAction(query));
   }
 
-  initTaskDispatch(task: TareaDTO): any { console.log(task.nombre);
+  initTaskDispatch(task: TareaDTO): any {
     switch (task.nombre) {
       case TASK_RADICACION_ENTRADA:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.radicarCofEntrada, task]));
@@ -162,7 +159,9 @@ export class Sandbox {
       case TASK_CORREGIR_RADICACION:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.corregirRadicacion, task]));
         break;
-
+      case TASK_APROBAR_DISPOSICION_FINAL:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.disposicionFinal, task]));
+        break;
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
         break;
@@ -228,7 +227,6 @@ export class Sandbox {
   loadDispatch(payload?) {
     this._store.dispatch(new actions.LoadAction(payload));
   }
-
 
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -19,131 +19,52 @@ import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import { CorregirRadicacionStateService } from './corregir-radication.state.service';
 
 @Component({
   selector: 'app-corregir-radicacion',
   templateUrl: './corregir-radicacion.component.html',
   styleUrls: ['./corregir-radicacion.component.scss'],
 })
-export class CorregirRadicacionComponent implements OnInit {
+export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
 
-
-  @ViewChild('actualizarDatosGenerales') actualizarDatosGenerales;
+  @ViewChild('datosGenerales') datosGenerales;
 
   @ViewChild('datosRemitente') datosRemitente;
 
   @ViewChild('datosDestinatario') datosDestinatario;
 
-  editable = false;
-
   tabIndex = 0;
 
-  comunicacion: ComunicacionOficialDTO = {};
+  formsTabOrder: Array<any> = [];
 
-  task: TareaDTO;
-  activeTaskUnsubscriber: Subscription;
+  state: CorregirRadicacionStateService
 
-  radicacion: ComunicacionOficialDTO;
-
-  radicacionEntradaDTV: any;
-
-  constructor(private _store: Store<State>, private _sandbox: RadicarComunicacionesSandBox, private _asiganacionSandbox: AsiganacionDTOSandbox, private _comunicacionOficialApi: CominicacionOficialSandbox,private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder) {
-     //this.initForm();
+  constructor(private stateService: CorregirRadicacionStateService) {
+    this.state = this.stateService;
   }
 
   ngOnInit() {
-    this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
-      this.task = activeTask;
-      this.restore();
-    });
+    this.state.Init();
   }
 
-  abort() {
-    this._taskSandBox.abortTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      instanciaProceso: this.task.idInstanciaProceso
-    });
+  ngAfterContentInit() {
+    this.formsTabOrder.push(this.datosGenerales);
+    this.formsTabOrder.push(this.datosRemitente);
+    this.formsTabOrder.push(this.datosDestinatario);
   }
 
-  save(): Observable<any> {
-    const payload: any = {
-      destinatario: this.datosDestinatario.form.value,
-      generales: this.actualizarDatosGenerales.form.value,
-      remitente: this.datosRemitente.form.value,
-      descripcionAnexos: this.actualizarDatosGenerales.descripcionAnexos,
-      radicadosReferidos: this.actualizarDatosGenerales.radicadosReferidos,
-      agentesDestinatario: this.datosDestinatario.agentesDestinatario
-    };
-
-    if (this.datosRemitente.datosContactos) {
-      payload.datosContactos = this.datosRemitente.datosContactos.contacts;
-      // payload.contactInProgress = this.datosRemitente.datosContactos.form.value
-    }
-
-    const tareaDto: any = {
-      idTareaProceso: this.task.idTarea,
-      idInstanciaProceso: this.task.idInstanciaProceso,
-      payload: payload
-    };
-
-    return this._sandbox.quickSave(tareaDto);
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
   }
 
-  restore() {
-    if (this.task) {
-      console.log(this.task);
-
-      /*this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).subscribe(response => {
-
-        console.log(response);
-
-        const results = response.payload;
-        if (!results) {
-          return;
-        }
-        console.log(results);
-        // generales
-        this.datosGenerales.form.patchValue(results.generales);
-        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
-        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
-
-      });*/
-
-      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
-        this.comunicacion = result;
-        console.log(this.comunicacion);
-
-        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
-        console.log(this.radicacionEntradaDTV);
-        this.datosRemitente.form.patchValue(this.radicacionEntradaDTV.getDatosRemitente());
-        this.actualizarDatosGenerales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
-        //this.contactos$ = this.radicacionEntradaDTV.getDatosContactos();
-        //this.destinatarios$ = this.radicacionEntradaDTV.getDatosDestinatarios();
-
-      });
-    }
-  }
-  actualizarComunicacion(){
-    console.log(this.comunicacion);
-
-
-
-    this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
-
-    this._taskSandBox.completeTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      idTarea: this.task.idTarea,
-      parametros: {
-      }
-    });
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
-
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
   }
 
-  ngOnDestroy() {
-
+  updateTabIndex(event) {
+    this.tabIndex = event.index;
   }
+
 
 }
