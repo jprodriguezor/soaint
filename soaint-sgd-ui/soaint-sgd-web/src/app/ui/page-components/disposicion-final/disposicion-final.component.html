@@ -74,7 +74,7 @@
                                     <label for="sede">Serie</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <p-dropdown [options]="series$ | async | dropdownItem"
+                                    <p-dropdown [options]="series$ | async | dropdownItemSerie"
                                                 id="serie"
                                                 formControlName="serie"
                                                 placeholder="Seleccione"
@@ -93,7 +93,7 @@
                                     <label for="sede">Subserie</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <p-dropdown [options]="subseries$ | async | dropdownItem"
+                                    <p-dropdown [options]="subseries$ | async | dropdownItemSubserie"
                                                 id="subserie"
                                                 formControlName="subserie"
                                                 placeholder="Seleccione"
