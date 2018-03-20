@@ -1725,22 +1725,4 @@ public class ContentControlAlfresco implements ContentControl {
             return Boolean.FALSE;
         }
     }
-
-    public static void main(String[] args) throws SystemException {
-
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring/core-config.xml");
-        ContentControlAlfresco contentControl = context.getBean(ContentControlAlfresco.class);
-
-        Conexion conexion = contentControl.obtenerConexion();
-        Session session = conexion.getSession();
-
-        UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
-        dto.setId("");
-        dto.setCodigoSerie("10000");
-        dto.setCodigoDependencia("100100");
-        dto.setCodigoSubSerie("345");
-
-        final MensajeRespuesta respuesta = contentControl.listaDocumentoDTO(dto, session);
-        System.out.println(respuesta);
-    }
 }
