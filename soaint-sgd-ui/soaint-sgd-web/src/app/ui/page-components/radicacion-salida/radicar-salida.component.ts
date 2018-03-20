@@ -32,6 +32,11 @@ import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-mana
 import {
   getTipoDocumentoArrayData, getTipoPersonaArrayData, getTipoDestinatarioArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {ComunicacionOficialEntradaDTV} from "../../../shared/data-transformers/comunicacionOficialEntradaDTV";
+import {RadicacionSalidaDTV} from "../../../shared/data-transformers/radicacionSalidaDTV";
+import {AbstractControl, FormControl, Validators} from "@angular/forms";
+import {ExtendValidators} from "../../../shared/validators/custom-validators";
 
 
 declare const require: any;
@@ -87,12 +92,30 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
    // this._funcionarioSandbox.loadAllFuncionariosDispatch();
   }
 
+
+
   ngOnInit() {
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
 
+      ViewFilterHook.addFilter(this.task.nombre+'-showFieldShipment',() => true);
+
+      ViewFilterHook.addFilter(this.task.nombre+'-dataContact',value => Object.assign(value,{
+        'clase_envio' : [null],
+        'modalidad_correo':[null],
+      }));
+
+      this.datosContacto.form.setValidators([
+        ExtendValidators.requiredIf('distribucion','física','clase_envio'),
+        ExtendValidators.requiredIf('distribucion','física','modalidad_correo'),
+
+      ]);
+
+
+
       this.restore();
     });
+
    this._changeDetectorRef.detectChanges();
   }
 
@@ -107,15 +130,21 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   radicarSalida() {
-    /*this.formDestinatarioExterno =
-      this.datosDestinatario.destinatarioExterno.form.value;
-    this.destinatariosExternos =
-      this.datosDestinatario.destinatarioExterno.listaDestinatarios;
 
-    this.formDestinatarioInterno =
-      this.datosDestinatario.destinatarioInterno.form.value;
-    this.destinatariosInternos =
-      this.datosDestinatario.destinatarioInterno.listaDestinatarios;*/
+    const radicacionEntradaFormPayload: any = {
+       generales: this.datosGenerales.form.value,
+       descripcionAnexos: this.datosGenerales.descripcionAnexos,
+       radicadosReferidos: this.datosGenerales.radicadosReferidos,
+       task: this.task,
+       destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
+       destinatarioExt:this.datosContacto.listaDestinatariosExternos,
+    };
+
+    const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
+
+    this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+
+    console.log(this.radicacion);
 
   }
 
@@ -169,7 +198,24 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   ngOnDestroy() {
     console.log('ON DESTROY...');
+
+    ViewFilterHook.removeFilter(this.task.nombre+'-showFieldShipment');
+
+    ViewFilterHook.removeFilter(this.task.nombre+'-dataContact');
+
     this.activeTaskUnsubscriber.unsubscribe();
+  }
+
+
+  radicacionButtonIsShown():boolean{
+
+      const conditions:boolean[] = [
+      this.datosGenerales.form.valid,
+      this.datosContacto.form.valid,
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+    ];
+
+    return  conditions.every( condition => condition);
   }
 
 }

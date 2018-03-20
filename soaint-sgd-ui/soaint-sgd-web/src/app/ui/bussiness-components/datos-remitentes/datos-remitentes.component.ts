@@ -31,6 +31,7 @@ import {ConfirmationService} from 'primeng/components/common/api';
 import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
 
 @Component({
   selector: 'app-datos-remitentes',
@@ -377,5 +378,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+
 }
 
