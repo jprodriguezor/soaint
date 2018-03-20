@@ -49,7 +49,7 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
   readonly = false;
 
   radicacion: ComunicacionOficialDTO;
-  radicacionEntradaDTV: any;
+  radicacionEntradaDTV: RadicacionEntradaDTV = null;
   radicacionEntradaFormData: RadicacionEntradaFormInterface = null;
   comunicacion: ComunicacionOficialDTO = {};
 
@@ -142,11 +142,12 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
         this.comunicacion = result;
         this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
         this.radicacionEntradaFormData = this.radicacionEntradaDTV.getRadicacionEntradaFormData();
-        this.destinatario = this.radicacionEntradaDTV.getDatosDestinatarios();
-        this.remitente = this.radicacionEntradaDTV.getDatosRemitente();
-        this.generales = this.radicacionEntradaDTV.getRadicacionEntradaFormData();
+        this.destinatario = this.radicacionEntradaFormData.destinatario;
+        this.remitente = this.radicacionEntradaFormData.remitente;
+        this.generales = this.radicacionEntradaFormData.generales;
         this.InitFormGenerales();
         this.InitFormRemitente();
+        this.InitFormDestinatario();
         this._changeDetectorRef.detectChanges();
       });
     }
@@ -154,51 +155,51 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
 
 
   InitFormGenerales() {
-      const reqDistFisica = (this.generales.generales.reqDistFisica === 1);
+      const reqDistFisica = (this.generales.reqDistFisica === 1);
       this.formGenerales = this.formBuilder.group({
-        'fechaRadicacion': [this.generales.generales.fechaRadicacion],
-        'nroRadicado': [this.generales.generales.nroRadicado],
+        'fechaRadicacion': [this.generales.fechaRadicacion],
+        'nroRadicado': [this.generales.nroRadicado],
         'tipoComunicacion': [{value: {codigo: 'EE', nombre: 'Comunicación Oficial Externa Recibida', codPadre: 'TP-CMC', id: 30}, disabled: this.disabled}, Validators.required],
         'medioRecepcion': [{value: {codigo: 'ME-RECV', nombre: 'Virtual', codPadre: 'ME-RECE', id: 18}, disabled: this.disabled}, Validators.required],
-        'empresaMensajeria': [{value: this.generales.generales.empresaMensajeria, disabled: this.disabled}, Validators.required],
-        'numeroGuia': [{value: this.generales.generales.numeroGuia, disabled: this.disabled}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'empresaMensajeria': [{value: this.generales.empresaMensajeria, disabled: this.disabled}, Validators.required],
+        'numeroGuia': [{value: this.generales.numeroGuia, disabled: this.disabled}, Validators.compose([Validators.required, Validators.maxLength(8)])],
         'tipologiaDocumental': [{value: {codigo: 'TL-DOCOF', nombre: 'Oficio', codPadre: 'TL-DOC', id: 49}, disabled: !this.disabled}, Validators.required],
         'unidadTiempo': [{value: {codigo: 'UNID-TIH', nombre: 'Horas', codPadre: 'UNID-TI', id: 90}, disabled: this.disabled}],
-        'numeroFolio': [{value: this.generales.generales.numeroFolio, disabled: this.disabled}, Validators.required],
-        'inicioConteo': [this.generales.generales.inicioConteo],
+        'numeroFolio': [{value: this.generales.numeroFolio, disabled: this.disabled}, Validators.required],
+        'inicioConteo': [this.generales.inicioConteo],
         'reqDistFisica': [{value: reqDistFisica, disabled: this.disabled}],
-        'reqDigit': [{value: this.generales.generales.reqDigit, disabled: this.disabled}],
-        'tiempoRespuesta': [{value: this.generales.generales.tiempoRespuesta, disabled: this.disabled}],
-        'asunto': [{value: this.generales.generales.asunto, disabled: !this.disabled}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-        'radicadoReferido': [{value: this.generales.generales.radicadoReferido, disabled: !this.disabled}],
-        'tipoAnexos': [{value: {codigo: 'ANE-CJ', nombre: 'Caja', codPadre: 'ANE', id: 69}, disabled: this.disabled}],
-        'soporteAnexos': [{value: {codigo: 'TP-SOPE', nombre: 'Electrónico', codPadre: 'TP-SOP', id: 46}, disabled: this.disabled}],
-        'tipoAnexosDescripcion': [{value: this.generales.generales.descripcion, disabled: this.disabled}, Validators.maxLength(300)],
-        'hasAnexos': [{value: this.generales.generales.hasAnexos, disabled: this.disabled}]
+        'reqDigit': [{value: this.generales.reqDigit, disabled: this.disabled}],
+        'tiempoRespuesta': [{value: this.generales.tiempoRespuesta, disabled: this.disabled}],
+        'asunto': [{value: this.generales.asunto, disabled: !this.disabled}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: this.generales.radicadoReferido, disabled: !this.disabled}],
+        'tipoAnexos': [{value: null, disabled: this.disabled}],
+        'soporteAnexos': [{value: null, disabled: this.disabled}],
+        'tipoAnexosDescripcion': [{value: null}, Validators.maxLength(300)],
+        'hasAnexos': [{value: this.generales.hasAnexos, disabled: this.disabled}]
       });
+      this.datosGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
       this.datosGenerales.form = this.formGenerales;
-      this.datosRemitente.initLoadTipoComunicacionExterna();
       this.datosRemitente.setTipoComunicacion(this.formGenerales.controls['tipoComunicacion'].value);
   }
 
   InitFormRemitente() {
     this.formRemitente = this.formBuilder.group({
       'tipoPersona': [{value: {codigo: 'TP-PERA', nombre: 'Anonimo', codPadre: '', id: 30}, disabled: this.disabled}, Validators.required],
-        'nit': [{value: null, disabled: this.disabled}],
-        'actuaCalidad': [{value: null, disabled: this.disabled}],
-        'tipoDocumento': [{value: null, disabled: this.disabled}],
-        'razonSocial': [{value: null, disabled: this.disabled}, Validators.required],
-        'nombreApellidos': [{value: null, disabled: this.disabled}, Validators.required],
-        'nroDocumentoIdentidad': [{value: null, disabled: this.disabled}],
-        'sedeAdministrativa': [{value: null, disabled: this.disabled}, Validators.required],
-        'dependenciaGrupo': [{value: null, disabled: this.disabled}, Validators.required],
+        'nit': [{value: this.remitente.nit, disabled: this.disabled}],
+        'actuaCalidad': [{value: this.remitente.actuaCalidad, disabled: this.disabled}],
+        'tipoDocumento': [{value: this.remitente.tipoDocumento, disabled: this.disabled}],
+        'razonSocial': [{value: this.remitente.razonSocial, disabled: this.disabled}, Validators.required],
+        'nombreApellidos': [{value: this.remitente.nombreApellidos, disabled: this.disabled}, Validators.required],
+        'nroDocumentoIdentidad': [{value: this.remitente.nroDocumentoIdentidad, disabled: this.disabled}],
+        'sedeAdministrativa': [{value: this.remitente.sedeAdministrativa, disabled: this.disabled}, Validators.required],
+        'dependenciaGrupo': [{value: this.remitente.dependenciaGrupo, disabled: this.disabled}, Validators.required],
     });
     this.datosRemitente.onSelectTipoPersona(this.formRemitente.controls['tipoPersona'].value);
+    this.datosRemitente.datosContactos.contacts = this.radicacionEntradaFormData.datosContactos;
 }
 
 InitFormDestinatario() {
-
-  this.datosDestinatario.agentesDestinatario = [...[]];
+  this.datosDestinatario.agentesDestinatario = [...this.radicacionEntradaFormData.agentesDestinatario];
 }
 
   actualizarComunicacion() {

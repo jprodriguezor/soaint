@@ -6,4 +6,5 @@ export interface MensajeRespuestaDTO {
     contenidoDependenciaTrdDTOS: ContenidoDependenciaTrdDTO[];
     documentoDTOList: DocumentoEcmDTO[];
     mensaje: string;
+    response: any;
 }
