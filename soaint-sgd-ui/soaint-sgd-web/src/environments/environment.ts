@@ -152,10 +152,6 @@ export const process_info = {
     displayValue: 'Gestión de unidades documentales',
     show: false
   },
-  'proceso.gestion-unidades-documentales': {
-    displayValue: 'Gestión de unidades documentales',
-    show: false
-  },
   'process.archivar-documento':{
     displayValue : 'Organización y Archivo',
     show: true,
