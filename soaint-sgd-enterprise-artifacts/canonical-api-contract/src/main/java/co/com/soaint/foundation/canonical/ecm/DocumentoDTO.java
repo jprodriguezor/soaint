@@ -36,9 +36,8 @@ public class DocumentoDTO implements Serializable {
     private Date fechaCreacion;
     private String tipoDocumento;
     private String tamano;
-    private String tipoPadreAdjunto;
+    private String tipoPadreAdjunto;//xTipo = principal o anexo
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
-
 }

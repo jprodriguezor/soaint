@@ -39,6 +39,7 @@ import java.util.*;
 @BusinessControl
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
+    public static final String CMCOR_CODIGO_SERIE = "cmcor:CodigoSerie";
     @Autowired
     Configuracion configuracion;
 
@@ -725,7 +726,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
-                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
+                //documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente") != null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : null);
 
                 documentosLista.add(documentoDTO);
@@ -1234,7 +1235,8 @@ public class ContentControlAlfresco implements ContentControl {
 
         if ("cmcor:CodigoSubserie".equals(tipoCarpeta)) {
             if (folderFather != null) {
-                props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue("cmcor:CodigoSerie"));
+                props.put(CMCOR_CODIGOUNIDADAMINPADRE, folderFather.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE));
+                props.put(CMCOR_CODIGO_SERIE, folderFather.getFolder().getPropertyValue(CMCOR_CODIGO_SERIE));
                 props.put(CMCOR_CODIGODEPENDENCIA, idOrgOfc);
             }
         } else if ("cmcor:CodigoSerie".equals(tipoCarpeta)) {
@@ -1246,7 +1248,6 @@ public class ContentControlAlfresco implements ContentControl {
             props.put(CMCOR_CODIGOUNIDADAMINPADRE, codOrg);
             props.put(CMCOR_CODIGODEPENDENCIA, codOrg);
         }
-
     }
 
     /**

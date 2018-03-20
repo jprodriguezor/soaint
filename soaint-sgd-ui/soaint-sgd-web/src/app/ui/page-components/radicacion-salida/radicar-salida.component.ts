@@ -1,4 +1,7 @@
-import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit,
+  ViewChild
+} from '@angular/core';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
 import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
@@ -20,6 +23,15 @@ import {getMediosRecepcionVentanillaData} from '../../../infrastructure/state-ma
 import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import 'rxjs/add/operator/skipWhile';
 import {Sandbox as ComunicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
+import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {Sandbox as PaisSandbox} from '../../../infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
+import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {
+  getTipoDocumentoArrayData, getTipoPersonaArrayData, getTipoDestinatarioArrayData
+} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 
 declare const require: any;
@@ -40,9 +52,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   printStyle: string = printStyles;
 
   @ViewChild('datosGenerales') datosGenerales;
-  @ViewChild('datosRemitente') datosRemitente;
-  @ViewChild('datosDestinatario') datosDestinatario;
-
+  @ViewChild('datosContacto') datosContacto;
   @ViewChild('ticketRadicado') ticketRadicado;
 
   task: TareaDTO;
@@ -50,53 +60,46 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   barCodeVisible = false;
 
   formsTabOrder: Array<any> = [];
-
-  // Unsubscribers
   activeTaskUnsubscriber: Subscription;
-  /*sedeUnsubscriber: Subscription;
-  reqDigitInmediataUnsubscriber: Subscription;
-  validDatosGeneralesUnsubscriber: Subscription;*/
 
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
-
-  mediosRecepcionDefaultSelection$: Observable<ConstanteDTO>;
-  tipoDestinatarioDefaultSelection$: Observable<ConstanteDTO>;
+  sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
+  funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
 
 
   formDatosGenerales: any;
-  formDatosRemitentes: any;
-  formDestinatarioInterno: any;
-  formDestinatarioExterno: any;
-
-  destinatariosInternos: any;
-  destinatariosExternos: any;
 
   constructor(private _sandbox: RadicarComunicacionesSandBox,
               private _coSandbox: ComunicacionOficialSandbox,
               private _store: Store<RootState>,
-              private _taskSandBox: TaskSandBox) {
+              private _dependenciaSandbox: DependenciaSandbox,
+              private _paisSandbox: PaisSandbox,
+              private _funcionarioSandbox: FuncionariosSandbox,
+              private _changeDetectorRef: ChangeDetectorRef) {
+   // this.tipoDestinatarioSuggestions$ = this._store.select(getTipoDestinatarioArrayData);
+  //  this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
+   // this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
+  //  this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
+    //this._dependenciaSandbox.loadDependencies({});
+   // this._paisSandbox.loadDispatch();
+   // this._funcionarioSandbox.loadAllFuncionariosDispatch();
   }
 
   ngOnInit() {
-    // Default Selection for Children Components bindings
-    this.mediosRecepcionDefaultSelection$ = this._store.select(getMediosRecepcionVentanillaData);
-    this.tipoDestinatarioDefaultSelection$ = this._store.select(getDestinatarioPrincial);
-    // Datalist Load bindings
-    this.tipoDestinatarioSuggestions$ = this._store.select(tipoDestinatarioEntradaSelector);
-    this.sedeDestinatarioSuggestions$ = this._store.select(sedeDestinatarioEntradaSelector);
-    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
+
       this.restore();
     });
+   this._changeDetectorRef.detectChanges();
   }
 
   ngAfterContentInit() {
-    this.formsTabOrder.push(this.datosGenerales);
-    this.formsTabOrder.push(this.datosRemitente);
-    this.formsTabOrder.push(this.datosDestinatario);
+   this.formsTabOrder.push(this.datosGenerales);
+   this.formsTabOrder.push(this.datosContacto);
+    console.log('AFTER VIEW INIT...');
   }
 
   ngAfterViewInit() {
@@ -104,10 +107,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   radicarSalida() {
-    this.formDatosGenerales = this.datosGenerales.form.value;
-    this.formDatosRemitentes = this.datosRemitente.form.value;
-
-    this.formDestinatarioExterno =
+    /*this.formDestinatarioExterno =
       this.datosDestinatario.destinatarioExterno.form.value;
     this.destinatariosExternos =
       this.datosDestinatario.destinatarioExterno.listaDestinatarios;
@@ -115,7 +115,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this.formDestinatarioInterno =
       this.datosDestinatario.destinatarioInterno.form.value;
     this.destinatariosInternos =
-      this.datosDestinatario.destinatarioInterno.listaDestinatarios;
+      this.datosDestinatario.destinatarioInterno.listaDestinatarios;*/
 
   }
 

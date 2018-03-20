@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -35,15 +36,16 @@ public class ECMClient {
         super();
     }
 
-    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO) {
+    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO, String selector) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/" + selector)
                 .request()
                 .post(Entity.json(documentoDTO));
 
         return response.readEntity(MensajeRespuesta.class);
     }
+
 
     public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -120,9 +122,11 @@ public class ECMClient {
                 .delete();
     }
 
-    public Response findDocumentosAsociados(String idDocumento) {
+    public MensajeRespuesta findDocumentosAsociados(String idDocumento) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/obtenerDocumentosAdjuntosECM/" + idDocumento).request().get();
+        DocumentoDTO dto = DocumentoDTO.newInstance().idDocumento(idDocumento).build();
+        Response response = wt.path("/obtenerDocumentosAdjuntosECM").request().post(Entity.json(dto));
+        return response.readEntity(MensajeRespuesta.class);
     }
 
     public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
@@ -131,6 +135,14 @@ public class ECMClient {
         return wt.path("/devolverSerieOSubserieECM")
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
+    }
+
+    public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/listarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
     }
 
 }

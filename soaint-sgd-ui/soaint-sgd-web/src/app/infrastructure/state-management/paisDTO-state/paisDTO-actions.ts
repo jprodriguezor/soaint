@@ -18,7 +18,8 @@ export class FilterAction implements Action {
 
 export class LoadAction implements Action {
   type = ActionTypes.LOAD;
-  constructor(public payload?: any) { }
+
+  constructor(public payload?: any) {  }
 }
 
 export class LoadSuccessAction implements Action {

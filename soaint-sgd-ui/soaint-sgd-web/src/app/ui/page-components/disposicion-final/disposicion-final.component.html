@@ -1,0 +1,241 @@
+<div class="ui-fluid">
+    <app-task-container>
+        <div customActions>
+            <button pButton type="button" label="Asignar" style="width:auto;margin-bottom:10px;" *ngIf="task"></button>
+        </div>
+    </app-task-container>
+    <div taskBody>
+        <p-panel header="Buscar unidad documental" leftIcon="ui-icon-assignment">
+            <form [formGroup]="formSearch" novalidate>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                            <div class="ui-g-12">
+                                <label for="tipoDisposicionFinal"><span class="text-danger">*</span>Tipo disposición final</label>
+                            </div>
+                            <div class="ui-g-12 md-dropdownfield">
+                                <p-dropdown [options]="tiposDisposicionFinal$ | async | dropdownItem"
+                                            id="dependencia"
+                                            formControlName="tipoDisposicionFinal"
+                                            placeholder="Seleccione"
+                                            [autoWidth]="false">
+                                </p-dropdown>
+                                <div class="ui-message ui-messages-error"
+                                    *ngIf="validations.tipoDisposicionFinal">
+                                    {{ validations.tipoDisposicionFinal }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-sm-12 ui-g-5 ui-lg-5">
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede"><span class="text-danger">*</span>Sede</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <p-dropdown [options]="sedes$ | async | dropdownItem"
+                                                id="sede"
+                                                formControlName="sede"
+                                                placeholder="Seleccione"
+                                                [autoWidth]="false">
+                                    </p-dropdown>
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.sede">
+                                        {{ validations.sede }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Dependencia</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <p-dropdown [options]="dependencias$ | async | dropdownItem"
+                                                id="dependencia"
+                                                formControlName="dependencia"
+                                                placeholder="Seleccione"
+                                                [autoWidth]="false">
+                                    </p-dropdown>
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.dependencia">
+                                        {{ validations.dependencia }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-sm-12 ui-g-4 ui-lg-4">
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Serie</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <p-dropdown [options]="series$ | async | dropdownItem"
+                                                id="serie"
+                                                formControlName="serie"
+                                                placeholder="Seleccione"
+                                                [autoWidth]="false">
+                                    </p-dropdown>
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.serie">
+                                        {{ validations.serie }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Subserie</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <p-dropdown [options]="subseries$ | async | dropdownItem"
+                                                id="subserie"
+                                                formControlName="subserie"
+                                                placeholder="Seleccione"
+                                                [autoWidth]="false">
+                                    </p-dropdown>
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.subserie">
+                                        {{ validations.subserie }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui-g ui-fluid">
+                    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                        <div class="ui-g form-group">
+                            <div class="ui-g-12">
+                                <label for="tipoDisposicionFinal">Identificador unidad documental</label>
+                            </div>
+                            <div class="ui-g-12 md-dropdownfield">
+                                <input type="text" pInputText id="idUnidadDocumental" formControlName="idUnidadDocumental" />
+                                <div class="ui-message ui-messages-error"
+                                    *ngIf="validations.idUnidadDocumental">
+                                    {{ validations.idUnidadDocumental }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-sm-12 ui-g-5 ui-lg-5">
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Nombre unidad documental</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <input type="text" pInputText id="nombreUnidadDocumental" formControlName="nombreUnidadDocumental" />
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.nombreUnidadDocumental">
+                                        {{ validations.nombreUnidadDocumental }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Descriptor 1</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <input type="text" pInputText id="descriptor1" formControlName="descriptor1" />
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.descriptor1">
+                                        {{ validations.descriptor1 }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-sm-12 ui-g-4 ui-lg-4">
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12">
+                                    <label for="sede">Descriptor 2</label>
+                                </div>
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <input type="text" pInputText id="descriptor2" formControlName="descriptor2" />
+                                    <div class="ui-message ui-messages-error"
+                                        *ngIf="validations.descriptor2">
+                                        {{ validations.descriptor2 }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12 md-dropdownfield">
+                                    <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button"></button>
+                                    <button pButton label="Buscar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button"></button>
+                                </div>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </form>            
+        </p-panel>
+
+        <br/>
+
+        <p-panel header="Aprobar disposición final" leftIcon="ui-icon-assignment">
+            <div class="ui-g ui-fluid">
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12">
+                            <label for="sede">Ejecutar selección</label>
+                        </div>
+                        <div class="ui-g-12 md-dropdownfield">
+                            <p-dropdown 
+                                        id="ejecutarSeleccion"
+                                        placeholder="Seleccione"
+                                        [autoWidth]="false">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>                
+                <div class="ui-sm-12 ui-g-3 ui-lg-3">
+                    <button pButton label="Ejecutar" style="width:auto;margin-left:5px;margin-top:20px;" type="button"></button>
+                </div>
+                <div class="ui-sm-12 ui-g-6 ui-lg-6">
+                    <button pButton label="Transponer" style="width:auto;float:right;margin-left:5px;margin-top:20px;" type="button"
+                    (click)="transponer()"></button>
+                </div>
+            </div>
+
+            <div class="ui-g ui-fluid" style="margin-bottom: 16px">
+                <div class="ui-sm-12 ui-g-12 ui-lg-12">
+                    <p-dataTable 
+                        [paginator]="true" 
+                        [rows]="10" 
+                        [responsive]="true" 
+                        [value]="listaDisposiciones"
+                        dataKey="dependencia"
+                        [(selection)]="selectedItemsListaDisposiciones"
+                        [headerCheckboxToggleAllPages]="true"
+                        [stacked]="stacked"
+                        emptyMessage="No hay resultados que mostrar">
+                        <p-column field="dependencia" header="Dependencia" [sortable]="true"></p-column>
+                        <p-column field="subserie" header="Nombre serie/subserie" [sortable]="true"></p-column>
+                        <p-column field="idUnidadDocumental" header="Identificador unidad documental" [sortable]="true"></p-column>
+                        <p-column field="nombreUnidadDocumental" header="Nombre unidad documental" [sortable]="true"></p-column>
+                        <p-column field="descriptor1" header="Descriptor 1" [sortable]="true"></p-column>
+                        <p-column field="descriptor2" header="Descriptor 2" [sortable]="true"></p-column>
+                        <p-column field="faseArchivo" header="Fase archivo" [sortable]="true"></p-column>  
+                        <p-column field="estado" header="Estado" [sortable]="true"></p-column>
+                        <p-column field="fechaExternaInicial" header="Fecha externa inicial" [sortable]="true"></p-column>
+                        <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
+                        <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
+                        <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>                      
+                    </p-dataTable>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

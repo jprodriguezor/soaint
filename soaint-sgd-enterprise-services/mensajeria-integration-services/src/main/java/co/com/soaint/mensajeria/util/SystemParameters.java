@@ -20,6 +20,7 @@ public class SystemParameters {
     public static final String BROKER_USER = "broker-user";
     public static final String BROKER_PASS = "broker-pass";
     public static final String BROKER_IMPLEMENTATION = "broker-implementation";
+    public static final String CORRESPONDENCIA_INTEGRATION_SERVICE_ENDPOINT = "correspondencia-integration-services-endpoint";
 
     /**
      * @param parameterName
