@@ -61,7 +61,6 @@ import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-do
 import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
 import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
-import { STATE_SERVICES } from './ui/state-provider.include';
 
 
 @NgModule({
@@ -174,7 +173,6 @@ import { STATE_SERVICES } from './ui/state-provider.include';
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
-    ...STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,

@@ -76,17 +76,17 @@ export class DatosRemitenteComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    this.form = this.formBuilder.group({
-      'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
-      'nit': [{value: null, disabled: !this.editable}],
-      'actuaCalidad': [{value: null, disabled: !this.editable}],
-      'tipoDocumento': [{value: null, disabled: !this.editable}],
-      'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
-      'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
-      'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
-      'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
-      'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
-    });
+      this.form = this.formBuilder.group({
+        'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
+        'nit': [{value: null, disabled: !this.editable}],
+        'actuaCalidad': [{value: null, disabled: !this.editable}],
+        'tipoDocumento': [{value: null, disabled: !this.editable}],
+        'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
+        'nombreApellidos': [{value: null, disabled: !this.editable}, Validators.required],
+        'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
+        'sedeAdministrativa': [{value: null, disabled: !this.editable}, Validators.required],
+        'dependenciaGrupo': [{value: null, disabled: !this.editable}, Validators.required],
+      });
   }
 
   listenForChanges() {
