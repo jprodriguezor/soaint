@@ -37,7 +37,7 @@ public class Cron implements Job {
 
        // ProcesarFichero procesarFichero = new ProcesarFichero();
         try {
-          procesarFichero.leerDirectorio(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR),SystemParameters.getParameter(SystemParameters.DIR_PROCESADAS));
+          //procesarFichero.leerDirectorio(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR),SystemParameters.getParameter(SystemParameters.DIR_PROCESADAS));
            //procesarFichero.leerDirectorio("C:\\sgd\\procesar\\","C:\\sgd\\procesados\\");
 
         } catch (Exception ex) {
