@@ -1,4 +1,7 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+  ViewChild
+} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
@@ -45,6 +48,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
   form: FormGroup;
 
   subscription: Subscription;
+
+  @Output() onSelectDistribucionElectronica:EventEmitter<boolean> = new EventEmitter;
 
   validations: any = {};
 
@@ -125,6 +130,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
      });*/
 
     this.initForm();
+  }
+
+  dispatchSelectDistElectronica(selected:boolean){
+
+    this.onSelectDistribucionElectronica.emit(selected);
   }
 
   ngOnInit(): void {

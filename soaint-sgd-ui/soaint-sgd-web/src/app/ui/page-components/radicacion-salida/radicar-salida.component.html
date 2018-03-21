@@ -26,7 +26,7 @@
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
-          <pd-datos-contacto #datosContacto [taskData]="task" ></pd-datos-contacto>
+          <pd-datos-contacto #datosContacto [taskData]="task" (onSelectDistribucionElectronica)="changeValidationAbility($event)" ></pd-datos-contacto>
         </p-tabPanel>
 
         <!--p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">

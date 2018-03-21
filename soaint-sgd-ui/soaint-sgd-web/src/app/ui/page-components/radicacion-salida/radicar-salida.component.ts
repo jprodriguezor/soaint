@@ -37,6 +37,7 @@ import {ComunicacionOficialEntradaDTV} from "../../../shared/data-transformers/c
 import {RadicacionSalidaDTV} from "../../../shared/data-transformers/radicacionSalidaDTV";
 import {AbstractControl, FormControl, Validators} from "@angular/forms";
 import {ExtendValidators} from "../../../shared/validators/custom-validators";
+import {COMUNICACION_EXTERNA} from "../../../shared/bussiness-properties/radicacion-properties";
 
 
 declare const require: any;
@@ -66,6 +67,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   formsTabOrder: Array<any> = [];
   activeTaskUnsubscriber: Subscription;
+
+  formContactDataShown:Subscription;
 
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
@@ -111,9 +114,18 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       ]);
 
-
-
       this.restore();
+    });
+
+    this.formContactDataShown = this.validatorSubscription();
+
+    ViewFilterHook.addFilter('datos-remitente-'+COMUNICACION_EXTERNA, valid => {
+
+      if(this.datosContacto.form.get('distribucion').value != 'eléctronica')
+        return valid;
+
+        return valid && this.datosContacto.datosRemitentesExterno.destinatariosContactos.length > 0;
+
     });
 
    this._changeDetectorRef.detectChanges();
@@ -203,9 +215,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     ViewFilterHook.removeFilter(this.task.nombre+'-dataContact');
 
+    ViewFilterHook.removeFilter('datos-remitente-'+COMUNICACION_EXTERNA);
+
     this.activeTaskUnsubscriber.unsubscribe();
   }
-
 
   radicacionButtonIsShown():boolean{
 
@@ -216,6 +229,40 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     ];
 
     return  conditions.every( condition => condition);
+  }
+
+  private validatorSubscription():Subscription{
+
+    return this.datosContacto.datosRemitentesExterno.formDataContactShown.subscribe(form =>{
+
+      let validator= (<AbstractControl>form.get('correoEle')).validator;
+
+      let validatorsFn = [Validators.email,Validators.required];
+
+      if(validator !== null){
+
+        validatorsFn.push(validator);
+      }
+
+      (<AbstractControl>form.get('correoEle')).setValidators(validatorsFn);
+    });
+  }
+
+  changeValidationAbility(enable:boolean){
+
+    console.log(enable);
+
+    // const control:AbstractControl = this.datosContacto.datosRemitentesExterno.destinatarioDatosContactos.form.get('correoEle');
+
+    if(enable){
+      this.formContactDataShown = this.validatorSubscription();
+    }
+    else{
+
+      this.formContactDataShown.unsubscribe();
+    }
+
+
   }
 
 }

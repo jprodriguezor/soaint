@@ -18,7 +18,10 @@ export  abstract class RadicacionBase {
 
   protected  date:Date;
 
-  constructor(protected source: RadicacionFormInterface,private _store: Store<RootState>) { }
+  constructor(protected source: RadicacionFormInterface,private _store: Store<RootState>) {
+
+    this.date = new Date();
+  }
 
   getCorrespondencia(): CorrespondenciaDTO {
     const generales = this.source.generales;
