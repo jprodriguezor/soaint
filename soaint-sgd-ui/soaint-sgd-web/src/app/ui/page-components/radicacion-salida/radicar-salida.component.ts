@@ -32,6 +32,12 @@ import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-mana
 import {
   getTipoDocumentoArrayData, getTipoPersonaArrayData, getTipoDestinatarioArrayData
 } from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {ComunicacionOficialEntradaDTV} from "../../../shared/data-transformers/comunicacionOficialEntradaDTV";
+import {RadicacionSalidaDTV} from "../../../shared/data-transformers/radicacionSalidaDTV";
+import {AbstractControl, FormControl, Validators} from "@angular/forms";
+import {ExtendValidators} from "../../../shared/validators/custom-validators";
+import {COMUNICACION_EXTERNA} from "../../../shared/bussiness-properties/radicacion-properties";
 
 
 declare const require: any;
@@ -62,6 +68,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   formsTabOrder: Array<any> = [];
   activeTaskUnsubscriber: Subscription;
 
+  formContactDataShown:Subscription;
+
   tipoDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   sedeDestinatarioSuggestions$: Observable<ConstanteDTO[]>;
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
@@ -87,12 +95,39 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
    // this._funcionarioSandbox.loadAllFuncionariosDispatch();
   }
 
+
+
   ngOnInit() {
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
 
+      ViewFilterHook.addFilter(this.task.nombre+'-showFieldShipment',() => true);
+
+      ViewFilterHook.addFilter(this.task.nombre+'-dataContact',value => Object.assign(value,{
+        'clase_envio' : [null],
+        'modalidad_correo':[null],
+      }));
+
+      this.datosContacto.form.setValidators([
+        ExtendValidators.requiredIf('distribucion','física','clase_envio'),
+        ExtendValidators.requiredIf('distribucion','física','modalidad_correo'),
+
+      ]);
+
       this.restore();
     });
+
+    this.formContactDataShown = this.validatorSubscription();
+
+    ViewFilterHook.addFilter('datos-remitente-'+COMUNICACION_EXTERNA, valid => {
+
+      if(this.datosContacto.form.get('distribucion').value != 'eléctronica')
+        return valid;
+
+        return valid && this.datosContacto.datosRemitentesExterno.destinatariosContactos.length > 0;
+
+    });
+
    this._changeDetectorRef.detectChanges();
   }
 
@@ -107,15 +142,21 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   }
 
   radicarSalida() {
-    /*this.formDestinatarioExterno =
-      this.datosDestinatario.destinatarioExterno.form.value;
-    this.destinatariosExternos =
-      this.datosDestinatario.destinatarioExterno.listaDestinatarios;
 
-    this.formDestinatarioInterno =
-      this.datosDestinatario.destinatarioInterno.form.value;
-    this.destinatariosInternos =
-      this.datosDestinatario.destinatarioInterno.listaDestinatarios;*/
+    const radicacionEntradaFormPayload: any = {
+       generales: this.datosGenerales.form.value,
+       descripcionAnexos: this.datosGenerales.descripcionAnexos,
+       radicadosReferidos: this.datosGenerales.radicadosReferidos,
+       task: this.task,
+       destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
+       destinatarioExt:this.datosContacto.listaDestinatariosExternos,
+    };
+
+    const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
+
+    this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+
+    console.log(this.radicacion);
 
   }
 
@@ -169,7 +210,59 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   ngOnDestroy() {
     console.log('ON DESTROY...');
+
+    ViewFilterHook.removeFilter(this.task.nombre+'-showFieldShipment');
+
+    ViewFilterHook.removeFilter(this.task.nombre+'-dataContact');
+
+    ViewFilterHook.removeFilter('datos-remitente-'+COMUNICACION_EXTERNA);
+
     this.activeTaskUnsubscriber.unsubscribe();
+  }
+
+  radicacionButtonIsShown():boolean{
+
+      const conditions:boolean[] = [
+      this.datosGenerales.form.valid,
+      this.datosContacto.form.valid,
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+    ];
+
+    return  conditions.every( condition => condition);
+  }
+
+  private validatorSubscription():Subscription{
+
+    return this.datosContacto.datosRemitentesExterno.formDataContactShown.subscribe(form =>{
+
+      let validator= (<AbstractControl>form.get('correoEle')).validator;
+
+      let validatorsFn = [Validators.email,Validators.required];
+
+      if(validator !== null){
+
+        validatorsFn.push(validator);
+      }
+
+      (<AbstractControl>form.get('correoEle')).setValidators(validatorsFn);
+    });
+  }
+
+  changeValidationAbility(enable:boolean){
+
+    console.log(enable);
+
+    // const control:AbstractControl = this.datosContacto.datosRemitentesExterno.destinatarioDatosContactos.form.get('correoEle');
+
+    if(enable){
+      this.formContactDataShown = this.validatorSubscription();
+    }
+    else{
+
+      this.formContactDataShown.unsubscribe();
+    }
+
+
   }
 
 }

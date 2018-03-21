@@ -6,7 +6,8 @@
           <p-radioButton name="distribucion"
                          label="Física"
                          value="física"
-                         formControlName="distribucion">
+                         formControlName="distribucion"
+                         (onClick)="dispatchSelectDistElectronica(false)">
           </p-radioButton>
         </div>
       </div>
@@ -15,7 +16,7 @@
           <p-radioButton name="distribucion"
                          label="Electrónica"
                          value="eléctronica"
-                         formControlName="distribucion">
+                         formControlName="distribucion"  (onClick)="dispatchSelectDistElectronica(true)">
           </p-radioButton>
         </div>
       </div>
@@ -37,6 +38,46 @@
   </p-panel>
 </form>
 
+<!-------------------------------------- CAMPOS DE ENVIO ------------------------------->
+
+<div class="ui-fluid" style="margin-top: 30px" *ngIf="showFieldShipment() && form.controls['distribucion'].value == 'física'">
+  <p-panel header="Datos de envio">
+    <div class="ui-g ui-fluid" >
+      <div class="ui-g-12">
+        <div class="ui-g-4 ui-sm-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-3">
+              <label >Clase de envio</label>
+            </div>
+            <div class="ui-g-9">
+              <p-dropdown ></p-dropdown>
+              <!--<div class="ui-message ui-messages-error"  *ngIf="form.controls['serie'].invalid && form.controls['serie'].touched">-->
+              <!--<p *ngIf="form.controls['serie'].hasError('required')">-->
+              <!--Debe  de Seleccionar un numero de serie-->
+              <!--</p>-->
+              <!--</div>-->
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-4 ui-sm-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-3">
+              <label >Modalidad de Correo</label>
+            </div>
+            <div class="ui-g-9">
+              <p-dropdown ></p-dropdown>
+              <!--<div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">-->
+              <!--<p *ngIf="form.controls['subserie'].hasError('required')">-->
+              <!--Debe  de Seleccionar un numero de serie-->
+              <!--</p>-->
+              <!--</div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+</div>
 
 <!--------------------------------------------- TABLAS  ------------------------->
 
