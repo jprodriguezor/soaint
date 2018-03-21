@@ -4,14 +4,14 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 
- const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
- const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+//  const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+//  const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-//const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -144,7 +144,7 @@ export const process_info = {
   },
   'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
-    show: true
+    show: false
   }
 
 };
