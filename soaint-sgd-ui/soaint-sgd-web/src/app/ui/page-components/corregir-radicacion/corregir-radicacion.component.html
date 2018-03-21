@@ -3,42 +3,36 @@
     <div customActions>
 
       <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="state.abort()"></button>
+              (click)="abort()"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="state.save().subscribe()"></button>
+              (click)="save().subscribe()"></button>
 
       <button pButton type="button" label="Actualizar" style="width: auto; margin-bottom: 10px"
               [disabled]="false"
-              (click)="state.actualizarComunicacion()"></button>
+              (click)="actualizarComunicacion()"></button>
 
     </div>
     <div taskBody>
 
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales [_dataform]="state.generales"  #datosGenerales
-                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
-                               (onChangeTipoComunicacion)="setTipoComunicacion($event)">
+          <app-datos-generales  #datosGenerales [editable]="false" [editmode]="true"
+                               [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async">
           </app-datos-generales>
         </p-tabPanel>
 
-        <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
-          <!--<p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" [disabled]="!datosGenerales.form.valid" >-->
-          <!--<app-datos-remitente #datosRemitente [editable]="editable"></app-datos-remitente>-->
+        <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment" [disabled]="!datosGenerales.form.valid" >
+          <app-datos-remitente #datosRemitente ></app-datos-remitente>
         </p-tabPanel>
 
-        <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
-          <!--<p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">-->
-          <!--<app-datos-destinatario #datosDestinatario [editable]="editable"-->
-                                  <!--[tipoDestinatarioDefaultInput]="tipoDestinatarioDefaultSelection$ | async"-->
-                                  <!--[tipoDestinatarioInput]="tipoDestinatarioSuggestions$ | async"-->
-                                  <!--[sedeAdministrativaInput]="sedeDestinatarioSuggestions$ | async"-->
-          <!--&gt;</app-datos-destinatario>-->
+        <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment" [disabled]="!datosRemitente.form.valid">
+          <app-datos-destinatario #datosDestinatario>
+          </app-datos-destinatario>
         </p-tabPanel>
         <p-tabPanel header="Adjuntar documentos" leftIcon="ui-icon-assignment">
-          <div style="overflow-y: scroll;max-height: 700px" *ngIf="state.HasDocuments()">
-            <app-documentos-ecm-list [idDocumentECM]="state.comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="true"></app-documentos-ecm-list>
+          <div style="overflow-y: scroll;max-height: 700px" *ngIf="HasDocuments()">
+            <app-documentos-ecm-list [idDocumentECM]="comunicacion.ppdDocumentoList[0].ideEcm" [versionar]="true"></app-documentos-ecm-list>
           </div>
         </p-tabPanel>
 

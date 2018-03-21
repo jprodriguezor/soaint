@@ -83,12 +83,12 @@ export class DatosDestinatarioComponent implements OnInit {
   }
 
   initForm() {
-    this.form = this.formBuilder.group({
-      'tipoDestinatario': [{value: null, disabled: !this.editable}],
-      'sedeAdministrativa': [{value: null, disabled: !this.editable}],
-      'dependenciaGrupo': [{value: null, disabled: !this.editable}],
-      'destinatarioPrincipal': [{value: null, disabled: !this.editable}, Validators.required],
-    });
+      this.form = this.formBuilder.group({
+        'tipoDestinatario': [{value: null, disabled: !this.editable}],
+        'sedeAdministrativa': [{value: null, disabled: !this.editable}],
+        'dependenciaGrupo': [{value: null, disabled: !this.editable}],
+        'destinatarioPrincipal': [{value: null, disabled: !this.editable}, Validators.required],
+      });
   }
 
   addAgentesDestinatario() {
@@ -96,7 +96,7 @@ export class DatosDestinatarioComponent implements OnInit {
     const sede = this.form.get('sedeAdministrativa');
     const grupo = this.form.get('dependenciaGrupo');
 
-    if(this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sede.value.codigo && value.dependenciaGrupo.codigo === grupo.value.codigo).length > 0){
+    if (this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sede.value.codigo && value.dependenciaGrupo.codigo === grupo.value.codigo).length > 0){
       return  this._store.dispatch(new PushNotificationAction({
         severity: 'warn',
         summary: WARN_DESTINATARIOS_REPETIDOS

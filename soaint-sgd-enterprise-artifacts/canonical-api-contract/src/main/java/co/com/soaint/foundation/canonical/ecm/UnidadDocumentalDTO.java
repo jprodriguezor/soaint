@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,32 +27,34 @@ import java.util.Date;
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
 public class UnidadDocumentalDTO {
 
-    private String id;
-    private String descriptor2;
-
-    @JsonFormat(pattern = "dd/mm/yyyy")
-    private Date fechaCierre;
-    @JsonFormat(pattern = "dd/mm/yyyy")
-    private Date fechaExtremaInicial;
-    @JsonFormat(pattern = "dd/mm/yyyy")
-    private Date fechaExtremaFinal;
-
-    private String soporte;
-    private String estado;
+    private String accion;
+    private boolean inactivo;
     private String ubicacionTopografica;
+    private Date fechaCierre;
+    private String id;
     private String faseArchivo;
-    private String descriptor1;
-    private String codigoSubSerie;
-    private String nombreSubSerie;
-    private String codigoSerie;
-    private String nombreSerie;
-    private String nombreUnidadDocumental;
+    private Date fechaExtremaInicial;
+    private String soporte;
     private String codigoUnidadDocumental;
-    private String codigoDependencia;
-    private String nombreDependencia;
-    private String codigoSede;
-    private String nombreSede;
+    private String nombreUnidadDocumental;
+    private String descriptor2;
+    private String descriptor1;
+    private Date fechaExtremaFinal;
     private boolean cerrada;
 
-    private String accion;
+    //heredadas
+    private String codigoSubSerie;
+    private String nombreSubSerie;
+
+    private String codigoSerie;
+    private String nombreSerie;
+
+    private String codigoDependencia;
+    private String nombreDependencia;
+
+    private String codigoSede;
+    private String nombreSede;
+
+    //Agregacion
+    private List<DocumentoDTO> listaDocumentos;
 }
