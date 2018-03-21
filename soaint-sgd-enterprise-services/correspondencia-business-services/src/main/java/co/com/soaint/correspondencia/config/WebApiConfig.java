@@ -66,6 +66,7 @@ public class WebApiConfig extends Application {
         resources.add(PlanillasWebApi.class);
         resources.add(PlantillaWebApi.class);
         resources.add(TareaWebApi.class);
+        resources.add(AnexoWebApi.class);
 
         resources.add(ApiListingResource.class);
         resources.add(SwaggerSerializers.class);
