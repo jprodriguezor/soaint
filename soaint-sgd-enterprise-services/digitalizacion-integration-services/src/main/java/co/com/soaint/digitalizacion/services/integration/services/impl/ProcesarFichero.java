@@ -47,24 +47,17 @@ public class ProcesarFichero implements IProcesarFichero {
     private String errorSistema = "";
     @Value("${mensaje.error.sistema.generico}")
     private String errorSistemaGenerico = "";
-
-
     @Override
     public String getImgText(String imagen) {
-
         Tesseract instance = new Tesseract();
-
-
         instance.setLanguage("eng");
         try {
-            String imgText = instance.doOCR(new File("C:/testDoc/test-image.png"));
+            String imgText = instance.doOCR(new File(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR)));
             return imgText;
         } catch (TesseractException e) {
             e.getMessage();
             return "Error en leer texto";
         }
-
-
     }
 
     @Override

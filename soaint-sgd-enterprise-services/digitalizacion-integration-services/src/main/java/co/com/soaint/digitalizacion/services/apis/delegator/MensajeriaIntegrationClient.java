@@ -2,7 +2,6 @@ package co.com.soaint.digitalizacion.services.apis.delegator;
 
 import co.com.soaint.digitalizacion.services.infrastructure.ApiDelegator;
 import co.com.soaint.digitalizacion.services.util.SystemParameters;
-import co.com.soaint.foundation.canonical.integration.DigitalizacionDTO;
 import co.com.soaint.foundation.canonical.mensajeria.MensajeGenericoQueueDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
