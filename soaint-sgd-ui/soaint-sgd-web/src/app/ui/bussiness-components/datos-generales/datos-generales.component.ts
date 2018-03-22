@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -20,7 +20,12 @@ import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-genera
 import {createSelector} from 'reselect';
 import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
-import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-properties/radicacion-properties';
+import {
+  MEDIO_RECEPCION_EMPRESA_MENSAJERIA,
+  RADICACION_ENTRADA, RADICACION_SALIDA
+} from '../../../shared/bussiness-properties/radicacion-properties';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {ExtendValidators} from "../../../shared/validators/custom-validators";
 
 @Component({
   selector: 'app-datos-generales',
@@ -32,7 +37,7 @@ import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-prop
   `],
   encapsulation: ViewEncapsulation.None
 })
-export class DatosGeneralesComponent implements OnInit, OnDestroy {
+export class DatosGeneralesComponent implements OnInit {
 
   form: FormGroup;
   visibility: any = {};
@@ -57,6 +62,8 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
   @Input()
   editable = true;
 
+  @Input() tipoRadicacion = RADICACION_ENTRADA;
+
   @Input()
   editmode = false;
 
@@ -66,18 +73,15 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
+  @Output() onChangeTipoDistribucion: EventEmitter<boolean> = new EventEmitter;
+
   validations: any = {};
   //
   // @ViewChild('dropDownThing')
   // dropDownThing: Dropdown;
 
 
-  constructor(
-    private _store: Store<State>,
-     private _apiDatosGenerales: DatosGeneralesApiService,
-     private _constSandbox: ConstanteSandbox,
-     private formBuilder: FormBuilder,
-     private _changeDetectorRef: ChangeDetectorRef ) {
+  constructor(private _store: Store<State>, private _apiDatosGenerales: DatosGeneralesApiService, private _constSandbox: ConstanteSandbox, private formBuilder: FormBuilder) {
 
   }
 
@@ -95,6 +99,8 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
         'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
         'inicioConteo': [null],
         'reqDistFisica': [{value: null, disabled: !this.editable}],
+        'clase_envio'  : [null],
+        'modalidad_correo'  : [null],
         'reqDigit': [{value: '1', disabled: !this.editable}],
         'tiempoRespuesta': [{value: null, disabled: !this.editable}],
         'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
@@ -105,6 +111,19 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
         'hasAnexos': [{value: null, disabled: !this.editable}]
       });
 
+      if(this.tipoRadicacion == RADICACION_SALIDA){
+
+        this.form.setValidators([
+          ExtendValidators.requiredIf('reqDistFisica',true,'clase_envio'),
+          ExtendValidators.requiredIf('reqDistFisica',true,'modalidad_correo'),
+        ]);
+      };
+
+  }
+
+  changeTipoDistribucion(evt:boolean){
+
+    this.onChangeTipoDistribucion.emit(evt);
   }
 
   listenForErrors() {
@@ -236,8 +255,10 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this._changeDetectorRef.detach();
+  showDistributionFields():boolean{
+
+    return this.tipoRadicacion == RADICACION_SALIDA && this.form.get('reqDistFisica').value;
   }
+
 
 }

@@ -138,11 +138,15 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
   }
 
   ngOnInit(): void {
+
     this._store.dispatch(new SedeAdministrativaLoadAction());
     this._store.dispatch(new LoadPaisAction());
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
     }
+
+    if(!this.showForm())
+      this.form = null;
 
   }
 
@@ -327,11 +331,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
   }
 
   initForm() {
-    this.form = this.formBuilder.group({
-      // Datos destinatario
-      'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
-      'distribucion': ['eléctronica'],
-    });
+      this.form = this.formBuilder.group({
+        // Datos destinatario
+        'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
+        'distribucion': ['eléctronica'],
+      });
+
   }
 
   showAddDestinatarioExternoPopup() {
@@ -444,9 +449,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     this._changeDetectorRef.detectChanges();
   }
 
-  showFieldShipment(){
+  showForm():boolean{
 
-   return  ViewFilterHook.applyFilter(this.taskData.nombre+'-showFieldShipment',false);
+    return ViewFilterHook.applyFilter(this.taskData.nombre+'-datos-contactos-show-form',true);
   }
+
 
 }

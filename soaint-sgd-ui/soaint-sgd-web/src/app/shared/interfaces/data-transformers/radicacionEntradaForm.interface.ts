@@ -32,15 +32,5 @@ export interface RadicacionEntradaFormInterface extends  RadicacionFormInterface
     destinatarioPrincipal: any
   },
   agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }>,
-  remitente: {
-    tipoPersona?: any,
-    nit?: any,
-    actuaCalidad?: any,
-    tipoDocumento?: any,
-    razonSocial?: any,
-    nombreApellidos?: any,
-    nroDocumentoIdentidad?: any,
-    sedeAdministrativa?: any,
-    dependenciaGrupo?: any
-  },
+
 }
