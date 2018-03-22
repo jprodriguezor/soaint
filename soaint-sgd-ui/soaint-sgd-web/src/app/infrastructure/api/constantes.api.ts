@@ -1,24 +1,21 @@
 import {Injectable} from '@angular/core';
-import {environment} from 'environments/environment';
-
-import {Store} from '@ngrx/store';
-import {State} from 'app/infrastructure/redux-store/redux-reducers';
-import * as actions from './constanteDTO-actions';
+import {ApiBase} from './api-base';
+import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/delay';
-import {ApiBase} from '../../api/api-base';
-import {CacheResponse} from "../../../shared/cache-response";
+import { SerieDTO } from 'app/domain/serieDTO';
+import { SubserieDTO } from 'app/domain/subserieDTO';
+import { ContenidoDependenciaTrdDTO } from 'app/domain/ContenidoDependenciaTrdDTO';
+import { ConstanteDTO } from '../../domain/constanteDTO';
+import { CacheResponse } from '../../shared/cache-response';
 
 @Injectable()
-export class Sandbox extends CacheResponse {
+export class ConstanteApiService extends CacheResponse {
 
-  constructor(private _store: Store<State>,
-              private _api: ApiBase) {
-
+  constructor(private _api: ApiBase) {
     super();
   }
 
-  loadData(payload: actions.GenericFilterAutocomplete) {
+  Listar(payload: any): Observable<ConstanteDTO[]> {
     let endpoint = null;
     switch (payload.key) {
       case 'tipoComunicacion':
@@ -75,36 +72,13 @@ export class Sandbox extends CacheResponse {
     }
 
     if (endpoint !== null) {
-
-      return this.getResponse(payload,this._api.list(endpoint, payload)
+      return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload,response);
+          this.cacheResponse(payload, response);
           return response;
         }));
     }
-    return Observable.of([]).delay(400);
-    // return Observable.of(this.getMock()).delay(400);
-  }
 
-  filterDispatch(target, query) {
-    this._store.dispatch(new actions.FilterAction({key: target, data: query}));
-  }
-
-  loadDispatch(target) {
-    this._store.dispatch(new actions.LoadAction({key: target}));
-  }
-
-  loadCausalDevolucionDispatch() {
-    this._store.dispatch(new actions.LoadCausalDevolucionAction({key: 'causalDevolucion'}));
-  }
-
-  loadDatosGeneralesDispatch() {
-    this._store.dispatch(new actions.LoadDatosGeneralesAction());
-  }
-
-  loadDatosRemitenteDispatch() {
-    this._store.dispatch(new actions.LoadDatosRemitenteAction());
   }
 
 }
-

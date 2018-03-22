@@ -8,6 +8,7 @@ import {MessagingService} from '../shared/providers/MessagingService';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.api';
 import {SerieService} from "./api/serie.service";
+import { ConstanteApiService } from './api/constantes.api';
 
 export const API_SERVICES = [
   ApiBase,
@@ -19,7 +20,8 @@ export const API_SERVICES = [
   PdMessageService,
   UnidadDocumentalApiService,
   SerieSubserieApiService,
-  SerieService
+  SerieService,
+  ConstanteApiService
 ];
 
 export {
