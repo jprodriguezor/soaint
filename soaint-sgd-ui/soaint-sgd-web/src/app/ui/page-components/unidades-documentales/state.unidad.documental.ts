@@ -26,7 +26,7 @@ import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.
 
 export class StateUnidadDocumental implements TaskForm {
 
-    ListadoUnidadDocumental: Observable<UnidadDocumentalDTO[]>;
+    ListadoUnidadDocumental$: Observable<UnidadDocumentalDTO[]>;
     ListadoSeries: Observable<SerieDTO[]>;
     ListadoSubseries: SubserieDTO[];
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
@@ -93,7 +93,7 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     GetListadoUnidadesDocumentales(codDependencia: string) {
-        this.ListadoUnidadDocumental = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia});
+        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia});
     }
 
     GetDetalleUnidadUnidadDocumental(payload: any) {
@@ -148,13 +148,13 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     Buscar() {
-        this.ListadoUnidadDocumental = this.unidadDocumentalApiService.Listar(this.GetBuscarPayload());
+        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar(this.GetBuscarPayload());
     }
 
     Agregar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental
+            this.ListadoUnidadDocumental$ = this.ListadoUnidadDocumental$
             .reduce((listado, currenvalue: any) => {
                   if (currenvalue.seleccionado) {
                       currenvalue.fechaCierre = this.FechaExtremaFinal;
@@ -175,11 +175,11 @@ export class StateUnidadDocumental implements TaskForm {
         const estado =
         ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
             || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? 'Inactiva'
-            : 'Activa' ;
+            ? true
+            : false ;
         const payload: UnidadDocumentalDTO = {
             cerrada: cerrada,
-            estado: estado,
+            inactivo: estado,
             codigoDependencia: this.task.variables.codDependencia,
         }
 
@@ -206,7 +206,7 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     SeleccionarTodos(checked: boolean) {
-        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.map((_map) => {
+        this.ListadoUnidadDocumental$ = this.ListadoUnidadDocumental$.map((_map) => {
             const unidadesDocumentales = _map.reduce((listado, unidad) => {
                 unidad.seleccionado = checked;
                 listado.push(unidad);
@@ -218,7 +218,7 @@ export class StateUnidadDocumental implements TaskForm {
 
     GetUnidadesSeleccionadas(): UnidadDocumentalDTO[] {
         let ListadoFiltrado = [];
-        const UnidadesSeleccionadas = this.ListadoUnidadDocumental.subscribe(data => {
+        const UnidadesSeleccionadas = this.ListadoUnidadDocumental$.subscribe(data => {
             ListadoFiltrado =  data.filter(item => item.seleccionado);
             if (!ListadoFiltrado.length) {
                 this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));

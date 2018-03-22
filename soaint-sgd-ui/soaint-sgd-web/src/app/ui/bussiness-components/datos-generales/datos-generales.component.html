@@ -291,7 +291,7 @@
       <div class="ui-g ui-fluid" style="margin-top: 30px">
 
         <!-- Radicados Referidos -->
-        <div class="ui-g-12" *ngIf="editable === true" style="margin-top: 8px">
+        <div class="ui-g-12" *ngIf="editable === true || editmode === true" style="margin-top: 8px">
 
           <div class="form-group" style="display: flex; margin: 16px">
               <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
@@ -304,7 +304,7 @@
 
             <span style="float: right">
                  <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                         (click)="addRadicadosReferidos()" *ngIf="editable === true"
+                         (click)="addRadicadosReferidos()" *ngIf="editable === true || editmode === true"
                          [disabled]="!form.get('radicadoReferido').value">
 
                 </button>
