@@ -81,7 +81,7 @@ public class CorrespondenciaGatewayApi {
     public Response radicarSalida(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
 
         log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
-        Response response = client.radicar(comunicacionOficial);
+        Response response = client.radicarSalida(comunicacionOficial);
         String responseContent = response.readEntity(String.class);
         log.info(CONTENT + responseContent);
 
