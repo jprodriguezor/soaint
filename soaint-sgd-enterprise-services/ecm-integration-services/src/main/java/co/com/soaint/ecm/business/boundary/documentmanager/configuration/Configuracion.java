@@ -13,6 +13,7 @@ public class Configuracion {
     private String aformatoNombreSerie;
     @Value("${formatoNombreSubserie}")
     private String aformatoNombreSubserie;
+
     @Value("${claseSubserie}")
     private String aclaseSubserie;
     @Value("${claseSerie}")
@@ -21,6 +22,9 @@ public class Configuracion {
     private String aclaseDependencia;
     @Value("${claseBase}")
     private String aclaseBase;
+    @Value("${claseUnidadDocumental}")
+    private String aclaseUnidadDocumental;
+
     @Value("${metadatoCodBase}")
     private String ametadatoCodBase;
     @Value("${metadatoCodDependencia}")
@@ -50,7 +54,7 @@ public class Configuracion {
     private Configuracion(){
         /*
          *a
-          */
+         */
     }
     /**
      * Metodo que dado el nombre del parametro devuelve el valor
@@ -67,7 +71,7 @@ public class Configuracion {
                 return aformatoNombreSubserie != null ? aformatoNombreSubserie : "1.2.4_5";
 
             case "claseSubserie":
-                return aclaseSubserie != null ? aclaseSubserie : "CM_Subserie";
+                return aclaseSubserie != null ? aclaseSubserie : "CM_SubSerie";
 
             case "claseSerie":
                 return aclaseSerie != null ? aclaseSerie : "CM_Serie";
@@ -76,21 +80,23 @@ public class Configuracion {
                 return aclaseDependencia != null ? aclaseDependencia : "CM_Unidad_Administrativa";
             case "claseBase":
                 return aclaseBase != null ? aclaseBase : "CM_Unidad_Base";
+            case "claseUnidadDocumental":
+                return aclaseUnidadDocumental != null ? aclaseUnidadDocumental : "CM_Unidad_Documental";
 
             case "metadatoCodDependencia":
                 return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
 
             case "metadatoCodBase":
-                return ametadatoCodBase != null ? ametadatoCodBase : "CodigoBase";
+                return ametadatoCodBase != null ? ametadatoCodBase : "codigoBase";
 
             case "metadatoCodSubserie":
-                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "CodigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "codigoSubserie";
 
             case "metadatoCodSerie":
-                return ametadatoCodSerie != null ? ametadatoCodSerie : "CodigoSerie";
+                return ametadatoCodSerie != null ? ametadatoCodSerie : "codigoSerie";
 
             case "metadatoCodUnidadAdminParent":
-                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "CodUnidadPadre";
+                return ametadatoCodUnidadAdminParent != null ? ametadatoCodUnidadAdminParent : "codUnidadPadre";
             case "REPOSITORY_ID":
                 return aRepositoryId != null ? aRepositoryId : "-default-";
             case "ECM_ERROR":

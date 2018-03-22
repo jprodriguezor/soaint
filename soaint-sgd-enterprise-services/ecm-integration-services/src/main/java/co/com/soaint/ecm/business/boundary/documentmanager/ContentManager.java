@@ -4,12 +4,10 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +24,11 @@ import java.util.List;
 @BusinessBoundary
 @NoArgsConstructor
 public class ContentManager {
+    private static final String MSGCONEXION = "### Estableciendo la conexion..";
+    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
     @Autowired
     private
     ContentControl contentControl;
-    private static final String MSGCONEXION = "### Estableciendo la conexion..";
-    private static final Logger logger = LogManager.getLogger(ContentManager.class.getName());
-
 
     /**
      * Metodo que crea la estructura en el ECM
@@ -330,4 +327,77 @@ public class ContentManager {
         return response;
     }
 
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+
+        MensajeRespuesta response = new MensajeRespuesta();
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+
+        try {
+
+            logger.info(MSGCONEXION);
+            Conexion conexion = contentControl.obtenerConexion();
+            logger.info("### Invocando metodo para crear Unidad Documental..");
+            response = contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+            logger.info("Unidad Documental creada exitosamente");
+
+        } catch (Exception e) {
+            logger.error("Error al crear la Unidad Documental ", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al crear la Unidad Documental");
+
+        }
+        return response;
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+
+        MensajeRespuesta response = new MensajeRespuesta();
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+
+        try {
+
+            logger.info(MSGCONEXION);
+            Conexion conexion = contentControl.obtenerConexion();
+            response = contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+            logger.info("Series o subseries devueltas exitosamente");
+
+        } catch (Exception e) {
+            logger.error("Error al Listar las Unidades Documentales ", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error al Listar las Unidades Documentales");
+
+        }
+        return response;
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentoDTO(String idUnidadDocumental) throws SystemException {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listaDocumentoDTO(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
+    }
 }
