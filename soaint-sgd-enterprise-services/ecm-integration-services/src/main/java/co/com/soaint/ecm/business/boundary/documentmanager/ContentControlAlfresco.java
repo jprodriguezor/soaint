@@ -989,7 +989,6 @@ public class ContentControlAlfresco implements ContentControl {
         } else {
             logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
             carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_UNIDAD_DOCUMENTAL, dependencia.get(), null);
-
         }
         return carpetaTarget;
     }
