@@ -65,6 +65,10 @@ import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-sali
 import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
 import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
 import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
+import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-generales-edit/datos-generales-edit.component";
+import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
+import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
+import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 
 
 @NgModule({
@@ -171,7 +175,10 @@ import { DistribucionComponent } from './ui/page-components/radicacion-salida/co
     AdjuntarDocumentoComponent,
     RsTicketRadicadoComponent,
     TicketRadicadoComponent,
-    DistribucionComponent
+    DistribucionComponent,
+    DatosGeneralesEditComponent,
+    DatosRemitenteEditComponent,
+    DatosDestinatarioEditComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -184,6 +191,7 @@ import { DistribucionComponent } from './ui/page-components/radicacion-salida/co
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,
+    RadicacionSalidaService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]
