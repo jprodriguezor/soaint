@@ -52,6 +52,8 @@ public class CorrespondenciaDTO implements Serializable {
     private Date fecVenGestion;
     private String codEstado;
     private String inicioConteo;
+    private String codClaseEnvio;
+    private String codModalidadEnvio;
 
     public CorrespondenciaDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
                               String codUnidadTiempo, String codMedioRecepcion, Date fecRadicado, String nroRadicado,

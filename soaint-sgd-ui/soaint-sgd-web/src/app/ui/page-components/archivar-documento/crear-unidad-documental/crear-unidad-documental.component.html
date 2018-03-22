@@ -15,7 +15,7 @@
 
 <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)"></app-lista-solicitud-crear-ud>
 
-<app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD" [solicitud]="solicitudSelected" ]></app-no-tramitar-creacion-ud>
+<app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD" [solicitud]="solicitudSelected" ></app-no-tramitar-creacion-ud>
 
 <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD"></app-form-crear-unidad-documental>
 

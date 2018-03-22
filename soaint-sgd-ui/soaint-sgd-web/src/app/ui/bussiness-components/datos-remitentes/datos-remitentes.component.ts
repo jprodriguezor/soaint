@@ -1,4 +1,8 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+  ViewChild
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -31,12 +35,18 @@ import {ConfirmationService} from 'primeng/components/common/api';
 import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {DatosDireccionComponent} from "../datos-direccion/datos-direccion.component";
+import {ExtendValidators} from "../../../shared/validators/custom-validators";
+import {ValidateFn} from "codelyzer/walkerFactory/walkerFn";
+import {createChangeDetectorRef} from "@angular/core/src/view/refs";
 
 @Component({
   selector: 'app-datos-remitentes',
   templateUrl: './datos-remitentes.component.html',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class DatosRemitentesComponent implements OnInit, OnDestroy {
+export class DatosRemitentesComponent implements OnInit,OnDestroy {
 
   form: FormGroup;
   validations: any = {};
@@ -62,6 +72,7 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   destinatario: DestinatarioDTO;
   destinatariosContactos: Array<any> = [];
   @Output() destinatarioOutput: EventEmitter<any> = new EventEmitter<any>();
+  @Output() formDataContactShown: EventEmitter<FormGroup> = new EventEmitter<any>();
   @ViewChild('destinatarioDatosContactos') destinatarioDatosContactos;
 
 
@@ -80,9 +91,17 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.internalInit();
 
+    /* if(this.tipoComunicacion == 'EE'){
+       this.form.setValidators([
+         ExtendValidators.requiredWhen(fr => fr.get('tipoPersona').value !== null && fr.get('tipoPersona').value.codigo == PERSONA_JURIDICA , 'razonSocial'),
+         ExtendValidators.requiredWhen(fr =>fr.get('tipoPersona').value !== null && fr.get('tipoPersona').value.codigo == PERSONA_NATURAL, 'nombre'),
+       ]);
+     }*/
+
+
   }
 
-  internalInit(): void {
+   internalInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
     this.form.enable();
@@ -127,20 +146,36 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    this.form = this.formBuilder.group({
-      'tipoPersona': [{value: null, disabled: !this.editable}, Validators.required],
+
+     this.form = this.formBuilder.group({
+      'tipoPersona': [{value: null, disabled: !this.editable}, this.tipoComunicacion == COMUNICACION_EXTERNA ? Validators.required:null],
       'nit': [{value: null, disabled: !this.editable}],
       'actuaCalidad': [{value: null, disabled: !this.editable}],
       'tipoDocumento': [{value: null, disabled: !this.editable}],
-      'razonSocial': [{value: null, disabled: !this.editable}, Validators.required],
-      'nombre': [{value: null, disabled: !this.editable}, Validators.required],
+      'razonSocial': [{value: null, disabled: !this.editable}],
+      'nombre': [{value: null, disabled: !this.editable}],
       'nroDocumentoIdentidad': [{value: null, disabled: !this.editable}],
-      'sede': [{value: null, disabled: !this.editable}, Validators.required],
-      'dependencia': [{value: null, disabled: !this.editable}, Validators.required],
-      'funcionario': [{value: null, disabled: !this.editable}, Validators.required],
+      'sede': [{value: null, disabled: !this.editable}, this.tipoComunicacion == COMUNICACION_INTERNA ? Validators.required: null],
+      'dependencia': [{value: null, disabled: !this.editable},this.tipoComunicacion == COMUNICACION_INTERNA ?  Validators.required: null],
+      'funcionario': [{value: null, disabled: !this.editable},this.tipoComunicacion == COMUNICACION_INTERNA ?  Validators.required: null],
       'tipoDestinatario': [{value: null, disabled: !this.editable}, Validators.required],
       'principal': null,
+    }
+       );
+
+    this.form.valueChanges.subscribe(() => {
+
+      if(this.tipoComunicacion == 'EE'){
+
+        if(this.form.validator  === null) {
+          this.form.setValidators([
+            ExtendValidators.requiredWhen(fr => fr.get('tipoPersona').value !== null && fr.get('tipoPersona').value.codigo == PERSONA_JURIDICA , 'razonSocial'),
+            ExtendValidators.requiredWhen(fr =>fr.get('tipoPersona').value !== null && fr.get('tipoPersona').value.codigo == PERSONA_NATURAL, 'nombre'),
+          ]);
+        }
+      }
     });
+
   }
 
   initFormByDestinatario(destinatario) {
@@ -164,7 +199,6 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
       if (!this.destinatario.interno) {
         this.visibility['datosContacto'] = true;
       }
-
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
         const newList1 = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
@@ -302,6 +336,8 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
   ngOnDestroy() {
     this.subscribers.forEach(subscriber => {
       subscriber.unsubscribe();
@@ -310,6 +346,11 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   updateDestinatarioContacts(event) {
     this.destinatariosContactos = event;
+  }
+
+   ShowFormContactData(component:DatosDireccionComponent){
+
+       this.formDataContactShown.emit(component.form);
   }
 
   newRemitente() {
@@ -377,5 +418,12 @@ export class DatosRemitentesComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+  disabledButtonAgregar():boolean{
+
+     return !ViewFilterHook.applyFilter('datos-remitente-'+this.tipoComunicacion,this.form.valid);
+  }
+
+
 }
 

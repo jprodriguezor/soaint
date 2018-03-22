@@ -17,5 +17,11 @@ export  abstract class CacheResponse{
     return payloadCached === undefined? defaultResponse : Observable.of(payloadCached.response);
   }
 
+  protected  cacheResponse(payload,response){
+
+    this.payloadsCached.push({payload:payload,response:response});
+
+  }
+
 
 }

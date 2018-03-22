@@ -7,12 +7,15 @@ import * as actions from './constanteDTO-actions';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/delay';
 import {ApiBase} from '../../api/api-base';
+import {CacheResponse} from "../../../shared/cache-response";
 
 @Injectable()
-export class Sandbox {
+export class Sandbox extends CacheResponse{
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
+
+    super();
   }
 
   loadData(payload: actions.GenericFilterAutocomplete) {
@@ -72,7 +75,12 @@ export class Sandbox {
     }
 
     if (endpoint !== null) {
-      return this._api.list(endpoint, payload);
+
+      return this.getResponse(payload,this._api.list(endpoint, payload)
+        .map(response => {
+          this.cacheResponse(payload,response);
+          return response;
+        }));
     }
     return Observable.of([]).delay(400);
     // return Observable.of(this.getMock()).delay(400);

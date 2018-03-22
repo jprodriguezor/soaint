@@ -83,7 +83,7 @@ PendingRequestInterceptor extends HttpInterceptor {
         }
       }*/
       return response;
-    }).catch(error => {  console.log(error);
+    }).catch(error => {
 
         this.requestQueuee = [];
 
