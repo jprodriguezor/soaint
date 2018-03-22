@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import javax.persistence.*;
 
+
 /**
  *
  * @author jrodriguez
@@ -25,12 +26,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "COR_ANEXO")
 @NamedQueries({
-    @NamedQuery(name = "CorAnexo.findAll", query = "SELECT c FROM CorAnexo c"),
+        @NamedQuery(name = "CorAnexo.findAll", query = "SELECT c FROM CorAnexo c"),
         @NamedQuery(name = "CorAnexo.findByIdePpdDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AnexoDTO " +
                 "(c.ideAnexo, c.codAnexo, c.descripcion, c.codTipoSoporte) " +
                 "FROM CorAnexo c " +
                 "INNER JOIN c.ppdDocumento pp " +
-                "WHERE pp.idePpdDocumento = :IDE_PPD_DOCUMENTO")})
+                "WHERE pp.idePpdDocumento = :IDE_PPD_DOCUMENTO"),
+        @NamedQuery(name = "CorAnexo.findAnexosByNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AnexoFullDTO " +
+                "(a.ideAnexo, a.codAnexo, tc.nombre, a.descripcion, a.codTipoSoporte, tsc.nombre) " +
+                "FROM CorAnexo a, TvsConstantes tc, TvsConstantes tsc " +
+                "INNER JOIN a.ppdDocumento pp " +
+                "INNER JOIN pp.corCorrespondencia co " +
+                "WHERE co.nroRadicado = :NRO_RADICADO AND a.codAnexo = tc.codigo AND a.codTipoSoporte = tsc.codigo")})
 @javax.persistence.TableGenerator(name = "COR_ANEXO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_ANEXO_SEQ", allocationSize = 1)
 public class CorAnexo implements Serializable {
