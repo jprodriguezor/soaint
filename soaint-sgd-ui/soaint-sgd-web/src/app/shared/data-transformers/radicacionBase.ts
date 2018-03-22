@@ -13,6 +13,7 @@ import {AnexoDTO} from "../../domain/anexoDTO";
 import {AgentDTO} from "../../domain/agentDTO";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacionForm.interface";
+import {AgenteFactoryDTV} from "./agentesDTV";
 
 export  abstract class RadicacionBase {
 
@@ -103,6 +104,13 @@ export  abstract class RadicacionBase {
   }
 
   abstract  getAgentesDestinatario(): Array<AgentDTO>;
+
+   getRemitente():AgentDTO{
+
+     const tipoComunicacion = this.source.generales.tipoComunicacion.codigo ;
+
+     return AgenteFactoryDTV.getAgente(tipoComunicacion).getRemitente(this.source.remitente);
+   }
 
 
 

@@ -43,19 +43,6 @@ public class CorrespondenciaGatewayApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @POST
-    @Path("/radicar")
-    @JWTTokenSecurity
-    public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-
-        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
-        Response response = client.radicar(comunicacionOficial);
-        String responseContent = response.readEntity(String.class);
-        log.info(CONTENT + responseContent);
-
-        return Response.status(response.getStatus()).entity(responseContent).build();
-    }
-
     @GET
     @Path("/listar-comunicaciones")
     @JWTTokenSecurity
@@ -72,6 +59,32 @@ public class CorrespondenciaGatewayApi {
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/radicar")
+    @JWTTokenSecurity
+    public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
+        Response response = client.radicar(comunicacionOficial);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/radicar_salida")
+    @JWTTokenSecurity
+    public Response radicarSalida(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
+        Response response = client.radicar(comunicacionOficial);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 

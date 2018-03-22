@@ -21,17 +21,17 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales #datosGenerales></app-datos-generales>
+          <app-datos-generales #datosGenerales (onChangeTipoDistribucion)="changeValidationAbility($event)" [tipoRadicacion]="tipoRadicacion" ></app-datos-generales>
+        </p-tabPanel>
+
+        <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">
+          <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
+          <pd-datos-contacto #datosContacto [taskData]="task"  ></pd-datos-contacto>
         </p-tabPanel>
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
-          <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
-          <pd-datos-contacto #datosContacto [taskData]="task" (onSelectDistribucionElectronica)="changeValidationAbility($event)" ></pd-datos-contacto>
+          <rs-datos-remitente #datosRemitente></rs-datos-remitente>
         </p-tabPanel>
-
-        <!--p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
-          <rs-datos-destinatario #datosDestinatario [taskData]="task"></rs-datos-destinatario>
-        </p-tabPanel-->
       </p-tabView>
 
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
@@ -45,7 +45,7 @@
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
                 (onHide)="hideTicketRadicado()">
-        <app-ticket-radicado id="ticket" #ticketRadicado></app-ticket-radicado>
+        <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
 
         <p-footer>
           <div class="ui-dialog-buttonpane ui-helper-clearfix">
