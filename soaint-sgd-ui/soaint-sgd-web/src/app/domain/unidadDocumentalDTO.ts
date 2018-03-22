@@ -5,7 +5,7 @@ export interface  UnidadDocumentalDTO {
     fechaExtremaInicial?: Date;
     fechaExtremaFinal?: Date;
     soporte?: string;
-    estado?: string;
+    inactivo?: boolean;
     ubicacionTopografica?: string;
     faseArchivo?: string;
     descriptor1?: string;

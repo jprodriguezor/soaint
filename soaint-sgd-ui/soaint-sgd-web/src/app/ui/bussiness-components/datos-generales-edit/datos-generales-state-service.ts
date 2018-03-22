@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation, OnDestroy, Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -22,19 +22,11 @@ import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-properties/radicacion-properties';
 
-@Component({
-  selector: 'app-datos-generales',
-  templateUrl: './datos-generales.component.html',
-  styles: [`
-    .ui-datalist-header, .ui-datatable-header {
-      text-align: left !important;
-    }
-  `],
-  encapsulation: ViewEncapsulation.None
-})
-export class DatosGeneralesComponent implements OnInit, OnDestroy {
+@Injectable()
+export class DatosGeneralesStateService {
 
   form: FormGroup;
+  dataform: any = null;
   visibility: any = {};
 
   radicadosReferidos: Array<{ nombre: string }> = [];
@@ -54,11 +46,7 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
   tiempoRespuestaMetricaTipologia$: Observable<number> = Observable.of(null);
   codUnidaTiempoMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
 
-  @Input()
-  editable = true;
-
-  @Input()
-  editmode = false;
+  disabled = true;
 
   @Input()
   mediosRecepcionInput: ConstanteDTO = null;
@@ -67,42 +55,43 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
   validations: any = {};
-  //
-  // @ViewChild('dropDownThing')
-  // dropDownThing: Dropdown;
-
 
   constructor(
     private _store: Store<State>,
      private _apiDatosGenerales: DatosGeneralesApiService,
      private _constSandbox: ConstanteSandbox,
      private formBuilder: FormBuilder,
-     private _changeDetectorRef: ChangeDetectorRef ) {
+     ) {
 
   }
 
-  initForm() {
+  Init() {
+    this.initForm();
+    this.LoadData();
+  }
 
+  initForm() {
+    const reqDistFisica = (this.dataform.reqDistFisica === 1);
       this.form = this.formBuilder.group({
-        'fechaRadicacion': [null],
-        'nroRadicado': [null],
-        'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
-        'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
-        'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
-        'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-        'tipologiaDocumental': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable }, Validators.required],
-        'unidadTiempo': [{value: null, disabled: !this.editable}],
-        'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
-        'inicioConteo': [null],
-        'reqDistFisica': [{value: null, disabled: !this.editable}],
-        'reqDigit': [{value: '1', disabled: !this.editable}],
-        'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-        'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-        'radicadoReferido': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}],
-        'tipoAnexos': [{value: null, disabled: !this.editable}],
-        'soporteAnexos': [{value: null, disabled: !this.editable}],
-        'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
-        'hasAnexos': [{value: null, disabled: !this.editable}]
+        'fechaRadicacion': [this.dataform.fechaRadicacion],
+        'nroRadicado': [this.dataform.nroRadicado],
+        'tipoComunicacion': [{value: this.dataform.tipoComunicacion, disabled: this.disabled}, Validators.required],
+        'medioRecepcion': [{value: this.dataform.medioRecepcion, disabled: this.disabled}, Validators.required],
+        'empresaMensajeria': [{value: this.dataform.empresaMensajeria, disabled: this.disabled}, Validators.required],
+        'numeroGuia': [{value: this.dataform.numeroGuia, disabled: this.disabled}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+        'tipologiaDocumental': [{value: this.dataform.tipologiaDocumental, disabled: !this.disabled}, Validators.required],
+        'unidadTiempo': [{value: this.dataform.unidadTiempo, disabled: this.disabled}],
+        'numeroFolio': [{value: this.dataform.numeroFolio, disabled: this.disabled}, Validators.required],
+        'inicioConteo': [this.dataform.inicioConteo],
+        'reqDistFisica': [{value: reqDistFisica, disabled: this.disabled}],
+        'reqDigit': [{value: this.dataform.reqDigit, disabled: this.disabled}],
+        'tiempoRespuesta': [{value: this.dataform.tiempoRespuesta, disabled: this.disabled}],
+        'asunto': [{value: this.dataform.asunto, disabled: !this.disabled}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+        'radicadoReferido': [{value: this.dataform.radicadoReferido, disabled: !this.disabled}],
+        'tipoAnexos': [{value: null, disabled: this.disabled}],
+        'soporteAnexos': [{value: null, disabled: this.disabled}],
+        'tipoAnexosDescripcion': [{value: null, disabled: this.disabled}, Validators.maxLength(300)],
+        'hasAnexos': [{value: this.dataform.hasAnexos, disabled: this.disabled}]
       });
 
   }
@@ -117,23 +106,16 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
     this.bindToValidationErrorsOf('numeroGuia');
   }
 
-  ngOnInit(): void {
+  LoadData(): void {
     this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
     this.unidadTiempoSuggestions$ = this._store.select(getUnidadTiempoArrayData);
     this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
-
     this.soporteAnexosSuggestions$ = this._store.select(getSoporteAnexoArrayData);
 
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());
-
-    this.initForm();
-
-    this.form.get('tipoComunicacion').valueChanges.subscribe((value) => {
-      this.onSelectTipoComunicacion(value);
-    });
 
     this.form.get('tipologiaDocumental').valueChanges.subscribe((value) => {
       this.onSelectTipologiaDocumental(value);
@@ -157,27 +139,6 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
     this.form.get('radicadoReferido').reset();
   }
 
-  addTipoAnexosDescripcion() {
-    const tipoAnexo = this.form.get('tipoAnexos').value;
-    const soporteAnexo = this.form.get('soporteAnexos').value;
-    const descripcion = this.form.get('tipoAnexosDescripcion').value;
-
-    if (!tipoAnexo) {
-      return;
-    }
-    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
-    this.descripcionAnexos = [
-      ...insertVal,
-      ...this.descripcionAnexos.filter(
-        value => value.tipoAnexo.nombre !== tipoAnexo.nombre ||
-          value.descripcion !== descripcion
-      )
-    ];
-    this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);
-    this.form.get('tipoAnexos').reset();
-    this.form.get('soporteAnexos').reset();
-    this.form.get('tipoAnexosDescripcion').reset();
-  }
 
   deleteRadicadoReferido(index) {
     const removeVal = [...this.radicadosReferidos];
@@ -185,14 +146,6 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
     this.radicadosReferidos = removeVal;
   }
 
-  deleteTipoAnexoDescripcion(index) {
-    const removeVal = [...this.descripcionAnexos];
-    removeVal.splice(index, 1);
-    if (removeVal.length === 0) {
-      this.form.get('hasAnexos').reset();
-    }
-    this.descripcionAnexos = removeVal;
-  }
 
   onSelectTipologiaDocumental(codigoTipologia) {
     this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
@@ -218,10 +171,6 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
       this.validations[control] = VALIDATION_MESSAGES[last_error_key];
     }
   }
-  // resetCarFilter() {
-  //  console.log(this.dropDownThing);
-  //  this.dropDownThing.selectedOption = null;
-  // }
 
   bindToValidationErrorsOf(control: string) {
     const ac = this.form.get(control);
@@ -235,9 +184,4 @@ export class DatosGeneralesComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  ngOnDestroy() {
-    this._changeDetectorRef.detach();
-  }
-
 }

@@ -163,9 +163,9 @@
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="State.ListadoUnidadDocumental | async"
+                       [value]="State.ListadoUnidadDocumental$ | async"
                        emptyMessage="No se encontraron resultados ">
-            <p-column field="State.ListadoUnidadDocumental.seleccionado" header="">
+            <p-column field="State.ListadoUnidadDocumental$.seleccionado" header="">
               <ng-template pTemplate="header">
                 <p-checkbox name="seleccionartodos"  (onChange)="State.SeleccionarTodos($event)"></p-checkbox>
               </ng-template>
@@ -173,24 +173,24 @@
                 <p-checkbox [(ngModel)]="unidad[col.field].seleccionado"></p-checkbox>
               </ng-template>
             </p-column>
-            <p-column field="State.ListadoUnidadDocumental.nombreSerie" header="Nombre serie/subserie"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.descriptor1" header="Descriptor 1"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.descriptor2" header="Descriptor 2"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.faseArchivo" header="Fase archivo"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.estado" header="Estado"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaExtremaFinal" header="Fecha extrema final"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaCierre" header="Fecha cierre trámite"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
-            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+            <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
+            <p-column field="codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
+            <p-column field="descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="estado" header="Estado"></p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
+            <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
+            <p-column field="soporte" header="Soporte"></p-column>
+            <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                 <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>
-            </p-column>
+            </p-column> -->
           </p-dataTable>
         </div>
       </p-panel>

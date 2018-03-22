@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form *ngIf="state.form" [formGroup]="state.form">
   <div class="ui-g ui-fluid">
     <div class="card card-w-title">
       <h1>Datos Generales</h1>
@@ -6,7 +6,7 @@
 
         <!--fechaRadicacion-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
-             *ngIf="form.get('fechaRadicacion').value">
+             *ngIf="state.form.get('fechaRadicacion').value">
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
@@ -19,7 +19,7 @@
 
         <!--nroRadicado-->
         <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
-             *ngIf="form.get('nroRadicado').value">
+             *ngIf="state.form.get('nroRadicado').value">
           <div class="ui-g form-group">
             <div class="ui-g-12">
                   <span class="md-inputfield">
@@ -37,18 +37,18 @@
               <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItemSingle"
                           id="tipoComunicacion"
                           formControlName="tipoComunicacion"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          (onBlur)="listenForBlurEvents('tipoComunicacion')"
+                          (onBlur)="state.listenForBlurEvents('tipoComunicacion')"
               >
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.tipoComunicacion">
-                {{ validations.tipoComunicacion }}
+                   *ngIf="state.validations.tipoComunicacion">
+                {{ state.validations.tipoComunicacion }}
               </div>
             </div>
           </div>
@@ -61,19 +61,19 @@
               <label for="tipologiaDocumental"><span class="text-danger">*</span>Tipología documental</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="tipologiaDocumentalSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="state.tipologiaDocumentalSuggestions$ | async | dropdownItemSingle"
                           id="tipologiaDocumental"
                           formControlName="tipologiaDocumental"
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
-                          (onBlur)="listenForBlurEvents('tipologiaDocumental')"
+                          (onBlur)="state.listenForBlurEvents('tipologiaDocumental')"
               >
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.tipologiaDocumental">
-                {{ validations.tipologiaDocumental }}
+                   *ngIf="state.validations.tipologiaDocumental">
+                {{ state.validations.tipologiaDocumental }}
               </div>
             </div>
           </div>
@@ -86,41 +86,41 @@
               <label for="medioRecepcion"><span class="text-danger">*</span>Medio de recepción</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="medioRecepcionSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="medioRecepcionSuggestions$ | async | dropdownItemSingle"
                           [ngModel]="mediosRecepcionInput"
                           id="medioRecepcion"
                           formControlName="medioRecepcion"
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
-                          (onBlur)="listenForBlurEvents('medioRecepcion')"
+                          (onBlur)="state.listenForBlurEvents('medioRecepcion')"
               >
               </p-dropdown>
 
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.medioRecepcion">
-                {{ validations.medioRecepcion }}
+                   *ngIf="state.validations.medioRecepcion">
+                {{ state.validations.medioRecepcion }}
               </div>
             </div>
           </div>
         </div>
 
         <!--Empresa de mensajeria-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.empresaMensajeria">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!state.visibility.empresaMensajeria">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText
                      id="empresaMensajeria"
                      formControlName="empresaMensajeria"
-                     [dynamicDisable]="!visibility.empresaMensajeria"
-                     (blur)="listenForBlurEvents('empresaMensajeria')"
+                     [dynamicDisable]="!state.visibility.empresaMensajeria"
+                     (blur)="state.listenForBlurEvents('empresaMensajeria')"
               >
               <label for="empresaMensajeria"><span class="text-danger">*</span>Empresa de mensajería</label>
 
                  <div class="ui-message ui-messages-error"
-                      *ngIf="validations.empresaMensajeria">
-                 {{ validations.empresaMensajeria }}
+                      *ngIf="state.validations.empresaMensajeria">
+                 {{ state.validations.empresaMensajeria }}
               </div>
               </span>
             </div>
@@ -128,21 +128,21 @@
         </div>
 
         <!--Numero Guia-->
-        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!visibility.empresaMensajeria">
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!state.visibility.empresaMensajeria">
           <div class="ui-g form-group" style="padding-top: 40px">
             <div class="ui-g-12">
               <span class="md-inputfield">
               <input type="text" pInputText
                      id="numeroGuia"
                      formControlName="numeroGuia"
-                     [dynamicDisable]="!visibility.numeroGuia"
-                     (blur)="listenForBlurEvents('numeroGuia')"
+                     [dynamicDisable]="!state.visibility.numeroGuia"
+                     (blur)="state.listenForBlurEvents('numeroGuia')"
               >
               <label for="empresaMensajeria"><span class="text-danger">*</span>Número guía</label>
 
                  <div class="ui-message ui-messages-error"
-                      *ngIf="validations.numeroGuia">
-                 {{ validations.numeroGuia }}
+                      *ngIf="state.validations.numeroGuia">
+                 {{ state.validations.numeroGuia }}
               </div>
               </span>
             </div>
@@ -169,7 +169,7 @@
               <label for="unidadTiempo">Unidad de tiempo</label>
             </div>
             <div class="ui-g-12">
-              <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItem"
+              <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItemSingle"
                           [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
                           id="unidadTiempo"
                           [disabled]="true"
@@ -189,14 +189,14 @@
             <div class="ui-g-12">
               <span class="md-inputfield">
               <!--<input type="text" pInputText id="numeroFolio" formControlName="numeroFolio"-->
-                <!--(blur)="listenForBlurEvents('numeroFolio')"-->
+                <!--(blur)="state.listenForBlurEvents('numeroFolio')"-->
                 <!--&gt;-->
                 <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio"
-                           (OnBlur)="listenForBlurEvents('numeroFolio')" [min]="0"></p-spinner>
+                           (OnBlur)="state.listenForBlurEvents('numeroFolio')" [min]="0"></p-spinner>
               <label><span class="text-danger">*</span>No. de folio</label>
                <div class="ui-message ui-messages-error"
-                    *ngIf="validations.numeroFolio">
-                {{ validations.numeroFolio }}
+                    *ngIf="state.validations.numeroFolio">
+                {{ state.validations.numeroFolio }}
               </div>
               </span>
             </div>
@@ -208,7 +208,7 @@
             <div class="ui-g-12">
           <span class="md-inputfield">
           <input type="text" pInputText id="cantidadAnexos" readonly
-                 [value]="descripcionAnexos.length">
+                 [value]="state.descripcionAnexos.length">
           <label>Cantidad de Anexos</label>
           </span>
             </div>
@@ -255,7 +255,7 @@
       <div class="ui-g ui-fluid" style="margin-top: 30px">
 
         <!-- Radicados Referidos -->
-        <div class="ui-g-12" *ngIf="editable === true || editmode === true" style="margin-top: 8px">
+        <div class="ui-g-12" *ngIf="state.disabled" style="margin-top: 8px">
 
           <div class="form-group" style="display: flex; margin: 16px">
               <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
@@ -268,8 +268,8 @@
 
             <span style="float: right">
                  <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
-                         (click)="addRadicadosReferidos()" *ngIf="editable === true || editmode === true"
-                         [disabled]="!form.get('radicadoReferido').value">
+                         (click)="state.addRadicadosReferidos()" *ngIf="state.disabled"
+                         [disabled]="!state.form.get('radicadoReferido').value">
 
                 </button>
               </span>
@@ -283,7 +283,7 @@
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="radicadosReferidos"
+                       [value]="state.radicadosReferidos"
                        emptyMessage="No se encontraron resultados"
           >
             <!--Header-->
@@ -294,9 +294,9 @@
             <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
             <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
-                <button type="button" icon="ui-icon-close" pButton (click)="deleteRadicadoReferido(i)"
+                <button type="button" icon="ui-icon-close" pButton (click)="state.deleteRadicadoReferido(i)"
                         class="ui-button ui-button-icon ui-button-danger"
-                        *ngIf="editable === true"
+                        *ngIf="state.disabled"
                 ></button>
               </ng-template>
             </p-column>
@@ -312,11 +312,11 @@
             <div class="ui-g-12 md-inputfield">
               <textarea [rows]="3" pInputTextarea placeholder="Descripción"
                         autoResize="true" formControlName="asunto"
-                        (blur)="listenForBlurEvents('asunto')"
+                        (blur)="state.listenForBlurEvents('asunto')"
               ></textarea>
               <div class="ui-message ui-messages-error"
-                   *ngIf="validations.asunto">
-                {{ validations.asunto }}
+                   *ngIf="state.validations.asunto">
+                {{ state.validations.asunto }}
               </div>
             </div>
           </div>
@@ -334,7 +334,7 @@
             <label for="tipoAnexos">Tipo anexos</label>
           </div>
           <div class="ui-g-12">
-            <p-dropdown [options]="tipoAnexosSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="state.tipoAnexosSuggestions$ | async | dropdownItemSingle"
                         id="tipoAnexos"
                         placeholder="Seleccione"
                         formControlName="tipoAnexos"
@@ -353,7 +353,7 @@
             <label for="tipoAnexos">Soporte</label>
           </div>
           <div class="ui-g-12">
-            <p-dropdown [options]="soporteAnexosSuggestions$ | async | dropdownItem"
+            <p-dropdown [options]="state.soporteAnexosSuggestions$ | async | dropdownItemSingle"
                         id="soporteAnexos"
                         placeholder="Seleccione"
                         formControlName="soporteAnexos"
@@ -376,16 +376,16 @@
                            formControlName="tipoAnexosDescripcion"
                  ></textarea>
             <div class="ui-message ui-messages-error"
-                 *ngIf="validations.tipoAnexosDescripcion">
-              {{ validations.tipoAnexosDescripcion }}
+                 *ngIf="state.validations.tipoAnexosDescripcion">
+              {{ state.validations.tipoAnexosDescripcion }}
             </div>
           </div>
 
           <span style="float: right; margin-top: 30px">
-                  <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
+                  <button pButton type="button" label="Agregar"
                           style="width: auto; margin-left: 12px;"
-                          *ngIf="editable === true"
-                          [disabled]="!form.get('tipoAnexos').value || !form.get('soporteAnexos').value"
+                          *ngIf="state.disabled"
+                          [disabled]="true"
                   ></button>
               </span>
         </div>
@@ -395,7 +395,7 @@
         <p-dataTable selectionMode="single"
                      [paginator]="true" [rows]="10"
                      [responsive]="true"
-                     [value]="descripcionAnexos"
+                     [value]="state.descripcionAnexos"
                      inmutable="false"
                      emptyMessage="No se encontraron resultados"
         >
@@ -406,11 +406,11 @@
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
           <p-column field="soporteAnexo.nombre" header="Soporte anexos" [sortable]="true"></p-column>
           <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="state.disabled">
             <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
-              <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
+              <button type="button" icon="ui-icon-close" pButton
                       class="ui-button ui-button-icon ui-button-danger"
-
+                      [disabled]="true"
               ></button>
             </ng-template>
           </p-column>

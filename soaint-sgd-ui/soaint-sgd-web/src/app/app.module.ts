@@ -61,6 +61,10 @@ import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-do
 import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
 import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
+import { DatosGeneralesEditComponent } from './ui/bussiness-components/datos-generales-edit/datos-generales-edit.component';
+import { DatosRemitenteEditComponent } from './ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component';
+import { DatosDestinatarioEditComponent } from './ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component';
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 
 
 @NgModule({
@@ -163,7 +167,10 @@ import { UdTramitadasComponent } from './ui/page-components/archivar-documento/c
     ListaSolicitudCrearUdComponent,
     NoTramitarCreacionUdComponent,
     FormCrearUnidadDocumentalComponent,
-    UdTramitadasComponent
+    UdTramitadasComponent,
+    DatosGeneralesEditComponent,
+    DatosRemitenteEditComponent,
+    DatosDestinatarioEditComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -173,6 +180,7 @@ import { UdTramitadasComponent } from './ui/page-components/archivar-documento/c
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,
