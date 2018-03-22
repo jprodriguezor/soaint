@@ -10,7 +10,7 @@ import {ApiBase} from '../../api/api-base';
 import {CacheResponse} from "../../../shared/cache-response";
 
 @Injectable()
-export class Sandbox extends CacheResponse{
+export class Sandbox extends CacheResponse {
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {

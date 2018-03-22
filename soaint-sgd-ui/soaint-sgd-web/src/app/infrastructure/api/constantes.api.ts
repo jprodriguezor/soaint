@@ -6,12 +6,13 @@ import { SerieDTO } from 'app/domain/serieDTO';
 import { SubserieDTO } from 'app/domain/subserieDTO';
 import { ContenidoDependenciaTrdDTO } from 'app/domain/ContenidoDependenciaTrdDTO';
 import { ConstanteDTO } from '../../domain/constanteDTO';
+import { CacheResponse } from '../../shared/cache-response';
 
 @Injectable()
-export class ConstanteApiService {
+export class ConstanteApiService extends CacheResponse {
 
   constructor(private _api: ApiBase) {
-
+    super();
   }
 
   Listar(payload: any): Observable<ConstanteDTO[]> {
@@ -71,7 +72,11 @@ export class ConstanteApiService {
     }
 
     if (endpoint !== null) {
-      return this._api.list(endpoint, payload).map(resp => resp.constantes);
+      return this.getResponse(payload, this._api.list(endpoint, payload)
+        .map(response => {
+          this.cacheResponse(payload, response);
+          return response;
+        }));
     }
 
   }
