@@ -8,6 +8,9 @@ export class RadicacionSalidaDTV extends  RadicacionBase{
   getAgentesDestinatario(): Array<AgentDTO>{
 
     const agentes = [];
+
+    agentes.push(this.getRemitente());
+
     (<RadicacionSalidaFormInterface>this.source).destinatarioInterno.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
         ideAgente: null,

@@ -3,11 +3,11 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 //const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
 //const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
@@ -53,6 +53,7 @@ export const environment = {
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
+  radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -128,7 +129,7 @@ export const process_info = {
   },
   'proceso.correspondencia-salida': {
     displayValue: 'Correspondencia de salida',
-    show: false
+    show: true
   },
   'proceso.gestion-planillas': {
     displayValue: 'Gestion de planillas',
