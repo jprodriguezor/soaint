@@ -209,4 +209,13 @@ public class CorrespondenciaClient {
                 .request()
                 .put(Entity.json(comunicacionOficialDTO));
     }
+
+
+    public Response listarAnexos(String nroRadicado) {
+        log.info("Comunicacion - [trafic] - listar anexos: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return  wt.path("correspondencia-web-api/anexo-web-api/anexo" +  "/" + nroRadicado)
+                .request()
+                .get();
+    }
 }

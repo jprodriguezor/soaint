@@ -76,7 +76,7 @@ export class ConstanteApiService extends CacheResponse {
         .map(response => {
           this.cacheResponse(payload, response);
           return response;
-        }));
+        }), endpoint);
     }
 
   }

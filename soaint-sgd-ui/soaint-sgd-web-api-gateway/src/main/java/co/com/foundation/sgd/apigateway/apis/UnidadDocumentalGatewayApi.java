@@ -66,7 +66,6 @@ public class UnidadDocumentalGatewayApi {
         log.info("ListarUnidadesDocumentalesGatewayApi - [trafic] - listing unidades documentales");
         Response response = ecmClient.listarUnidadesDocumentales(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
-
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
