@@ -943,6 +943,76 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
+                //Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia
+                Optional<Carpeta> dependencia = carpetasHijas.stream()
+                        .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();
+
+                logger.info("Se obtienen la dependencia referente a la sede" + dependencia);
+                if (dependencia.isPresent()) {
+
+                    logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + documentoDTO.getDependencia());
+                    Calendar cal = Calendar.getInstance();
+                    int year = cal.get(Calendar.YEAR);
+                    List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
+
+                    Carpeta carpetaTarget;
+
+                    Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
+                            .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
+                    carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
+
+                    if (PRODUCCION_DOCUMENTAL.equals(carpetaCrearBuscar)){
+                        idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
+                        //Creando el mensaje de respuesta
+                        response.setCodMensaje("0000");
+                        response.setMensaje("Documento añadido correctamente");
+                        logger.info(AVISO_CREA_DOC_ID + idDocumento);
+                    }else if (DOCUMENTOS_APOYO.equals(carpetaCrearBuscar)){
+                        crearLink(session,documentoDTO.getIdDocumento(),carpetaTarget);
+                        response.setCodMensaje("0000");
+                        response.setMensaje("Link añadido correctamente");
+                    }
+                } else {
+                    logger.info(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+                    response.setCodMensaje("4445");
+                    response.setMensaje(NO_EXISTE_DEPENDENCIA + documentoDTO.getSede());
+                }
+            } else {
+                logger.info(NO_EXISTE_SEDE + documentoDTO.getSede());
+                response.setCodMensaje("4444");
+                response.setMensaje(NO_EXISTE_SEDE + documentoDTO.getSede());
+            }
+
+        } catch (CmisContentAlreadyExistsException ccaee) {
+            logger.error(ECM_ERROR_DUPLICADO, ccaee);
+            response.setCodMensaje("1111");
+            response.setMensaje(ECM_ERROR_DUPLICADO);
+        } catch (CmisConstraintException cce) {
+            logger.error(ECM_ERROR, cce);
+            response.setCodMensaje("2222");
+            response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
+        } catch (Exception e) {
+            logger.error(ERROR_TIPO_EXCEPTION, e);
+            response.setCodMensaje("2222");
+            response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
+        }
+    }
+    /*private void buscarCrearCarpeta(Session session, DocumentoDTO documentoDTO, MensajeRespuesta response, byte[] bytes, Map<String, Object> properties, String carpetaCrearBuscar) {
+        logger.info("MetaDatos: " + documentoDTO.toString());
+        String idDocumento;
+        List<DocumentoDTO> documentoDTOList = new ArrayList<>();
+        try {
+            //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
+            new Carpeta();
+            Carpeta folderAlfresco;
+            logger.info("### Se elige la carpeta donde se va a guardar el documento principal..");
+            logger.info("###------------ Se elige la sede donde se va a guardar el documento principal..");
+            folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
+
+            if (folderAlfresco.getFolder() != null) {
+                logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
+                List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
+
                 //Se busca si existe la dependencia
                 Optional<Carpeta> dependencia = carpetasHijas.stream()
                         .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();
@@ -993,7 +1063,7 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
-    }
+    }*/
 
     private Carpeta getCarpeta(String carpetaCrearBuscar, Optional<Carpeta> dependencia, int year, Optional<Carpeta> produccionDocumental) {
         Carpeta carpetaTarget;
@@ -1716,10 +1786,39 @@ public class ContentControlAlfresco implements ContentControl {
         MensajeRespuesta response = new MensajeRespuesta();
 
         Map<String, Object> properties = new HashMap<>();
-        //buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
+        buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
 
         logger.info("Se sale del metodo crearLinkDocumentosApoyo");
         return response;
+    }
+
+    /**
+     * Metodo para crear el link
+     *
+     * @param session     Objeto session
+     * @param idDocumento Identificador del dcumento
+     * @param carpetaLink Carpeta donde se va a crear el link
+     * @return
+     */
+
+    private void crearLink(Session session, String idDocumento, Carpeta carpetaLink) {
+
+        logger.info("Se entra al metodo crearLink");
+
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_ITEM.value());
+
+        // define a name and a description for the link
+        properties.put(PropertyIds.NAME, "Name_for_the.link");
+        properties.put("cmis:description", "test create link");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "I:app:filelink");
+
+        //define the destination node reference
+        properties.put("cm:destination", "workspace://SpacesStore/" + idDocumento);
+        //Se crea el link
+        session.createItem(properties, carpetaLink.getFolder());
+
+        logger.info("Se crea el link y se sale del método crearLink");
     }
 
     /**

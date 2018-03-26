@@ -83,6 +83,7 @@ public interface ContentControl {
     String DOCUMENTO = "documento";
     String APPLICATION_PDF = "application/pdf";
     String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
+    String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
     String AVISO_CREA_DOC = "### Se va a crear el documento..";
     String AVISO_CREA_DOC_ID = "### Documento creado con id ";
     String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
