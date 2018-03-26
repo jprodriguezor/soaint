@@ -361,4 +361,26 @@ public class EcmManager {
     public MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental) {
         return contentManager.reactivarUnidadDocumental(idUnidadDocumental);
     }
+
+    /**
+     * Metodo que llama el servicio para crear el link del documentos en la carpeta DOCUMENTOS DE APOYO en el ECM.
+     *
+     * @param documento              Documento que se va a subir
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta crearLinkDocumentosApoyo( DocumentoDTO documento) throws IOException {
+        logger.info("### Creando link del documento en el content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response = contentManager.crearLinkContent(documento);
+        } catch (Exception e) {
+            logger.error(ECM_ERROR, e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM Creando link del documento en el content");
+            throw e;
+        }
+
+        return response;
+    }
 }

@@ -84,13 +84,13 @@ public class Configuracion {
                 return aclaseUnidadDocumental != null ? aclaseUnidadDocumental : "CM_Unidad_Documental";
 
             case "metadatoCodDependencia":
-                return ametadatoCodDependencia != null ? ametadatoCodDependencia : "CodigoDependencia";
+                return ametadatoCodDependencia != null ? ametadatoCodDependencia : "codigoDependencia";
 
             case "metadatoCodBase":
                 return ametadatoCodBase != null ? ametadatoCodBase : "codigoBase";
 
             case "metadatoCodSubserie":
-                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "codigoSubserie";
+                return ametadatoCodSubserie != null ? ametadatoCodSubserie : "codigoSubSerie";
 
             case "metadatoCodSerie":
                 return ametadatoCodSerie != null ? ametadatoCodSerie : "codigoSerie";

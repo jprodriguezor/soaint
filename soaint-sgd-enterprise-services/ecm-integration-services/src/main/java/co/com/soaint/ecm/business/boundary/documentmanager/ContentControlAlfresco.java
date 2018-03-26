@@ -10,7 +10,6 @@ import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -30,8 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 
 import java.io.*;
@@ -1706,6 +1703,26 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
+     *
+     * @param session        Objeto de conexion a Alfresco
+     * @param documento      Objeto qeu contiene los datos del documento
+     * @return
+     */
+    @Override
+    public MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento) {
+        logger.info("Se entra al metodo crearLinkDocumentosApoyo");
+
+        MensajeRespuesta response = new MensajeRespuesta();
+
+        Map<String, Object> properties = new HashMap<>();
+        //buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
+
+        logger.info("Se sale del metodo crearLinkDocumentosApoyo");
+        return response;
+    }
+
+    /**
      * Metodo que busca una Unidad Documental en el ECM
      *
      * @param idUnidadDocumental Id Documento
@@ -1878,34 +1895,4 @@ public class ContentControlAlfresco implements ContentControl {
             return Boolean.FALSE;
         }
     }
-
-    public static void main(String[] args) throws SystemException {
-
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring/core-config.xml");
-
-        ContentControlAlfresco controlAlfresco = context.getBean(ContentControlAlfresco.class);
-
-        Session session = controlAlfresco.obtenerConexion().getSession();
-
-        /*final MensajeRespuesta respuesta = controlAlfresco.
-                cerrarUnidadDocumental("1cb1bf7a-e476-483a-a8fe-8df9b6d4ab50", session);*/
-
-        String query = "Select * from cmcor:CM_Unidad_Documental";
-
-        final ItemIterable<QueryResult> queryResults = session.query(query, false);
-
-        List<Folder> folderList = new ArrayList<>();
-        queryResults.forEach(queryResult -> {
-
-            String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-            Folder folder = (Folder) session.getObject(session.createObjectId(objectId));
-            folderList.add(folder);
-            System.out.println("---------------------------------------------");
-            System.out.println("Name: " + queryResult.getPropertyValueByQueryName(PropertyIds.NAME));
-            System.out.println("ID: " + objectId);
-            System.out.println("---------------------------------------------");
-        });
-    }
-
-
 }
