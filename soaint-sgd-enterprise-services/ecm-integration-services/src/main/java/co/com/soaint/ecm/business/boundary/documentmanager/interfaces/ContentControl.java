@@ -46,6 +46,7 @@ public interface ContentControl {
     String CMCOR_UD_DESCRIPTOR_2 = "cmcor:descriptor2";
     String CMCOR_UD_DESCRIPTOR_1 = "cmcor:descriptor1";
     String CMCOR_UD_CERRADA = "cmcor:cerrada";
+    String CMCOR_UD_OBSERVACIONES = "cmcor:observaciones";
 
     //cmcor:CM_Unidad_Base
     String CMCOR_UB_CODIGO = "cmcor:codigoBase";
@@ -230,4 +231,39 @@ public interface ContentControl {
      * @return MensajeRespuesta con los detalles del documento
      */
     MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session);
+
+    /**
+     * Metodo para abrir una unidad documental cerrada
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @param session Objeto Conexion de alfresco
+     * @return MensajeRespuesta con la Unidad Documntal abierta
+     */
+    MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental, Session session);
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session);
+
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @param session Objeto Conexion de alfresco
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental, Session session) throws SystemException;
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @param session Objeto Conexion de alfresco
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental, Session session);
 }

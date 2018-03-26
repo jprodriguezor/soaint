@@ -55,6 +55,8 @@ public class UnidadDocumentalDTO {
     private String codigoSede;
     private String nombreSede;
 
+    private String observaciones;
+
     //Agregacion
     private List<DocumentoDTO> listaDocumentos;
 }

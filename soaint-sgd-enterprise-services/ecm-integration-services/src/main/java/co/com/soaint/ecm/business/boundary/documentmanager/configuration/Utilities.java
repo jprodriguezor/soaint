@@ -7,8 +7,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ADMIN
@@ -24,10 +23,35 @@ public class Utilities {
      *
      * @param organigramaItem Lista a ordenar
      */
-    public void ordenarListaOrganigrama(List <OrganigramaDTO> organigramaItem) {
+    public void ordenarListaOrganigrama(List<OrganigramaDTO> organigramaItem) {
 
-        organigramaItem.sort (Comparator.comparing (OrganigramaDTO::getIdeOrgaAdmin));
+        organigramaItem.sort(Comparator.comparing(OrganigramaDTO::getIdeOrgaAdmin));
     }
 
+    /**
+     * Metodo suma cierta cantidad de dias a una fecha dada
+     *
+     * @param fecha fecha inicial
+     * @param campo tipo por el que se hacer la variacion(Calendar.HOUR, DAY_OF_YEAR, etc)
+     * @param valor valor a sumar o restar
+     * @return Date fecha final
+     */
+    public static Date variarFecha(Date fecha, int campo, int valor) {
+        if (valor == 0) return fecha;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
+        calendar.add(campo, valor);
+        return calendar.getTime();
+    }
 
+    /**
+     * Metodo suma cierta cantidad de dias a una fecha dada
+     *
+     * @param date fecha inicial
+     * @param dias     cantidad de dias a sumar
+     * @return Date fecha final
+     */
+    public static Date sumarDiasAFecha(Date date, int dias) {
+        return variarFecha(date, Calendar.DAY_OF_YEAR, dias);
+    }
 }

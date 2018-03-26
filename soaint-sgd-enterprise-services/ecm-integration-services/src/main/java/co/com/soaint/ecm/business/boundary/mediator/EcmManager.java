@@ -321,4 +321,44 @@ public class EcmManager {
     public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) {
         return contentManager.obtenerDetallesDocumentoDTO(idDocumento);
     }
+
+    /**
+     * Metodo para abrir una unidad documental cerrada
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta con la Unidad Documntal abierta
+     */
+    public MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental) {
+        return contentManager.abrirUnidadDocumental(idUnidadDocumental);
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) {
+        return contentManager.detallesUnidadDocumental(idUnidadDocumental);
+    }
+
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental) throws SystemException {
+        return contentManager.cerrarUnidadDocumental(idUnidadDocumental);
+    }
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental) {
+        return contentManager.reactivarUnidadDocumental(idUnidadDocumental);
+    }
 }

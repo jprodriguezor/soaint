@@ -55,22 +55,4 @@ public class RecordIntegratioServicesClientRest {
             throw e;
         }
     }
-
-    /**
-     * Crear carpeta en el Record
-     *
-     * @param entrada carpeta a crear
-     * @return Mensaje de respuesta
-     */
-    @POST
-    @Path("/crearCarpetaRecord/")
-    public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
-        logger.info("processing rest request - Crear carpeta Record");
-        try {
-            return record.crearCarpetaRecord(entrada);
-        } catch (RuntimeException e) {
-            logger.error("Error servicio creando estructura ", e);
-            throw e;
-        }
-    }
 }

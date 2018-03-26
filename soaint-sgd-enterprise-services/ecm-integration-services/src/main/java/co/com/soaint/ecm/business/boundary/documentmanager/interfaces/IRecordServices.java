@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Service
 public interface IRecordServices {
-
     /**
      * Permite crear la estructura en el record
      * @param structure objeto que contiene la estructura
@@ -25,9 +24,8 @@ public interface IRecordServices {
     /**
      * permite crear carpeta en el record
      * @param entrada objeto que contiene la informacion necesaria para crear la carpeta
-     * @return respuesta satisfactoria para la creacion de la carpeta
+     * @return String ID carpeta record
      * @throws SystemException
      */
-    MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
-
+    String crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 }

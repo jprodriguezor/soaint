@@ -400,4 +400,48 @@ public class ContentManager {
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
     }
+
+    /**
+     * Metodo para abrir una unidad documental cerrada
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta con la Unidad Documntal abierta
+     */
+    public MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental) {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.abrirUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental) throws SystemException {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.cerrarUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental) {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.reactivarUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
 }

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -98,7 +99,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -366,6 +366,90 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
         } catch (RuntimeException e) {
             logger.error("Error en operacion - listarUnidadesDocumentalesECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para abrir una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/abrirUnidadDocumentalECM/")
+    public MensajeRespuesta abrirUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental)");
+        try {
+            return fEcmManager.abrirUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - abrirUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/cerrarUnidadDocumentalECM/")
+    public MensajeRespuesta cerrarUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta cerrarUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.cerrarUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - cerrarUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/reactivarUnidadDocumentalECM/")
+    public MensajeRespuesta reactivarUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta reactivarUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.reactivarUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - reactivarUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    @GET
+    @Path("/verDetalleUnidadDocumentalECM/{idUnidadDocumental}")
+    public MensajeRespuesta detallesUnidadDocumentalECM(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.detallesUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
