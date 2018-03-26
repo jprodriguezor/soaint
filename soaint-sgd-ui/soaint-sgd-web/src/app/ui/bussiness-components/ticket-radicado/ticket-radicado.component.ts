@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 
-interface TicketRadicado {
+export interface TicketRadicado {
   anexos: string;
 
   folios: string;

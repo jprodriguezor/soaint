@@ -1,5 +1,8 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {
+  ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+  ViewChild
+} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
 import {PdMessageService} from '../../providers/PdMessageService';
 import {TareaDTO} from '../../../../../domain/tareaDTO';
@@ -33,6 +36,7 @@ import {
   TIPO_REMITENTE_INTERNO
 } from '../../../../../shared/bussiness-properties/radicacion-properties';
 import {Observable} from "rxjs/Observable";
+import {ViewFilterHook} from "../../../../../shared/ViewHooksHelper";
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -40,10 +44,12 @@ import {Observable} from "rxjs/Observable";
   styleUrls: ['datos-contacto.component.css'],
 })
 
-export class PDDatosContactoComponent implements OnInit, OnDestroy {
+export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
   form: FormGroup;
 
   subscription: Subscription;
+
+  @Output() onSelectDistribucionElectronica:EventEmitter<boolean> = new EventEmitter;
 
   validations: any = {};
 
@@ -126,12 +132,39 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
+  dispatchSelectDistElectronica(selected:boolean){
+
+    this.onSelectDistribucionElectronica.emit(selected);
+  }
+
   ngOnInit(): void {
+
     this._store.dispatch(new SedeAdministrativaLoadAction());
     this._store.dispatch(new LoadPaisAction());
     if (this.taskData.variables.numeroRadicado) {
       this.hasNumberRadicado = true;
     }
+
+    if(!this.showForm())
+      this.form = null;
+
+  }
+
+  ngOnChanges(){
+
+    if(this.taskData !== undefined){
+
+      let newControllers:any = ViewFilterHook.applyFilter(this.taskData.nombre+'-dataContact',{});
+
+      Object.keys(newControllers).forEach(key => {
+
+      if(this.form.get(key) === null){
+
+        this.form.addControl(key, new FormControl(newControllers[key][0], newControllers[key].length > 1 ? newControllers[key][1]: null,newControllers[key].length > 2 ? newControllers[key][2] : null));
+        }
+      });
+    }
+
   }
 
 
@@ -298,11 +331,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    this.form = this.formBuilder.group({
-      // Datos destinatario
-      'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
-      'distribucion': [null],
-    });
+      this.form = this.formBuilder.group({
+        // Datos destinatario
+        'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
+        'distribucion': ['eléctronica'],
+      });
+
   }
 
   showAddDestinatarioExternoPopup() {
@@ -414,5 +448,11 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+  showForm():boolean{
+
+    return ViewFilterHook.applyFilter(this.taskData.nombre+'-datos-contactos-show-form',true);
+  }
+
 
 }

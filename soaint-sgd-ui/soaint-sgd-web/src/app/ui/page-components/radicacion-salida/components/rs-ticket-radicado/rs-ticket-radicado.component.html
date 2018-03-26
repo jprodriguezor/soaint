@@ -1,0 +1,87 @@
+<div id="ticket-rad" class="ticket-panel" style="display: table" *ngIf="ticket">
+  <div>
+    <div style="padding-top: 0 !important; padding-bottom: 0 !important;">
+      <div style="position: absolute; float: left;">
+        <img width="115" src="assets/layout/images/logo.png">
+      </div>
+      <div class="row-container" style="width: 440px; float: right">
+        <div class="ui-g-5 text-right" style="clear: both"><b>No radicado</b></div>
+        <div class="ui-g-1 text-right"></div>
+        <div class="ui-g-6 text-left">{{ ticket.noRadicado }}</div>
+
+        <div class="ui-g-5 text-right"> <b>Fecha</b></div>
+        <div class="ui-g-1 text-right"></div>
+        <div class="ui-g-6 text-left">{{ ticket.fecha | date: 'dd/MM/yyyy hh:mm a'}}</div>
+      </div>
+    </div>
+
+    <div class="row-container" >
+
+      <ng-template [ngIf]="ticket.isInterno()" [ngIfElse]="ticketExterno">
+        <div  class="clear" style="padding-top: 5px; padding-bottom: 0">
+          <div class="ui-g-3 text-left "> <b>Destinatario</b></div>
+          <div class="ui-g-2 text-left "> <b>Sede</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.destinatarioSede}}</div>
+
+          <div class="ui-g-3 text-left "></div>
+          <div class="ui-g-2 text-left "> <b>Depen</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.destinatarioGrupo }}</div>
+
+
+            <div class="ui-g-3 text-left "></div>
+            <div class="ui-g-2 text-left "> <b>Funcio</b></div>
+            <div class="ui-g-7 text-left "> {{ ticket.destinatario }}</div>
+        </div>
+        <div [hidden]="!ticket.remitenteSede" class="clear" >
+          <div class="ui-g-3 text-left "> <b>Remitente</b></div>
+          <div class="ui-g-2 text-left "> <b>Sede</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.remitenteSede}}</div>
+
+          <div class="ui-g-3 text-left "></div>
+          <div class="ui-g-2 text-left "> <b>Depen</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.remitenteGrupo }}</div>
+        </div>
+      </ng-template>
+
+      <ng-template #ticketExterno>
+        <div  class="clear"  style="padding-top: 5px; padding-bottom: 0">
+          <div class="ui-g-3 text-left "> <b>Destinatario</b></div>
+          <div class="ui-g-9 text-left "> {{ ticket.destinatario }}</div>
+        </div>
+
+        <div  class="clear" >
+          <div class="ui-g-3 text-left "> <b>Remitente</b></div>
+          <div class="ui-g-2 text-left "> <b>Sede</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.remitenteSede}}</div>
+
+          <div class="ui-g-3 text-left "></div>
+          <div class="ui-g-2 text-left "> <b>Depen</b></div>
+          <div class="ui-g-7 text-left "> {{ ticket.remitenteGrupo }}</div>
+        </div>
+
+        <div class="clear" >
+          <div class="ui-g-3 text-left "> <b>Remitente</b></div>
+          <div class="ui-g-9 text-left "> {{ ticket.remitente }}</div>
+        </div>
+
+      </ng-template>
+    </div>
+
+    <div class="ui-g-12" style="display: flex; justify-content: center;">
+
+      <div class="ui-g-2 text-left" style="padding-left: 10px"> <b>Anexo</b></div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ anexos }}</div>
+
+      <div class="ui-g-2 text-left" style="padding-left: 10px"><b>Folios</b></div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ folios }}</div>
+
+    </div>
+
+    <ngx-barcode [bc-height]="28" [bc-format]="'CODE128B'" [bc-value]="noRadicado" [bc-display-value]="true"
+                 [bc-margin-left]="0" [bc-margin-bottom]="0" [bc-margin-right]="0" [bc-margin-top]="0" [bc-text-margin]="0" [bc-text-align]="0"
+                 style="margin: 0 auto"></ngx-barcode>
+
+  </div>
+</div>
+
+

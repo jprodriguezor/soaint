@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -134,6 +135,14 @@ public class ECMClient {
         return wt.path("/devolverSerieOSubserieECM")
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
+    }
+
+    public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/listarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
     }
 
 }

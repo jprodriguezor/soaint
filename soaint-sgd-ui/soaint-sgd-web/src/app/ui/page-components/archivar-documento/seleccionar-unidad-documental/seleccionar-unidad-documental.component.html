@@ -7,7 +7,7 @@
 
     <div class="ui-sm-6 ui-g-6 text-right">
       <button class="ui-button" pButton label="Guardar" style="width: auto;  margin-bottom: 10px"></button>
-      <button pButton type="button" class="ui-button" label="Finalizar" (click)="finalizarTarea()" style="width: auto;  margin-bottom: 10px"></button>
+      <button pButton type="button" class="ui-button" label="Finalizar" [disabled]="operation==='solicitarUnidadDocumental' && solicitudes.length === 0" (click)="finalizarTarea()" style="width: auto;  margin-bottom: 10px"></button>
     </div>
 
   </div>

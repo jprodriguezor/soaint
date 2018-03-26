@@ -6,25 +6,31 @@ export class  ObjectHelper {
     if(obj1 === undefined)
        return obj2 === undefined;
 
-   return Object.keys(obj1).every( key => {
+    let a = Object.keys(obj1).length >= Object.keys(obj2).length ? obj1 : obj2;
+    let b = Object.keys(obj1).length < Object.keys(obj2).length ? obj1 : obj2;
 
-      if(obj2[key] === undefined ){
+   return Object.keys(a).every( key => {
 
-         return obj1[key] === undefined;
+      if(a[key] === undefined ){
+
+         return b[key] === undefined;
       }
 
-      if(typeof obj1[key] === 'object' && typeof  obj2[key] == 'object')
-      return  ObjectHelper.similar(obj1[key],obj2[key]);
+     if(typeof a[key] === 'object'){
 
-      if( typeof obj1[key] !== 'function') {
+       if(typeof b[key] !== 'object')
+         return false;
 
-       let x= (obj1[key].toString().trim() === obj2[key].toString().trim());
+       return  ObjectHelper.similar(a[key],b[key]);
 
-       return x;
+     }
 
+      if( typeof a[key] !== 'function') {
+
+        return a[key].toString().trim() === b[key].toString().trim();
       }
 
-      return true;
+       return typeof  b[key] !== 'function';
     });
 
   }

@@ -261,14 +261,14 @@
 </form>
 
 
-<div *ngIf="visibility.datosContacto">
+<div *ngIf="visibility.datosContacto"  >
   <app-datos-direccion #destinatarioDatosContactos [editable]="editable"
-                       (nuevosContactos)="updateDestinatarioContacts($event)"></app-datos-direccion>
+                       (nuevosContactos)="updateDestinatarioContacts($event)" (loadComponent)="ShowFormContactData($event)"></app-datos-direccion>
 </div>
 
 <div class="ui-g form-group text-right" style="padding-top: 20px;float: right">
   <div class="ui-dialog-buttonpane1 ui-helper-clearfix">
-    <button pButton type="button" class="ui-button-primary" label="Aceptar"
+    <button pButton type="button" class="ui-button-primary" label="Aceptar" [disabled]="disabledButtonAgregar()"
             (click)="newRemitente()"></button>
   </div>
 </div>
