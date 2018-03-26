@@ -15,6 +15,7 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
@@ -71,6 +72,7 @@ public class ContentControlAlfresco implements ContentControl {
     private static final String DOCUMENTO = "documento";
     private static final String APPLICATION_PDF = "application/pdf";
     private static final String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
+    private static final String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
     private static final String AVISO_CREA_DOC = "### Se va a crear el documento..";
     private static final String AVISO_CREA_DOC_ID = "### Documento creado con id ";
     private static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
@@ -852,6 +854,56 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
+     *
+     * @param session        Objeto de conexion a Alfresco
+     * @param documento      Objeto qeu contiene los datos del documento
+     * @return
+     */
+    @Override
+    public MensajeRespuesta crearLinkDocumentosApoyo(Session session,DocumentoDTO documento) {
+        logger.info("Se entra al metodo crearLinkDocumentosApoyo");
+
+        MensajeRespuesta response = new MensajeRespuesta();
+
+        Map<String, Object> properties = new HashMap<>();
+
+            buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
+
+        logger.info("Se sale del metodo crearLinkDocumentosApoyo");
+        return response;
+    }
+
+    /**
+     * Metodo para crear el link
+     *
+     * @param session     Objeto session
+     * @param idDocumento Identificador del dcumento
+     * @param carpetaLink Carpeta donde se va a crear el link
+     * @return
+     */
+
+    public void crearLink(Session session, String idDocumento, Carpeta carpetaLink) {
+
+        logger.info("Se entra al metodo crearLink");
+
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_ITEM.value());
+
+        // define a name and a description for the link
+        properties.put(PropertyIds.NAME, "Name_for_the.link");
+        properties.put("cmis:description", "test create link");
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "I:app:filelink");
+
+        //define the destination node reference
+        properties.put("cm:destination", "workspace://SpacesStore/" + idDocumento);
+        //Se crea el link
+        session.createItem(properties, carpetaLink.getFolder());
+
+        logger.info("Se crea el link y se sale del método crearLink");
+    }
+
+    /**
      * Metodo para subir/versionar documentos al Alfresco
      *
      * @param session   Objeto de conexion a Alfresco
@@ -966,11 +1018,17 @@ public class ContentControlAlfresco implements ContentControl {
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
+                    if (PRODUCCION_DOCUMENTAL.equals(carpetaCrearBuscar)){
                     idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
                     //Creando el mensaje de respuesta
                     response.setCodMensaje("0000");
                     response.setMensaje("Documento añadido correctamente");
                     logger.info(AVISO_CREA_DOC_ID + idDocumento);
+                    }else if (DOCUMENTOS_APOYO.equals(carpetaCrearBuscar)){
+                        crearLink(session,documentoDTO.getIdDocumento(),carpetaTarget);
+                        response.setCodMensaje("0000");
+                        response.setMensaje("Link añadido correctamente");
+                    }
                 } else {
                     logger.info(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
                     response.setCodMensaje("4445");
