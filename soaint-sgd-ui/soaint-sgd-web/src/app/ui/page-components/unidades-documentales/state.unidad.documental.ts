@@ -26,7 +26,7 @@ import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.
 
 export class StateUnidadDocumental implements TaskForm {
 
-    ListadoUnidadDocumental$: Observable<UnidadDocumentalDTO[]>;
+    ListadoUnidadDocumental$: Observable<UnidadDocumentalDTO[]> = Observable.empty();
     ListadoSeries: Observable<SerieDTO[]>;
     ListadoSubseries: SubserieDTO[];
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
@@ -93,7 +93,10 @@ export class StateUnidadDocumental implements TaskForm {
     }
 
     GetListadoUnidadesDocumentales(codDependencia: string) {
-        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia});
+        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia})
+        .do( resp => {
+            console.log(resp);
+        });
     }
 
     GetDetalleUnidadUnidadDocumental(payload: any) {

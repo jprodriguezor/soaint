@@ -118,6 +118,14 @@ public interface ContentControl {
     MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws IOException;
 
     /**
+     * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
+     * @param session Objeto de conexion a Alfresco
+     * @param documento Objeto que contiene los datos del documento
+     * @return
+     */
+    MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento);
+
+    /**
      * Subir Versionar documento Generado al ECM
      *
      * @param session   Objeto conexion

@@ -413,6 +413,7 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+
     @GET
     @Path("/verificar-redirecciones")
     @JWTTokenSecurity
@@ -423,5 +424,14 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-anexos")
+    @JWTTokenSecurity
+    public Response listarAnexos(@QueryParam("payload") String nroRadicado) {
+        log.info(CONTENT + "  - listar anexos por nro radicado");
+        Response response = client.listarAnexos(nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }
