@@ -15,6 +15,9 @@ import {OrganigramaDTO} from '../../../domain/organigramaDTO';
 import {Subscription} from 'rxjs/Subscription';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {WARN_DESTINATARIOS_REPETIDOS} from '../../../shared/lang/es';
+import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import { sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import { ConstanteApiService } from '../../../infrastructure/api/constantes.api';
 
 @Injectable()
 export class DatosDestinatarioStateService {
@@ -25,37 +28,52 @@ export class DatosDestinatarioStateService {
     canInsert = false;
     agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
 
-    sedeAdministrativaInput
-    tipoDestinatarioInput: ConstanteDTO[] = [];
-    dependenciaGrupoInput: ConstanteDTO[] = [];
+    sedeAdministrativaInput$: Observable<ConstanteDTO[]> = Observable.empty();
+    tipoDestinatarioInput$: Observable<ConstanteDTO[]> = Observable.empty();
+    dependenciaGrupoInput$: Observable<ConstanteDTO[]> = Observable.empty();
 
-    // Selections
-    tipoDestinatarioDefaultInput: ConstanteDTO = null;
+    ListadoDependencias$: Observable<ConstanteDTO[]> = Observable.empty();
 
     disabled = true;
 
     constructor(private _store: Store<State>,
                 private confirmationService: ConfirmationService,
                 private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
-                private formBuilder: FormBuilder) {
+                private formBuilder: FormBuilder,
+                private constanteService: ConstanteApiService) {
     }
 
     Init(): void {
       this.initForm();
-      const grupoControl = this.form.get('dependenciaGrupo');
-      grupoControl.disable();
-      this.form.get('sedeAdministrativa').valueChanges.subscribe(sede => {
-        if (this.disabled && sede) {
-          grupoControl.enable();
-          this.form.get('dependenciaGrupo').reset();
-          const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
-            this.dependenciaGrupoInput = dependencias.organigrama;
-            depedenciaSubscription.unsubscribe();
-          });
-        } else {
-          grupoControl.disable();
-        }
+      this.LoadData();
+      this.Subcripciones();
+    }
+
+    initForm() {
+        this.form = this.formBuilder.group({
+          'tipoDestinatario': [{value: null, disabled: !this.disabled}],
+          'sedeAdministrativa': [{value: null, disabled: !this.disabled}],
+          'dependenciaGrupo': [{value: null, disabled: !this.disabled}],
+          'destinatarioPrincipal': [{value: null, disabled: !this.disabled}, Validators.required],
+        });
+
+      if (!this.disabled) {
+        this.form.disable();
+      }
+
+    }
+
+    LoadData() {
+      this.ListadoDependencias$ = this._dependenciaGrupoSandbox.loadData({});
+      this.tipoDestinatarioInput$ = this.constanteService.Listar({key: 'tipoDestinatario'});
+      this.sedeAdministrativaInput$ = this._store.select(sedeDestinatarioEntradaSelector);
+      this._store.select(getDestinatarioPrincial)
+      .subscribe(result => {
+        this.form.value.tipoDestinatario = result;
       });
+     }
+
+    Subcripciones() {
 
       Observable.combineLatest(
         this.form.get('tipoDestinatario').valueChanges,
@@ -70,18 +88,21 @@ export class DatosDestinatarioStateService {
           this.canInsert = true
         });
 
-      if (!this.disabled) {
-        this.form.disable();
-      }
     }
 
-    initForm() {
-        this.form = this.formBuilder.group({
-          'tipoDestinatario': [{value: null, disabled: !this.disabled}],
-          'sedeAdministrativa': [{value: null, disabled: !this.disabled}],
-          'dependenciaGrupo': [{value: null, disabled: !this.disabled}],
-          'destinatarioPrincipal': [{value: null, disabled: !this.disabled}, Validators.required],
-        });
+    LoadDependencias(sede: any) {
+      sede = sede.value;
+      const grupoControl = this.form.get('dependenciaGrupo');
+      grupoControl.disable();
+
+        if (this.disabled && sede) {
+          grupoControl.enable();
+          this.form.get('dependenciaGrupo').reset();
+          this.dependenciaGrupoInput$ = this._dependenciaGrupoSandbox.loadData({codigo: sede.id})
+          .map(_map => _map.organigrama);
+        } else {
+          grupoControl.disable();
+        }
     }
 
     addAgentesDestinatario() {
@@ -89,7 +110,7 @@ export class DatosDestinatarioStateService {
       const sede = this.form.get('sedeAdministrativa');
       const grupo = this.form.get('dependenciaGrupo');
 
-      if (this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sede.value.codigo && value.dependenciaGrupo.codigo === grupo.value.codigo).length > 0){
+      if (this.agentesDestinatario.filter(value => value.sedeAdministrativa.codigo === sede.value.codigo && value.dependenciaGrupo.codigo === grupo.value.codigo).length > 0) {
         return  this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: WARN_DESTINATARIOS_REPETIDOS

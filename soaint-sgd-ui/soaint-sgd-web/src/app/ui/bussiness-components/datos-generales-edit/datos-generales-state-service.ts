@@ -32,7 +32,7 @@ export class DatosGeneralesStateService {
   radicadosReferidos: Array<{ nombre: string }> = [];
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }> = [];
 
-  tipoComunicacionSuggestions$: Observable<any[]>;
+  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
   soporteAnexosSuggestions$: Observable<any[]>;
@@ -45,7 +45,7 @@ export class DatosGeneralesStateService {
   medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
   tiempoRespuestaMetricaTipologia$: Observable<number> = Observable.of(null);
   codUnidaTiempoMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
-
+  ppdDocumentoList: any;
   disabled = true;
 
   @Input()
@@ -68,6 +68,7 @@ export class DatosGeneralesStateService {
   Init() {
     this.initForm();
     this.LoadData();
+    this.Subcripciones();
   }
 
   initForm() {
@@ -75,12 +76,12 @@ export class DatosGeneralesStateService {
       this.form = this.formBuilder.group({
         'fechaRadicacion': [this.dataform.fechaRadicacion],
         'nroRadicado': [this.dataform.nroRadicado],
-        'tipoComunicacion': [{value: this.dataform.tipoComunicacion, disabled: this.disabled}, Validators.required],
-        'medioRecepcion': [{value: this.dataform.medioRecepcion, disabled: this.disabled}, Validators.required],
+        'tipoComunicacion': [{value: null, disabled: this.disabled}, Validators.required],
+        'medioRecepcion': [{value: null, disabled: this.disabled}, Validators.required],
         'empresaMensajeria': [{value: this.dataform.empresaMensajeria, disabled: this.disabled}, Validators.required],
         'numeroGuia': [{value: this.dataform.numeroGuia, disabled: this.disabled}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-        'tipologiaDocumental': [{value: this.dataform.tipologiaDocumental, disabled: !this.disabled}, Validators.required],
-        'unidadTiempo': [{value: this.dataform.unidadTiempo, disabled: this.disabled}],
+        'tipologiaDocumental': [{value: null, disabled: !this.disabled}, Validators.required],
+        'unidadTiempo': [{value: null, disabled: this.disabled}],
         'numeroFolio': [{value: this.dataform.numeroFolio, disabled: this.disabled}, Validators.required],
         'inicioConteo': [this.dataform.inicioConteo],
         'reqDistFisica': [{value: reqDistFisica, disabled: this.disabled}],
@@ -108,15 +109,44 @@ export class DatosGeneralesStateService {
 
   LoadData(): void {
     this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
+    this.tipoComunicacionSuggestions$
+    .subscribe(result => {
+        const selected = result.find(_item => _item.codigo === this.dataform.tipoComunicacion);
+        this.form.controls['tipoComunicacion'].setValue(selected);
+    });
     this.unidadTiempoSuggestions$ = this._store.select(getUnidadTiempoArrayData);
-    this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
+    this.unidadTiempoSuggestions$
+    .subscribe(result => {
+      const selected = result.find(_item => _item.codigo === this.dataform.unidadTiempo.codigo);
+      this.form.controls['unidadTiempo'].setValue(selected);
+    });
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
+    this.medioRecepcionSuggestions$
+    .subscribe(result => {
+      const selected = result.find(_item => _item.codigo === this.dataform.medioRecepcion.codigo);
+        this.form.controls['medioRecepcion'].setValue(selected);
+    });
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
+    this.tipologiaDocumentalSuggestions$
+    .subscribe(result => {
+      const tipologiaDoc = this.ppdDocumentoList[0].codTipoDoc;
+      const selected = result.find(_item => _item.codigo === tipologiaDoc )
+      this.form.controls['tipologiaDocumental'].setValue(selected);
+    });
     this.soporteAnexosSuggestions$ = this._store.select(getSoporteAnexoArrayData);
+    this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
+    const anexosInfo =  this.soporteAnexosSuggestions$.concat( this.tipoAnexosSuggestions$)
+    .map(_map => _map);
+    anexosInfo.subscribe(result => {
 
+
+    });
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());
+    this.onSelectTipologiaDocumental(this.form.value.tipologiaDocumental);
+  }
 
+  Subcripciones() {
     this.form.get('tipologiaDocumental').valueChanges.subscribe((value) => {
       this.onSelectTipologiaDocumental(value);
     });
@@ -130,6 +160,7 @@ export class DatosGeneralesStateService {
         delete this.visibility.numeroGuia;
       }
     });
+
     this.listenForErrors();
   }
 
@@ -148,15 +179,16 @@ export class DatosGeneralesStateService {
 
 
   onSelectTipologiaDocumental(codigoTipologia) {
-    this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
-    this.metricasTiempoTipologia$.subscribe(metricas => {
-      console.log(metricas);
-      this.tiempoRespuestaMetricaTipologia$ = Observable.of(metricas.tiempoRespuesta);
-      this.codUnidaTiempoMetricaTipologia$ = this._store.select(createSelector(getUnidadTiempoEntities, (entities) => {
-        return entities[metricas.codUnidaTiempo];
-      }));
-      this.form.get('inicioConteo').setValue(metricas.inicioConteo);
-    });
+    if (codigoTipologia) {
+      this.metricasTiempoTipologia$ = this._apiDatosGenerales.loadMetricasTiempo(codigoTipologia);
+      this.metricasTiempoTipologia$.subscribe(metricas => {
+        this.form.controls['tiempoRespuesta'].setValue(metricas.tiempoRespuesta);
+        this.codUnidaTiempoMetricaTipologia$ = this._store.select(createSelector(getUnidadTiempoEntities, (entities) => {
+          return entities[metricas.codUnidaTiempo];
+        }));
+        this.form.get('inicioConteo').setValue(metricas.inicioConteo);
+      });
+    }
   }
 
   onSelectTipoComunicacion(value) {

@@ -37,7 +37,7 @@
               <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="tipoComunicacionSuggestions$ | async | dropdownItemSingle"
+              <p-dropdown [options]="state.tipoComunicacionSuggestions$ | async | dropdownItem"
                           id="tipoComunicacion"
                           formControlName="tipoComunicacion"
                           placeholder="Seleccione"
@@ -61,7 +61,7 @@
               <label for="tipologiaDocumental"><span class="text-danger">*</span>Tipología documental</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="state.tipologiaDocumentalSuggestions$ | async | dropdownItemSingle"
+              <p-dropdown [options]="state.tipologiaDocumentalSuggestions$ | async | dropdownItem"
                           id="tipologiaDocumental"
                           formControlName="tipologiaDocumental"
                           placeholder="Seleccione"
@@ -86,12 +86,11 @@
               <label for="medioRecepcion"><span class="text-danger">*</span>Medio de recepción</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="medioRecepcionSuggestions$ | async | dropdownItemSingle"
+              <p-dropdown [options]="state.medioRecepcionSuggestions$ | async | dropdownItem"
                           [ngModel]="mediosRecepcionInput"
                           id="medioRecepcion"
                           formControlName="medioRecepcion"
                           placeholder="Seleccione"
-                          [filter]="true"
                           [autoWidth]="false"
                           (onBlur)="state.listenForBlurEvents('medioRecepcion')"
               >
@@ -155,7 +154,7 @@
             <div class="ui-g-12">
                   <span class="md-inputfield">
                     <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta" [disabled]="true"
-                               [ngModel]="tiempoRespuestaMetricaTipologia$ | async"></p-spinner>
+                              ></p-spinner>
                     <label>Tiempo de respuesta</label>
                   </span>
             </div>
@@ -169,7 +168,7 @@
               <label for="unidadTiempo">Unidad de tiempo</label>
             </div>
             <div class="ui-g-12">
-              <p-dropdown [options]="unidadTiempoSuggestions$ | async | dropdownItemSingle"
+              <p-dropdown [options]="state.unidadTiempoSuggestions$ | async | dropdownItem"
                           [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
                           id="unidadTiempo"
                           [disabled]="true"
