@@ -211,8 +211,11 @@
                         <label for="tipoAnexo">Tipo de anexo</label>
                     </div>
                     <div class="ui-g-12 md-dropdownfield">
-                        <p-dropdown [options]="tiposAnexo$ | async | dropdownItem" [disabled]="form.get('soporte').value != 'fisico'" id="tipoAnexo"
-                                    formControlName="tipoAnexo" placeholder="Seleccione" [autoWidth]="false">
+                        <p-dropdown [options]="tiposAnexo$ | async | dropdownItem"
+                                    id="tipoAnexo"
+                                    formControlName="tipoAnexo" 
+                                    placeholder="Seleccione" 
+                                    [autoWidth]="false">
                         </p-dropdown>
                     </div>
                 </div>
@@ -223,7 +226,9 @@
                         <label for="descripcion">Descripcion</label>
                     </div>
                     <div class="ui-g-12">
-                        <input type="text" pInputText [dynamicDisable]="form.get('soporte').value != 'fisico'" disabled="disabled" id="descripcion" formControlName="descripcion" />
+                        <input type="text" pInputText
+                                            id="descripcion"
+                                            formControlName="descripcion" />
                     </div>
                 </div>
             </div>
@@ -237,14 +242,14 @@
                           accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
-                          [disabled]="form.get('soporte').value !== 'electronico'"
+                          [disabled]="form.get('soporte').value == 'fisico' || !form.get('tipoAnexo').value"
                           (uploadHandler)="agregarAnexo($event, anexoUploader)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
                     </div>
                     <div class="ui-g-12"  *ngIf="form.get('soporte').value !== 'electronico'">
                       <button pButton label="Agregar"
-                              [disabled]="!((form.get('soporte').value == 'electronico') || (form.get('soporte').value == 'fisico' && form.get('tipoAnexo').value))"
+                              [disabled]="form.get('soporte').value == 'electronico' || !form.get('tipoAnexo').value"
                               (click)="agregarAnexo()" style="width: auto;margin-top: 20px;margin-left: 10px; float: right;" type="button">
                       </button>
                     </div>

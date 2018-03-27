@@ -273,9 +273,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
             docEcmResp = resp.documentoDTOList[0];
             anexo.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
             anexo.descripcion = docEcmResp && docEcmResp.nombreDocumento || null;
-            const versiones = [...this.listaAnexos];
-            versiones.push(anexo);
-            this.listaAnexos = [...versiones];
+            this.addAnexoToList(anexo);
             this.messagingService.publish(new DocumentUploaded(docEcmResp));
           } else {
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
@@ -286,8 +284,19 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       anexoUploader.clear();
       anexoUploader.basicFileInput.nativeElement.value = '';
     } else {
-      this.addToList(anexo, 'listaAnexos');
+      this.addAnexoToList(anexo);
     }
+  }
+
+  addAnexoToList(anexo: AnexoDTO) {
+    this.listaAnexos = [
+      ...[anexo],
+      ...this.listaAnexos.filter(
+            value =>
+            value.tipo.nombre !== anexo.tipo.nombre ||
+            value.soporte !== anexo.soporte
+      )
+    ];
   }
 
   mostrarAnexo(index: number) {
