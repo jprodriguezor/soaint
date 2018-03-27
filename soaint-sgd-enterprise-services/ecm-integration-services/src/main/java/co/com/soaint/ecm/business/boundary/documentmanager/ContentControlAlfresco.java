@@ -407,7 +407,7 @@ public class ContentControlAlfresco implements ContentControl {
             //Lista de carpetas hijas
             for (CmisObject contentItem : listaObjetos) {
 
-                if (contentItem instanceof Folder && ("CM_Serie".equals(contentItem.getDescription()) || "CM_SubSerie".equals(contentItem.getDescription()) || "CM_Unidad_Administrativa".equals(contentItem.getDescription()))) {
+                if (contentItem instanceof Folder) {
                     Carpeta folder = new Carpeta();
                     folder.setFolder((Folder) contentItem);
 
@@ -940,8 +940,12 @@ public class ContentControlAlfresco implements ContentControl {
             folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
 
             if (folderAlfresco.getFolder() != null) {
+                System.out.println("Nombre Folder sede" + folderAlfresco.getFolder().getName());
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
+
+                System.out.println("Lista Hijos");
+                carpetasHijas.forEach(carpeta -> System.out.println(carpeta.getFolder().getName()));
 
                 //Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia
                 Optional<Carpeta> dependencia = carpetasHijas.stream()
@@ -954,6 +958,9 @@ public class ContentControlAlfresco implements ContentControl {
                     Calendar cal = Calendar.getInstance();
                     int year = cal.get(Calendar.YEAR);
                     List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
+
+                    System.out.println("Nombre Dependencia: " + dependencia.get().getFolder().getName());
+                    carpetasDeLaDependencia.forEach(carpeta -> System.out.println("Carpetas Hojas: " + carpeta.getFolder().getName()));
 
                     Carpeta carpetaTarget;
 
