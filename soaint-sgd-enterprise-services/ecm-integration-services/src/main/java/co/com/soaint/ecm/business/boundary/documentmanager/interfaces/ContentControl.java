@@ -275,12 +275,4 @@ public interface ContentControl {
      * @return MensajeRespuesta
      */
     MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental, Session session);
-
-    /**
-     * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
-     * @param session Objeto de conexion a Alfresco
-     * @param documento Objeto que contiene los datos del documento
-     * @return
-     */
-    MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento);
 }
