@@ -82,6 +82,25 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
+     * Crear link de documento en el ECM
+     *
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/crearLinkDocumento/")
+    public MensajeRespuesta crearLinkDocumentosApoyo(@RequestBody DocumentoDTO documento) throws IOException {
+
+        logger.info("processing rest request - Crear Link de Documento en la carpeta Documentos de Apoyo para el documento: {}", documento.getNombreDocumento());
+        try {
+            return fEcmManager.crearLinkDocumentosApoyo(documento);
+        } catch (IOException e) {
+            logger.error("Error en operacion - Crear Link de Documento en la carpeta Documentos de Apoyo ", e);
+            throw e;
+        }
+
+    }
+
+    /**
      * Subir versionar documento Generado al ECM
      *
      * @param documento documento a subir

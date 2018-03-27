@@ -97,6 +97,34 @@ public class ContentManager {
         return response;
 
     }
+    /**
+     * Metodo generico para crear el link del documento en el content
+     *
+     * @param documento Documento que se va a subir
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) throws IOException {
+
+        logger.info("### Creando link del documento en el content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            Conexion conexion;
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo crearLinkDocumentosApoyo..");
+            response = contentControl.crearLinkDocumentosApoyo(conexion.getSession(), documento);
+
+        } catch (Exception e) {
+            logger.error("Error Creando link del documento en el content", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error Creando link del documento en el content");
+            throw e;
+        }
+        return response;
+
+    }
 
     /**
      * Metodo generico para subir los dccumentos adjuntos al content
