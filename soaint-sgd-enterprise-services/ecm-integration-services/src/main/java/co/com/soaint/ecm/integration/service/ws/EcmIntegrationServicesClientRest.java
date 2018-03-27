@@ -60,6 +60,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Subir documento Principal al ECM
      *
+     * @param documento Objeto documentoDTO
      * @param selector Selector que dice donde se va a gauardar el documento
      * @return identificador del documento en el ecm
      */
@@ -80,6 +81,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Crear link de documento en el ECM
      *
+     * @param documento
      * @return identificador del documento en el ecm
      */
     @POST
@@ -299,7 +301,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/devolverSerieOSubserieECM/")
-    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws Exception {
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
@@ -334,6 +336,7 @@ public class EcmIntegrationServicesClientRest {
      * Metodo para listar los documentos de una Unidad Documental
      *
      * @param idUnidadDocumental   Id de la unidad documental
+     * @return MensajeRespuesta
      */
     @POST
     @Path("/listaDocumentosDTOUnidadDocumental/{idUnidadDocumental}")
@@ -374,7 +377,8 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Listar las Unidades Documentales del ECM
      *
-     * @return Mensaje de respuesta
+     * @param unidadDocumentalDTO
+     * @return MensajeRespuesta Mensaje de respuesta
      */
     @POST
     @Path("/listarUnidadesDocumentalesECM/")

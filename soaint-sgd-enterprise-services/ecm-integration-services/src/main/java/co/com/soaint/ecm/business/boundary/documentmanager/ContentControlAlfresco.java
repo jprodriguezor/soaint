@@ -103,7 +103,8 @@ public class ContentControlAlfresco implements ContentControl {
      * @param folderFather    Carpeta dentro de la cual se va a crear la carpeta
      * @return Devuelve la carpeta creada dentro del objeto Carpeta
      */
-    private Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg, String classDocumental, Carpeta folderFather, String idOrgOfc) {
+    private Carpeta crearCarpeta(Carpeta folder, String nameOrg, String codOrg,
+                                 String classDocumental, Carpeta folderFather, String idOrgOfc) {
         Carpeta newFolder = null;
         try {
 
@@ -975,7 +976,7 @@ public class ContentControlAlfresco implements ContentControl {
                         response.setMensaje("Documento añadido correctamente");
                         logger.info(AVISO_CREA_DOC_ID + idDocumento);
                     }else if (DOCUMENTOS_APOYO.equals(carpetaCrearBuscar)){
-                        crearLink(session,documentoDTO.getIdDocumento(),carpetaTarget);
+                        crearLink(session,documentoDTO,carpetaTarget);
                         response.setCodMensaje("0000");
                         response.setMensaje("Link añadido correctamente");
                     }
@@ -1551,7 +1552,7 @@ public class ContentControlAlfresco implements ContentControl {
         }
 
         String queryString = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
-                " WHERE " + CMCOR_UD_ID + " = '" + idUnidadDocumental + "'";
+                " WHERE " + PropertyIds.OBJECT_ID + " = '" + idUnidadDocumental + "'";
 
         final ItemIterable<QueryResult> queryResults = session.query(queryString, false);
         final Iterator<QueryResult> iterator = queryResults.iterator();
@@ -1684,7 +1685,7 @@ public class ContentControlAlfresco implements ContentControl {
 
         final MensajeRespuesta listaDocumentoDTO = listaDocumentoDTO(idUnidadDocumental, session);
         final Map<String, Object> response = listaDocumentoDTO.getResponse();
-
+        System.out.println("FolderID: " + idUnidadDocumental + " aaaaa ");
         if (response.containsKey("unidadDocumentalDTO")) {
             UnidadDocumentalDTO dto = (UnidadDocumentalDTO) response.get("unidadDocumentalDTO");
             if (recordControl.cerrarUnidadDocumentalRecord(dto)) {
@@ -1696,7 +1697,7 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return MensajeRespuesta.newInstance()
                 .codMensaje("1111")
-                .mensaje("Ocurrio un error al cerrar la unidad documental")
+                .mensaje("Ocurrio un error al cerrar la unidad documental '" + listaDocumentoDTO.getMensaje() + "'")
                 .build();
     }
 
@@ -1736,12 +1737,12 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo para crear el link
      *
      * @param session     Objeto session
-     * @param idDocumento Identificador del dcumento
+     * @param documentoDTO Objeto DocumentoDTO
      * @param carpetaLink Carpeta donde se va a crear el link
      * @return
      */
 
-    private void crearLink(Session session, String idDocumento, Carpeta carpetaLink) {
+    private void crearLink(Session session, DocumentoDTO documentoDTO, Carpeta carpetaLink) {
 
         logger.info("Se entra al metodo crearLink");
 
@@ -1749,12 +1750,12 @@ public class ContentControlAlfresco implements ContentControl {
         properties.put(PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_ITEM.value());
 
         // define a name and a description for the link
-        properties.put(PropertyIds.NAME, "Name_for_the.link");
-        properties.put("cmis:description", "test create link");
+        properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento() + ".link");
+        properties.put("cmis:description", "");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "I:app:filelink");
 
         //define the destination node reference
-        properties.put("cm:destination", "workspace://SpacesStore/" + idDocumento);
+        properties.put("cm:destination", "workspace://SpacesStore/" + documentoDTO.getIdDocumento());
         //Se crea el link
         session.createItem(properties, carpetaLink.getFolder());
 

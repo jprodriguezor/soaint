@@ -45,10 +45,8 @@ public class RecordControlAlfresco implements RecordControl {
         final String idRecordFolder = recordServices.crearCarpetaRecord(entradaRecordDTO);
 
         boolean result = false;
-        if (!ObjectUtils.isEmpty(idRecordFolder)) {
-
-            if (!unidadDocumentalDTO.getListaDocumentos().isEmpty()) {
-
+        if (!ObjectUtils.isEmpty(idRecordFolder) &&
+                !unidadDocumentalDTO.getListaDocumentos().isEmpty()) {
                 for (DocumentoDTO documentoDTO : unidadDocumentalDTO.getListaDocumentos()) {
 
                     final String idDocumento = documentoDTO.getIdDocumento();
@@ -67,7 +65,7 @@ public class RecordControlAlfresco implements RecordControl {
                         logger.info("Se archiva el documento '{}'", nombreDocumento);
                     }
                 }
-            }
+
             //Se cierra la carpeta
             result = recordServices.abrirCerrarRecordFolder(idRecordFolder,true);
         }
