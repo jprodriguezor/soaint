@@ -69,6 +69,7 @@ import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-gener
 import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 
 
 @NgModule({
@@ -188,6 +189,7 @@ import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.se
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,

@@ -10,8 +10,7 @@
             <label for="tipoDestinatario"><span class="text-danger">*</span>Tipo destinatario</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="state.tipoDestinatarioInput | dropdownItem"
-                        [ngModel]="state.tipoDestinatarioDefaultInput"
+            <p-dropdown [options]="state.tipoDestinatarioInput$ | async | dropdownItem"
                         id="tipoDestinatario"
                         formControlName="tipoDestinatario"
                         placeholder="Seleccione"
@@ -29,12 +28,13 @@
             <label for="sedeAdministrativa"><span class="text-danger">*</span>Sede</label>
           </div>
           <div class="ui-g-12 md-dropdownfield">
-            <p-dropdown [options]="state.sedeAdministrativaInput | dropdownItem"
+            <p-dropdown [options]="state.sedeAdministrativaInput$ | async | dropdownItem"
                         id="sedeAdministrativa"
                         formControlName="sedeAdministrativa"
                         placeholder="Seleccione"
                         [filter]="true"
                         [autoWidth]="false"
+                        (onChange)="state.LoadDependencias($event)"
             >
             </p-dropdown>
           </div>
@@ -48,7 +48,7 @@
           </div>
           <div class="ui-g-12 md-dropdownfield">
 
-            <p-dropdown [options]="state.dependenciaGrupoInput | dropdownItem"
+            <p-dropdown [options]="state.dependenciaGrupoInput$ | async | dropdownItem"
                         id="dependenciaGrupo"
                         formControlName="dependenciaGrupo"
                         placeholder="Seleccione"

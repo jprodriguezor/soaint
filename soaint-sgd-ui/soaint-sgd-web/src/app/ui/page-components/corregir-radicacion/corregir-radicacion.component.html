@@ -6,7 +6,7 @@
               (click)="abort()"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="save().subscribe()"></button>
+              (click)="save()"></button>
 
       <button pButton type="button" label="Actualizar" style="width: auto; margin-bottom: 10px"
               [disabled]="false"
@@ -39,7 +39,7 @@
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
         <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
                 (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2"
-                [disabled]="!formsTabOrder[tabIndex].valid">
+                [disabled]="!IsDisabled()">
         </button>
         <button pButton label="Anterior" style="width: 150px; float: left"
                 (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
