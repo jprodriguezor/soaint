@@ -10,6 +10,7 @@ import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.a
 import {SerieService} from './api/serie.service';
 import { ConstanteApiService } from './api/constantes.api';
 import { CorrespondenciaApiService } from './api/correspondencia.api';
+import { DependenciaApiService } from './api/dependencia.api';
 
 export const API_SERVICES = [
   ApiBase,
@@ -24,6 +25,7 @@ export const API_SERVICES = [
   SerieService,
   ConstanteApiService,
   CorrespondenciaApiService,
+  DependenciaApiService,
 ];
 
 export {

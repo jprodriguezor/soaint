@@ -81,6 +81,9 @@ export class DatosRemitenteStateService {
             'sedeAdministrativa': [{value: this.dataform.sedeAdministrativa, disabled: !this.disabled}, Validators.required],
             'dependenciaGrupo': [{value: this.dataform.dependenciaGrupo, disabled: !this.disabled}, Validators.required],
         });
+        setTimeout(() => {
+          this.onSelectTipoPersona(this.dataform.tipoPersona.codigo);
+        }, 0);
     }
 
     listenForChanges() {

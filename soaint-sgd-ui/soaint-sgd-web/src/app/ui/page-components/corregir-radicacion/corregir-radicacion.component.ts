@@ -150,16 +150,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   InitGenerales() {
     this.stateGenerales.dataform = this.radicacionEntradaFormData.generales;
-    // this._correspondenciaService.ListarAnexos(this.task.variables.numeroRadicado)
-    // .subscribe(_response => {
-    //   this.stateGenerales.descripcionAnexos = _response.map(_map => {
-    //     return {
-    //       tipoAnexo: {nombre: _map.descTipoAnexo},
-    //       soporteAnexo: {nombre: _map.descTipoSoporte},
-    //       descripcion: _map.descripcion,
-    //     }
-    //   });
-    // });
+    this.stateGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
     this.stateGenerales.ppdDocumentoList = this.comunicacion.ppdDocumentoList;
     this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
     this.stateGenerales.Init();
@@ -196,7 +187,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   GetComunicacionPayload(): any {
     const radicacionEntradaFormPayload: any = {
       destinatario: this.stateDestinatario.form.value,
-      generales: this.stateGenerales.form.value,
+      generales: JSON.parse(JSON.stringify(this.stateGenerales.form.getRawValue())),
       remitente: this.stateRemitente.form.value,
       descripcionAnexos: this.stateGenerales.descripcionAnexos,
       radicadosReferidos: this.stateGenerales.radicadosReferidos,

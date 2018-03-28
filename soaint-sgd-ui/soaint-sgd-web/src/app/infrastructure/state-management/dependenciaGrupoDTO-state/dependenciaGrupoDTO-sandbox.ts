@@ -16,14 +16,7 @@ export class Sandbox extends CacheResponse {
   }
 
   loadData(payload: any) {
-    const _endpoint = `${environment.dependenciaGrupo_endpoint}/${payload.codigo}`;
-    return this.getResponse(this._api.list(_endpoint, payload)
-    .map(response => {
-      this.cacheResponse(payload, response);
-      return response;
-    }), payload
-  );
-
+    return this._api.list(`${environment.dependenciaGrupo_endpoint}/${payload.codigo}`, payload);
     // return Observable.of(this.getMock()).delay(400);
   }
 

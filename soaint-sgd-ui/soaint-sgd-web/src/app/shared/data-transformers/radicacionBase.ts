@@ -44,7 +44,7 @@ export  abstract class RadicacionBase {
       codFuncRadica: null,
       codSede: null,
       codDependencia: null,
-      reqDigita: generales.reqDigit ? '1' : '0',
+      reqDigita: generales.reqDigit === 1 ? '1' : '0',
       codEmpMsj: generales.empresaMensajeria ? generales.empresaMensajeria : null,
       nroGuia: generales.numeroGuia ? generales.numeroGuia : null,
       fecVenGestion: null,

@@ -187,9 +187,6 @@
           <div class="ui-g form-group">
             <div class="ui-g-12">
               <span class="md-inputfield">
-              <!--<input type="text" pInputText id="numeroFolio" formControlName="numeroFolio"-->
-                <!--(blur)="state.listenForBlurEvents('numeroFolio')"-->
-                <!--&gt;-->
                 <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio"
                            (OnBlur)="state.listenForBlurEvents('numeroFolio')" [min]="0"></p-spinner>
               <label><span class="text-danger">*</span>No. de folio</label>
@@ -223,24 +220,9 @@
 
               <p-radioButton name="cg" formControlName="reqDigit" [value]="2" label="Adjuntar documento"
                              [style]="{'margin-left':'10px'}"></p-radioButton>
-
-              <!--<p-checkbox name="cg" label="Requiere digitalización"-->
-              <!--formControlName="reqDigit" id="reqDigit" binary="true"></p-checkbox>-->
             </div>
 
           </div>
-          <!--<div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6" [hidden]="!visibility.reqDigitInmediata">-->
-          <!--<div style="padding: 20px 0 0 10px">-->
-          <!--<p-checkbox name="cg"-->
-          <!--label="Digitalización inmediata"-->
-          <!--id="reqDigInmediata"-->
-          <!--formControlName="reqDigitInmediata"-->
-          <!--binary="true"-->
-          <!--[dynamicDisable]="!visibility.reqDigitInmediata"-->
-
-          <!--&gt;</p-checkbox>-->
-          <!--</div>-->
-          <!--</div>-->
           <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
             <div style="padding: 20px 0 0 10px">
               <p-checkbox name="cg" label="Requiere distribución física" id="reqDistFisica"
@@ -396,8 +378,7 @@
                      [responsive]="true"
                      [value]="state.descripcionAnexos"
                      inmutable="false"
-                     emptyMessage="No se encontraron resultados"
-        >
+                     emptyMessage="No se encontraron resultados" >
 
           <p-header> Listado de anexos</p-header>
 
@@ -415,15 +396,7 @@
           </p-column>
           <!--End Body-->
         </p-dataTable>
-        <!--<div class="ui-g-12 md-inputfield">
-          <div class="ui-message ui-messages-error"
-               *ngIf="descripcionAnexos.length === 0 &&
-               (form.get('tipoAnexos').touched || form.get('tipoAnexosDescripcion').touched)">
-            Listado requerido
-          </div>
-        </div>-->
-      </div>
-
+       </div>
     </div>
   </div>
 </form>

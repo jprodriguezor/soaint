@@ -18,6 +18,8 @@ import {WARN_DESTINATARIOS_REPETIDOS} from '../../../shared/lang/es';
 import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import { sedeDestinatarioEntradaSelector, tipoDestinatarioEntradaSelector } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import { ConstanteApiService } from '../../../infrastructure/api/constantes.api';
+import { DependenciaApiService } from '../../../infrastructure/api/dependencia.api';
+import { DependenciaDTO } from '../../../domain/dependenciaDTO';
 
 @Injectable()
 export class DatosDestinatarioStateService {
@@ -32,7 +34,7 @@ export class DatosDestinatarioStateService {
     tipoDestinatarioInput$: Observable<ConstanteDTO[]> = Observable.empty();
     dependenciaGrupoInput$: Observable<ConstanteDTO[]> = Observable.empty();
 
-    ListadoDependencias$: Observable<ConstanteDTO[]> = Observable.empty();
+    ListadoDependencias: DependenciaDTO[] = null;
 
     disabled = true;
 
@@ -40,7 +42,9 @@ export class DatosDestinatarioStateService {
                 private confirmationService: ConfirmationService,
                 private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
                 private formBuilder: FormBuilder,
-                private constanteService: ConstanteApiService) {
+                private constanteService: ConstanteApiService,
+                private _dependenciaService: DependenciaApiService
+              ) {
     }
 
     Init(): void {
@@ -64,9 +68,31 @@ export class DatosDestinatarioStateService {
     }
 
     LoadData() {
-      this.ListadoDependencias$ = this._dependenciaGrupoSandbox.loadData({});
+      // buscar nombre grupo dependencia y sede
+      this._dependenciaService.Listar({}).subscribe(result => {
+        this.agentesDestinatario = this.agentesDestinatario
+        .reduce((_listado, _grupo) => {
+          const dependencia = result.find(_item => _item.codigo === _grupo.dependenciaGrupo.codigo && _item.codSede === _grupo.sedeAdministrativa.codigo);
+          _grupo.sedeAdministrativa.nombre = dependencia.nomSede;
+          _grupo.dependenciaGrupo.nombre = dependencia.nombre;
+          _listado.push(_grupo);
+          return _listado
+        }, []);
+      });
+
+      // buscar nombre tipo destinatario
       this.tipoDestinatarioInput$ = this.constanteService.Listar({key: 'tipoDestinatario'});
+      this.tipoDestinatarioInput$.subscribe( result => {
+        this.agentesDestinatario = this.agentesDestinatario
+        .reduce((_listado, _tipo) => {
+          const destinatario = result.find(_item => _item.codigo === _tipo.tipoDestinatario.codigo);
+          _tipo.tipoDestinatario.nombre = destinatario.nombre;
+          _listado.push(_tipo);
+          return _listado
+        }, []);
+      });
       this.sedeAdministrativaInput$ = this._store.select(sedeDestinatarioEntradaSelector);
+
       this._store.select(getDestinatarioPrincial)
       .subscribe(result => {
         this.form.value.tipoDestinatario = result;

@@ -21,6 +21,7 @@ import {createSelector} from 'reselect';
 import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-properties/radicacion-properties';
+import { ConstanteApiService } from '../../../infrastructure/api/constantes.api';
 
 @Injectable()
 export class DatosGeneralesStateService {
@@ -31,6 +32,7 @@ export class DatosGeneralesStateService {
 
   radicadosReferidos: Array<{ nombre: string }> = [];
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }> = [];
+  constantesAnexos: ConstanteDTO[];
 
   tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
@@ -61,6 +63,7 @@ export class DatosGeneralesStateService {
      private _apiDatosGenerales: DatosGeneralesApiService,
      private _constSandbox: ConstanteSandbox,
      private formBuilder: FormBuilder,
+     private _contantesService: ConstanteApiService
      ) {
 
   }
@@ -73,6 +76,7 @@ export class DatosGeneralesStateService {
 
   initForm() {
     const reqDistFisica = (this.dataform.reqDistFisica === 1);
+    const reqDigit = (this.dataform.reqDigit === 1) ? 1 : 2;
       this.form = this.formBuilder.group({
         'fechaRadicacion': [this.dataform.fechaRadicacion],
         'nroRadicado': [this.dataform.nroRadicado],
@@ -85,7 +89,7 @@ export class DatosGeneralesStateService {
         'numeroFolio': [{value: this.dataform.numeroFolio, disabled: this.disabled}, Validators.required],
         'inicioConteo': [this.dataform.inicioConteo],
         'reqDistFisica': [{value: reqDistFisica, disabled: this.disabled}],
-        'reqDigit': [{value: this.dataform.reqDigit, disabled: this.disabled}],
+        'reqDigit': [{value: reqDigit, disabled: this.disabled}],
         'tiempoRespuesta': [{value: this.dataform.tiempoRespuesta, disabled: this.disabled}],
         'asunto': [{value: this.dataform.asunto, disabled: !this.disabled}, Validators.compose([Validators.required, Validators.maxLength(500)])],
         'radicadoReferido': [{value: this.dataform.radicadoReferido, disabled: !this.disabled}],
@@ -108,24 +112,28 @@ export class DatosGeneralesStateService {
   }
 
   LoadData(): void {
+    // tipo de comunicacion seleccionada
     this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
     this.tipoComunicacionSuggestions$
     .subscribe(result => {
         const selected = result.find(_item => _item.codigo === this.dataform.tipoComunicacion);
         this.form.controls['tipoComunicacion'].setValue(selected);
     });
+    // unidad tiempo seleccionada
     this.unidadTiempoSuggestions$ = this._store.select(getUnidadTiempoArrayData);
     this.unidadTiempoSuggestions$
     .subscribe(result => {
       const selected = result.find(_item => _item.codigo === this.dataform.unidadTiempo.codigo);
       this.form.controls['unidadTiempo'].setValue(selected);
     });
+    // medio recepción seleccionada
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
     this.medioRecepcionSuggestions$
     .subscribe(result => {
       const selected = result.find(_item => _item.codigo === this.dataform.medioRecepcion.codigo);
         this.form.controls['medioRecepcion'].setValue(selected);
     });
+    // tipología documental seleccionada
     this.tipologiaDocumentalSuggestions$ = this._store.select(getTipologiaDocumentalArrayData);
     this.tipologiaDocumentalSuggestions$
     .subscribe(result => {
@@ -133,13 +141,41 @@ export class DatosGeneralesStateService {
       const selected = result.find(_item => _item.codigo === tipologiaDoc )
       this.form.controls['tipologiaDocumental'].setValue(selected);
     });
-    this.soporteAnexosSuggestions$ = this._store.select(getSoporteAnexoArrayData);
-    this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
-    const anexosInfo =  this.soporteAnexosSuggestions$.concat( this.tipoAnexosSuggestions$)
-    .map(_map => _map);
-    anexosInfo.subscribe(result => {
+    // listado anexos
+    // this.soporteAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
+    // this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'soporteAnexo' });
+    // const anexosInfo$ = Observable.concat(this.soporteAnexosSuggestions$, this.tipoAnexosSuggestions$);
+    // anexosInfo$.subscribe((result: ConstanteDTO[]) => {
+    //     this.descripcionAnexos = this.descripcionAnexos
+    //     .reduce((_listado, _anexo) => {
+    //       const codAnexo = result.find(item => item.codigo === _anexo.tipoAnexo.codigo);
+    //       const codTipoSoporte = result.find(item => item.codigo === _anexo.soporteAnexo.codigo);
+    //       _anexo.tipoAnexo.nombre = (codAnexo) ? codAnexo.nombre : '';
+    //       _anexo.soporteAnexo.nombre = (codTipoSoporte) ? codTipoSoporte.nombre : '';
+    //       _listado.push(_anexo);
+    //       return _listado;
+    //     }, []);
+    // });
 
-
+    // // listado anexos
+    this.soporteAnexosSuggestions$ = this._contantesService.Listar({key: 'soporteAnexo' })
+    this.soporteAnexosSuggestions$
+    .subscribe((result) => {
+      this.constantesAnexos = [...result];
+      this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
+      this.tipoAnexosSuggestions$
+      .subscribe(resultsoporte => {
+        this.constantesAnexos = [...result].concat(resultsoporte);
+        this.descripcionAnexos = this.descripcionAnexos
+        .reduce((_listado, _anexo) => {
+          const codAnexo = this.constantesAnexos.find(item => item.codigo === _anexo.tipoAnexo.codigo);
+          const codTipoSoporte = this.constantesAnexos.find(item => item.codigo === _anexo.soporteAnexo.codigo);
+          _anexo.tipoAnexo.nombre = codAnexo.nombre;
+          _anexo.soporteAnexo.nombre = codTipoSoporte.nombre;
+          _listado.push(_anexo);
+          return _listado;
+        }, []);
+      });
     });
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());
