@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -65,6 +65,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   nombreSede = '';
   nombreDependencia = '';
+
+  @Output()
+  docRadicadoPreview: EventEmitter<any> = new EventEmitter();
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -147,7 +150,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   obtenerDocumentoRadicado() {
-    this.messagingService.publish(new DocumentDownloaded(''));
+    console.log('Emitiendo evento');
+    this.docRadicadoPreview.emit(true);
+    console.log('Evento emitido');
   }
 
   loadHtmlVersion() {

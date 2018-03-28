@@ -66,10 +66,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.route.params.subscribe( params => {
           this.status = parseInt(params.status, 10) || 0;
       } );
-      this.documentSubscription = this.messagingService.of(DocumentDownloaded).subscribe(message => {
-          this.tabIndex = 3;
-          this.refreshView();
-      });
       this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
           this.refreshView();
           this.guardarEstadoTarea();
@@ -82,6 +78,12 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     })).subscribe((value) => {
       this.authPayload = value;
     });
+  }
+
+  private DocumentoRadicadoPreview(event) {
+      if (event) {
+        this.tabIndex = 3;
+      }
   }
 
   private initCurrentStatus() {
