@@ -16,6 +16,7 @@ import {isArray, isNullOrUndefined} from 'util';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {empty} from 'rxjs/Observer';
 import * as codigos from '../../../shared/bussiness-properties/radicacion-properties';
+import {FileUpload} from "primeng/primeng";
 
 enum UploadStatus {
   CLEAN = 0,
@@ -135,6 +136,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             this._store.dispatch(new PushNotificationAction({
               severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
             }));
+            (<FileUpload>(this.uploader)).disabled = true;
             this.uploadDisabled = true;
             this.principalFileId = data[0];
             this.changeDetection.detectChanges();
@@ -145,6 +147,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
+              (<FileUpload>(this.uploader)).disabled = true;
               this.uploadDisabled = true;
               break;
             case '3333':
@@ -171,6 +174,11 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           }
         }
       });
+
+
+      // (<FileUpload>(this.uploader)).disabled = true;
+      //
+      // this.uploadDisabled = true;
     }
 
   }
