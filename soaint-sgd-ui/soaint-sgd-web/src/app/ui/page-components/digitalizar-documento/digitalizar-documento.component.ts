@@ -106,7 +106,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
 
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
-          _dependencia = result[0];
+          _dependencia = result.dependencias[0];
           let _agente = this.comunicacion.agenteList.find(a => a.codTipAgent === codigos.TIPO_AGENTE_REMITENTE);
           formData.append('tipoComunicacion', this.correspondencia.codTipoCmc);
           formData.append('fileName', this.correspondencia.nroRadicado);
@@ -176,9 +176,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       });
 
 
-      // (<FileUpload>(this.uploader)).disabled = true;
-      //
-      // this.uploadDisabled = true;
     }
 
   }
