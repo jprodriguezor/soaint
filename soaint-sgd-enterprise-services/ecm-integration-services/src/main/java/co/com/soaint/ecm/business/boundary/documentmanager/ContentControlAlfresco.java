@@ -396,7 +396,7 @@ public class ContentControlAlfresco implements ContentControl {
      */
     private List<Carpeta> obtenerCarpetasHijasDadoPadre(Carpeta carpetaPadre) {
         logger.info("### Obtener Carpetas Hijas Dado Padre: " + carpetaPadre.getFolder().getName());
-        List<Carpeta> listaCarpetas = null;
+        List<Carpeta> listaCarpetas = new ArrayList<>();
 
         try {
             ItemIterable<CmisObject> listaObjetos = carpetaPadre.getFolder().getChildren();
