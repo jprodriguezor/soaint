@@ -61,7 +61,6 @@ import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-do
 import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
 import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
-import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component';
 import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
 import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
 import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
@@ -69,6 +68,7 @@ import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-gener
 import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 
 
 @NgModule({
@@ -172,7 +172,6 @@ import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.se
     NoTramitarCreacionUdComponent,
     FormCrearUnidadDocumentalComponent,
     UdTramitadasComponent,
-    AdjuntarDocumentoComponent,
     RsTicketRadicadoComponent,
     TicketRadicadoComponent,
     DistribucionComponent,
@@ -192,6 +191,7 @@ import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.se
     ProcesoService,
     SolicitudCreacionUdService,
     RadicacionSalidaService,
+    UnidadDocumentalApiService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

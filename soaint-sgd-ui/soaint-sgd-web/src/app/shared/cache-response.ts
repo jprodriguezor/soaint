@@ -7,7 +7,7 @@ export  abstract class CacheResponse {
 
   isCached(payload: any, endpoint?: string): any {
 
-    return this.payloadsCached.find(p =>  ObjectHelper.similar(p.payload, payload) && ( p.endpoint === null || p.endpoint === endpoint));
+    return this.payloadsCached.find(p =>  ObjectHelper.similar(p.payload, payload) && ( p.endpoint === undefined || p.endpoint === endpoint));
   }
 
   protected getResponse(payload, defaultResponse = Observable.empty(), endpoint?: string): Observable<any> {
