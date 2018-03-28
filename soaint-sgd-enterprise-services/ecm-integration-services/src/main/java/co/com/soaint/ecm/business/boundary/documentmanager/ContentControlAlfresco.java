@@ -1139,7 +1139,7 @@ public class ContentControlAlfresco implements ContentControl {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         List<DocumentoDTO> documentoDTOList = new ArrayList<>();
-        Carpeta carpetaTarget;
+        Carpeta carpetaTarget = new Carpeta();
         String idDocumento;
         if (comunicacionOficialFolder.isPresent()) {
             logger.info(EXISTE_CARPETA + comunicacionOficialFolder.get().getFolder().getName());
@@ -1153,13 +1153,15 @@ public class ContentControlAlfresco implements ContentControl {
             if (!comunicacionOficialInOut.isPresent()) {
 
                 Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), comunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
+                if (carpetaCreada!=null){
                 logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
+                    List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
 
-                List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
+                    Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
+                            .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
+                    carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada, null));
+                }
 
-                Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
-                        .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(carpetaCreada, tipoComunicacionSelector + year, "11", CLASE_SUBSERIE, carpetaCreada, null));
 
             } else {
                 logger.info(EXISTE_CARPETA + comunicacionOficialInOut.get().getFolder().getName());
