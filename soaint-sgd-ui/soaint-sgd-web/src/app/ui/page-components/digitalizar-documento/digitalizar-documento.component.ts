@@ -15,6 +15,7 @@ import {PushNotificationAction} from '../../../infrastructure/state-management/n
 import {isArray, isNullOrUndefined} from 'util';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {empty} from 'rxjs/Observer';
+import * as codigos from '../../../shared/bussiness-properties/radicacion-properties';
 
 enum UploadStatus {
   CLEAN = 0,
@@ -105,9 +106,18 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           _dependencia = result[0];
+          let _agente = this.comunicacion.agenteList.find(a => a.codTipAgent === codigos.TIPO_AGENTE_REMITENTE);
+          formData.append('tipoComunicacion', this.correspondencia.codTipoCmc);
+          formData.append('fileName', this.correspondencia.nroRadicado);
+          formData.append('principalFileName', this.principalFile);
+          if(_dependencia) {
+            formData.append('sede', _dependencia.nomSede);
+            formData.append('dependencia', _dependencia.nombre);
+          }
+          if(_agente)
+            formData.append('nombreRemitente', _agente.nombre);
           return this._api.sendFile(
-            this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,
-              this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
+            this.uploadUrl, formData, []);
         }
       ).subscribe(response => {
         const data = response;
