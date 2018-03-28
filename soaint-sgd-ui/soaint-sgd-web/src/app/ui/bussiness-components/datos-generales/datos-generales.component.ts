@@ -43,7 +43,7 @@ export class DatosGeneralesComponent implements OnInit {
   tipoComunicacionSuggestions$: Observable<any[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
-  soporteAnexosSuggestions$: Observable<any[]>;
+  soporteAnexosSuggestions$: Observable<ConstanteDTO[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
   metricasTiempoTipologia$: Observable<any>;
@@ -155,12 +155,14 @@ export class DatosGeneralesComponent implements OnInit {
     if (!tipoAnexo) {
       return;
     }
-    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
+    const newAnexo = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
     this.descripcionAnexos = [
-      ...insertVal,
+      ...newAnexo,
       ...this.descripcionAnexos.filter(
-        value => value.tipoAnexo.nombre !== tipoAnexo.nombre ||
-          value.descripcion !== descripcion
+        value =>
+          value.tipoAnexo.nombre !== tipoAnexo.nombre ||
+          // value.descripcion !== descripcion &&
+          value.soporteAnexo.nombre !== soporteAnexo.nombre
       )
     ];
     this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);
