@@ -226,7 +226,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Objeto de tipo response que devuleve el documento
      */
     @Override
-    public MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException {
+    public MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) {
         logger.info(documentoDTO.toString());
         ArrayList<DocumentoDTO> versionesLista = new ArrayList<>();
         ArrayList<DocumentoDTO> documento = new ArrayList<>();
@@ -250,9 +250,10 @@ public class ContentControlAlfresco implements ContentControl {
                 file = convertInputStreamToFile(doc.getContentStream());
             }
             logger.info("Se procede a devolver el documento" + documentoDTO.getNombreDocumento());
-            byte[] data = FileUtils.readFileToByteArray(file);
-            documentoDTO1.setDocumento(data);
-
+            if (file != null) {
+                byte[] data = FileUtils.readFileToByteArray(file);
+                documentoDTO1.setDocumento(data);
+            }
             mensajeRespuesta.setCodMensaje("0000");
             mensajeRespuesta.setMensaje("Documento Retornado con exito");
             documento.add(documentoDTO1);
@@ -274,7 +275,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param versionesLista Listado por el que se va a buscar
      * @param version        Version del documento que se esta buscando
      * @return Objeto file
-     * @throws IOException
+     * @throws IOException Tipo de excepcion
      */
     private File getFile(DocumentoDTO documentoDTO, ArrayList<DocumentoDTO> versionesLista, Document version) throws IOException {
         File fileAux = null;
@@ -666,10 +667,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session   Objeto de conexion a Alfresco
      * @param documento DTO que contiene los metadatos el documento que se va a buscar
      * @return Devuelve el listado de documentos asociados al id de documento padre
-     * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento) throws IOException {
+    public MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento) {
 
         logger.info("Se entra al metodo obtenerDocumentosAdjuntos");
 
@@ -747,10 +747,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session Objeto de conexion a Alfresco
      * @param idDoc   Id Documento que se va pedir versiones
      * @return Devuelve el listado de versiones asociados al id de documento
-     * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc) throws IOException {
+    public MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc) {
 
         logger.info("Se entra al metodo obtenerVersionesDocumento");
 
@@ -776,7 +775,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (Exception e) {
             response.setCodMensaje("2222");
             response.setMensaje("Error en la obtención de las versiones del documento: " + e.getMessage());
-            response.setDocumentoDTOList(new ArrayList<DocumentoDTO>());
+            response.setDocumentoDTOList(new ArrayList<>());
             logger.error("Error en la obtención de las versiones del documento: ", e);
         }
         logger.info("Se devuelven las versiones del documento: ", versionesLista.toString());
@@ -793,10 +792,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param documento Objeto que contiene los metadatos del documento.
      * @param selector  Selector que dice donde se va a gauardar el documento
      * @return Devuelve el id de la carpeta creada
-     * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) throws IOException {
+    public MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documento, String selector) {
 
         logger.info("Se entra al metodo subirDocumentoPrincipalAdjunto");
 
@@ -827,7 +825,7 @@ public class ContentControlAlfresco implements ContentControl {
      *
      * @param session   Objeto de conexion a Alfresco
      * @param documento Objeto qeu contiene los datos del documento
-     * @return
+     * @return Mensaje de respuesta
      */
     @Override
     public MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento) {
@@ -849,10 +847,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param session     Objeto session
      * @param idDocumento Identificador del dcumento
      * @param carpetaLink Carpeta donde se va a crear el link
-     * @return
      */
 
-    public void crearLink(Session session, String idDocumento, Carpeta carpetaLink) {
+    private void crearLink(Session session, String idDocumento, Carpeta carpetaLink) {
 
         logger.info("Se entra al metodo crearLink");
 
@@ -879,10 +876,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param documento Documento que se va a subir/versionar
      * @param selector  parametro que indica donde se va a guardar el documento
      * @return Devuelve el id de la carpeta creada
-     * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) throws IOException {
+    public MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) {
 
         logger.info("Se entra al metodo subirVersionarDocumentoGenerado");
 
@@ -1150,14 +1146,13 @@ public class ContentControlAlfresco implements ContentControl {
 
             List<Carpeta> carpetasDeComunicacionOficial = obtenerCarpetasHijasDadoPadre(comunicacionOficialFolder.get());
 
-            String finalComunicacionOficial = comunicacionOficial;
             Optional<Carpeta> comunicacionOficialInOut = carpetasDeComunicacionOficial.stream()
-                    .filter(p -> p.getFolder().getName().contains(finalComunicacionOficial)).findFirst();
+                    .filter(p -> p.getFolder().getName().contains(comunicacionOficial)).findFirst();
 
 
             if (!comunicacionOficialInOut.isPresent()) {
 
-                Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), finalComunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
+                Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), comunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
                 logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
 
                 List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
@@ -1219,10 +1214,9 @@ public class ContentControlAlfresco implements ContentControl {
      * @param nroRadicado         Documento que se va a subir
      * @param tipologiaDocumental Tipo de comunicacion que puede ser Externa o Interna
      * @return Devuelve el id de la carpeta creada
-     * @throws IOException Excepcion ante errores de entrada/salida
      */
     @Override
-    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws IOException {
+    public MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) {
         logger.info("### Modificar documento: " + idDocumento);
         MensajeRespuesta response = new MensajeRespuesta();
         try {
