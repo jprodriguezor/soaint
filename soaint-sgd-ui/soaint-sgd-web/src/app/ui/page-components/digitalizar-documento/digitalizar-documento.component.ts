@@ -183,6 +183,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   }
 
   onClear(event) {
+
+    this.principalFile = undefined;
+
     this.changeDetection.detectChanges();
     this.status = UploadStatus.CLEAN;
     this.uploadDisabled = false;
@@ -201,6 +204,12 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   }
 
   onSelect(event) {
+
+    if(this.principalFile === undefined){
+
+      this.principalFile = this.uploader.files[0].name;
+    }
+
     this.previewWasRefreshed = false;
     for (const file of event.files) {
       this.uploadFiles.push(file);
