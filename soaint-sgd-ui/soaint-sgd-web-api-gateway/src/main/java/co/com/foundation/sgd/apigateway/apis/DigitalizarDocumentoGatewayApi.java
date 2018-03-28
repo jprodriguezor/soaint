@@ -38,7 +38,7 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @POST
-    @Path("/{tipoComunicacion}/{fileName}/{principalFileName}/{sede}/{dependencia}/{nombreRemitente}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response digitalizar(MultipartFormDataInput formDataInput) {
