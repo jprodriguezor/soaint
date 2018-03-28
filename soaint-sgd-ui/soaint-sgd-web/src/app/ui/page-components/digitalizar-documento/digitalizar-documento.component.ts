@@ -127,6 +127,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             }));
             this.uploadDisabled = true;
             this.principalFileId = data[0];
+            this.changeDetection.detectChanges();
           }
         } else {
           switch (data.codMensaje) {
@@ -187,7 +188,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
     this.status = UploadStatus.CLEAN;
     this.uploadDisabled = false;
     console.log('DOCUMENTO PRINCIPAL ELIMINADO...');
-    if (null !== this.principalFileId) {
+/*    if (null !== this.principalFileId) {
       const deleteUrl = environment.digitalizar_doc_upload_endpoint + '/eliminarprincipal/' + this.principalFileId;
       this._api.post(deleteUrl, {}).subscribe(data => {
         if (data.ok) {
@@ -197,7 +198,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           }));
         }
       });
-    }
+    }*/
   }
 
   onSelect(event) {
