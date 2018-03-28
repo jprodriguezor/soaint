@@ -235,15 +235,16 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             logger.info("Se entra al metodo de descargar el documento");
             Document doc = (Document) session.getObject(documentoDTO.getIdDocumento());
-            File file;
+            File file = null;
 
             if (documentoDTO.getVersionLabel() != null) {
                 List<Document> versions = doc.getAllVersions();
                 //Filtrar la version correcta dentro de las versiones del documento para obtener el file
                 Optional<Document> version = versions.stream()
                         .filter(p -> p.getVersionLabel().equals(documentoDTO.getVersionLabel())).findFirst();
-
-                file = getFile(documentoDTO, versionesLista, version.get());
+                if (version.isPresent()) {
+                    file = getFile(documentoDTO, versionesLista, version.get());
+                }
 
             } else {
                 file = convertInputStreamToFile(doc.getContentStream());
@@ -824,19 +825,19 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
      *
-     * @param session        Objeto de conexion a Alfresco
-     * @param documento      Objeto qeu contiene los datos del documento
+     * @param session   Objeto de conexion a Alfresco
+     * @param documento Objeto qeu contiene los datos del documento
      * @return
      */
     @Override
-    public MensajeRespuesta crearLinkDocumentosApoyo(Session session,DocumentoDTO documento) {
+    public MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento) {
         logger.info("Se entra al metodo crearLinkDocumentosApoyo");
 
         MensajeRespuesta response = new MensajeRespuesta();
 
         Map<String, Object> properties = new HashMap<>();
 
-            buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
+        buscarCrearCarpeta(session, documento, response, documento.getDocumento(), properties, DOCUMENTOS_APOYO);
 
         logger.info("Se sale del metodo crearLinkDocumentosApoyo");
         return response;
@@ -986,14 +987,14 @@ public class ContentControlAlfresco implements ContentControl {
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
                     carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
 
-                    if (PRODUCCION_DOCUMENTAL.equals(carpetaCrearBuscar)){
-                    idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
-                    //Creando el mensaje de respuesta
-                    response.setCodMensaje("0000");
-                    response.setMensaje("Documento añadido correctamente");
-                    logger.info(AVISO_CREA_DOC_ID + idDocumento);
-                    }else if (DOCUMENTOS_APOYO.equals(carpetaCrearBuscar)){
-                        crearLink(session,documentoDTO.getIdDocumento(),carpetaTarget);
+                    if (PRODUCCION_DOCUMENTAL.equals(carpetaCrearBuscar)) {
+                        idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
+                        //Creando el mensaje de respuesta
+                        response.setCodMensaje("0000");
+                        response.setMensaje("Documento añadido correctamente");
+                        logger.info(AVISO_CREA_DOC_ID + idDocumento);
+                    } else if (DOCUMENTOS_APOYO.equals(carpetaCrearBuscar)) {
+                        crearLink(session, documentoDTO.getIdDocumento(), carpetaTarget);
                         response.setCodMensaje("0000");
                         response.setMensaje("Link añadido correctamente");
                     }
@@ -1024,13 +1025,15 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     private Carpeta getCarpeta(String carpetaCrearBuscar, Optional<Carpeta> dependencia, int year, Optional<Carpeta> produccionDocumental) {
-        Carpeta carpetaTarget;
+        Carpeta carpetaTarget = null;
         if (produccionDocumental.isPresent()) {
             logger.info(EXISTE_CARPETA + carpetaCrearBuscar + year);
             carpetaTarget = produccionDocumental.get();
         } else {
             logger.info("Se crea la Carpeta: " + carpetaCrearBuscar + year);
-            carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get(), null);
+            if (dependencia.isPresent()) {
+                carpetaTarget = crearCarpeta(dependencia.get(), carpetaCrearBuscar + year, "11", CLASE_SUBSERIE, dependencia.get(), null);
+            }
         }
         return carpetaTarget;
     }
@@ -1339,9 +1342,8 @@ public class ContentControlAlfresco implements ContentControl {
 
         File file = File.createTempFile(contentStream.getFileName(), "");
 
-        OutputStream out = null;
-        try (InputStream inputStream = contentStream.getStream()) {
-            out = new FileOutputStream(file);
+        try (InputStream inputStream = contentStream.getStream(); OutputStream out = new FileOutputStream(file)) {
+
 
             int read;
             byte[] bytes = new byte[1024];
@@ -1352,11 +1354,6 @@ public class ContentControlAlfresco implements ContentControl {
 
         } catch (IOException e) {
             logger.error("Error al convertir el contentStream a File", e);
-        } finally {
-            if (out != null) {
-                out.flush();
-                out.close();
-            }
         }
 
         file.deleteOnExit();
