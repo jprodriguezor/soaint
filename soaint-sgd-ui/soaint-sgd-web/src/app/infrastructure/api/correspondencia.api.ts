@@ -13,8 +13,8 @@ export class CorrespondenciaApiService {
   constructor(private _api: ApiBase) {
   }
 
-  ListarAnexos(nroRadicado: string): Observable<AnexoFullDTO[]> {
-    return this._api.list(environment.listarAnexos_endpoint + nroRadicado)
-    .map((resp) => resp);
-  }
+  // ListarAnexos(nroRadicado: string): Observable<AnexoFullDTO[]> {
+  //   return this._api.list(environment.listarAnexos_endpoint + nroRadicado)
+  //   .map((resp) => resp);
+  // }
 }

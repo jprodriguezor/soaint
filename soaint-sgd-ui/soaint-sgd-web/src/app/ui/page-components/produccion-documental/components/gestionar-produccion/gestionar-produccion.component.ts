@@ -52,6 +52,8 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
               private _changeDetectorRef: ChangeDetectorRef,
               private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
               private _funcionarioSandBox: FuncionarioSandbox) {
+
+        this.initForm();
   }
 
   initForm() {
@@ -67,7 +69,6 @@ export class PDGestionarProduccionComponent implements OnInit, OnDestroy {
         this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
             this.funcionarioLog = funcionario;
         });
-        this.initForm();
         this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
         this.roles$ = this._produccionDocumentalApi.getRoles({}).map( roles => {
           return roles.filter(role => role.rol !== 'administrador').concat();
