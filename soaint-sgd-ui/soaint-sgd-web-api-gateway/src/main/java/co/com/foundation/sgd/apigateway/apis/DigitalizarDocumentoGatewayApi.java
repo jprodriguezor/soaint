@@ -46,7 +46,7 @@ public class DigitalizarDocumentoGatewayApi {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
 
         List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> _files = ECMUtils.findFiles(formDataInput);
+        Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
         DocumentoDTO documentoECMDTO = new DocumentoDTO();
         MensajeRespuesta parentResponse = null;
 
@@ -55,7 +55,7 @@ public class DigitalizarDocumentoGatewayApi {
             String dependencia = formDataInput.getFormDataPart("dependencia", String.class, null);
             String sede = formDataInput.getFormDataPart("sede", String.class, null);
             String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
-            String fileName = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
+            String nroRadicado = formDataInput.getFormDataPart("nroRadicado", String.class, null);
             InputPart parent = _files.get(principalFileName);
             InputStream result = parent.getBody(InputStream.class, null);
             documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
@@ -63,9 +63,10 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setSede(sede);
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
+            documentoECMDTO.setNroRadicado(nroRadicado);
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
-            _files.remove(fileName);
+            _files.remove(principalFileName);
             if ("0000".equals(parentResponse.getCodMensaje())){
                 List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
                 if(null != documentoDTO && !documentoDTO.isEmpty()) {
@@ -81,7 +82,7 @@ public class DigitalizarDocumentoGatewayApi {
                     return Response.status(Response.Status.OK).entity(ecmIds).build();
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
