@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -39,6 +40,7 @@ import java.util.*;
 @BusinessControl
 @NoArgsConstructor
 public class ContentControlAlfresco implements ContentControl {
+    public static final String CMCOR_X_TIPO = "cmcor:xTipo";
     @Autowired
     Configuracion configuracion;
 
@@ -674,7 +676,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setIdDocumento(idDocumento);
                 if (qResult.getPropertyValueByQueryName("cmcor:xIdentificadorDocPrincipal") != null) {
                     documentoDTO.setIdDocumentoPadre(documento.getIdDocumento());
-                    documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName("cmcor:TipologiaDocumental").toString());
+                    documentoDTO.setTipoPadreAdjunto(qResult.getPropertyValueByQueryName(CMCOR_X_TIPO).toString());
                 } else {
                     documentoDTO.setTipoPadreAdjunto("Principal");
                 }
@@ -684,7 +686,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
                 documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
-                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName("cmcor:xTipo").toString());
+                documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(CMCOR_X_TIPO).toString());
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente") != null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : "");
 
                 documentosLista.add(documentoDTO);
@@ -711,12 +713,12 @@ public class ContentControlAlfresco implements ContentControl {
 
         String principalAdjuntos = "SELECT * FROM cmcor:CM_DocumentoPersonalizado ";
         if (documento.getIdDocumento() != null) {
-            principalAdjuntos += "WHERE(  cmis:objectId = '" + documento.getIdDocumento() + "'" + " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento() + "')";
-            if (documento.getNroRadicado() != null) {
+            principalAdjuntos += "WHERE(cmis:objectId = '" + documento.getIdDocumento() + "'" + " OR cmcor:xIdentificadorDocPrincipal = '" + documento.getIdDocumento() + "')";
+            if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
                 principalAdjuntos += " AND cmcor:NroRadicado = '" + documento.getNroRadicado();
             }
         } else {
-            if (documento.getNroRadicado() != null) {
+            if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
                 principalAdjuntos += " WHERE  cmcor:NroRadicado = '" + documento.getNroRadicado() + "'";
             }
         }
@@ -789,7 +791,7 @@ public class ContentControlAlfresco implements ContentControl {
         //En caso de que sea documento adjunto se le pone el id del documento principal dentro del parametro cmcor:xIdentificadorDocPrincipal
         if (documento.getIdDocumentoPadre() != null) {
             properties.put("cmcor:xIdentificadorDocPrincipal", documento.getIdDocumentoPadre());
-            properties.put("cmcor:TipologiaDocumental", "Anexo");
+            properties.put(CMCOR_X_TIPO, "Anexo");
         }
 
         properties.put(PropertyIds.NAME, documento.getNombreDocumento());
@@ -1156,7 +1158,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> updateProperties = new HashMap<>();
             updateProperties.put("cmcor:NroRadicado", nroRadicado);
             updateProperties.put("cmcor:NombreRemitente", nombreRemitente);
-            updateProperties.put("cmcor:TipologiaDocumental", tipologiaDocumental);
+            updateProperties.put(CMCOR_X_TIPO, tipologiaDocumental);
 
             CmisObject object = session.getObject(idDoc);
             object.updateProperties(updateProperties);
