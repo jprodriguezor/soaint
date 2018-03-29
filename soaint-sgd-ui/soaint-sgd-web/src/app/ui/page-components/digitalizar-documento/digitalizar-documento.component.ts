@@ -113,7 +113,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           });
           let _agente = this.comunicacion.agenteList.find(a => a.codTipAgent === codigos.TIPO_AGENTE_REMITENTE);
           formData.append('tipoComunicacion', this.correspondencia.codTipoCmc);
-          formData.append('fileName', this.correspondencia.nroRadicado);
+          formData.append('nroRadicado', this.correspondencia.nroRadicado);
           formData.append('principalFileName', this.principalFile);
           if(_dependencia) {
             formData.append('sede', _dependencia.nomSede);
