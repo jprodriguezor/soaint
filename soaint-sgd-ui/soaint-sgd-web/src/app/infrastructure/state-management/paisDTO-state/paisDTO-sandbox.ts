@@ -25,7 +25,7 @@ export class Sandbox extends CacheResponse {
          })
        };
 
-       this.payloadsCached.push({payload:payload,response:paises});
+       this.cacheResponse(payload,paises);
 
        return paises;
      }));

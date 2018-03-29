@@ -251,8 +251,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
      if(this.solicitudes.length > 0){
 
-       console.log(this.solicitudes);
-       this._solicitudUDService.solicitarUnidadDocumental(this.solicitudes);
+         this._solicitudUDService.solicitarUnidadDocumental(this.solicitudes);
      }
    }
 

@@ -182,6 +182,17 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
   }
 
   assignComunications() {
+
+    if(this.selectedFuncionarios.length > this.selectedComunications.length) {
+
+      this._store.dispatch(new PushNotificationAction({
+        severity: 'error',
+        summary: 'La cantidad de registros seleccionados es menor a la cantidad de funcionarios para realizar la asignación.'
+      }));
+
+      return;
+    }
+
     this._asignacionSandbox.assignDispatch({
       asignaciones: {
         asignaciones: this.asignationType === 'auto' ? this.createAsignacionesAuto() : this.createAsignaciones()

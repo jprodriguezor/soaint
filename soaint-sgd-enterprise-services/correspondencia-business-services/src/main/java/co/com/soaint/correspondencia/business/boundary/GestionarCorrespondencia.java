@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.business.boundary;
 
 import co.com.soaint.correspondencia.business.control.CorrespondenciaControl;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
@@ -52,6 +53,17 @@ public class GestionarCorrespondencia {
      */
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         return control.listarCorrespondenciaByNroRadicado(nroRadicado);
+    }
+
+    /**
+     *
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionOficialFullDTO listarFullCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        return control.listarFullCorrespondenciaByNroRadicado(nroRadicado);
     }
 
     /**

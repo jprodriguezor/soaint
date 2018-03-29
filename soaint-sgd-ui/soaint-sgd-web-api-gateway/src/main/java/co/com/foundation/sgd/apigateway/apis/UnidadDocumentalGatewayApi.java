@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +55,17 @@ public class UnidadDocumentalGatewayApi {
         String responseContent = response.readEntity(String.class);
         log.info("UnidadDocumentalGatewayApi - [content] : " + responseContent);
 
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/listar-unidad-documental")
+    @JWTTokenSecurity
+    public Response listarUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO ) {
+
+        log.info("ListarUnidadesDocumentalesGatewayApi - [trafic] - listing unidades documentales");
+        Response response = ecmClient.listarUnidadesDocumentales(unidadDocumentalDTO);
+        String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 

@@ -1,4 +1,6 @@
-<form [formGroup]="form">
+
+
+<form [formGroup]="form" *ngIf="showForm()">
   <p-panel header="Distribucion" [style]="{border: 'none'}">
     <div class="ui-g ui-fluid">
       <div class="ui-sm-12 ui-md-4 ui-g-4 ui-lg-4">
@@ -6,7 +8,8 @@
           <p-radioButton name="distribucion"
                          label="Física"
                          value="física"
-                         formControlName="distribucion">
+                         formControlName="distribucion"
+                         (onClick)="dispatchSelectDistElectronica(false)">
           </p-radioButton>
         </div>
       </div>
@@ -15,7 +18,7 @@
           <p-radioButton name="distribucion"
                          label="Electrónica"
                          value="eléctronica"
-                         formControlName="distribucion">
+                         formControlName="distribucion"  (onClick)="dispatchSelectDistElectronica(true)">
           </p-radioButton>
         </div>
       </div>
@@ -36,7 +39,6 @@
     </div>
   </p-panel>
 </form>
-
 
 <!--------------------------------------------- TABLAS  ------------------------->
 

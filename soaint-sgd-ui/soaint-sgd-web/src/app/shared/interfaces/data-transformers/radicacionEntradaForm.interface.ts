@@ -1,34 +1,7 @@
-import {TareaDTO} from '../../../domain/tareaDTO';
-import {ConstanteDTO} from '../../../domain/constanteDTO';
+import {RadicacionFormInterface} from "./radicacionForm.interface";
+import {ConstanteDTO} from "../../../domain/constanteDTO";
 
-export interface RadicacionEntradaFormInterface {
-  destinatario?: {
-    tipoDestinatario: any,
-    sedeAdministrativa: any,
-    dependenciaGrupo: any,
-    destinatarioPrincipal: any
-  },
-  generales: {
-    fechaRadicacion: any,
-    nroRadicado: any,
-    tipoComunicacion: any,
-    medioRecepcion: any
-    empresaMensajeria: any,
-    numeroGuia: any,
-    tipologiaDocumental: any,
-    unidadTiempo: any,
-    numeroFolio: any,
-    inicioConteo: any,
-    reqDistFisica: any,
-    reqDigit: any,
-    reqDigitInmediata?: any,
-    tiempoRespuesta: any,
-    asunto: any,
-    radicadoReferido?: any,
-    tipoAnexos?: any,
-    tipoAnexosDescripcion?: any,
-    hasAnexos?: any
-  },
+export interface RadicacionEntradaFormInterface extends  RadicacionFormInterface{
   datosContactos?: Array<{
     tipoVia?: any,
     noViaPrincipal?: any,
@@ -52,19 +25,12 @@ export interface RadicacionEntradaFormInterface {
     provinciaEstado?: any,
     ciudad?: any,
   }>,
-  radicadosReferidos: Array<{ nombre: string }>,
-  remitente: {
-    tipoPersona?: any,
-    nit?: any,
-    actuaCalidad?: any,
-    tipoDocumento?: any,
-    razonSocial?: any,
-    nombreApellidos?: any,
-    nroDocumentoIdentidad?: any,
-    sedeAdministrativa?: any,
-    dependenciaGrupo?: any
+  destinatario?: {
+    tipoDestinatario: any,
+    sedeAdministrativa: any,
+    dependenciaGrupo: any,
+    destinatarioPrincipal: any
   },
-  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }>,
-  agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }>
-  task?: TareaDTO
+  agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }>,
+
 }

@@ -31,7 +31,7 @@ public class MensajeRespuesta {
     private String mensaje;
     private List<DocumentoDTO> documentoDTOList;
     private List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS;
-    private Map<String, Object> response = new HashMap<>();
+    private Map<String, Object> response;
 
     public MensajeRespuesta(String codMensaje, String mensaje, List<DocumentoDTO> documentoDTOList,
                             List<ContenidoDependenciaTrdDTO> contenidoDependenciaTrdDTOS, Map<String, Object> response) {

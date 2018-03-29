@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -16,7 +16,7 @@ import {AnexoDTO} from '../../models/DocumentoDTO';
 import {Sandbox as DependenciaSandbox} from '../../../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {getActiveTask} from '../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {StatusDTO} from '../../models/StatusDTO';
+import { StatusDTO } from '../../models/StatusDTO';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
@@ -66,6 +66,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   nombreSede = '';
   nombreDependencia = '';
 
+  @Input()
+  documentoRadicadoUrl: string;
+
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _dependenciaSandbox: DependenciaSandbox,
@@ -106,6 +109,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   updateStatus(currentStatus: StatusDTO) {
     if (currentStatus.datosGenerales.tipoComunicacion) {
       this.form.get('tipoComunicacion').setValue(currentStatus.datosGenerales.tipoComunicacion);
+      this.form.get('tipoPlantilla').setValue(currentStatus.datosGenerales.tipoPlantilla);
       this.pdMessageService.sendMessage(currentStatus.datosGenerales.tipoComunicacion);
     }
     this.listaVersionesDocumento = [...currentStatus.datosGenerales.listaVersionesDocumento];
@@ -147,7 +151,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   obtenerDocumentoRadicado() {
-    this.messagingService.publish(new DocumentDownloaded(''));
+    if (this.documentoRadicadoUrl) {
+      this.showPdfViewer(this.documentoRadicadoUrl);
+    } else {
+      console.log('No se pudo mostrar el documento del radicado asociado');
+    }
   }
 
   loadHtmlVersion() {
@@ -177,8 +185,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
 
     if ('pdf' === this.pd_currentVersion.tipo) {
-        this.documentPreviewUrl = this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version});
-        this.documentPreview = true;
+        this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version}));
     } else {
         this.loadHtmlVersion();
     }
@@ -273,9 +280,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
             docEcmResp = resp.documentoDTOList[0];
             anexo.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
             anexo.descripcion = docEcmResp && docEcmResp.nombreDocumento || null;
-            const versiones = [...this.listaAnexos];
-            versiones.push(anexo);
-            this.listaAnexos = [...versiones];
+            this.addAnexoToList(anexo);
             this.messagingService.publish(new DocumentUploaded(docEcmResp));
           } else {
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
@@ -286,14 +291,24 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       anexoUploader.clear();
       anexoUploader.basicFileInput.nativeElement.value = '';
     } else {
-      this.addToList(anexo, 'listaAnexos');
+      this.addAnexoToList(anexo);
     }
+  }
+
+  addAnexoToList(anexo: AnexoDTO) {
+    this.listaAnexos = [
+      ...[anexo],
+      ...this.listaAnexos.filter(
+            value =>
+            value.tipo.nombre !== anexo.tipo.nombre ||
+            value.soporte !== anexo.soporte
+      )
+    ];
   }
 
   mostrarAnexo(index: number) {
     const anexo = this.listaAnexos[index];
-    this.documentPreviewUrl = this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id});
-    this.documentPreview = true;
+    this.showPdfViewer(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
 
@@ -310,6 +325,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
       );
     }
+  }
+
+  showPdfViewer(pdfUrl: string) {
+    this.documentPreviewUrl = pdfUrl;
+    this.documentPreview = true;
   }
 
   tipoComunicacionChange(event) {
@@ -376,9 +396,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   hidePdf() {
+    this.documentPreviewUrl = '';
     this.documentLoaded = false;
     this.documentPreview = false;
-    this.documentPreviewUrl = '';
   }
 
   previewDocument(file) {

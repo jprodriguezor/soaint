@@ -1,6 +1,6 @@
 export interface ConstanteDTO {
-  id: number;
-  codigo: string;
+  id?: number;
+  codigo?: string;
   codPadre?: string;
   nombre: string;
 }

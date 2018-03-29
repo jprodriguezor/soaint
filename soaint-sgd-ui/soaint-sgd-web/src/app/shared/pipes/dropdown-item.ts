@@ -13,6 +13,18 @@ export class DropdownItemPipe implements PipeTransform {
   }
 }
 
+@Pipe({name: 'dropdownItemSingle'})
+export class DropdownItemPipeSingle implements PipeTransform {
+  transform(value, args?) {
+    // ES6 array destructuring
+    if (value) {
+      return value.map(item => {
+        return {label: item.nombre, value: item.codigo};
+      });
+    }
+  }
+}
+
 @Pipe({name: 'dropdownItemFullName'})
 export class DropdownItemPipeFullName implements PipeTransform {
   transform(value, args?) {

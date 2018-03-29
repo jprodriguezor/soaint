@@ -1,0 +1,402 @@
+<form *ngIf="state.form" [formGroup]="state.form">
+  <div class="ui-g ui-fluid">
+    <div class="card card-w-title">
+      <h1>Datos Generales</h1>
+      <div class="ui-g ui-fluid">
+
+        <!--fechaRadicacion-->
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
+             *ngIf="state.form.get('fechaRadicacion').value">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="fechaRadicacion" readonly formControlName="fechaRadicacion">
+                    <label style="color: blue">Fecha y Hora de Radicación</label>
+                  </span>
+            </div>
+          </div>
+        </div>
+
+        <!--nroRadicado-->
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px"
+             *ngIf="state.form.get('nroRadicado').value">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <input type="text" pInputText id="nroRadicado" readonly formControlName="nroRadicado">
+                    <label style="color: blue">Nro Radicado</label>
+                  </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Tipo Comunicacion-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipoComunicacion"><span class="text-danger">*</span>Tipo de comunicación</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="state.tipoComunicacionSuggestions$ | async | dropdownItem"
+                          id="tipoComunicacion"
+                          formControlName="tipoComunicacion"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="state.listenForBlurEvents('tipoComunicacion')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="state.validations.tipoComunicacion">
+                {{ state.validations.tipoComunicacion }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Tipologia Documental-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="tipologiaDocumental"><span class="text-danger">*</span>Tipología documental</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="state.tipologiaDocumentalSuggestions$ | async | dropdownItem"
+                          id="tipologiaDocumental"
+                          formControlName="tipologiaDocumental"
+                          placeholder="Seleccione"
+                          [filter]="true"
+                          [autoWidth]="false"
+                          (onBlur)="state.listenForBlurEvents('tipologiaDocumental')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="state.validations.tipologiaDocumental">
+                {{ state.validations.tipologiaDocumental }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Medios Recepcion-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="medioRecepcion"><span class="text-danger">*</span>Medio de recepción</label>
+            </div>
+            <div class="ui-g-12 md-dropdownfield">
+              <p-dropdown [options]="state.medioRecepcionSuggestions$ | async | dropdownItem"
+                          [ngModel]="mediosRecepcionInput"
+                          id="medioRecepcion"
+                          formControlName="medioRecepcion"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+                          (onBlur)="state.listenForBlurEvents('medioRecepcion')"
+              >
+              </p-dropdown>
+
+              <div class="ui-message ui-messages-error"
+                   *ngIf="state.validations.medioRecepcion">
+                {{ state.validations.medioRecepcion }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Empresa de mensajeria-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!state.visibility.empresaMensajeria">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText
+                     id="empresaMensajeria"
+                     formControlName="empresaMensajeria"
+                     [dynamicDisable]="!state.visibility.empresaMensajeria"
+                     (blur)="state.listenForBlurEvents('empresaMensajeria')"
+              >
+              <label for="empresaMensajeria"><span class="text-danger">*</span>Empresa de mensajería</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="state.validations.empresaMensajeria">
+                 {{ state.validations.empresaMensajeria }}
+              </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Numero Guia-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" [hidden]="!state.visibility.empresaMensajeria">
+          <div class="ui-g form-group" style="padding-top: 40px">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+              <input type="text" pInputText
+                     id="numeroGuia"
+                     formControlName="numeroGuia"
+                     [dynamicDisable]="!state.visibility.numeroGuia"
+                     (blur)="state.listenForBlurEvents('numeroGuia')"
+              >
+              <label for="empresaMensajeria"><span class="text-danger">*</span>Número guía</label>
+
+                 <div class="ui-message ui-messages-error"
+                      *ngIf="state.validations.numeroGuia">
+                 {{ state.validations.numeroGuia }}
+              </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Tiempo Respuesta-->
+        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+                  <span class="md-inputfield">
+                    <p-spinner id="tiempoRespuesta" formControlName="tiempoRespuesta" [disabled]="true"
+                              ></p-spinner>
+                    <label>Tiempo de respuesta</label>
+                  </span>
+            </div>
+          </div>
+        </div>
+
+        <!--Unidad de Tiempo-->
+        <div class="ui-sm-12 ui-md-6 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label for="unidadTiempo">Unidad de tiempo</label>
+            </div>
+            <div class="ui-g-12">
+              <p-dropdown [options]="state.unidadTiempoSuggestions$ | async | dropdownItem"
+                          [ngModel]="codUnidaTiempoMetricaTipologia$ | async"
+                          id="unidadTiempo"
+                          [disabled]="true"
+                          formControlName="unidadTiempo"
+                          placeholder="Seleccione"
+                          [autoWidth]="false"
+              >
+              </p-dropdown>
+
+            </div>
+          </div>
+        </div>
+
+        <!--Numero Folio-->
+        <div class="ui-sm-12 ui-g-6 ui-lg-6" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <span class="md-inputfield">
+                <p-spinner size="30" id="numeroFolio" formControlName="numeroFolio"
+                           (OnBlur)="state.listenForBlurEvents('numeroFolio')" [min]="0"></p-spinner>
+              <label><span class="text-danger">*</span>No. de folio</label>
+               <div class="ui-message ui-messages-error"
+                    *ngIf="state.validations.numeroFolio">
+                {{ state.validations.numeroFolio }}
+              </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="padding-top: 40px">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+          <span class="md-inputfield">
+          <input type="text" pInputText id="cantidadAnexos" readonly
+                 [value]="state.descripcionAnexos.length">
+          <label>Cantidad de Anexos</label>
+          </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
+
+              <p-radioButton name="cg" formControlName="reqDigit" [value]="1"
+                             label="Requiere digitalización"></p-radioButton>
+
+              <p-radioButton name="cg" formControlName="reqDigit" [value]="2" label="Adjuntar documento"
+                             [style]="{'margin-left':'10px'}"></p-radioButton>
+            </div>
+
+          </div>
+          <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
+            <div style="padding: 20px 0 0 10px">
+              <p-checkbox name="cg" label="Requiere distribución física" id="reqDistFisica"
+                          formControlName="reqDistFisica" binary="true"></p-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="ui-g ui-fluid" style="margin-top: 30px">
+
+        <!-- Radicados Referidos -->
+        <div class="ui-g-12" *ngIf="state.disabled" style="margin-top: 8px">
+
+          <div class="form-group" style="display: flex; margin: 16px">
+              <span class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                  <input type="text" pInputText
+                         id="radicadoReferido"
+                         formControlName="radicadoReferido"
+                  >
+                  <label>Radicados Referidos</label>
+              </span>
+
+            <span style="float: right">
+                 <button pButton type="button" label="Agregar" style="width: auto; margin-left: 12px"
+                         (click)="state.addRadicadosReferidos()" *ngIf="state.disabled"
+                         [disabled]="!state.form.get('radicadoReferido').value">
+
+                </button>
+              </span>
+
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-12 padding-12">
+
+          <p-dataTable selectionMode="single"
+                       [paginator]="true"
+                       [rows]="10"
+                       [responsive]="true"
+                       [value]="state.radicadosReferidos"
+                       emptyMessage="No se encontraron resultados"
+          >
+            <!--Header-->
+            <p-header> Radicados referidos</p-header>
+            <!--End Header-->
+
+            <!--Body-->
+            <p-column field="nombre" header="Nombre" [sortable]="true"></p-column>
+            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}">
+              <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
+                <button type="button" icon="ui-icon-close" pButton (click)="state.deleteRadicadoReferido(i)"
+                        class="ui-button ui-button-icon ui-button-danger"
+                        *ngIf="state.disabled"
+                ></button>
+              </ng-template>
+            </p-column>
+            <!--End Body-->
+          </p-dataTable>
+        </div>
+
+        <div class="ui-g-12 ui-lg-12">
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <label><span class="text-danger">*</span>Asunto</label>
+            </div>
+            <div class="ui-g-12 md-inputfield">
+              <textarea [rows]="3" pInputTextarea placeholder="Descripción"
+                        autoResize="true" formControlName="asunto"
+                        (blur)="state.listenForBlurEvents('asunto')"
+              ></textarea>
+              <div class="ui-message ui-messages-error"
+                   *ngIf="state.validations.asunto">
+                {{ state.validations.asunto }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card card-w-title">
+      <h1>Descripción anexos</h1>
+
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexos">Tipo anexos</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="state.tipoAnexosSuggestions$ | async | dropdownItemSingle"
+                        id="tipoAnexos"
+                        placeholder="Seleccione"
+                        formControlName="tipoAnexos"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexos">Soporte</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="state.soporteAnexosSuggestions$ | async | dropdownItemSingle"
+                        id="soporteAnexos"
+                        placeholder="Seleccione"
+                        formControlName="soporteAnexos"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-sm-12 ui-g-12 ui-g-12">
+        <div class="form-group" style="display: flex; margin: 16px">
+          <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+                 <textarea [rows]="3" pInputTextarea
+                           id="descripcionAnexos"
+                           placeholder="Descripción"
+                           autoResize="false"
+                           formControlName="tipoAnexosDescripcion"
+                 ></textarea>
+            <div class="ui-message ui-messages-error"
+                 *ngIf="state.validations.tipoAnexosDescripcion">
+              {{ state.validations.tipoAnexosDescripcion }}
+            </div>
+          </div>
+
+          <span style="float: right; margin-top: 30px">
+                  <button pButton type="button" label="Agregar"
+                          style="width: auto; margin-left: 12px;"
+                          *ngIf="state.disabled"
+                          [disabled]="true"
+                  ></button>
+              </span>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <p-dataTable selectionMode="single"
+                     [paginator]="true" [rows]="10"
+                     [responsive]="true"
+                     [value]="state.descripcionAnexos"
+                     inmutable="false"
+                     emptyMessage="No se encontraron resultados" >
+
+          <p-header> Listado de anexos</p-header>
+
+          <!--Body-->
+          <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
+          <p-column field="soporteAnexo.nombre" header="Soporte anexos" [sortable]="true"></p-column>
+          <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="state.disabled">
+            <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
+              <button type="button" icon="ui-icon-close" pButton
+                      class="ui-button ui-button-icon ui-button-danger"
+                      [disabled]="true"
+              ></button>
+            </ng-template>
+          </p-column>
+          <!--End Body-->
+        </p-dataTable>
+       </div>
+    </div>
+  </div>
+</form>

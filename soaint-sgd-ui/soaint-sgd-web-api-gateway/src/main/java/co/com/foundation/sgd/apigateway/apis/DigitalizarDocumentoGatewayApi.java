@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.util.GenericType;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,52 +43,56 @@ public class DigitalizarDocumentoGatewayApi {
     }
 
     @POST
-    @Path("/{tipoComunicacion}/{fileName}/{referidoList}/{principalFileName}/{sede}/{dependencia}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response digitalizar(@PathParam("tipoComunicacion") String tipoComunicacion, @PathParam("fileName") String fileName, @PathParam("referidoList") String[] referidoList,
-                                @PathParam("principalFileName") String principalFileName, @PathParam("sede") String sede,
-                                @PathParam("dependencia") String dependencia, MultipartFormDataInput files) {
+    public Response digitalizar(MultipartFormDataInput formDataInput) {
 
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
 
         List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> _files = ECMUtils.findFiles(files);
-        InputPart parent = _files.get(principalFileName);
+        Map<String,InputPart> _files = ECMUtils.findFiles(formDataInput);
         DocumentoDTO documentoECMDTO = new DocumentoDTO();
-        try {
+        MensajeRespuesta parentResponse = null;
 
+        try {
+            String principalFileName = formDataInput.getFormDataPart("principalFileName", String.class, null);
+            String dependencia = formDataInput.getFormDataPart("dependencia", String.class, null);
+            String sede = formDataInput.getFormDataPart("sede", String.class, null);
+            String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
+            String fileName = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
+            List<String> referidoList = new ArrayList<>();
+            for(InputPart referido: formDataInput.getFormDataMap().get("referidoList")) {
+                referidoList.add(referido.getBodyAsString());
+            }
+            InputPart parent = _files.get(principalFileName);
+            InputStream result = parent.getBody(InputStream.class, null);
+            documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
             documentoECMDTO.setDependencia(dependencia);
             documentoECMDTO.setSede(sede);
-            InputStream result = parent.getBody(InputStream.class, null);
             documentoECMDTO.setTipoDocumento("application/pdf");
-            documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
             documentoECMDTO.setNombreDocumento(principalFileName);
-            documentoECMDTO.setNroRadicado(fileName);
-            documentoECMDTO.setNroRadicadoReferido(referidoList);
-
-        }catch (Exception e){
-            log.info("Error generando el documento ",e);
-        }
-
-
-        MensajeRespuesta parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
-        _files.remove(fileName);
-        if ("0000".equals(parentResponse.getCodMensaje())){
-            List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
-            if(null != documentoDTO && !documentoDTO.isEmpty()) {
-                ecmIds.add(documentoDTO.get(0).getIdDocumento());
-                if(!_files.isEmpty()){
-                    client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName,referidoList).forEach(mensajeRespuesta -> {
-                        if("0000".equals(mensajeRespuesta.getCodMensaje())){
-                            List<DocumentoDTO> documentoDTO1 =
-                                    (List<DocumentoDTO>) mensajeRespuesta.getDocumentoDTOList();
-                            ecmIds.add(documentoDTO1.get(0).getIdDocumento());
-                        }
-                    });
+            documentoECMDTO.setNroRadicadoReferido((String[]) referidoList.toArray());
+            documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
+            parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
+            _files.remove(fileName);
+            if ("0000".equals(parentResponse.getCodMensaje())){
+                List<DocumentoDTO> documentoDTO = parentResponse.getDocumentoDTOList();
+                if(null != documentoDTO && !documentoDTO.isEmpty()) {
+                    ecmIds.add(documentoDTO.get(0).getIdDocumento());
+                    if(!_files.isEmpty()){
+                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName, (String[]) referidoList.toArray()).forEach(mensajeRespuesta -> {
+                            if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                                List<DocumentoDTO> documentoDTO1 = mensajeRespuesta.getDocumentoDTOList();
+                                ecmIds.add(documentoDTO1.get(0).getIdDocumento());
+                            }
+                        });
+                    }
+                    return Response.status(Response.Status.OK).entity(ecmIds).build();
                 }
-                return Response.status(Response.Status.OK).entity(ecmIds).build();
             }
+        } catch (Exception e){
+
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
     }

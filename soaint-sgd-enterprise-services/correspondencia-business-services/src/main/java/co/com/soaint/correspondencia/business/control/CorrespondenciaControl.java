@@ -5,6 +5,8 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -228,6 +230,47 @@ public class CorrespondenciaControl {
             CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroRadicado);
 
             return consultarComunicacionOficialByCorrespondencia(correspondenciaDTO);
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ComunicacionOficialFullDTO listarFullCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            List<AgenteFullDTO> agentes = new ArrayList<>();
+            List<AnexoFullDTO> anexos = new ArrayList<>();
+            List<PpdDocumentoFullDTO> documentos = new ArrayList<>();
+            List<DatosContactoFullDTO> datosContacto = new ArrayList<>();
+            List<ReferidoDTO> referidos = new ArrayList<>();
+
+            ComunicacionOficialFullDTO comunicacionOficialFullDTO = ComunicacionOficialFullDTO.newInstance()
+                    .agentes(agentes)
+                    .anexos(anexos)
+                    .ppdDocumentos(documentos)
+                    .datosContactos(datosContacto)
+                    .referidos(referidos)
+                    .correspondencia(CorrespondenciaFullDTO.newInstance().build())
+                    .build();
+
+            return comunicacionOficialFullDTO;
+
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -474,6 +517,8 @@ public class CorrespondenciaControl {
                 .nroGuia(correspondenciaDTO.getNroGuia())
                 .fecVenGestion(correspondenciaDTO.getFecVenGestion())
                 .codEstado(correspondenciaDTO.getCodEstado())
+                .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
+                .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                 .corAgenteList(new ArrayList<>())
                 .dctAsignacionList(new ArrayList<>())
                 .dctAsigUltimoList(new ArrayList<>())

@@ -1,4 +1,3 @@
-import { ListadoUnidadDocumentalModel } from 'app/ui/page-components/unidades-documentales/models/listado.unidad.documental.model';
 import { FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
@@ -20,13 +19,14 @@ import { VariablesTareaDTO } from '../produccion-documental/models/StatusDTO';
 import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import { ConfirmationService } from 'primeng/primeng';
 import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.enum';
 
 
 
 
 export class StateUnidadDocumental implements TaskForm {
 
-    ListadoUnidadDocumental: Observable<ListadoUnidadDocumentalModel[]>;
+    ListadoUnidadDocumental$: Observable<UnidadDocumentalDTO[]> = Observable.empty();
     ListadoSeries: Observable<SerieDTO[]>;
     ListadoSubseries: SubserieDTO[];
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
@@ -74,7 +74,6 @@ export class StateUnidadDocumental implements TaskForm {
         nombre: [''],
         descriptor1: [''],
         descriptor2: [''],
-        accion: [''],
        });
     }
 
@@ -88,13 +87,16 @@ export class StateUnidadDocumental implements TaskForm {
             if (this.task.variables.codDependencia) {
                 const codDependencia = this.task.variables.codDependencia
                 this.GetListadosSeries(codDependencia);
-                this.GetListadoUnidadesDocumentales(codDependencia);
+                this.Buscar();
             }
         });
     }
 
     GetListadoUnidadesDocumentales(codDependencia: string) {
-        this.ListadoUnidadDocumental = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia});
+        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia})
+        .do( resp => {
+            console.log(resp);
+        });
     }
 
     GetDetalleUnidadUnidadDocumental(payload: any) {
@@ -148,16 +150,66 @@ export class StateUnidadDocumental implements TaskForm {
         this.AbrirDetalle = false;
     }
 
-    Buscar(form: FormControl) {
-
+    Buscar() {
+        this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar(this.GetBuscarPayload());
     }
 
     Agregar() {
+        const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
+        if (unidadesSeleccionadas.length) {
+            this.ListadoUnidadDocumental$ = this.ListadoUnidadDocumental$
+            .reduce((listado, currenvalue: any) => {
+                  if (currenvalue.seleccionado) {
+                      currenvalue.fechaCierre = this.FechaExtremaFinal;
+                  }
+                  listado.push(currenvalue);
+                  return listado;
+            }, []);
+        }
+    }
 
+    GetBuscarPayload(): UnidadDocumentalDTO {
+
+        const cerrada =
+        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
+            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
+            ? true
+            : false ;
+        const estado =
+        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
+            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
+            ? true
+            : false ;
+        const payload: UnidadDocumentalDTO = {
+            cerrada: cerrada,
+            inactivo: estado,
+            codigoDependencia: this.task.variables.codDependencia,
+        }
+
+        if (this.formBuscar.controls['serie'].value) {
+            payload.codigoSerie = this.formBuscar.controls['serie'].value;
+        }
+        if (this.formBuscar.controls['subserie'].value) {
+            payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
+        }
+        if (this.formBuscar.controls['identificador'].value) {
+            payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
+        }
+        if (this.formBuscar.controls['nombre'].value) {
+            payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
+        }
+        if (this.formBuscar.controls['descriptor1'].value) {
+            payload.descriptor1 = this.formBuscar.controls['descriptor1'].value;
+        }
+        if (this.formBuscar.controls['descriptor2'].value) {
+            payload.descriptor1 = this.formBuscar.controls['descriptor2'].value;
+        }
+
+        return payload;
     }
 
     SeleccionarTodos(checked: boolean) {
-        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.map((_map) => {
+        this.ListadoUnidadDocumental$ = this.ListadoUnidadDocumental$.map((_map) => {
             const unidadesDocumentales = _map.reduce((listado, unidad) => {
                 unidad.seleccionado = checked;
                 listado.push(unidad);
@@ -167,10 +219,13 @@ export class StateUnidadDocumental implements TaskForm {
         });
     }
 
-    GetUnidadesSeleccionadas(): ListadoUnidadDocumentalModel[] {
+    GetUnidadesSeleccionadas(): UnidadDocumentalDTO[] {
         let ListadoFiltrado = [];
-        const UnidadesSeleccionadas = this.ListadoUnidadDocumental.subscribe(data => {
+        const UnidadesSeleccionadas = this.ListadoUnidadDocumental$.subscribe(data => {
             ListadoFiltrado =  data.filter(item => item.seleccionado);
+            if (!ListadoFiltrado.length) {
+                this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));
+            }
         });
         return ListadoFiltrado;
     }
@@ -179,8 +234,6 @@ export class StateUnidadDocumental implements TaskForm {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
 
-        } else {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));
         }
     }
 
@@ -194,7 +247,7 @@ export class StateUnidadDocumental implements TaskForm {
                 accept: () => {
                     unidadesSeleccionadas = unidadesSeleccionadas.reduce((listado, current) => {
                         if (current.fechaExtremaFinal === null && current.soporte) {
-                            current.fechaExtremaFinal = current.fechaCierreTramite;
+                            current.fechaExtremaFinal = current.fechaCierre;
                             listado.push(current);
                         }
                         return listado;
