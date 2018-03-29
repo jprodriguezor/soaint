@@ -32,14 +32,14 @@ export class DocumentosECMListComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.loadDocumentos();
+   // this.loadDocumentos();
   }
 
   ngOnChanges(): void {
     this.loadDocumentos();
   }
 
-  loadDocumentos() {
+  loadDocumentos() { console.log(this.idDocumentECM);
     if (this.idDocumentECM !== undefined) {
       // const idDocumentECM = this.comunicacion.ppdDocumentoList[0].ideEcm;
       // console.log('ID del ecm');
