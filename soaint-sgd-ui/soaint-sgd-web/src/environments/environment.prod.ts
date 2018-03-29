@@ -1,4 +1,4 @@
- //const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 
 const host = 'http://192.168.1.152:28080/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
@@ -37,7 +37,6 @@ export const environment = {
   tasksReserveProcess: `${host}/proceso-gateway-api/tareas/reservar`,
   tasksCompleteProcess: `${host}/proceso-gateway-api/tareas/completar/`,
   tasksAbortProcess: `${host}/proceso-gateway-api/tareas/abortar/`,
-
   taskStatus_endpoint: `${host}/tarea-gateway-api/tarea`,
   bis_endpoint: `${host}/bis-gateway-api`,
   tipoComplemento_endpoint: `${host}/tipo-complemento-gateway-api`,
@@ -68,8 +67,8 @@ export const environment = {
   reasignarComunicaciones_endpoint: `${host}/correspondencia-gateway-api/reasignar`,
   obtenerObservaciones_endpoint: `${host}/correspondencia-gateway-api/obtenerObservaciones/`,
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
+  obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
-
   obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
@@ -115,7 +114,7 @@ export const process_info = {
     displayValue: 'Correspondencia de entrada',
     show: true
   },
-'proceso.correspondencia-salida': {
+  'proceso.correspondencia-salida': {
     displayValue: 'Correspondencia de salida',
     show: false
   },
@@ -139,7 +138,7 @@ export const process_info = {
     displayValue: 'Recibir y gestionar documento',
     show: false
   },
-'proceso.gestion-unidades-documentales': {
+  'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
     show: false
   }

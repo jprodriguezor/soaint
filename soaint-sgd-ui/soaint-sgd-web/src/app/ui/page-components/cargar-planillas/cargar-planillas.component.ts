@@ -270,7 +270,9 @@ export class CargarPlanillasComponent implements OnInit, OnDestroy {
       formData.append('file[]', file, file.name);
 
       this._store.select(correspondenciaEntrada).take(1).subscribe((value) => {
-        this._api.sendFile(this.uploadUrl, formData, ['1', '2']).subscribe(response => {
+        formData.append('tipoComunicacion', '1');
+        formData.append('fileName', '2');
+        this._api.sendFile(this.uploadUrl, formData, []).subscribe(response => {
 
 
           let objresponse = JSON.parse(response.ecmIds[0]);
