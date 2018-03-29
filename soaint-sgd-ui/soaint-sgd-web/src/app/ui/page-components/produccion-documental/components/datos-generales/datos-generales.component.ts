@@ -16,7 +16,7 @@ import {AnexoDTO} from '../../models/DocumentoDTO';
 import {Sandbox as DependenciaSandbox} from '../../../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {getActiveTask} from '../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
-import {StatusDTO} from '../../models/StatusDTO';
+import { StatusDTO } from '../../models/StatusDTO';
 import {PushNotificationAction} from '../../../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
@@ -66,8 +66,8 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   nombreSede = '';
   nombreDependencia = '';
 
-  @Output()
-  docRadicadoPreview: EventEmitter<any> = new EventEmitter();
+  @Input()
+  documentoRadicadoUrl: string;
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -109,6 +109,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   updateStatus(currentStatus: StatusDTO) {
     if (currentStatus.datosGenerales.tipoComunicacion) {
       this.form.get('tipoComunicacion').setValue(currentStatus.datosGenerales.tipoComunicacion);
+      this.form.get('tipoPlantilla').setValue(currentStatus.datosGenerales.tipoPlantilla);
       this.pdMessageService.sendMessage(currentStatus.datosGenerales.tipoComunicacion);
     }
     this.listaVersionesDocumento = [...currentStatus.datosGenerales.listaVersionesDocumento];
@@ -150,9 +151,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   obtenerDocumentoRadicado() {
-    console.log('Emitiendo evento');
-    this.docRadicadoPreview.emit(true);
-    console.log('Evento emitido');
+    if (this.documentoRadicadoUrl) {
+      this.showPdfViewer(this.documentoRadicadoUrl);
+    } else {
+      console.log('No se pudo mostrar el documento del radicado asociado');
+    }
   }
 
   loadHtmlVersion() {
@@ -182,8 +185,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
 
     if ('pdf' === this.pd_currentVersion.tipo) {
-        this.documentPreviewUrl = this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version});
-        this.documentPreview = true;
+        this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version}));
     } else {
         this.loadHtmlVersion();
     }
@@ -306,8 +308,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   mostrarAnexo(index: number) {
     const anexo = this.listaAnexos[index];
-    this.documentPreviewUrl = this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id});
-    this.documentPreview = true;
+    this.showPdfViewer(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
 
@@ -324,6 +325,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
       );
     }
+  }
+
+  showPdfViewer(pdfUrl: string) {
+    this.documentPreviewUrl = pdfUrl;
+    this.documentPreview = true;
   }
 
   tipoComunicacionChange(event) {
@@ -390,9 +396,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   hidePdf() {
+    this.documentPreviewUrl = '';
     this.documentLoaded = false;
     this.documentPreview = false;
-    this.documentPreviewUrl = '';
   }
 
   previewDocument(file) {
