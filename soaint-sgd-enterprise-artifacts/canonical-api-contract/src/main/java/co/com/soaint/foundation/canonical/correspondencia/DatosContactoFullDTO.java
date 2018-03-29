@@ -41,11 +41,11 @@ public class DatosContactoFullDTO implements Serializable {
     private String extension;
     private String corrElectronico;
     private String codPais;
-    private String descPais;
+    private PaisDTO pais;
     private String codDepartamento;
-    private String descDepartamento;
+    private DepartamentoDTO departamento;
     private String codMunicipio;
-    private String descMunicipio;
+    private MunicipioDTO municipio;
     private String provEstado;
     private String principal;
     private String ciudad;
