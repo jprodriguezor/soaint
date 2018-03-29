@@ -37,4 +37,17 @@ public class DepartamentoGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/")
+    @JWTTokenSecurity
+    public Response listarDepartamentosActivos() {
+
+        log.info("DepartamentoGatewayApi - [trafic] - listing todos los Departamentos activos");
+        Response response = client.listarDepartamentosActivos();
+        String responseContent = response.readEntity(String.class);
+        log.info("DepartamentoGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }

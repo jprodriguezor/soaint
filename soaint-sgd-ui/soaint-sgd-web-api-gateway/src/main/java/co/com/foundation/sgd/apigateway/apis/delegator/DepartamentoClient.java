@@ -27,4 +27,12 @@ public class DepartamentoClient {
                 .get();
     }
 
+    public Response listarDepartamentosActivos() {
+        log.info("Departamento - [trafic] - listar departamentos activos  con endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/departamentos-web-api/departamentos/A")
+                .request()
+                .get();
+    }
+
 }

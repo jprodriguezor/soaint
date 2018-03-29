@@ -36,4 +36,12 @@ public class MunicipioClient {
                 .get();
     }
 
+    public Response listarMunicipiosActivos() {
+        log.info("Municipios - [trafic] - listing Municipios with active status: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/municipios-web-api/municipios/A")
+                .request()
+                .get();
+    }
+
 }

@@ -27,6 +27,7 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import { LocalizacionApiService } from '../../../infrastructure/api/localizacion.api';
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -85,7 +86,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private formBuilder: FormBuilder,
-              private _changeDetectorRef: ChangeDetectorRef) {
+              private _changeDetectorRef: ChangeDetectorRef,
+              private _localizacionService: LocalizacionApiService
+            ) {
 
     this.initForm();
     this.listenForChanges();
@@ -117,6 +120,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       .combineLatest(this.municipios$, (event: any, municipios) => municipios.filter(municipio => municipio.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
 
     this.loadComponent.emit(this);
+
+    // para el caso de lista con datos incompletos
+    if (this.contactsDefault) {
+      this.CompletarDatosContacto();
+    }
 
   }
 
@@ -332,6 +340,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (prefijoCuadrante_se.value) {
         direccion += ' ' + prefijoCuadrante_se.value.nombre;
+        value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
@@ -341,14 +350,17 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (orientacion_se.value) {
         direccion += ' ' + orientacion_se.value.nombre;
+        value['orientacion_se'] = orientacion_se.value;
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
         direccion += ' ' + tipoComplemento.value.nombre;
+        value['complementoTipo'] = tipoComplemento.value;
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
         direccion += ' ' + complementoAdicional.value;
+        value['complementoAdicional'] = complementoAdicional.value;
         complementoAdicional.reset();
       }
 
@@ -421,14 +433,14 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.form.valid) {
 
       const principal = this.form.get('principal');
-      if(principal.value === true && this.hasDireccionPrincipal() === true ){
+      if (principal.value === true && this.hasDireccionPrincipal() === true ){
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: 'Recuerde que únicamente puede existir una dirección principal'
         }));
 
-      }else {
+      } else {
         if (this.formContext === FormContextEnum.CREATE) {
           this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
         } else {
@@ -466,7 +478,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
      .subscribe((values) => {
        this.paises = values;
        this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
-
        setTimeout(() => subscription.unsubscribe());
      });
 
@@ -479,4 +490,46 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   refreshView() {
     this._changeDetectorRef.detectChanges();
   }
+
+  CompletarDatosContacto() {
+    this._paisSandbox.loadDispatch();
+    this.paisSuggestions$
+    .subscribe((result: any) => {
+      this.contacts = this.contacts
+      .reduce((_listado, _contact) => {
+        const pais = result.find(_item => _item.codigo === _contact.pais.codigo);
+        _contact.pais.nombre = (pais) ? pais.nombre : '';
+        this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
+        this.departamentoSuggestions$
+        .subscribe((resultdep: any) => {
+            const departamento = resultdep.find(_item => _item.codigo === _contact.departamento.codigo);
+            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+            _listado.push(_contact);
+            return _listado;
+          });
+      }, []);
+    });
+
+    // this._localizacionService.ListarMunicipiosActivos({})
+    // .subscribe((result: any) => {
+    //   this.contacts = this.contacts
+    //   .reduce((_listado, _contact) => {
+    //     const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+    //     _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
+    //     _listado.push(_contact);
+    //     return _listado;
+    //   }, []);
+    // });
+
+    // this._localizacionService.ListarDepartamentosActivos({})
+    // .subscribe((result: any) => {
+    //   this.contacts = this.contacts
+    //   .reduce((_listado, _contact) => {
+    //     const departamento = result.find(_item => _item.codigo === _contact.departamento.codigo);
+    //     _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+    //     _listado.push(_contact);
+    //     return _listado;
+    //   }, []);
+    // });
+   }
 }
