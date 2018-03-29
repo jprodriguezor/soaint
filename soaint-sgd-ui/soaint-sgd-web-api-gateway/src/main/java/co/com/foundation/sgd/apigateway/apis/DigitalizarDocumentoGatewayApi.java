@@ -7,6 +7,7 @@ import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import com.sun.corba.se.impl.orbutil.ObjectStreamClassUtil_1_3;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -51,7 +52,7 @@ public class DigitalizarDocumentoGatewayApi {
         log.info("ProduccionDocumentalGatewayApi - [content] : ");
 
         List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> _files = ECMUtils.findFiles(formDataInput);
+        Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
         DocumentoDTO documentoECMDTO = new DocumentoDTO();
         MensajeRespuesta parentResponse = null;
 
@@ -62,8 +63,10 @@ public class DigitalizarDocumentoGatewayApi {
             String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
             String fileName = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
             List<String> referidoList = new ArrayList<>();
-            for(InputPart referido: formDataInput.getFormDataMap().get("referidoList")) {
-                referidoList.add(referido.getBodyAsString());
+            if (null != formDataInput.getFormDataMap().get("referidoList")) {
+                for (InputPart referido : formDataInput.getFormDataMap().get("referidoList")) {
+                    referidoList.add(referido.getBodyAsString());
+                }
             }
             InputPart parent = _files.get(principalFileName);
             InputStream result = parent.getBody(InputStream.class, null);
@@ -72,17 +75,17 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setSede(sede);
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
-            documentoECMDTO.setNroRadicadoReferido((String[]) referidoList.toArray());
+            documentoECMDTO.setNroRadicadoReferidoFromList(referidoList);
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
             _files.remove(fileName);
-            if ("0000".equals(parentResponse.getCodMensaje())){
+            if ("0000".equals(parentResponse.getCodMensaje())) {
                 List<DocumentoDTO> documentoDTO = parentResponse.getDocumentoDTOList();
-                if(null != documentoDTO && !documentoDTO.isEmpty()) {
+                if (null != documentoDTO && !documentoDTO.isEmpty()) {
                     ecmIds.add(documentoDTO.get(0).getIdDocumento());
-                    if(!_files.isEmpty()){
-                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName, (String[]) referidoList.toArray()).forEach(mensajeRespuesta -> {
-                            if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                    if (!_files.isEmpty()) {
+                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(), _files, sede, dependencia, tipoComunicacion, fileName, documentoECMDTO.getNroRadicadoReferido()).forEach(mensajeRespuesta -> {
+                            if ("0000".equals(mensajeRespuesta.getCodMensaje())) {
                                 List<DocumentoDTO> documentoDTO1 = mensajeRespuesta.getDocumentoDTOList();
                                 ecmIds.add(documentoDTO1.get(0).getIdDocumento());
                             }
@@ -91,7 +94,7 @@ public class DigitalizarDocumentoGatewayApi {
                     return Response.status(Response.Status.OK).entity(ecmIds).build();
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
@@ -134,14 +137,14 @@ public class DigitalizarDocumentoGatewayApi {
 
         return Response.status(Response.Status.OK).entity(clientResponse).build();
     }
+
     private Response EcmErrorMessage(@NotNull Exception ex) {
         JSONObject jsonResponse = new JSONObject();
-        jsonResponse.put("codMensaje","9999");
-        jsonResponse.put("mensaje",ex.getMessage());
+        jsonResponse.put("codMensaje", "9999");
+        jsonResponse.put("mensaje", ex.getMessage());
 
         return Response.status(Response.Status.BAD_REQUEST).entity(jsonResponse.toJSONString()).build();
     }
-
 
 
     @GET

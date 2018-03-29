@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,4 +44,11 @@ public class DocumentoDTO implements Serializable {
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
+
+    public void setNroRadicadoReferidoFromList(List<String> lista) {
+        nroRadicadoReferido = new String[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            nroRadicadoReferido[i] = lista.get(i);
+        }
+    }
 }
