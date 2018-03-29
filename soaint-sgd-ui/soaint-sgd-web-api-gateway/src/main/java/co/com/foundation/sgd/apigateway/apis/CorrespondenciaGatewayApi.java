@@ -425,9 +425,9 @@ public class CorrespondenciaGatewayApi {
     }
 
     @GET
-    @Path("/listar-anexos")
+    @Path("/listar-anexos/{nroRadicado}")
     @JWTTokenSecurity
-    public Response listarAnexos(@QueryParam("payload") String nroRadicado) {
+    public Response listarAnexos(@PathParam("nroRadicado") String nroRadicado) {
         log.info(CONTENT + "  - listar anexos por nro radicado");
         Response response = client.listarAnexos(nroRadicado);
         String responseContent = response.readEntity(String.class);

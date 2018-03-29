@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit, ChangeDetectorRef, OnDestroy, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterContentInit, ChangeDetectorRef, OnDestroy, AfterViewChecked } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -27,6 +27,9 @@ import { DatosGeneralesStateService } from '../../bussiness-components/datos-gen
 import { DatosRemitenteStateService } from '../../bussiness-components/datos-remitente-edit/datos-remitente-state-service';
 import { DatosDestinatarioStateService } from '../../bussiness-components/datos-destinatario-edit/datos-destinatario-state-service';
 import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+import { CorrespondenciaApiService } from '../../../infrastructure/api/correspondencia.api';
+import { AnexoDTO } from '../../../domain/anexoDTO';
+import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 @Component({
   selector: 'app-corregir-radicacion',
@@ -70,6 +73,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     private _generalesStateService: DatosGeneralesStateService,
     private _remitenteStateService: DatosRemitenteStateService,
     private _destinatarioStateService: DatosDestinatarioStateService,
+    private _correspondenciaService: CorrespondenciaApiService
   ) {
     this.stateGenerales = this._generalesStateService;
     this.stateRemitente = this._remitenteStateService;
@@ -109,22 +113,21 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   save(): Observable<any> {
     const payload: any = {
-      destinatario: this.radicacionEntradaFormData.destinatario,
-      generales: this.radicacionEntradaFormData.generales,
-      remitente: this.radicacionEntradaFormData.remitente,
-      descripcionAnexos: this.descripcionAnexos,
-      radicadosReferidos: this.radicadosReferidos,
-      agentesDestinatario: this.agentesDestinatario
+      destinatario: this.stateDestinatario.form,
+      generales: this.stateGenerales.form,
+      remitente: this.stateRemitente.form,
+      descripcionAnexos: this.stateGenerales.descripcionAnexos,
+      radicadosReferidos: this.stateGenerales.radicadosReferidos,
+      agentesDestinatario: this.stateDestinatario.agentesDestinatario
     };
     if (this.radicacionEntradaFormData.datosContactos) {
-      payload.datosContactos = this.radicacionEntradaFormData.datosContactos;
+      payload.datosContactos = this.stateRemitente.contacts;
     }
     const tareaDto: any = {
       idTareaProceso: this.task.idTarea,
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: payload
     };
-
     return this._sandbox.quickSave(tareaDto);
   }
 
@@ -138,6 +141,9 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
         this.InitGenerales();
         this.InitRemitente();
         this.InitDestinatario();
+        setTimeout(() => {
+          this._changeDetectorRef.detectChanges();
+        }, 0);
       });
     }
   }
@@ -145,6 +151,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   InitGenerales() {
     this.stateGenerales.dataform = this.radicacionEntradaFormData.generales;
     this.stateGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
+    this.stateGenerales.ppdDocumentoList = this.comunicacion.ppdDocumentoList;
     this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
     this.stateGenerales.Init();
     this.formsTabOrder.push(this.stateGenerales.form);
@@ -153,6 +160,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   InitRemitente() {
     this.stateRemitente.tipoComunicacion = this.radicacionEntradaFormData.generales.tipoComunicacion;
     this.stateRemitente.dataform = this.radicacionEntradaFormData.remitente;
+    this.stateRemitente.contacts = this.radicacionEntradaFormData.datosContactos;
     this.stateRemitente.Init();
     this.formsTabOrder.push(this.stateRemitente.form);
   }
@@ -179,7 +187,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   GetComunicacionPayload(): any {
     const radicacionEntradaFormPayload: any = {
       destinatario: this.stateDestinatario.form.value,
-      generales: this.stateGenerales.form.value,
+      generales: JSON.parse(JSON.stringify(this.stateGenerales.form.getRawValue())),
       remitente: this.stateRemitente.form.value,
       descripcionAnexos: this.stateGenerales.descripcionAnexos,
       radicadosReferidos: this.stateGenerales.radicadosReferidos,
@@ -199,6 +207,10 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
       return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
     }
     return false;
+  }
+
+  IsDisabled() {
+    return (this.formsTabOrder[this.tabIndex] && this.formsTabOrder[this.tabIndex].valid);
   }
 
   uploadVersionDocumento(doc: VersionDocumentoDTO) {

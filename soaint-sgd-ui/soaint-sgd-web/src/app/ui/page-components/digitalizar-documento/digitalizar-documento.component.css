@@ -8,3 +8,7 @@
   width: 100%;
   background-color: aliceblue;
 }
+
+.uploaderDisabled .ui-fileupload-choose{
+  opacity: .35;
+}
