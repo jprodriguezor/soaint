@@ -31,6 +31,7 @@ public class DocumentoDTO implements Serializable {
     private String nombreRemitente;
     private String sede;
     private String dependencia;
+    private String codigoDependencia;
     private String nombreDocumento;
     private String idDocumentoPadre;
     private Date fechaCreacion;

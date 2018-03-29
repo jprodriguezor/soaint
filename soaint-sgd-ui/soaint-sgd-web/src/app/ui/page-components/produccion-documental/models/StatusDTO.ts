@@ -7,6 +7,7 @@ import {ObservacionDTO} from './ObservacionDTO';
 export interface StatusDTO {
   datosGenerales: {
     tipoComunicacion: ConstanteDTO,
+    tipoPlantilla?: ConstanteDTO,
     listaVersionesDocumento: VersionDocumentoDTO[],
     listaAnexos: AnexoDTO[]
   },
