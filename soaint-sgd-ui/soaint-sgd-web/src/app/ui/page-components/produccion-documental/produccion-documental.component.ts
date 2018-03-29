@@ -47,7 +47,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
 
-  documentUrl: string;
+  documentoRadicadoUrl: string;
   pdfViewer = false;
 
   tabIndex = 0;
@@ -66,10 +66,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.route.params.subscribe( params => {
           this.status = parseInt(params.status, 10) || 0;
       } );
-      this.documentSubscription = this.messagingService.of(DocumentDownloaded).subscribe(message => {
-          this.tabIndex = 3;
-          this.refreshView();
-      });
       this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
           this.refreshView();
           this.guardarEstadoTarea();
@@ -88,6 +84,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus = {
           datosGenerales: {
               tipoComunicacion: null,
+              tipoPlantilla: null,
               listaVersionesDocumento: [],
               listaAnexos: []
           },
@@ -121,7 +118,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
+                        this.documentoRadicadoUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {
@@ -172,11 +169,12 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   getCurrentStatus(): StatusDTO {
       this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
+      this.taskCurrentStatus.datosGenerales.tipoPlantilla = this.datosGenerales.form.get('tipoPlantilla').value;
       this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
+
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-
       this.taskCurrentStatus.datosContacto.hasDestinatarioPrincipal = this.datosContacto.hasDestinatarioPrincipal;
       this.taskCurrentStatus.datosContacto.issetListDestinatarioBackend = this.datosContacto.issetListDestinatarioBacken;
       this.taskCurrentStatus.datosContacto.listaDestinatariosInternos = this.datosContacto.listaDestinatariosInternos;

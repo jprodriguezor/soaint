@@ -12,18 +12,17 @@
                     uploadLabel="Guardar"
                     cancelLabel="Cancelar"
                     multiple="true"
-                    accept="application/*"
+                    accept="application/pdf"
                     maxFileSize="1000000"
                     customUpload="true"
-                    invalidFileSizeMessageSummary="El documento que desea adjuntar supera el tamaño permitido"
-                    invalidFileSizeMessageDetail=""
-                    [disabled]="uploadDisabled"
                     [showUploadButton]="!uploadDisabled"
                     [showCancelButton]="!uploadDisabled"
                     (uploadHandler)="customUploader($event)"
                     (onUpload)="onUpload($event)"
                     (onClear)="onClear($event)"
-                    (onSelect)="onSelect($event)">
+                    (onSelect)="onSelect($event)"
+                    [styleClass]="uploadDisabled?'uploaderDisabled':''"
+      >
 
 
         <ng-template pTemplate="content" #parent>
