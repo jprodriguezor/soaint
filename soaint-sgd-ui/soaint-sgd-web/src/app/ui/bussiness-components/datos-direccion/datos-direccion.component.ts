@@ -97,6 +97,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
 
   ngOnInit(): void {
+    this._paisSandbox.loadDispatch();
     this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
     this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
@@ -492,44 +493,38 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   CompletarDatosContacto() {
-    this._paisSandbox.loadDispatch();
+
     this.paisSuggestions$
     .subscribe((result: any) => {
       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
         const pais = result.find(_item => _item.codigo === _contact.pais.codigo);
         _contact.pais.nombre = (pais) ? pais.nombre : '';
-        this._departamentoSandbox.loadDispatch({codPais: pais.codigo});
-        this.departamentoSuggestions$
-        .subscribe((resultdep: any) => {
-            const departamento = resultdep.find(_item => _item.codigo === _contact.departamento.codigo);
-            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-            _listado.push(_contact);
-            return _listado;
-          });
+        _listado.push(_contact);
+        return _listado;
       }, []);
     });
 
-    // this._localizacionService.ListarMunicipiosActivos({})
-    // .subscribe((result: any) => {
-    //   this.contacts = this.contacts
-    //   .reduce((_listado, _contact) => {
-    //     const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-    //     _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-    //     _listado.push(_contact);
-    //     return _listado;
-    //   }, []);
-    // });
+    this._localizacionService.ListarMunicipiosActivos({})
+    .subscribe((result: any) => {
+      this.contacts = this.contacts
+      .reduce((_listado, _contact) => {
+        const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+        _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
+        _listado.push(_contact);
+        return _listado;
+      }, []);
+    });
 
-    // this._localizacionService.ListarDepartamentosActivos({})
-    // .subscribe((result: any) => {
-    //   this.contacts = this.contacts
-    //   .reduce((_listado, _contact) => {
-    //     const departamento = result.find(_item => _item.codigo === _contact.departamento.codigo);
-    //     _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-    //     _listado.push(_contact);
-    //     return _listado;
-    //   }, []);
-    // });
+    this._localizacionService.ListarDepartamentosActivos({})
+    .subscribe((result: any) => {
+      this.contacts = this.contacts
+      .reduce((_listado, _contact) => {
+        const departamento = result.find(_item => _item.codigo === _contact.departamento.codigo);
+        _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+        _listado.push(_contact);
+        return _listado;
+      }, []);
+    });
    }
 }
