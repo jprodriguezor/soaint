@@ -47,7 +47,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
 
-  documentUrl: string;
+  documentoRadicadoUrl: string;
   pdfViewer = false;
 
   tabIndex = 0;
@@ -80,16 +80,11 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     });
   }
 
-  private DocumentoRadicadoPreview(event) {
-      if (event) {
-        this.tabIndex = 3;
-      }
-  }
-
   private initCurrentStatus() {
       this.taskCurrentStatus = {
           datosGenerales: {
               tipoComunicacion: null,
+              tipoPlantilla: null,
               listaVersionesDocumento: [],
               listaAnexos: []
           },
@@ -123,7 +118,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
+                        this.documentoRadicadoUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {
@@ -174,6 +169,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   getCurrentStatus(): StatusDTO {
       this.taskCurrentStatus.datosGenerales.tipoComunicacion = this.datosGenerales.form.get('tipoComunicacion').value;
+      this.taskCurrentStatus.datosGenerales.tipoPlantilla = this.datosGenerales.form.get('tipoPlantilla').value;
       this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
