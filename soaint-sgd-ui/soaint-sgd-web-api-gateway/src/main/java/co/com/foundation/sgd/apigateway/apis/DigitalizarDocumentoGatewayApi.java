@@ -61,7 +61,10 @@ public class DigitalizarDocumentoGatewayApi {
             String sede = formDataInput.getFormDataPart("sede", String.class, null);
             String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
             String fileName = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
-            String [] referidoList = formDataInput.getFormDataPart("referidoList", new  GenericType<String[]>(){});
+            List<String> referidoList = new ArrayList<>();
+            for(InputPart referido: formDataInput.getFormDataMap().get("referidoList")) {
+                referidoList.add(referido.getBodyAsString());
+            }
             InputPart parent = _files.get(principalFileName);
             InputStream result = parent.getBody(InputStream.class, null);
             documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
@@ -69,7 +72,7 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setSede(sede);
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
-            documentoECMDTO.setNroRadicadoReferido(referidoList);
+            documentoECMDTO.setNroRadicadoReferido((String[]) referidoList.toArray());
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
             _files.remove(fileName);
@@ -78,7 +81,7 @@ public class DigitalizarDocumentoGatewayApi {
                 if(null != documentoDTO && !documentoDTO.isEmpty()) {
                     ecmIds.add(documentoDTO.get(0).getIdDocumento());
                     if(!_files.isEmpty()){
-                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName, referidoList).forEach(mensajeRespuesta -> {
+                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion, fileName, (String[]) referidoList.toArray()).forEach(mensajeRespuesta -> {
                             if("0000".equals(mensajeRespuesta.getCodMensaje())){
                                 List<DocumentoDTO> documentoDTO1 = mensajeRespuesta.getDocumentoDTOList();
                                 ecmIds.add(documentoDTO1.get(0).getIdDocumento());
