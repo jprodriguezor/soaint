@@ -168,11 +168,11 @@
                              emptyMessage="No se han agregado observaciones"
                 >
                   <p-column field="rol.nombre" header="Rol" [sortable]="true"></p-column>
-                  <p-column field="funcionario.nombre" header="Fencionario" [sortable]="true"></p-column>
+                  <p-column field="funcionario.nombre" header="Funcionario" [sortable]="true"></p-column>
                   <p-column field="observaciones" header="Observaciones" [sortable]="true"></p-column>
                   <p-column header="Fecha y hora" [sortable]="true" >
                       <ng-template let-rdata="rowData" let-rindex="rowIndex" pTemplate="item">
-                          <span>{{rdata.fecha | dateFormat}}</span>
+                          <span>{{rdata.fecha | dateTimeFormat}}</span>
                       </ng-template>
                   </p-column>
                   <p-column header="Acción" [style]="{'width':'120px','text-align':'center'}">

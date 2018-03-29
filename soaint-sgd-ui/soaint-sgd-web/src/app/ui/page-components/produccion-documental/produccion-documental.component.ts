@@ -172,9 +172,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.datosGenerales.tipoPlantilla = this.datosGenerales.form.get('tipoPlantilla').value;
       this.taskCurrentStatus.datosGenerales.listaVersionesDocumento = this.datosGenerales.listaVersionesDocumento;
       this.taskCurrentStatus.datosGenerales.listaAnexos = this.datosGenerales.listaAnexos;
+
       this.taskCurrentStatus.datosContacto.distribucion = this.datosContacto.form.get('distribucion').value;
       this.taskCurrentStatus.datosContacto.responderRemitente = this.datosContacto.form.get('responderRemitente').value;
-
       this.taskCurrentStatus.datosContacto.hasDestinatarioPrincipal = this.datosContacto.hasDestinatarioPrincipal;
       this.taskCurrentStatus.datosContacto.issetListDestinatarioBackend = this.datosContacto.issetListDestinatarioBacken;
       this.taskCurrentStatus.datosContacto.listaDestinatariosInternos = this.datosContacto.listaDestinatariosInternos;

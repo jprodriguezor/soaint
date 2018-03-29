@@ -30,6 +30,7 @@ public class DocumentoDTO implements Serializable {
     private String tipologiaDocumental;
     private String nombreRemitente;
     private String sede;
+    private String codigoSede;
     private String dependencia;
     private String codigoDependencia;
     private String nombreDocumento;
