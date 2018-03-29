@@ -140,7 +140,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             this._store.dispatch(new PushNotificationAction({
               severity: 'success', summary: SUCCESS_ADJUNTAR_DOCUMENTO
             }));
-            (<FileUpload>(this.uploader)).disabled = true;
             this.uploadDisabled = true;
             this.principalFileId = data[0];
             this.changeDetection.detectChanges();
