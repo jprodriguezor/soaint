@@ -28,6 +28,4 @@ public class Utilities {
 
         organigramaItem.sort (Comparator.comparing (OrganigramaDTO::getIdeOrgaAdmin));
     }
-
-
 }

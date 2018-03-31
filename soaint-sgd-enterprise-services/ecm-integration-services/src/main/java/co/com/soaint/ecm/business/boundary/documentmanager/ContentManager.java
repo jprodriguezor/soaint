@@ -4,10 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import lombok.NoArgsConstructor;
@@ -358,4 +355,16 @@ public class ContentManager {
         return response;
     }
 
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        logger.info("### Invocando metodo para crear Unidad Documental..");
+        return contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+    }
 }

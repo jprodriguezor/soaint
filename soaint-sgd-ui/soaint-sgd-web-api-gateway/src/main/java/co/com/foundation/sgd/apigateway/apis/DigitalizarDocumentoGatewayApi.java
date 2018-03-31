@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +77,7 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
             documentoECMDTO.setNroRadicado(nroRadicado);
-            documentoECMDTO.setNroRadicadoReferidoFromList(referidoList);
+            documentoECMDTO.setNroRadicadoReferido(Arrays.copyOf(referidoList.toArray(), referidoList.size(), String[].class));
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
             _files.remove(principalFileName);
