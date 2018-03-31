@@ -72,7 +72,6 @@ export class DetallesAsignacionComponent implements OnInit {
 
   loadComunication() {
     this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.nroRadicado).subscribe((result) => {
-      console.log(result);
       this.comunicacion = result;
       this.loadDocumento();
       this.loadConstantsByCodes();
@@ -125,10 +124,7 @@ export class DetallesAsignacionComponent implements OnInit {
     this.comunicacion.datosContactoList.forEach((item) => {
       result += item.codMunicipio + ',';
     });
-
-    console.log(result);
-
-     return result;
+    return result;
   }
 
   loadConstantsByCodes() {

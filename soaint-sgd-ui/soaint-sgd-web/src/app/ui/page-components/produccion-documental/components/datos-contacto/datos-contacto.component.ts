@@ -335,7 +335,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
       this.form = this.formBuilder.group({
         // Datos destinatario
         'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
-        'distribucion': ['eléctronica'],
+        'distribucion': ['electronica'],
       });
 
   }
@@ -450,7 +450,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     this._changeDetectorRef.detectChanges();
   }
 
-  showForm():boolean{
+  showForm(): boolean{
 
     return ViewFilterHook.applyFilter(this.taskData.nombre+'-datos-contactos-show-form',true);
   }

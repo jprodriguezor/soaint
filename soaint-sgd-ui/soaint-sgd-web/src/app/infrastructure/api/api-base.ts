@@ -23,7 +23,7 @@ export class ApiBase {
   }
 
   public delete(endpoint: string, payload = {}): Observable<any> {
-         return this._http.delete(endpoint, payload);
+    return this._http.delete(endpoint, payload);
   }
 
   public sendFile(endpoint: string, formData: FormData, pathParams: Array<string>): Observable<any> {
