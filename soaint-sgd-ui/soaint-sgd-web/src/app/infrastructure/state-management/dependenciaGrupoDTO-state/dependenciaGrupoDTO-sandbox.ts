@@ -4,28 +4,24 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import * as actions from './dependenciaGrupoDTO-actions';
 import {ApiBase} from '../../api/api-base';
-import { CacheResponse } from '../../../shared/cache-response';
 
 
 @Injectable()
-export class Sandbox extends CacheResponse {
+export class Sandbox {
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
-                super();
   }
 
   loadData(payload: any) {
-    return this._api.list(`${environment.dependenciaGrupo_endpoint}/${payload.codigo}`, payload);
+    const _endpoint = `${environment.dependenciaGrupo_endpoint}/${payload.codigo}`;
+    return this._api.list(_endpoint, payload);
+
     // return Observable.of(this.getMock()).delay(400);
   }
 
   loadDependencies(payload: any) {
-    return this.getResponse(this._api.list(environment.dependencias_endpoint, payload)
-    .map(response => {
-      this.cacheResponse(payload, response);
-      return response;
-    }), payload)
+    return this._api.list(environment.dependencias_endpoint, payload);
   }
 
   loadDispatch(payload) {
