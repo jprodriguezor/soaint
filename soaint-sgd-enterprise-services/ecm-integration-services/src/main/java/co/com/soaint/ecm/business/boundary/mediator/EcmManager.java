@@ -1,14 +1,10 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -280,5 +276,15 @@ public class EcmManager {
         }
 
         return response;
+    }
+
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        return contentManager.crearUnidadDocumental(unidadDocumentalDTO);
     }
 }

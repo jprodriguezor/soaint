@@ -27,6 +27,7 @@ import java.util.List;
 public class DocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String idDocumento;
     private String nroRadicado;
     private String tipologiaDocumental;
@@ -44,11 +45,4 @@ public class DocumentoDTO implements Serializable {
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
-
-    public void setNroRadicadoReferidoFromList(List<String> lista) {
-        nroRadicadoReferido = new String[lista.size()];
-        for (int i = 0; i < lista.size(); i++) {
-            nroRadicadoReferido[i] = lista.get(i);
-        }
-    }
 }

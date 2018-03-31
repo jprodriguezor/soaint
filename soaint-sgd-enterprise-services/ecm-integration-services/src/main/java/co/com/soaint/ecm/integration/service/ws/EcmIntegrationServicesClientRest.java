@@ -1,10 +1,7 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -315,6 +312,27 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
 
+    }
+
+    /**
+     * Crear unidad documental en el ECM
+     *
+     * @param unidadDocumentalDTO Unidad a crear
+     * @return Mensaje de respuesta
+     */
+    @POST
+    @Path("/crearUnidadDocumentalECM/")
+    public MensajeRespuesta crearUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Crear Unidad Documental ECM");
+        try {
+            return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - crearUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
     }
 
 }
