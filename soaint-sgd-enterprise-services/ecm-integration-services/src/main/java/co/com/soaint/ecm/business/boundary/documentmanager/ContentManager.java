@@ -367,4 +367,16 @@ public class ContentManager {
         logger.info("### Invocando metodo para crear Unidad Documental..");
         return contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
     }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+    }
 }

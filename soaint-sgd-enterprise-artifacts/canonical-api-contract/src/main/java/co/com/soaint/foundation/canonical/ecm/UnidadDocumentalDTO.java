@@ -27,7 +27,7 @@ import java.util.List;
 public class UnidadDocumentalDTO {
 
     private String accion;
-    private boolean inactivo;
+    private Boolean inactivo;
     private String ubicacionTopografica;
     private Calendar fechaCierre;
     private String id;
@@ -39,7 +39,7 @@ public class UnidadDocumentalDTO {
     private String descriptor2;
     private String descriptor1;
     private Calendar fechaExtremaFinal;
-    private boolean cerrada;
+    private Boolean cerrada;
 
     //heredadas
     private String codigoSubSerie;

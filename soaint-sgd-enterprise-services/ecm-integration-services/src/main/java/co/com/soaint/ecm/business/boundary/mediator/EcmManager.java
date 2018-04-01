@@ -287,4 +287,15 @@ public class EcmManager {
         logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
         return contentManager.crearUnidadDocumental(unidadDocumentalDTO);
     }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+
+        logger.info("### Listando las Unidades Documentales");
+        return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+    }
 }

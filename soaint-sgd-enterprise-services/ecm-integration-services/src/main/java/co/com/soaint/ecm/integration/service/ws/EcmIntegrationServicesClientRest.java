@@ -38,7 +38,6 @@ public class EcmIntegrationServicesClientRest {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-
     /**
      * Crear estructura del ECM
      *
@@ -328,6 +327,27 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
         } catch (RuntimeException e) {
             logger.error("Error en operacion - crearUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    @POST
+    @Path("/listarUnidadesDocumentalesECM/")
+    public MensajeRespuesta listarUnidadesDocumentalesECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Listar Unidades Documentales ECM");
+        try {
+            return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+        } catch (RuntimeException e) {
+            logger.error("Error en operacion - listarUnidadesDocumentalesECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
