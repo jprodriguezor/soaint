@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.stereotype.Service;
 
@@ -214,13 +215,38 @@ public interface ContentControl {
      * @param session           Objeto de conexion
      * @return MensajeRespuesta
      */
-    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
 
     /**
      * Listar las Unidades Documentales del ECM
      *
      * @return Mensaje de respuesta
      */
-    MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session);
+    MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @param session Objeto conexion de Alfresco
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental     La unidad documental
+     * @param session Objeto conexion de Alfresco
+     */
+    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
 
 }

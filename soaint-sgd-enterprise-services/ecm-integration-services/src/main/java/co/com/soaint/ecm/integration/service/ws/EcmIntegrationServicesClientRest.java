@@ -310,7 +310,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -325,7 +324,7 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Crear Unidad Documental ECM");
         try {
             return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("Error en operacion - crearUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
@@ -337,7 +336,7 @@ public class EcmIntegrationServicesClientRest {
     /**
      * Listar las Unidades Documentales del ECM
      *
-     * @param unidadDocumentalDTO
+     * @param unidadDocumentalDTO Objeto que contiene el criterio de Busqueda
      * @return MensajeRespuesta Mensaje de respuesta
      */
     @POST
@@ -346,8 +345,71 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Listar Unidades Documentales ECM");
         try {
             return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("Error en operacion - listarUnidadesDocumentalesECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    @GET
+    @Path("/obtenerDetallesDocumentoECM/{idDoc}")
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(@PathParam("idDoc") String idDocumento) {
+        logger.info("Ejecutando metodo MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento)");
+        try {
+            return fEcmManager.obtenerDetallesDocumentoDTO(idDocumento);
+        } catch (Exception e) {
+            logger.error("Error en operacion - obtenerDetallesDocumentoDTO ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     * @return MensajeRespuesta
+     */
+    @GET
+    @Path("/listaDocumentosDTOUnidadDocumental/{idUnidadDocumental}")
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return fEcmManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    @GET
+    @Path("/verDetalleUnidadDocumentalECM/{idUnidadDocumental}")
+    public MensajeRespuesta detallesUnidadDocumentalECM(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.detallesUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());

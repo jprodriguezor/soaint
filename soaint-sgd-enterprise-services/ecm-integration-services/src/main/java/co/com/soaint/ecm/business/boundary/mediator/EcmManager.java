@@ -2,6 +2,7 @@ package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
 import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -283,7 +284,7 @@ public class EcmManager {
      * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
         return contentManager.crearUnidadDocumental(unidadDocumentalDTO);
     }
@@ -293,9 +294,42 @@ public class EcmManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
-
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Listando las Unidades Documentales");
         return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        logger.info("### Mostrando el documento con id {}", idDocumento);
+        return contentManager.obtenerDetallesDocumentoDTO(idDocumento);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Listando los documentos de la UD con id {}", idUnidadDocumental);
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(UnidadDocumentalDTO dto)");
+        return contentManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Mostrando la Unidad Documental con id {}", idUnidadDocumental);
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
+        return contentManager.detallesUnidadDocumental(idUnidadDocumental);
     }
 }
