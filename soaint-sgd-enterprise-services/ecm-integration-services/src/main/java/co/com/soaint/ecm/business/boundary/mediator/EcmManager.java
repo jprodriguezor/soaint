@@ -306,6 +306,18 @@ public class EcmManager {
      * @return MensajeRespuesta con los detalles del documento
      */
     public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        logger.info("### Mostrando la Unidad Documental");
         return contentManager.obtenerDetallesDocumentoDTO(idDocumento);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Listando los documentos de la UD con id {}", idUnidadDocumental);
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(UnidadDocumentalDTO dto)");
+        return contentManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
     }
 }

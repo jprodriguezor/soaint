@@ -55,6 +55,34 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     /**
+     * Convierte contentStream a File
+     *
+     * @param contentStream contentStream
+     * @return Un objeto File
+     * @throws IOException En caso de error
+     */
+    private static File convertInputStreamToFile(ContentStream contentStream) throws IOException {
+
+        File file = File.createTempFile(contentStream.getFileName(), "");
+
+        try (InputStream inputStream = contentStream.getStream(); OutputStream out = new FileOutputStream(file)) {
+
+            int read;
+            byte[] bytes = new byte[1024];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+
+        } catch (IOException e) {
+            logger.error("Error al convertir el contentStream a File", e);
+        }
+
+        file.deleteOnExit();
+        return file;
+    }
+
+    /**
      * Metodo que obtiene el objeto de conexion que produce Alfresco en conexion
      *
      * @return Objeto de tipo Conexion en este caso devuevle un objeto Session
@@ -286,7 +314,6 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return fileAux;
     }
-
 
     /**
      * Metodo que retorna true en caso de que la cadena que se le pasa es numerica y false si no.
@@ -676,6 +703,77 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error("Ningun resultado coincide con el ID: {}", idDocumento);
             throw new BusinessException("Ningun resultado coincide con el Id dado");
         }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental Id de la unidad documental
+     * @param session            Objeto conexion de Alfresco
+     * @return MensajeRespuesta con los documentos dentro del dto Unidad Documental
+     */
+    @Override
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException {
+        logger.info("Ejecutando el metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session)");
+
+        final MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
+        {
+            mensajeRespuesta.setResponse(new HashMap<>());
+        }
+
+        final UnidadDocumentalDTO dto = listarDocsDadoIdUD(idUnidadDocumental, session);
+
+        logger.info("Documentos devuelto satisfactoriamente {}", dto);
+        mensajeRespuesta.setCodMensaje("0000");
+        mensajeRespuesta.setMensaje("OK");
+        mensajeRespuesta.getResponse().put("unidadDocumentalDTO", dto);
+        return mensajeRespuesta;
+    }
+
+    private UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException {
+
+        if (ObjectUtils.isEmpty(idUnidadDocumental)) {
+            logger.info("El ID de la Unidad Documental esta vacio");
+            throw new BusinessException("El ID de la Unidad Documental esta vacio");
+        }
+
+        UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
+
+        try {
+
+            String queryString = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
+                    " WHERE " + PropertyIds.OBJECT_ID + " = '" + idUnidadDocumental + "'";
+
+            final ItemIterable<QueryResult> queryResults = session.query(queryString, false);
+            final Iterator<QueryResult> iterator = queryResults.iterator();
+
+            if (iterator.hasNext()) {
+
+                QueryResult queryResult = iterator.next();
+                String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                Folder udFolder = (Folder) session.getObject(session.getObject(objectId));
+
+
+                final ItemIterable<CmisObject> folderChildren = udFolder.getChildren();
+                final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
+                dto = transformarUnidadDocumental(udFolder);
+                dto.setListaDocumentos(documentoDTOS);
+
+                folderChildren.forEach(cmisObject -> {
+                    if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
+                            cmisObject.getType().getId().equals("D:cmcor:CM_DocumentoPersonalizado")) {
+                        documentoDTOS.add(documentoDTOS.size(), transformarDocumento((Document) cmisObject));
+                    }
+                });
+            }
+        } catch (CmisObjectNotFoundException c) {
+            logger.warn("Ningun resultado coincide con el criterio de busqueda");
+            throw new BusinessException("Ningun resultado coincide con el criterio de busqueda");
+        } catch (Exception e) {
+            logger.warn("No es posible establecer la conexion");
+            throw new BusinessException("No es posible establecer la conexion");
+        }
+        return dto;
     }
 
     private boolean areDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
@@ -1735,34 +1833,6 @@ public class ContentControlAlfresco implements ContentControl {
         }
 
         return documentoDTO;
-    }
-
-    /**
-     * Convierte contentStream a File
-     *
-     * @param contentStream contentStream
-     * @return Un objeto File
-     * @throws IOException En caso de error
-     */
-    private static File convertInputStreamToFile(ContentStream contentStream) throws IOException {
-
-        File file = File.createTempFile(contentStream.getFileName(), "");
-
-        try (InputStream inputStream = contentStream.getStream(); OutputStream out = new FileOutputStream(file)) {
-
-            int read;
-            byte[] bytes = new byte[1024];
-
-            while ((read = inputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-
-        } catch (IOException e) {
-            logger.error("Error al convertir el contentStream a File", e);
-        }
-
-        file.deleteOnExit();
-        return file;
     }
 }
 

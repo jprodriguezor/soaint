@@ -375,5 +375,26 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     * @return MensajeRespuesta
+     */
+    @GET
+    @Path("/listaDocumentosDTOUnidadDocumental/{idUnidadDocumental}")
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return fEcmManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
 }
 

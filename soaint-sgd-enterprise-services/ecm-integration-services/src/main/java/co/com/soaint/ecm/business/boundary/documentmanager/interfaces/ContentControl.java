@@ -233,4 +233,11 @@ public interface ContentControl {
      */
     MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
 
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental     La unidad documental
+     * @param session Objeto conexion de Alfresco
+     */
+    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
 }

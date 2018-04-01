@@ -388,7 +388,21 @@ public class ContentManager {
      * @return MensajeRespuesta con los detalles del documento
      */
     public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        logger.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
+        logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());
     }
 }
