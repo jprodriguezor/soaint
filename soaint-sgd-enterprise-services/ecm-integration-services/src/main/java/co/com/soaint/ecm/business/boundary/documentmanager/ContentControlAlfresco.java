@@ -31,6 +31,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -498,9 +499,6 @@ public class ContentControlAlfresco implements ContentControl {
                     }
                 }
 
-                System.out.println("Nombre Carpeta: " + folder.getName());
-                System.out.println("Tipo Carpeta: " + folder.getType().getId());
-
                 final Map<String, Object> props = new HashMap<>();
                 //Se define como nombre de la carpeta nameOrg
 
@@ -508,12 +506,12 @@ public class ContentControlAlfresco implements ContentControl {
                 props.put(CMCOR_UD_ID, unidadDocumentalDTO.getId());
                 props.put(CMCOR_UD_ACCION, unidadDocumentalDTO.getAccion());
                 props.put(CMCOR_UD_DESCRIPTOR_2, unidadDocumentalDTO.getDescriptor2());
-                props.put(CMCOR_UD_CERRADA, unidadDocumentalDTO.isCerrada());
+                props.put(CMCOR_UD_CERRADA, unidadDocumentalDTO.getCerrada());
                 props.put(CMCOR_UD_FECHA_CIERRE, unidadDocumentalDTO.getFechaCierre());
                 props.put(CMCOR_UD_FECHA_INICIAL, unidadDocumentalDTO.getFechaExtremaInicial());
                 props.put(CMCOR_UD_FECHA_FINAL, unidadDocumentalDTO.getFechaExtremaFinal());
                 props.put(CMCOR_UD_SOPORTE, unidadDocumentalDTO.getSoporte());
-                props.put(CMCOR_UD_INACTIVO, unidadDocumentalDTO.isInactivo());
+                props.put(CMCOR_UD_INACTIVO, unidadDocumentalDTO.getInactivo());
                 props.put(CMCOR_UD_UBICACION_TOPOGRAFICA, unidadDocumentalDTO.getUbicacionTopografica());
                 props.put(CMCOR_UD_FASE_ARCHIVO, unidadDocumentalDTO.getFaseArchivo());
                 props.put(CMCOR_UD_DESCRIPTOR_1, unidadDocumentalDTO.getDescriptor1());
@@ -546,12 +544,157 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje("Ningun resultado coincide con el criterio de busqueda");
             return response;
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ocurrio un error inesperado al crear la UD, consulte a su administrador ");
             response.setCodMensaje("0006");
             response.setMensaje("Ocurrio un error inesperado, consulte a su administrador");
             return response;
         }
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    @Override
+    public MensajeRespuesta listarUnidadesDocumentales(final UnidadDocumentalDTO dto,
+                                                       final Session session) {
+        System.out.println("UD: " + dto);
+        final MensajeRespuesta respuesta = new MensajeRespuesta();
+        try {
+            String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
+            boolean where = false;
+
+            if (!ObjectUtils.isEmpty(dto.getId())) {
+                query += " WHERE " + CMCOR_UD_ID + " = '" + dto.getId() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getDescriptor2())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_2 + " LIKE '%" + dto.getDescriptor2() + "%'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getSoporte())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_UD_SOPORTE + " = '" + dto.getSoporte() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getInactivo())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_UD_INACTIVO + " = '" + dto.getInactivo() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getDescriptor1())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_1 + " LIKE '%" + dto.getDescriptor1() + "%'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getCerrada())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_UD_CERRADA + " = '" + dto.getCerrada() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getCodigoSerie())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_SER_CODIGO + " = '" + dto.getCodigoSerie() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getCodigoSubSerie())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_SS_CODIGO + " = '" + dto.getCodigoSubSerie() + "'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getNombreUnidadDocumental())) {
+                query += (!where ? " WHERE " : " AND ") + PropertyIds.NAME + " LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
+                where = true;
+            }
+            if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
+                query += (!where ? " WHERE " : " AND ") + CMCOR_DEP_CODIGO + " = '" + dto.getCodigoDependencia() + "'";
+            }
+
+            logger.info("Executing query {}", query);
+            final ItemIterable<QueryResult> queryResults = session.query(query, false);
+            final List<UnidadDocumentalDTO> unidadDocumentalDTOS;
+            unidadDocumentalDTOS = new ArrayList<>();
+
+            for (QueryResult queryResult :
+                    queryResults) {
+                String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                Folder folder = (Folder)
+                        session.getObject(session.getObject(objectId));
+
+                if (areDatesInRange(folder, dto)) {
+                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(),
+                            transformarUnidadDocumental(folder));
+                }
+            }
+
+            respuesta.setMensaje("Listado seleccionado correctamente");
+            respuesta.setCodMensaje("00000");
+            Map<String, Object> map = new HashMap<>();
+            map.put("unidadDocumental", unidadDocumentalDTOS);
+            respuesta.setResponse(map);
+            return respuesta;
+
+        } catch (Exception e) {
+            respuesta.setMensaje("Error al Listar las Unidades Documentales");
+            respuesta.setCodMensaje("111111");
+            return respuesta;
+        }
+    }
+
+    private boolean areDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
+
+        Calendar dtoFechaCierre = dto.getFechaCierre();
+        Calendar folderFechaCierre = folder.getPropertyValue(CMCOR_UD_FECHA_CIERRE);
+
+        Calendar dtoFechaInicial = dto.getFechaExtremaInicial();
+        Calendar folderFechaInicial = folder.getPropertyValue(CMCOR_UD_FECHA_INICIAL);
+
+        Calendar dtoFechaFinal = dto.getFechaExtremaFinal();
+        Calendar folderFechaFinal = folder.getPropertyValue(CMCOR_UD_FECHA_FINAL);
+
+        boolean result = dtoFechaCierre == null && dtoFechaInicial == null && dtoFechaFinal == null;
+
+        if (result) {
+            return true;
+        }
+
+        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
+                (dtoFechaInicial != null && folderFechaInicial != null) &&
+                (dtoFechaFinal != null && folderFechaFinal != null)) {
+            return (comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
+                    (comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
+                    (comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
+                    (comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
+        }
+        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
+                (dtoFechaInicial != null && folderFechaInicial != null) && dtoFechaFinal == null) {
+            return (comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
+                    (comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
+        }
+        if ((dtoFechaCierre != null && folderFechaCierre != null) &&
+                (dtoFechaFinal != null && folderFechaFinal != null) && dtoFechaInicial == null) {
+            return (comparaFecha(dtoFechaCierre, folderFechaCierre) == 0) &&
+                    (comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0);
+        }
+        if (dtoFechaCierre != null && folderFechaCierre != null) {
+            return (comparaFecha(dtoFechaCierre, folderFechaCierre) == 0);
+        }
+        if ((dtoFechaInicial != null && folderFechaInicial != null) &&
+                (dtoFechaFinal != null && folderFechaFinal != null)) {
+            return (comparaFecha(dtoFechaInicial, folderFechaInicial) == 0) &&
+                    (comparaFecha(dtoFechaFinal, folderFechaFinal) == 0) &&
+                    (comparaFecha(dtoFechaInicial, dtoFechaFinal) <= 0);
+        }
+        if (dtoFechaInicial != null && folderFechaInicial != null) {
+            return (comparaFecha(dtoFechaInicial, folderFechaInicial) >= 0);
+        }
+        return ((dtoFechaFinal != null && folderFechaFinal != null) &&
+                (comparaFecha(dtoFechaFinal, folderFechaFinal) <= 0));
+    }
+
+    private int comparaFecha(Calendar dtoCalendar, Calendar folderCalendar) {
+        logger.info("Comparando fechas {} == {}", dtoCalendar, folderCalendar);
+        LocalDate dtoDate = LocalDate.of(dtoCalendar.get(Calendar.YEAR),
+                dtoCalendar.get(Calendar.MONTH) + 1, dtoCalendar.get(Calendar.DAY_OF_MONTH));
+        LocalDate folderDate = LocalDate.of(folderCalendar.get(Calendar.YEAR),
+                folderCalendar.get(Calendar.MONTH) + 1, folderCalendar.get(Calendar.DAY_OF_MONTH));
+        return dtoDate.compareTo(folderDate);
     }
 
     /**
@@ -1012,9 +1155,9 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para crear el link
      *
-     * @param session     Objeto session
+     * @param session      Objeto session
      * @param documentoDTO Identificador del dcumento
-     * @param carpetaLink Carpeta donde se va a crear el link
+     * @param carpetaLink  Carpeta donde se va a crear el link
      */
 
     private void crearLink(Session session, DocumentoDTO documentoDTO, Carpeta carpetaLink) {
@@ -1319,8 +1462,8 @@ public class ContentControlAlfresco implements ContentControl {
             if (!comunicacionOficialInOut.isPresent()) {
 
                 Carpeta carpetaCreada = crearCarpeta(comunicacionOficialFolder.get(), comunicacionOficial, "11", CLASE_SUBSERIE, comunicacionOficialFolder.get(), null);
-                if (carpetaCreada!=null){
-                logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
+                if (carpetaCreada != null) {
+                    logger.info(EXISTE_CARPETA + carpetaCreada.getFolder().getName());
                     List<Carpeta> carpetasDeComunicacionOficialDentro = obtenerCarpetasHijasDadoPadre(carpetaCreada);
 
                     Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
@@ -1405,7 +1548,7 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("0000");
 
         } catch (CmisObjectNotFoundException e) {
-                logger.error("*** Error al modificar el documento *** ", e);
+            logger.error("*** Error al modificar el documento *** ", e);
             response.setMensaje("Documento no encontrado");
             response.setCodMensaje("00006");
         }
@@ -1492,6 +1635,65 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error("No se pudo eliminar el documento :", e);
             return Boolean.FALSE;
         }
+    }
+
+    /**
+     * Convierte la Interfaz Folder de opencemis a una UnidadDocumentalDTO
+     *
+     * @param folder Objeto a transformar
+     * @return UnidadDocumentalDTO
+     */
+    private UnidadDocumentalDTO transformarUnidadDocumental(Folder folder) {
+
+        final UnidadDocumentalDTO unidadDocumentalDTO = new UnidadDocumentalDTO();
+        {
+            unidadDocumentalDTO.setId(folder.getPropertyValue(CMCOR_UD_ID));
+            unidadDocumentalDTO.setAccion(folder.getPropertyValue(CMCOR_UD_ACCION));
+            unidadDocumentalDTO.setDescriptor2(folder.getPropertyValue(CMCOR_UD_DESCRIPTOR_2));
+            unidadDocumentalDTO.setCerrada(folder.getPropertyValue(CMCOR_UD_CERRADA));
+            unidadDocumentalDTO.setFechaCierre(folder.getPropertyValue(CMCOR_UD_FECHA_CIERRE));
+            unidadDocumentalDTO.setFechaExtremaInicial(folder.getPropertyValue(CMCOR_UD_FECHA_INICIAL));
+            unidadDocumentalDTO.setFechaExtremaFinal(folder.getPropertyValue(CMCOR_UD_FECHA_FINAL));
+            unidadDocumentalDTO.setSoporte(folder.getPropertyValue(CMCOR_UD_SOPORTE));
+            unidadDocumentalDTO.setInactivo(folder.getPropertyValue(CMCOR_UD_INACTIVO));
+            unidadDocumentalDTO.setUbicacionTopografica(folder.getPropertyValue(CMCOR_UD_UBICACION_TOPOGRAFICA));
+            unidadDocumentalDTO.setFaseArchivo(folder.getPropertyValue(CMCOR_UD_FASE_ARCHIVO));
+            unidadDocumentalDTO.setDescriptor1(folder.getPropertyValue(CMCOR_UD_DESCRIPTOR_1));
+            unidadDocumentalDTO.setCodigoUnidadDocumental(folder.getPropertyValue(CMCOR_UD_CODIGO));
+            unidadDocumentalDTO.setCodigoSerie(folder.getPropertyValue(CMCOR_SER_CODIGO));
+            unidadDocumentalDTO.setCodigoSubSerie(folder.getPropertyValue(CMCOR_SS_CODIGO));
+            unidadDocumentalDTO.setCodigoDependencia(folder.getPropertyValue(CMCOR_DEP_CODIGO));
+            unidadDocumentalDTO.setNombreUnidadDocumental(folder.getPropertyValue(PropertyIds.NAME));
+            unidadDocumentalDTO.setObservaciones(folder.getPropertyValue(CMCOR_UD_OBSERVACIONES));
+        }
+        return unidadDocumentalDTO;
+    }
+
+    /**
+     * Convierte la Interfaz Document de opencemis a un DocumentoDTO
+     *
+     * @param document Objeto a transformar
+     * @return DocumentoDTO
+     */
+    private DocumentoDTO transformarDocumento(Document document) {
+
+        DocumentoDTO documentoDTO = new DocumentoDTO();
+        String idDoc = document.getId();
+        documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(";")) : idDoc);
+        documentoDTO.setTipoDocumento(document.getPropertyValue(CMCOR_TIPO_DOCUMENTO));
+        documentoDTO.setNroRadicado(document.getPropertyValue(CMCOR_NRO_RADICADO));
+        documentoDTO.setTipologiaDocumental(document.getPropertyValue(CMCOR_TIPOLOGIA_DOCUMENTAL));
+        documentoDTO.setNombreRemitente(document.getPropertyValue(CMCOR_NOMBRE_REMITENTE));
+        documentoDTO.setNombreDocumento(document.getName());
+        documentoDTO.setTamano(document.getContentStreamLength() + "");
+        final String nroRadicado = document.getPropertyValue(CMCOR_NUMERO_REFERIDO);
+
+        if (!ObjectUtils.isEmpty(nroRadicado)) {
+            String[] splitRadicado = nroRadicado.split(SEPARADOR);
+            documentoDTO.setNroRadicadoReferido(splitRadicado);
+        }
+
+        return documentoDTO;
     }
 
     /**
