@@ -6,6 +6,7 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -360,7 +361,7 @@ public class ContentManager {
      * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
@@ -373,10 +374,21 @@ public class ContentManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
     }
 }

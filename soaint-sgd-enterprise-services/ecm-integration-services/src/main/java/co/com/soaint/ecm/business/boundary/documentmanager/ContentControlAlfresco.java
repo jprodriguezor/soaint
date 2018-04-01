@@ -8,6 +8,7 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -403,7 +404,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @return MensajeRespuesta
      */
     @Override
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) {
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException {
 
         logger.info("Executing crearUnidadDocumental method");
 
@@ -545,10 +546,8 @@ public class ContentControlAlfresco implements ContentControl {
             response.setMensaje("Ningun resultado coincide con el criterio de busqueda");
             return response;
         } catch (Exception ex) {
-            logger.error("Ocurrio un error inesperado al crear la UD, consulte a su administrador ");
-            response.setCodMensaje("0006");
-            response.setMensaje("Ocurrio un error inesperado, consulte a su administrador");
-            return response;
+            logger.error("Ocurrio un error al crear la Unidad Documental");
+            throw new BusinessException("Ocurrio un error al crear la Unidad Documental");
         }
     }
 
@@ -559,8 +558,8 @@ public class ContentControlAlfresco implements ContentControl {
      */
     @Override
     public MensajeRespuesta listarUnidadesDocumentales(final UnidadDocumentalDTO dto,
-                                                       final Session session) {
-        System.out.println("UD: " + dto);
+                                                       final Session session) throws BusinessException {
+
         final MensajeRespuesta respuesta = new MensajeRespuesta();
         try {
             String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
@@ -631,9 +630,51 @@ public class ContentControlAlfresco implements ContentControl {
             return respuesta;
 
         } catch (Exception e) {
-            respuesta.setMensaje("Error al Listar las Unidades Documentales");
-            respuesta.setCodMensaje("111111");
-            return respuesta;
+            logger.error("Error al Listar las Unidades Documentales");
+            throw new BusinessException("Error al Listar las Unidades Documentales");
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento Id Documento
+     * @param session     Objeto conexion de Alfresco
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    @Override
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException {
+        logger.info("Ejecutando el metodo MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session)");
+
+        final MensajeRespuesta mensajeRespuesta = new MensajeRespuesta();
+
+        if (ObjectUtils.isEmpty(idDocumento)) {
+            logger.info("El ID del documento esta vacio");
+            mensajeRespuesta.setMensaje("El ID del documento esta vacio");
+            mensajeRespuesta.setCodMensaje("11111");
+            return mensajeRespuesta;
+        }
+
+        try {
+            CmisObject cmisObjectDocument = session.getObject(session.getObject(idDocumento));
+
+            if (!(cmisObjectDocument instanceof Document)) {
+                logger.info("Ningun resultado coincide con el criterio de busqueda");
+                mensajeRespuesta.setMensaje("Ningun resultado coincide con el criterio de busqueda");
+                mensajeRespuesta.setCodMensaje("11111");
+                return mensajeRespuesta;
+            }
+
+            Map<String, Object> mapResponsonse = new HashMap<>();
+            mapResponsonse.put("documentoDTO", transformarDocumento((Document) cmisObjectDocument));
+            mensajeRespuesta.setMensaje("Documento devuelto correctamente");
+            mensajeRespuesta.setCodMensaje("00000");
+            mensajeRespuesta.setResponse(mapResponsonse);
+
+            return mensajeRespuesta;
+        } catch (CmisObjectNotFoundException ex) {
+            logger.error("Ningun resultado coincide con el ID: {}", idDocumento);
+            throw new BusinessException("Ningun resultado coincide con el Id dado");
         }
     }
 
