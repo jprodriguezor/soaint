@@ -240,4 +240,13 @@ public interface ContentControl {
      * @param session Objeto conexion de Alfresco
      */
     MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+
 }

@@ -434,8 +434,15 @@ public class ContentControlAlfresco implements ContentControl {
     public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException {
 
         logger.info("Executing crearUnidadDocumental method");
-
         final MensajeRespuesta response = new MensajeRespuesta();
+
+        if (!ObjectUtils.isEmpty(unidadDocumentalDTO.getId()) &&
+                !ObjectUtils.isEmpty(buscarUnidadDocumntalPorId(unidadDocumentalDTO.getId(), session))) {
+            logger.error("Ya existe la Unidad Documental con Id {}", unidadDocumentalDTO.getId());
+            response.setCodMensaje("1111");
+            response.setMensaje("Ya existe la Unidad Documental con el Id solicitado");
+            return response;
+        }
 
         try {
             final String dependenciaCode = unidadDocumentalDTO.getCodigoDependencia();
@@ -728,6 +735,57 @@ public class ContentControlAlfresco implements ContentControl {
         mensajeRespuesta.setMensaje("OK");
         mensajeRespuesta.getResponse().put("unidadDocumentalDTO", dto);
         return mensajeRespuesta;
+    }
+
+    @Override
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException {
+        logger.info("Ejecutando el metodo detallesUnidadDocumental(String idUnidadDocumental, Session session)");
+
+        UnidadDocumentalDTO dto = buscarUnidadDocumntalPorId(idUnidadDocumental, session);
+        MensajeRespuesta respuesta = new MensajeRespuesta();
+
+        respuesta.setCodMensaje("0000");
+        respuesta.setMensaje("Detalles Unidad Documental");
+        Map<String, Object> map = new HashMap<>();
+        map.put("unidadDocumental", dto);
+        respuesta.setResponse(map);
+
+        return respuesta;
+    }
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idUnidadDocumental Id Documento
+     * @param session            Objeto conexion de Alfresco
+     * @return UnidadDocumentalDTO si existe null si no existe
+     */
+    private UnidadDocumentalDTO buscarUnidadDocumntalPorId(String idUnidadDocumental, Session session) throws BusinessException {
+        logger.info("Ejecutando UnidadDocumentalDTO buscarUnidadDocumntalPorId(String idUnidadDocumental, Session session)");
+        if (ObjectUtils.isEmpty(idUnidadDocumental)) {
+            logger.error("El Id recibido es vacio");
+            throw new BusinessException("El ID de la UD esta vacio");
+        }
+        String queryString = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
+                " WHERE " + CMCOR_UD_ID + " = '" + idUnidadDocumental + "'";
+        try {
+            final ItemIterable<QueryResult> queryResults = session.query(queryString, false);
+            final Iterator<QueryResult> iterator = queryResults.iterator();
+
+            if (iterator.hasNext()) {
+                QueryResult queryResult = iterator.next();
+                String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                Folder udFolder = (Folder) session.getObject(session.getObject(objectId));
+                return transformarUnidadDocumental(udFolder);
+            }
+        }catch (CmisObjectNotFoundException noFoundException) {
+            logger.error("La Unidad Documental con ID: {} no existe en el ECM", idUnidadDocumental);
+            throw new BusinessException("Ningun resultado coincide con el criterio de busqueda");
+        }catch (Exception ex) {
+            logger.error("Ocurrio un error en el Servidor");
+            throw new BusinessException("Error Interno, consulte al administrador");
+        }
+        return null;
     }
 
     private UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException {

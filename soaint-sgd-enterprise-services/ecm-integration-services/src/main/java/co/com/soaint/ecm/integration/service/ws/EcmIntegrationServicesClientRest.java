@@ -396,5 +396,26 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    @GET
+    @Path("/verDetalleUnidadDocumentalECM/{idUnidadDocumental}")
+    public MensajeRespuesta detallesUnidadDocumentalECM(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.detallesUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
 }
 

@@ -405,4 +405,17 @@ public class ContentManager {
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());
     }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Ejecutando MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
 }
