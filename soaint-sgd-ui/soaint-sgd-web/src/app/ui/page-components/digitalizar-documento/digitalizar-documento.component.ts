@@ -147,8 +147,8 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
-              (<FileUpload>(this.uploader)).disabled = true;
-              this.uploadDisabled = true;
+              // (<FileUpload>(this.uploader)).disabled = true;
+              // this.uploadDisabled = true;
               break;
             case '3333':
               this._store.dispatch(new PushNotificationAction({
