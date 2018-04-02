@@ -374,6 +374,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy {
         }
       }
     }
+
+    this.hideAddDestinatarioInternoPopup();
+    this.hideAddDestinatarioExternoPopup();
   }
 
   editDestinatario(index, op) {
