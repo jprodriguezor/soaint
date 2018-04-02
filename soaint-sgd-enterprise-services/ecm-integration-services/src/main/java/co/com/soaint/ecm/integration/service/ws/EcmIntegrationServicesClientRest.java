@@ -115,7 +115,7 @@ public class EcmIntegrationServicesClientRest {
     @Path("/obtenerDocumentosAdjuntosECM/")
     public MensajeRespuesta obtenerDocumentoPrincipalAdjunto(@RequestBody DocumentoDTO documento) throws IOException {
 
-        logger.info("processing rest request - Buscar Documento en el ECM: {}",documento.getIdDocumento());
+        logger.info("processing rest request - Buscar Documento en el ECM: {}",documento);
         try {
             return fEcmManager.obtenerDocumentosAdjuntos(documento);
         } catch (IOException e) {
