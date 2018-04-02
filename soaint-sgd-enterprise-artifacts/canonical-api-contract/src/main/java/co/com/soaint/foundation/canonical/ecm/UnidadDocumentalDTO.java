@@ -30,7 +30,7 @@ public class UnidadDocumentalDTO {
     private Boolean inactivo;
     private String ubicacionTopografica;
     private Calendar fechaCierre;
-    private String id;
+    //private String id;
     private String faseArchivo;
     private Calendar fechaExtremaInicial;
     private String soporte;
