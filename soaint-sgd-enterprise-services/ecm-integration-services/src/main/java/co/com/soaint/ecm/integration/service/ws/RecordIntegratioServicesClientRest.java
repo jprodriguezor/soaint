@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.Consumes;
@@ -26,16 +27,18 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
 public class RecordIntegratioServicesClientRest {
-    private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
-    @Autowired
-    private IRecordServices record;
 
+    private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
+
+    private final IRecordServices record;
 
     /**
      * Constructor de la clase
      */
-    public RecordIntegratioServicesClientRest() {
+    @Autowired
+    public RecordIntegratioServicesClientRest(IRecordServices record) {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        this.record = record;
     }
 
     /**
@@ -69,8 +72,74 @@ public class RecordIntegratioServicesClientRest {
         try {
             return record.crearCarpetaRecord(entrada);
         } catch (RuntimeException e) {
-            logger.error("Error servicio creando estructura ", e);
+            logger.error("Error en operacion - crearCarpetaRecord ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
             throw e;
+        }
+    }
+
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/cerrarUnidadDocumentalECM/")
+    public MensajeRespuesta cerrarUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta cerrarUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return record.cerrarUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - cerrarUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para abrir una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/abrirUnidadDocumentalECM/")
+    public MensajeRespuesta abrirUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta abrirUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return record.abrirUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - abrirUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/reactivarUnidadDocumentalECM/")
+    public MensajeRespuesta reactivarUnidadDocumentalECM(@RequestParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta reactivarUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return record.reactivarUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - reactivarUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
         }
     }
 }

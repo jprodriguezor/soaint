@@ -4,6 +4,7 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.stereotype.Service;
 
@@ -109,9 +110,9 @@ public interface ContentControl {
     /**
      * Subir documento Principal Adjuntos al ECM
      *
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
-     * @param selector               Selector que dice donde se va a gauardar el documento
+     * @param selector     Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
@@ -119,7 +120,8 @@ public interface ContentControl {
 
     /**
      * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
-     * @param session Objeto de conexion a Alfresco
+     *
+     * @param session   Objeto de conexion a Alfresco
      * @param documento Objeto que contiene los datos del documento
      * @return
      */
@@ -128,18 +130,18 @@ public interface ContentControl {
     /**
      * Subir Versionar documento Generado al ECM
      *
-     * @param session                Objeto conexion
-     * @param documento              documento a subir/versionar
-     * @param selector               parametro que indica donde se va a guardar el documento
+     * @param session   Objeto conexion
+     * @param documento documento a subir/versionar
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session,  DocumentoDTO documento, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
      *
-     * @param session        Objeto conexion
+     * @param session   Objeto conexion
      * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de documentos adjuntos
      * @throws IOException exception
@@ -174,7 +176,7 @@ public interface ContentControl {
      * Descargar documento
      *
      * @param documentoDTO Objeto que contiene metadatos del documento en el ECM
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @return Se retorna el documento
      */
     MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException;
@@ -206,13 +208,13 @@ public interface ContentControl {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-     MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) ;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session);
 
     /**
      * Servicio que crea las unidades documentales del ECM
      *
      * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
-     * @param session           Objeto de conexion
+     * @param session             Objeto de conexion
      * @return MensajeRespuesta
      */
     MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
@@ -227,8 +229,8 @@ public interface ContentControl {
     /**
      * Metodo para listar los documentos de una Unidad Documental
      *
-     * @param idDocumento     Id Documento
-     * @param session Objeto conexion de Alfresco
+     * @param idDocumento Id Documento
+     * @param session     Objeto conexion de Alfresco
      * @return MensajeRespuesta con los detalles del documento
      */
     MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
@@ -236,17 +238,35 @@ public interface ContentControl {
     /**
      * Metodo para listar los documentos de una Unidad Documental
      *
-     * @param idUnidadDocumental     La unidad documental
-     * @param session Objeto conexion de Alfresco
+     * @param idUnidadDocumental La unidad documental
+     * @param session            Objeto conexion de Alfresco
      */
     MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
 
     /**
      * Metodo para devolver la Unidad Documental
      *
-     * @param idUnidadDocumental     Id Unidad Documental
+     * @param idUnidadDocumental Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
     MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
 
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idUnidadDocumental Id Documento
+     * @param session            Objeto conexion de Alfresco
+     * @return UnidadDocumentalDTO si existe null si no existe
+     */
+    UnidadDocumentalDTO buscarUnidadDocumentalPorId(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo que devuelve una Unidad Documental con sus Documentos
+     *
+     * @param idUnidadDocumental Id Unidad Documental
+     * @return UnidadDocumentalDTO      Unidad Documntal
+     */
+    UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException;
+
+    Folder getUnidadDocumentalFolder(String idUnidadDocumental, Session session) throws BusinessException;
 }
