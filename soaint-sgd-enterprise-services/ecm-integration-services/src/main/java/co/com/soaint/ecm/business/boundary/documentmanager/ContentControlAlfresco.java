@@ -685,7 +685,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setFechaCreacion(newGregCal.getTime());
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName("cmis:contentStreamMimeType").toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName("cmis:contentStreamLength").toString());
-                documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString());
+                documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName("cmcor:NroRadicado") != null ? qResult.getPropertyValueByQueryName("cmcor:NroRadicado").toString() : "");
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(CMCOR_X_TIPO).toString());
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName("cmcor:NombreRemitente") != null ? qResult.getPropertyValueByQueryName("cmcor:NombreRemitente").toString() : "");
 
