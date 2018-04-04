@@ -254,30 +254,31 @@ public class CorrespondenciaControl {
      * @return
      */
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
+        log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
             return CorrespondenciaFullDTO.newInstance()
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
-                    .descClaseEnvio(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()).getNombre())
+                    .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .descDependencia(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodDependencia()).getNombre())
+                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodDependencia()))
                     .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
-                    .descEmpMsj(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()).getNombre())
+                    .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
                     .codEstado(correspondenciaDTO.getCodEstado())
-                    .descEstado(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodEstado()).getNombre())
+                    .descEstado(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEstado()))
                     .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .descFuncRadica(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()).getNombre())
+                    .descFuncRadica(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()))
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
-                    .descMedioRecepcion(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()).getNombre())
+                    .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
                     .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
-                    .descModalidadEnvio(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()).getNombre())
+                    .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
-                    .descSede(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodSede()).getNombre())
+                    .descSede(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodSede()))
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
-                    .descTipoCmc(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()).getNombre())
+                    .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
                     .codTipoDoc(correspondenciaDTO.getCodTipoDoc())
-                    .descTipoDoc(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodTipoDoc()).getNombre())
+                    .descTipoDoc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoDoc()))
                     .codUnidadTiempo(correspondenciaDTO.getCodUnidadTiempo())
-                    .descUnidadTiempo(constanteControl.consultarConstanteByCodigo(correspondenciaDTO.getCodUnidadTiempo()).getNombre())
+                    .descUnidadTiempo(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodUnidadTiempo()))
                     .fecDocumento(correspondenciaDTO.getFecDocumento())
                     .fecRadicado(correspondenciaDTO.getFecRadicado())
                     .fecVenGestion(correspondenciaDTO.getFecVenGestion())
@@ -317,11 +318,12 @@ public class CorrespondenciaControl {
             return consultarComunicacionOficialFullByCorrespondencia(correspondenciaFullDTO);
 
 //            List<AgenteFullDTO> agentes = new ArrayList<>();
+//            CorrespondenciaFullDTO correspondenciaFullDTO = CorrespondenciaFullDTO.newInstance().build();
 //            List<AnexoFullDTO> anexos = new ArrayList<>();
 //            List<PpdDocumentoFullDTO> documentos = new ArrayList<>();
 //            List<DatosContactoFullDTO> datosContacto = new ArrayList<>();
 //            List<ReferidoDTO> referidos = new ArrayList<>();
-//
+
 //            ComunicacionOficialFullDTO comunicacionOficialFullDTO = ComunicacionOficialFullDTO.newInstance()
 //                    .agentes(agentes)
 //                    .anexos(anexos)
@@ -562,16 +564,17 @@ public class CorrespondenciaControl {
      * @return
      */
     public ComunicacionOficialFullDTO consultarComunicacionOficialFullByCorrespondencia(CorrespondenciaFullDTO correspondenciaFullDTO) throws SystemException, BusinessException {
-
+        log.info("processing rest request - CorrespondenciaControl-consultarComunicacionOficialFullByCorrespondencia");
         List<AgenteFullDTO> agenteFullDTOList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-
+            log.info("processing rest request - CorrespondenciaControl-agenteControl.consultarAgentesFullByCorrespondencia OK");
         List<DatosContactoFullDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoFullByAgentes(agenteFullDTOList);
-
+            log.info("processing rest request - datosContactoControl.consultarDatosContactoFullByAgentes OK");
         List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-
+            log.info("processing rest request - ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia OK");
         List<AnexoDTO> anexoList = anexoControl.consultarAnexosByPpdDocumentos(ppdDocumentoDTOList);
-
+            log.info("processing rest request - anexoControl.consultarAnexosByPpdDocumentos OK");
         List<ReferidoDTO> referidoList = referidoControl.consultarReferidosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
+        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
 
         return ComunicacionOficialFullDTO.newInstance()
                 .correspondencia(correspondenciaFullDTO)
@@ -728,6 +731,7 @@ public class CorrespondenciaControl {
      * @return
      */
     public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - CorrespondenciaControl-consultarCorrespondenciaByNroRadicado");
         try {
             return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)

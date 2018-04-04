@@ -47,9 +47,9 @@ public class AnexoControl {
             return AnexoFullDTO.newInstance()
                     .ideAnexo(anexoDTO.getIdeAnexo())
                     .codAnexo(anexoDTO.getCodAnexo())
-                    .descTipoAnexo(constantesControl.consultarConstanteByCodigo(anexoDTO.getCodAnexo()).getNombre())
+                    .descTipoAnexo(constantesControl.consultarNombreConstanteByCodigo(anexoDTO.getCodAnexo()))
                     .codTipoSoporte(anexoDTO.getCodTipoSoporte())
-                    .descTipoSoporte(constantesControl.consultarConstanteByCodigo(anexoDTO.getCodTipoSoporte()).getNombre())
+                    .descTipoSoporte(constantesControl.consultarNombreConstanteByCodigo(anexoDTO.getCodTipoSoporte()))
                     .build();
             //pendiente construir transform de lista de contactoFullDTO
         } catch (Exception e){

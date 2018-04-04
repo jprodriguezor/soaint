@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,6 +134,7 @@ public class ConstantesControl {
             return em.createNamedQuery("TvsConstantes.findByCodigo", ConstanteDTO.class)
                     .setParameter("CODIGO", codigo)
                     .getSingleResult();
+
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -146,5 +148,19 @@ public class ConstantesControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public String consultarNombreConstanteByCodigo(String codigo) {
+        try {
+            return  em.createNamedQuery("TvsConstantes.getNombreByCodigo", String.class)
+                    .setParameter("CODIGO", codigo)
+                    .getSingleResult();
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+        }
+        return null;
+
     }
 }
