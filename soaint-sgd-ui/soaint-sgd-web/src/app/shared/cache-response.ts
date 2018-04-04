@@ -5,6 +5,7 @@ export  abstract class CacheResponse {
 
  protected   payloadsCached: {payload: any, response: any, endpoint?: string}[] = [];
 
+
   isCached(payload: any, endpoint?: string): any {
 
     return this.payloadsCached.find(p =>  ObjectHelper.similar(p.payload, payload) && ( p.endpoint === undefined || p.endpoint === endpoint));
@@ -19,8 +20,7 @@ export  abstract class CacheResponse {
 
   protected  cacheResponse(payload, response, endpoint?) {
 
-    this.payloadsCached.push({payload: payload, response: response, endpoint: endpoint});
-
+      this.payloadsCached.push({payload: payload, response: response, endpoint: endpoint});
   }
 
 

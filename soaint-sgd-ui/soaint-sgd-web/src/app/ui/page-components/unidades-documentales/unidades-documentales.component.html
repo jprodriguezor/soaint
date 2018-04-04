@@ -165,7 +165,7 @@
                        [responsive]="true"
                        [value]="State.ListadoUnidadDocumental$ | async"
                        emptyMessage="No se encontraron resultados ">
-            <p-column field="State.ListadoUnidadDocumental$.seleccionado" header="">
+            <p-column field="seleccionado" header="">
               <ng-template pTemplate="header">
                 <p-checkbox name="seleccionartodos"  (onChange)="State.SeleccionarTodos($event)"></p-checkbox>
               </ng-template>

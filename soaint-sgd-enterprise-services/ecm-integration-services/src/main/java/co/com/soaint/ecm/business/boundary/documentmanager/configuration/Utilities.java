@@ -7,6 +7,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.configuration;
 
 import co.com.soaint.foundation.canonical.ecm.OrganigramaDTO;
 
+import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,5 +30,15 @@ public class Utilities {
         organigramaItem.sort (Comparator.comparing (OrganigramaDTO::getIdeOrgaAdmin));
     }
 
-
+    /**
+     * Función que elimina acentos y caracteres especiales de
+     * una cadena de texto.
+     * @param texto
+     * @return cadena de texto limpia de acentos y caracteres especiales.
+     */
+    public static String reemplazarCaracteresRaros(String texto) {
+        String resultText = Normalizer.normalize(texto, Normalizer.Form.NFD);
+        resultText = resultText.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return resultText;
+    }
 }

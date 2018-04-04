@@ -1,11 +1,11 @@
 import {AgentDTO} from '../../domain/agentDTO';
-import {RadicacionBase} from "./radicacionBase";
-import {TIPO_AGENTE_DESTINATARIO} from "../bussiness-properties/radicacion-properties";
-import {RadicacionSalidaFormInterface} from "../interfaces/data-transformers/radicacionSalidaForm.interface";
+import {RadicacionBase} from './radicacionBase';
+import {TIPO_AGENTE_DESTINATARIO} from '../bussiness-properties/radicacion-properties';
+import {RadicacionSalidaFormInterface} from '../interfaces/data-transformers/radicacionSalidaForm.interface';
 
-export class RadicacionSalidaDTV extends  RadicacionBase{
+export class RadicacionSalidaDTV extends  RadicacionBase {
 
-  getAgentesDestinatario(): Array<AgentDTO>{
+  getAgentesDestinatario(): Array<AgentDTO> {
 
     const agentes = [];
 

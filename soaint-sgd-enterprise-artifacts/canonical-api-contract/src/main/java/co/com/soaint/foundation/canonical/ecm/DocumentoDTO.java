@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,12 +27,15 @@ import java.util.Date;
 public class DocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String idDocumento;
     private String nroRadicado;
     private String tipologiaDocumental;
     private String nombreRemitente;
     private String sede;
+    private String codigoSede;
     private String dependencia;
+    private String codigoDependencia;
     private String nombreDocumento;
     private String idDocumentoPadre;
     private Date fechaCreacion;

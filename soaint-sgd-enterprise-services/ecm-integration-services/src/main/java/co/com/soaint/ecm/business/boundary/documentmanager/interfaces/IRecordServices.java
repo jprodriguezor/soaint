@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.springframework.stereotype.Service;
 
@@ -30,4 +31,27 @@ public interface IRecordServices {
      */
     MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException;
 
+    /**
+     * Metodo para cerrar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental) throws BusinessException, SystemException;
+
+    /**
+     * Metodo para abrir una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental) throws BusinessException, SystemException;
+
+    /**
+     * Metodo para reactivar una unidad documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental);
 }

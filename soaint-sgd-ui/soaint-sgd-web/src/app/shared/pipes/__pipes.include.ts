@@ -6,7 +6,7 @@ import {DropdownSingleItemPipe} from './dropdown-single-item';
 import {ConstantCodePipe} from './constant-code-pipe.pipe';
 import { CountryPhonePipe } from './countryPhone-input.pipe';
 import { MobilePhonePipe } from './mobile-input.pipe';
-import {DateFormatPipe} from './date.pipe';
+import { DateFormatPipe, DateTimeFormatPipe } from './date.pipe';
 
 export const PIPES = [
     EllipsisPipe,
@@ -17,6 +17,7 @@ export const PIPES = [
     CountryPhonePipe,
     MobilePhonePipe,
     DateFormatPipe,
+    DateTimeFormatPipe,
     DropdownItemPipeSerie,
     DropdownItemPipeSubserie,
     DropdownItemPipeSingle,

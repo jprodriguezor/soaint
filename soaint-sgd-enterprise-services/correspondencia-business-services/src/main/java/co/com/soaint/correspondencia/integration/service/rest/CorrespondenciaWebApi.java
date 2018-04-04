@@ -2,6 +2,7 @@ package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -67,6 +68,19 @@ public class CorrespondenciaWebApi {
     public ComunicacionOficialDTO listarCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - listar correspondencia by nro radicado");
         return boundary.listarCorrespondenciaByNroRadicado(nroRadicado);
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/full/{nro_radicado}")
+    public ComunicacionOficialFullDTO listarFullCorrespondenciaByNroRadicado(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - listar full correspondencia by nro radicado");
+        return boundary.listarFullCorrespondenciaByNroRadicado(nroRadicado);
     }
 
     /**

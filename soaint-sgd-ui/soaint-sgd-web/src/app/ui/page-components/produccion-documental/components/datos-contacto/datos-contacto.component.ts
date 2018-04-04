@@ -173,6 +173,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatariosInternos];
     this.hasDestinatarioPrincipal = currentStatus.datosContacto.hasDestinatarioPrincipal;
     this.responderRemitente = currentStatus.datosContacto.responderRemitente;
+    this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
     this.issetListDestinatarioBacken = currentStatus.datosContacto.issetListDestinatarioBackend;
     this.refreshView();
   }
@@ -334,7 +335,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
       this.form = this.formBuilder.group({
         // Datos destinatario
         'responderRemitente': [{value: false, disabled: this.issetListDestinatarioBacken}],
-        'distribucion': ['eléctronica'],
+        'distribucion': ['electronica'],
       });
 
   }
@@ -449,7 +450,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     this._changeDetectorRef.detectChanges();
   }
 
-  showForm():boolean{
+  showForm(): boolean{
 
     return ViewFilterHook.applyFilter(this.taskData.nombre+'-datos-contactos-show-form',true);
   }

@@ -28,7 +28,7 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="tabIndex = $event.index">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <pd-datos-generales #datosGenerales></pd-datos-generales>
+          <pd-datos-generales #datosGenerales [documentoRadicadoUrl]="documentoRadicadoUrl"></pd-datos-generales>
           <br/>
         </p-tabPanel>
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
@@ -36,12 +36,6 @@
         </p-tabPanel>
         <p-tabPanel header="Gestionar producción" leftIcon="ui-icon-assignment">
           <pd-gestionar-produccion #gestionarProduccion [status]="status"></pd-gestionar-produccion>
-        </p-tabPanel>
-
-        <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding *ngIf="pdfViewer">
-          <div style="overflow-y: scroll;max-height: 100%" *ngIf="documentUrl">
-            <pdf-viewer [src]="documentUrl" [show-all]="true" [zoom]="1.5"></pdf-viewer>
-          </div>
         </p-tabPanel>
       </p-tabView>
     </div>
