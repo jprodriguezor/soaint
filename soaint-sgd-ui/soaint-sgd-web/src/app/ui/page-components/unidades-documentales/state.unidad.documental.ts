@@ -147,7 +147,7 @@ export class StateUnidadDocumental implements TaskForm {
         this.AbrirDetalle = false;
     }
 
-    Buscar() {
+    Buscar(anything?:any) {
         this.ListadoUnidadDocumental$ = this.unidadDocumentalApiService.Listar(this.GetBuscarPayload());
     }
 

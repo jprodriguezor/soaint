@@ -29,4 +29,6 @@ export class CrearUnidadDocumentalComponent implements OnInit {
     this.solicitudSelected = evt.solicitud;
   }
 
+  closePopup(){}
+
 }
