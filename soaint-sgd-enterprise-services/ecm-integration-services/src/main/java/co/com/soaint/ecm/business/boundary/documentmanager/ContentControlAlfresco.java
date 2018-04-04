@@ -1478,29 +1478,44 @@ public class ContentControlAlfresco implements ContentControl {
             Carpeta folderAlfresco;
             logger.info("### Se elige la carpeta donde se va a guardar el documento principal..");
             logger.info("###------------ Se elige la sede donde se va a guardar el documento principal..");
-            folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
+
+            folderAlfresco = !ObjectUtils.isEmpty(documentoDTO.getCodigoSede()) ?
+                    obtenerCarpetaPorSede(documentoDTO.getCodigoSede(), session) :
+                    obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
 
             if (folderAlfresco.getFolder() != null) {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
                 //Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia
-                Optional<Carpeta> dependencia = carpetasHijas.stream()
-                        .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();
+                /*Optional<Carpeta> dependencia = carpetasHijas.stream()
+                        .filter(p -> p.getFolder().getName().equals(documentoDTO.getDependencia())).findFirst();*/
 
-                logger.info("Se obtienen la dependencia referente a la sede" + dependencia);
-                if (dependencia.isPresent()) {
+                folderAlfresco = new Carpeta();
+                for (Carpeta carpeta :
+                        carpetasHijas) {
+                    Folder folder = carpeta.getFolder();
+                    String codigoDependencia = folder.getPropertyValue(CMCOR_DEP_CODIGO_UAP);
+                    if ((!ObjectUtils.isEmpty(codigoDependencia) && codigoDependencia.equals(documentoDTO.getCodigoDependencia()))
+                            || folder.getName().equals(documentoDTO.getDependencia())) {
+                        folderAlfresco.setFolder(folder);
+                        break;
+                    }
+                }
+
+                logger.info("Se obtienen la dependencia referente a la sede" + folderAlfresco);
+                if (!ObjectUtils.isEmpty(folderAlfresco.getFolder())) {
 
                     logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + documentoDTO.getDependencia());
                     Calendar cal = Calendar.getInstance();
                     int year = cal.get(Calendar.YEAR);
-                    List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(dependencia.get());
+                    List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
                     Carpeta carpetaTarget;
 
                     Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
                             .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
-                    carpetaTarget = getCarpeta(carpetaCrearBuscar, dependencia, year, produccionDocumental);
+                    carpetaTarget = getCarpeta(carpetaCrearBuscar, Optional.of(folderAlfresco), year, produccionDocumental);
 
                     if (PRODUCCION_DOCUMENTAL.equals(carpetaCrearBuscar)) {
                         idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
@@ -1537,6 +1552,25 @@ public class ContentControlAlfresco implements ContentControl {
             response.setCodMensaje("2222");
             response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
+    }
+
+    private Carpeta obtenerCarpetaPorSede(String codigoSede, Session session) {
+        Carpeta folder = new Carpeta();
+        try {
+
+            final String queryString = "SELECT * FROM cmcor:CM_Unidad_Administrativa" +
+                    " WHERE " + CMCOR_DEP_CODIGO_UAP + " = '" + codigoSede + "'" +
+                    " and cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa'";
+
+            ItemIterable<QueryResult> results = session.query(queryString, false);
+            for (QueryResult qResult : results) {
+                String objectId = qResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+                folder.setFolder((Folder) session.getObject(session.createObjectId(objectId)));
+            }
+        } catch (Exception e) {
+            logger.error("*** Error al obtenerCarpetas *** ", e);
+        }
+        return folder;
     }
 
     private Carpeta getCarpeta(String carpetaCrearBuscar, Optional<Carpeta> dependencia, int year, Optional<Carpeta> produccionDocumental) {
