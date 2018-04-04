@@ -15,6 +15,8 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
   solicitudSelected:SolicitudCreacionUDDto;
 
+  visiblePopup:boolean = false;
+
   constructor() { }
 
   ngOnInit() {
