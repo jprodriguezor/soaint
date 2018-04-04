@@ -88,8 +88,8 @@ public class GestionarAsignacionesTest {
             FuncAsigDTO funcAsigDTO = boundary.consultarAsignacionReasignarByIdeAgente(new BigInteger("100"));
 //            assertEquals(new BigInteger("100"), funcAsigDTO.getAsignacion().getIdeAsignacion());
 //            assertEquals("CREDENCIALES 1", funcAsigDTO.getCredenciales());
-        } catch (SystemException e){
-            assertTrue(e.getCause() instanceof NullPointerException);
+        } catch (Exception e){
+            assertTrue(e.getCause() instanceof BusinessException);
             Log.error("GestionarAsignacionesTest - a business error has occurred", e);
 
         }
