@@ -4,6 +4,7 @@ export const ROUTES_PATH = {
   radicarCofSalida: 'radicacion-salida',
   radicarDocumentoSalida: 'radicacion-documento_salida',
   digitalizarDocumento: 'digitalizar-documentos',
+  adjuntarDocumento: 'adjuntar-documentos',
   gestionarDevoluciones: 'gestionar-devoluciones',
   corregirRadicacion: 'corregir-radicacion',
   dashboard: 'home',
@@ -19,8 +20,11 @@ export const ROUTES_PATH = {
   cargarPlanillas: 'cargar-planillas',
   produccionDocumentalMultiple: 'produccion-documental-multiple',
   produccionDocumental: 'producir-documento',
+  archivarDocumento: 'archivar-documento',
   seleccionarUnidadDocumental: 'seleccionar-unidad-documental',
   seleccionarDocumentos: 'seleccionar-documentos',
   securityRole: 'security-role',
-  gestionUnidadDocumental: 'gestion-unidad-documental'
+  gestionUnidadDocumental: 'gestion-unidad-documental',
+  crearUnidadDocumental: 'crear-unidad-documental',
+  disposicionFinal: 'disposicion-final'
 };

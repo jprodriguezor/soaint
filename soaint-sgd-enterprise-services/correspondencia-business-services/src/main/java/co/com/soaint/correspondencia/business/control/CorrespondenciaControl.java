@@ -474,6 +474,8 @@ public class CorrespondenciaControl {
                 .nroGuia(correspondenciaDTO.getNroGuia())
                 .fecVenGestion(correspondenciaDTO.getFecVenGestion())
                 .codEstado(correspondenciaDTO.getCodEstado())
+                .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
+                .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                 .corAgenteList(new ArrayList<>())
                 .dctAsignacionList(new ArrayList<>())
                 .dctAsigUltimoList(new ArrayList<>())

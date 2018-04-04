@@ -287,10 +287,6 @@ public class AsignacionControl {
      */
     public void actualizarAsignacion(BigInteger ideAgente, BigInteger ideDocumento, String codDependencia, BigInteger ideFunci) throws SystemException {
         try {
-            log.error("ideAgente: " + ideAgente);
-            log.error("ideDocumento: " + ideDocumento);
-            log.error("codDependencia: " + codDependencia);
-            log.error("ideFunci: " + ideFunci);
             DctAsigUltimo asignacionUltimo = getAsignacionUltimoByIdeAgente(ideAgente);
 
             CorCorrespondencia correspondencia = CorCorrespondencia.newInstance()

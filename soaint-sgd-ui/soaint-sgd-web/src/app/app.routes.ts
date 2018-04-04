@@ -9,7 +9,6 @@ import {AsignarComunicacionesComponent} from './ui/page-components/asignacion-co
 import {TareaDtoGuard} from './infrastructure/state-management/tareasDTO-state/tareasDTO-guard';
 import {DigitalizarDocumentoComponent} from './ui/page-components/digitalizar-documento/digitalizar-documento.component';
 import {CargaMasivaComponent} from './ui/page-components/carga-masiva/carga-masiva.component';
-
 import {ROUTES_PATH} from './app.route-names';
 import {DocumentosTramiteComponent} from './ui/page-components/documentos-tramite/documentos-tramite.component';
 import {RadicarSalidaComponent} from './ui/page-components/radicacion-salida/radicar-salida.component';
@@ -24,6 +23,9 @@ import {SecurityRoleComponent} from './ui/page-components/security-role/security
 import {UnidadesDocumentalesComponent} from './ui/page-components/unidades-documentales/unidades-documentales.component';
 import {GestionarDevolucionesComponent} from './ui/page-components/gestionar-devoluciones/gestionar-devoluciones.component';
 import {CorregirRadicacionComponent} from './ui/page-components/corregir-radicacion/corregir-radicacion.component';
+import {RedirectSeleccionarDocumentoComponent} from "./ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component";
+import {CrearUnidadDocumentalComponent} from "./ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component";
+import {DisposicionFinalComponent} from './ui/page-components/disposicion-final/disposicion-final.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -50,6 +52,12 @@ export const routes: Routes = [
       },
       {
         path: ROUTES_PATH.digitalizarDocumento,
+        component: DigitalizarDocumentoComponent,
+        canActivate: [AuthenticatedGuard],
+        canDeactivate: [TareaDtoGuard]
+      },
+      {
+        path: ROUTES_PATH.adjuntarDocumento,
         component: DigitalizarDocumentoComponent,
         canActivate: [AuthenticatedGuard],
         canDeactivate: [TareaDtoGuard]
@@ -89,6 +97,21 @@ export const routes: Routes = [
         path: ROUTES_PATH.gestionUnidadDocumental,
         component: UnidadesDocumentalesComponent,
         canActivate: [AuthenticatedGuard]
+      },
+      {
+        path: ROUTES_PATH.archivarDocumento,
+        component: SeleccionarUnidadDocumentalComponent,
+        canActivate:[AuthenticatedGuard]
+      },
+      {
+        path: ROUTES_PATH.crearUnidadDocumental,
+        component: CrearUnidadDocumentalComponent,
+        canActivate:[AuthenticatedGuard]
+      },
+      {
+      	path: ROUTES_PATH.disposicionFinal,
+        component: DisposicionFinalComponent,
+        canActivate: [AuthenticatedGuard]
       }
     ]
   },
@@ -120,6 +143,11 @@ export const routes: Routes = [
     canActivate: [AuthenticatedGuard]
   },
   {
+    path: ROUTES_PATH.archivarDocumento,
+    component: RedirectSeleccionarDocumentoComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
     path: ROUTES_PATH.seleccionarUnidadDocumental,
     component: SeleccionarUnidadDocumentalComponent,
     canActivate: [AuthenticatedGuard]
@@ -137,15 +165,3 @@ export const routes: Routes = [
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
 
-// import { NgModule } from '@angular/core';
-// import { RouterModule } from '@angular/router';
-//
-// @NgModule({
-//   imports: [
-//     RouterModule.forChild([
-//       { path: '', redirectTo: '/home', pathMatch: 'full' },
-//       { path: 'lazy', loadChildren: getLazyModule }
-//     ])
-//   ],
-// })
-// export class AppRoutingModule { }

@@ -132,6 +132,10 @@ public class CorCorrespondencia implements Serializable {
     private Date fecVenGestion;
     @Column(name = "COD_ESTADO")
     private String codEstado;
+    @Column(name = "COD_CLASE_ENVIO")
+    private String codClaseEnvio;
+    @Column(name = "COD_MODALIDAD_ENVIO")
+    private String codModalidadEnvio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorAgente> corAgenteList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")

@@ -3,15 +3,14 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-//  const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-//  const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
-
-// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -54,6 +53,7 @@ export const environment = {
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
+  radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -98,19 +98,28 @@ export const environment = {
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
 
-  // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
-  pd_gestion_documental : {
-      subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
-      eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
-      obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
-      subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
-      eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
-      // ECM Endpoints
-      obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
-  }
+    // Produccion Documental
+  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
+  pd_gestion_documental : {
+      subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
+      eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
+      obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
+      subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
+      eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
+      // ECM Endpoints
+      obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
+  },
+  listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
+
+  // Archivar Documento
+
+  ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`,
+    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
+  crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
+  listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
+  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
 };
 
 export const process_info = {
@@ -120,7 +129,7 @@ export const process_info = {
   },
   'proceso.correspondencia-salida': {
     displayValue: 'Correspondencia de salida',
-    show: false
+    show: true
   },
   'proceso.gestion-planillas': {
     displayValue: 'Gestion de planillas',
@@ -143,8 +152,12 @@ export const process_info = {
     show: false
   },
   'proceso.gestion-unidades-documentales': {
-    displayValue: 'Gestión de unidades documentales',
-    show: false
+    displayValue: 'G0estión de unidades documentales',
+    show: true
+  },
+  'process.archivar-documento': {
+    displayValue : 'Organización y Archivo',
+    show: true,
   }
 
 };

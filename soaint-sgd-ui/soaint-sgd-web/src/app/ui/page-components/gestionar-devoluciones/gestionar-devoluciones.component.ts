@@ -18,6 +18,7 @@ import {DependenciaDTO} from '../../../domain/dependenciaDTO';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 
 @Component({
   selector: 'app-gestionar-devoluciones',
@@ -27,9 +28,6 @@ import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-manag
 export class GestionarDevolucionesComponent implements OnInit {
 
   @ViewChild('popupAgregarObservaciones') popupAgregarObservaciones;
-
-  @ViewChild('documentosECMList') documentosECMList;
-
 
   causalDevolucion: any;
   usuariodevuelve: any;
@@ -44,8 +42,11 @@ export class GestionarDevolucionesComponent implements OnInit {
   dependencias: DependenciaDTO[] = [];
   disabledDevolucionRechazar: Boolean = false;
   disabledDevolucionAction: Boolean = false;
+  hasDocumnts: Boolean = false;
 
   comunicacion: ComunicacionOficialDTO = {};
+
+  afterTaskCompleteSubscriptor:Subscription;
 
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
@@ -53,6 +54,8 @@ export class GestionarDevolucionesComponent implements OnInit {
   constructor(private _store: Store<State>,private _dependenciaSandbox: DependenciaSandbox , private _sandbox: RadicarComunicacionesSandBox, private _constSandbox: ConstanteSandbox, private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder, private _asiganacionSandbox: AsiganacionDTOSandbox) {
      this.initForm();
   }
+
+
   form = new FormGroup({
     causalDevolucion: new FormControl(),
     usuariodevuelve: new FormControl(),
@@ -81,6 +84,8 @@ export class GestionarDevolucionesComponent implements OnInit {
       this.form.get("sedeAdministrativa").setValue(objSede ? objSede.nomSede : '');
 
     });
+
+    this.afterTaskCompleteSubscriptor =  afterTaskComplete.subscribe( t => this._store.dispatch(go(['/' + ROUTES_PATH.workspace])));
 
   }
 
@@ -117,6 +122,7 @@ export class GestionarDevolucionesComponent implements OnInit {
 
         if(this.comunicacion){
 
+            this.hasDocumnts = (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
             this.popupAgregarObservaciones.form.reset();
             this.popupAgregarObservaciones.setData({
               idDocumento: this.comunicacion.correspondencia.ideDocumento,
@@ -125,13 +131,6 @@ export class GestionarDevolucionesComponent implements OnInit {
               isPopup: false
             });
             this.popupAgregarObservaciones.loadObservations();
-
-            //para la lista de documentos
-            this.documentosECMList.setDataDocument({
-              comunicacion: this.comunicacion,
-              versionar: false,
-            });
-            this.documentosECMList.loadDocumentos();
         }
 
 
@@ -168,7 +167,7 @@ export class GestionarDevolucionesComponent implements OnInit {
       }
     });
 
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+    //this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
   gestionarDevolucion(){
@@ -182,11 +181,12 @@ export class GestionarDevolucionesComponent implements OnInit {
         requiereDigitalizacion: this.comunicacion.correspondencia.reqDigita,
       }
     });
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+    //this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
   ngOnDestroy() {
     this.activeTaskUnsubscriber.unsubscribe();
+    this.afterTaskCompleteSubscriptor.unsubscribe();
   }
 
 }

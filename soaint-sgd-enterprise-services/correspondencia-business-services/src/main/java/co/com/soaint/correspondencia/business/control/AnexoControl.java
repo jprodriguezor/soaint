@@ -1,12 +1,16 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAnexo;
+import co.com.soaint.foundation.canonical.correspondencia.AnexoFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.AnexoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.AnexosFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,6 +49,26 @@ public class AnexoControl {
                         .forEach(anexoList::add);
             }
             return anexoList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public AnexosFullDTO listarAnexosByNroRadicado(String nroRadicado) throws SystemException {
+        try {
+            return AnexosFullDTO.newInstance().anexos(em.createNamedQuery("CorAnexo.findAnexosByNroRadicado", AnexoFullDTO.class)
+                    .setParameter("NRO_RADICADO", nroRadicado)
+                    .getResultList()).build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()

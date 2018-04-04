@@ -4,11 +4,12 @@
     <p-panel header="Documentos Asociados" [style]="{border: 'none'}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
-          <p-dataTable selectionMode="single"
+          <p-progressBar mode="indeterminate" *ngIf="loading"></p-progressBar>
+          <p-dataTable selectionMode="single" *ngIf="!loading"
                        [paginator]="true" [rows]="10"
                        [responsive]="true"
                        [value]="documentsList"
-                       inmutable="false"
+                       inmutable="true"
                        emptyMessage="No tiene documentos asociados">
             <!--<p-header>Redirecciones / Devoluciones Fallidas</p-header>-->
             <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
@@ -28,11 +29,22 @@
                 <button type="button" pButton label="Ver Documento" (click)="showDocument(row.idDocumento)"></button>
               </ng-template>
             </p-column>
-            <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="versionar" >
-              <ng-template let-row="rowData"  pTemplate="item" [ngIf]="row.tipoPadreAdjunto==='Principal'">
-                <button type="button" label="Versionar" pButton (click)="ejecutarRedireccionOrigen(i)"
-                        class="ui-button ui-button-icon ui-button-danger"
-                ></button>
+            <p-column header="Acciones" [style]="{'width':'265px','text-align':'center'}" *ngIf="versionar" >
+              <ng-template let-row="rowData"  pTemplate="item">
+                <p-fileUpload *ngIf="row.tipoPadreAdjunto==='Principal'" #uploader
+                              (onSelect)="selectFile(uploader)"
+                              (onRemove)="clearFileList(uploader)"
+                              (onUpload)="onUpload($event)" 
+                              customUpload="true"
+                              (uploadHandler)="uploadHandler($event, uploader)"
+                              [styleClass]="selectedFile"
+                              [showUploadButton]="false"
+                              [showCancelButton]="false"
+                              chooseLabel="Buscar"
+                              uploadLabel="Versionar"
+                              cancelLabel="Cancelar"
+                              accept="application/pdf"
+                ></p-fileUpload>
               </ng-template>
             </p-column>
           </p-dataTable>

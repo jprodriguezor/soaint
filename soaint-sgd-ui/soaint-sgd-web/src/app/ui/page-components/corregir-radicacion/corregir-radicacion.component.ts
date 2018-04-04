@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit, ChangeDetectorRef, OnDestroy, AfterViewChecked } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -19,42 +19,83 @@ import {ROUTES_PATH} from '../../../app.route-names';
 import {go} from '@ngrx/router-store';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as CominicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
+import { ProduccionDocumentalApiService, MessagingService } from '../../../infrastructure/__api.include';
+import { VersionDocumentoDTO } from '../produccion-documental/models/DocumentoDTO';
+import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import { RadicacionEntradaFormInterface } from '../../../shared/interfaces/data-transformers/radicacionEntradaForm.interface';
+import { DatosGeneralesStateService } from '../../bussiness-components/datos-generales-edit/datos-generales-state-service';
+import { DatosRemitenteStateService } from '../../bussiness-components/datos-remitente-edit/datos-remitente-state-service';
+import { DatosDestinatarioStateService } from '../../bussiness-components/datos-destinatario-edit/datos-destinatario-state-service';
+import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
 
 @Component({
   selector: 'app-corregir-radicacion',
   templateUrl: './corregir-radicacion.component.html',
-  styleUrls: ['./corregir-radicacion.component.scss'],
 })
-export class CorregirRadicacionComponent implements OnInit {
-
-
-  @ViewChild('actualizarDatosGenerales') actualizarDatosGenerales;
-
-  @ViewChild('datosRemitente') datosRemitente;
-
-  @ViewChild('datosDestinatario') datosDestinatario;
-
-  editable = false;
+export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   tabIndex = 0;
 
-  comunicacion: ComunicacionOficialDTO = {};
+  formsTabOrder: Array<any> = [];
+
+  formGenerales: FormGroup;
+  formRemitente: FormGroup;
 
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
+  readonly = false;
 
-  radicacion: ComunicacionOficialDTO;
+  radicacionEntradaFormData: RadicacionEntradaFormInterface = null;
+  comunicacion: ComunicacionOficialDTO = {};
 
-  radicacionEntradaDTV: any;
+  descripcionAnexos: any;
+  radicadosReferidos: any;
+  agentesDestinatario: any;
+  disabled = true;
 
-  constructor(private _store: Store<State>, private _sandbox: RadicarComunicacionesSandBox, private _asiganacionSandbox: AsiganacionDTOSandbox, private _comunicacionOficialApi: CominicacionOficialSandbox,private _taskSandBox: TaskSandBox, private formBuilder: FormBuilder) {
-     //this.initForm();
+  stateGenerales: DatosGeneralesStateService = null;
+  stateRemitente: DatosRemitenteStateService = null;
+  stateDestinatario: DatosDestinatarioStateService = null;
+
+  constructor(
+    private _store: Store<State>,
+    private _sandbox: RadicarComunicacionesSandBox,
+    private _asiganacionSandbox: AsiganacionDTOSandbox,
+    private _comunicacionOficialApi: CominicacionOficialSandbox,
+    private _taskSandBox: TaskSandBox,
+    private formBuilder: FormBuilder,
+    private _produccionDocumentalApi: ProduccionDocumentalApiService,
+    private messagingService: MessagingService,
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _generalesStateService: DatosGeneralesStateService,
+    private _remitenteStateService: DatosRemitenteStateService,
+    private _destinatarioStateService: DatosDestinatarioStateService,
+  ) {
+    this.stateGenerales = this._generalesStateService;
+    this.stateRemitente = this._remitenteStateService;
+    this.stateDestinatario = this._destinatarioStateService;
   }
 
   ngOnInit() {
+    this.Init();
+  }
+
+  openNext() {
+    this.tabIndex = (this.tabIndex === 2) ? 0 : this.tabIndex + 1;
+  }
+
+  openPrev() {
+    this.tabIndex = (this.tabIndex === 0) ? 2 : this.tabIndex - 1;
+  }
+
+  updateTabIndex(event) {
+    this.tabIndex = event.index;
+  }
+
+  Init() {
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
-      this.task = activeTask;
-      this.restore();
+        this.task = activeTask;
+        this.restore();
     });
   }
 
@@ -68,19 +109,16 @@ export class CorregirRadicacionComponent implements OnInit {
 
   save(): Observable<any> {
     const payload: any = {
-      destinatario: this.datosDestinatario.form.value,
-      generales: this.actualizarDatosGenerales.form.value,
-      remitente: this.datosRemitente.form.value,
-      descripcionAnexos: this.actualizarDatosGenerales.descripcionAnexos,
-      radicadosReferidos: this.actualizarDatosGenerales.radicadosReferidos,
-      agentesDestinatario: this.datosDestinatario.agentesDestinatario
+      destinatario: this.radicacionEntradaFormData.destinatario,
+      generales: this.radicacionEntradaFormData.generales,
+      remitente: this.radicacionEntradaFormData.remitente,
+      descripcionAnexos: this.descripcionAnexos,
+      radicadosReferidos: this.radicadosReferidos,
+      agentesDestinatario: this.agentesDestinatario
     };
-
-    if (this.datosRemitente.datosContactos) {
-      payload.datosContactos = this.datosRemitente.datosContactos.contacts;
-      // payload.contactInProgress = this.datosRemitente.datosContactos.form.value
+    if (this.radicacionEntradaFormData.datosContactos) {
+      payload.datosContactos = this.radicacionEntradaFormData.datosContactos;
     }
-
     const tareaDto: any = {
       idTareaProceso: this.task.idTarea,
       idInstanciaProceso: this.task.idInstanciaProceso,
@@ -92,44 +130,42 @@ export class CorregirRadicacionComponent implements OnInit {
 
   restore() {
     if (this.task) {
-      console.log(this.task);
-
-      /*this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).subscribe(response => {
-
-        console.log(response);
-
-        const results = response.payload;
-        if (!results) {
-          return;
-        }
-        console.log(results);
-        // generales
-        this.datosGenerales.form.patchValue(results.generales);
-        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
-        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
-
-      });*/
-
-      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado).subscribe((result) => {
+      this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado)
+      .subscribe((result) => {
         this.comunicacion = result;
-        console.log(this.comunicacion);
-
-        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
-        console.log(this.radicacionEntradaDTV);
-        this.datosRemitente.form.patchValue(this.radicacionEntradaDTV.getDatosRemitente());
-        this.actualizarDatosGenerales.form.patchValue(this.radicacionEntradaDTV.getRadicacionEntradaFormData());
-        //this.contactos$ = this.radicacionEntradaDTV.getDatosContactos();
-        //this.destinatarios$ = this.radicacionEntradaDTV.getDatosDestinatarios();
-
+        const radicacionEntradaDTV: RadicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        this.radicacionEntradaFormData = radicacionEntradaDTV.getRadicacionEntradaFormData();
+        this.InitGenerales();
+        this.InitRemitente();
+        this.InitDestinatario();
       });
     }
   }
-  actualizarComunicacion(){
-    console.log(this.comunicacion);
 
+  InitGenerales() {
+    this.stateGenerales.dataform = this.radicacionEntradaFormData.generales;
+    this.stateGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
+    this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
+    this.stateGenerales.Init();
+    this.formsTabOrder.push(this.stateGenerales.form);
+  }
 
-    this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
+  InitRemitente() {
+    this.stateRemitente.tipoComunicacion = this.radicacionEntradaFormData.generales.tipoComunicacion;
+    this.stateRemitente.dataform = this.radicacionEntradaFormData.remitente;
+    this.stateRemitente.Init();
+    this.formsTabOrder.push(this.stateRemitente.form);
+  }
 
+  InitDestinatario() {
+    this.stateDestinatario.agentesDestinatario =  [...this.radicacionEntradaFormData.agentesDestinatario];
+    this.stateDestinatario.Init();
+    this.formsTabOrder.push(this.stateDestinatario.form);
+  }
+
+  actualizarComunicacion() {
+    const payload = this.GetComunicacionPayload();
+    this._comunicacionOficialApi.actualizarComunicacion(payload);
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
@@ -138,11 +174,62 @@ export class CorregirRadicacionComponent implements OnInit {
       }
     });
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
-
   }
 
-  ngOnDestroy() {
+  GetComunicacionPayload(): any {
+    const radicacionEntradaFormPayload: any = {
+      destinatario: this.stateDestinatario.form.value,
+      generales: this.stateGenerales.form.value,
+      remitente: this.stateRemitente.form.value,
+      descripcionAnexos: this.stateGenerales.descripcionAnexos,
+      radicadosReferidos: this.stateGenerales.radicadosReferidos,
+      agentesDestinatario: this.stateDestinatario.agentesDestinatario,
+      task: this.task
+    };
+    if (this.stateRemitente.contacts) {
+      radicacionEntradaFormPayload.datosContactos = this.stateRemitente.contacts;
+    }
+    const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);
 
+    return comunicacionOficialDTV.getComunicacionOficial();
   }
+
+  HasDocuments() {
+    if (this.comunicacion && this.comunicacion.ppdDocumentoList) {
+      return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
+    }
+    return false;
+  }
+
+  uploadVersionDocumento(doc: VersionDocumentoDTO) {
+    const formData = new FormData();
+    formData.append('documento', doc.file, doc.nombre);
+    if (doc.id) {
+        formData.append('idDocumento', doc.id);
+    }
+    formData.append('selector', 'PD');
+    formData.append('nombreDocumento', doc.nombre);
+    formData.append('tipoDocumento', doc.tipo);
+    formData.append('sede', this.task.variables.nombreSede);
+    formData.append('dependencia', this.task.variables.nombreDependencia);
+    formData.append('nroRadicado', this.task.variables && this.task.variables.numeroRadicado || null);
+    this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
+    resp => {
+      if ('0000' === resp.codMensaje) {
+        this._store.dispatch(new PushNotificationAction({severity: 'success', summary: resp.mensaje}))
+        return resp.documentoDTOList[0];
+      } else {
+        this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
+        return doc
+      }
+    },
+    error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
+  );
+}
+
+ngOnDestroy() {
+  this._changeDetectorRef.detach();
+}
+
 
 }

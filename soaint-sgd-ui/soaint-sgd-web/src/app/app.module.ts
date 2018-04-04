@@ -51,6 +51,24 @@ import { DatosDestinatarioComponent } from './ui/page-components/radicacion-sali
 import { DatosDestinatarioExternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-externo/datos-destinatario-externo.component';
 import { DatosDestinatarioInternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-interno/datos-destinatario-interno.component';
 import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remitentes/datos-remitentes.component';
+import { DetalleUnidadConservacionComponent } from './ui/page-components/unidades-documentales/components/detalle-unidad-conservacion/detalle-unidad-conservacion.component';
+import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component';
+import {ProcesoService} from "./infrastructure/api/proceso.service";
+import {SolicitudCreacionUdService} from "./infrastructure/api/solicitud-creacion-ud.service";
+import { ListaDocumentosArchivadosComponent } from './ui/page-components/archivar-documento/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
+import { CrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component';
+import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/lista-solicitud-crear-ud/lista-solicitud-crear-ud.component';
+import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
+import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
+import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
+import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
+import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
+import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
+import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-generales-edit/datos-generales-edit.component";
+import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
+import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
+import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 
 
 @NgModule({
@@ -145,7 +163,21 @@ import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remite
     DatosDestinatarioComponent,
     DatosDestinatarioExternoComponent,
     DatosDestinatarioInternoComponent,
-    DatosRemitentesComponent
+    DatosRemitentesComponent,
+    DetalleUnidadConservacionComponent,
+    RedirectSeleccionarDocumentoComponent,
+    ListaDocumentosArchivadosComponent,
+    CrearUnidadDocumentalComponent,
+    ListaSolicitudCrearUdComponent,
+    NoTramitarCreacionUdComponent,
+    FormCrearUnidadDocumentalComponent,
+    UdTramitadasComponent,
+    RsTicketRadicadoComponent,
+    TicketRadicadoComponent,
+    DistribucionComponent,
+    DatosGeneralesEditComponent,
+    DatosRemitenteEditComponent,
+    DatosDestinatarioEditComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -156,6 +188,10 @@ import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remite
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
     ConfirmationService,
+    ProcesoService,
+    SolicitudCreacionUdService,
+    RadicacionSalidaService,
+    UnidadDocumentalApiService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

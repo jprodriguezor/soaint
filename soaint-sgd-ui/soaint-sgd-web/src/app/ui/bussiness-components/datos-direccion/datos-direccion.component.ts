@@ -1,10 +1,11 @@
+
 import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
 import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
@@ -45,6 +46,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   @Output()
   nuevosContactos = new EventEmitter();
+
+  @Output() loadComponent:EventEmitter<DatosDireccionComponent> = new EventEmitter;
 
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
@@ -112,6 +115,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
     this.municipioSuggestions$ = this.municipioAutoComplete.completeMethod
       .combineLatest(this.municipios$, (event: any, municipios) => municipios.filter(municipio => municipio.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
+
+    this.loadComponent.emit(this);
 
   }
 
@@ -327,6 +332,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (prefijoCuadrante_se.value) {
         direccion += ' ' + prefijoCuadrante_se.value.nombre;
+        value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
@@ -336,14 +342,17 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (orientacion_se.value) {
         direccion += ' ' + orientacion_se.value.nombre;
+        value['orientacion_se'] = orientacion_se.value;
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
         direccion += ' ' + tipoComplemento.value.nombre;
+        value['complementoTipo'] = tipoComplemento.value;
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
         direccion += ' ' + complementoAdicional.value;
+        value['complementoAdicional'] = complementoAdicional.value;
         complementoAdicional.reset();
       }
 

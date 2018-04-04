@@ -14,7 +14,8 @@ import {
   TASK_DIGITALIZAR_DOCUMENTO, TASK_DOCUMENTOS_TRAMITES, TASK_GENERAR_PLANILLA_ENTRADA,
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
-  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA
+  TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL,
+  TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -22,6 +23,7 @@ import {createSelector} from 'reselect';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {getSelectedDependencyGroupFuncionario} from '../funcionarioDTO-state/funcionarioDTO-selectors';
 import {Observable} from 'rxjs/Observable';
+import {getActiveTask} from "./tareasDTO-selectors";
 
 @Injectable()
 export class Sandbox {
@@ -151,13 +153,18 @@ export class Sandbox {
       case TASK_DIGITALIZAR_DOCUMENTO:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.digitalizarDocumento, task]));
         break;
+      case TASK_ADJUNTAR_DOCUMENTO:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.adjuntarDocumento, task]));
+        break;
       case TASK_GESTIONAR_DEVOLUCIONES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.gestionarDevoluciones, task]));
         break;
       case TASK_CORREGIR_RADICACION:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.corregirRadicacion, task]));
         break;
-
+      case TASK_APROBAR_DISPOSICION_FINAL:
+        this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.disposicionFinal, task]));
+        break;
       case TASK_DOCUMENTOS_TRAMITES:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.documentosTramite, task]));
         break;
@@ -179,6 +186,14 @@ export class Sandbox {
       case TASK_APROBAR_DOCUMENTO:
           this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.produccionDocumental}/3`, task]));
           break;
+      case TASK_ARCHIVAR_DOCUMENTO :
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.archivarDocumento}`, task]));
+        break;
+
+      case TASK_CREAR_UNIDAD_DOCUMENTAL :
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.crearUnidadDocumental}`, task]));
+        break;
+
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }

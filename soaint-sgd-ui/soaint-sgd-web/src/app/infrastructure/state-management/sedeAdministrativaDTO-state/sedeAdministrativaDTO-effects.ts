@@ -51,10 +51,11 @@ export class Effects {
     // .let(isLoaded())
     .map(toPayload)
     .switchMap(
-        (payload) => this._sandbox.loadData(payload)
+        (payload) => { console.log(payload);
+
+         return this._sandbox.loadData(payload)
           .map((response) => new actions.LoadSuccessAction(response))
-          .catch((error) => Observable.of(new actions.LoadFailAction({error}))
-      )
+          .catch((error) => Observable.of(new actions.LoadFailAction({error})))}
     );
 
 

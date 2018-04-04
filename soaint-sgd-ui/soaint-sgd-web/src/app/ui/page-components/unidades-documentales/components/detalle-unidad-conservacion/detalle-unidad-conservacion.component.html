@@ -1,0 +1,70 @@
+<div *ngIf="State.UnidadDocumentalSeleccionada">
+<p-panel header="Datos unidad documental" leftIcon="ui-icon-assignment">
+  <div class="ui-g ui-fluid">   
+      <div class="ui-sm-12 ui-g-6 ui-lg-12">
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <label for="idunidaddocumental">Identificador principal unidad documental</label>
+              </div>
+              <div class="ui-g-12">
+                  <input type="text" pInputText   id="idunidaddocumental" [(ngModel)]="State.UnidadDocumentalSeleccionada.identificador" />
+              </div>
+          </div>
+      </div>
+      <div class="ui-sm-12 ui-g-3 ui-lg-3">
+        <div class="ui-g form-group">
+            <div class="ui-g-12">
+                <label for="nombre">Nombre unidad documental</label>
+            </div>
+            <div class="ui-g-12">
+                <input type="text" pInputText   id="nombre" [(ngModel)]="State.UnidadDocumentalSeleccionada.nombre" />
+            </div>
+        </div>
+    </div>
+    <div class="ui-sm-12 ui-g-3 ui-lg-3">
+      <div class="ui-g form-group">
+          <div class="ui-g-12">
+              <label for="descriptor1">Descriptor 1</label>
+          </div>
+          <div class="ui-g-12">
+              <input type="text" pInputText   id="descriptor1" [(ngModel)]="State.UnidadDocumentalSeleccionada.descriptor1" />
+          </div>
+      </div>
+  </div>
+  <div class="ui-sm-12 ui-g-3 ui-lg-3">
+    <div class="ui-g form-group">
+        <div class="ui-g-12">
+            <label for="descriptor2">Descriptor 2</label>
+        </div>
+        <div class="ui-g-12">
+            <input type="text" pInputText   id="descriptor2" [(ngModel)]="State.UnidadDocumentalSeleccionada.descriptor2" />
+        </div>
+    </div>
+  </div>
+        </div>      
+     </div>
+</p-panel>
+<p-panel header="Unidades de conservación asociada" leftIcon="ui-icon-assignment">
+        <div class="ui-fluid">
+          <p-dataTable selectionMode="single"
+                       [paginator]="true"
+                       [rows]="10"
+                       [responsive]="true"
+                       [value]="State.UnidadDocumentalSeleccionada.unidadesConservacion"
+                       emptyMessage="No se encontraron resultados ">
+            <p-column field="item" header="Item"></p-column>
+            <p-column field="nombreSerieSubserie" header="Nombre serie/subserie"></p-column>
+            <p-column field="identificadorUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="nombre" header="Nombre unidad documental"></p-column>
+            <p-column field="descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="estado" header="Estado"></p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
+            <p-column field="soporte" header="Soporte"></p-column>
+          </p-dataTable>     
+     </div>
+</p-panel>
+</div>

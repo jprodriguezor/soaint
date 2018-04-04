@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -35,15 +36,16 @@ public class ECMClient {
         super();
     }
 
-    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO) {
+    public MensajeRespuesta uploadVersionDocumento(DocumentoDTO documentoDTO, String selector) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/PD")
+        Response response = wt.path("/subirVersionarDocumentoGeneradoECM/" + selector)
                 .request()
                 .post(Entity.json(documentoDTO));
 
         return response.readEntity(MensajeRespuesta.class);
     }
+
 
     public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -74,10 +76,10 @@ public class ECMClient {
 
 
 
-    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion){
+    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
-            files.forEach((key, part) -> {
+            files.entrySet().forEach((key, part) -> {
 
                 DocumentoDTO documentoAsociadoECMDTO = new DocumentoDTO();
                 try {
@@ -88,6 +90,8 @@ public class ECMClient {
                     documentoAsociadoECMDTO.setTipoDocumento("application/pdf");
                     documentoAsociadoECMDTO.setNombreDocumento(key);
                     documentoAsociadoECMDTO.setIdDocumentoPadre(parentId);
+                    documentoAsociadoECMDTO.setNroRadicado(numero);
+                    documentoAsociadoECMDTO.setNroRadicadoReferido(referidoList);
 
                 }catch (Exception e){
                     log.info("Error generando el documento ",e);
@@ -131,6 +135,14 @@ public class ECMClient {
         return wt.path("/devolverSerieOSubserieECM")
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
+    }
+
+    public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/listarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
     }
 
 }
