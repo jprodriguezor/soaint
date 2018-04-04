@@ -327,6 +327,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (prefijoCuadrante_se.value) {
         direccion += ' ' + prefijoCuadrante_se.value.nombre;
+        value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
@@ -336,14 +337,17 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
       if (orientacion_se.value) {
         direccion += ' ' + orientacion_se.value.nombre;
+        value['orientacion_se'] = orientacion_se.value;
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
         direccion += ' ' + tipoComplemento.value.nombre;
+        value['complementoTipo'] = tipoComplemento.value;
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
         direccion += ' ' + complementoAdicional.value;
+        value['complementoAdicional'] = complementoAdicional.value;
         complementoAdicional.reset();
       }
 
