@@ -103,7 +103,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       }));
 
     } else {
-
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           _dependencia = result.dependencias[0];
