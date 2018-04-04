@@ -173,6 +173,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     this.listaDestinatariosInternos = [...currentStatus.datosContacto.listaDestinatariosInternos];
     this.hasDestinatarioPrincipal = currentStatus.datosContacto.hasDestinatarioPrincipal;
     this.responderRemitente = currentStatus.datosContacto.responderRemitente;
+    this.form.get('distribucion').setValue(currentStatus.datosContacto.distribucion);
     this.issetListDestinatarioBacken = currentStatus.datosContacto.issetListDestinatarioBackend;
     this.refreshView();
   }
@@ -407,6 +408,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
         }
       }
     }
+
+    this.hideAddDestinatarioInternoPopup();
+    this.hideAddDestinatarioExternoPopup();
   }
 
   editDestinatario(index, op) {
