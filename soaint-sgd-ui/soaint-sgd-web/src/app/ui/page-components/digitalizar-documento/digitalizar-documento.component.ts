@@ -113,7 +113,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           formData.append('principalFileName', this.principalFile);
           if(_dependencia) {
             formData.append('sede', _dependencia.nomSede);
+            formData.append('codigoSede', _dependencia.codSede);
             formData.append('dependencia', _dependencia.nombre);
+            formData.append('codigoDependencia', _dependencia.codigo);
           }
           if(_agente)
             formData.append('nombreRemitente', _agente.nombre);
