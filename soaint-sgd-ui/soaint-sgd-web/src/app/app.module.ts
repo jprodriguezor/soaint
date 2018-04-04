@@ -61,7 +61,6 @@ import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-do
 import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
 import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
-import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component';
 import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
 import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
 import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
@@ -173,7 +172,6 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     NoTramitarCreacionUdComponent,
     FormCrearUnidadDocumentalComponent,
     UdTramitadasComponent,
-    AdjuntarDocumentoComponent,
     RsTicketRadicadoComponent,
     TicketRadicadoComponent,
     DistribucionComponent,
