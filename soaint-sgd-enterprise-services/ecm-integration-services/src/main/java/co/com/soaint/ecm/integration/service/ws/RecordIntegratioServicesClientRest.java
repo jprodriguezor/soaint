@@ -30,15 +30,15 @@ public class RecordIntegratioServicesClientRest {
 
     private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
 
-    private final IRecordServices record;
+    @Autowired
+    private IRecordServices record;
 
     /**
      * Constructor de la clase
      */
-    @Autowired
-    public RecordIntegratioServicesClientRest(IRecordServices record) {
+
+    public RecordIntegratioServicesClientRest() {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-        this.record = record;
     }
 
     /**
