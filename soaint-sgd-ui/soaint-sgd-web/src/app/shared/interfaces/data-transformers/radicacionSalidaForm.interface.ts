@@ -14,6 +14,10 @@
      Nombre: any,
      TipoDocumento:any,
      destinatarioPrincipal: any
-   }>
+   }>,
+   datosEnvio?:{
+     clase_envio:any,
+     modalidad_correo: any,
+   }
 
  }

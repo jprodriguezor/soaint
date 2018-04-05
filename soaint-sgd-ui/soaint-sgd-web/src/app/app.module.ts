@@ -68,7 +68,9 @@ import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-gener
 import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
-import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
+import {DropdownItemPipeSerie, DropdownItemPipeSubserie} from "./shared/pipes/dropdown-item";
+import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
 
 
 @NgModule({
@@ -177,7 +179,9 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     DistribucionComponent,
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
-    DatosDestinatarioEditComponent
+    DatosDestinatarioEditComponent,
+    FormEnvioComponent,
+
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -187,11 +191,11 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
-    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,
     RadicacionSalidaService,
+    UnidadDocumentalApiService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

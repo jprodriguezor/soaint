@@ -76,6 +76,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   @ViewChild('datosContacto') datosContacto;
   @ViewChild('ticketRadicado') ticketRadicado;
   @ViewChild('datosRemitente') datosRemitente;
+  @ViewChild('datosEnvio') datosEnvio;
 
   task: TareaDTO;
   taskFilter?:string;
@@ -157,6 +158,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
        destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
        destinatarioExt:this.datosContacto.listaDestinatariosExternos,
        remitente:this.datosRemitente.form.value,
+       datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
     };
 
 
@@ -212,9 +214,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     const valueGeneral = this.datosGenerales.form.value;
     const valueRemitente = this.datosRemitente.form.value;
-
-
-
 
      return new RsTicketRadicado(
       DESTINATARIO_INTERNO,
@@ -373,6 +372,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       const conditions:boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
+      !this.datosGenerales.form.get("reqDistFisica").value || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
       this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
     ];
 

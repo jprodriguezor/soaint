@@ -2,8 +2,22 @@ import {AgentDTO} from '../../domain/agentDTO';
 import {RadicacionBase} from './radicacionBase';
 import {TIPO_AGENTE_DESTINATARIO} from '../bussiness-properties/radicacion-properties';
 import {RadicacionSalidaFormInterface} from '../interfaces/data-transformers/radicacionSalidaForm.interface';
+import {CorrespondenciaDTO} from "../../domain/correspondenciaDTO";
 
 export class RadicacionSalidaDTV extends  RadicacionBase {
+
+
+  getCorrespondencia():CorrespondenciaDTO{
+
+    const datosEnvio = (<RadicacionSalidaFormInterface>this.source).datosEnvio;
+
+    let correspondencia = super.getCorrespondencia();
+
+    correspondencia.codClaseEnvio = datosEnvio.clase_envio;
+    correspondencia.codModalidadEnvio = datosEnvio.modalidad_correo;
+
+     return correspondencia;
+  }
 
   getAgentesDestinatario(): Array<AgentDTO> {
 

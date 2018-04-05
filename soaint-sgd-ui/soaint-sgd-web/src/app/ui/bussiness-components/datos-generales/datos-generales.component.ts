@@ -99,8 +99,6 @@ export class DatosGeneralesComponent implements OnInit {
         'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
         'inicioConteo': [null],
         'reqDistFisica': [{value: null, disabled: !this.editable}],
-        'clase_envio'  : [null],
-        'modalidad_correo'  : [null],
         'reqDigit': [{value: '1', disabled: !this.editable}],
         'tiempoRespuesta': [{value: null, disabled: !this.editable}],
         'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
@@ -110,14 +108,6 @@ export class DatosGeneralesComponent implements OnInit {
         'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
         'hasAnexos': [{value: null, disabled: !this.editable}]
       });
-
-      if(this.tipoRadicacion == RADICACION_SALIDA){
-
-        this.form.setValidators([
-          ExtendValidators.requiredIf('reqDistFisica',true,'clase_envio'),
-          ExtendValidators.requiredIf('reqDistFisica',true,'modalidad_correo'),
-        ]);
-      };
 
   }
 
@@ -256,11 +246,5 @@ export class DatosGeneralesComponent implements OnInit {
       }
     });
   }
-
-  showDistributionFields():boolean{
-
-    return this.tipoRadicacion == RADICACION_SALIDA && this.form.get('reqDistFisica').value;
-  }
-
 
 }

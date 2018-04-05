@@ -49,7 +49,9 @@ export  abstract class RadicacionBase {
       nroGuia: generales.numeroGuia ? generales.numeroGuia : null,
       fecVenGestion: null,
       codEstado: null,
-      inicioConteo: generales.inicioConteo || ''
+      inicioConteo: generales.inicioConteo || '',
+      codClaseEnvio:null,
+      codModalidadEnvio:null
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
