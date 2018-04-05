@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,6 @@ public class DigitalizarDocumentoGatewayApi {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
-
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,6 +56,12 @@ public class DigitalizarDocumentoGatewayApi {
             String sede = formDataInput.getFormDataPart("sede", String.class, null);
             String tipoComunicacion = formDataInput.getFormDataPart("tipoComunicacion", String.class, null);
             String nroRadicado = formDataInput.getFormDataPart("nroRadicado", String.class, null);
+            List<String> referidoList = new ArrayList<>();
+            if (null != formDataInput.getFormDataMap().get("referidoList")) {
+                for (InputPart referido : formDataInput.getFormDataMap().get("referidoList")) {
+                    referidoList.add(referido.getBodyAsString());
+                }
+            }
             InputPart parent = _files.get(principalFileName);
             InputStream result = parent.getBody(InputStream.class, null);
             documentoECMDTO.setDocumento(IOUtils.toByteArray(result));
@@ -64,16 +70,17 @@ public class DigitalizarDocumentoGatewayApi {
             documentoECMDTO.setTipoDocumento("application/pdf");
             documentoECMDTO.setNombreDocumento(principalFileName);
             documentoECMDTO.setNroRadicado(nroRadicado);
+            documentoECMDTO.setNroRadicadoReferido(Arrays.copyOf(referidoList.toArray(), referidoList.size(), String[].class));
             documentoECMDTO.setNombreRemitente(formDataInput.getFormDataPart("nombreRemitente", String.class, null));
             parentResponse = client.uploadDocument(documentoECMDTO, tipoComunicacion);
             _files.remove(principalFileName);
-            if ("0000".equals(parentResponse.getCodMensaje())){
-                List<DocumentoDTO> documentoDTO = (List<DocumentoDTO>) parentResponse.getDocumentoDTOList();
-                if(null != documentoDTO && !documentoDTO.isEmpty()) {
+            if ("0000".equals(parentResponse.getCodMensaje())) {
+                List<DocumentoDTO> documentoDTO = parentResponse.getDocumentoDTOList();
+                if (null != documentoDTO && !documentoDTO.isEmpty()) {
                     ecmIds.add(documentoDTO.get(0).getIdDocumento());
-                    if(!_files.isEmpty()){
-                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(),_files, sede, dependencia, tipoComunicacion).forEach(mensajeRespuesta -> {
-                            if("0000".equals(mensajeRespuesta.getCodMensaje())){
+                    if (!_files.isEmpty()) {
+                        client.uploadDocumentsAsociates(documentoDTO.get(0).getIdDocumento(), _files, sede, dependencia, tipoComunicacion, nroRadicado, documentoECMDTO.getNroRadicadoReferido()).forEach(mensajeRespuesta -> {
+                            if ("0000".equals(mensajeRespuesta.getCodMensaje())) {
                                 List<DocumentoDTO> documentoDTO1 = mensajeRespuesta.getDocumentoDTOList();
                                 ecmIds.add(documentoDTO1.get(0).getIdDocumento());
                             }
@@ -86,17 +93,6 @@ public class DigitalizarDocumentoGatewayApi {
 
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
-    }
-
-    @GET
-    @Path("/obtener-documento/{idDocumento}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response constantes(@PathParam("idDocumento") String idDocumento) {
-        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento desde el ecm: " + idDocumento);
-        Response response = client.findByIdDocument(idDocumento);
-        InputStream responseObject = response.readEntity(InputStream.class);
-//        response.ok(responseObject).header ("Content-Type", "application/pdf");
-        return Response.status(Response.Status.OK).entity(responseObject).build();
     }
 
     @GET
