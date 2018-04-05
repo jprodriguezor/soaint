@@ -3,6 +3,7 @@ package co.com.soaint.correspondencia.apis.delegator;
 import co.com.soaint.correspondencia.infrastructure.ApiDelegator;
 import co.com.soaint.correspondencia.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
@@ -72,5 +74,21 @@ public class CorrespondenciaApiClient {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    public Response radicar(ComunicacionOficialDTO comunicacionOficialDTO) {
+        log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia")
+                .request()
+                .post(Entity.json(comunicacionOficialDTO));
+    }
+
+    public Response actualizarEstado(CorrespondenciaDTO correspondenciaDTO) {
+        log.info("Correspondencia - [trafic] - actualizar estado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/actualizar-estado")
+                .request()
+                .put(Entity.json(correspondenciaDTO));
     }
 }
