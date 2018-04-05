@@ -22,6 +22,7 @@ import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 import {DocumentUploaded} from '../../events/DocumentUploaded';
+import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -231,7 +232,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('tipoDocumento', doc.tipo);
       formData.append('sede', this.taskData.variables.nombreSede);
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
+      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
       formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
       resp => {
