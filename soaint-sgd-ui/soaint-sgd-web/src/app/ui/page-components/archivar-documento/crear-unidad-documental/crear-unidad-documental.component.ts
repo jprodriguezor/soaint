@@ -15,6 +15,8 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
   solicitudSelected:SolicitudCreacionUDDto;
 
+  visiblePopup:boolean = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -26,5 +28,7 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
     this.solicitudSelected = evt.solicitud;
   }
+
+  closePopup(){}
 
 }

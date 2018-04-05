@@ -40,8 +40,7 @@ export class DropdownItemPipeFullName implements PipeTransform {
   }
 }
 
-@
-  Pipe({name: 'dropdownItemSerie'})
+@Pipe({name: 'dropdownItemSerie'})
 export class DropdownItemPipeSerie implements PipeTransform {
   transform(value, args?) {
     // ES6 array destructuring

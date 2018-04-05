@@ -23,7 +23,10 @@ import {getMediosRecepcionVentanillaData} from '../../../infrastructure/state-ma
 import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import 'rxjs/add/operator/skipWhile';
 import {Sandbox as ComunicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
-import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getArrayData as getFuncionarioArrayData,
+  getSelectedDependencyGroupFuncionario
+} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
 import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
@@ -49,6 +52,7 @@ import {afterTaskComplete} from "../../../infrastructure/state-management/tareas
 import {go} from "@ngrx/router-store";
 import {ROUTES_PATH} from "../../../app.route-names";
 import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-salida.service";
+import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 
 
 declare const require: any;
@@ -74,11 +78,14 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   @ViewChild('datosRemitente') datosRemitente;
 
   task: TareaDTO;
+  taskFilter?:string;
   radicacion: ComunicacionOficialDTO;
   barCodeVisible = false;
 
   formsTabOrder: Array<any> = [];
   activeTaskUnsubscriber: Subscription;
+  dependencySubscription:Subscription;
+  dependencySelected?:DependenciaDTO;
 
   afterTaskCompleteSubscriptor:Subscription;
 
@@ -91,18 +98,27 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     ,private _changeDetectorRef: ChangeDetectorRef
     ,private _sandbox:RadicacionSalidaService
     ,private _taskSandbox:TaskSandBox) {
+
   }
-
-
 
   ngOnInit() {
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
       this.task = activeTask;
 
-      ViewFilterHook.addFilter(this.task.nombre+'-datos-contactos-show-form',() => false);
+      if(this.task !== null){
 
+        this.taskFilter = this.task.nombre+'-datos-contactos-show-form';
+
+        ViewFilterHook.addFilter(this.taskFilter,() => false);
+      }
       this.restore();
+    });
+
+
+    this.dependencySubscription =  this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependency => {
+
+      this.dependencySelected = dependency;
     });
 
     this.formContactDataShown = this.validatorSubscription();
@@ -159,7 +175,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       this.datosContacto.listaDestinatariosInternos.forEach(destinatario => {
 
-        this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatario));
+        console.log('destinatario');
+        console.log(destinatario);
+
+       this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatario));
       });
 
       this.datosContacto.listaDestinatariosExternos.forEach(destinatario => {
@@ -174,19 +193,14 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null
       }));
 
-       let requiereDigitalizacion = 0;
+       let requiereDigitalizacion = valueGeneral.reqDigit;
 
-      if (valueGeneral.reqDigit === 1) {
-        requiereDigitalizacion = 1;
-      } else if (valueGeneral.reqDigit === 2) {
-        requiereDigitalizacion = 2;
-      }
-
-      this._taskSandbox.completeTaskDispatch({
+        this._taskSandbox.completeTaskDispatch({
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
         parametros: {
+          codDependencia: this.dependencySelected.codigo,
           requiereDigitalizacion: requiereDigitalizacion,
           numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
         }
@@ -200,17 +214,20 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     const valueRemitente = this.datosRemitente.form.value;
 
 
-    return new RsTicketRadicado(
+
+
+     return new RsTicketRadicado(
       DESTINATARIO_INTERNO,
       this.datosGenerales.descripcionAnexos.length.toString(),
       valueGeneral.numeroFolio.toString(),
       this.radicacion.correspondencia.nroRadicado.toString(),
-       this.radicacion.correspondencia.fecRadicado.toString(),
-      destinatario.sedeAdministrativa.nombre.toString(),
-      destinatario.dependenciaGrupo.nombre.toString(),
-      destinatario.funcionario.toString(),
-      valueRemitente.sedeAdministrativa.toString(),
-     valueRemitente.dependenciaGrupo.toString(),
+      this.radicacion.correspondencia.fecRadicado.toString(),
+      null,
+      valueRemitente.sedeAdministrativa.nombre,
+      valueRemitente.dependenciaGrupo.nombre,
+      destinatario.funcionario.nombre,
+      destinatario.sede.nombre,
+      destinatario.dependencia.nombre,
      );
   }
 
@@ -221,14 +238,14 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     return new RsTicketRadicado(
       DESTINATARIO_EXTERNO,
-   this.datosGenerales.descripcionAnexos.length,
-   valueGeneral.numeroFolio,
-   this.radicacion.correspondencia.nroRadicado,
-   this.radicacion.correspondencia.fecRadicado,
-   destinatario.nombre,
-   valueRemitente.sedeAdministrativa,
-   valueRemitente.dependenciaGrupo,
-    valueRemitente.funcionarioGrupo
+     this.datosGenerales.descripcionAnexos.length,
+     valueGeneral.numeroFolio,
+     this.radicacion.correspondencia.nroRadicado,
+     this.radicacion.correspondencia.fecRadicado,
+     destinatario.nombre,
+     valueRemitente.sedeAdministrativa.nombre,
+     valueRemitente.dependenciaGrupo.nombre,
+     valueRemitente.funcionarioGrupo.nombre
   );
   }
 
@@ -264,28 +281,87 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   abort() {
     console.log('ABORT...');
-    /*this._taskSandBox.abortTaskDispatch({
+    this._taskSandbox.abortTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       instanciaProceso: this.task.idInstanciaProceso
-    });*/
+    });
   }
 
   save(): Observable<any> {
-    console.log('SAVE...');
-    return Observable.of({id: 'ID'});
+    const payload: any = {
+      generales: this.datosGenerales.form.value,
+      remitente: this.datosRemitente.form.value,
+      descripcionAnexos: this.datosGenerales.descripcionAnexos,
+      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      destinatariosInternos:this.datosContacto.listaDestinatariosInternos,
+      destinatariosExternos:this.datosContacto.listaDestinatariosExternos,
+    };
+
+    if (this.datosRemitente.datosContactos) {
+      payload.datosContactos = this.datosRemitente.datosContactos.contacts;
+      // payload.contactInProgress = this.datosRemitente.datosContactos.form.value
+    }
+
+
+    const tareaDto: any = {
+      idTareaProceso: this.task.idTarea,
+      idInstanciaProceso: this.task.idInstanciaProceso,
+      payload: payload
+    };
+
+    return this._sandbox.quickSave(tareaDto);
   }
 
   restore() {
-    console.log('RESTORE...')
+    console.log('RESTORE...');
+    if (this.task) {
+      this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
+        const results = response.payload;
+        if (!results) {
+          return;
+        }
+
+        // generales
+        this.datosGenerales.form.patchValue(results.generales);
+        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
+        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
+
+        // remitente
+        this.datosRemitente.form.patchValue(results.remitente);
+
+        // destinatario
+        this.datosContacto.listaDestinatariosExternos = results.destinatariosExternos;
+        this.datosContacto.listaDestinatariosInternos= results.destinatariosInternos;
+
+        if (results.datosContactos) {
+          const retry = setInterval(() => {
+            if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+              this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
+              clearInterval(retry);
+            }
+          }, 400);
+        }
+
+        // if (results.contactInProgress) {
+        //   const retry = setInterval(() => {
+        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
+        //       clearInterval(retry);
+        //     }
+        //   }, 400)
+        // }
+
+      });
+    }
   }
 
   ngOnDestroy() {
     console.log('ON DESTROY...');
 
-    ViewFilterHook.removeFilter(this.task.nombre+'-datos-contactos-show-form');
+    ViewFilterHook.removeFilter(this.taskFilter);
 
-    ViewFilterHook.removeFilter('datos-remitente-'+COMUNICACION_EXTERNA);
+    ViewFilterHook.removeFilter('datos-remitente-'+ COMUNICACION_EXTERNA);
 
     this.activeTaskUnsubscriber.unsubscribe();
 

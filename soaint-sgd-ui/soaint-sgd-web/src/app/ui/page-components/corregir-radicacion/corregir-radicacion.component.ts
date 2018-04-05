@@ -56,6 +56,8 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   agentesDestinatario: any;
   disabled = true;
 
+  radicacion:any;
+
   stateGenerales: DatosGeneralesStateService = null;
   stateRemitente: DatosRemitenteStateService = null;
   stateDestinatario: DatosDestinatarioStateService = null;

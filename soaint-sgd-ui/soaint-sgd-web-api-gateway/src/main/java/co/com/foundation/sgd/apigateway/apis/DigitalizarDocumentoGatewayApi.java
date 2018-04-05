@@ -3,22 +3,16 @@ package co.com.foundation.sgd.apigateway.apis;
 import co.com.foundation.sgd.apigateway.apis.delegator.DigitalizarDocumentoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
-import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import com.sun.corba.se.impl.orbutil.ObjectStreamClassUtil_1_3;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.resteasy.util.GenericType;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,7 +37,6 @@ public class DigitalizarDocumentoGatewayApi {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
-
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,64 +93,6 @@ public class DigitalizarDocumentoGatewayApi {
 
         }
         return Response.status(Response.Status.OK).entity(parentResponse).build();
-    }
-
-    @POST
-    @Path("/versionar-documento")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @JWTTokenSecurity
-    public Response versionarDocumento(MultipartFormDataInput formDataInput) {
-
-        log.info("DigitalizarDocumentoComunicacionGatewayApi - [content] : Subir version documento");
-
-        MensajeRespuesta clientResponse = null;
-        DocumentoDTO documentoDTO = new DocumentoDTO();
-        try {
-            InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
-            documentoDTO.setDocumento(IOUtils.toByteArray(inputStream));
-
-            if (null != formDataInput.getFormDataPart("idDocumento", String.class, null)) {
-                documentoDTO.setIdDocumento(formDataInput.getFormDataPart("idDocumento", String.class, null));
-            }
-
-            documentoDTO.setNombreDocumento(formDataInput.getFormDataPart("nombreDocumento", String.class, null));
-            documentoDTO.setTipoDocumento(formDataInput.getFormDataPart("tipoDocumento", String.class, null));
-            documentoDTO.setSede(formDataInput.getFormDataPart("sede", String.class, null));
-            documentoDTO.setDependencia(formDataInput.getFormDataPart("dependencia", String.class, null));
-            String selector = formDataInput.getFormDataPart("selector", String.class, null);
-            if (0 < formDataInput.getFormDataPart("nroRadicado", String.class, null).length()) {
-                documentoDTO.setNroRadicado(formDataInput.getFormDataPart("nroRadicado", String.class, null));
-            }
-
-            clientResponse = this.client.uploadVersionDocumento(documentoDTO, selector);
-            log.info(clientResponse);
-
-        } catch (Exception ex) {
-            return this.EcmErrorMessage(ex);
-        }
-
-        return Response.status(Response.Status.OK).entity(clientResponse).build();
-    }
-
-    private Response EcmErrorMessage(@NotNull Exception ex) {
-        JSONObject jsonResponse = new JSONObject();
-        jsonResponse.put("codMensaje", "9999");
-        jsonResponse.put("mensaje", ex.getMessage());
-
-        return Response.status(Response.Status.BAD_REQUEST).entity(jsonResponse.toJSONString()).build();
-    }
-
-
-    @GET
-    @Path("/obtener-documento/{idDocumento}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response constantes(@PathParam("idDocumento") String idDocumento) {
-        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento desde el ecm: " + idDocumento);
-        Response response = client.findByIdDocument(idDocumento);
-        InputStream responseObject = response.readEntity(InputStream.class);
-//        response.ok(responseObject).header ("Content-Type", "application/pdf");
-        return Response.status(Response.Status.OK).entity(responseObject).build();
     }
 
     @GET

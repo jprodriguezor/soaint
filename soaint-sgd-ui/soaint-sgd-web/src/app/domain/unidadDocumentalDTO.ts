@@ -22,4 +22,5 @@ export interface  UnidadDocumentalDTO {
     cerrada?: boolean;
     accion?: string;
     seleccionado?: boolean;
+    observacion?:string;
 }
