@@ -7,8 +7,10 @@ import co.com.soaint.foundation.canonical.correspondencia.AnexosFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,56 @@ public class AnexoControl {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private ConstantesControl constantesControl;
+
+    /**
+     * @param anexoDTO
+     * @return
+     */
+    public AnexoFullDTO anexoTransformToFull(AnexoDTO anexoDTO) throws SystemException, BusinessException{
+        try{
+            return AnexoFullDTO.newInstance()
+                    .ideAnexo(anexoDTO.getIdeAnexo())
+                    .codAnexo(anexoDTO.getCodAnexo())
+                    .descTipoAnexo(constantesControl.consultarNombreConstanteByCodigo(anexoDTO.getCodAnexo()))
+                    .codTipoSoporte(anexoDTO.getCodTipoSoporte())
+                    .descTipoSoporte(constantesControl.consultarNombreConstanteByCodigo(anexoDTO.getCodTipoSoporte()))
+                    .build();
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param anexoDTOList
+     * @return
+     */
+    public List<AnexoFullDTO> anexoListTransformToFull(List<AnexoDTO> anexoDTOList) throws SystemException, BusinessException {
+        List<AnexoFullDTO> anexoFullDTOList = new ArrayList<>();
+        try{
+
+            for (AnexoDTO anexoDTO:anexoDTOList){
+                anexoFullDTOList.add(anexoTransformToFull(anexoDTO));
+            }
+
+            return anexoFullDTOList;
+
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
 
     /**
      *
