@@ -408,6 +408,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
         }
       }
     }
+
+    this.hideAddDestinatarioInternoPopup();
+    this.hideAddDestinatarioExternoPopup();
   }
 
   editDestinatario(index, op) {

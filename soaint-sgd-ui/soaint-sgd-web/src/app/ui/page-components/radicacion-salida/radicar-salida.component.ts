@@ -175,18 +175,20 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       const valueGeneral = this.datosGenerales.form.value;
 
-      this.datosContacto.listaDestinatariosInternos.forEach(destinatario => {
+      let predicate = (destinatario) => destinatario.tipoDestinatario.nombre == "Principal";
 
-        console.log('destinatario');
-        console.log(destinatario);
+      let destinatarioPrincipal = this.datosContacto.listaDestinatariosInternos.find(predicate);
 
-       this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatario));
-      });
+      if(destinatarioPrincipal === undefined){
+        destinatarioPrincipal = this.datosContacto.listaDestinatariosExternos.find(predicate);
 
-      this.datosContacto.listaDestinatariosExternos.forEach(destinatario => {
+        if(destinatarioPrincipal !== undefined)
+          this.ticketRadicado.setDataTicketRadicado(this.createTicketDestExterno(destinatarioPrincipal));
+      }
+      else{
 
-        this.ticketRadicado.setDataTicketRadicado(this.createTicketDestExterno(destinatario));
-      });
+        this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
+      }
 
       this.disableEditionOnForms();
 
