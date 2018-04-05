@@ -79,7 +79,7 @@ public class ECMClient {
     public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList){
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
-            files.entrySet().forEach((key, part) -> {
+            files.forEach((key, part) -> {
 
                 DocumentoDTO documentoAsociadoECMDTO = new DocumentoDTO();
                 try {
