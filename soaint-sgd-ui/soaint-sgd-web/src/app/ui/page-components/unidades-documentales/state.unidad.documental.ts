@@ -235,7 +235,7 @@ export class StateUnidadDocumentalService implements TaskForm {
     Abrir() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
             this.unidadDocumentalApiService.abrirUnidadesDocumentales(payload)
             .subscribe(response => {
                 this.ManageActionResponse(response);
@@ -255,7 +255,7 @@ export class StateUnidadDocumentalService implements TaskForm {
                     payload = unidadesSeleccionadas.reduce((listado, current) => {
                         if (current.fechaExtremaFinal === null && current.soporte === 'fisico') {
                             const item = {
-                                idUnidadDocumental: current.id,
+                                id: current.id,
                                 fechaExtremaFinal: current.fechaCierre,
                             }
                             listado.push(current);
@@ -286,7 +286,7 @@ export class StateUnidadDocumentalService implements TaskForm {
     Reactivar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
             this.unidadDocumentalApiService.reactivarUnidadesDocumentales(payload)
             .subscribe(response => {
                this.ManageActionResponse(response);
