@@ -38,7 +38,11 @@ import java.util.List;
                 "(t.ideDepar, t.nombreDepar, t.codDepar) " +
                 "FROM TvsDepartamento t " +
                 "INNER JOIN t.tvsMunicipioList m " +
-                "WHERE TRIM(m.codMunic) = TRIM(:COD_MUNIC)")})
+                "WHERE TRIM(m.codMunic) = TRIM(:COD_MUNIC)"),
+        @NamedQuery(name = "TvsDepartamento.findByCodDep", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
+                "(t.ideDepar, t.nombreDepar, t.codDepar) " +
+                "FROM TvsDepartamento t " +
+                "WHERE TRIM(t.codDepar) = TRIM(:COD_DEP)")})
 public class TvsDepartamento implements Serializable {
 
     private static final long serialVersionUID = 1L;

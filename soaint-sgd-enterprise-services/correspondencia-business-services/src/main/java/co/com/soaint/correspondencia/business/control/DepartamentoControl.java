@@ -112,6 +112,35 @@ public class DepartamentoControl {
         }
     }
 
+    /**
+     *
+     * @param cod
+     * @return
+     * @throws SystemException
+     * @throws BusinessException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public DepartamentoDTO consultarDepartamentoByCod(String cod) throws SystemException, BusinessException {
+        try {
+            DepartamentoDTO departamento = em.createNamedQuery("TvsDepartamento.findByCodDep", DepartamentoDTO.class)
+                    .setParameter("COD_DEP", cod)
+                    .getSingleResult();
+            return departamento;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("departamento.departamento_not_exist_by_codMunic")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     private List<DepartamentoDTO> conformarDepartamentosConPais(List<DepartamentoDTO> departamentos)throws SystemException, BusinessException{
         for(DepartamentoDTO departamento : departamentos){
             departamento.setPais(paisControl.consultarPaisByCodDepar(departamento.getCodDepar()));

@@ -63,4 +63,40 @@ public class CorrespondenciaFullDTO implements Serializable {
     private String descClaseEnvio;
     private String codModalidadEnvio;
     private String descModalidadEnvio;
+
+    public CorrespondenciaFullDTO(BigInteger ideDocumento, String descripcion, String tiempoRespuesta,
+                              String codUnidadTiempo, String descUnidadTiempo, String codMedioRecepcion, String descMedioRecepcion, Date fecRadicado, String nroRadicado,
+                              Date fecDocumento, String codTipoDoc, String descTipoDoc, String codTipoCmc, String descTipoCmc, String reqDistFisica,
+                              String ideInstancia, String codFuncRadica, String descFuncRadica, String codSede, String descSede, String codDependencia, String descDependencia,
+                              String reqDigita, String nroGuia, String codEmpMsj, String descEmpMsj, Date fecVenGestion, String codEstado, String descEstado) {
+        this.ideDocumento = ideDocumento;
+        this.descripcion = descripcion;
+        this.tiempoRespuesta = tiempoRespuesta;
+        this.codUnidadTiempo = codUnidadTiempo;
+        this.descUnidadTiempo = descUnidadTiempo;
+        this.codMedioRecepcion = codMedioRecepcion;
+        this.descMedioRecepcion = descMedioRecepcion;
+        this.fecRadicado = fecRadicado;
+        this.nroRadicado = nroRadicado;
+        this.fecDocumento = fecDocumento;
+        this.codTipoDoc = codTipoDoc;
+        this.descTipoDoc = descTipoDoc;
+        this.codTipoCmc = codTipoCmc;
+        this.descTipoCmc = descTipoCmc;
+        this.reqDistFisica = reqDistFisica;
+        this.ideInstancia = ideInstancia;
+        this.codFuncRadica = codFuncRadica;
+        this.descFuncRadica = descFuncRadica;
+        this.codSede = codSede;
+        this.descSede = descSede;
+        this.codDependencia = codDependencia;
+        this.descDependencia = descDependencia;
+        this.reqDigita = reqDigita;
+        this.nroGuia = nroGuia;
+        this.codEmpMsj = codEmpMsj;
+        this.descEmpMsj = descEmpMsj;
+        this.fecVenGestion = fecVenGestion;
+        this.codEstado = codEstado;
+        this.descEstado = descEstado;
+    }
 }

@@ -41,6 +41,9 @@ import java.math.BigInteger;
         @NamedQuery(name = "TvsConstantes.findByCodigo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO" +
                 "(t.ideConst, t.codigo, t.nombre, t.codPadre) " +
                 "FROM TvsConstantes t " +
+                "WHERE t.codigo = :CODIGO"),
+        @NamedQuery(name = "TvsConstantes.getNombreByCodigo", query = "SELECT t.nombre " +
+                "FROM TvsConstantes t " +
                 "WHERE t.codigo = :CODIGO")})
 public class TvsConstantes implements Serializable {
 

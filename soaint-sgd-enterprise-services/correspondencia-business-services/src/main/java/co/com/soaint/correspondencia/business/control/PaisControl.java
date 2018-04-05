@@ -103,4 +103,32 @@ public class PaisControl {
                     .buildSystemException();
         }
     }
+
+    /**
+     *
+     * @param codPais
+     * @return
+     * @throws SystemException
+     * @throws BusinessException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public PaisDTO consultarPaisByCod(String codPais) throws SystemException, BusinessException {
+        try {
+            return em.createNamedQuery("TvsPais.findByCod", PaisDTO.class)
+                    .setParameter("COD_PAIS", codPais)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("pais.pais_not_exist_by_codDepar")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
 }

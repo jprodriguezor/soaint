@@ -1,5 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Arrays;
@@ -110,5 +112,34 @@ public class MunicipioControl {
             municipio.setDepartamento(departamentoControl.consultarDepartamentoByCodMunic(municipio.getCodMunic()));
         }
         return municipios;
+    }
+
+    /**
+     *
+     * @param codMunic
+     * @return
+     * @throws SystemException
+     * @throws BusinessException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public MunicipioDTO consultarMunicipioByCodMunic(String codMunic) throws SystemException, BusinessException {
+        try {
+            MunicipioDTO municipioDTO = em.createNamedQuery("TvsDepartamento.findByCodMun", MunicipioDTO.class)
+                    .setParameter("COD_MUN", codMunic)
+                    .getSingleResult();
+            return municipioDTO;
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("departamento.departamento_not_exist_by_codMunic")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }
