@@ -275,7 +275,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
       formData.append('sede', this.taskData.variables.nombreSede);
+      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
+      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirAnexo(formData).subscribe(
         resp => {
