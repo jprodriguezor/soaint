@@ -366,6 +366,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this.activeTaskUnsubscriber.unsubscribe();
 
     this.afterTaskCompleteSubscriptor.unsubscribe();
+
+    this.dependencySubscription.unsubscribe();
   }
 
   radicacionButtonIsShown():boolean{
