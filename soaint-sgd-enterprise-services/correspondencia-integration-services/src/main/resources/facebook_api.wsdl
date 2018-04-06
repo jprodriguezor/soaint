@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.soaint.org/facebook-api/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="facebook-api" targetNamespace="http://www.soaint.org/facebook-api/">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.soaint.org/facebook-api/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://www.soaint.org/facebook-api/">
+
+
+            <xsd:element name="sendMessage">
+
+                <xsd:complexType>
+
+                    <xsd:sequence>
+
+                        <xsd:element name="message" type="xsd:string"/>
+
+                    </xsd:sequence>
+
+                </xsd:complexType>
+
+            </xsd:element>
+
+
+            <xsd:element name="sendMessageWithImage">
+
+                <xsd:complexType>
+
+                    <xsd:sequence>
+
+                        <xsd:element name="message" type="xsd:string"/>
+
+                        <xsd:element name="image" type="xsd:string"/>
+
+                    </xsd:sequence>
+
+                </xsd:complexType>
+
+            </xsd:element>
+
+
+            <xsd:element name="sendMessageResponse">
+
+                <xsd:complexType>
+
+                    <xsd:sequence>
+
+                        <xsd:element name="response" type="xsd:string"/>
+
+                    </xsd:sequence>
+
+                </xsd:complexType>
+
+            </xsd:element>
+
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="sendMessageRequest">
+        <wsdl:part element="tns:sendMessage" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="sendMessageWithImageRequest">
+        <wsdl:part element="tns:sendMessageWithImage" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="sendMessageResponse">
+        <wsdl:part element="tns:sendMessageResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="facebook-api">
+        <wsdl:operation name="sendMessage">
+            <wsdl:input message="tns:sendMessageRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:sendMessageResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="sendMessageWithImage">
+            <wsdl:input message="tns:sendMessageWithImageRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:sendMessageResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="facebook-apiSOAP" type="tns:facebook-api">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="sendMessage">
+            <soap:operation soapAction="http://www.soaint.org/facebook-api/sendMessage"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="sendMessageWithImage">
+            <soap:operation soapAction="http://www.soaint.org/facebook-api/sendMessageWithImage"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="facebook-api">
+        <wsdl:port binding="tns:facebook-apiSOAP" name="facebook-api-SOAP">
+            <soap:address location="http://192.168.1.152:4300/esb/facebook-api/1.0.0"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

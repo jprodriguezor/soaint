@@ -47,4 +47,20 @@ public class EcmApiClient {
                     .buildSystemException();
         }
     }
+
+    public MensajeRespuesta findByIdDocument(String idDocumento) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/descargarDocumentoECM/")
+                .queryParam("identificadorDoc", idDocumento)
+                .request()
+                .get().readEntity(MensajeRespuesta.class);
+    }
+
+    public MensajeRespuesta obtenerVersionesDocumento(String documentId) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/obtenerVersionesDocumentos/" + documentId).request()
+                .post(Entity.json(""));
+
+        return response.readEntity(MensajeRespuesta.class);
+    }
 }

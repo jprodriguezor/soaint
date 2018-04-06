@@ -12,6 +12,7 @@ package co.com.soaint.correspondencia.config;
 
 import co.com.soaint.correspondencia.integration.service.rest.CorrespondenciaWebApi;
 import co.com.soaint.correspondencia.integration.service.rest.DigitalizacionWebApi;
+import co.com.soaint.correspondencia.integration.service.rest.ProduccionDocumentalWebApi;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
@@ -55,6 +56,7 @@ public class WebApiConfig extends Application {
         Set<Class<?>> resources = new HashSet<>();
         resources.add(DigitalizacionWebApi.class);
         resources.add(CorrespondenciaWebApi.class);
+        resources.add(ProduccionDocumentalWebApi.class);
 
         resources.add(ApiListingResource.class);
         resources.add(SwaggerSerializers.class);

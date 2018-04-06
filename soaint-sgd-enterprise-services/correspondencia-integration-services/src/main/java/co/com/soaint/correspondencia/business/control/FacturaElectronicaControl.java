@@ -1,7 +1,10 @@
 package co.com.soaint.correspondencia.business.control;
 
+import co.com.soaint.correspondencia.apis.delegator.DependenciaApiClient;
 import co.com.soaint.correspondencia.utils.Concepto;
 import co.com.soaint.correspondencia.utils.Conceptos;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DependenciaDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -13,6 +16,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageInputStream;
@@ -42,6 +46,9 @@ public class FacturaElectronicaControl {
     private String logoPath = "/home/wildfly/correspondencia_reports/jb_logo.png";
     private String logoSmallPath = "/home/wildfly/correspondencia_reports/logoSmall.png";
 
+    @Autowired
+    private DependenciaApiClient dependenciaApiClient;
+
     public Map<String, Object> obtenerMetadatos(Document document) {
         Map<String, Object> metadatos = new HashMap<>();
         metadatos.put("noFactura", document.valueOf("/fe:Invoice/cbc:ID"));
@@ -65,10 +72,10 @@ public class FacturaElectronicaControl {
         }
     }
 
-    public byte[] getPDF(Document documento)throws SystemException{
+    public byte[] getPDF(Document documento, ComunicacionOficialDTO comunicacionOficialDTO)throws SystemException{
         try {
         JasperReport report = JasperCompileManager.compileReport(reportPath);
-        return JasperRunManager.runReportToPdf(report, getReportParameters(documento), getReportDataSource(documento));
+        return JasperRunManager.runReportToPdf(report, getReportParameters(documento, comunicacionOficialDTO), getReportDataSource(documento));
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -78,18 +85,20 @@ public class FacturaElectronicaControl {
         }
     }
 
-    private Map<String, Object> getReportParameters(Document document) throws IOException {
+    private Map<String, Object> getReportParameters(Document document, ComunicacionOficialDTO comunicacionOficialDTO) throws IOException {
         BufferedImage logo = ImageIO.read(new FileImageInputStream(new File(logoPath)));
         BufferedImage logoSmall = ImageIO.read(new FileImageInputStream(new File(logoSmallPath)));
+
+        DependenciaDTO dependenciaDTO = dependenciaApiClient.obtenerPorCodigo(comunicacionOficialDTO.getCorrespondencia().getCodDependencia()).readEntity(DependenciaDTO.class);
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("pLogo", logo);
         parameters.put("pLogoSmall", logoSmall);
-        parameters.put("pNoRadicado", "1000EE2018000001");
+        parameters.put("pNoRadicado", comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
         parameters.put("pFechaRadicacion", document.valueOf("/fe:Invoice/cbc:IssueDate").concat(" ").concat(document.valueOf("/fe:Invoice/cbc:IssueTime")));
         parameters.put("pRemitente", "SOFTWARE ASSOCIATES S.A.S.");
-        parameters.put("pDestinatarioSede", "1040_VICEPRESIDENCIA DE BENEFICIOS ECONOMICOS PERIODICOS");
-        parameters.put("pDestinatarioDependencia", "1040.1040_VICEPRESIDENCIA DE BENEFICIOS ECONOMICOS PERIODICOS");
+        parameters.put("pDestinatarioSede", dependenciaDTO.getNomSede());
+        parameters.put("pDestinatarioDependencia", dependenciaDTO.getNomDependencia());
         parameters.put("pAnexos", 1);
         parameters.put("pFolios", 2);
         parameters.put("pNoFactura", document.valueOf("/fe:Invoice/cbc:ID"));

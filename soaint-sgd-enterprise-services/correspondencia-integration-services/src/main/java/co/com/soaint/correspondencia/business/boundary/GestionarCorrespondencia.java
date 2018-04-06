@@ -5,13 +5,13 @@ import co.com.soaint.correspondencia.apis.delegator.DependenciaApiClient;
 import co.com.soaint.correspondencia.apis.delegator.DocumentoApiClient;
 import co.com.soaint.correspondencia.apis.delegator.EcmApiClient;
 import co.com.soaint.correspondencia.business.control.FacturaElectronicaControl;
+import co.com.soaint.correspondencia.business.control.FirmaDigital;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.DocumentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoRemitenteEnum;
-import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.integration.FileBase64DTO;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -19,9 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 
-import java.io.ByteArrayInputStream;
 import java.util.*;
 
 /**
@@ -48,6 +46,8 @@ public class GestionarCorrespondencia {
     private FacturaElectronicaControl facturaElectronicaControl;
     @Autowired
     private DependenciaApiClient dependenciaApiClient;
+    @Autowired
+    private FirmaDigital firmaDigital;
 
     public void radicarFacturaElectronica(FileBase64DTO xmlDocument) throws SystemException {
 
@@ -104,6 +104,7 @@ public class GestionarCorrespondencia {
                 .codTipAgent(TipoAgenteEnum.DESTINATARIO.getCodigo())
                 .codSede("1000")
                 .codDependencia("10001010")
+                .indOriginal("TP-DESP")
                 .build();
 
         List<AgenteDTO> agentes = new ArrayList<>();
@@ -143,7 +144,7 @@ public class GestionarCorrespondencia {
                 .codigoDependencia(dependenciaDTO.getCodDependencia())
                 .dependencia(dependenciaDTO.getNomDependencia())
                 .nroRadicado(comunicacionOficialDTO.getCorrespondencia().getNroRadicado())
-                .documento(facturaElectronicaControl.getPDF(facturaElectronica))
+                .documento(firmaDigital.signPDF(facturaElectronicaControl.getPDF(facturaElectronica, comunicacionOficialDTO)))
                 .tipologiaDocumental(codTipoDoc)
                 .tipoDocumento("application/pdf")
                 .build();

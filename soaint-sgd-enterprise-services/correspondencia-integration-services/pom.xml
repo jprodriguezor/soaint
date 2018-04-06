@@ -167,6 +167,24 @@
             <version>2.7.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20170516</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>html2pdf</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -213,6 +231,35 @@
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlDirectory>
+                                src/main/resources
+                            </wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>sign_pdf.wsdl</wsdlFile>
+                                <wsdlFile>facebook_api.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <wsdlLocation>/*</wsdlLocation>
+                            <sourceDestDir>
+                                ${basedir}/target/generated-sources
+                            </sourceDestDir>
+                            <!-- Needed with JAXP 1.5, see https://netbeans.org/bugzilla/show_bug.cgi?id=241570#c2 -->
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
                         </configuration>
                     </execution>
                 </executions>
