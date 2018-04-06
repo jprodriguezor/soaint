@@ -198,13 +198,13 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
       else{
-        afterTaskComplete.subscribe( (taskGenerated) => {
+     /*  afterTaskComplete.subscribe( (taskGenerated) => {
 
           // write your implementation here
 
         // this._taskSandBox.startTask(taskGenerated);
 
-        });
+        });*/
       }
 
 
@@ -274,6 +274,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   ngOnDestroy() {
     this.subscribers.forEach(subsc => subsc.unsubscribe());
 
-    afterTaskComplete.unsubscribe();
+    this.authPayloadUnsubscriber.unsubscribe();
+
+   // afterTaskComplete.unsubscribe();
   }
 }

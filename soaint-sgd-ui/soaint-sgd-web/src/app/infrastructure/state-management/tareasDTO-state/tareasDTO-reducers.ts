@@ -94,6 +94,8 @@ export function reducer(state = initialState, action: Actions) {
       const cloneEntities = tassign({}, state.entities);
       delete cloneEntities[state.activeTask.idTarea];
 
+      console.log(afterTaskComplete);
+
       afterTaskComplete.emit();
 
       return tassign(state, {

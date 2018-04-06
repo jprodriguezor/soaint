@@ -85,9 +85,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   formsTabOrder: Array<any> = [];
   activeTaskUnsubscriber: Subscription;
   dependencySubscription:Subscription;
+  afterCompleteTaskSubscriber:Subscription;
   dependencySelected?:DependenciaDTO;
 
-  afterTaskCompleteSubscriptor:Subscription;
+
 
   formContactDataShown:Subscription;
 
@@ -132,7 +133,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     });
 
-    this.afterTaskCompleteSubscriptor= afterTaskComplete.subscribe( ()=> this._store.dispatch(go(['/'+ROUTES_PATH.workspace])));
+   this.afterCompleteTaskSubscriber =  afterTaskComplete.subscribe( ()=> this._store.dispatch(go(['/'+ROUTES_PATH.workspace])));
 
    this._changeDetectorRef.detectChanges();
   }
@@ -365,7 +366,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     this.activeTaskUnsubscriber.unsubscribe();
 
-    this.afterTaskCompleteSubscriptor.unsubscribe();
+    this.afterCompleteTaskSubscriber.unsubscribe();
 
     this.dependencySubscription.unsubscribe();
   }
