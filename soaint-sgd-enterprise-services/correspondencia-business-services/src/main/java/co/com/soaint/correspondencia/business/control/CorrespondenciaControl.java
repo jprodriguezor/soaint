@@ -564,15 +564,10 @@ public class CorrespondenciaControl {
      * @return
      */
     public ComunicacionOficialFullDTO consultarComunicacionOficialFullByCorrespondencia(CorrespondenciaFullDTO correspondenciaFullDTO) throws SystemException, BusinessException {
-        log.info("processing rest request - CorrespondenciaControl-consultarComunicacionOficialFullByCorrespondencia");
         List<AgenteFullDTO> agenteFullDTOList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - CorrespondenciaControl-agenteControl.consultarAgentesFullByCorrespondencia OK");
         List<DatosContactoFullDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoFullByAgentes(agenteFullDTOList);
-            log.info("processing rest request - datosContactoControl.consultarDatosContactoFullByAgentes OK");
         List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia OK");
         List<AnexoDTO> anexoList = anexoControl.consultarAnexosByPpdDocumentos(ppdDocumentoDTOList);
-            log.info("processing rest request - anexoControl.consultarAnexosByPpdDocumentos OK");
         List<ReferidoDTO> referidoList = referidoControl.consultarReferidosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
         log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
 
