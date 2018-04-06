@@ -38,9 +38,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   taskVariables: VariablesTareaDTO;
   idEstadoTarea = '0000';
   status = 1;
-  closedTask:boolean = false;
+  closedTask: Observable<boolean> ;
 
-  taksCompleteSubscriber:Subscription;
 
 
   @ViewChild('datosGenerales') datosGenerales;
@@ -102,8 +101,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
   ngOnInit(): void {
 
-    this.taksCompleteSubscriber = afterTaskComplete.subscribe(() => { this.closedTask = true; });
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
 
+    // this.taksCompleteSubscriber = afterTaskComplete.subscribe(()=> {  this.closedTask = true;  console.log(this.closedTask)});
 
     this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
       this.refreshView();
@@ -170,7 +170,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
-    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO);
+    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(()=>{});
   }
 
   updateEstadoTarea() {
@@ -306,7 +306,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this.authPayloadUnsubscriber.unsubscribe();
         this.documentSubscription.unsubscribe();
         this.subscription.unsubscribe();
-        this.taksCompleteSubscriber.unsubscribe();
+        // this.taksCompleteSubscriber.unsubscribe();
     }
 
     save(): Observable<any> {

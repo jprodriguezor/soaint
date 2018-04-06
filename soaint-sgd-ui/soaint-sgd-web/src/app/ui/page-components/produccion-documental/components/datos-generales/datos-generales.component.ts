@@ -94,12 +94,16 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         return this._dependenciaSandbox.loadDependencies({});
       })
       .subscribe((results) => {
+
+     
         if (this.taskData && this.taskData.variables) {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
           this._changeDetectorRef.detectChanges();
         }
-      });
+
+      }
+      );
 
     this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
@@ -230,11 +234,14 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       }
       formData.append('nombreDocumento', doc.nombre);
       formData.append('tipoDocumento', doc.tipo);
-      formData.append('sede', this.taskData.variables.nombreSede);
-      formData.append('dependencia', this.taskData.variables.nombreDependencia);
-      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
-      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
-      formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
+      if(this.taskData !== null){
+        formData.append('sede', this.taskData.variables.nombreSede);
+        formData.append('dependencia', this.taskData.variables.nombreDependencia);
+        formData.append('codigoDependencia', this.taskData.variables.codDependencia);
+        formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+        formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
+      }
+     
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
       resp => {
@@ -274,10 +281,12 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('documento', anexo.file, anexo.file.name);
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
+      if(this.taskData !== null){
       formData.append('sede', this.taskData.variables.nombreSede);
       formData.append('codigoDependencia', this.taskData.variables.codDependencia);
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
       formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      }
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirAnexo(formData).subscribe(
         resp => {
