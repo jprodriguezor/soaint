@@ -8,6 +8,7 @@ import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteE
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -49,28 +50,34 @@ public class CorrespondenciaControl {
     private EntityManager em;
 
     @Autowired
-    AgenteControl agenteControl;
+    private AgenteControl agenteControl;
 
     @Autowired
-    ConstantesControl constanteControl;
+    private ConstantesControl constanteControl;
 
     @Autowired
-    PpdDocumentoControl ppdDocumentoControl;
+    private FuncionariosControl funcionarioControl;
 
     @Autowired
-    AnexoControl anexoControl;
+    private OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
     @Autowired
-    DatosContactoControl datosContactoControl;
+    private PpdDocumentoControl ppdDocumentoControl;
 
     @Autowired
-    ReferidoControl referidoControl;
+    private AnexoControl anexoControl;
 
     @Autowired
-    DserialControl dserialControl;
+    private DatosContactoControl datosContactoControl;
 
     @Autowired
-    AsignacionControl asignacionControl;
+    private ReferidoControl referidoControl;
+
+    @Autowired
+    private DserialControl dserialControl;
+
+    @Autowired
+    private AsignacionControl asignacionControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -287,23 +294,26 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
+            FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+            String nomCompleto = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1()).concat(" ").concat(funcionarioDTO.getValApellido2());
+
             return CorrespondenciaFullDTO.newInstance()
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
                     .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodDependencia()))
+                    .descDependencia(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodDependencia()).getDescOrg())
                     .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
                     .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
                     .codEstado(correspondenciaDTO.getCodEstado())
                     .descEstado(this.consultarNombreEnumCorrespondencia(correspondenciaDTO.getCodEstado()))
                     .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .descFuncRadica(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()))
+                    .descFuncRadica(nomCompleto)
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
                     .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                     .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
-                    .descSede(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodSede()))
+                    .descSede(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodSede()).getDescOrg())
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
                     .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
                     .codTipoDoc(correspondenciaDTO.getCodTipoDoc())
