@@ -19,15 +19,15 @@
         <!--
                 if there are any jobs/trigger in scheduler of same name (as in this
                 file), and over-write is false, ignore them rather then generating an
-                error
+                errorOk this is where all the jobs are created:
         -->
         <ignore-duplicates>false</ignore-duplicates>
     </processing-directives>
 
-    <!-- Ok this is where all the jobs are created: -->
+
 
     <schedule>
-        <job>
+       <job>
             <name>TareaParaLeerFicheros</name>
             <group>MYJOB_GROUP</group>
             <job-class>co.com.soaint.digitalizacion.services.integration.services.Cron</job-class>
@@ -37,7 +37,7 @@
                 <name>TenSecondIntervals</name>
                 <group>MYJOB_GROUP</group>
                 <job-name>TareaParaLeerFicheros</job-name>
-                <!--<repeat-count>-1</repeat-count> &lt;!&ndash; repeat forever  &ndash;&gt;-->
+                <!--<repeat-count>-1</repeat-count> &lt;!&ndash; repeat forever  &ndash;&gt;
                 <!--<repeat-interval>10000</repeat-interval>  &lt;!&ndash;  every 10 seconds &ndash;&gt;-->
                 <cron-expression>0 0/1 * 1/1 * ? *</cron-expression>
             </cron>

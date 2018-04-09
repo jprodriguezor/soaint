@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { StateUnidadDocumental } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { StateUnidadDocumentalService } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
 import { FormBuilder } from '@angular/forms';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { Store } from '@ngrx/store';
@@ -13,31 +13,17 @@ import { ConfirmationService } from 'primeng/primeng';
 @Component({
   selector: 'app-unidades-documentales',
   templateUrl: './unidades-documentales.component.html',
-  styleUrls: ['./unidades-documentales.component.css']
+  styleUrls: ['./unidades-documentales.component.css'],
 })
 export class UnidadesDocumentalesComponent implements OnInit {
 
-  State: StateUnidadDocumental;
+  State: StateUnidadDocumentalService;
 
   constructor(
-    private fb: FormBuilder,
-    private unidadDocumentalApiService: UnidadDocumentalApiService,
-    private serieSubserieApiService: SerieSubserieApiService,
-    private _store: Store<State>,
-    private _dependenciaSandbox: Sandbox,
-    private _taskSandBox: TaskSandBox,
-    private confirmationService: ConfirmationService
+    private state: StateUnidadDocumentalService
 
   ) {
-    this.State = new StateUnidadDocumental(
-      this.fb,
-      this.unidadDocumentalApiService,
-      this.serieSubserieApiService,
-      this._store,
-      this._dependenciaSandbox,
-      this._taskSandBox,
-      this.confirmationService
-    );
+    this.State = this.state;
   }
 
   ngOnInit() {

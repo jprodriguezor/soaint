@@ -5,8 +5,10 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -22,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -47,28 +50,34 @@ public class CorrespondenciaControl {
     private EntityManager em;
 
     @Autowired
-    AgenteControl agenteControl;
+    private AgenteControl agenteControl;
 
     @Autowired
-    ConstantesControl constanteControl;
+    private ConstantesControl constanteControl;
 
     @Autowired
-    PpdDocumentoControl ppdDocumentoControl;
+    private FuncionariosControl funcionarioControl;
 
     @Autowired
-    AnexoControl anexoControl;
+    private OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
     @Autowired
-    DatosContactoControl datosContactoControl;
+    private PpdDocumentoControl ppdDocumentoControl;
 
     @Autowired
-    ReferidoControl referidoControl;
+    private AnexoControl anexoControl;
 
     @Autowired
-    DserialControl dserialControl;
+    private DatosContactoControl datosContactoControl;
 
     @Autowired
-    AsignacionControl asignacionControl;
+    private ReferidoControl referidoControl;
+
+    @Autowired
+    private DserialControl dserialControl;
+
+    @Autowired
+    private AsignacionControl asignacionControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -93,6 +102,35 @@ public class CorrespondenciaControl {
 
     // ----------------------
 
+    /**
+     * @param codigo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String consultarNombreEnumCorrespondencia(String codigo) throws BusinessException, SystemException {
+
+            if (codigo.equals(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo()))
+                return EstadoCorrespondenciaEnum.ASIGNACION.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo()))
+                return EstadoCorrespondenciaEnum.REGISTRADO.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo()))
+                return EstadoCorrespondenciaEnum.SIN_ASIGNAR.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.RADICADO.getCodigo()))
+                return EstadoCorrespondenciaEnum.RADICADO.getNombre();
+            else return null;
+    }
+
+    /**
+     * @param nroRadicado
+     * @param codSede
+     * @param codTipoCmc
+     * @param anno
+     * @param consecutivo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc, String anno, String consecutivo) throws BusinessException, SystemException {
         String nRadicado = nroRadicado;
         try {
@@ -256,23 +294,26 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
+            FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+            String nomCompleto = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1()).concat(" ").concat(funcionarioDTO.getValApellido2());
+
             return CorrespondenciaFullDTO.newInstance()
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
                     .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodDependencia()))
+                    .descDependencia(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodDependencia()).getDescOrg())
                     .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
                     .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
                     .codEstado(correspondenciaDTO.getCodEstado())
-                    .descEstado(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEstado()))
+                    .descEstado(this.consultarNombreEnumCorrespondencia(correspondenciaDTO.getCodEstado()))
                     .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .descFuncRadica(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()))
+                    .descFuncRadica(nomCompleto)
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
                     .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                     .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
-                    .descSede(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodSede()))
+                    .descSede(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodSede()).getDescOrg())
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
                     .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
                     .codTipoDoc(correspondenciaDTO.getCodTipoDoc())
@@ -291,7 +332,6 @@ public class CorrespondenciaControl {
                     .reqDistFisica(correspondenciaDTO.getReqDistFisica())
                     .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
                     .build();
-            //pendiente construir transform de listaa de agenteFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -564,17 +604,17 @@ public class CorrespondenciaControl {
      * @return
      */
     public ComunicacionOficialFullDTO consultarComunicacionOficialFullByCorrespondencia(CorrespondenciaFullDTO correspondenciaFullDTO) throws SystemException, BusinessException {
-        log.info("processing rest request - CorrespondenciaControl-consultarComunicacionOficialFullByCorrespondencia");
+
         List<AgenteFullDTO> agenteFullDTOList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - CorrespondenciaControl-agenteControl.consultarAgentesFullByCorrespondencia OK");
+
         List<DatosContactoFullDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoFullByAgentes(agenteFullDTOList);
-            log.info("processing rest request - datosContactoControl.consultarDatosContactoFullByAgentes OK");
+
         List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia OK");
+
         List<AnexoDTO> anexoList = anexoControl.consultarAnexosByPpdDocumentos(ppdDocumentoDTOList);
-            log.info("processing rest request - anexoControl.consultarAnexosByPpdDocumentos OK");
+
         List<ReferidoDTO> referidoList = referidoControl.consultarReferidosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
+//        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
 
         return ComunicacionOficialFullDTO.newInstance()
                 .correspondencia(correspondenciaFullDTO)
