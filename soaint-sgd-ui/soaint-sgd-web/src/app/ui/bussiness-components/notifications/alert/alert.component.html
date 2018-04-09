@@ -1,0 +1,12 @@
+<p-dialog [visible]="visible" [modal]="true" [closable]="true" (onHide) = "Close()" [width]="width" [height]="height" [minHeight]="250" >
+  <div class="ui-g ui-dialog ui-dialog-content ">
+    <div class="text-center alert-text">
+      {{message}}
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" label="Cerrar" class ="alert-close"  (click)="Close()"></button>
+    </div>
+  </p-footer>
+</p-dialog>
