@@ -24,23 +24,42 @@ public  class Main   {
 
     public void contextRefreshedEvent() {
 
-//        try {
-//            JobDetail job = JobBuilder.newJob(Cron.class)
-//                    .withIdentity("procesarFicherosJobName", "group1").build();
-//            Trigger trigger = TriggerBuilder
-//                    .newTrigger()
-//                    .withIdentity("procesarFicherosTriggerName", "group1")
-//                    .withSchedule(
-//                            SimpleScheduleBuilder.simpleSchedule()
-//                                    .withIntervalInSeconds(50).repeatForever())
-//                    .build();
-//            SchedulerFactory sf = new StdSchedulerFactory();
-//            Scheduler scheduler = sf.getScheduler();
-//            scheduler.start();
-//            scheduler.scheduleJob(job, trigger);
-//        } catch (SchedulerException se) {
-//            se.printStackTrace();
-//        }
+        try {
+            JobDetail job = JobBuilder.newJob(Cron.class)
+                    .withIdentity("procesarFicherosJobName1", "group1").build();
+            Trigger trigger = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("procesarFicherosTriggerName", "group1")
+                    .withSchedule(
+                            SimpleScheduleBuilder.simpleSchedule()
+                                    .withIntervalInSeconds(50).repeatForever())
+                    .build();
+            SchedulerFactory sf = new StdSchedulerFactory();
+            Scheduler scheduler = sf.getScheduler();
+
+            boolean flag = scheduler.checkExists(trigger.getKey());
+            if (!flag)
+            {
+                scheduler.start();
+                scheduler.scheduleJob(job, trigger);
+            }
+            else
+            {
+
+                scheduler.start();
+                scheduler.scheduleJob(job,  TriggerBuilder
+                        .newTrigger()
+                        .withIdentity("procesarFicherosTriggerName", "group1")
+                        .withSchedule(
+                                SimpleScheduleBuilder.simpleSchedule()
+                                        .withIntervalInSeconds(50).repeatForever())
+                        .build());
+            }
+
+
+        } catch (SchedulerException se) {
+            se.printStackTrace();
+        }
 
 
 //    @Override
