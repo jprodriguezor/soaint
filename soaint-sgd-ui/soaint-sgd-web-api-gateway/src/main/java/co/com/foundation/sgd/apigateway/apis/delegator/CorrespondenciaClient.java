@@ -33,6 +33,14 @@ public class CorrespondenciaClient {
                 .post(Entity.json(comunicacionOficialDTO));
     }
 
+    public Response radicarSalida(ComunicacionOficialDTO comunicacionOficialDTO) {
+        log.info("Correspondencia - [trafic] - radicar Correspondencia Salida with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/radicar-salida")
+                .request()
+                .post(Entity.json(comunicacionOficialDTO));
+    }
+
     public Response listarComunicaciones(String fechaIni, String fechaFin, String codDependencia, String codEstado, String nroRadicado) {
         log.info("Correspondencia - [trafic] - radicar Correspondencia with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -58,6 +66,14 @@ public class CorrespondenciaClient {
         log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/" + nroRadicado)
+                .request()
+                .get();
+    }
+
+    public Response obtenerCorrespondenciaFullPorNroRadicado(String nroRadicado) {
+        log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/full" + nroRadicado)
                 .request()
                 .get();
     }
@@ -208,5 +224,14 @@ public class CorrespondenciaClient {
         return wt.path("/correspondencia-web-api/correspondencia")
                 .request()
                 .put(Entity.json(comunicacionOficialDTO));
+    }
+
+
+    public Response listarAnexos(String nroRadicado) {
+        log.info("Comunicacion - [trafic] - listar anexos: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return  wt.path("correspondencia-web-api/anexo-web-api/anexo" +  "/" + nroRadicado)
+                .request()
+                .get();
     }
 }

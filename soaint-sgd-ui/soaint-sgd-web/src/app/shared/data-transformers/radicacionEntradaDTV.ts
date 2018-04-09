@@ -110,8 +110,9 @@ export class RadicacionEntradaDTV {
     this.source.anexoList.forEach((anexo: AnexoDTO) => {
       anexos.push({
         tipoAnexo: {codigo: anexo.codAnexo},
+        soporteAnexo: {codigo: anexo.codTipoSoporte},
         descripcion: anexo.descripcion
-      })
+      });
     });
 
     return anexos;

@@ -7,6 +7,8 @@ export const COMUNICACION_EXTERNA_ENVIADA = 'SE';
 export const COMUNICACION_INTERNA_ENVIADA = 'SI';
 
 export const DESTINATARIO_PRINCIPAL = 'TP-DESP';
+export const DESTINATARIO_INTERNO = 'INTERNO';
+export const DESTINATARIO_EXTERNO = 'EXTERNO';
 
 export const TIPO_AGENTE_REMITENTE = 'TP-AGEE';
 export const TIPO_AGENTE_DESTINATARIO = 'TP-AGEI';
@@ -21,6 +23,9 @@ export const TPDOC_NRO_IDENTIFICACION_TRIBUTARIO = 'TP-DOCN';
 export const TPDOC_CEDULA_CIUDADANIA = 'TP-DOCCC';
 
 export const MEDIO_RECEPCION_EMPRESA_MENSAJERIA = 'ME-RECEM';
+
+export  const RADICACION_ENTRADA = "radicacion-entrada";
+export  const RADICACION_SALIDA = "radicacion-salida";
 
 
 

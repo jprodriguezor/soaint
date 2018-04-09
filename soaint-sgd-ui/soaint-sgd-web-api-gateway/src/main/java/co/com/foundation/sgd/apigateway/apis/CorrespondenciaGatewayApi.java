@@ -43,19 +43,6 @@ public class CorrespondenciaGatewayApi {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-    @POST
-    @Path("/radicar")
-    @JWTTokenSecurity
-    public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-
-        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
-        Response response = client.radicar(comunicacionOficial);
-        String responseContent = response.readEntity(String.class);
-        log.info(CONTENT + responseContent);
-
-        return Response.status(response.getStatus()).entity(responseContent).build();
-    }
-
     @GET
     @Path("/listar-comunicaciones")
     @JWTTokenSecurity
@@ -72,6 +59,32 @@ public class CorrespondenciaGatewayApi {
         if (response.getStatus() != HttpStatus.OK.value()) {
             return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
         }
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/radicar")
+    @JWTTokenSecurity
+    public Response radicarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
+        Response response = client.radicar(comunicacionOficial);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/radicar_salida")
+    @JWTTokenSecurity
+    public Response radicarSalida(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+
+        log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
+        Response response = client.radicarSalida(comunicacionOficial);
+        String responseContent = response.readEntity(String.class);
+        log.info(CONTENT + responseContent);
+
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
@@ -256,6 +269,16 @@ public class CorrespondenciaGatewayApi {
     }
 
     @GET
+    @Path("/obtener-comunicacion-full/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerComunicacionfull(@PathParam("nro_radicado") String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.obtenerCorrespondenciaFullPorNroRadicado(nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
     @Path("/obtenerObservaciones/{idCorrespondencia}")
     @JWTTokenSecurity
     public Response obtenerObservaciones(@PathParam("idCorrespondencia") BigInteger idCorrespondencia) {
@@ -400,6 +423,7 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+
     @GET
     @Path("/verificar-redirecciones")
     @JWTTokenSecurity
@@ -410,5 +434,14 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-anexos/{nroRadicado}")
+    @JWTTokenSecurity
+    public Response listarAnexos(@PathParam("nroRadicado") String nroRadicado) {
+        log.info(CONTENT + "  - listar anexos por nro radicado");
+        Response response = client.listarAnexos(nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }

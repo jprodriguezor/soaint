@@ -61,6 +61,15 @@ import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-do
 import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
 import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
+import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component';
+import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
+import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
+import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
+import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-generales-edit/datos-generales-edit.component";
+import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
+import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
+import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 
 
 @NgModule({
@@ -163,7 +172,14 @@ import { UdTramitadasComponent } from './ui/page-components/archivar-documento/c
     ListaSolicitudCrearUdComponent,
     NoTramitarCreacionUdComponent,
     FormCrearUnidadDocumentalComponent,
-    UdTramitadasComponent
+    UdTramitadasComponent,
+    AdjuntarDocumentoComponent,
+    RsTicketRadicadoComponent,
+    TicketRadicadoComponent,
+    DistribucionComponent,
+    DatosGeneralesEditComponent,
+    DatosRemitenteEditComponent,
+    DatosDestinatarioEditComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -173,9 +189,11 @@ import { UdTramitadasComponent } from './ui/page-components/archivar-documento/c
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,
+    RadicacionSalidaService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

@@ -1,14 +1,11 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +66,28 @@ public class EcmManager {
             logger.error(ECM_ERROR, e);
             response.setCodMensaje("2222");
             response.setMensaje("Error ECM Subiendo documento adjunto al content");
+            throw e;
+        }
+
+        return response;
+    }
+
+    /**
+     * Metodo que llama el servicio para crear el link del documentos en la carpeta DOCUMENTOS DE APOYO en el ECM.
+     *
+     * @param documento              Documento que se va a subir
+     * @return Identificador del documento creado
+     * @throws InfrastructureException Excepcion ante errores del metodo
+     */
+    public MensajeRespuesta crearLinkDocumentosApoyo( DocumentoDTO documento) throws IOException {
+        logger.info("### Creando link del documento en el content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            response = contentManager.crearLinkContent(documento);
+        } catch (Exception e) {
+            logger.error(ECM_ERROR, e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error ECM Creando link del documento en el content");
             throw e;
         }
 
@@ -258,5 +277,59 @@ public class EcmManager {
         }
 
         return response;
+    }
+
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        return contentManager.crearUnidadDocumental(unidadDocumentalDTO);
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales");
+        return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        logger.info("### Mostrando el documento con id {}", idDocumento);
+        return contentManager.obtenerDetallesDocumentoDTO(idDocumento);
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Listando los documentos de la UD con id {}", idUnidadDocumental);
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(UnidadDocumentalDTO dto)");
+        return contentManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Mostrando la Unidad Documental con id {}", idUnidadDocumental);
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
+        return contentManager.detallesUnidadDocumental(idUnidadDocumental);
     }
 }

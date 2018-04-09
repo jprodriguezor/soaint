@@ -7,7 +7,11 @@ import {PdMessageService} from '../ui/page-components/produccion-documental/prov
 import {MessagingService} from '../shared/providers/MessagingService';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.api';
-import {SerieService} from "./api/serie.service";
+import {SerieService} from './api/serie.service';
+import { ConstanteApiService } from './api/constantes.api';
+import { CorrespondenciaApiService } from './api/correspondencia.api';
+import { DependenciaApiService } from './api/dependencia.api';
+import { LocalizacionApiService } from './api/localizacion.api';
 
 export const API_SERVICES = [
   ApiBase,
@@ -19,7 +23,11 @@ export const API_SERVICES = [
   PdMessageService,
   UnidadDocumentalApiService,
   SerieSubserieApiService,
-  SerieService
+  SerieService,
+  ConstanteApiService,
+  CorrespondenciaApiService,
+  DependenciaApiService,
+  LocalizacionApiService
 ];
 
 export {

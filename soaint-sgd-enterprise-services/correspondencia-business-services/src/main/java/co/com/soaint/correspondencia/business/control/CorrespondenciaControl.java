@@ -5,6 +5,9 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
+
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
@@ -45,6 +48,9 @@ public class CorrespondenciaControl {
 
     @Autowired
     AgenteControl agenteControl;
+
+    @Autowired
+    ConstantesControl constanteControl;
 
     @Autowired
     PpdDocumentoControl ppdDocumentoControl;
@@ -228,6 +234,107 @@ public class CorrespondenciaControl {
             CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroRadicado);
 
             return consultarComunicacionOficialByCorrespondencia(correspondenciaDTO);
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_not_exist_by_nroRadicado")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param correspondenciaDTO
+     * @return
+     */
+    public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
+        log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
+        try{
+            return CorrespondenciaFullDTO.newInstance()
+                    .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
+                    .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
+                    .codDependencia(correspondenciaDTO.getCodDependencia())
+                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodDependencia()))
+                    .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
+                    .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
+                    .codEstado(correspondenciaDTO.getCodEstado())
+                    .descEstado(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEstado()))
+                    .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
+                    .descFuncRadica(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()))
+                    .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
+                    .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
+                    .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
+                    .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
+                    .codSede(correspondenciaDTO.getCodSede())
+                    .descSede(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodSede()))
+                    .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
+                    .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
+                    .codTipoDoc(correspondenciaDTO.getCodTipoDoc())
+                    .descTipoDoc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoDoc()))
+                    .codUnidadTiempo(correspondenciaDTO.getCodUnidadTiempo())
+                    .descUnidadTiempo(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodUnidadTiempo()))
+                    .fecDocumento(correspondenciaDTO.getFecDocumento())
+                    .fecRadicado(correspondenciaDTO.getFecRadicado())
+                    .fecVenGestion(correspondenciaDTO.getFecVenGestion())
+                    .ideDocumento(correspondenciaDTO.getIdeDocumento())
+                    .ideInstancia(correspondenciaDTO.getIdeInstancia())
+                    .inicioConteo(correspondenciaDTO.getInicioConteo())
+                    .nroGuia(correspondenciaDTO.getNroGuia())
+                    .nroRadicado(correspondenciaDTO.getNroRadicado())
+                    .reqDigita(correspondenciaDTO.getReqDigita())
+                    .reqDistFisica(correspondenciaDTO.getReqDistFisica())
+                    .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
+                    .build();
+            //pendiente construir transform de listaa de agenteFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ComunicacionOficialFullDTO listarFullCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        try {
+
+            CorrespondenciaDTO correspondenciaDTO = consultarCorrespondenciaByNroRadicado(nroRadicado);
+
+            CorrespondenciaFullDTO correspondenciaFullDTO = correspondenciaTransformToFull(correspondenciaDTO);
+
+            return consultarComunicacionOficialFullByCorrespondencia(correspondenciaFullDTO);
+
+//            List<AgenteFullDTO> agentes = new ArrayList<>();
+//            CorrespondenciaFullDTO correspondenciaFullDTO = CorrespondenciaFullDTO.newInstance().build();
+//            List<AnexoFullDTO> anexos = new ArrayList<>();
+//            List<PpdDocumentoFullDTO> documentos = new ArrayList<>();
+//            List<DatosContactoFullDTO> datosContacto = new ArrayList<>();
+//            List<ReferidoDTO> referidos = new ArrayList<>();
+
+//            ComunicacionOficialFullDTO comunicacionOficialFullDTO = ComunicacionOficialFullDTO.newInstance()
+//                    .agentes(agentes)
+//                    .anexos(anexos)
+//                    .ppdDocumentos(documentos)
+//                    .datosContactos(datosContacto)
+//                    .referidos(referidos)
+//                    .correspondencia(correspondenciaFullDTO)
+//                    .build();
+//
+//            return comunicacionOficialFullDTO;
+
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
@@ -451,6 +558,34 @@ public class CorrespondenciaControl {
                 .build();
     }
 
+
+    /**
+     * @param correspondenciaFullDTO
+     * @return
+     */
+    public ComunicacionOficialFullDTO consultarComunicacionOficialFullByCorrespondencia(CorrespondenciaFullDTO correspondenciaFullDTO) throws SystemException, BusinessException {
+        log.info("processing rest request - CorrespondenciaControl-consultarComunicacionOficialFullByCorrespondencia");
+        List<AgenteFullDTO> agenteFullDTOList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
+            log.info("processing rest request - CorrespondenciaControl-agenteControl.consultarAgentesFullByCorrespondencia OK");
+        List<DatosContactoFullDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoFullByAgentes(agenteFullDTOList);
+            log.info("processing rest request - datosContactoControl.consultarDatosContactoFullByAgentes OK");
+        List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
+            log.info("processing rest request - ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia OK");
+        List<AnexoDTO> anexoList = anexoControl.consultarAnexosByPpdDocumentos(ppdDocumentoDTOList);
+            log.info("processing rest request - anexoControl.consultarAnexosByPpdDocumentos OK");
+        List<ReferidoDTO> referidoList = referidoControl.consultarReferidosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
+        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
+
+        return ComunicacionOficialFullDTO.newInstance()
+                .correspondencia(correspondenciaFullDTO)
+                .agentes(agenteFullDTOList)
+                .ppdDocumentos(ppdDocumentoControl.ppdDocumentoListTransformToFull(ppdDocumentoDTOList))
+                .anexos(anexoControl.anexoListTransformToFull(anexoList))
+                .referidos(referidoList)
+                .datosContactos(datosContactoDTOList)
+                .build();
+    }
+
     /**
      * @param correspondenciaDTO
      * @return
@@ -596,6 +731,7 @@ public class CorrespondenciaControl {
      * @return
      */
     public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - CorrespondenciaControl-consultarCorrespondenciaByNroRadicado");
         try {
             return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)

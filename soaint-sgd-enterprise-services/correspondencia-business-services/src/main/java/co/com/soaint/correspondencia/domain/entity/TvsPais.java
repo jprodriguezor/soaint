@@ -40,7 +40,11 @@ import java.util.List;
                 "FROM TvsPais t " +
                 "INNER JOIN t.tvsDepartamentoList d " +
                 "WHERE TRIM(d.codDepar) = TRIM(:COD_DEPAR) " +
-                "ORDER BY t.nombrePais")})
+                "ORDER BY t.nombrePais"),
+        @NamedQuery(name = "TvsPais.findByCod", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.PaisDTO" +
+                "(t.idePais, t.nombrePais, t.codPais) " +
+                "FROM TvsPais t " +
+                "WHERE TRIM(t.idePais) = TRIM(:COD_PAIS) ")})
 
 public class TvsPais implements Serializable {
 

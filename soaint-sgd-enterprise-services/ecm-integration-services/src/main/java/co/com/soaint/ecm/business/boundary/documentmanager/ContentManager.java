@@ -4,11 +4,9 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessBoundary;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -92,6 +90,34 @@ public class ContentManager {
             logger.error("Error subiendo documento principal/adjunto", e);
             response.setCodMensaje("2222");
             response.setMensaje("Error al crear el documento principal/adjunto");
+            throw e;
+        }
+        return response;
+
+    }
+    /**
+     * Metodo generico para crear el link del documento en el content
+     *
+     * @param documento Documento que se va a subir
+     * @return Identificador del documento que se inserto
+     * @throws InfrastructureException Excepcion que se lanza en error
+     */
+    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) throws IOException {
+
+        logger.info("### Creando link del documento en el content..");
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+            Conexion conexion;
+            new Conexion();
+            logger.info(MSGCONEXION);
+            conexion = contentControl.obtenerConexion();
+            logger.info("### Se invoca el metodo crearLinkDocumentosApoyo..");
+            response = contentControl.crearLinkDocumentosApoyo(conexion.getSession(), documento);
+
+        } catch (Exception e) {
+            logger.error("Error Creando link del documento en el content", e);
+            response.setCodMensaje("2222");
+            response.setMensaje("Error Creando link del documento en el content");
             throw e;
         }
         return response;
@@ -330,4 +356,66 @@ public class ContentManager {
         return response;
     }
 
+    /**
+     * Metodo para devolver crear las unidades documentales
+     * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        logger.info("### Invocando metodo para crear Unidad Documental..");
+        return contentControl.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+        logger.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.obtenerDetallesDocumentoDTO(idDocumento, conexion.getSession());
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     */
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+        logger.info("### Ejecutando MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
 }

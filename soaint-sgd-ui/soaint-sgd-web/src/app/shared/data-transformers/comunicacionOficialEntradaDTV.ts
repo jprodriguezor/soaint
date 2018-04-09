@@ -13,63 +13,11 @@ import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/ra
 
 export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
-
-
-  getTipoAgenteRemitenteInterno(): AgentDTO {
-
-    return {
-      ideAgente: null,
-      codTipoRemite: TIPO_REMITENTE_INTERNO,
-      codTipoPers: null,
-      nombre: null,
-      razonSocial: null,
-      nit: null,
-      codCortesia: null,
-      codEnCalidad: null,
-      codTipDocIdent: null,
-      nroDocuIdentidad: null,
-      codSede: (<RadicacionEntradaFormInterface>this.source).remitente.sedeAdministrativa ? (<RadicacionEntradaFormInterface>this.source).remitente.sedeAdministrativa.codigo : null,
-      codDependencia: (<RadicacionEntradaFormInterface>this.source).remitente.dependenciaGrupo ? (<RadicacionEntradaFormInterface>this.source).remitente.dependenciaGrupo.codigo : null,
-      fecAsignacion: null,
-      codTipAgent: TIPO_AGENTE_REMITENTE,
-      codEstado: null
-    };
-  }
-
-  getTipoAgenteRemitenteExterno() {
-
-    return  {
-      ideAgente: null,
-      codTipoRemite: TIPO_REMITENTE_EXTERNO,
-      codTipoPers: (<RadicacionEntradaFormInterface>this.source).remitente.tipoPersona ? (<RadicacionEntradaFormInterface>this.source).remitente.tipoPersona.codigo : null,
-      nombre: (<RadicacionEntradaFormInterface>this.source).remitente.nombreApellidos || null,
-      razonSocial: (<RadicacionEntradaFormInterface>this.source).remitente.razonSocial || null,
-      nit: (<RadicacionEntradaFormInterface>this.source).remitente.nit || null,
-      codEnCalidad: (<RadicacionEntradaFormInterface>this.source).remitente.actuaCalidad ? (<RadicacionEntradaFormInterface>this.source).remitente.actuaCalidad.codigo : null,
-      codTipDocIdent: (<RadicacionEntradaFormInterface>this.source).remitente.tipoDocumento ? (<RadicacionEntradaFormInterface>this.source).remitente.tipoDocumento.codigo : null,
-      nroDocuIdentidad: (<RadicacionEntradaFormInterface>this.source).remitente.nroDocumentoIdentidad,
-      codSede: null,
-      codDependencia: null,
-      fecAsignacion: null,
-      codTipAgent: TIPO_AGENTE_REMITENTE,
-      indOriginal: null,
-      codEstado: null
-    };
-
-  }
-
-
-  getAgentesDestinatario(): Array<AgentDTO> {
+ getAgentesDestinatario(): Array<AgentDTO> {
 
     const agentes = [];
 
-    const isRemitenteInterno = this.source.generales.tipoComunicacion.codigo === COMUNICACION_INTERNA;
-
-    if (isRemitenteInterno) {
-      agentes.push(this.getTipoAgenteRemitenteInterno());
-    } else {
-      agentes.push(this.getTipoAgenteRemitenteExterno());
-    }
+    agentes.push(this.getRemitente());
 
     (<RadicacionEntradaFormInterface>this.source).agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {

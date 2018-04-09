@@ -1,13 +1,12 @@
 package co.com.soaint.foundation.canonical.ecm;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -28,19 +27,19 @@ import java.util.List;
 public class UnidadDocumentalDTO {
 
     private String accion;
-    private boolean inactivo;
+    private Boolean inactivo;
     private String ubicacionTopografica;
-    private Date fechaCierre;
+    private Calendar fechaCierre;
     private String id;
     private String faseArchivo;
-    private Date fechaExtremaInicial;
+    private Calendar fechaExtremaInicial;
     private String soporte;
     private String codigoUnidadDocumental;
     private String nombreUnidadDocumental;
     private String descriptor2;
     private String descriptor1;
-    private Date fechaExtremaFinal;
-    private boolean cerrada;
+    private Calendar fechaExtremaFinal;
+    private Boolean cerrada;
 
     //heredadas
     private String codigoSubSerie;
@@ -54,6 +53,8 @@ public class UnidadDocumentalDTO {
 
     private String codigoSede;
     private String nombreSede;
+
+    private String observaciones;
 
     //Agregacion
     private List<DocumentoDTO> listaDocumentos;

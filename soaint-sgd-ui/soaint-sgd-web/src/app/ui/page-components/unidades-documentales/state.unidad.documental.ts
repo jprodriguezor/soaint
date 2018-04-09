@@ -20,13 +20,16 @@ import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import { ConfirmationService } from 'primeng/primeng';
 import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.enum';
+import { MensajeRespuestaDTO } from '../../../domain/MensajeRespuestaDTO';
+import { ChangeDetectorRef, Injectable, ApplicationRef } from '@angular/core';
 
 
 
+@Injectable()
+export class StateUnidadDocumentalService implements TaskForm {
 
-export class StateUnidadDocumental implements TaskForm {
-
-    ListadoUnidadDocumental: Observable<UnidadDocumentalDTO[]>;
+    ListadoUnidadDocumental: UnidadDocumentalDTO[] = [];
+    unidadesSeleccionadas: UnidadDocumentalDTO[] = [];
     ListadoSeries: Observable<SerieDTO[]>;
     ListadoSubseries: SubserieDTO[];
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
@@ -37,6 +40,7 @@ export class StateUnidadDocumental implements TaskForm {
     FechaExtremaFinal: Date;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
+    MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
 
     formBuscar: FormGroup;
 
@@ -47,7 +51,8 @@ export class StateUnidadDocumental implements TaskForm {
         private _store: Store<State>,
         private _dependenciaSandbox: Sandbox,
         private _taskSandBox: TaskSandBox,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private _appRef: ApplicationRef
     ) {
     }
 
@@ -62,7 +67,7 @@ export class StateUnidadDocumental implements TaskForm {
 
     InitData() {
         this.InitForm();
-        this.OpcionSeleccionada = 1 // abrir
+        this.OpcionSeleccionada = 0 // abrir
         this.InitPropiedadesTarea();
     }
 
@@ -87,13 +92,9 @@ export class StateUnidadDocumental implements TaskForm {
             if (this.task.variables.codDependencia) {
                 const codDependencia = this.task.variables.codDependencia
                 this.GetListadosSeries(codDependencia);
-                this.Buscar();
+                this.Listar();
             }
         });
-    }
-
-    GetListadoUnidadesDocumentales(codDependencia: string) {
-        this.ListadoUnidadDocumental = this.unidadDocumentalApiService.Listar({idOrgOfc: codDependencia});
     }
 
     GetDetalleUnidadUnidadDocumental(payload: any) {
@@ -147,25 +148,42 @@ export class StateUnidadDocumental implements TaskForm {
         this.AbrirDetalle = false;
     }
 
-    Buscar() {
-        this.ListadoUnidadDocumental = this.unidadDocumentalApiService.Listar(this.GetBuscarPayload());
+    Listar(value?: any) {
+        this.OpcionSeleccionada = (value) ? value : this.OpcionSeleccionada;
+        this.unidadDocumentalApiService.Listar(this.GetPayload())
+        .subscribe(response => {
+            const ListadoMapeado =  response.reduce((_listado, _current) => {
+                _current.estado = (_current.inactivo) ? 'Inactivo' : 'Activo';
+                _current.seleccionado = true;
+                switch (_current.soporte) {
+                    case 'fisico': _current.soporte = 'Físico'; break;
+                    case 'electronico': _current.soporte = 'Electrónico'; break;
+                    case 'hibrido': _current.soporte = 'Híbrido'; break;
+                }
+                _listado.push(_current);
+                return _listado;
+            }, []);
+            this.ListadoUnidadDocumental = [...ListadoMapeado];
+        });
     }
 
     Agregar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental
+            const listadoMapeado = this.ListadoUnidadDocumental
             .reduce((listado, currenvalue: any) => {
-                  if (currenvalue.seleccionado) {
+                  const item = this.unidadesSeleccionadas.find(_item => _item.soporte === 'Físico' && _item.fechaCierre === null);
+                  if (item) {
                       currenvalue.fechaCierre = this.FechaExtremaFinal;
                   }
                   listado.push(currenvalue);
                   return listado;
             }, []);
+            this.ListadoUnidadDocumental = [...listadoMapeado];
         }
     }
 
-    GetBuscarPayload(): UnidadDocumentalDTO {
+    GetPayload(): UnidadDocumentalDTO {
 
         const cerrada =
         ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
@@ -175,11 +193,11 @@ export class StateUnidadDocumental implements TaskForm {
         const estado =
         ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
             || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? 'Inactiva'
-            : 'Activa' ;
+            ? true
+            : false ;
         const payload: UnidadDocumentalDTO = {
             cerrada: cerrada,
-            estado: estado,
+            inactivo: estado,
             codigoDependencia: this.task.variables.codDependencia,
         }
 
@@ -205,69 +223,82 @@ export class StateUnidadDocumental implements TaskForm {
         return payload;
     }
 
-    SeleccionarTodos(checked: boolean) {
-        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.map((_map) => {
-            const unidadesDocumentales = _map.reduce((listado, unidad) => {
-                unidad.seleccionado = checked;
-                listado.push(unidad);
-                return listado;
-            }, []);
-            return unidadesDocumentales;
-        });
-    }
 
     GetUnidadesSeleccionadas(): UnidadDocumentalDTO[] {
-        let ListadoFiltrado = [];
-        const UnidadesSeleccionadas = this.ListadoUnidadDocumental.subscribe(data => {
-            ListadoFiltrado =  data.filter(item => item.seleccionado);
+        const ListadoFiltrado = this.unidadesSeleccionadas
             if (!ListadoFiltrado.length) {
                 this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));
             }
-        });
         return ListadoFiltrado;
     }
 
     Abrir() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-
+            const payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+            this.unidadDocumentalApiService.abrirUnidadesDocumentales(payload)
+            .subscribe(response => {
+                this.ManageActionResponse(response);
+            });
         }
     }
 
     Cerrar() {
-        let unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
+        const unidadesSeleccionadas: UnidadDocumentalDTO[] = this.GetUnidadesSeleccionadas();
+        let payload = {};
         if (unidadesSeleccionadas.length) {
-           const pendienteFechaYSoporte = unidadesSeleccionadas.find(item => (item.fechaExtremaFinal === null && item.soporte === null));
+           const pendienteFechaYSoporte = unidadesSeleccionadas.find(item => (item.fechaExtremaFinal === null && item.soporte === 'Físico'));
            if (pendienteFechaYSoporte) {
                this.confirmationService.confirm({
                 message: `<p style="text-align: center">¿Desea que la fecha extrema final sea la misma fecha del cierre del trámite Aceptar / Cancelar. ?</p>`,
                 accept: () => {
-                    unidadesSeleccionadas = unidadesSeleccionadas.reduce((listado, current) => {
-                        if (current.fechaExtremaFinal === null && current.soporte) {
-                            current.fechaExtremaFinal = current.fechaCierre;
+                    payload = unidadesSeleccionadas.reduce((listado, current) => {
+                        if (current.fechaExtremaFinal === null && current.soporte === 'fisico') {
+                            const item = {
+                                idUnidadDocumental: current.id,
+                                fechaExtremaFinal: current.fechaCierre,
+                            }
                             listado.push(current);
                         }
                         return listado;
-                    }, [])
+                    }, []);
+                    this.SubmitCerrar(payload)
                 },
                 reject: () => {
-
+                    this._store.dispatch(new PushNotificationAction({severity: 'info', summary: this.MensajeIngreseFechaExtremaFinal}));
                 }
               });
+           } else {
+                 payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+                 this.SubmitCerrar(payload);
            }
 
-        } else {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));
         }
+    }
+
+    SubmitCerrar(payload: any) {
+        this.unidadDocumentalApiService.cerrarUnidadesDocumentales(payload)
+        .subscribe(response => {
+            this.ManageActionResponse(response);
+        });
     }
 
     Reactivar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-
-        } else {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: this.NoUnidadesSeleccionadas}));
+            const payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+            this.unidadDocumentalApiService.reactivarUnidadesDocumentales(payload)
+            .subscribe(response => {
+               this.ManageActionResponse(response);
+            });
         }
+    }
+
+    ManageActionResponse(response: MensajeRespuestaDTO) {
+        const mensajeRespuesta: MensajeRespuestaDTO = response;
+        const mensajeSeverity = (mensajeRespuesta.codMensaje === '0000') ? 'success' : 'error';
+        this.Listar();
+        this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
     }
 
     Finalizar() {

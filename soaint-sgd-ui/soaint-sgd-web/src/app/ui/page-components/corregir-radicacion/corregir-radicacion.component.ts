@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, AfterContentInit, ChangeDetectorRef, OnDestroy, AfterViewChecked } from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
@@ -23,19 +23,19 @@ import { ProduccionDocumentalApiService, MessagingService } from '../../../infra
 import { VersionDocumentoDTO } from '../produccion-documental/models/DocumentoDTO';
 import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import { RadicacionEntradaFormInterface } from '../../../shared/interfaces/data-transformers/radicacionEntradaForm.interface';
+import { DatosGeneralesStateService } from '../../bussiness-components/datos-generales-edit/datos-generales-state-service';
+import { DatosRemitenteStateService } from '../../bussiness-components/datos-remitente-edit/datos-remitente-state-service';
+import { DatosDestinatarioStateService } from '../../bussiness-components/datos-destinatario-edit/datos-destinatario-state-service';
+import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+import { CorrespondenciaApiService } from '../../../infrastructure/api/correspondencia.api';
+import { AnexoDTO } from '../../../domain/anexoDTO';
+import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 
 @Component({
   selector: 'app-corregir-radicacion',
   templateUrl: './corregir-radicacion.component.html',
-  styleUrls: ['./corregir-radicacion.component.scss'],
 })
-export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
-
-  @ViewChild('datosGenerales') datosGenerales;
-
-  @ViewChild('datosRemitente') datosRemitente;
-
-  @ViewChild('datosDestinatario') datosDestinatario;
+export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   tabIndex = 0;
 
@@ -48,19 +48,17 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
   activeTaskUnsubscriber: Subscription;
   readonly = false;
 
-  radicacion: ComunicacionOficialDTO;
-  radicacionEntradaDTV: RadicacionEntradaDTV = null;
   radicacionEntradaFormData: RadicacionEntradaFormInterface = null;
   comunicacion: ComunicacionOficialDTO = {};
 
-
-  destinatario: any = null;
-  generales: any = null;
-  remitente: any = null;
   descripcionAnexos: any;
   radicadosReferidos: any;
   agentesDestinatario: any;
   disabled = true;
+
+  stateGenerales: DatosGeneralesStateService = null;
+  stateRemitente: DatosRemitenteStateService = null;
+  stateDestinatario: DatosDestinatarioStateService = null;
 
   constructor(
     private _store: Store<State>,
@@ -71,18 +69,19 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
     private formBuilder: FormBuilder,
     private _produccionDocumentalApi: ProduccionDocumentalApiService,
     private messagingService: MessagingService,
-    private _changeDetectorRef: ChangeDetectorRef
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _generalesStateService: DatosGeneralesStateService,
+    private _remitenteStateService: DatosRemitenteStateService,
+    private _destinatarioStateService: DatosDestinatarioStateService,
+    private _correspondenciaService: CorrespondenciaApiService
   ) {
+    this.stateGenerales = this._generalesStateService;
+    this.stateRemitente = this._remitenteStateService;
+    this.stateDestinatario = this._destinatarioStateService;
   }
 
   ngOnInit() {
     this.Init();
-  }
-
-  ngAfterContentInit() {
-    this.formsTabOrder.push(this.datosGenerales);
-    this.formsTabOrder.push(this.datosRemitente);
-    this.formsTabOrder.push(this.datosDestinatario);
   }
 
   openNext() {
@@ -114,24 +113,21 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
 
   save(): Observable<any> {
     const payload: any = {
-      destinatario: this.destinatario,
-      generales: this.generales,
-      remitente: this.remitente,
-      descripcionAnexos: this.descripcionAnexos,
-      radicadosReferidos: this.radicadosReferidos,
-      agentesDestinatario: this.agentesDestinatario
+      destinatario: this.stateDestinatario.form,
+      generales: this.stateGenerales.form,
+      remitente: this.stateRemitente.form,
+      descripcionAnexos: this.stateGenerales.descripcionAnexos,
+      radicadosReferidos: this.stateGenerales.radicadosReferidos,
+      agentesDestinatario: this.stateDestinatario.agentesDestinatario
     };
-
-    if (this.remitente.datosContactos) {
-      payload.datosContactos = this.remitente.datosContactos.contacts;
+    if (this.radicacionEntradaFormData.datosContactos) {
+      payload.datosContactos = this.stateRemitente.contacts;
     }
-
     const tareaDto: any = {
       idTareaProceso: this.task.idTarea,
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: payload
     };
-
     return this._sandbox.quickSave(tareaDto);
   }
 
@@ -140,70 +136,44 @@ export class CorregirRadicacionComponent implements OnInit, AfterContentInit {
       this._asiganacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado)
       .subscribe((result) => {
         this.comunicacion = result;
-        this.radicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
-        this.radicacionEntradaFormData = this.radicacionEntradaDTV.getRadicacionEntradaFormData();
-        this.destinatario = this.radicacionEntradaFormData.destinatario;
-        this.remitente = this.radicacionEntradaFormData.remitente;
-        this.generales = this.radicacionEntradaFormData.generales;
-        this.InitFormGenerales();
-        this.InitFormRemitente();
-        this.InitFormDestinatario();
-        this._changeDetectorRef.detectChanges();
+        const radicacionEntradaDTV: RadicacionEntradaDTV = new RadicacionEntradaDTV(this.comunicacion);
+        this.radicacionEntradaFormData = radicacionEntradaDTV.getRadicacionEntradaFormData();
+        this.InitGenerales();
+        this.InitRemitente();
+        this.InitDestinatario();
+        setTimeout(() => {
+          this._changeDetectorRef.detectChanges();
+        }, 0);
       });
     }
   }
 
-
-  InitFormGenerales() {
-      const reqDistFisica = (this.generales.reqDistFisica === 1);
-      this.formGenerales = this.formBuilder.group({
-        'fechaRadicacion': [this.generales.fechaRadicacion],
-        'nroRadicado': [this.generales.nroRadicado],
-        'tipoComunicacion': [{value: {codigo: 'EE', nombre: 'Comunicación Oficial Externa Recibida', codPadre: 'TP-CMC', id: 30}, disabled: this.disabled}, Validators.required],
-        'medioRecepcion': [{value: {codigo: 'ME-RECV', nombre: 'Virtual', codPadre: 'ME-RECE', id: 18}, disabled: this.disabled}, Validators.required],
-        'empresaMensajeria': [{value: this.generales.empresaMensajeria, disabled: this.disabled}, Validators.required],
-        'numeroGuia': [{value: this.generales.numeroGuia, disabled: this.disabled}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-        'tipologiaDocumental': [{value: {codigo: 'TL-DOCOF', nombre: 'Oficio', codPadre: 'TL-DOC', id: 49}, disabled: !this.disabled}, Validators.required],
-        'unidadTiempo': [{value: {codigo: 'UNID-TIH', nombre: 'Horas', codPadre: 'UNID-TI', id: 90}, disabled: this.disabled}],
-        'numeroFolio': [{value: this.generales.numeroFolio, disabled: this.disabled}, Validators.required],
-        'inicioConteo': [this.generales.inicioConteo],
-        'reqDistFisica': [{value: reqDistFisica, disabled: this.disabled}],
-        'reqDigit': [{value: this.generales.reqDigit, disabled: this.disabled}],
-        'tiempoRespuesta': [{value: this.generales.tiempoRespuesta, disabled: this.disabled}],
-        'asunto': [{value: this.generales.asunto, disabled: !this.disabled}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-        'radicadoReferido': [{value: this.generales.radicadoReferido, disabled: !this.disabled}],
-        'tipoAnexos': [{value: null, disabled: this.disabled}],
-        'soporteAnexos': [{value: null, disabled: this.disabled}],
-        'tipoAnexosDescripcion': [{value: null}, Validators.maxLength(300)],
-        'hasAnexos': [{value: this.generales.hasAnexos, disabled: this.disabled}]
-      });
-      this.datosGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
-      this.datosGenerales.form = this.formGenerales;
-      this.datosRemitente.setTipoComunicacion(this.formGenerales.controls['tipoComunicacion'].value);
+  InitGenerales() {
+    this.stateGenerales.dataform = this.radicacionEntradaFormData.generales;
+    this.stateGenerales.descripcionAnexos = this.radicacionEntradaFormData.descripcionAnexos;
+    this.stateGenerales.ppdDocumentoList = this.comunicacion.ppdDocumentoList;
+    this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
+    this.stateGenerales.Init();
+    this.formsTabOrder.push(this.stateGenerales.form);
   }
 
-  InitFormRemitente() {
-    this.formRemitente = this.formBuilder.group({
-      'tipoPersona': [{value: {codigo: 'TP-PERA', nombre: 'Anonimo', codPadre: '', id: 30}, disabled: this.disabled}, Validators.required],
-        'nit': [{value: this.remitente.nit, disabled: this.disabled}],
-        'actuaCalidad': [{value: this.remitente.actuaCalidad, disabled: this.disabled}],
-        'tipoDocumento': [{value: this.remitente.tipoDocumento, disabled: this.disabled}],
-        'razonSocial': [{value: this.remitente.razonSocial, disabled: this.disabled}, Validators.required],
-        'nombreApellidos': [{value: this.remitente.nombreApellidos, disabled: this.disabled}, Validators.required],
-        'nroDocumentoIdentidad': [{value: this.remitente.nroDocumentoIdentidad, disabled: this.disabled}],
-        'sedeAdministrativa': [{value: this.remitente.sedeAdministrativa, disabled: this.disabled}, Validators.required],
-        'dependenciaGrupo': [{value: this.remitente.dependenciaGrupo, disabled: this.disabled}, Validators.required],
-    });
-    this.datosRemitente.onSelectTipoPersona(this.formRemitente.controls['tipoPersona'].value);
-    this.datosRemitente.datosContactos.contacts = this.radicacionEntradaFormData.datosContactos;
-}
+  InitRemitente() {
+    this.stateRemitente.tipoComunicacion = this.radicacionEntradaFormData.generales.tipoComunicacion;
+    this.stateRemitente.dataform = this.radicacionEntradaFormData.remitente;
+    this.stateRemitente.contacts = this.radicacionEntradaFormData.datosContactos;
+    this.stateRemitente.Init();
+    this.formsTabOrder.push(this.stateRemitente.form);
+  }
 
-InitFormDestinatario() {
-  this.datosDestinatario.agentesDestinatario = [...this.radicacionEntradaFormData.agentesDestinatario];
-}
+  InitDestinatario() {
+    this.stateDestinatario.agentesDestinatario =  [...this.radicacionEntradaFormData.agentesDestinatario];
+    this.stateDestinatario.Init();
+    this.formsTabOrder.push(this.stateDestinatario.form);
+  }
 
   actualizarComunicacion() {
-    this._comunicacionOficialApi.actualizarComunicacion(this.comunicacion);
+    const payload = this.GetComunicacionPayload();
+    this._comunicacionOficialApi.actualizarComunicacion(payload);
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
@@ -214,11 +184,33 @@ InitFormDestinatario() {
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
+  GetComunicacionPayload(): any {
+    const radicacionEntradaFormPayload: any = {
+      destinatario: this.stateDestinatario.form.value,
+      generales: JSON.parse(JSON.stringify(this.stateGenerales.form.getRawValue())),
+      remitente: this.stateRemitente.form.value,
+      descripcionAnexos: this.stateGenerales.descripcionAnexos,
+      radicadosReferidos: this.stateGenerales.radicadosReferidos,
+      agentesDestinatario: this.stateDestinatario.agentesDestinatario,
+      task: this.task
+    };
+    if (this.stateRemitente.contacts) {
+      radicacionEntradaFormPayload.datosContactos = this.stateRemitente.contacts;
+    }
+    const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);
+
+    return comunicacionOficialDTV.getComunicacionOficial();
+  }
+
   HasDocuments() {
     if (this.comunicacion && this.comunicacion.ppdDocumentoList) {
       return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
     }
     return false;
+  }
+
+  IsDisabled() {
+    return (this.formsTabOrder[this.tabIndex] && this.formsTabOrder[this.tabIndex].valid);
   }
 
   uploadVersionDocumento(doc: VersionDocumentoDTO) {
@@ -245,6 +237,10 @@ InitFormDestinatario() {
     },
     error => this._store.dispatch(new PushNotificationAction({severity: 'error', summary: error}))
   );
+}
+
+ngOnDestroy() {
+  this._changeDetectorRef.detach();
 }
 
 

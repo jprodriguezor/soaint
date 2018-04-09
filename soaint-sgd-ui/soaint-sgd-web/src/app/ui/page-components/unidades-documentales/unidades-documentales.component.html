@@ -1,13 +1,13 @@
 <div class="ui-fluid">
   <app-task-container>
     <div customActions>
-      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
+      <button [disabled]="!State.HabilitarOpcion(0)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
               (click)="State.Abrir()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
+      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
               (click)="State.Cerrar()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(3)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
+      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
               (click)="State.Reactivar()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
@@ -19,9 +19,9 @@
         <div class="ui-g ui-fluid">   
             <div class="ui-sm-12 ui-g-6 ui-lg-12">
                 <div class="ui-g form-group">
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="3" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
                
                 </div>
               </div>      
@@ -136,7 +136,7 @@
       </p-panel>
 
       <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
-        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="State.HabilitarOpcion(2)">
+        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="State.HabilitarOpcion(1)">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
@@ -159,38 +159,32 @@
             </div>
          </div>
         <div class="ui-fluid">
-          <p-dataTable selectionMode="single"
+          <p-dataTable selectionMode="multiple"
+                      [(selection)]="State.unidadesSeleccionadas"
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="State.ListadoUnidadDocumental | async"
+                       [value]="State.ListadoUnidadDocumental"
                        emptyMessage="No se encontraron resultados ">
-            <p-column field="State.ListadoUnidadDocumental.seleccionado" header="">
-              <ng-template pTemplate="header">
-                <p-checkbox name="seleccionartodos"  (onChange)="State.SeleccionarTodos($event)"></p-checkbox>
-              </ng-template>
-              <ng-template let-col let-unidad="rowData" pTemplate="editor">
-                <p-checkbox [(ngModel)]="unidad[col.field].seleccionado"></p-checkbox>
-              </ng-template>
-            </p-column>
-            <p-column field="State.ListadoUnidadDocumental.nombreSerie" header="Nombre serie/subserie"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.descriptor1" header="Descriptor 1"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.descriptor2" header="Descriptor 2"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.faseArchivo" header="Fase archivo"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.estado" header="Estado"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaExtremaFinal" header="Fecha extrema final"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.fechaCierre" header="Fecha cierre trámite"></p-column>
-            <p-column field="State.ListadoUnidadDocumental.soporte" header="Soporte"></p-column>
-            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+            <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+            <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
+            <p-column field="codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
+            <p-column field="descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="estado" header="Estado"></p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
+            <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
+            <p-column field="soporte" header="Soporte"></p-column>
+            <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                 <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>
-            </p-column>
+            </p-column> -->
           </p-dataTable>
         </div>
       </p-panel>

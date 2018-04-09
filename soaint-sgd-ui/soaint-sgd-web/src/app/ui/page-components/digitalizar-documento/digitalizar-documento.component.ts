@@ -15,6 +15,8 @@ import {PushNotificationAction} from '../../../infrastructure/state-management/n
 import {isArray, isNullOrUndefined} from 'util';
 import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {empty} from 'rxjs/Observer';
+import * as codigos from '../../../shared/bussiness-properties/radicacion-properties';
+import {FileUpload} from "primeng/primeng";
 
 enum UploadStatus {
   CLEAN = 0,
@@ -104,16 +106,23 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
 
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
-          _dependencia = result[0];
+          _dependencia = result.dependencias[0];
 
-          const listRef = ["-1"];
           this.comunicacion.referidoList.forEach((data) => {
-            listRef.push(data.nroRadRef);
+            formData.append('referidoList', data.nroRadRef);
           });
-
+          let _agente = this.comunicacion.agenteList.find(a => a.codTipAgent === codigos.TIPO_AGENTE_REMITENTE);
+          formData.append('tipoComunicacion', this.correspondencia.codTipoCmc);
+          formData.append('nroRadicado', this.correspondencia.nroRadicado);
+          formData.append('principalFileName', this.principalFile);
+          if(_dependencia) {
+            formData.append('sede', _dependencia.nomSede);
+            formData.append('dependencia', _dependencia.nombre);
+          }
+          if(_agente)
+            formData.append('nombreRemitente', _agente.nombre);
           return this._api.sendFile(
-            this.uploadUrl, formData, [this.correspondencia.codTipoCmc, this.correspondencia.nroRadicado,listRef,
-              this.principalFile, result.dependencias[0].nomSede, result.dependencias[0].nombre]);
+            this.uploadUrl, formData, []);
         }
       ).subscribe(response => {
         const data = response;
@@ -133,6 +142,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
             }));
             this.uploadDisabled = true;
             this.principalFileId = data[0];
+            this.changeDetection.detectChanges();
           }
         } else {
           switch (data.codMensaje) {
@@ -140,6 +150,7 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
+              (<FileUpload>(this.uploader)).disabled = true;
               this.uploadDisabled = true;
               break;
             case '3333':
@@ -189,24 +200,23 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
   }
 
   onClear(event) {
+
+    this.principalFile = undefined;
+
     this.changeDetection.detectChanges();
     this.status = UploadStatus.CLEAN;
     this.uploadDisabled = false;
     console.log('DOCUMENTO PRINCIPAL ELIMINADO...');
-    if (null !== this.principalFileId) {
-      const deleteUrl = environment.digitalizar_doc_upload_endpoint + '/eliminarprincipal/' + this.principalFileId;
-      this._api.post(deleteUrl, {}).subscribe(data => {
-        if (data.ok) {
-          this.principalFileId = null;
-          this._store.dispatch(new PushNotificationAction({
-            severity: 'success', summary: 'DOCUMENTOS ELIMINADOS CORRECTAMENTE'
-          }));
-        }
-      });
-    }
+
   }
 
   onSelect(event) {
+
+    if(this.principalFile === undefined){
+
+      this.principalFile = this.uploader.files[0].name;
+    }
+
     this.previewWasRefreshed = false;
     for (const file of event.files) {
       this.uploadFiles.push(file);

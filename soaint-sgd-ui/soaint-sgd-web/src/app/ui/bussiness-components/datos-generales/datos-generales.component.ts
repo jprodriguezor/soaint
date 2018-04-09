@@ -20,7 +20,12 @@ import {DatosGeneralesApiService} from '../../../infrastructure/api/datos-genera
 import {createSelector} from 'reselect';
 import {getUnidadTiempoEntities} from '../../../infrastructure/state-management/constanteDTO-state/selectors/unidad-tiempo-selectors';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
-import {MEDIO_RECEPCION_EMPRESA_MENSAJERIA} from '../../../shared/bussiness-properties/radicacion-properties';
+import {
+  MEDIO_RECEPCION_EMPRESA_MENSAJERIA,
+  RADICACION_ENTRADA, RADICACION_SALIDA
+} from '../../../shared/bussiness-properties/radicacion-properties';
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {ExtendValidators} from "../../../shared/validators/custom-validators";
 
 @Component({
   selector: 'app-datos-generales',
@@ -43,7 +48,7 @@ export class DatosGeneralesComponent implements OnInit {
   tipoComunicacionSuggestions$: Observable<any[]>;
   unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
   tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
-  soporteAnexosSuggestions$: Observable<any[]>;
+  soporteAnexosSuggestions$: Observable<ConstanteDTO[]>;
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
   metricasTiempoTipologia$: Observable<any>;
@@ -57,6 +62,8 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   editable = true;
 
+  @Input() tipoRadicacion = RADICACION_ENTRADA;
+
   @Input()
   editmode = false;
 
@@ -65,6 +72,8 @@ export class DatosGeneralesComponent implements OnInit {
 
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
+
+  @Output() onChangeTipoDistribucion: EventEmitter<boolean> = new EventEmitter;
 
   validations: any = {};
   //
@@ -90,6 +99,8 @@ export class DatosGeneralesComponent implements OnInit {
         'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
         'inicioConteo': [null],
         'reqDistFisica': [{value: null, disabled: !this.editable}],
+        'clase_envio'  : [null],
+        'modalidad_correo'  : [null],
         'reqDigit': [{value: '1', disabled: !this.editable}],
         'tiempoRespuesta': [{value: null, disabled: !this.editable}],
         'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
@@ -100,6 +111,19 @@ export class DatosGeneralesComponent implements OnInit {
         'hasAnexos': [{value: null, disabled: !this.editable}]
       });
 
+      if(this.tipoRadicacion == RADICACION_SALIDA){
+
+        this.form.setValidators([
+          ExtendValidators.requiredIf('reqDistFisica',true,'clase_envio'),
+          ExtendValidators.requiredIf('reqDistFisica',true,'modalidad_correo'),
+        ]);
+      };
+
+  }
+
+  changeTipoDistribucion(evt:boolean){
+
+    this.onChangeTipoDistribucion.emit(evt);
   }
 
   listenForErrors() {
@@ -160,12 +184,14 @@ export class DatosGeneralesComponent implements OnInit {
     if (!tipoAnexo) {
       return;
     }
-    const insertVal = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
+    const newAnexo = [{tipoAnexo: tipoAnexo, descripcion: descripcion, soporteAnexo: soporteAnexo}];
     this.descripcionAnexos = [
-      ...insertVal,
+      ...newAnexo,
       ...this.descripcionAnexos.filter(
-        value => value.tipoAnexo.nombre !== tipoAnexo.nombre ||
-          value.descripcion !== descripcion
+        value =>
+          value.tipoAnexo.nombre !== tipoAnexo.nombre ||
+          // value.descripcion !== descripcion &&
+          value.soporteAnexo.nombre !== soporteAnexo.nombre
       )
     ];
     this.form.get('hasAnexos').setValue(this.descripcionAnexos.length);
@@ -229,6 +255,11 @@ export class DatosGeneralesComponent implements OnInit {
         delete this.validations[control];
       }
     });
+  }
+
+  showDistributionFields():boolean{
+
+    return this.tipoRadicacion == RADICACION_SALIDA && this.form.get('reqDistFisica').value;
   }
 
 

@@ -10,7 +10,7 @@ import {ApiBase} from '../../api/api-base';
 import {CacheResponse} from "../../../shared/cache-response";
 
 @Injectable()
-export class Sandbox extends CacheResponse{
+export class Sandbox extends CacheResponse {
 
   constructor(private _store: Store<State>,
               private _api: ApiBase) {
@@ -76,9 +76,9 @@ export class Sandbox extends CacheResponse{
 
     if (endpoint !== null) {
 
-      return this.getResponse(payload,this._api.list(endpoint, payload)
+      return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload,response);
+          this.cacheResponse(payload, response);
           return response;
         }));
     }
