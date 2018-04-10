@@ -96,7 +96,9 @@ export class DatosGeneralesStateService {
         'tipoAnexos': [{value: null, disabled: this.disabled}],
         'soporteAnexos': [{value: null, disabled: this.disabled}],
         'tipoAnexosDescripcion': [{value: null, disabled: this.disabled}, Validators.maxLength(300)],
-        'hasAnexos': [{value: this.dataform.hasAnexos, disabled: this.disabled}]
+        'hasAnexos': [{value: this.dataform.hasAnexos, disabled: this.disabled}],
+        'ideDocumento': [{value: this.dataform.ideDocumento, disabled: this.disabled}],
+        'idePpdDocumento': [{value: this.dataform.idePpdDocumento, disabled: this.disabled}],
       });
 
   }

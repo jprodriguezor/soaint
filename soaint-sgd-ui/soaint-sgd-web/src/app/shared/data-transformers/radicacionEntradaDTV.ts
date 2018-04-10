@@ -58,7 +58,9 @@ export class RadicacionEntradaDTV {
         radicadoReferido: null,
         tipoAnexos: null,
         tipoAnexosDescripcion: null,
-        hasAnexos: null
+        hasAnexos: null,
+        ideDocumento: this.source.correspondencia.ideDocumento,
+        idePpdDocumento: this.source.ppdDocumentoList[0].idePpdDocumento,
       },
       datosContactos: this.getDatosContactoFormList(),
       radicadosReferidos: this.getRadicadosReferidosFormList(),
@@ -100,7 +102,7 @@ export class RadicacionEntradaDTV {
   getRadicadosReferidosFormList() {
     const referidos = [];
     this.source.referidoList.forEach(referido => {
-      referidos.push({nombre: referido.nroRadRef});
+      referidos.push({ideReferido: referido.ideReferido, nombre: referido.nroRadRef});
     });
 
     return referidos;
@@ -110,6 +112,7 @@ export class RadicacionEntradaDTV {
     const anexos = [];
     this.source.anexoList.forEach((anexo: AnexoDTO) => {
       anexos.push({
+        ideAnexo: anexo.ideAnexo,
         tipoAnexo: {codigo: anexo.codAnexo},
         soporteAnexo: {codigo: anexo.codTipoSoporte},
         descripcion: anexo.descripcion
