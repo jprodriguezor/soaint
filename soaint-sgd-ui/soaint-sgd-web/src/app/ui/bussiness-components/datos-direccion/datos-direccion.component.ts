@@ -27,6 +27,7 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import { LocalizacionApiService } from '../../../infrastructure/api/localizacion.api';
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -85,7 +86,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
               private _departamentoSandbox: DepartamentoSandbox,
               private _municipioSandbox: MunicipioSandbox,
               private formBuilder: FormBuilder,
-              private _changeDetectorRef: ChangeDetectorRef) {
+              private _changeDetectorRef: ChangeDetectorRef,
+              private _localizacionService: LocalizacionApiService
+            ) {
 
     this.initForm();
     this.listenForChanges();
@@ -94,6 +97,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
 
   ngOnInit(): void {
+    this._paisSandbox.loadDispatch();
     this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
     this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
     this.orientacionSuggestions$ = this._store.select(getOrientacionArrayData);
@@ -117,6 +121,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       .combineLatest(this.municipios$, (event: any, municipios) => municipios.filter(municipio => municipio.nombre.toLowerCase().indexOf(event.query.toLowerCase()) >= 0 ));
 
     this.loadComponent.emit(this);
+
+    // para el caso de lista con datos incompletos
+    if (this.contactsDefault) {
+      this.CompletarDatosContacto();
+    }
 
   }
 
@@ -432,7 +441,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
           summary: 'Recuerde que únicamente puede existir una dirección principal'
         }));
 
-      }else {
+      } else {
         if (this.formContext === FormContextEnum.CREATE) {
           this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
         } else {
@@ -482,5 +491,25 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   refreshView() {
     this._changeDetectorRef.detectChanges();
+  }
+
+  CompletarDatosContacto() {
+
+    this._localizacionService.ListarMunicipiosActivos({})
+    .subscribe((result: any) => {
+      this.contacts = this.contacts
+      .reduce((_listado, _contact) => {
+        const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+        if (municipio) {
+          const departamento = municipio.departamento;
+          const pais = departamento.pais;
+          _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
+          _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+          _contact.pais.nombre = (pais) ? pais.nombre : '';
+          _listado.push(_contact);
+        }
+        return _listado;
+      }, []);
+    });
   }
 }

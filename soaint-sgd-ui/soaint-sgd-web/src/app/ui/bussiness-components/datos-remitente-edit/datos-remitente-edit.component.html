@@ -64,7 +64,7 @@
               <label for="tipoPersona"><span class="text-danger">*</span>Tipo de persona</label>
             </div>
             <div class="ui-g-12 md-dropdownfield">
-              <p-dropdown [options]="state.tipoPersonaSuggestions | dropdownItem"
+              <p-dropdown [options]="state.tipoPersonaSuggestions$ | async | dropdownItemSingle"
                           id="tipoPersona"
                           formControlName="tipoPersona"
                           placeholder="Seleccione"
@@ -194,7 +194,7 @@
 
 
 <div *ngIf="state.visibility.datosContacto">
-  <app-datos-direccion #datosContactos [editable]="state.disabled"></app-datos-direccion>
+  <app-datos-direccion #datosContactos [contactsDefault]="state.contacts" [editable]="state.disabled"></app-datos-direccion>
 </div>
 
 
