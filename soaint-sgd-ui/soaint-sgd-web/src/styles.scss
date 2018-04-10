@@ -67,6 +67,16 @@ tbody tr {
   display: none !important;
 }
 
+.row-container::before,.row-container::after{
+  clear:both;
+  display: block;
+  margin: 10px 0;
+}
+
+.clear{
+  clear:both;
+}
+
 @media print {
 
   @page {

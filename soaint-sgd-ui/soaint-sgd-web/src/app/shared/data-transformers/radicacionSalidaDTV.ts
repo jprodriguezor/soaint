@@ -13,8 +13,11 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
     let correspondencia = super.getCorrespondencia();
 
-    correspondencia.codClaseEnvio = datosEnvio.clase_envio;
-    correspondencia.codModalidadEnvio = datosEnvio.modalidad_correo;
+    if(datosEnvio !== undefined){
+
+      correspondencia.codClaseEnvio = datosEnvio.clase_envio;
+      correspondencia.codModalidadEnvio = datosEnvio.modalidad_correo;
+    }
 
      return correspondencia;
   }

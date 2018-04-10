@@ -76,6 +76,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   @Input() taskData: TareaDTO;
 
+ private showFormFilter:string;
+
+
+
   constructor(private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -152,7 +156,9 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   ngOnChanges(){
 
-    if(this.taskData !== undefined){
+    if(this.taskData){
+
+      this.showFormFilter = this.taskData.nombre+'-datos-contactos-show-form';
 
       let newControllers:any = ViewFilterHook.applyFilter(this.taskData.nombre+'-dataContact',{});
 
@@ -455,7 +461,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   showForm(): boolean{
 
-    return ViewFilterHook.applyFilter(this.taskData.nombre+'-datos-contactos-show-form',true);
+    return ViewFilterHook.applyFilter(this.showFormFilter,true);
   }
 
 

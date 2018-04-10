@@ -26,7 +26,7 @@
 
         <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
-          <pd-datos-contacto #datosContacto [taskData]="task"  ></pd-datos-contacto>
+          <pd-datos-contacto #datosContacto [taskData]="task"   ></pd-datos-contacto>
 
           <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value">
             <app-form-envio  #datosEnvio ></app-form-envio>
@@ -49,7 +49,7 @@
       </div>
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
-                (onHide)="hideTicketRadicado()">
+                (onHide)="hideTicketRadicado()" [width]="520">
         <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
 
         <p-footer>
