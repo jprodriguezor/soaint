@@ -77,7 +77,8 @@ export class RadicacionEntradaDTV {
         prefijoCuadrante: {codigo: contacto.codPrefijoCuadrant},
         bis: null,
         orientacion: null,
-        noVia: contacto.codTipoVia,
+        direccion: contacto.direccion,
+        noVia: null,
         prefijoCuadrante_se: null,
         placa: contacto.nroPlaca,
         orientacion_se: null,
@@ -109,8 +110,8 @@ export class RadicacionEntradaDTV {
     const anexos = [];
     this.source.anexoList.forEach((anexo: AnexoDTO) => {
       anexos.push({
-        tipoAnexo: {nombre: anexo.codAnexo},
-        soporteAnexo: {nombre: anexo.codTipoSoporte},
+        tipoAnexo: {codigo: anexo.codAnexo},
+        soporteAnexo: {codigo: anexo.codTipoSoporte},
         descripcion: anexo.descripcion
       });
     });

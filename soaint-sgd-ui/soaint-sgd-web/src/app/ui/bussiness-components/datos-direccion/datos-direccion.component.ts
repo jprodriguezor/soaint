@@ -499,17 +499,22 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     .subscribe((result: any) => {
       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
-        const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-        if (municipio) {
-          const departamento = municipio.departamento;
-          const pais = departamento.pais;
-          _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-          _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-          _contact.pais.nombre = (pais) ? pais.nombre : '';
-          _listado.push(_contact);
+        if (result) {
+          const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+          if (municipio) {
+            const departamento = municipio.departamento;
+            const pais = departamento.pais;
+            _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
+            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+            _contact.pais.nombre = (pais) ? pais.nombre : '';
+            _listado.push(_contact);
+          }
+          return _listado;
+        } else {
+          return this.contacts;
         }
-        return _listado;
       }, []);
+      this._changeDetectorRef.detectChanges();
     });
   }
 }

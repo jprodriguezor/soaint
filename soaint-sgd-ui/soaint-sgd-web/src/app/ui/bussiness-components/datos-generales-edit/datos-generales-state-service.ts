@@ -161,21 +161,23 @@ export class DatosGeneralesStateService {
     this.soporteAnexosSuggestions$ = this._contantesService.Listar({key: 'soporteAnexo' })
     this.soporteAnexosSuggestions$
     .subscribe((result) => {
-      this.constantesAnexos = [...result];
-      this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
-      this.tipoAnexosSuggestions$
-      .subscribe(resultsoporte => {
-        this.constantesAnexos = [...result].concat(resultsoporte);
-        this.descripcionAnexos = this.descripcionAnexos
-        .reduce((_listado, _anexo) => {
-          const codAnexo = this.constantesAnexos.find(item => item.codigo === _anexo.tipoAnexo.codigo);
-          const codTipoSoporte = this.constantesAnexos.find(item => item.codigo === _anexo.soporteAnexo.codigo);
-          _anexo.tipoAnexo.nombre = codAnexo.nombre;
-          _anexo.soporteAnexo.nombre = codTipoSoporte.nombre;
-          _listado.push(_anexo);
-          return _listado;
-        }, []);
-      });
+      if (result) {
+        this.constantesAnexos = [...result];
+        this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
+        this.tipoAnexosSuggestions$
+        .subscribe(resultsoporte => {
+          this.constantesAnexos = [...result].concat(resultsoporte);
+          this.descripcionAnexos = this.descripcionAnexos
+          .reduce((_listado, _anexo) => {
+            const codAnexo = this.constantesAnexos.find(item => item.codigo === _anexo.tipoAnexo.codigo);
+            const codTipoSoporte = this.constantesAnexos.find(item => item.codigo === _anexo.soporteAnexo.codigo);
+            _anexo.tipoAnexo.nombre = codAnexo.nombre;
+            _anexo.soporteAnexo.nombre = codTipoSoporte.nombre;
+            _listado.push(_anexo);
+            return _listado;
+          }, []);
+        });
+      }
     });
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());
