@@ -69,6 +69,7 @@ import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remit
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
+import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
 
 
 @NgModule({
@@ -177,7 +178,8 @@ import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental
     DistribucionComponent,
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
-    DatosDestinatarioEditComponent
+    DatosDestinatarioEditComponent,
+    AlertComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

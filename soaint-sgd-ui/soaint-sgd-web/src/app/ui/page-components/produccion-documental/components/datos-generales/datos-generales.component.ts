@@ -67,6 +67,8 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   nombreSede = '';
   nombreDependencia = '';
 
+  @ViewChild("alertItem") alertItem;
+
   @Input()
   documentoRadicadoUrl: string;
 
@@ -95,7 +97,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       })
       .subscribe((results) => {
 
-     
+
         if (this.taskData && this.taskData.variables) {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
@@ -241,7 +243,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
         formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
       }
-     
+
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
       resp => {
@@ -270,12 +272,26 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     return this.listaVersionesDocumento;
   }
 
+  selectAnexo(){
+
+    if(!this.form.get('tipoAnexo').value){
+
+      this.alertItem.ShowMessage("Debe de seleccionar un tipo de anexo");
+
+      return false;
+
+    }
+  }
+
   agregarAnexo(event?, anexoUploader?: FileUpload) {
     const anexo: AnexoDTO = {
       id: (new Date()).toTimeString(), descripcion: this.form.get('descripcion').value,
       soporte: this.form.get('soporte').value, tipo: this.form.get('tipoAnexo').value
     };
+
     if (event && anexoUploader) {
+
+
       anexo.file = event.files[0];
       const formData = new FormData();
       formData.append('documento', anexo.file, anexo.file.name);

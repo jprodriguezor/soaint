@@ -87,8 +87,10 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
 
     const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
 
-    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(() => {
+    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(response => {
       this.form.disable();
+
+      console.log(response);
 
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,

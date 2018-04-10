@@ -284,9 +284,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     }
 
     puedeAprobar() {
-        const valid = this.status > 1
-            || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length);
-        return valid && this.isValid();
+
+        let rules:boolean[] = [
+          this.status > 1  || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length),
+          this.isValid(),
+          this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+        ];
+
+        return rules.every( condition => condition);
     }
 
     hasAprobador() {
