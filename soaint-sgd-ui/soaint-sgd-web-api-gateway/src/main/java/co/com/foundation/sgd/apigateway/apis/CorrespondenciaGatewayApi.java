@@ -269,6 +269,16 @@ public class CorrespondenciaGatewayApi {
     }
 
     @GET
+    @Path("/obtener-comunicacion-full/{nro_radicado}")
+    @JWTTokenSecurity
+    public Response obtenerComunicacionfull(@PathParam("nro_radicado") String nroRadicado) {
+        log.info("CorrespondenciaGatewayApi - [trafic] - redirect Comunicaciones");
+        Response response = client.obtenerCorrespondenciaFullPorNroRadicado(nroRadicado);
+        String responseObject = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseObject).build();
+    }
+
+    @GET
     @Path("/obtenerObservaciones/{idCorrespondencia}")
     @JWTTokenSecurity
     public Response obtenerObservaciones(@PathParam("idCorrespondencia") BigInteger idCorrespondencia) {
@@ -413,6 +423,7 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+
     @GET
     @Path("/verificar-redirecciones")
     @JWTTokenSecurity
@@ -423,5 +434,14 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
+    @GET
+    @Path("/listar-anexos/{nroRadicado}")
+    @JWTTokenSecurity
+    public Response listarAnexos(@PathParam("nroRadicado") String nroRadicado) {
+        log.info(CONTENT + "  - listar anexos por nro radicado");
+        Response response = client.listarAnexos(nroRadicado);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
 }

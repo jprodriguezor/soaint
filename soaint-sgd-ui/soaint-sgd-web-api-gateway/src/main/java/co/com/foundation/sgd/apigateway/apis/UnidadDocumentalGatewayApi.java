@@ -13,6 +13,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 @Path("/unidad-documental-gateway-api")
@@ -66,7 +67,39 @@ public class UnidadDocumentalGatewayApi {
         log.info("ListarUnidadesDocumentalesGatewayApi - [trafic] - listing unidades documentales");
         Response response = ecmClient.listarUnidadesDocumentales(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 
+    @POST
+    @Path("/abrir-unidades-documentales")
+    @JWTTokenSecurity
+    public Response abrirUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
+
+        log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
+        Response response = ecmClient.abrirUnidadDocumental(unidadesDocumentalesDTO);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/cerrar-unidades-documentales")
+    @JWTTokenSecurity
+    public Response cerrarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
+
+        log.info("CerrarUnidadesDocumentalesGatewayApi - [trafic] - cerrar unidades documentales");
+        Response response = ecmClient.cerrarUnidadDocumental(unidadesDocumentalesDTO);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/reactivar-unidades-documentales")
+    @JWTTokenSecurity
+    public Response reactivarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
+
+        log.info("ReactivarUnidadesDocumentalesGatewayApi - [trafic] - reactivar unidades documentales");
+        Response response = ecmClient.reactivarUnidadDocumental(unidadesDocumentalesDTO);
+        String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 

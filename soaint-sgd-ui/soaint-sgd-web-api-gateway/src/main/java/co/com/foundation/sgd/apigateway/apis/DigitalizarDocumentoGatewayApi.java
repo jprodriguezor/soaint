@@ -95,6 +95,64 @@ public class DigitalizarDocumentoGatewayApi {
         return Response.status(Response.Status.OK).entity(parentResponse).build();
     }
 
+    @POST
+    @Path("/versionar-documento")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @JWTTokenSecurity
+    public Response versionarDocumento(MultipartFormDataInput formDataInput) {
+
+        log.info("DigitalizarDocumentoComunicacionGatewayApi - [content] : Subir version documento");
+
+        MensajeRespuesta clientResponse = null;
+        DocumentoDTO documentoDTO = new DocumentoDTO();
+        try {
+            InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
+            documentoDTO.setDocumento(IOUtils.toByteArray(inputStream));
+
+            if (null != formDataInput.getFormDataPart("idDocumento", String.class, null)) {
+                documentoDTO.setIdDocumento(formDataInput.getFormDataPart("idDocumento", String.class, null));
+            }
+
+            documentoDTO.setNombreDocumento(formDataInput.getFormDataPart("nombreDocumento", String.class, null));
+            documentoDTO.setTipoDocumento(formDataInput.getFormDataPart("tipoDocumento", String.class, null));
+            documentoDTO.setSede(formDataInput.getFormDataPart("sede", String.class, null));
+            documentoDTO.setDependencia(formDataInput.getFormDataPart("dependencia", String.class, null));
+            String selector = formDataInput.getFormDataPart("selector", String.class, null);
+            if (0 < formDataInput.getFormDataPart("nroRadicado", String.class, null).length()) {
+                documentoDTO.setNroRadicado(formDataInput.getFormDataPart("nroRadicado", String.class, null));
+            }
+
+            clientResponse = this.client.uploadVersionDocumento(documentoDTO, selector);
+            log.info(clientResponse);
+
+        } catch (Exception ex) {
+            return this.EcmErrorMessage(ex);
+        }
+
+        return Response.status(Response.Status.OK).entity(clientResponse).build();
+    }
+
+    private Response EcmErrorMessage(@NotNull Exception ex) {
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("codMensaje", "9999");
+        jsonResponse.put("mensaje", ex.getMessage());
+
+        return Response.status(Response.Status.BAD_REQUEST).entity(jsonResponse.toJSONString()).build();
+    }
+
+
+    @GET
+    @Path("/obtener-documento/{idDocumento}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response constantes(@PathParam("idDocumento") String idDocumento) {
+        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento desde el ecm: " + idDocumento);
+        Response response = client.findByIdDocument(idDocumento);
+        InputStream responseObject = response.readEntity(InputStream.class);
+//        response.ok(responseObject).header ("Content-Type", "application/pdf");
+        return Response.status(Response.Status.OK).entity(responseObject).build();
+    }
+
     @GET
     @Path("/obtener-documentos-asociados/{idDocumento}")
     @Produces(MediaType.APPLICATION_JSON)
