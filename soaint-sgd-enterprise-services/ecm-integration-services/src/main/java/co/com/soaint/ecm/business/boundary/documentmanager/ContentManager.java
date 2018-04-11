@@ -418,4 +418,32 @@ public class ContentManager {
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
     }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTOS           Lista de documentos a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS) {
+        logger.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS, conexion.getSession());
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTO            Documento a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
+        logger.info("### Ejecutando MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO, conexion.getSession());
+    }
 }

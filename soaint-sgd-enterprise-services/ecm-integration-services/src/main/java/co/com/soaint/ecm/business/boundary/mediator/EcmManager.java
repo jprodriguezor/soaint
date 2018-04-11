@@ -332,4 +332,28 @@ public class EcmManager {
         logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
         return contentManager.detallesUnidadDocumental(idUnidadDocumental);
     }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTOS           Lista de documentos a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS)");
+        return contentManager.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS);
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTO            Documento a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        return contentManager.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO);
+    }
 }
