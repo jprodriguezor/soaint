@@ -1,5 +1,17 @@
 
-import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  AfterViewInit,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  ViewChildren, QueryList
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -131,7 +143,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.loadComponent.emit(this);
 
     // para el caso de lista con datos incompletos
-    if (this.contactsDefault) {
+    if (this.contactsDefault && this.contactsDefault.length > 0) {
+
+      console.log("contact default",this.contactsDefault);
+
       this.CompletarDatosContacto();
     }
 
@@ -551,19 +566,28 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   CompletarDatosContacto() {
 
-    this._localizacionService.ListarMunicipiosActivos({})
+
+
+ this._localizacionService.ListarMunicipiosActivos({})
+
     .subscribe((result: any) => {
-      this.contacts = this.contacts
+
+       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
         if (result) {
-          const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-          if (municipio) {
-            const departamento = municipio.departamento;
-            const pais = departamento.pais;
-            _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-            _contact.pais.nombre = (pais) ? pais.nombre : '';
-            _listado.push(_contact);
+          if(!isNullOrUndefined(_contact.municipio)) {
+            const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+            if (municipio) {
+              const departamento = municipio.departamento;
+              const pais = departamento.pais;
+              if (!isNullOrUndefined(_contact.municipio) )
+                _contact.municipio.nombre = _contact.municipio.nombre ?  _contact.municipio.nombre : (municipio) ? municipio.nombre : '';
+              if (!isNullOrUndefined(_contact.departamento) )
+                _contact.departamento.nombre =_contact.departamento.nombre ? _contact.departamento.nombre : (departamento) ? departamento.nombre : '';
+              if (!isNullOrUndefined(_contact.pais) )
+                _contact.pais.nombre =  _contact.pais.nombre ? _contact.pais.nombre : (pais) ? pais.nombre : '';
+              _listado.push(_contact);
+            }
           }
           return _listado;
         } else {
