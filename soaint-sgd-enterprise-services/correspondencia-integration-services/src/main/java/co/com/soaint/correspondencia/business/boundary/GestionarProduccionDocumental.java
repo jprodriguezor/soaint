@@ -84,6 +84,11 @@ public class GestionarProduccionDocumental {
             MensajeRespuesta respuestaEcm = ecmApiClient.uploadDocument(documentoECM, "EE");*/
 
             fileTmp.deleteOnExit();
+
+            JSONObject datosContacto = (JSONObject) respuestaJson.get("datosContacto");
+            String distribucion = datosContacto.getString("distribucion");
+
+
             return redesSocialesIntegration.publicarFacebook("Documento producido desde SOADOC", Base64.getEncoder().encodeToString(firmaDigital.signPDF(IOUtils.toByteArray(fileInputStream))));
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
