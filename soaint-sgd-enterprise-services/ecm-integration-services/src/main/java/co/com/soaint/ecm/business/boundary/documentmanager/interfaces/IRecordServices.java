@@ -1,10 +1,13 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
 import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
+import org.apache.chemistry.opencmis.client.api.Folder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,21 +40,22 @@ public interface IRecordServices {
      * @param idUnidadDocumental     Id Unidad Documental
      * @return MensajeRespuesta
      */
-    MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental) throws BusinessException, SystemException;
+    MensajeRespuesta abrirCerrarReactivarUnidadDocumental(final String idUnidadDocumental, AccionUsuario accionUsuario) throws BusinessException, SystemException;
 
     /**
-     * Metodo para abrir una unidad documental
+     * Metodo para abrir/cerrar una unidad documental
      *
-     * @param idUnidadDocumental     Id Unidad Documental
+     * @param unidadDocumentalDTOS Lista de Unidad Documental
+     * @param accionUsuario            accion a realizar
      * @return MensajeRespuesta
      */
-    MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental) throws BusinessException, SystemException;
+    MensajeRespuesta abrirCerrarReactivarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, AccionUsuario accionUsuario) throws SystemException, BusinessException;
 
     /**
-     * Metodo para reactivar una unidad documental
+     * Metodo para Obtener un recordFolder
      *
      * @param idUnidadDocumental     Id Unidad Documental
-     * @return MensajeRespuesta
+     * @return Folder folder
      */
-    MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental);
+    Folder obtenerRecordFolder(String idUnidadDocumental) throws BusinessException;
 }

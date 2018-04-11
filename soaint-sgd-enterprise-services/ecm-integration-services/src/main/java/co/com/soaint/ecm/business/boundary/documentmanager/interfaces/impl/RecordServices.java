@@ -3,6 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
 import co.com.soaint.ecm.util.SystemParameters;
@@ -14,6 +15,9 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.data.ContentStream;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +29,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by amartinez on 24/01/2018.
@@ -38,9 +39,11 @@ import java.util.Map;
 public class RecordServices implements IRecordServices {
 
     private static final String ENTRY = "entry";
+    private static final int AUTO_CLOSE_NUM_DAYS = 8;
 
+    @Autowired
+    private ContentControl contentControl;
     String idSubCategoria = "";
-    final ContentControl contentControl;
     private String idPadre = "";
     @Value("${protocolo}")
     private String protocolo = "";
@@ -97,11 +100,6 @@ public class RecordServices implements IRecordServices {
     private Map<String, String> propiedades = new HashMap<>();
     private Map<String, String> codigosSubseries = new HashMap<>();
     private Map<String, Object> disposicion = new HashMap<>();
-
-    @Autowired
-    public RecordServices(ContentControl contentControl) {
-        this.contentControl = contentControl;
-    }
 
     /**
      * Permite crear la estructura en record a partir de la informacion enviada de instrumento
@@ -188,98 +186,103 @@ public class RecordServices implements IRecordServices {
     }
 
     /**
-     * Metodo para cerrar una unidad documental
+     * Metodo para abrir/cerrar una unidad documental
      *
      * @param idUnidadDocumental Id Unidad Documental
+     * @param accionUsuario      accion a realizar
      * @return MensajeRespuesta
      */
     @Override
-    public MensajeRespuesta cerrarUnidadDocumental(final String idUnidadDocumental) throws BusinessException, SystemException {
+    public MensajeRespuesta abrirCerrarReactivarUnidadDocumental(final String idUnidadDocumental, AccionUsuario accionUsuario) throws BusinessException, SystemException {
         log.info("Ejecutando MensajeRespuesta cerrarUnidadDocumental(String idUnidadDocumental)");
 
         final MensajeRespuesta respuesta = new MensajeRespuesta();
-        final Conexion conexion = contentControl.obtenerConexion();
-        final UnidadDocumentalDTO unidadDocumentalDTO = contentControl.
-                buscarUnidadDocumentalPorId(idUnidadDocumental, conexion.getSession());
-        if (!unidadDocumentalDTO.getCerrada()) {
-            Folder udRecordFolder = obtenerRecordFolder(idUnidadDocumental);
-            String idRecordFolder;
-            if (!ObjectUtils.isEmpty(udRecordFolder)) {
-                idRecordFolder = udRecordFolder.getId();
-            }else {
-
-                EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
-                entradaRecordDTO.setSede(unidadDocumentalDTO.getCodigoSede());
-                entradaRecordDTO.setDependencia(unidadDocumentalDTO.getCodigoDependencia());
-                entradaRecordDTO.setSerie(unidadDocumentalDTO.getCodigoSerie());
-                entradaRecordDTO.setSubSerie(unidadDocumentalDTO.getCodigoSubSerie());
-                entradaRecordDTO.setNombreCarpeta(unidadDocumentalDTO.getNombreUnidadDocumental());
-                MensajeRespuesta mensajeRespuestaAux = crearCarpetaRecord(entradaRecordDTO);
-                idRecordFolder = (String) mensajeRespuestaAux.getResponse().get("idUnidadDocumental");
-            }
-            for (DocumentoDTO documentoDTO : unidadDocumentalDTO.getListaDocumentos()) {
-                //Se declara el record
-                declararRecord(documentoDTO.getIdDocumento());
-                //Se completa el record
-                completeRecord(documentoDTO.getIdDocumento());
-                //Se archiva el record
-                fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
-            }
-            if (abrirCerrarRecordFolder(idRecordFolder, true)) {
-                final Folder unidadDocumentalFolder = contentControl.
-                        getUnidadDocumentalFolder(idUnidadDocumental, conexion.getSession());
-                Map<String, Object> map = new HashMap<>();
-                map.put("cmcor:cerrada", true);
-                unidadDocumentalFolder.updateProperties(map);
-                respuesta.setCodMensaje("0000");
-                respuesta.setMensaje("OK");
-                return respuesta;
-            }
-            respuesta.setMensaje("Ocurrio un error del Sistema");
-            respuesta.setCodMensaje("0006");
-            return respuesta;
-        }
-        respuesta.setMensaje("La unidad doumental ya se encuentra cerrada");
-        respuesta.setCodMensaje("0006");
-        return respuesta;
-    }
-
-    @Override
-    public MensajeRespuesta abrirUnidadDocumental(String idUnidadDocumental) throws BusinessException, SystemException {
-        final MensajeRespuesta respuesta = new MensajeRespuesta();
-        final Conexion conexion = contentControl.obtenerConexion();
-        final UnidadDocumentalDTO unidadDocumentalDTO = contentControl.
-                buscarUnidadDocumentalPorId(idUnidadDocumental, conexion.getSession());
-        if (unidadDocumentalDTO.getCerrada()) {
-            Folder udRecordFolder = obtenerRecordFolder(idUnidadDocumental);
-            if (!ObjectUtils.isEmpty(udRecordFolder) && abrirCerrarRecordFolder(udRecordFolder.getId(), false)) {
-                final Folder unidadDocumentalFolder = contentControl.
-                        getUnidadDocumentalFolder(idUnidadDocumental, conexion.getSession());
-                Map<String, Object> map = new HashMap<>();
-                map.put("cmcor:cerrada", false);
-                unidadDocumentalFolder.updateProperties(map);
-                respuesta.setCodMensaje("0000");
-                respuesta.setMensaje("OK");
-                return respuesta;
-            }
-        }
-        respuesta.setMensaje("La unidad doumental ya se encuentra abierta");
-        respuesta.setCodMensaje("0006");
-        return respuesta;
-    }
-
-    @Override
-    public MensajeRespuesta reactivarUnidadDocumental(String idUnidadDocumental) {
-        final MensajeRespuesta respuesta = new MensajeRespuesta();
+        respuesta.setMensaje("Success");
         respuesta.setCodMensaje("0000");
-        respuesta.setMensaje("OK");
-        return null;
+
+        switch (accionUsuario) {
+            case ABRIR:
+                if (!esUnidadDocumentalAbierta(idUnidadDocumental)) {
+                    respuesta.setCodMensaje("0006");
+                    respuesta.setMensaje("Ocurrio un error al abrir la unidad documental");
+                }
+                break;
+            case CERRAR:
+                if (!esUnidadDocumentalCerrada(idUnidadDocumental)) {
+                    respuesta.setCodMensaje("0006");
+                    respuesta.setMensaje("Ocurrio un error al cerrar la unidad documental");
+                }
+                break;
+            case REACTIVAR:
+                if (!esUnidadDocumentalReactivada(idUnidadDocumental)) {
+                    respuesta.setCodMensaje("0006");
+                    respuesta.setMensaje("Ocurrio un error al reactivar la unidad documental");
+                }
+                break;
+        }
+        return respuesta;
     }
 
-    private Folder obtenerRecordFolder(String idUnidadDocumental) throws BusinessException {
+    private boolean esUnidadDocumentalReactivada(String idUnidadDocumental) throws SystemException, BusinessException {
+
+        esUnidadDocumentalAbierta(idUnidadDocumental);
+
+        final Folder recordFolder = obtenerRecordFolder(idUnidadDocumental);
+        final Folder contentFolder = contentControl.getUDFolderById(idUnidadDocumental,
+                contentControl.obtenerConexion().getSession());
+
+        if (recordFolder != null && contentFolder != null) {
+            final ItemIterable<CmisObject> children = recordFolder.getChildren();
+
+            children.forEach(cmisObject -> {
+                if (cmisObject.getBaseTypeId() == BaseTypeId.CMIS_DOCUMENT &&
+                        cmisObject.getType().getId().startsWith("D:cmcor")) {
+                    Document document = (Document) cmisObject;
+                    ContentStream contentStream = document.getContentStream();
+                    eliminarObjECM(BaseTypeId.CMIS_DOCUMENT, document.getId().split(";")[0]);
+                    contentFolder.createDocument(contentControl.obtenerPropiedadesDocumento(document), contentStream, VersioningState.MAJOR);
+                }
+            });
+            return eliminarObjECM(BaseTypeId.CMIS_FOLDER, recordFolder.getId());
+        }
+        return false;
+    }
+
+    /**
+     * Metodo para abrir/cerrar una unidad documental
+     *
+     * @param unidadDocumentalDTOS Lista de Unidad Documental
+     * @param accionUsuario        Accion a realizar
+     * @return MensajeRespuesta
+     */
+    @Override
+    public MensajeRespuesta abrirCerrarReactivarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, AccionUsuario accionUsuario) throws SystemException, BusinessException {
+        log.info("Ejecutando MensajeRespuesta abrirCerrarReactivarUnidadesDocumentales(List<UnidadDocumentalDTO>, AccionUsuario)");
+        for (UnidadDocumentalDTO dto :
+                unidadDocumentalDTOS) {
+            switch (accionUsuario) {
+                case ABRIR:
+                    esUnidadDocumentalAbierta(dto.getId());
+                    break;
+                case CERRAR:
+                    esUnidadDocumentalCerrada(dto.getId());
+                    break;
+                case REACTIVAR:
+                    esUnidadDocumentalReactivada(dto.getId());
+                    break;
+            }
+        }
+        final MensajeRespuesta respuesta = new MensajeRespuesta();
+        respuesta.setMensaje("Success");
+        respuesta.setCodMensaje("0000");
+        return respuesta;
+    }
+
+    @Override
+    public Folder obtenerRecordFolder(String idUnidadDocumental) throws BusinessException {
         final Conexion conexion = contentControl.obtenerConexion();
         final UnidadDocumentalDTO unidadDocumentalDTO = contentControl.
-                buscarUnidadDocumentalPorId(idUnidadDocumental, conexion.getSession());
+                findUDById(idUnidadDocumental, conexion.getSession());
         Folder obtenerRecordCategory = obtenerRecordCategory(unidadDocumentalDTO, conexion.getSession());
         if (!ObjectUtils.isEmpty(obtenerRecordCategory)) {
             final ItemIterable<CmisObject> children = obtenerRecordCategory.getChildren();
@@ -300,38 +303,21 @@ public class RecordServices implements IRecordServices {
     /**
      * Permite Abrir/Cerrar Record Folder
      *
-     * @param action Valor boolenao para abrir cerrar la unidad documental
+     * @param documentalDTO abrir cerrar la unidad documental
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    private boolean abrirCerrarRecordFolder(String idRecordFolder, boolean action) throws SystemException {
-        log.info("Se entra al metodo abrirCerrarRecordFolder para cerrar la unidad documental con id: {}", idRecordFolder);
+    private boolean closeOrOpenUnidadDocumentalRecord(UnidadDocumentalDTO documentalDTO) throws SystemException {
+        log.info("Se entra al metodo closeOrOpenUnidadDocumentalRecord para cerrar la unidad documental con id: {}", documentalDTO.getId());
         try {
-
-            JSONObject properties = new JSONObject();
-            Map<String, Object> nombreMap = new HashMap<>();
-            nombreMap.put("rma:isClosed", action); // Añade un elemento al Mapç
-            properties.put("properties", nombreMap);
-
-            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-            Response response = wt.path("/record-folders/" + idRecordFolder)
-                    .request()
-                    .header(headerAuthorization, valueAuthorization + " " + encoding)
-                    .header(headerAccept, valueApplicationType)
-                    .put(Entity.json(properties.toString()));
-
+            Response response = modificarRecordFolder(documentalDTO);
             if (response.getStatus() != HttpURLConnection.HTTP_OK) {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
                         .buildBusinessException();
             }
+            return true;
 
-        } catch (BusinessException e) {
-            log.error(e.getMessage());
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage(e.getMessage())
-                    .withRootException(e)
-                    .buildSystemException();
         } catch (Exception ex) {
             log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
@@ -341,7 +327,77 @@ public class RecordServices implements IRecordServices {
         } finally {
             log.info("fin - Abrir o cerrar el record folder ");
         }
-        return true;
+    }
+
+    private Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
+
+        JSONObject properties = new JSONObject();
+        Map<String, Object> nombreMap = new HashMap<>();
+        nombreMap.put("rma:isClosed", documentalDTO.getCerrada());
+
+        properties.put("properties", nombreMap);
+
+        WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        return wt.path("/record-folders/" + documentalDTO.getId())
+                .request()
+                .header(headerAuthorization, valueAuthorization + " " + encoding)
+                .header(headerAccept, valueApplicationType)
+                .put(Entity.json(properties.toString()));
+    }
+
+    private synchronized boolean esUnidadDocumentalAbierta(String idUnidadDocumental) throws BusinessException, SystemException {
+
+        final Folder udRecordFolder = obtenerRecordFolder(idUnidadDocumental);
+        if (!ObjectUtils.isEmpty(udRecordFolder)) {
+            final Calendar currentDay = GregorianCalendar.getInstance();
+            final UnidadDocumentalDTO documentalDTO = new UnidadDocumentalDTO();
+            documentalDTO.setId(udRecordFolder.getId());
+            documentalDTO.setCerrada(false);
+            documentalDTO.setInactivo(false);
+            documentalDTO.setFechaAutoCierre(Utilities.sumarDiasAFecha(currentDay, AUTO_CLOSE_NUM_DAYS));
+
+            boolean actionRecord = closeOrOpenUnidadDocumentalRecord(documentalDTO);
+            documentalDTO.setId(idUnidadDocumental);
+            return actionRecord && closeOrOpenUnidadDocumntalContent(documentalDTO);
+        }
+        return false;
+    }
+
+    private synchronized boolean esUnidadDocumentalCerrada(String idUnidadDocumental) throws BusinessException, SystemException {
+
+        final Conexion conexion = contentControl.obtenerConexion();
+        final UnidadDocumentalDTO unidadDocumentalDTO = contentControl.
+                listarDocsDadoIdUD(idUnidadDocumental, conexion.getSession());
+
+        if (!ObjectUtils.isEmpty(unidadDocumentalDTO)) {
+
+            Folder udRecordFolder = obtenerRecordFolder(idUnidadDocumental);
+
+            String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
+                    udRecordFolder.getId() : createAndRetrieveId(unidadDocumentalDTO);
+
+            for (DocumentoDTO documentoDTO : unidadDocumentalDTO.getListaDocumentos()) {
+                //Se declara el record
+                String s = declararRecord(documentoDTO.getIdDocumento());
+                log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
+                //Se completa el record
+                String s1 = completeRecord(documentoDTO.getIdDocumento());
+                log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
+                //Se archiva el record
+                String s2 = fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
+                log.info("Archivando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s2);
+            }
+
+            UnidadDocumentalDTO dto = new UnidadDocumentalDTO();
+            dto.setId(idRecordFolder);
+            dto.setCerrada(true);
+            dto.setInactivo(true);
+            boolean isUDRecordClosed = closeOrOpenUnidadDocumentalRecord(dto);
+            dto.setId(idUnidadDocumental);
+            dto.setFechaAutoCierre(GregorianCalendar.getInstance());
+            return isUDRecordClosed && closeOrOpenUnidadDocumntalContent(dto);
+        }
+        return false;
     }
 
     /**
@@ -351,7 +407,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    public String completeRecord(String idRecord) throws SystemException {
+    private String completeRecord(String idRecord) throws SystemException {
         log.info("Se entra al metodo completeRecord para el record de id: {}", idRecord);
         try {
             if (!idRecord.isEmpty()) {
@@ -387,7 +443,6 @@ public class RecordServices implements IRecordServices {
         } finally {
             log.info("fin - Completar record ");
         }
-
     }
 
     /**
@@ -398,7 +453,7 @@ public class RecordServices implements IRecordServices {
      * @return identificador de la subserie creada
      * @throws SystemException SystemException
      */
-    public String fileRecord(String idRecord, String idRecordFolder) throws SystemException {
+    private String fileRecord(String idRecord, String idRecordFolder) throws SystemException {
         log.info("Se entra al metodo fileRecord para archivar el documento de id: {}", idRecord);
         try {
             JSONObject recordFolder = new JSONObject();
@@ -435,7 +490,6 @@ public class RecordServices implements IRecordServices {
         } finally {
             log.info("fin - Guardar record en su record folder ");
         }
-
     }
 
     /**
@@ -640,7 +694,24 @@ public class RecordServices implements IRecordServices {
         } finally {
             log.info("fin - crear categoria padre ");
         }
+    }
 
+    private String createAndRetrieveId(UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
+        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
+        entradaRecordDTO.setSede(unidadDocumentalDTO.getCodigoSede());
+        entradaRecordDTO.setDependencia(unidadDocumentalDTO.getCodigoDependencia());
+        entradaRecordDTO.setSerie(unidadDocumentalDTO.getCodigoSerie());
+        entradaRecordDTO.setSubSerie(unidadDocumentalDTO.getCodigoSubSerie());
+        entradaRecordDTO.setNombreCarpeta(unidadDocumentalDTO.getNombreUnidadDocumental());
+        MensajeRespuesta mensajeRespuestaAux = crearCarpetaRecord(entradaRecordDTO);
+        return (String) mensajeRespuestaAux.getResponse().get("idUnidadDocumental");
+    }
+
+    private boolean closeOrOpenUnidadDocumntalContent(UnidadDocumentalDTO documentalDTO) throws BusinessException {
+
+        final Conexion conexion = contentControl.obtenerConexion();
+
+        return contentControl.actualizarUnidadDocumental(documentalDTO, conexion.getSession());
     }
 
     /**
@@ -866,10 +937,7 @@ public class RecordServices implements IRecordServices {
         } else {
             idSerie = crearNodo(serie, idSubCategoria);
         }
-
-
         return idSerie;
-
     }
 
     /**
@@ -955,4 +1023,14 @@ public class RecordServices implements IRecordServices {
         return nodoId;
     }
 
+    private boolean eliminarObjECM(BaseTypeId type, String id) {
+        final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? "/records/" : "/record-folders/") + id;
+        WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+        Response response = wt.path(path)
+                .request()
+                .header(headerAuthorization, valueAuthorization + " " + encoding)
+                .header(headerAccept, valueApplicationType)
+                .delete();
+        return response.getStatus() == HttpURLConnection.HTTP_NO_CONTENT;
+    }
 }

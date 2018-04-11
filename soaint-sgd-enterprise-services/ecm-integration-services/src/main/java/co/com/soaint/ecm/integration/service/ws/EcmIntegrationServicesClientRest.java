@@ -117,6 +117,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
         }
+
     }
 
     /**
@@ -175,7 +176,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -194,7 +194,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Modificar Documento ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -291,7 +290,6 @@ public class EcmIntegrationServicesClientRest {
             throw e;
         }
     }
-
 
     /**
      * Operacion para devolver series o subseries
@@ -409,6 +407,52 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.detallesUnidadDocumental(idUnidadDocumental);
         } catch (Exception e) {
             logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTO            Documento a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @POST
+    @Path("/subirDocumentoUnidadDocumentalECM/")
+    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO,
+                                                              @RequestBody DocumentoDTO documentoDTO) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        try {
+            return fEcmManager.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO);
+        } catch (Exception e) {
+            logger.error("Error en operacion - subirDocumentoUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTOS           Lista de documentos a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @POST
+    @Path("/subirDocumentosUnidadDocumentalECM/")
+    public MensajeRespuesta subirDocumentosUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO,
+                                                               @RequestBody List<DocumentoDTO> documentoDTOS) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTOS)");
+        try {
+            return fEcmManager.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS);
+        } catch (Exception e) {
+            logger.error("Error en operacion - subirDocumentosUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());

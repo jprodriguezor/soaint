@@ -4,18 +4,21 @@ import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Creado por Dasiel
  */
 @Service
-public interface ContentControl {
+public interface ContentControl extends Serializable {
 
     // Class Properties ECM
     String CLASE_BASE = "claseBase";
@@ -48,6 +51,7 @@ public interface ContentControl {
     String CMCOR_UD_DESCRIPTOR_1 = "cmcor:descriptor1";
     String CMCOR_UD_CERRADA = "cmcor:cerrada";
     String CMCOR_UD_OBSERVACIONES = "cmcor:observaciones";
+    String CMCOR_UD_FECHA_AUTO_CIERRE = "cmcor:fechaAutoCierre";
 
     //cmcor:CM_Unidad_Base
     String CMCOR_UB_CODIGO = "cmcor:CodigoBase";
@@ -254,19 +258,67 @@ public interface ContentControl {
     /**
      * Metodo que busca una Unidad Documental en el ECM
      *
-     * @param idUnidadDocumental Id Documento
+     * @param idUnidadDocumental Id de la Unidad Documental
      * @param session            Objeto conexion de Alfresco
-     * @return UnidadDocumentalDTO si existe null si no existe
+     * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    UnidadDocumentalDTO buscarUnidadDocumentalPorId(String idUnidadDocumental, Session session) throws BusinessException;
+    UnidadDocumentalDTO findUDById(String idUnidadDocumental, Session session) throws BusinessException;
 
     /**
      * Metodo que devuelve una Unidad Documental con sus Documentos
      *
      * @param idUnidadDocumental Id Unidad Documental
-     * @return UnidadDocumentalDTO      Unidad Documntal
+     * @return UnidadDocumentalDTO      Unidad Documental
      */
     UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException;
 
-    Folder getUnidadDocumentalFolder(String idUnidadDocumental, Session session) throws BusinessException;
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idProperty Id de la Unidad Documental
+     * @param session    Objeto conexion de Alfresco
+     * @return Folder si existe, null si no existe
+     */
+    Folder getUDFolderById(String idProperty, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param session             Objeto conexion de Alfresco
+     * @return boolean true/false
+     */
+    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param folder Obj ECm
+     * @return List<DocumentoDTO> Lista de los documentos de la carpeta
+     */
+    List<DocumentoDTO> getDocumentsFromFolder(Folder folder);
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param documentoDTOS       Lista de documentos a guardar
+     * @param session             Obj conexion de alfresco
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS, Session session);
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param documentoDTO        Documento a guardar
+     * @param session             Obj conexion de alfresco
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO, Session session);
+
+    void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
+
+    Map<String, Object> obtenerPropiedadesDocumento(Document document);
 }
