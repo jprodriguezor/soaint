@@ -49,6 +49,9 @@ import java.util.List;
         @NamedQuery(name = "Funcionarios.consultarCredencialesByIdeFunci", query = "SELECT f.credenciales " +
                 "FROM Funcionarios f " +
                 "WHERE f.ideFunci = :IDE_FUNCI"),
+        @NamedQuery(name = "Funcionarios.existFuncionarioByIdeFunci", query = "SELECT count(*)" +
+                "FROM Funcionarios f " +
+                "WHERE f.ideFunci = :IDE_FUNCI"),
         @NamedQuery(name = "Funcionarios.consultarLoginNameByIdeFunci", query = "SELECT f.loginName " +
                 "FROM Funcionarios f " +
                 "WHERE f.ideFunci = :IDE_FUNCI"),
