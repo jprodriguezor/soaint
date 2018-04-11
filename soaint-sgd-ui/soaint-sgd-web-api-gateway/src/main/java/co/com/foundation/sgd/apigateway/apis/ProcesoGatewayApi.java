@@ -83,7 +83,7 @@ public class ProcesoGatewayApi {
 
         log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
         Response response = procesoClient.listarTareas(entrada);
-        log.info(response);
+        log.info("Listar tareas" +" ******->" + response);
         List<RespuestaTareaDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
         });
 
