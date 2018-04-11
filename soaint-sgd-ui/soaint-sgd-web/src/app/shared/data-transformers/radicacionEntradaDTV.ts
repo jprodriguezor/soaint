@@ -76,9 +76,9 @@ export class RadicacionEntradaDTV {
     this.source.datosContactoList.forEach(contacto => {
     const direccion: DireccionDTO = this.GetDireccion(contacto);
     contactos.push({
-        tipoVia: {codigo: contacto.codTipoVia},
+        tipoVia: (direccion) ? direccion.tipoVia : null,
         noViaPrincipal: contacto.nroViaGeneradora,
-        prefijoCuadrante: {codigo: contacto.codPrefijoCuadrant},
+        prefijoCuadrante: (direccion) ? direccion.prefijoCuadrante : null,
         bis: (direccion) ? direccion.bis : null,
         orientacion: (direccion) ? direccion.orientacion : null,
         direccion: this.GetDireccionText(contacto),
