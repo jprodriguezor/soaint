@@ -37,6 +37,9 @@ import {
 } from '../../../../../shared/bussiness-properties/radicacion-properties';
 import {Observable} from "rxjs/Observable";
 import {ViewFilterHook} from "../../../../../shared/ViewHooksHelper";
+import { ComunicacionOficialDTO } from '../../../../../domain/comunicacionOficialDTO';
+import { ComunicacionOficialEntradaDTV } from '../../../../../shared/data-transformers/comunicacionOficialEntradaDTV';
+import { DireccionDTO } from '../../../../../domain/DireccionDTO';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -276,7 +279,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
               numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
               celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
               correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-              direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
+              direccion: isNullOrUndefined(contact.direccion) ? '' : this.GetDireccionText(contact),
               direccionAdicional:{
                 noViaPrincipal:contact.nroViaGeneradora,
                 placa:contact.nroPlaca,
@@ -373,6 +376,55 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
       });*/
 
   }
+
+
+  GetDireccionText(contact): string {
+    let direccion: DireccionDTO  = {};
+    let direccionText = '';
+    try {
+      direccion =  JSON.parse(contact.direccion);
+    } catch (e) {
+      return direccionText;
+    }
+    if (direccion) {
+      if (direccion.tipoVia) {
+        direccionText += direccion.tipoVia.nombre;
+      }
+      if (direccion.noViaPrincipal) {
+        direccionText += ' ' + direccion.noViaPrincipal;
+      }
+      if (direccion.prefijoCuadrante) {
+        direccionText += ' ' + direccion.prefijoCuadrante.nombre;
+      }
+      if (direccion.bis) {
+        direccionText += ' ' + direccion.bis.nombre;
+      }
+      if (direccion.orientacion) {
+        direccionText += ' ' + direccion.orientacion.nombre;
+      }
+      if (direccion.noVia) {
+        direccionText += ' ' + direccion.noVia;
+      }
+      if (direccion.prefijoCuadrante_se) {
+        direccionText += ' ' + direccion.prefijoCuadrante_se.nombre;
+      }
+      if (direccion.placa) {
+        direccionText += ' ' + direccion.placa;
+      }
+      if (direccion.orientacion_se) {
+        direccionText += ' ' + direccion.orientacion_se.nombre;
+      }
+      if (direccion.complementoTipo) {
+        direccionText += ' ' + direccion.complementoTipo.nombre;
+      }
+      if (direccion.complementoAdicional) {
+        direccionText += ' ' + direccion.complementoAdicional;
+      }
+
+    }
+    return direccionText;
+  }
+
 
   seachTipoDestinatario(indOriginal) {
     let result = null;
