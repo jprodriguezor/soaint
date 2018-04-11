@@ -103,6 +103,10 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     });
   }
 
+  EsTareaActiva() {
+    return (this.task);
+  }
+
   abort() {
     this._taskSandBox.abortTaskDispatch({
       idProceso: this.task.idProceso,
@@ -181,7 +185,6 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
       parametros: {
       }
     });
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
   GetComunicacionPayload(): any {
