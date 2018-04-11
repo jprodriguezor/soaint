@@ -257,7 +257,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           console.log(versiones);
           this.listaVersionesDocumento = [...versiones];
           console.log(this.listaVersionesDocumento);
-          this.form.get('tipoPlantilla').reset();
+        //  this.form.get('tipoPlantilla').reset();
           this.resetCurrentVersion();
           this.messagingService.publish(new DocumentUploaded(docEcmResp));
         } else {

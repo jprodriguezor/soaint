@@ -295,16 +295,22 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     }
 
     hasAprobador() {
-        return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
+
+       return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
     }
 
 
 
     isValid(): boolean {
        let valid = true;
-       valid = valid && this.datosGenerales.isValid();
 
-       return valid;
+      let rules:boolean[] = [
+        valid && this.datosGenerales.isValid(),
+        this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+      ];
+
+
+      return rules.every( condition => condition);
     }
 
     ngOnDestroy(): void {
