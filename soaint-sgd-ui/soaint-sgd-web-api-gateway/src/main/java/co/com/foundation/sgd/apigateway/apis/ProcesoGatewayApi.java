@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.lang.Exception;
 
 @Path("/proceso-gateway-api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -80,21 +81,26 @@ public class ProcesoGatewayApi {
     @Path("/tareas/listar/estados")
     @JWTTokenSecurity
     public Response listTareas(EntradaProcesoDTO entrada) {
+        try {
+            log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
+            Response response = procesoClient.listarTareas(entrada);
+            
+            List<RespuestaTareaDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
+            });
+            log.info("=======================");
+            log.info(responseContent);
+            List<RespuestaTareaDTO> result = responseContent
+                    .stream()
+                    .filter((tarea) -> tarea.getCodigoDependencia().equals(entrada.getParametros().get("codDependencia")))
+                    .collect(Collectors.toList());
+    
+            log.info(CONTENT + responseContent);
+            return Response.status(response.getStatus()).entity(result).build();
 
-        log.info("ProcesoGatewayApi - [trafic] - listing Tasks");
-        Response response = procesoClient.listarTareas(entrada);
-        log.info("Listar tareas" +" ******->" + response);
-        List<RespuestaTareaDTO> responseContent = response.readEntity(new GenericType<List<RespuestaTareaDTO>>() {
-        });
-
-        List<RespuestaTareaDTO> result = responseContent
-                .stream()
-                .filter((tarea) -> tarea.getCodigoDependencia().equals(entrada.getParametros().get("codDependencia")))
-                .collect(Collectors.toList());
-
-        log.info(CONTENT + responseContent);
-
-        return Response.status(response.getStatus()).entity(result).build();
+        } catch (Exception ex) {
+            log.info(ex.getMessage());
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
