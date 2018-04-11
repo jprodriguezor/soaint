@@ -29,9 +29,9 @@ export class DatosRemitenteStateService {
     visibility: any = {};
     display = false;
 
-    tipoPersonaSuggestions: ConstanteDTO[];
 
     // Observables
+    tipoPersonaSuggestions$: Observable<ConstanteDTO[]>;
     tipoDocumentoSuggestions$: Observable<ConstanteDTO[]>;
     actuaCalidadSuggestions$: Observable<ConstanteDTO[]>;
     sedeAdministrativaSuggestions$: Observable<ConstanteDTO[]>;
@@ -39,7 +39,7 @@ export class DatosRemitenteStateService {
     // Listas de subscripcion
     contacts: Array<any> = [];
     dependenciasGrupoList: Array<any> = [];
-    subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
+    subscriptionTipoDocumentoPersona = [];
     subscribers: Array<Subscription> = [];
 
     disabled = true;
@@ -60,10 +60,7 @@ export class DatosRemitenteStateService {
     }
 
     initLoadTipoComunicacionExterna(): void {
-      this.constanteService.Listar({key: 'tipoPersona'})
-      .subscribe(result => {
-          this.tipoPersonaSuggestions = result;
-      });
+      this.tipoPersonaSuggestions$ = this.constanteService.Listar({key: 'tipoPersona'});
       this.tipoDocumentoSuggestions$ = this._store.select(getTipoDocumentoArrayData);
       this.actuaCalidadSuggestions$ = this._store.select(getActuaCalidadArrayData);
     }
@@ -74,16 +71,19 @@ export class DatosRemitenteStateService {
 
     initForm(): void {
         this.form = this.formBuilder.group({
-            'tipoPersona': [{value: {codigo: 'TP-PERA', nombre: 'Anónimo', codPadre: 'TP-PER', id: 37}, disabled: !this.disabled}, Validators.required],
+            'tipoPersona': [{value: this.dataform.tipoPersona.codigo, disabled: !this.disabled}, Validators.required],
             'nit': [{value: this.dataform.nit, disabled: !this.disabled}],
-            'actuaCalidad': [{value: this.dataform.actuaCalidad, disabled: !this.disabled}],
-            'tipoDocumento': [{value: this.dataform.tipoDocumento, disabled: !this.disabled}],
+            'actuaCalidad': [{value: this.dataform.actuaCalidad.codigo, disabled: !this.disabled}],
+            'tipoDocumento': [{value: null, disabled: !this.disabled}],
             'razonSocial': [{value: this.dataform.razonSocial, disabled: !this.disabled}, Validators.required],
             'nombreApellidos': [{value: this.dataform.nombreApellidos, disabled: !this.disabled}, Validators.required],
             'nroDocumentoIdentidad': [{value: this.dataform.nroDocumentoIdentidad, disabled: !this.disabled}],
             'sedeAdministrativa': [{value: this.dataform.sedeAdministrativa, disabled: !this.disabled}, Validators.required],
             'dependenciaGrupo': [{value: this.dataform.dependenciaGrupo, disabled: !this.disabled}, Validators.required],
         });
+        setTimeout(() => {
+          this.onSelectTipoPersona(this.dataform.tipoPersona.codigo);
+        }, 0);
     }
 
     listenForChanges() {
@@ -119,10 +119,10 @@ export class DatosRemitenteStateService {
         };
       }
 
-      if (value.codigo === PERSONA_ANONIMA) {
+      if (value === PERSONA_ANONIMA) {
         this.visibility['tipoPersona'] = true;
 
-      } else if (value.codigo === PERSONA_JURIDICA && this.tipoComunicacion === COMUNICACION_EXTERNA) {
+      } else if (value === PERSONA_JURIDICA && this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['nit'] = true;
         this.visibility['actuaCalidad'] = true;
         this.visibility['razonSocial'] = true;
@@ -132,20 +132,20 @@ export class DatosRemitenteStateService {
         this.visibility['tipoDocumento'] = true;
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
-        }).unsubscribe();
+          const tipoDocumento = this.subscriptionTipoDocumentoPersona.find(_item => _item.codigo === this.dataform.tipoDocumento.codigo);
+          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[tipoDocumento]);
+        });
         this.visibility['personaJuridica'] = true;
-      } else if (value.codigo === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
+      } else if (value === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['nombreApellidos'] = true;
         this.visibility['departamento'] = true;
         this.visibility['nroDocumentoIdentidad'] = true;
         this.visibility['datosContacto'] = true;
         this.visibility['tipoDocumento'] = true;
-
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
           this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
-        }).unsubscribe();
+        });
 
       }
     }

@@ -70,7 +70,7 @@ import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-de
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
-
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 
 @NgModule({
   imports: [
@@ -189,6 +189,7 @@ import { AlertComponent } from './ui/bussiness-components/notifications/alert/al
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,

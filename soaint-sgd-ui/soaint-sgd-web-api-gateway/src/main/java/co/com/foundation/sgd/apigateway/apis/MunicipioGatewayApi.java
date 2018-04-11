@@ -27,6 +27,18 @@ public class MunicipioGatewayApi {
     }
 
     @GET
+    @Path("/")
+    public Response listarMunicipiosActivos() {
+
+        log.info("MunicipioGatewayApi - [trafic] - listing municipios activos");
+        Response response = municipioClient.listarMunicipiosActivos();
+        String responseContent = response.readEntity(String.class);
+        log.info("MunicipioGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
     @Path("/{departamento}")
     @JWTTokenSecurity
     public Response list(@PathParam("departamento") String departamento) {
@@ -50,4 +62,6 @@ public class MunicipioGatewayApi {
 
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
+
+
 }

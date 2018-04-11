@@ -70,6 +70,14 @@ public class CorrespondenciaClient {
                 .get();
     }
 
+    public Response obtenerCorrespondenciaFullPorNroRadicado(String nroRadicado) {
+        log.info("Correspondencia - [trafic] - obtenet Correspondencia por nro de radicado with endpoint: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/full" + nroRadicado)
+                .request()
+                .get();
+    }
+
     public Response asignarComunicaciones(AsignacionTramiteDTO asignacionTramiteDTO) {
         log.info("Correspondencia - [trafic] - asignar Comunicaciones with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -213,8 +221,17 @@ public class CorrespondenciaClient {
     public Response actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) {
         log.info("Comunicacion - [trafic] - comunicacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/correspondencia-web-api/correspondencia")
+        return wt.path("/correspondencia-web-api/correspondencia/actualizar-comunicacion")
                 .request()
                 .put(Entity.json(comunicacionOficialDTO));
+    }
+
+
+    public Response listarAnexos(String nroRadicado) {
+        log.info("Comunicacion - [trafic] - listar anexos: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return  wt.path("correspondencia-web-api/anexo-web-api/anexo" +  "/" + nroRadicado)
+                .request()
+                .get();
     }
 }
