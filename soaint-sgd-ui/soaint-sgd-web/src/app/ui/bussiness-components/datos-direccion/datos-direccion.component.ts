@@ -1,5 +1,17 @@
 
-import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  AfterViewInit,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  ViewChildren, QueryList
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -27,6 +39,11 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {Dropdown} from "primeng/primeng";
+import {
+  DATOS_CONTACTO_PRINCIPAL,
+  DATOS_CONTACTO_SECUNDARIO
+} from "../../../shared/bussiness-properties/radicacion-properties";
 enum FormContextEnum {
   SAVE,
   CREATE
@@ -52,6 +69,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
+  @ViewChildren(Dropdown) dropdownsChilds: QueryList<Dropdown>;
+
+
 
   validations: any = {};
   visibility: any = {};
@@ -280,7 +300,19 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   saveDireccionData() {
+
+
+    /*const direccionKeys = ['tipoVia','noViaPrincipal','bis','orientacion','noVia','prefijoCuadrante_se','placa','orientacion_se','complementoTipo','complementoAdicional'];
+
+    let direccionJson = direccionKeys.reduce((acc,curr) => {
+      if(this.form.get(curr).value)
+        acc[curr] = this.form.get(curr);
+      return acc;
+    },{});*/
+
+
     let direccion = '';
+
     const tipoVia = this.form.get('tipoVia');
     const noViaPrincipal = this.form.get('noViaPrincipal');
     const prefijoCuadrante = this.form.get('prefijoCuadrante');
@@ -460,6 +492,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   ngAfterViewInit() {
     this.refreshView();
+
   }
 
   addColombiaByDefault() {
@@ -482,5 +515,53 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   refreshView() {
     this._changeDetectorRef.detectChanges();
+  }
+
+  toggleDireccionForm(checked:boolean){
+
+    if(!checked || this.formContext != FormContextEnum.SAVE)
+      return ;
+
+
+    let direccionData = this.contacts[this.editIndexContext].direccionAdicional;
+
+
+
+    if(isNullOrUndefined(direccionData))
+      return;
+
+    Object.keys(direccionData).forEach( key => {
+
+      if(isNullOrUndefined(direccionData[key]))
+        return;
+
+      let control = this.form.get(key);
+
+      if(key == "principal"){
+
+        control.setValue( direccionData[key] ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO);
+        return;
+
+      }
+
+      if(!isNullOrUndefined(direccionData[key].codigo)){
+
+        const options = this.dropdownsChilds
+          .find(d => d.inputId == key)
+          .options;
+
+        const valtoSelect = options.map( option => option.value).find( val =>  val.codigo == direccionData[key].codigo);
+
+
+        control.setValue(valtoSelect);
+
+        return;
+      }
+
+      control.setValue(direccionData[key]);
+
+    });
+
+
   }
 }

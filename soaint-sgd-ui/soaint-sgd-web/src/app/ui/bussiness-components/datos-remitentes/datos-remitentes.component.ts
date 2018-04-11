@@ -202,7 +202,7 @@ export class DatosRemitentesComponent implements OnInit,OnDestroy {
 
       if (!isNullOrUndefined(this.destinatarioDatosContactos)) {
         const newList1 = (!isNullOrUndefined(this.destinatario.datosContactoList) ? this.destinatario.datosContactoList : []);
-        const newList2 = this.transformToDestinatarioContacts(newList1);
+        const newList2 = this.transformToDestinatarioContacts(newList1);  console.log("datos contacto", newList2);
         this.destinatarioDatosContactos.contacts = [...newList2];
       }
 
@@ -210,9 +210,17 @@ export class DatosRemitentesComponent implements OnInit,OnDestroy {
   }
 
   transformToDestinatarioContacts(contacts) {
-    return contacts.map(c => {
-      return {direccion: isNullOrUndefined(c.direccion) ? '' : c.direccion, pais: isNullOrUndefined(c.pais) ? '' : c.pais, departamento: isNullOrUndefined(c.departamento) ? null : c.departamento, municipio: isNullOrUndefined(c.municipio) ? null : c.municipio,
-        numeroTel: isNullOrUndefined(c.numeroTel) ? '' : c.numeroTel, celular: isNullOrUndefined(c.celular) ? '' : c.celular, correoEle: isNullOrUndefined(c.correoEle) ? '' : c.correoEle}; });
+    return contacts.map(c => { console.log("datos contacto destinatario",c);
+      return {
+        direccion: isNullOrUndefined(c.direccion) ? '' : c.direccion,
+        pais: isNullOrUndefined(c.pais) ? '' : c.pais,
+        departamento: isNullOrUndefined(c.departamento) ? null : c.departamento,
+        municipio: isNullOrUndefined(c.municipio) ? null : c.municipio,
+        numeroTel: isNullOrUndefined(c.numeroTel) ? '' : c.numeroTel,
+        celular: isNullOrUndefined(c.celular) ? '' : c.celular,
+        correoEle: isNullOrUndefined(c.correoEle) ? '' : c.correoEle,
+        direccionAdicional:c.direccionAdicional
+      }; });
   }
 
   listenForChanges() {
