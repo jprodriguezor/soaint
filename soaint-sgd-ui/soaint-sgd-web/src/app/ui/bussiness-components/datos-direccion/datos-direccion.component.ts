@@ -1,5 +1,17 @@
 
-import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  AfterViewInit,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  ViewChildren, QueryList
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -27,6 +39,11 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {Dropdown} from "primeng/primeng";
+import {
+  DATOS_CONTACTO_PRINCIPAL,
+  DATOS_CONTACTO_SECUNDARIO
+} from "../../../shared/bussiness-properties/radicacion-properties";
 import { LocalizacionApiService } from '../../../infrastructure/api/localizacion.api';
 enum FormContextEnum {
   SAVE,
@@ -53,6 +70,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
+  @ViewChildren(Dropdown) dropdownsChilds: QueryList<Dropdown>;
+
+
 
   validations: any = {};
   visibility: any = {};
@@ -123,7 +143,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.loadComponent.emit(this);
 
     // para el caso de lista con datos incompletos
-    if (this.contactsDefault) {
+    if (this.contactsDefault && this.contactsDefault.length > 0) {
+
+      console.log("contact default",this.contactsDefault);
+
       this.CompletarDatosContacto();
     }
 
@@ -441,7 +464,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
           summary: 'Recuerde que únicamente puede existir una dirección principal'
         }));
 
-      } else {
+      }else {
         if (this.formContext === FormContextEnum.CREATE) {
           this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
         } else {
@@ -493,21 +516,78 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this._changeDetectorRef.detectChanges();
   }
 
+  toggleDireccionForm(checked:boolean){
+
+    if(!checked || this.formContext != FormContextEnum.SAVE)
+      return ;
+
+
+    let direccionData = this.contacts[this.editIndexContext].direccionAdicional;
+
+
+
+    if(isNullOrUndefined(direccionData))
+      return;
+
+    Object.keys(direccionData).forEach( key => {
+
+      if(isNullOrUndefined(direccionData[key]))
+        return;
+
+      let control = this.form.get(key);
+
+      if(key == "principal"){
+
+        control.setValue( direccionData[key] ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO);
+        return;
+
+      }
+
+      if(!isNullOrUndefined(direccionData[key].codigo)){
+
+        const options = this.dropdownsChilds
+          .find(d => d.inputId == key)
+          .options;
+
+        const valtoSelect = options.map( option => option.value).find( val =>  val.codigo == direccionData[key].codigo);
+
+
+        control.setValue(valtoSelect);
+
+        return;
+      }
+
+      control.setValue(direccionData[key]);
+
+    });
+
+
+  }
+
   CompletarDatosContacto() {
 
-    this._localizacionService.ListarMunicipiosActivos({})
+
+
+ this._localizacionService.ListarMunicipiosActivos({})
+
     .subscribe((result: any) => {
-      this.contacts = this.contacts
+
+       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
         if (result) {
-          const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-          if (municipio) {
-            const departamento = municipio.departamento;
-            const pais = departamento.pais;
-            _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-            _contact.pais.nombre = (pais) ? pais.nombre : '';
-            _listado.push(_contact);
+          if(!isNullOrUndefined(_contact.municipio)) {
+            const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+            if (municipio) {
+              const departamento = municipio.departamento;
+              const pais = departamento.pais;
+              if (!isNullOrUndefined(_contact.municipio) )
+                _contact.municipio.nombre = _contact.municipio.nombre ?  _contact.municipio.nombre : (municipio) ? municipio.nombre : '';
+              if (!isNullOrUndefined(_contact.departamento) )
+                _contact.departamento.nombre =_contact.departamento.nombre ? _contact.departamento.nombre : (departamento) ? departamento.nombre : '';
+              if (!isNullOrUndefined(_contact.pais) )
+                _contact.pais.nombre =  _contact.pais.nombre ? _contact.pais.nombre : (pais) ? pais.nombre : '';
+              _listado.push(_contact);
+            }
           }
           return _listado;
         } else {
