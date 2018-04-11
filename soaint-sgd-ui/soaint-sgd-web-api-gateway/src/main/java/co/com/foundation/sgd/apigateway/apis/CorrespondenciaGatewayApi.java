@@ -399,7 +399,7 @@ public class CorrespondenciaGatewayApi {
 
     @PUT
     @Path("/actualizar-comunicacion")
-    // @JWTTokenSecurity
+    @JWTTokenSecurity
     public Response actualizarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
 
         log.info("CorrespondenciaGatewayApi - [trafic] - comunicacion");
