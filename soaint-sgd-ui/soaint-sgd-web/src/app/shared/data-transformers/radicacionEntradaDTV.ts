@@ -9,6 +9,7 @@ import {
   TIPO_AGENTE_DESTINATARIO, COMUNICACION_INTERNA
 } from '../bussiness-properties/radicacion-properties';
 import {AnexoDTO} from '../../domain/anexoDTO';
+import { DireccionDTO } from '../../domain/DireccionDTO';
 
 export class RadicacionEntradaDTV {
 
@@ -73,19 +74,20 @@ export class RadicacionEntradaDTV {
   getDatosContactoFormList() {
     const contactos = [];
     this.source.datosContactoList.forEach(contacto => {
-      contactos.push({
+    const direccion: DireccionDTO = this.GetDireccion(contacto);
+    contactos.push({
         tipoVia: {codigo: contacto.codTipoVia},
         noViaPrincipal: contacto.nroViaGeneradora,
         prefijoCuadrante: {codigo: contacto.codPrefijoCuadrant},
-        bis: null,
-        orientacion: null,
-        direccion: contacto.direccion,
-        noVia: null,
-        prefijoCuadrante_se: null,
+        bis: (direccion) ? direccion.bis : null,
+        orientacion: (direccion) ? direccion.orientacion : null,
+        direccion: this.GetDireccionText(contacto),
+        noVia: (direccion) ? direccion.noVia : null,
+        prefijoCuadrante_se: (direccion) ? direccion.prefijoCuadrante_se : null,
         placa: contacto.nroPlaca,
-        orientacion_se: null,
-        complementoTipo: null,
-        complementoAdicional: null,
+        orientacion_se: (direccion) ? direccion.orientacion_se : null,
+        complementoTipo: (direccion) ? direccion.complementoTipo : null,
+        complementoAdicional: (direccion) ? direccion.complementoAdicional : null,
         celular: contacto.celular,
         numeroTel: contacto.telFijo,
         correoEle: contacto.corrElectronico,
@@ -173,5 +175,74 @@ export class RadicacionEntradaDTV {
     return destinatarios;
   }
 
+  GetDireccion(contact): DireccionDTO {
+    let direccion: DireccionDTO  = {};
+    try {
+      direccion =  JSON.parse(contact.direccion);
+    } catch (e) {
+      direccion = null;
+    }
+    if (direccion) {
+      direccion.tipoVia = (direccion.tipoVia) ? direccion.tipoVia : null;
+      direccion.noViaPrincipal = (direccion.noViaPrincipal) ? direccion.noViaPrincipal : null;
+      direccion.prefijoCuadrante = (direccion.prefijoCuadrante) ? direccion.prefijoCuadrante : null;
+      direccion.bis = (direccion.bis) ? direccion.bis : null;
+      direccion.orientacion = (direccion.orientacion) ? direccion.orientacion : null;
+      direccion.noVia = (direccion.noVia) ? direccion.noVia : null;
+      direccion.prefijoCuadrante_se = (direccion.prefijoCuadrante_se) ? direccion.prefijoCuadrante_se : null;
+      direccion.placa = (direccion.placa) ? direccion.placa : null;
+      direccion.orientacion_se = (direccion.orientacion_se) ? direccion.orientacion_se : null;
+      direccion.complementoTipo = (direccion.complementoTipo) ? direccion.complementoTipo : null;
+      direccion.complementoAdicional = (direccion.complementoAdicional) ? direccion.complementoAdicional : null;
+    }
+    return direccion;
+  }
+
+  GetDireccionText(contact): string {
+    let direccion: DireccionDTO  = {};
+    let direccionText = '';
+    try {
+      direccion =  JSON.parse(contact.direccion);
+    } catch (e) {
+      return direccionText;
+    }
+    if (direccion) {
+      if (direccion.tipoVia) {
+        direccionText += direccion.tipoVia.nombre;
+      }
+      if (direccion.noViaPrincipal) {
+        direccionText += ' ' + direccion.noViaPrincipal;
+      }
+      if (direccion.prefijoCuadrante) {
+        direccionText += ' ' + direccion.prefijoCuadrante.nombre;
+      }
+      if (direccion.bis) {
+        direccionText += ' ' + direccion.bis.nombre;
+      }
+      if (direccion.orientacion) {
+        direccionText += ' ' + direccion.orientacion.nombre;
+      }
+      if (direccion.noVia) {
+        direccionText += ' ' + direccion.noVia;
+      }
+      if (direccion.prefijoCuadrante_se) {
+        direccionText += ' ' + direccion.prefijoCuadrante_se.nombre;
+      }
+      if (direccion.placa) {
+        direccionText += ' ' + direccion.placa;
+      }
+      if (direccion.orientacion_se) {
+        direccionText += ' ' + direccion.orientacion_se.nombre;
+      }
+      if (direccion.complementoTipo) {
+        direccionText += ' ' + direccion.complementoTipo.nombre;
+      }
+      if (direccion.complementoAdicional) {
+        direccionText += ' ' + direccion.complementoAdicional;
+      }
+
+    }
+    return direccionText;
+  }
 
 }

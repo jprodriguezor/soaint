@@ -10,6 +10,7 @@ import {
 
 import {RadicacionBase} from "./radicacionBase";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
+import { DireccionDTO } from '../../domain/DireccionDTO';
 
 export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
@@ -56,7 +57,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
         codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
         codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
         codPostal: null,
-        direccion: contact.direccion || null,
+        direccion: this.getDireccion(contact),
         celular: contact.celular || null,
         telFijo: contact.numeroTel || null,
         extension: null,
@@ -66,11 +67,50 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
         codMunicipio: contact.municipio ? contact.municipio.codigo : null,
         provEstado: contact.provinciaEstado ? contact.provinciaEstado : null,
         ciudad: contact.ciudad ? contact.ciudad : null,
-        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
+        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO,
       });
     });
 
     return contactos;
+  }
+
+  getDireccion(contact): string {
+    const direccion: DireccionDTO = {};
+    if (contact.tipoVia) {
+      direccion.tipoVia = contact.tipoVia;
+    }
+    if (contact.noViaPrincipal) {
+      direccion.noViaPrincipal = contact.noViaPrincipal;
+    }
+    if (contact.prefijoCuadrante) {
+      direccion.prefijoCuadrante = contact.prefijoCuadrante;
+    }
+    if (contact.bis) {
+      direccion.bis = contact.bis;
+    }
+    if (contact.orientacion) {
+      direccion.orientacion = contact.orientacion;
+    }
+    if (contact.noVia) {
+      direccion.noVia = contact.noVia;
+    }
+    if (contact.prefijoCuadrante_se) {
+      direccion.prefijoCuadrante_se = contact.prefijoCuadrante_se;
+    }
+    if (contact.placa) {
+      direccion.placa = contact.placa;
+    }
+    if (contact.orientacion_se) {
+      direccion.orientacion_se = contact.orientacion_se;
+    }
+    if (contact.tipoComplemento) {
+      direccion.complementoTipo = contact.tipoComplemento;
+    }
+    if (contact.complementoAdicional) {
+      direccion.complementoAdicional = contact.complementoAdicional;
+    }
+
+    return JSON.stringify(direccion);
   }
 
   isRemitenteInterno() {
