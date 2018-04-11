@@ -22,7 +22,7 @@ export class RadicacionEntradaDTV {
   }
 
   getDatosContactos(): Observable<ContactoDTO[]> {
-    return Observable.of(this.source.datosContactoList);
+    return Observable.of(this.getDatosContactoFormList());
   }
 
   getDatosDocumento(): Observable<DocumentoDTO[]> {
