@@ -40,8 +40,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   status = 1;
   closedTask: Observable<boolean> ;
 
-
-
   @ViewChild('datosGenerales') datosGenerales;
   @ViewChild('datosContacto') datosContacto;
   @ViewChild('gestionarProduccion') gestionarProduccion;
@@ -102,8 +100,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   ngOnInit(): void {
 
     this.closedTask = afterTaskComplete.map(() => true).startWith(false);
-
-    // this.taksCompleteSubscriber = afterTaskComplete.subscribe(()=> {  this.closedTask = true;  console.log(this.closedTask)});
 
     this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
       this.refreshView();

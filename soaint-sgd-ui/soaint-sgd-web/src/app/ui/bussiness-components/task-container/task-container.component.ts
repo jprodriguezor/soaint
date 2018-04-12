@@ -1,4 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component, Input,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation
+} from '@angular/core';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
 import {Store} from '@ngrx/store';
 import {Subscription} from 'rxjs/Subscription';
@@ -22,7 +29,8 @@ import {process_info} from '../../../../environments/environment';
 export class TaskContainerComponent implements OnInit, OnDestroy {
 
   task: TareaDTO = null;
-  processName = '';
+ @Input() processName = '';
+ @Input() taskName = "";
   isActive = true;
   hasToContinue: boolean;
 
@@ -34,14 +42,14 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-
-
+    if(!this.processName && !this.taskName)
     this.infoUnsubscriber = Observable.combineLatest(
       this._store.select(getActiveTask),
       this._store.select(getProcessEntities)
     ).take(1).subscribe(([activeTask, procesos]) => {
       if (activeTask) {
         this.task = activeTask;
+        this.taskName = this.task.nombre;
         this.processName = (process_info[procesos[activeTask.idProceso].codigoProceso]) ? process_info[procesos[activeTask.idProceso].codigoProceso].displayValue : '';
         this._changeDetector.detectChanges();
       }
