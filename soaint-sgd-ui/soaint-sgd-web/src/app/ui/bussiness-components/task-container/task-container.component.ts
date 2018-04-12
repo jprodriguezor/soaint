@@ -17,6 +17,7 @@ import {go} from '@ngrx/router-store';
 import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {process_info} from '../../../../environments/environment';
+import {isNullOrUndefined} from "util";
 
 
 @Component({
@@ -55,8 +56,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
       }
     });
 
-
-    this.activeTaskUnsubscriber = Observable.combineLatest(
+      this.activeTaskUnsubscriber = Observable.combineLatest(
       this._store.select(getActiveTask),
       this._store.select(getNextTask)
     ).distinctUntilChanged()
@@ -79,6 +79,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if(!isNullOrUndefined(this.infoUnsubscriber))
     this.infoUnsubscriber.unsubscribe();
     this.activeTaskUnsubscriber.unsubscribe();
   }
