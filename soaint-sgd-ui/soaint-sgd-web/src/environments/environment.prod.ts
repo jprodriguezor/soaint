@@ -70,6 +70,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
    obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
    obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+   obtenerComunicacionfull_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/full`,
    obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
    registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
    obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
@@ -111,8 +112,10 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
    listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
    archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+   abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
+   cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
+   reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
  };
-
 export const process_info = {
   'proceso.correspondencia-entrada': {
     displayValue: 'Correspondencia de entrada',
