@@ -6,6 +6,7 @@ import { DetalleUnidadDocumentalDTO } from 'app/ui/page-components/unidades-docu
 import {UnidadDocumentalDTO} from '../../domain/unidadDocumentalDTO';
 import { MensajeRespuestaDTO } from '../../domain/MensajeRespuestaDTO';
 import { AnexoFullDTO } from '../../domain/anexoFullDTO';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class CorrespondenciaApiService {
@@ -14,10 +15,7 @@ export class CorrespondenciaApiService {
 
   }
 
-  actualizarComunicacion(payload: any) {
-      this._api.put(environment.actualizarComunicacion_endpoint, payload)
-      .subscribe(result => {
-        console.log(result);
-      });
+  actualizarComunicacion(payload: any): Observable<any> {
+     return  this._api.put(environment.actualizarComunicacion_endpoint, payload);
   }
 }

@@ -1,7 +1,7 @@
 <div class="ui-fluid radicar-comunicaciones">
   <app-task-container>
     <div customActions>
-      <div *ngIf="EsTareaActiva()">
+      <div *ngIf="!(closedTask | async)">
         <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
         (click)="abort()"></button>
 
@@ -12,8 +12,6 @@
                 [disabled]="false"
                 (click)="actualizarComunicacion()"></button>
       </div>
-
-
     </div>
     <div taskBody>
 

@@ -4,8 +4,8 @@
     <p-panel header="Documentos Asociados" [style]="{border: 'none'}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
-          <p-progressBar mode="indeterminate" *ngIf="isLoading"></p-progressBar>
-          <p-dataTable selectionMode="single" *ngIf="!isLoading"
+          <p-progressBar mode="indeterminate" *ngIf="loading"></p-progressBar>
+          <p-dataTable selectionMode="single" *ngIf="!loading"
                        [paginator]="true" [rows]="10"
                        [responsive]="true"
                        [value]="documentsList"
@@ -34,7 +34,7 @@
                 <p-fileUpload *ngIf="row.tipoPadreAdjunto==='Principal'" #uploader
                               (onSelect)="selectFile(uploader)"
                               (onRemove)="clearFileList(uploader)"
-                              (onUpload)="onUpload($event)"
+                              (onUpload)="onUpload($event)" 
                               customUpload="true"
                               (uploadHandler)="uploadHandler($event, uploader)"
                               [styleClass]="selectedFile"
