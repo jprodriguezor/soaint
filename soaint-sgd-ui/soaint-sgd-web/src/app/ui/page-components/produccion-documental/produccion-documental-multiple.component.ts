@@ -9,7 +9,11 @@ import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {ProyectorDTO} from 'app/domain/ProyectorDTO';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {
+  getActiveTask,
+  getArrayData,
+  getEntities, getReadyTasksArrayData
+} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
@@ -24,6 +28,8 @@ import {
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
 import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {TASK_PRODUCIR_DOCUMENTO} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'produccion-documental-multiple',
@@ -53,6 +59,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   subscribers: Array<Subscription> = [];
   authPayload: { usuario: string, pass: string } | {};
   authPayloadUnsubscriber: Subscription;
+
 
   constructor(private _store: Store<RootState>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -90,7 +97,30 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
     this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(response => {
       this.form.disable();
 
-      console.log(response);
+      this.subscribers.push(
+        afterTaskComplete.subscribe(() => {
+
+          this.subscribers.push(
+            combineLatest(
+              this._store.select(getAuthenticatedFuncionario)
+                .map( funcionario => this.funcionarios.find( func => func.id == funcionario.id)),
+              this._store.select(getSelectedDependencyGroupFuncionario)
+            ).switchMap(([funcionario,dependency])=> {
+
+              return this._taskSandBox.loadData(null,dependency)
+                .map( tasks => tasks.find( task => task.nombre == TASK_PRODUCIR_DOCUMENTO && task.estado == "RESERVADO"));
+            })
+              .subscribe( task => {
+
+                console.log("task filtrada",task);
+
+                if(!isNullOrUndefined(task)){
+
+                  this._taskSandBox.startTaskDispatch(task);
+                }
+              })
+          );
+        }));
 
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
@@ -98,6 +128,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         idTarea: this.task.idTarea,
         parametros: {}
       });
+
+
+
     });
   }
 
@@ -277,7 +310,5 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
     this.subscribers.forEach(subsc => subsc.unsubscribe());
 
     this.authPayloadUnsubscriber.unsubscribe();
-
-   // afterTaskComplete.unsubscribe();
   }
 }
