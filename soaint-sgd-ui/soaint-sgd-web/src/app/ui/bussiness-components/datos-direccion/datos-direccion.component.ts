@@ -335,56 +335,85 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       if (tipoVia.value) {
         direccion += tipoVia.value.nombre;
         value['tipoVia'] = tipoVia.value;
+
+        this.addToDireccionAdicional(value,"tipoVia",{codigo:tipoVia.value.codigo});
+
         tipoVia.reset();
       }
       if (noViaPrincipal.value) {
         direccion += ' ' + noViaPrincipal.value;
         value['noViaPrincipal'] = noViaPrincipal.value;
+
+        this.addToDireccionAdicional(value,"noViaPrincipal",noViaPrincipal.value);
+
         noViaPrincipal.reset();
       }
       if (prefijoCuadrante.value) {
         direccion += ' ' + prefijoCuadrante.value.nombre;
         value['prefijoCuadrante'] = prefijoCuadrante.value;
+        this.addToDireccionAdicional(value,"prefijoCuadrante",{codigo:prefijoCuadrante.value.codigo});
+
         prefijoCuadrante.reset();
       }
       if (bis.value) {
         direccion += ' ' + bis.value.nombre;
         value['bis'] = bis.value;
+        this.addToDireccionAdicional(value,"bis",{codigo:bis.value.codigo});
+
         bis.reset();
       }
       if (orientacion.value) {
         direccion += ' ' + orientacion.value.nombre;
         value['orientacion'] = orientacion.value;
+
+        this.addToDireccionAdicional(value,"orientacion",{codigo:orientacion.value.codigo});
         orientacion.reset();
       }
       if (noVia.value) {
         direccion += ' ' + noVia.value;
         value['noVia'] = noVia.value;
+        this.addToDireccionAdicional(value,"noVia",noVia.value);
+
         noVia.reset();
       }
       if (prefijoCuadrante_se.value) {
         direccion += ' ' + prefijoCuadrante_se.value.nombre;
         value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
+
+        this.addToDireccionAdicional(value,"prefijoCuadrante_se",{codigo:prefijoCuadrante_se.value.codigo});
+
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
         direccion += ' ' + placa.value;
         value['placa'] = placa.value;
+
+        this.addToDireccionAdicional(value,"placa",placa.value);
+
         placa.reset();
       }
       if (orientacion_se.value) {
         direccion += ' ' + orientacion_se.value.nombre;
         value['orientacion_se'] = orientacion_se.value;
+
+        this.addToDireccionAdicional(value,"orientacion_se",{codigo:orientacion_se.value.codigo});
+
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
         direccion += ' ' + tipoComplemento.value.nombre;
         value['complementoTipo'] = tipoComplemento.value;
+
+        this.addToDireccionAdicional(value,"tipoComplemento",{codigo:tipoComplemento.value.codigo});
+
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
         direccion += ' ' + complementoAdicional.value;
         value['complementoAdicional'] = complementoAdicional.value;
+
+        this.addToDireccionAdicional(value,"complementoAdicional",tipoComplemento.value);
+
         complementoAdicional.reset();
       }
 
@@ -394,6 +423,15 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       value['direccion'] = direccionText.value;
     }
     return value;
+  }
+
+  private addToDireccionAdicional(target,key:string,value){
+
+    if(target.direccionAdicional === undefined)
+      target.direccionAdicional = {};
+
+    target.direccionAdicional[key] = value;
+
   }
 
   deleteContact(index) {
@@ -420,7 +458,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   hasDireccionPrincipal(index: number): boolean {
     let result = false;
-    if (this.contacts.length > 0) {
+    if(this.contacts.length > 0){
       this.contacts.forEach(values => {
         if (values.principal === true && this.contacts.indexOf(values) !== index) {
           result = true;
@@ -457,14 +495,14 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.form.valid) {
 
       const principal = this.form.get('principal');
-      if (principal.value === true && this.hasDireccionPrincipal(this.editIndexContext) === true ) {
+      if(principal.value === true && this.hasDireccionPrincipal() === true ){
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: 'Recuerde que únicamente puede existir una dirección principal'
         }));
 
-      } else {
+      }else {
         if (this.formContext === FormContextEnum.CREATE) {
           this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
         } else {
@@ -516,32 +554,41 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this._changeDetectorRef.detectChanges();
   }
 
-  toggleDireccionForm(checked: boolean) {
+  toggleDireccionForm(checked:boolean){
 
-    if (!checked || this.formContext !== FormContextEnum.SAVE) {
+    if(!checked || this.formContext != FormContextEnum.SAVE)
       return ;
-    }
-    const direccionData = this.contacts[this.editIndexContext].direccionAdicional;
-    if (isNullOrUndefined(direccionData)) {
+
+
+    let direccionData = this.contacts[this.editIndexContext].direccionAdicional;
+
+
+
+    if(isNullOrUndefined(direccionData))
       return;
-    }
+
     Object.keys(direccionData).forEach( key => {
 
-      if (isNullOrUndefined(direccionData[key])) {
+      if(isNullOrUndefined(direccionData[key]))
         return;
-      }
-    const control = this.form.get(key);
 
-    if (key === 'principal') {
+      let control = this.form.get(key);
+
+      if(key == "principal"){
+
         control.setValue( direccionData[key] ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO);
         return;
-    }
 
-    if (!isNullOrUndefined(direccionData[key].codigo)) {
+      }
+
+      if(!isNullOrUndefined(direccionData[key].codigo)){
+
         const options = this.dropdownsChilds
-          .find(d => d.inputId === key)
+          .find(d => d.inputId == key)
           .options;
-        const valtoSelect = options.map( option => option.value).find( val =>  val.codigo === direccionData[key].codigo);
+
+        const valtoSelect = options.map( option => option.value).find( val =>  val.codigo == direccionData[key].codigo);
+
 
         control.setValue(valtoSelect);
 
@@ -556,34 +603,36 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   CompletarDatosContacto() {
-  this._localizacionService.ListarMunicipiosActivos({})
-      .subscribe((result: any) => {
-        this.contacts = this.contacts
-        .reduce((_listado, _contact) => {
-          if (result) {
-            if (!isNullOrUndefined(_contact.municipio)) {
-              const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-              if (municipio) {
-                const departamento = municipio.departamento;
-                const pais = departamento.pais;
-                if (!isNullOrUndefined(_contact.municipio) ) {
-                  _contact.municipio.nombre = _contact.municipio.nombre ?  _contact.municipio.nombre : (municipio) ? municipio.nombre : '';
-                }
-                if (!isNullOrUndefined(_contact.departamento) ) {
-                  _contact.departamento.nombre =_contact.departamento.nombre ? _contact.departamento.nombre : (departamento) ? departamento.nombre : '';
-                }
-                if (!isNullOrUndefined(_contact.pais) ) {
-                  _contact.pais.nombre =  _contact.pais.nombre ? _contact.pais.nombre : (pais) ? pais.nombre : '';
-                }
-                _listado.push(_contact);
-              }
+
+
+
+ this._localizacionService.ListarMunicipiosActivos({})
+
+    .subscribe((result: any) => {
+
+       this.contacts = this.contacts
+      .reduce((_listado, _contact) => {
+        if (result) {
+          if(!isNullOrUndefined(_contact.municipio)) {
+            const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+            if (municipio) {
+              const departamento = municipio.departamento;
+              const pais = departamento.pais;
+              if (!isNullOrUndefined(_contact.municipio) )
+                _contact.municipio.nombre = _contact.municipio.nombre ?  _contact.municipio.nombre : (municipio) ? municipio.nombre : '';
+              if (!isNullOrUndefined(_contact.departamento) )
+                _contact.departamento.nombre =_contact.departamento.nombre ? _contact.departamento.nombre : (departamento) ? departamento.nombre : '';
+              if (!isNullOrUndefined(_contact.pais) )
+                _contact.pais.nombre =  _contact.pais.nombre ? _contact.pais.nombre : (pais) ? pais.nombre : '';
+              _listado.push(_contact);
             }
-            return _listado;
-          } else {
-            return this.contacts;
           }
-        }, []);
-        this._changeDetectorRef.detectChanges();
-      });
+          return _listado;
+        } else {
+          return this.contacts;
+        }
+      }, []);
+      this._changeDetectorRef.detectChanges();
+    });
   }
 }
