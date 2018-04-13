@@ -17,7 +17,7 @@ import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {getPrefijoCuadranteArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/prefijo-cuadrante-selectors';
 import {getTipoViaArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/tipo-via-selectors';
 import {getOrientacionArrayData} from 'app/infrastructure/state-management/constanteDTO-state/selectors/orientacion-selectors';
@@ -404,7 +404,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
         direccion += ' ' + tipoComplemento.value.nombre;
         value['complementoTipo'] = tipoComplemento.value;
 
-        this.addToDireccionAdicional(value,"tipoComplemento",{codigo:tipoComplemento.value.codigo});
+        this.addToDireccionAdicional(value,"complementoTipo",{codigo:tipoComplemento.value.codigo});
 
         tipoComplemento.reset();
       }
@@ -454,9 +454,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.showContactForm = true;
     this.formContext = FormContextEnum.CREATE;
     this.addColombiaByDefault();
+    this.editIndexContext = null;
   }
 
-  hasDireccionPrincipal(index: number): boolean {
+  hasDireccionPrincipal(index?: number): boolean {
     let result = false;
     if(this.contacts.length > 0){
       this.contacts.forEach(values => {
@@ -495,7 +496,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.form.valid) {
 
       const principal = this.form.get('principal');
-      if(principal.value === true && this.hasDireccionPrincipal() === true ){
+      if(principal.value === true && this.hasDireccionPrincipal(this.editIndexContext) === true ){
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
@@ -582,6 +583,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }
 
       if(!isNullOrUndefined(direccionData[key].codigo)){
+
+        console.log(this.dropdownsChilds);
 
         const options = this.dropdownsChilds
           .find(d => d.inputId == key)
