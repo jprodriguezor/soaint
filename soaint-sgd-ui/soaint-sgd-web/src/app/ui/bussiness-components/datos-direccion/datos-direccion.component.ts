@@ -10,7 +10,7 @@ import {
   EventEmitter,
   ViewChild,
   ElementRef,
-  ViewChildren, QueryList
+  ViewChildren, QueryList, ChangeDetectionStrategy
 } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -72,9 +72,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
   @ViewChildren(Dropdown) dropdownsChilds: QueryList<Dropdown>;
 
+  dropdownsContainer:Dropdown[];
 
-
-  validations: any = {};
+   validations: any = {};
   visibility: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;
@@ -335,56 +335,85 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       if (tipoVia.value) {
         direccion += tipoVia.value.nombre;
         value['tipoVia'] = tipoVia.value;
+
+        this.addToDireccionAdicional(value,"tipoVia",{codigo:tipoVia.value.codigo});
+
         tipoVia.reset();
       }
       if (noViaPrincipal.value) {
         direccion += ' ' + noViaPrincipal.value;
         value['noViaPrincipal'] = noViaPrincipal.value;
+
+        this.addToDireccionAdicional(value,"noViaPrincipal",noViaPrincipal.value);
+
         noViaPrincipal.reset();
       }
       if (prefijoCuadrante.value) {
         direccion += ' ' + prefijoCuadrante.value.nombre;
         value['prefijoCuadrante'] = prefijoCuadrante.value;
+        this.addToDireccionAdicional(value,"prefijoCuadrante",{codigo:prefijoCuadrante.value.codigo});
+
         prefijoCuadrante.reset();
       }
       if (bis.value) {
         direccion += ' ' + bis.value.nombre;
         value['bis'] = bis.value;
+        this.addToDireccionAdicional(value,"bis",{codigo:bis.value.codigo});
+
         bis.reset();
       }
       if (orientacion.value) {
         direccion += ' ' + orientacion.value.nombre;
         value['orientacion'] = orientacion.value;
+
+        this.addToDireccionAdicional(value,"orientacion",{codigo:orientacion.value.codigo});
         orientacion.reset();
       }
       if (noVia.value) {
         direccion += ' ' + noVia.value;
         value['noVia'] = noVia.value;
+        this.addToDireccionAdicional(value,"noVia",noVia.value);
+
         noVia.reset();
       }
       if (prefijoCuadrante_se.value) {
         direccion += ' ' + prefijoCuadrante_se.value.nombre;
         value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
+
+        this.addToDireccionAdicional(value,"prefijoCuadrante_se",{codigo:prefijoCuadrante_se.value.codigo});
+
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
         direccion += ' ' + placa.value;
         value['placa'] = placa.value;
+
+        this.addToDireccionAdicional(value,"placa",placa.value);
+
         placa.reset();
       }
       if (orientacion_se.value) {
         direccion += ' ' + orientacion_se.value.nombre;
         value['orientacion_se'] = orientacion_se.value;
+
+        this.addToDireccionAdicional(value,"orientacion_se",{codigo:orientacion_se.value.codigo});
+
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
         direccion += ' ' + tipoComplemento.value.nombre;
         value['complementoTipo'] = tipoComplemento.value;
+
+        this.addToDireccionAdicional(value,"tipoComplemento",{codigo:tipoComplemento.value.codigo});
+
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
         direccion += ' ' + complementoAdicional.value;
         value['complementoAdicional'] = complementoAdicional.value;
+
+        this.addToDireccionAdicional(value,"complementoAdicional",tipoComplemento.value);
+
         complementoAdicional.reset();
       }
 
@@ -394,6 +423,15 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       value['direccion'] = direccionText.value;
     }
     return value;
+  }
+
+  private addToDireccionAdicional(target,key:string,value){
+
+    if(target.direccionAdicional === undefined)
+      target.direccionAdicional = {};
+
+    target.direccionAdicional[key] = value;
+
   }
 
   deleteContact(index) {
@@ -491,8 +529,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-    this.refreshView();
-  }
+
+      this.refreshView();
+
+      this.dropdownsContainer = this.dropdownsChilds.toArray();
+
+      }
 
   addColombiaByDefault() {
     const subscription = this.paises$
@@ -525,8 +567,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     let direccionData = this.contacts[this.editIndexContext].direccionAdicional;
 
 
-
-    if(isNullOrUndefined(direccionData))
+      if(isNullOrUndefined(direccionData))
       return;
 
     Object.keys(direccionData).forEach( key => {
@@ -546,12 +587,13 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       if(!isNullOrUndefined(direccionData[key].codigo)){
 
         const options = this.dropdownsChilds
-          .find(d => d.inputId == key)
+          .find(d => {return d.inputId == key})
           .options;
 
         const valtoSelect = options.map( option => option.value).find( val =>  val.codigo == direccionData[key].codigo);
 
 
+        console.log(valtoSelect);
         control.setValue(valtoSelect);
 
         return;
@@ -597,4 +639,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       this._changeDetectorRef.detectChanges();
     });
   }
+
+  probando(){
+
+    console.log("probando probando");
+  }
 }
+
+
