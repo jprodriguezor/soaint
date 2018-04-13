@@ -328,7 +328,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     const pais = this.form.get('pais');
     const direccionText = this.form.get('direccionText');
 
+    const principal = this.form.get('principal');
+
     const value = {};
+
+    this.addToDireccionAdicional(value,"principal",principal.value == DATOS_CONTACTO_PRINCIPAL);
 
     if (pais.value && pais.value.codigo.toUpperCase() === 'CO') {
 
@@ -412,7 +416,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
         direccion += ' ' + complementoAdicional.value;
         value['complementoAdicional'] = complementoAdicional.value;
 
-        this.addToDireccionAdicional(value,"complementoAdicional",tipoComplemento.value);
+        this.addToDireccionAdicional(value,"complementoAdicional",complementoAdicional.value);
 
         complementoAdicional.reset();
       }
