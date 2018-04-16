@@ -58,7 +58,7 @@
                 <div class="ui-g-12" *ngIf="contact.direccion">
                   <i class="fa ui-icon-location-on"></i>
                   <span class="table-text-custom">
-                        {{ contact.direccion }}
+                        {{ contact.direccion | direccionToText }}
                         </span>
                 </div>
 
@@ -420,7 +420,6 @@
                           [filter]="true"
                           [autoWidth]="false"
                           inputId="orientacion_se"
-                          (update)="probando()"
               >
               </p-dropdown>
             </div>

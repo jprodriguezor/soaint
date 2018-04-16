@@ -70,11 +70,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
-  @ViewChildren(Dropdown) dropdownsChilds: QueryList<Dropdown>;
+  direccionText:Observable<string>;
 
-  dropdownsContainer:Dropdown[];
-
-   validations: any = {};
+  validations: any = {};
   visibility: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;
@@ -117,6 +115,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
 
   ngOnInit(): void {
+
+    console.log(this.contactsDefault);
+
     this._paisSandbox.loadDispatch();
     this.prefijoCuadranteSuggestions$ = this._store.select(getPrefijoCuadranteArrayData);
     this.tipoViaSuggestions$ = this._store.select(getTipoViaArrayData);
@@ -149,6 +150,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
       this.CompletarDatosContacto();
     }
+
 
   }
 
@@ -225,6 +227,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     }));
 
   }
+
 
 
   onDropdownClickPais(event?) {
@@ -312,7 +315,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   saveDireccionData() {
-    let direccion = '';
     const tipoVia = this.form.get('tipoVia');
     const noViaPrincipal = this.form.get('noViaPrincipal');
     const prefijoCuadrante = this.form.get('prefijoCuadrante');
@@ -333,105 +335,70 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (pais.value && pais.value.codigo.toUpperCase() === 'CO') {
 
       if (tipoVia.value) {
-        direccion += tipoVia.value.nombre;
-        value['tipoVia'] = tipoVia.value;
-
-        this.addToDireccionAdicional(value,"tipoVia",{codigo:tipoVia.value.codigo});
+           value['tipoVia'] = tipoVia.value;
 
         tipoVia.reset();
       }
       if (noViaPrincipal.value) {
-        direccion += ' ' + noViaPrincipal.value;
-        value['noViaPrincipal'] = noViaPrincipal.value;
-
-        this.addToDireccionAdicional(value,"noViaPrincipal",noViaPrincipal.value);
+           value['noViaPrincipal'] = noViaPrincipal.value;
 
         noViaPrincipal.reset();
       }
       if (prefijoCuadrante.value) {
-        direccion += ' ' + prefijoCuadrante.value.nombre;
-        value['prefijoCuadrante'] = prefijoCuadrante.value;
-        this.addToDireccionAdicional(value,"prefijoCuadrante",{codigo:prefijoCuadrante.value.codigo});
+           value['prefijoCuadrante'] = prefijoCuadrante.value;
 
         prefijoCuadrante.reset();
       }
       if (bis.value) {
-        direccion += ' ' + bis.value.nombre;
-        value['bis'] = bis.value;
-        this.addToDireccionAdicional(value,"bis",{codigo:bis.value.codigo});
+            value['bis'] = bis.value;
 
         bis.reset();
       }
       if (orientacion.value) {
-        direccion += ' ' + orientacion.value.nombre;
-        value['orientacion'] = orientacion.value;
+              value['orientacion'] = orientacion.value;
 
-        this.addToDireccionAdicional(value,"orientacion",{codigo:orientacion.value.codigo});
         orientacion.reset();
       }
       if (noVia.value) {
-        direccion += ' ' + noVia.value;
-        value['noVia'] = noVia.value;
-        this.addToDireccionAdicional(value,"noVia",noVia.value);
+            value['noVia'] = noVia.value;
 
         noVia.reset();
       }
       if (prefijoCuadrante_se.value) {
-        direccion += ' ' + prefijoCuadrante_se.value.nombre;
-        value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
+           value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
 
-        this.addToDireccionAdicional(value,"prefijoCuadrante_se",{codigo:prefijoCuadrante_se.value.codigo});
 
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
-        direccion += ' ' + placa.value;
-        value['placa'] = placa.value;
-
-        this.addToDireccionAdicional(value,"placa",placa.value);
+            value['placa'] = placa.value;
 
         placa.reset();
       }
       if (orientacion_se.value) {
-        direccion += ' ' + orientacion_se.value.nombre;
-        value['orientacion_se'] = orientacion_se.value;
+            value['orientacion_se'] = orientacion_se.value;
 
-        this.addToDireccionAdicional(value,"orientacion_se",{codigo:orientacion_se.value.codigo});
 
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
-        direccion += ' ' + tipoComplemento.value.nombre;
-        value['complementoTipo'] = tipoComplemento.value;
-
-        this.addToDireccionAdicional(value,"tipoComplemento",{codigo:tipoComplemento.value.codigo});
+           value['complementoTipo'] = tipoComplemento.value;
 
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
-        direccion += ' ' + complementoAdicional.value;
-        value['complementoAdicional'] = complementoAdicional.value;
+          value['complementoAdicional'] = complementoAdicional.value;
 
-        this.addToDireccionAdicional(value,"complementoAdicional",tipoComplemento.value);
 
         complementoAdicional.reset();
       }
 
-      value['direccion'] = direccion === '' ? null : direccion;
+      value['direccion'] = JSON.stringify(value);
 
     } else {
       value['direccion'] = direccionText.value;
     }
     return value;
-  }
-
-  private addToDireccionAdicional(target,key:string,value){
-
-    if(target.direccionAdicional === undefined)
-      target.direccionAdicional = {};
-
-    target.direccionAdicional[key] = value;
-
   }
 
   deleteContact(index) {
@@ -457,15 +424,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   hasDireccionPrincipal(){
-    let result = false;
-    if(this.contacts.length > 0){
-      this.contacts.forEach(values => {
-        if (values.principal === true) {
-          result = true;
-        }
-      });
-    }
-    return result;
+
+    return  this.contacts.some( (contact,index) => contact.principal === true && index !== this.editIndexContext)
+
   }
   onFilterPais(event) {
 
@@ -532,8 +493,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
       this.refreshView();
 
-      this.dropdownsContainer = this.dropdownsChilds.toArray();
-
       }
 
   addColombiaByDefault() {
@@ -563,8 +522,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if(!checked || this.formContext != FormContextEnum.SAVE)
       return ;
 
+    console.log(this.contacts[this.editIndexContext]);
 
-    let direccionData = this.contacts[this.editIndexContext].direccionAdicional;
+    this.form.get("principal").setValue(this.contacts[this.editIndexContext].principal);
+
+
+    let direccionData = JSON.parse(this.contacts[this.editIndexContext].direccion);
 
 
       if(isNullOrUndefined(direccionData))
@@ -577,33 +540,12 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
       let control = this.form.get(key);
 
-      if(key == "principal"){
+      if(control){
 
-        control.setValue( direccionData[key] ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO);
-        return;
-
+        control.setValue(direccionData[key]);
       }
-
-      if(!isNullOrUndefined(direccionData[key].codigo)){
-
-        const options = this.dropdownsChilds
-          .find(d => {return d.inputId == key})
-          .options;
-
-        const valtoSelect = options.map( option => option.value).find( val =>  val.codigo == direccionData[key].codigo);
-
-
-        console.log(valtoSelect);
-        control.setValue(valtoSelect);
-
-        return;
-      }
-
-      control.setValue(direccionData[key]);
 
     });
-
-
   }
 
   CompletarDatosContacto() {
@@ -638,11 +580,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
       }, []);
       this._changeDetectorRef.detectChanges();
     });
-  }
-
-  probando(){
-
-    console.log("probando probando");
   }
 }
 

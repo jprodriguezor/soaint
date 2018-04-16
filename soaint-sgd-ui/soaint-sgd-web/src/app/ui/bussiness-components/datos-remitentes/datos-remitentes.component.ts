@@ -30,7 +30,10 @@ import {LoadDatosGeneralesAction} from '../../../infrastructure/state-management
 import {LoadAction as SedeAdministrativaLoadAction} from '../../../infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {tipoDestinatarioEntradaSelector} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {PushNotificationAction} from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import {DESTINATARIO_PRINCIPAL} from '../../../shared/bussiness-properties/radicacion-properties';
+import {
+  DATOS_CONTACTO_PRINCIPAL,
+  DESTINATARIO_PRINCIPAL
+} from '../../../shared/bussiness-properties/radicacion-properties';
 import {ConfirmationService} from 'primeng/components/common/api';
 import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
@@ -219,7 +222,7 @@ export class DatosRemitentesComponent implements OnInit,OnDestroy {
         numeroTel: isNullOrUndefined(c.numeroTel) ? '' : c.numeroTel,
         celular: isNullOrUndefined(c.celular) ? '' : c.celular,
         correoEle: isNullOrUndefined(c.correoEle) ? '' : c.correoEle,
-        direccionAdicional:c.direccionAdicional
+        principal:c.principal == DATOS_CONTACTO_PRINCIPAL
       }; });
   }
 

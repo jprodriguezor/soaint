@@ -10,6 +10,7 @@ import {
 
 import {RadicacionBase} from "./radicacionBase";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
+import {DireccionDTO} from "../../domain/DireccionDTO";
 
 export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
@@ -49,6 +50,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
     const contactos = [];
     const contactsRemitente = ((<RadicacionEntradaFormInterface>this.source).datosContactos) ? (<RadicacionEntradaFormInterface>this.source).datosContactos : [];
     contactsRemitente.forEach((contact) => {
+
       contactos.push({
         ideContacto: null,
         nroViaGeneradora: contact.noViaPrincipal || null,
@@ -80,7 +82,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
     return contactos;
   }
 
-  isRemitenteInterno() {
+   isRemitenteInterno() {
     return this.source.generales.tipoComunicacion.codigo === COMUNICACION_INTERNA;
   }
 

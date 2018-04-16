@@ -267,7 +267,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
           this.searchMunicipio(contact.codMunicipio).take(1),
           (contact, pais, dpto, mncpio) =>{
 
-            console.log("lastest",[contact, pais, dpto, mncpio]);
+            console.log("contact",contact);
 
             return {
               pais: pais,
@@ -277,100 +277,13 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
               celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
               correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
               direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
-              direccionAdicional:{
-                noViaPrincipal:contact.nroViaGeneradora,
-                placa:contact.nroPlaca,
-                tipoVia:{codigo:contact.codTipoVia},
-                prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-                principal:contact.principal,
-                bis: {codigo:contact.codBis},
-                orientacion: {codigo:contact.codOrientacion},
-                noVia: contact.noVia,
-                prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-                orientacion_se: {codigo:contact.codOrientacionSe},
-                complementoTipo: {codigo:contact.codTipoComplemento},
-                complementoAdicional:  contact.codTipoComplementoAdicional,
-              }
-
+              principal:contact.principal
             };
           }
         );
 
         return obs;
       });
-    /*.map(a => { console.log("map latest",a);
-
-      let contact = a[0];
-      let pais= a[1];
-      let dpto = a[2];
-      let mncpio = a[3];
-
-      return {
-        pais: pais,
-        departamento: dpto,
-        municipio: mncpio,
-        numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
-        celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-        correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-        direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
-        direccionAdicional:{
-          noViaPrincipal:contact.nroViaGeneradora,
-          placa:contact.nroPlaca,
-          tipoVia:{codigo:contact.codTipoVia},
-          prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-          principal:contact.principal,
-          bis: {codigo:contact.codBis},
-          orientacion: {codigo:contact.codOrientacion},
-          noVia: contact.noVia,
-          prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-          orientacion_se: {codigo:contact.codOrientacionSe},
-          complementoTipo: {codigo:contact.codTipoComplemento},
-          complementoAdicional:  contact.codTipoComplementoAdicional,
-        }
-
-    }})
-    .subscribe();
-
-     return Observable.create(obs => { console.log("create");
-        contacts.forEach(contact => obs.next(contact));
-        obs.complete();
-      })
-      .flatMap(contact => {
-
-        let obs = Observable.combineLatest(
-          Observable.of(contact),
-          this.searchPais(contact.codPais).take(1),
-          this.searchDepartamento(contact.codDepartamento).skip(1).take(1),
-          this.searchMunicipio(contact.codMunicipio).skip(1).take(1)
-        );
-
-        return obs;
-      })
-      .map(([contact, pais, dpto, mncpio]) => {
-        return {
-          pais: pais,
-          departamento: dpto,
-          municipio: mncpio,
-          numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
-          celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-          correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-          direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
-          direccionAdicional:{
-            noViaPrincipal:contact.nroViaGeneradora,
-            placa:contact.nroPlaca,
-            tipoVia:{codigo:contact.codTipoVia},
-            prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-            principal:contact.principal,
-            bis: {codigo:contact.codBis},
-            orientacion: {codigo:contact.codOrientacion},
-            noVia: contact.noVia,
-            prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-            orientacion_se: {codigo:contact.codOrientacionSe},
-            complementoTipo: {codigo:contact.codTipoComplemento},
-            complementoAdicional:  contact.codTipoComplementoAdicional,
-          }
-        };
-      });*/
 
   }
 
