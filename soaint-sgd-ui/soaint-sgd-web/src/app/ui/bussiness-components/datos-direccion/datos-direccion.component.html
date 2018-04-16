@@ -58,7 +58,7 @@
                 <div class="ui-g-12" *ngIf="contact.direccion">
                   <i class="fa ui-icon-location-on"></i>
                   <span class="table-text-custom">
-                        {{ contact.direccion }}
+                        {{ contact.direccion | direccionToText }}
                         </span>
                 </div>
 
@@ -290,6 +290,7 @@
                           [autoWidth]="false"
                           [dynamicDisable]="!showDireccionForm"
                           inputId="tipoVia"
+                          [lazy]="false"
               >
               </p-dropdown>
             </div>
@@ -474,7 +475,7 @@
     </div>
 
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
-      <button pButton type="button" class="ui-button-info" [disabled]="form.pristine"
+      <button pButton type="button" class="ui-button-info" [disabled]="form.invalid"
               label="Aceptar" (click)="save();"
               style="width: auto; margin-left: 12px; margin-bottom: 10px"
       ></button>
