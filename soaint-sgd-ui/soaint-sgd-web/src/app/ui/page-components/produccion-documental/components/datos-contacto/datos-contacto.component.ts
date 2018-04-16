@@ -37,9 +37,6 @@ import {
 } from '../../../../../shared/bussiness-properties/radicacion-properties';
 import {Observable} from "rxjs/Observable";
 import {ViewFilterHook} from "../../../../../shared/ViewHooksHelper";
-import { ComunicacionOficialDTO } from '../../../../../domain/comunicacionOficialDTO';
-import { ComunicacionOficialEntradaDTV } from '../../../../../shared/data-transformers/comunicacionOficialEntradaDTV';
-import { DireccionDTO } from '../../../../../domain/DireccionDTO';
 
 @Component({
   selector: 'pd-datos-contacto',
@@ -270,7 +267,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
           this.searchMunicipio(contact.codMunicipio).take(1),
           (contact, pais, dpto, mncpio) =>{
 
-            console.log("lastest",[contact, pais, dpto, mncpio]);
+            console.log("contact",contact);
 
             return {
               pais: pais,
@@ -279,152 +276,16 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
               numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
               celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
               correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-              direccion: isNullOrUndefined(contact.direccion) ? '' : this.GetDireccionText(contact),
-              direccionAdicional:{
-                noViaPrincipal:contact.nroViaGeneradora,
-                placa:contact.nroPlaca,
-                tipoVia:{codigo:contact.codTipoVia},
-                prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-                principal:contact.principal,
-                bis: {codigo:contact.codBis},
-                orientacion: {codigo:contact.codOrientacion},
-                noVia: contact.noVia,
-                prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-                orientacion_se: {codigo:contact.codOrientacionSe},
-                complementoTipo: {codigo:contact.codTipoComplemento},
-                complementoAdicional:  contact.codTipoComplementoAdicional,
-              }
-
+              direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
+              principal:contact.principal
             };
           }
         );
 
         return obs;
       });
-    /*.map(a => { console.log("map latest",a);
-
-      let contact = a[0];
-      let pais= a[1];
-      let dpto = a[2];
-      let mncpio = a[3];
-
-      return {
-        pais: pais,
-        departamento: dpto,
-        municipio: mncpio,
-        numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
-        celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-        correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-        direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
-        direccionAdicional:{
-          noViaPrincipal:contact.nroViaGeneradora,
-          placa:contact.nroPlaca,
-          tipoVia:{codigo:contact.codTipoVia},
-          prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-          principal:contact.principal,
-          bis: {codigo:contact.codBis},
-          orientacion: {codigo:contact.codOrientacion},
-          noVia: contact.noVia,
-          prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-          orientacion_se: {codigo:contact.codOrientacionSe},
-          complementoTipo: {codigo:contact.codTipoComplemento},
-          complementoAdicional:  contact.codTipoComplementoAdicional,
-        }
-
-    }})
-    .subscribe();
-
-     return Observable.create(obs => { console.log("create");
-        contacts.forEach(contact => obs.next(contact));
-        obs.complete();
-      })
-      .flatMap(contact => {
-
-        let obs = Observable.combineLatest(
-          Observable.of(contact),
-          this.searchPais(contact.codPais).take(1),
-          this.searchDepartamento(contact.codDepartamento).skip(1).take(1),
-          this.searchMunicipio(contact.codMunicipio).skip(1).take(1)
-        );
-
-        return obs;
-      })
-      .map(([contact, pais, dpto, mncpio]) => {
-        return {
-          pais: pais,
-          departamento: dpto,
-          municipio: mncpio,
-          numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
-          celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-          correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
-          direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
-          direccionAdicional:{
-            noViaPrincipal:contact.nroViaGeneradora,
-            placa:contact.nroPlaca,
-            tipoVia:{codigo:contact.codTipoVia},
-            prefijoCuadrante:{codigo:contact.codPrefijoCuadrant},
-            principal:contact.principal,
-            bis: {codigo:contact.codBis},
-            orientacion: {codigo:contact.codOrientacion},
-            noVia: contact.noVia,
-            prefijoCuadrante_se:{codigo:contact.codPrefijoCuadrantSe},
-            orientacion_se: {codigo:contact.codOrientacionSe},
-            complementoTipo: {codigo:contact.codTipoComplemento},
-            complementoAdicional:  contact.codTipoComplementoAdicional,
-          }
-        };
-      });*/
 
   }
-
-
-  GetDireccionText(contact): string {
-    let direccion: DireccionDTO  = {};
-    let direccionText = '';
-    try {
-      direccion =  JSON.parse(contact.direccion);
-    } catch (e) {
-      return direccionText;
-    }
-    if (direccion) {
-      if (direccion.tipoVia) {
-        direccionText += direccion.tipoVia.nombre;
-      }
-      if (direccion.noViaPrincipal) {
-        direccionText += ' ' + direccion.noViaPrincipal;
-      }
-      if (direccion.prefijoCuadrante) {
-        direccionText += ' ' + direccion.prefijoCuadrante.nombre;
-      }
-      if (direccion.bis) {
-        direccionText += ' ' + direccion.bis.nombre;
-      }
-      if (direccion.orientacion) {
-        direccionText += ' ' + direccion.orientacion.nombre;
-      }
-      if (direccion.noVia) {
-        direccionText += ' ' + direccion.noVia;
-      }
-      if (direccion.prefijoCuadrante_se) {
-        direccionText += ' ' + direccion.prefijoCuadrante_se.nombre;
-      }
-      if (direccion.placa) {
-        direccionText += ' ' + direccion.placa;
-      }
-      if (direccion.orientacion_se) {
-        direccionText += ' ' + direccion.orientacion_se.nombre;
-      }
-      if (direccion.complementoTipo) {
-        direccionText += ' ' + direccion.complementoTipo.nombre;
-      }
-      if (direccion.complementoAdicional) {
-        direccionText += ' ' + direccion.complementoAdicional;
-      }
-
-    }
-    return direccionText;
-  }
-
 
   seachTipoDestinatario(indOriginal) {
     let result = null;
