@@ -20,7 +20,8 @@ import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-documentos-ecm-list',
-  templateUrl: './documentos-ecm-list.component.html'
+  templateUrl: './documentos-ecm-list.component.html',
+  styleUrls:['./documentos-ecm-list.css']
 })
 export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewInit {
 

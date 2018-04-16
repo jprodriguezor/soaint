@@ -48,7 +48,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
 
-  documentoRadicadoUrl: string;
+  idecmRadicado: string;
   pdfViewer = false;
 
   tabIndex = 0;
@@ -127,7 +127,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentoRadicadoUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
+                        this.idecmRadicado = res.ideEcm //`${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {

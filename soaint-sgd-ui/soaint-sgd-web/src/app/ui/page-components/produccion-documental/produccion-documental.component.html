@@ -28,7 +28,7 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="tabIndex = $event.index">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <pd-datos-generales #datosGenerales [documentoRadicadoUrl]="documentoRadicadoUrl"></pd-datos-generales>
+          <pd-datos-generales #datosGenerales [idecmDocumentoRadicado]="idecmRadicado"></pd-datos-generales>
           <br/>
         </p-tabPanel>
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
