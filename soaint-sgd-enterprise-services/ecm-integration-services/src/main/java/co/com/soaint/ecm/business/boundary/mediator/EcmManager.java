@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
@@ -297,6 +298,17 @@ public class EcmManager {
     public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Listando las Unidades Documentales");
         return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param accionUsuario Resultado se muestra segun la accion a realizar
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales");
+        return contentManager.listarUnidadesDocumentales(accionUsuario);
     }
 
     /**

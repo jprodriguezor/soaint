@@ -2,6 +2,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -379,6 +380,19 @@ public class ContentManager {
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param accionUsuario Resultado se muestra segun la accion a realizar
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.listarUnidadesDocumentales(accionUsuario, conexion.getSession());
     }
 
     /**

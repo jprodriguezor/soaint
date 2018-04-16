@@ -1,5 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -229,6 +230,14 @@ public interface ContentControl extends Serializable {
      * @return Mensaje de respuesta
      */
     MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param accionUsuario Resultado se muestra segun la accion a realizar
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario, Session session) throws BusinessException;
 
     /**
      * Metodo para listar los documentos de una Unidad Documental

@@ -4,6 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.util.SystemParameters;
@@ -616,24 +617,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
                 query += (!where ? " WHERE " : " AND ") + CMCOR_DEP_CODIGO + " = '" + dto.getCodigoDependencia() + "'";
             }
-
-            logger.info("Executing query {}", query);
-            final ItemIterable<QueryResult> queryResults = session.query(query, false);
-            final List<UnidadDocumentalDTO> unidadDocumentalDTOS;
-            unidadDocumentalDTOS = new ArrayList<>();
-
-            for (QueryResult queryResult :
-                    queryResults) {
-                String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
-                Folder folder = (Folder)
-                        session.getObject(session.getObject(objectId));
-
-                if (areDatesInRange(folder, dto)) {
-                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(),
-                            transformarUnidadDocumental(folder));
-                }
-            }
-
+            List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(query, dto, session);
             respuesta.setMensaje("Listado seleccionado correctamente");
             respuesta.setCodMensaje("00000");
             Map<String, Object> map = new HashMap<>();
@@ -644,6 +628,56 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (Exception e) {
             logger.error("Error al Listar las Unidades Documentales");
             throw new BusinessException("Error al Listar las Unidades Documentales");
+        }
+    }
+
+    private List<UnidadDocumentalDTO> listarUnidadesDocumentales(String query, UnidadDocumentalDTO dto, Session session) {
+        logger.info("Executing query {}", query);
+        final ItemIterable<QueryResult> queryResults = session.query(query, false);
+        final List<UnidadDocumentalDTO> unidadDocumentalDTOS = new ArrayList<>();
+        for (QueryResult queryResult :
+                queryResults) {
+            final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
+            final Folder folder = (Folder) session.getObject(session.getObject(objectId));
+            if (ObjectUtils.isEmpty(dto) || areDatesInRange(folder, dto)) {
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(),
+                        transformarUnidadDocumental(folder));
+            }
+        }
+        return unidadDocumentalDTOS;
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param accionUsuario Resultado se muestra segun la accion a realizar
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    @Override
+    public MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario, Session session) throws BusinessException {
+        try {
+            final MensajeRespuesta respuesta = new MensajeRespuesta();
+            String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
+                    " WHERE " + CMCOR_UD_FECHA_INICIAL + " IS NOT NULL AND " + CMCOR_UD_SOPORTE + " IS NOT NULL";
+            switch (accionUsuario) {
+                case ABRIR:
+                case REACTIVAR:
+                    query += " AND " + CMCOR_UD_CERRADA + " = 'true' AND " + CMCOR_UD_FECHA_FINAL + " IS NOT NULL" +
+                            " AND " + CMCOR_UD_FECHA_CIERRE + " IS NOT NULL AND " + CMCOR_UD_INACTIVO + " = 'true'";
+                    break;
+                case CERRAR:
+                    query += " AND " + CMCOR_UD_CERRADA + " = 'false' AND " + CMCOR_UD_INACTIVO + " = 'false'";
+                    break;
+            }
+            List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(query, null, session);
+            respuesta.setMensaje("Listado seleccionado correctamente");
+            respuesta.setCodMensaje("00000");
+            Map<String, Object> map = new HashMap<>();
+            map.put("unidadDocumental", unidadDocumentalDTOS);
+            respuesta.setResponse(map);
+            return respuesta;
+        } catch (Exception e) {
+            throw new BusinessException("ECM ERROR " + e.getMessage());
         }
     }
 
@@ -802,9 +836,9 @@ public class ContentControlAlfresco implements ContentControl {
                 String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                 return (Folder) session.getObject(session.getObject(objectId));
             }
-        }catch (CmisObjectNotFoundException noFoundException) {
+        } catch (CmisObjectNotFoundException noFoundException) {
             logger.error("La Unidad Documental con ID: {} no existe en el ECM", idUnidadDocumental);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Ocurrio un error en el Servidor");
             throw new BusinessException("Error Interno, consulte al administrador");
         }
@@ -924,7 +958,7 @@ public class ContentControlAlfresco implements ContentControl {
      * Metodo que verifica la existencia de fechas en el dto y el rango de seleccion
      *
      * @param folder {@link Folder}
-     * @param dto {@link UnidadDocumentalDTO}
+     * @param dto    {@link UnidadDocumentalDTO}
      * @return boolean {@link Boolean}
      */
     private boolean areDatesInRange(Folder folder, UnidadDocumentalDTO dto) {
@@ -1483,9 +1517,9 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Metodo para devolver la Unidad Documental
      *
-     * @param unidadDocumentalDTO     Obj Unidad Documental
-     * @param documentoDTOS           Lista de documentos a guardar
-     * @param session                 Obj conexion de alfresco
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param documentoDTOS       Lista de documentos a guardar
+     * @param session             Obj conexion de alfresco
      * @return MensajeRespuesta       Unidad Documental
      */
     @Override
