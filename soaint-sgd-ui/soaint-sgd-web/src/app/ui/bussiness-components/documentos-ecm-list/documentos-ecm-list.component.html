@@ -64,7 +64,7 @@
             </p-header>
             <p-blockUI [(blocked)]="isLoading" ></p-blockUI>
             <div class="pdf-container" >
-              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5" (after-load-complete)="docLoaded()"></pdf-viewer>
+              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5" (after-load-complete)="docLoaded()" ></pdf-viewer>
             </div>
           </p-panel>
         </div>

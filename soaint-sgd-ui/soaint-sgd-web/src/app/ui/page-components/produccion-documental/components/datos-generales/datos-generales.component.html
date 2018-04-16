@@ -362,11 +362,12 @@
 
     <div class="ui-g ui-fluid">
         <div class="ui-sm-12 ui-g-12 ui-lg-12">
-            <div style="overflow-y: scroll;max-height:500px">
-                <pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"
-                            (after-load-complete)="afterLoadComplete($event)"
-                ></pdf-viewer>
-            </div>
+         <app-documentos-ecm-list [idDocumentECM]="idecmDocumentoRadicado" [versionar] = "true" ></app-documentos-ecm-list>
+            <!--<div style="overflow-y: scroll;max-height:500px">-->
+                <!--<pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"-->
+                            <!--(after-load-complete)="afterLoadComplete($event)"-->
+                <!--&gt;</pdf-viewer>-->
+            <!--</div>-->
         </div>
     </div>
 

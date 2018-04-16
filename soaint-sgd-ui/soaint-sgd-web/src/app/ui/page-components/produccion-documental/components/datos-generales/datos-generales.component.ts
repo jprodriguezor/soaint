@@ -70,7 +70,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   @ViewChild("alertItem") alertItem;
 
   @Input()
-  documentoRadicadoUrl: string;
+  idecmDocumentoRadicado: string;
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -158,11 +158,13 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   obtenerDocumentoRadicado() {
-    if (this.documentoRadicadoUrl) {
-      this.showPdfViewer(this.documentoRadicadoUrl);
-    } else {
-      console.log('No se pudo mostrar el documento del radicado asociado');
-    }
+
+    // console.log(this.taskData);
+    // if (this.documentoRadicadoUrl) {
+    this.documentPreview = true;
+    // } else {
+    //   console.log('No se pudo mostrar el documento del radicado asociado');
+    // }
   }
 
   loadHtmlVersion() {
