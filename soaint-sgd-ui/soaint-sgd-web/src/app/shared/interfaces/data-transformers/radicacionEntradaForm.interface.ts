@@ -24,6 +24,8 @@ export interface RadicacionEntradaFormInterface extends  RadicacionFormInterface
     direccion?: any,
     provinciaEstado?: any,
     ciudad?: any,
+    ideDocumento: any,
+    idePpdDocumento: any
   }>,
   destinatario?: {
     tipoDestinatario: any,

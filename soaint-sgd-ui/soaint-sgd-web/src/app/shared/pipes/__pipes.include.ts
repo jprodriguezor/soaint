@@ -20,7 +20,7 @@ export const PIPES = [
     DateTimeFormatPipe,
     DropdownItemPipeSerie,
     DropdownItemPipeSubserie,
-    DropdownItemPipeSingle,
+    DropdownItemPipeSingle
 ];
 
 export const PIPES_AS_PROVIDERS = [

@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+ <form [formGroup]="form" *ngIf="taskData">
     <p-panel header="Datos Generales" [style]="{border: 'none'}">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom>
@@ -11,7 +11,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                                <label style="color: inherit">{{taskData.variables.usuarioProyector}}</label>
+                                <label style="color: inherit">{{taskData !== undefined ? taskData.variables.usuarioProyector: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                                <label style="color: inherit; position: relative">{{taskData.variables.nombreSede}}</label>
+                                <label style="color: inherit; position: relative">{{taskData!== undefined ? taskData.variables.nombreSede: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield" >
-                                <label style="color: inherit; position: relative">{{taskData.variables.nombreDependencia}}</label>
+                                <label style="color: inherit; position: relative">{{taskData!== undefined ? taskData.variables.nombreDependencia: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
         </div>
     </p-panel>
 
-    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="taskData.variables.numeroRadicado">
+    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="taskData!== undefined && taskData.variables.numeroRadicado">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom style="max-height: 68px">
                 <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
@@ -75,7 +75,7 @@
                         <div class="ui-g-12">
                             <span class="md-inputfield">
                   <label
-                    style="color: inherit">{{taskData.variables.fechaRadicacion | date:'dd/MM/yyyy hh:mm a'}}</label>
+                    style="color: inherit">{{(taskData !=undefined ? taskData.variables.fechaRadicacion : 0) | date:'dd/MM/yyyy hh:mm a'}}</label>
               </span>
                         </div>
                     </div>
@@ -90,12 +90,12 @@
                         <div class="ui-g-12">
                             <span class="md-inputfield">
                   <label
-                    style="color: inherit">{{taskData.variables.numeroRadicado}}</label>
+                    style="color: inherit">{{taskData !== undefined ? taskData.variables.numeroRadicado : ''}}</label>
               </span>
                         </div>
                     </div>
                 </div>
-                <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData.variables.numeroRadicado">
+                <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData !== undefined && taskData.variables.numeroRadicado">
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
                             <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;"
@@ -213,8 +213,8 @@
                     <div class="ui-g-12 md-dropdownfield">
                         <p-dropdown [options]="tiposAnexo$ | async | dropdownItem"
                                     id="tipoAnexo"
-                                    formControlName="tipoAnexo" 
-                                    placeholder="Seleccione" 
+                                    formControlName="tipoAnexo"
+                                    placeholder="Seleccione"
                                     [autoWidth]="false">
                         </p-dropdown>
                     </div>
@@ -242,7 +242,8 @@
                           accept="application/pdf"
                           chooseLabel="Adjuntar"
                           customUpload="true"
-                          [disabled]="form.get('soporte').value == 'fisico' || !form.get('tipoAnexo').value"
+                          [disabled]="form.get('soporte').value == 'fisico'"
+                          (click)="selectAnexo()"
                           (uploadHandler)="agregarAnexo($event, anexoUploader)"
                           (onError)="onErrorUpload($event)"
                         ></p-fileUpload>
@@ -361,11 +362,12 @@
 
     <div class="ui-g ui-fluid">
         <div class="ui-sm-12 ui-g-12 ui-lg-12">
-            <div style="overflow-y: scroll;max-height:500px">
-                <pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"
-                            (after-load-complete)="afterLoadComplete($event)"
-                ></pdf-viewer>
-            </div>
+         <app-documentos-ecm-list [idDocumentECM]="idecmDocumentoRadicado" [versionar] = "true" ></app-documentos-ecm-list>
+            <!--<div style="overflow-y: scroll;max-height:500px">-->
+                <!--<pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"-->
+                            <!--(after-load-complete)="afterLoadComplete($event)"-->
+                <!--&gt;</pdf-viewer>-->
+            <!--</div>-->
         </div>
     </div>
 
@@ -379,3 +381,5 @@
         </div>
     </p-footer>
 </p-dialog>
+
+<app-alert #alertItem [width]="400" [height]="150"></app-alert>

@@ -39,7 +39,7 @@ export class DatosRemitenteStateService {
     // Listas de subscripcion
     contacts: Array<any> = [];
     dependenciasGrupoList: Array<any> = [];
-    subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
+    subscriptionTipoDocumentoPersona = [];
     subscribers: Array<Subscription> = [];
 
     disabled = true;
@@ -74,7 +74,7 @@ export class DatosRemitenteStateService {
             'tipoPersona': [{value: this.dataform.tipoPersona.codigo, disabled: !this.disabled}, Validators.required],
             'nit': [{value: this.dataform.nit, disabled: !this.disabled}],
             'actuaCalidad': [{value: this.dataform.actuaCalidad.codigo, disabled: !this.disabled}],
-            'tipoDocumento': [{value: this.dataform.tipoDocumento.codigo, disabled: !this.disabled}],
+            'tipoDocumento': [{value: null, disabled: !this.disabled}],
             'razonSocial': [{value: this.dataform.razonSocial, disabled: !this.disabled}, Validators.required],
             'nombreApellidos': [{value: this.dataform.nombreApellidos, disabled: !this.disabled}, Validators.required],
             'nroDocumentoIdentidad': [{value: this.dataform.nroDocumentoIdentidad, disabled: !this.disabled}],
@@ -132,8 +132,9 @@ export class DatosRemitenteStateService {
         this.visibility['tipoDocumento'] = true;
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
-        }).unsubscribe();
+          const tipoDocumento = this.subscriptionTipoDocumentoPersona.find(_item => _item.codigo === this.dataform.tipoDocumento.codigo);
+          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[tipoDocumento]);
+        });
         this.visibility['personaJuridica'] = true;
       } else if (value === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['nombreApellidos'] = true;
@@ -141,11 +142,10 @@ export class DatosRemitenteStateService {
         this.visibility['nroDocumentoIdentidad'] = true;
         this.visibility['datosContacto'] = true;
         this.visibility['tipoDocumento'] = true;
-
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
           this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
-        }).unsubscribe();
+        });
 
       }
     }

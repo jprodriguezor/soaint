@@ -10,6 +10,7 @@ import {
 
 import {RadicacionBase} from "./radicacionBase";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
+import {DireccionDTO} from "../../domain/DireccionDTO";
 
 export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
@@ -55,6 +56,13 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
         nroPlaca: contact.placa || null,
         codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
         codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
+        /*codBis:contact.bis ? contact.bis : null,
+        codOrientacion : contact.orientacion ? contact.orientacion : null,
+        noVia:contact.noVia,
+        codPrefijoCuadrantSe: contact.prefijoCuadrante_se ? contact.prefijoCuadrante_se : null,
+        codOrientacionSe: contact.orientacion_se ? contact.orientacion_se : null,
+        codTipoComplemento: contact.complementoTipo ? contact.complementoTipo : null,
+        codTipoComplementoAdicional: contact.complementoAdicional ? contact.complementoAdicional : null,*/
         codPostal: null,
         direccion: contact.direccion || null,
         celular: contact.celular || null,

@@ -14,7 +14,7 @@ export class UnidadDocumentalApiService {
 
   Listar(payload: any): Observable<UnidadDocumentalDTO[]> {
     return this._api.post(environment.listar_unidad_documental_endpoint, payload)
-    .map((resp) => resp.response);
+    .map((resp) => resp.response.unidadDocumental);
   }
 
   GetDetalleUnidadDocumental(payload: any) {
@@ -24,5 +24,15 @@ export class UnidadDocumentalApiService {
    crear(unidadDocumental: UnidadDocumentalDTO) {
      return this._api.post('', unidadDocumental);
    }
+
+  abrirUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
+    return this._api.post(environment.abrir_unidad_documental_endpoint, payload)
+  }
+  cerrarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
+    return this._api.post(environment.cerrar_unidad_documental_endpoint, payload);
+  }
+  reactivarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
+    return this._api.post(environment.reactivar_unidad_documental_endpoint, payload);
+  }
 
 }

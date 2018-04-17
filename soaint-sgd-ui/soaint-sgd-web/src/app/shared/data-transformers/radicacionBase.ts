@@ -29,7 +29,7 @@ export  abstract class RadicacionBase {
     const task = this.source.task;
 
     const correspondenciaDto: CorrespondenciaDTO = {
-      ideDocumento: null,
+      ideDocumento: generales.ideDocumento,
       descripcion: generales.asunto,
       tiempoRespuesta: generales.tiempoRespuesta,
       codUnidadTiempo: generales.unidadTiempo ? generales.unidadTiempo.codigo : null,
@@ -49,9 +49,7 @@ export  abstract class RadicacionBase {
       nroGuia: generales.numeroGuia ? generales.numeroGuia : null,
       fecVenGestion: null,
       codEstado: null,
-      inicioConteo: generales.inicioConteo || '',
-      codClaseEnvio:null,
-      codModalidadEnvio:null
+      inicioConteo: generales.inicioConteo || ''
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
@@ -69,7 +67,7 @@ export  abstract class RadicacionBase {
   getDocumento(): DocumentoDTO {
     const generales = this.source.generales;
     return {
-      idePpdDocumento: null,
+      idePpdDocumento: this.source.generales.idePpdDocumento,
       codTipoDoc: generales.tipologiaDocumental ? generales.tipologiaDocumental.codigo : null,
       fecDocumento: this.date.toISOString(),
       asunto: generales.asunto,
@@ -84,7 +82,7 @@ export  abstract class RadicacionBase {
     const referidosList = [];
     this.source.radicadosReferidos.forEach(referido => {
       referidosList.push({
-        ideReferido: null,
+        ideReferido: referido.ideReferido,
         nroRadRef: referido.nombre
       });
     });
@@ -96,7 +94,7 @@ export  abstract class RadicacionBase {
     this.source.descripcionAnexos.forEach((anexo) => {
       console.log(anexo);
       anexoList.push({
-        ideAnexo: null,
+        ideAnexo: anexo.ideAnexo,
         codAnexo: anexo.tipoAnexo ? anexo.tipoAnexo.codigo : null,
         descripcion: anexo.descripcion,
         codTipoSoporte: anexo.soporteAnexo.codigo
@@ -128,7 +126,7 @@ export  abstract class RadicacionBase {
     };
   }
 
-  getDatosContactos(): Array<ContactoDTO>{
+  getDatosContactos(): Array<ContactoDTO> {
 
     return null;
   }

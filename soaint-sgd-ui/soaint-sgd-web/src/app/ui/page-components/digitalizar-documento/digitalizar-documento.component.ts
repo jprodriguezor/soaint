@@ -103,7 +103,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
       }));
 
     } else {
-
       let _dependencia;
       this._asignacionSandBox.obtnerDependenciasPorCodigos(this.correspondencia.codDependencia).switchMap((result) => {
           _dependencia = result.dependencias[0];
@@ -117,7 +116,9 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           formData.append('principalFileName', this.principalFile);
           if(_dependencia) {
             formData.append('sede', _dependencia.nomSede);
+            formData.append('codigoSede', _dependencia.codSede);
             formData.append('dependencia', _dependencia.nombre);
+            formData.append('codigoDependencia', _dependencia.codigo);
           }
           if(_agente)
             formData.append('nombreRemitente', _agente.nombre);
@@ -150,8 +151,8 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
               this._store.dispatch(new PushNotificationAction({
                 severity: 'error', summary: 'DOCUMENTO DUPLICADO, NO PUEDE ADJUNTAR EL DOCUMENTO'
               }));
-              (<FileUpload>(this.uploader)).disabled = true;
-              this.uploadDisabled = true;
+              // (<FileUpload>(this.uploader)).disabled = true;
+              // this.uploadDisabled = true;
               break;
             case '3333':
               this._store.dispatch(new PushNotificationAction({

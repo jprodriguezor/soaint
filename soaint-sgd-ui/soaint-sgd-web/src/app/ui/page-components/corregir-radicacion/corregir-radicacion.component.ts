@@ -30,6 +30,7 @@ import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers
 import { CorrespondenciaApiService } from '../../../infrastructure/api/correspondencia.api';
 import { AnexoDTO } from '../../../domain/anexoDTO';
 import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 
 @Component({
   selector: 'app-corregir-radicacion',
@@ -45,6 +46,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   formRemitente: FormGroup;
 
   task: TareaDTO;
+  closedTask:  Observable<boolean> ;
   activeTaskUnsubscriber: Subscription;
   readonly = false;
 
@@ -97,6 +99,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   }
 
   Init() {
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
         this.task = activeTask;
         this.restore();
@@ -171,9 +174,12 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this.formsTabOrder.push(this.stateDestinatario.form);
   }
 
-  actualizarComunicacion() {
+  actualizarComunicacion(): void {
     const payload = this.GetComunicacionPayload();
-    this._comunicacionOficialApi.actualizarComunicacion(payload);
+    this._correspondenciaService.actualizarComunicacion(payload)
+    .subscribe(response => {
+      console.log(response);      
+    });
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
@@ -181,10 +187,9 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
       parametros: {
       }
     });
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
-  GetComunicacionPayload(): any {
+  GetComunicacionPayload(): ComunicacionOficialDTO {
     const radicacionEntradaFormPayload: any = {
       destinatario: this.stateDestinatario.form.value,
       generales: JSON.parse(JSON.stringify(this.stateGenerales.form.getRawValue())),

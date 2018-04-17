@@ -69,9 +69,9 @@ import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remit
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
-import {DropdownItemPipeSerie, DropdownItemPipeSubserie} from "./shared/pipes/dropdown-item";
-import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
-
+import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
 
 @NgModule({
   imports: [
@@ -149,6 +149,7 @@ import { FormEnvioComponent } from './ui/page-components/radicacion-salida/compo
     ...DIRECTIVES,
     ...UI_COMPONENTS,
     ...PIPES,
+    DireccionToTextPipe,
     DistribucionFisicaComponent,
     CargarPlanillasComponent,
     EditarPlanillaComponent,
@@ -180,8 +181,7 @@ import { FormEnvioComponent } from './ui/page-components/radicacion-salida/compo
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
     DatosDestinatarioEditComponent,
-    FormEnvioComponent,
-
+    AlertComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -191,6 +191,7 @@ import { FormEnvioComponent } from './ui/page-components/radicacion-salida/compo
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,

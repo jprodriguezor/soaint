@@ -145,4 +145,28 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
+    public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/abrirUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response cerrarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/cerrarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response reactivarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/reactivarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
 }
