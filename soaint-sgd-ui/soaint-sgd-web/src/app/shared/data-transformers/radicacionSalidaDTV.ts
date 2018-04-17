@@ -68,6 +68,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
         indOriginal: agenteExt.tipoDestinatario ? agenteExt.tipoDestinatario.codigo : null,
+        datosContactoList:[],
       };
       agentes.push(tipoAgente);
     });

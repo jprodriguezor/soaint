@@ -389,7 +389,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   addDestinatario(newDestinatario) {
 
-    console.log(newDestinatario);
+    console.log("nuevo destinatario",newDestinatario);
 
     if (newDestinatario) {
 

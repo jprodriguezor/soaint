@@ -56,7 +56,8 @@ export class AgenteExternoDTV implements AgenteDTV{
       fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
       indOriginal: null,
-      codEstado: null
+      codEstado: null,
+      //datosContactoList: remitente.
     };
 
   }

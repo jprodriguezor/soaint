@@ -71,6 +71,8 @@ import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.se
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
 import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
+
 import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
 
 @NgModule({
@@ -181,7 +183,8 @@ import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/dir
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
     DatosDestinatarioEditComponent,
-    AlertComponent
+    AlertComponent,
+    FormEnvioComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

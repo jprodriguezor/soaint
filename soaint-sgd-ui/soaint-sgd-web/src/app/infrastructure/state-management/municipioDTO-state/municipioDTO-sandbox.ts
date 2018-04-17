@@ -30,11 +30,10 @@ export class Sandbox extends CacheResponse{
           })
         };
 
-        this.cacheResponse(payload,municipios);
 
         return municipios;
 
-      }));
+      }),_endpoint);
 
 
   }

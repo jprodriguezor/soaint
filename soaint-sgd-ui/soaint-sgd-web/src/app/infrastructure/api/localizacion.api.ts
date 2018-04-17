@@ -19,7 +19,6 @@ export class LocalizacionApiService extends CacheResponse {
     const endpoint = environment.municipio_endpoint;
     return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload, response);
           return response.municipios;
         }), endpoint);
   }
@@ -28,7 +27,6 @@ export class LocalizacionApiService extends CacheResponse {
     const endpoint = environment.departamento_endpoint;
     return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload, response);
           return response.departamentos;
         }), endpoint);
   }
