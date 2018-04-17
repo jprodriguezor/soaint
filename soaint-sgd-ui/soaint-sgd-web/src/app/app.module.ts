@@ -71,6 +71,7 @@ import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.se
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
 import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
 
 @NgModule({
   imports: [
@@ -148,6 +149,7 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     ...DIRECTIVES,
     ...UI_COMPONENTS,
     ...PIPES,
+    DireccionToTextPipe,
     DistribucionFisicaComponent,
     CargarPlanillasComponent,
     EditarPlanillaComponent,
