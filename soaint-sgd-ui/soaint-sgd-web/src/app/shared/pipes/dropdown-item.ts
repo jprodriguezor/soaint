@@ -22,6 +22,7 @@ export class DropdownItemPipeSingle implements PipeTransform {
         return {label: item.nombre, value: item.codigo};
       });
     }
+    return [];
   }
 }
 

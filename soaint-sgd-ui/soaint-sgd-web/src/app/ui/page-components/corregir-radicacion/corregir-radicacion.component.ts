@@ -31,6 +31,9 @@ import { CorrespondenciaApiService } from '../../../infrastructure/api/correspon
 import { AnexoDTO } from '../../../domain/anexoDTO';
 import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
+import { ConstanteDTO } from '../../../domain/constanteDTO';
+import { TIPO_AGENTE_DESTINATARIO } from '../../../shared/bussiness-properties/radicacion-properties';
+import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 
 @Component({
   selector: 'app-corregir-radicacion',
@@ -48,6 +51,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   task: TareaDTO;
   closedTask:  Observable<boolean> ;
   activeTaskUnsubscriber: Subscription;
+  validDatosGeneralesUnsubscriber: Subscription;
   readonly = false;
 
   radicacionEntradaFormData: RadicacionEntradaFormInterface = null;
@@ -158,6 +162,10 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
     this.stateGenerales.Init();
     this.formsTabOrder.push(this.stateGenerales.form);
+    this.validDatosGeneralesUnsubscriber = this.stateGenerales.form.statusChanges.filter(value => value === 'VALID').first()
+    .subscribe(() => {
+      this._store.dispatch(new LoadDatosRemitenteAction())
+  });
   }
 
   InitRemitente() {
@@ -178,7 +186,8 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     const payload = this.GetComunicacionPayload();
     this._correspondenciaService.actualizarComunicacion(payload)
     .subscribe(response => {
-      console.log(response);      
+      this.disableEditionOnForms();
+      console.log(response);
     });
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
@@ -207,6 +216,13 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     return comunicacionOficialDTV.getComunicacionOficial();
   }
 
+  disableEditionOnForms() {
+    this.disabled = true;
+    this.stateGenerales.form.disable();
+    this.stateRemitente.form.disable();
+    this.stateDestinatario.form.disable();
+  }
+
   HasDocuments() {
     if (this.comunicacion && this.comunicacion.ppdDocumentoList) {
       return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
@@ -216,6 +232,16 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   IsDisabled() {
     return (this.formsTabOrder[this.tabIndex] && this.formsTabOrder[this.tabIndex].valid);
+  }
+
+  EsInvalido() {
+    if (this.formsTabOrder.length) {
+      const formularioInvalido = this.formsTabOrder.find(_form => _form.valid === false);
+      if (formularioInvalido) {
+        return true;
+      }
+    }
+    return false;
   }
 
   uploadVersionDocumento(doc: VersionDocumentoDTO) {
