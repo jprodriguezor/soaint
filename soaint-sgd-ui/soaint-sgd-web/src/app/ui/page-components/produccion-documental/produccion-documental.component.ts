@@ -215,9 +215,9 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     continuarProceso() {
 
-      if(this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0){
+      if(!this.ExistsDestinatario()){
 
-        this.messageAlert.ShowMessage("Debe introducir al menos un destinatario");
+        this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe introducir al menos un destinatario'}));
         return false;
       }
 
@@ -244,11 +244,18 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this.terminarTarea();
     }
 
+    private ExistsDestinatario(){
+
+     return this.datosContacto.listaDestinatariosExternos ? this.datosContacto.listaDestinatariosExternos.length : 0 +
+            this.datosContacto.listaDestinatariosInternos ? this.datosContacto.listaDestinatariosInternos.length : 0 > 0;
+
+    }
+
   aprobarDocumento() {
 
-    if(this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0){
+    if(!this.ExistsDestinatario()){
 
-      this.messageAlert.ShowMessage("Debe introducir al menos un destinatario");
+      this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe introducir al menos un destinatario'}));
       return false;
     }
       switch (this.status) {
