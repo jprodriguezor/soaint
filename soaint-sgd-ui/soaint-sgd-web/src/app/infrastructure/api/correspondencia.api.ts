@@ -11,10 +11,13 @@ import { AnexoFullDTO } from '../../domain/anexoFullDTO';
 export class CorrespondenciaApiService {
 
   constructor(private _api: ApiBase) {
+
   }
 
-  // ListarAnexos(nroRadicado: string): Observable<AnexoFullDTO[]> {
-  //   return this._api.list(environment.listarAnexos_endpoint + nroRadicado)
-  //   .map((resp) => resp);
-  // }
+  actualizarComunicacion(payload: any) {
+      this._api.put(environment.actualizarComunicacion_endpoint, payload)
+      .subscribe(result => {
+        console.log(result);
+      });
+  }
 }

@@ -33,6 +33,9 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+
+
     this.infoUnsubscriber = Observable.combineLatest(
       this._store.select(getActiveTask),
       this._store.select(getProcessEntities)
@@ -43,6 +46,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
         this._changeDetector.detectChanges();
       }
     });
+
 
     this.activeTaskUnsubscriber = Observable.combineLatest(
       this._store.select(getActiveTask),

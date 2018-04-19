@@ -56,8 +56,6 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   agentesDestinatario: any;
   disabled = true;
 
-  radicacion:any;
-
   stateGenerales: DatosGeneralesStateService = null;
   stateRemitente: DatosRemitenteStateService = null;
   stateDestinatario: DatosDestinatarioStateService = null;
@@ -175,7 +173,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   actualizarComunicacion() {
     const payload = this.GetComunicacionPayload();
-    this._comunicacionOficialApi.actualizarComunicacion(payload);
+    this._correspondenciaService.actualizarComunicacion(payload);
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,

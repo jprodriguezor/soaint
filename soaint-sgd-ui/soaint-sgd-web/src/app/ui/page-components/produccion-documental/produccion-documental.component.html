@@ -1,6 +1,6 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
-    <div customActions>
+    <div customActions  *ngIf="!(closedTask | async)">
       <button pButton type="button" label="Guardar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"

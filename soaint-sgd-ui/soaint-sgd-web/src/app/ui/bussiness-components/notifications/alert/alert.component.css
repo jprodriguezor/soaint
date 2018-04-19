@@ -1,0 +1,15 @@
+.text-center{
+  text-align: center;
+}
+
+.alert-close{
+  width: auto;
+  margin-bottom: 10px;
+  margin-left: 12px;
+}
+
+.alert-text{
+  height: auto;
+  min-height: 30px;
+  width: 100%;
+}

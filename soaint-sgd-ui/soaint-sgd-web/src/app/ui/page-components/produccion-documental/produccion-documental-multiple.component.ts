@@ -87,8 +87,10 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
 
     const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
 
-    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(() => {
+    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(response => {
       this.form.disable();
+
+      console.log(response);
 
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
@@ -198,13 +200,13 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
       else{
-        afterTaskComplete.subscribe( (taskGenerated) => {
+     /*  afterTaskComplete.subscribe( (taskGenerated) => {
 
           // write your implementation here
 
         // this._taskSandBox.startTask(taskGenerated);
 
-        });
+        });*/
       }
 
 
@@ -274,6 +276,8 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   ngOnDestroy() {
     this.subscribers.forEach(subsc => subsc.unsubscribe());
 
-    afterTaskComplete.unsubscribe();
+    this.authPayloadUnsubscriber.unsubscribe();
+
+   // afterTaskComplete.unsubscribe();
   }
 }

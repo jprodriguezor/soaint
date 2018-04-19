@@ -192,6 +192,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
             tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
             tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
             tempDestinatario.nombre = (agente.nombre) ? agente.nombre : '';
+            tempDestinatario.nroDocumentoIdentidad = agente.nroDocuIdentidad;
             tempDestinatario.tipoDocumento = this.searchTipoDocumento(agente.codTipDocIdent);
             tempDestinatario.nit = (agente.nit) ? agente.nit : '';
             tempDestinatario.actuaCalidad = (agente.codEnCalidad) ? agente.codEnCalidad : null;

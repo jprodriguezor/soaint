@@ -434,7 +434,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.form.valid) {
 
       const principal = this.form.get('principal');
-      if (principal.value === true && this.hasDireccionPrincipal() === true ){
+      if(principal.value === true && this.hasDireccionPrincipal() === true ){
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
@@ -479,6 +479,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
      .subscribe((values) => {
        this.paises = values;
        this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
+
        setTimeout(() => subscription.unsubscribe());
      });
 
@@ -494,37 +495,26 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
 
   CompletarDatosContacto() {
 
-    this.paisSuggestions$
-    .subscribe((result: any) => {
-      this.contacts = this.contacts
-      .reduce((_listado, _contact) => {
-        const pais = result.find(_item => _item.codigo === _contact.pais.codigo);
-        _contact.pais.nombre = (pais) ? pais.nombre : '';
-        _listado.push(_contact);
-        return _listado;
-      }, []);
-    });
-
     this._localizacionService.ListarMunicipiosActivos({})
     .subscribe((result: any) => {
       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
-        const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-        _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-        _listado.push(_contact);
-        return _listado;
+        if (result) {
+          const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+          if (municipio) {
+            const departamento = municipio.departamento;
+            const pais = departamento.pais;
+            _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
+            _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
+            _contact.pais.nombre = (pais) ? pais.nombre : '';
+            _listado.push(_contact);
+          }
+          return _listado;
+        } else {
+          return this.contacts;
+        }
       }, []);
+      this._changeDetectorRef.detectChanges();
     });
-
-    this._localizacionService.ListarDepartamentosActivos({})
-    .subscribe((result: any) => {
-      this.contacts = this.contacts
-      .reduce((_listado, _contact) => {
-        const departamento = result.find(_item => _item.codigo === _contact.departamento.codigo);
-        _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-        _listado.push(_contact);
-        return _listado;
-      }, []);
-    });
-   }
+  }
 }

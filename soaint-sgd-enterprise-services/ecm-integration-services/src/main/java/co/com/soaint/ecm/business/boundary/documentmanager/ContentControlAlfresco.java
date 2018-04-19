@@ -8,6 +8,7 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import lombok.NoArgsConstructor;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -893,13 +894,42 @@ public class ContentControlAlfresco implements ContentControl {
         List<DocumentoDTO> documentoDTOList = new ArrayList<>();
         try {
             //Se obtiene la carpeta dentro del ECM al que va a ser subido el documento
-            Carpeta folderAlfresco;
             logger.info("### Se elige la carpeta donde se va a guardar el documento principal..");
             logger.info("###------------ Se elige la sede donde se va a guardar el documento principal..");
 
-            folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
+            if (ObjectUtils.isEmpty(documentoDTO.getCodigoDependencia())) {
+                throw new BusinessException("No se ha identificado el codigo de la Dependencia");
+            }
 
-            if (folderAlfresco.getFolder() != null) {
+            Carpeta folderAlfresco;
+            //folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
+            folderAlfresco = obtenerCarpetaPorCodigoDependencia(documentoDTO.getCodigoDependencia(), session);
+
+            if (!ObjectUtils.isEmpty(folderAlfresco.getFolder())) {
+
+                logger.info("Se busca si existe la carpeta de Produccion documental para el año en curso dentro de la dependencia " + documentoDTO.getDependencia());
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                List<Carpeta> carpetasDeLaDependencia = obtenerCarpetasHijasDadoPadre(folderAlfresco);
+
+                Carpeta carpetaTarget;
+
+                Optional<Carpeta> produccionDocumental = carpetasDeLaDependencia.stream()
+                        .filter(p -> p.getFolder().getName().equals(carpetaCrearBuscar + year)).findFirst();
+                carpetaTarget = getCarpeta(carpetaCrearBuscar, Optional.of(folderAlfresco), year, produccionDocumental);
+
+                idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
+                //Creando el mensaje de respuesta
+                response.setCodMensaje("0000");
+                response.setMensaje("Documento añadido correctamente");
+                logger.info(AVISO_CREA_DOC_ID + idDocumento);
+            } else {
+                logger.info(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+                response.setCodMensaje("4444");
+                response.setMensaje(NO_EXISTE_DEPENDENCIA + documentoDTO.getDependencia());
+            }
+
+            /*if (folderAlfresco.getFolder() != null) {
                 logger.info("###------------------- Se obtienen todas las dependencias de la sede..");
                 List<Carpeta> carpetasHijas = obtenerCarpetasHijasDadoPadre(folderAlfresco);
 
@@ -935,7 +965,7 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.info(NO_EXISTE_SEDE + documentoDTO.getSede());
                 response.setCodMensaje("4444");
                 response.setMensaje(NO_EXISTE_SEDE + documentoDTO.getSede());
-            }
+            }*/
 
         } catch (CmisContentAlreadyExistsException ccaee) {
             logger.error(ECM_ERROR_DUPLICADO, ccaee);
@@ -948,15 +978,16 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (Exception e) {
             logger.error(ERROR_TIPO_EXCEPTION, e);
             response.setCodMensaje("2222");
-            response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
+            response.setMensaje(e.getMessage());
+            //response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
     }
 
-    private Carpeta obtenerCarpetaPorCodigoSede(String codigoSede, Session session) {
+    private Carpeta obtenerCarpetaPorCodigoDependencia(String codigoDependencia, Session session) {
         Carpeta folder = new Carpeta();
         try {
             String queryString = "SELECT * FROM cmcor:CM_Unidad_Administrativa" +
-                    " WHERE " + CMCOR_CODIGOUNIDADAMINPADRE + " = '" + codigoSede + "'" +
+                    " WHERE " + CMCOR_CODIGODEPENDENCIA + " = '" + codigoDependencia + "'" +
                     " AND cmis:objectTypeId = 'F:cmcor:CM_Unidad_Administrativa'";
             ItemIterable<QueryResult> results = session.query(queryString, false);
             for (QueryResult qResult : results) {

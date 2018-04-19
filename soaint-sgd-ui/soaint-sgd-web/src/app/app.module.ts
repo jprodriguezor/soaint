@@ -69,7 +69,8 @@ import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remit
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
-
+import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
+import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 
 @NgModule({
   imports: [
@@ -177,7 +178,8 @@ import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental
     DistribucionComponent,
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
-    DatosDestinatarioEditComponent
+    DatosDestinatarioEditComponent,
+    AlertComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -187,6 +189,7 @@ import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental
     ...LAYOUT_COMPONENTS_PROVIDERS,
     ...BUSSINESS_COMPONENTS_PROVIDERS,
     ...PIPES_AS_PROVIDERS,
+    ...UI_STATE_SERVICES,
     ConfirmationService,
     ProcesoService,
     SolicitudCreacionUdService,

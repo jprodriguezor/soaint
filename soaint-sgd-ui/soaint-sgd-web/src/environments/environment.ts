@@ -79,6 +79,7 @@ export const environment = {
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  obtenerComunicacionfull_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/full`,
   obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
@@ -120,6 +121,9 @@ export const environment = {
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
+  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
+  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
 };
 
 export const process_info = {
@@ -152,7 +156,7 @@ export const process_info = {
     show: false
   },
   'proceso.gestion-unidades-documentales': {
-    displayValue: 'G0estión de unidades documentales',
+    displayValue: 'Gestión de unidades documentales',
     show: true
   },
   'process.archivar-documento': {
