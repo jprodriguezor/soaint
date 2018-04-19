@@ -229,15 +229,7 @@ public interface ContentControl extends Serializable {
      *
      * @return Mensaje de respuesta
      */
-    MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
-
-    /**
-     * Listar las Unidades Documentales del ECM
-     *
-     * @param accionUsuario Resultado se muestra segun la accion a realizar
-     * @return MensajeRespuesta Mensaje de respuesta
-     */
-    MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario, Session session) throws BusinessException;
+    MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
 
     /**
      * Metodo para listar los documentos de una Unidad Documental

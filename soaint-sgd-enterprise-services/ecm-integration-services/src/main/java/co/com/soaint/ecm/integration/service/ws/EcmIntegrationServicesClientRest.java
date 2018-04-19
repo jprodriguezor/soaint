@@ -328,34 +328,13 @@ public class EcmIntegrationServicesClientRest {
      * @return MensajeRespuesta Mensaje de respuesta
      */
     @POST
-    @Path("/listarUnidadesDocumentalesECM/")
-    public MensajeRespuesta listarUnidadesDocumentalesECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+    @Path("/listarUnidadDocumentalECM/")
+    public MensajeRespuesta listarUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
         logger.info("processing rest request - Listar Unidades Documentales ECM");
         try {
-            return fEcmManager.listarUnidadesDocumentales(unidadDocumentalDTO);
+            return fEcmManager.listarUnidadDocumental(unidadDocumentalDTO);
         } catch (Exception e) {
-            logger.error("Error en operacion - listarUnidadesDocumentalesECM(unidadDocumentalDTO) ", e);
-            MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
-            return respuesta;
-        }
-    }
-
-    /**
-     * Listar las Unidades Documentales del ECM
-     *
-     * @param accionUsuario Resultado se muestra segun la accion a realizar
-     * @return MensajeRespuesta Mensaje de respuesta
-     */
-    @GET
-    @Path("/listarUnidadesDocumentalesECM/{accion}")
-    public MensajeRespuesta listarUnidadesDocumentalesECM(@PathParam("accion") AccionUsuario accionUsuario) {
-        logger.info("processing rest request - Listar Unidades Documentales ECM");
-        try {
-            return fEcmManager.listarUnidadesDocumentales(accionUsuario);
-        } catch (Exception e) {
-            logger.error("Error en operacion - listarUnidadesDocumentalesECM(accionUsuario) ", e);
+            logger.error("Error en operacion - listarUnidadDocumentalECM(unidadDocumentalDTO) ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());

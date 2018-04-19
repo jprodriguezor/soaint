@@ -375,24 +375,11 @@ public class ContentManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
-    }
-
-    /**
-     * Listar las Unidades Documentales del ECM
-     *
-     * @param accionUsuario Resultado se muestra segun la accion a realizar
-     * @return MensajeRespuesta Mensaje de respuesta
-     */
-    public MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.listarUnidadesDocumentales(accionUsuario, conexion.getSession());
+        return contentControl.listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
     }
 
     /**
@@ -414,7 +401,7 @@ public class ContentManager {
      * @param idUnidadDocumental   Id de la unidad documental
      */
     public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());

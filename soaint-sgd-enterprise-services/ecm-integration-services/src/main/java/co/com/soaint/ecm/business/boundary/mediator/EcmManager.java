@@ -295,20 +295,9 @@ public class EcmManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
         logger.info("### Listando las Unidades Documentales");
-        return contentManager.listarUnidadesDocumentales(unidadDocumentalDTO);
-    }
-
-    /**
-     * Listar las Unidades Documentales del ECM
-     *
-     * @param accionUsuario Resultado se muestra segun la accion a realizar
-     * @return MensajeRespuesta Mensaje de respuesta
-     */
-    public MensajeRespuesta listarUnidadesDocumentales(AccionUsuario accionUsuario) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales");
-        return contentManager.listarUnidadesDocumentales(accionUsuario);
+        return contentManager.listarUnidadDocumental(unidadDocumentalDTO);
     }
 
     /**
