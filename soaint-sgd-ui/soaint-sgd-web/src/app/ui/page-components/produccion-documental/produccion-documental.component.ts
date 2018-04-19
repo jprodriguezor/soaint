@@ -24,6 +24,7 @@ import {DocumentDownloaded} from './events/DocumentDownloaded';
 import {environment} from '../../../../environments/environment';
 import {DocumentUploaded} from './events/DocumentUploaded';
 import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {AlertComponent} from "../../bussiness-components/notifications/alert/alert.component";
 
 @Component({
   selector: 'produccion-documental',
@@ -43,6 +44,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   @ViewChild('datosGenerales') datosGenerales;
   @ViewChild('datosContacto') datosContacto;
   @ViewChild('gestionarProduccion') gestionarProduccion;
+  @ViewChild('messageAlert') messageAlert:AlertComponent;
 
   tipoComunicacionSelected: ConstanteDTO;
   funcionarioLog: FuncionarioDTO;
@@ -212,6 +214,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   }
 
     continuarProceso() {
+
+      if(this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0){
+
+        this.messageAlert.ShowMessage("Debe introducir al menos un destinatario");
+        return false;
+      }
+
         if (!this.hasAprobador()) {
             console.log(`No hay aprobador`);
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe especificar al menos un aprobador'}));
@@ -236,6 +245,12 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     }
 
   aprobarDocumento() {
+
+    if(this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0){
+
+      this.messageAlert.ShowMessage("Debe introducir al menos un destinatario");
+      return false;
+    }
       switch (this.status) {
           case 1 : {
               this.taskVariables = {aprobado : 1, listaProyector : [], listaRevisor : [], listaAprobador : [] };
@@ -284,7 +299,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         let rules:boolean[] = [
           this.status > 1  || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length),
           this.isValid(),
-          this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+        //  this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
         ];
 
         return rules.every( condition => condition);
@@ -302,7 +317,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
       let rules:boolean[] = [
         valid && this.datosGenerales.isValid(),
-        this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
       ];
 
 
