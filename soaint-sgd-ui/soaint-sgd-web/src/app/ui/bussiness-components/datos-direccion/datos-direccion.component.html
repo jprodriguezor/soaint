@@ -58,7 +58,7 @@
                 <div class="ui-g-12" *ngIf="contact.direccion">
                   <i class="fa ui-icon-location-on"></i>
                   <span class="table-text-custom">
-                        {{ contact.direccion }}
+                        {{ contact.direccion | direccionToText }}
                         </span>
                 </div>
 
@@ -289,6 +289,8 @@
                           placeholder="Seleccione"
                           [autoWidth]="false"
                           [dynamicDisable]="!showDireccionForm"
+                          inputId="tipoVia"
+                          [lazy]="false"
               >
               </p-dropdown>
             </div>
@@ -319,6 +321,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          inputId="prefijoCuadrante"
               >
               </p-dropdown>
             </div>
@@ -337,6 +340,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          inputId="bis"
               >
               </p-dropdown>
             </div>
@@ -355,6 +359,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          inputId="orientacion"
               >
               </p-dropdown>
             </div>
@@ -384,6 +389,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          inputId="prefijoCuadrante_se"
               >
               </p-dropdown>
             </div>
@@ -413,6 +419,7 @@
                           placeholder="Seleccione"
                           [filter]="true"
                           [autoWidth]="false"
+                          inputId="orientacion_se"
               >
               </p-dropdown>
             </div>
@@ -427,6 +434,7 @@
             <div class="ui-g-12 md-dropdownfield">
               <p-dropdown [options]="tipoComplementoSuggestions$ | async | dropdownItem"
                           id="complementoTipo"
+                          inputId="complementoTipo"
                           placeholder="Seleccione"
                           formControlName="complementoTipo"
                           [filter]="true"
@@ -453,6 +461,7 @@
             <p-checkbox name="cg" label="Principal"
                         formControlName="principal" id="principal" binary="true"></p-checkbox>
           </div>
+
         </div>
       </div>
     </div>
@@ -461,12 +470,12 @@
   <div class="ui-g-12" *ngIf="showContactForm === true">
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
       <div style="padding: 20px 0 0 10px">
-        <p-checkbox name="cg" [hidden]="!showCheckDireccionForm" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true"></p-checkbox>
+        <p-checkbox name="cg" [hidden]="!showCheckDireccionForm" label="Agregar Dirección" [(ngModel)]="showDireccionForm" binary="true" (onChange)="toggleDireccionForm($event)"></p-checkbox>
       </div>
     </div>
 
     <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" style="text-align: right; padding-top: 20px">
-      <button pButton type="button" class="ui-button-info" [disabled]="form.pristine"
+      <button pButton type="button" class="ui-button-info" [disabled]="form.invalid"
               label="Aceptar" (click)="save();"
               style="width: auto; margin-left: 12px; margin-bottom: 10px"
       ></button>

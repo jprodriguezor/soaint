@@ -14,6 +14,7 @@ import {AgentDTO} from "../../domain/agentDTO";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacionForm.interface";
 import {AgenteFactoryDTV} from "./agentesDTV";
+import { DireccionDTO } from "../../domain/DireccionDTO";
 
 export  abstract class RadicacionBase {
 
@@ -29,7 +30,7 @@ export  abstract class RadicacionBase {
     const task = this.source.task;
 
     const correspondenciaDto: CorrespondenciaDTO = {
-      ideDocumento: null,
+      ideDocumento: generales.ideDocumento,
       descripcion: generales.asunto,
       tiempoRespuesta: generales.tiempoRespuesta,
       codUnidadTiempo: generales.unidadTiempo ? generales.unidadTiempo.codigo : null,
@@ -49,7 +50,7 @@ export  abstract class RadicacionBase {
       nroGuia: generales.numeroGuia ? generales.numeroGuia : null,
       fecVenGestion: null,
       codEstado: null,
-      inicioConteo: generales.inicioConteo || ''
+      inicioConteo: generales.inicioConteo || '',
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
@@ -67,7 +68,7 @@ export  abstract class RadicacionBase {
   getDocumento(): DocumentoDTO {
     const generales = this.source.generales;
     return {
-      idePpdDocumento: null,
+      idePpdDocumento: this.source.generales.idePpdDocumento,
       codTipoDoc: generales.tipologiaDocumental ? generales.tipologiaDocumental.codigo : null,
       fecDocumento: this.date.toISOString(),
       asunto: generales.asunto,
@@ -82,7 +83,7 @@ export  abstract class RadicacionBase {
     const referidosList = [];
     this.source.radicadosReferidos.forEach(referido => {
       referidosList.push({
-        ideReferido: null,
+        ideReferido: referido.ideReferido,
         nroRadRef: referido.nombre
       });
     });
@@ -94,7 +95,7 @@ export  abstract class RadicacionBase {
     this.source.descripcionAnexos.forEach((anexo) => {
       console.log(anexo);
       anexoList.push({
-        ideAnexo: null,
+        ideAnexo: anexo.ideAnexo,
         codAnexo: anexo.tipoAnexo ? anexo.tipoAnexo.codigo : null,
         descripcion: anexo.descripcion,
         codTipoSoporte: anexo.soporteAnexo.codigo
@@ -105,7 +106,7 @@ export  abstract class RadicacionBase {
 
   abstract  getAgentesDestinatario(): Array<AgentDTO>;
 
-   getRemitente():AgentDTO{
+   getRemitente(): AgentDTO {
 
      const tipoComunicacion = this.source.generales.tipoComunicacion.codigo ;
 
@@ -126,9 +127,56 @@ export  abstract class RadicacionBase {
     };
   }
 
-  getDatosContactos(): Array<ContactoDTO>{
+  getDatosContactos(): Array<ContactoDTO> {
 
     return null;
+  }
+
+  GetDireccionText(contact): string {
+    let direccion: DireccionDTO  = {};
+    let direccionText = '';
+    try {
+      direccion =  JSON.parse(contact.direccion);
+    } catch (e) {
+      return direccionText;
+    }
+    if (direccion) {
+      if (direccion.tipoVia) {
+        direccionText += direccion.tipoVia.nombre;
+      }
+      if (direccion.noViaPrincipal) {
+        direccionText += ' ' + direccion.noViaPrincipal;
+      }
+      if (direccion.prefijoCuadrante) {
+        direccionText += ' ' + direccion.prefijoCuadrante.nombre;
+      }
+      if (direccion.bis) {
+        direccionText += ' ' + direccion.bis.nombre;
+      }
+      if (direccion.orientacion) {
+        direccionText += ' ' + direccion.orientacion.nombre;
+      }
+      if (direccion.noVia) {
+        direccionText += ' ' + direccion.noVia;
+      }
+      if (direccion.prefijoCuadrante_se) {
+        direccionText += ' ' + direccion.prefijoCuadrante_se.nombre;
+      }
+      if (direccion.placa) {
+        direccionText += ' ' + direccion.placa;
+      }
+      if (direccion.orientacion_se) {
+        direccionText += ' ' + direccion.orientacion_se.nombre;
+      }
+      if (direccion.complementoTipo) {
+        direccionText += ' ' + direccion.complementoTipo.nombre;
+      }
+      if (direccion.complementoAdicional) {
+        direccionText += ' ' + direccion.complementoAdicional;
+      }
+
+    }
+    return direccionText;
   }
 
 }

@@ -69,8 +69,11 @@ import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-gener
 import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
 import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
+import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
 import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
-
+import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
+import { DisposicionFinalComponent } from './ui/page-components/disposicion-final/disposicion-final.component';
 
 @NgModule({
   imports: [
@@ -148,6 +151,7 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     ...DIRECTIVES,
     ...UI_COMPONENTS,
     ...PIPES,
+    DireccionToTextPipe,
     DistribucionFisicaComponent,
     CargarPlanillasComponent,
     EditarPlanillaComponent,
@@ -177,9 +181,11 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     RsTicketRadicadoComponent,
     TicketRadicadoComponent,
     DistribucionComponent,
+    DisposicionFinalComponent,
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
-    DatosDestinatarioEditComponent
+    DatosDestinatarioEditComponent,
+    AlertComponent
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
@@ -194,6 +200,7 @@ import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
     ProcesoService,
     SolicitudCreacionUdService,
     RadicacionSalidaService,
+    UnidadDocumentalApiService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

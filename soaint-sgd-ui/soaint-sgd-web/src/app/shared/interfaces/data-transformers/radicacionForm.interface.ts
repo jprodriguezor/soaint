@@ -23,8 +23,11 @@ export  interface  RadicacionFormInterface{
     tipoAnexos?: any,
     tipoAnexosDescripcion?: any,
     hasAnexos?: any,
+    ideDocumento: any,
+    idePpdDocumento: any,
   },
   remitente: {
+  ideAgente?: any,
   tipoPersona?: any,
   nit?: any,
   actuaCalidad?: any,
@@ -35,7 +38,7 @@ export  interface  RadicacionFormInterface{
   sedeAdministrativa?: any,
   dependenciaGrupo?: any
 },
-  radicadosReferidos: Array<{ nombre: string }>,
-  descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }>,
+  radicadosReferidos: Array<{ nombre: string, ideReferido: number, }>,
+  descripcionAnexos: Array<{ ideAnexo: string, tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }>,
   task?: TareaDTO
 }

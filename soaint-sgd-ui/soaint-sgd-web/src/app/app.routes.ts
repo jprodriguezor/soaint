@@ -102,11 +102,6 @@ export const routes: Routes = [
         component: CrearUnidadDocumentalComponent,
         canActivate:[AuthenticatedGuard]
       },
-      {
-      	path: ROUTES_PATH.disposicionFinal,
-        component: DisposicionFinalComponent,
-        canActivate: [AuthenticatedGuard]
-      }
     ]
   },
   {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
@@ -149,6 +144,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.seleccionarDocumentos,
     component: SeleccionarDocumentosComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.disposicionFinal,
+    component: DisposicionFinalComponent,
     canActivate: [AuthenticatedGuard]
   },
   {

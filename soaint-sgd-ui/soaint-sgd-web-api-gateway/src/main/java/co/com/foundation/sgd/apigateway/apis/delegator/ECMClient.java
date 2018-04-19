@@ -139,11 +139,11 @@ public class ECMClient {
 
     public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-
         return wt.path("/listarUnidadesDocumentalesECM")
                 .request()
                 .post(Entity.json(unidadDocumentalDTO));
     }
+
 
     public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

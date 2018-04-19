@@ -22,27 +22,45 @@ import { PushNotificationAction } from '../../../infrastructure/state-management
 import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.enum';
 import { MensajeRespuestaDTO } from '../../../domain/MensajeRespuestaDTO';
 import { ChangeDetectorRef, Injectable, ApplicationRef } from '@angular/core';
-
-
+import { isNullOrUndefined } from 'util';
+import { ConstanteDTO } from '../../../domain/constanteDTO';
+import { sedeDestinatarioEntradaSelector } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {Subscription} from 'rxjs/Subscription';
+import { DependenciaApiService } from '../../../infrastructure/api/dependencia.api';
+import { DependenciaDTO } from '../../../domain/dependenciaDTO';
 
 @Injectable()
 export class StateUnidadDocumentalService implements TaskForm {
 
     ListadoUnidadDocumental: UnidadDocumentalDTO[] = [];
     unidadesSeleccionadas: UnidadDocumentalDTO[] = [];
+
+    // dropdowns
+    tiposDisposicionFinal$: Observable<ConstanteDTO[]> = Observable.of([]);
+    sedes$: Observable<ConstanteDTO[]> = Observable.of([]);
+    dependencias: DependenciaDTO[] = [];
     ListadoSeries: Observable<SerieDTO[]>;
     ListadoSubseries: SubserieDTO[];
+
+    // generales
     UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
-    OpcionSeleccionada: number;
-    AbrirDetalle: boolean;
-    task: TareaDTO;
-    taskVariables: VariablesTareaDTO = {};
-    FechaExtremaFinal: Date;
+    formBuscar: FormGroup;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
+    validations: any = {};
+    subscribers: Array<Subscription> = [];
+
+    // gestionar unidad documental
+    OpcionSeleccionada: number;
+    AbrirDetalle: boolean;
+    FechaExtremaFinal: Date;
     MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
 
-    formBuscar: FormGroup;
+    // tarea
+    task: TareaDTO;
+    taskVariables: VariablesTareaDTO = {};
 
     constructor(
         private fb: FormBuilder,
@@ -52,34 +70,37 @@ export class StateUnidadDocumentalService implements TaskForm {
         private _dependenciaSandbox: Sandbox,
         private _taskSandBox: TaskSandBox,
         private confirmationService: ConfirmationService,
-        private _appRef: ApplicationRef
+        private _appRef: ApplicationRef,
+        private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+        private _dependenciaApiService: DependenciaApiService
     ) {
     }
 
     OnBlurEvents(control: string) {
         const formControl = this.formBuscar.get(control);
-        if (control === 'serie') {
-            this.GetSubSeries(formControl.value);
-        } else if (control === 'subserie') {
-            this.SubscribirSubserie();
+        if (formControl.touched && formControl.invalid) {
+          const error_keys = Object.keys(formControl.errors);
+          const last_error_key = error_keys[error_keys.length - 1];
+          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+        } else {
+            this.validations[control] = '';
         }
     }
 
-    InitData() {
-        this.InitForm();
-        this.OpcionSeleccionada = 0 // abrir
-        this.InitPropiedadesTarea();
-    }
 
-    InitForm() {
+    InitForm(camposRequeridos: string[]) {
        this.formBuscar = this.fb.group({
-        serie: [null, [Validators.required]],
+        tipoDisposicionFinal: [null],
+        sede: [null],
+        dependencia: [null],
+        serie: [null],
         subserie: [null],
         identificador: [''],
         nombre: [''],
         descriptor1: [''],
         descriptor2: [''],
        });
+       this.SetFormCamposRequeridos(camposRequeridos);
     }
 
     ResetForm() {
@@ -91,10 +112,38 @@ export class StateUnidadDocumentalService implements TaskForm {
             this.task = activeTask;
             if (this.task.variables.codDependencia) {
                 const codDependencia = this.task.variables.codDependencia
-                this.GetListadosSeries(codDependencia);
+                this.formBuscar.controls['dependencia'].setValue(codDependencia);
+                this.GetListadosSeries();
                 this.Listar();
             }
         });
+    }
+
+    SetFormCamposRequeridos(camposRequeridos: string[]) {
+        if (camposRequeridos.length) {
+            camposRequeridos.forEach(_control => {
+                this.formBuscar.controls[_control].setValidators(Validators.required);
+            });
+            this.formBuscar.updateValueAndValidity();
+        }
+    }
+
+    SetFormSubscriptions(controls: string[]) {
+        if (controls.length) {
+            controls.forEach(_control => {
+                this.subscribers.push(
+                this.formBuscar.get(_control).valueChanges.distinctUntilChanged().subscribe(value => {
+                    if (value !== null) {
+                        switch (_control) {
+                            case 'sede' : this.GetListadoDependencias(value.id); break;
+                            case 'dependencia': this.GetListadosSeries(); break;
+                            case 'serie': this.GetSubSeries(value.codigo); break;
+                        }
+                    }
+                  }))
+            });
+            this.formBuscar.updateValueAndValidity();
+        }
     }
 
     GetDetalleUnidadUnidadDocumental(payload: any) {
@@ -102,24 +151,48 @@ export class StateUnidadDocumentalService implements TaskForm {
         this.AbrirDetalle = true;
     }
 
-    GetListadosSeries(codDependencia: string) {
+    GetListadoTiposDisposicion() {
+        this.tiposDisposicionFinal$ = Observable.of([]);
+    }
+
+    GetListadoSedes() {
+        this._store.dispatch(new SedeAdministrativaLoadAction());
+        this.sedes$ = this._store.select(sedeDestinatarioEntradaSelector);
+    }
+
+    GetListadoDependencias(sedeId: any) {
+        this.formBuscar.controls['dependencia'].reset();
+        this._dependenciaApiService.Listar({})
+        .subscribe(resp => {
+            this.dependencias = resp.filter(_item => _item.ideSede === sedeId);
+        });
+        ;
+    }
+
+    GetListadosSeries() {
+        this.formBuscar.controls['serie'].reset();
         this.ListadoSeries = this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: codDependencia,
+            idOrgOfc: this.formBuscar.controls['dependencia'].value,
         })
         .map(map => map.listaSerie);
         this.ListadoSubseries = [];
     }
 
     GetSubSeries(serie: string) {
+        this.formBuscar.controls['subserie'].reset();
         if (serie) {
             this.serieSubserieApiService.ListarSerieSubserie({
-                idOrgOfc: this.task.variables.codDependencia,
+                idOrgOfc: this.formBuscar.controls['dependencia'].value,
                 codSerie: serie,
             })
             .map(map => map.listaSubSerie)
             .subscribe(result => {
                 this.ListadoSubseries =  result;
-            })
+                if (result) {
+                    this.formBuscar.controls['subserie'].setValidators(Validators.required);
+                    this.formBuscar.updateValueAndValidity();
+                }
+            });
         }
     }
 
@@ -183,22 +256,13 @@ export class StateUnidadDocumentalService implements TaskForm {
         }
     }
 
-    GetPayload(): UnidadDocumentalDTO {
+    GetPayload(accionSeleccionada?: UnidadDocumentalAccion): UnidadDocumentalDTO {
 
-        const cerrada =
-        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
-            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? true
-            : false ;
-        const estado =
-        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
-            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? true
-            : false ;
         const payload: UnidadDocumentalDTO = {
-            cerrada: cerrada,
-            inactivo: estado,
-            codigoDependencia: this.task.variables.codDependencia,
+            codigoDependencia: this.formBuscar.controls['dependencia'].value,
+        }
+        if (!isNullOrUndefined(accionSeleccionada)) {
+            payload.accion = UnidadDocumentalAccion[accionSeleccionada]
         }
 
         if (this.formBuscar.controls['serie'].value) {
