@@ -1,5 +1,6 @@
 package co.com.soaint.digitalizacion.services.integration.services;
 
+import co.com.soaint.digitalizacion.services.util.SystemParameters;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.Job;
@@ -22,8 +23,8 @@ public class Cron implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("**** Iniciando proceso de lectura ****");
         try {
-            //procesarFichero.leerDirectorio(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR),SystemParameters.getParameter(SystemParameters.DIR_PROCESADAS));
-
+           // procesarFichero.leerDirectorio(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR),SystemParameters.getParameter(SystemParameters.DIR_PROCESADAS));
+            procesarFichero.leerDirectorioEvento(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR),SystemParameters.getParameter(SystemParameters.DIR_PROCESADAS));
         } catch (Exception ex) {
             log.error("*** Error al procesar los ficheros *** ", ex);
         }

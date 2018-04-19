@@ -1,6 +1,7 @@
 package co.com.soaint.digitalizacion.services.integration.services.impl;
 
 import co.com.soaint.digitalizacion.services.apis.delegator.MensajeriaIntegrationClient;
+import co.com.soaint.digitalizacion.services.apis.delegator.RadicacionFacturaElectronicaClient;
 import co.com.soaint.digitalizacion.services.integration.services.IProcesarFichero;
 import co.com.soaint.digitalizacion.services.util.SystemParameters;
 import co.com.soaint.foundation.canonical.digitalizar.MensajeGenericoDigitalizarDTO;
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -43,6 +46,9 @@ import java.util.Map;
 public class ProcesarFichero implements IProcesarFichero {
     @Autowired
     private MensajeriaIntegrationClient apiClienteMensajeria;
+    @Autowired
+    private RadicacionFacturaElectronicaClient apiClienteFactura;
+
     @Value("${mensaje.error.sistema}")
     private String errorSistema = "";
     @Value("${mensaje.error.sistema.generico}")
@@ -89,34 +95,22 @@ public class ProcesarFichero implements IProcesarFichero {
     }
 
     @Override
-    public void leerDirectorioEvento() throws IOException, FormatException, ChecksumException, SystemException {
+    public void leerDirectorioEvento(String origen, String destino) throws IOException, FormatException, ChecksumException, SystemException {
         log.info("Iniciar Leer directorio");
-        Path directoryToWatch = Paths.get(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR));
-        if (directoryToWatch == null) {
-            throw new UnsupportedOperationException("Directory not found");
-        }
-        WatchService watchService = directoryToWatch.getFileSystem().newWatchService();
-        directoryToWatch.register(watchService, (WatchEvent.Kind<?>[]) new WatchEvent.Kind[]{StandardWatchEventKinds.ENTRY_CREATE});
-        try {
-            WatchKey key = watchService.take();
-            while (key != null) {
-                for (WatchEvent event : key.pollEvents()) {
-                    String eventKind = event.kind().toString();
-                    String file = event.context().toString();
-                    log.info("Event : " + eventKind + " in File " + file);
-                }
-                key.reset();
-                key = watchService.take();
+        Map<String, Object> data = new HashMap<>();
+        File folder = new File(origen);
+        if (folder.listFiles().length > 0) {
+            for (File fileEntry : folder.listFiles()) {
+                FileInputStream xml = new FileInputStream(fileEntry);
+                byte[] bytes = IOUtils.toByteArray(xml);
+                String encodedFile = Base64.getEncoder().encodeToString(bytes);
+                data.put("base64", encodedFile);
+                Files.move(Paths.get(origen.concat(fileEntry.getName())), Paths.get(destino.concat(fileEntry.getName())), StandardCopyOption.REPLACE_EXISTING);
             }
-        } catch (Exception e) {
-            log.error(errorSistema);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage(errorSistemaGenerico)
-                    .withRootException(e)
-                    .buildSystemException();
-        } finally {
-            log.info("Finalizar leer directorio");
+            apiClienteFactura.radicarFactura(data);
         }
+
+
     }
 
     @Override
@@ -127,7 +121,8 @@ public class ProcesarFichero implements IProcesarFichero {
         try {
             if (folder.listFiles().length > 0) {
                 String barCode = obtenerCodigoBarra(folder.listFiles()[0]);
-                String encodedFile = generarPDFBase64(entradaDigitalizar, folder);
+              //  String encodedFile = generarPDFBase64(entradaDigitalizar, folder);
+                String encodedFile = generarPDFFileSystem(entradaDigitalizar,barCode, folder);
                 data.put("nroRadicado", barCode);
                 data.put("fileName", barCode + ".pdf");
                 data.put("fileType", "application/pdf");
@@ -182,5 +177,63 @@ public class ProcesarFichero implements IProcesarFichero {
 
     }
 
+    public String generarPDFFileSystem(MensajeGenericoDigitalizarDTO entradaDigitalizar,String barCode, File carpeta) throws SystemException {
+        Document doc = null;
+        ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter("/home/sgd/procesados/".concat(barCode).concat(".pdf"))))
+        {
+            doc = new Document(pdfDoc, new PageSize(595.0F, 842.0F));
+            for (File fileEntry : carpeta.listFiles()) {
+                log.info(fileEntry.getName());
+                Image image = new Image(ImageDataFactory.create(entradaDigitalizar.getDirProcesar().concat(fileEntry.getName())));
+                pdfDoc.addNewPage(new PageSize(595.0F, 842.0F));
+                doc.add(image);
+                Files.move(Paths.get(entradaDigitalizar.getDirProcesar().concat(fileEntry.getName())), Paths.get(entradaDigitalizar.getDirProcesados().concat(fileEntry.getName())), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+        byte[] bytes = baosPDF.toByteArray();
+        String encodedFile = Base64.getEncoder().encodeToString(bytes);
+        doc.close();
+        return encodedFile;
+
+    }
+
+
+
+    public void leerDirectorioEventoEscucha() throws IOException, FormatException, ChecksumException, SystemException {
+        log.info("Iniciar Leer directorio");
+        Path directoryToWatch = Paths.get(SystemParameters.getParameter(SystemParameters.DIR_PROCESAR));
+        if (directoryToWatch == null) {
+            throw new UnsupportedOperationException("Directory not found");
+        }
+        WatchService watchService = directoryToWatch.getFileSystem().newWatchService();
+        directoryToWatch.register(watchService, (WatchEvent.Kind<?>[]) new WatchEvent.Kind[]{StandardWatchEventKinds.ENTRY_CREATE});
+        try {
+            WatchKey key = watchService.take();
+            while (key != null) {
+                for (WatchEvent event : key.pollEvents()) {
+                    String eventKind = event.kind().toString();
+                    String file = event.context().toString();
+                    log.info("Event : " + eventKind + " in File " + file);
+                }
+                key.reset();
+                key = watchService.take();
+            }
+        } catch (Exception e) {
+            log.error(errorSistema);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(errorSistemaGenerico)
+                    .withRootException(e)
+                    .buildSystemException();
+        } finally {
+            log.info("Finalizar leer directorio");
+        }
+    }
 
 }

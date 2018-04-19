@@ -172,6 +172,27 @@ public class FuncionariosControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public boolean existFuncionarioByIdeFunci(BigInteger ideFunci) throws SystemException {
+        try {
+            return em.createNamedQuery("Funcionarios.existFuncionarioByIdeFunci", Long.class)
+                    .setParameter("IDE_FUNCI", ideFunci)
+                    .getSingleResult()>0;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideFunci
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public FuncionarioDTO consultarFuncionarioByIdeFunci(BigInteger ideFunci) throws BusinessException, SystemException {
         try {
             FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByIdeFunci", FuncionarioDTO.class)
