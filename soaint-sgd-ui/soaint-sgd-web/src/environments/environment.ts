@@ -3,14 +3,14 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
 // const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -79,6 +79,7 @@ export const environment = {
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  obtenerComunicacionfull_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/full`,
   obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
@@ -120,6 +121,9 @@ export const environment = {
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
+  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
+  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
 };
 
 export const process_info = {

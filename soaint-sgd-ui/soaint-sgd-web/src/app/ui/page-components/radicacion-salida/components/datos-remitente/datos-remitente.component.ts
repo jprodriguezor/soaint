@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../domain/constanteDTO';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -10,6 +10,7 @@ import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-
 import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
+import {ViewFilterHook} from "../../../../../shared/ViewHooksHelper";
 
 @Component({
   selector: 'rs-datos-remitente',
@@ -27,6 +28,11 @@ export class DatosRemitenteComponent implements OnInit {
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
 
+  @Input() defautlData?;
+
+  @Input() datosRemitente?;
+
+
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
               private _funcionarioSandbox: FuncionariosSandbox,
@@ -37,6 +43,8 @@ export class DatosRemitenteComponent implements OnInit {
     this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
     this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
     this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
+
+
     this.initForm();
     this.listenForChanges();
   }

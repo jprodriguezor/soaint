@@ -23,7 +23,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
     (<RadicacionEntradaFormInterface>this.source).agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
         ideAgente: null,
-        codTipoRemite: null,
+        codTipoRemite: TIPO_REMITENTE_INTERNO,
         codTipoPers: null,
         nombre: null,
         razonSocial: null,
@@ -47,38 +47,10 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
 
   getDatosContactos(): Array<ContactoDTO> {
-    const contactos = [];
-    const contactsRemitente = ((<RadicacionEntradaFormInterface>this.source).datosContactos) ? (<RadicacionEntradaFormInterface>this.source).datosContactos : [];
-    contactsRemitente.forEach((contact) => {
-      contactos.push({
-        ideContacto: null,
-        nroViaGeneradora: contact.noViaPrincipal || null,
-        nroPlaca: contact.placa || null,
-        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
-        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
-        /*codBis:contact.bis ? contact.bis : null,
-        codOrientacion : contact.orientacion ? contact.orientacion : null,
-        noVia:contact.noVia,
-        codPrefijoCuadrantSe: contact.prefijoCuadrante_se ? contact.prefijoCuadrante_se : null,
-        codOrientacionSe: contact.orientacion_se ? contact.orientacion_se : null,
-        codTipoComplemento: contact.complementoTipo ? contact.complementoTipo : null,
-        codTipoComplementoAdicional: contact.complementoAdicional ? contact.complementoAdicional : null,*/
-        codPostal: null,
-        direccion: contact.direccion || null,
-        celular: contact.celular || null,
-        telFijo: contact.numeroTel || null,
-        extension: null,
-        corrElectronico: contact.correoEle || null,
-        codPais: contact.pais ? contact.pais.codigo : null,
-        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
-        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
-        provEstado: contact.provinciaEstado ? contact.provinciaEstado : null,
-        ciudad: contact.ciudad ? contact.ciudad : null,
-        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
-      });
-    });
 
-    return contactos;
+   return this.transformContactData((<RadicacionEntradaFormInterface>this.source).datosContactos
+     ? (<RadicacionEntradaFormInterface>this.source).datosContactos : []);
+
   }
 
   isRemitenteInterno() {

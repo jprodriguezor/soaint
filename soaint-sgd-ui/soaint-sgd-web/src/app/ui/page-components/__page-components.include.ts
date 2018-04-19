@@ -20,6 +20,7 @@ import {PlanillaGeneradaComponent} from '../bussiness-components/planilla-genera
 import {SeleccionarUnidadDocumentalComponent} from './archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
 import {SeleccionarDocumentosComponent} from './archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
 import { DisposicionFinalComponent } from './disposicion-final/disposicion-final.component';
+import {RadicarDocumentoProducidoComponent} from "./radicacion-salida/radicar-documento-producido.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -53,6 +54,7 @@ export const PAGE_COMPONENTS = [
   SeleccionarUnidadDocumentalComponent,
   SeleccionarDocumentosComponent,
   DisposicionFinalComponent,
+  RadicarDocumentoProducidoComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];

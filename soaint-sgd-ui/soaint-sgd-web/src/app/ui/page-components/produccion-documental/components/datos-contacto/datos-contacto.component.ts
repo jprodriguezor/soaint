@@ -53,8 +53,8 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   validations: any = {};
 
-  listaDestinatariosInternos: DestinatarioDTO[] = [];
-  listaDestinatariosExternos: DestinatarioDTO[] = [];
+ @Input() listaDestinatariosInternos: DestinatarioDTO[] = [];
+ @Input() listaDestinatariosExternos: DestinatarioDTO[] = [];
 
   destinatarioInterno: DestinatarioDTO = null;
   destinatarioExterno: DestinatarioDTO = null;
@@ -89,49 +89,6 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
               private _municipioSandbox: MunicipioSandbox,
               private _store: Store<State>) {
 
-    /*this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
-
-     this.tipoComunicacionSelected = tipoComunicacion;
-     this.responseToRem = false;
-     this.form.get('responderRemitente').setValue(false);
-
-     if(this.taskData.variables.numeroRadicado){
-
-     this._produccionDocumentalApi.obtenerContactosDestinatarioExterno({
-     nroRadicado: this.taskData.variables.numeroRadicado
-     }).subscribe( contacto => {
-     console.log(contacto);
-
-     this.hasNumberRadicado = false;
-
-     if(contacto.codTipoRemite == "EXT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
-     this.hasNumberRadicado = true;
-     }else if(contacto.codTipoRemite == "INT" && this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
-     this.hasNumberRadicado = true;
-     }
-
-     if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SE'){
-     this.remitenteExterno = contacto;
-     this.datosDestinatarioExterno.getDestinatarioDefault(this.remitenteExterno);
-     }else if(this.tipoComunicacionSelected && this.tipoComunicacionSelected.codigo === 'SI'){
-     //this.listaDestinatariosInternos.push(contacto);
-     console.log("entro por contacto " + contacto );
-
-     this._dependenciaSandbox.loadDependencies({}).subscribe((results) => {
-     console.log(results.dependencias.find((element) => element.codigo === contacto.codDependencia));
-     console.log(results.dependencias.find((element) => element.codSede === contacto.codSede));
-     this.defaultDestinatarioInterno = {
-     sede: results.dependencias.find((element) => element.codigo === contacto.codDependencia),
-     depedencia: results.dependencias.find((element) => element.codSede === contacto.codSede)
-     }
-     });
-
-     this.defaultDestinatarioInterno = contacto;
-     }
-
-     });
-     }
-     });*/
 
     this.initForm();
   }

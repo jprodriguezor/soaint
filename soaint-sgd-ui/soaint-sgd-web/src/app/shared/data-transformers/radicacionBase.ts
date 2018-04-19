@@ -14,6 +14,7 @@ import {AgentDTO} from "../../domain/agentDTO";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacionForm.interface";
 import {AgenteFactoryDTV} from "./agentesDTV";
+import {DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO} from "../bussiness-properties/radicacion-properties";
 
 export  abstract class RadicacionBase {
 
@@ -114,8 +115,6 @@ export  abstract class RadicacionBase {
      return AgenteFactoryDTV.getAgente(tipoComunicacion).getRemitente(this.source.remitente);
    }
 
-
-
   getComunicacionOficial(): ComunicacionOficialDTO {
 
     return {
@@ -126,6 +125,40 @@ export  abstract class RadicacionBase {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
+  }
+
+  transformContactData(contactOrigin): Array<ContactoDTO> {
+    const contactos = [];
+    contactOrigin.forEach((contact) => {
+      contactos.push({
+        ideContacto: null,
+        nroViaGeneradora: contact.noViaPrincipal || null,
+        nroPlaca: contact.placa || null,
+        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
+        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
+        /*codBis:contact.bis ? contact.bis : null,
+        codOrientacion : contact.orientacion ? contact.orientacion : null,
+        noVia:contact.noVia,
+        codPrefijoCuadrantSe: contact.prefijoCuadrante_se ? contact.prefijoCuadrante_se : null,
+        codOrientacionSe: contact.orientacion_se ? contact.orientacion_se : null,
+        codTipoComplemento: contact.complementoTipo ? contact.complementoTipo : null,
+        codTipoComplementoAdicional: contact.complementoAdicional ? contact.complementoAdicional : null,*/
+        codPostal: null,
+        direccion: contact.direccion || null,
+        celular: contact.celular || null,
+        telFijo: contact.numeroTel || null,
+        extension: null,
+        corrElectronico: contact.correoEle || null,
+        codPais: contact.pais ? contact.pais.codigo : null,
+        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
+        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
+        provEstado: contact.provinciaEstado ? contact.provinciaEstado : null,
+        ciudad: contact.ciudad ? contact.ciudad : null,
+        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
+      });
+    });
+
+    return contactos;
   }
 
   getDatosContactos(): Array<ContactoDTO> {

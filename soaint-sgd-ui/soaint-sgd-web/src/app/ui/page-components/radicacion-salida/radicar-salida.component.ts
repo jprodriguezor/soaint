@@ -3,43 +3,22 @@ import {
   ViewChild
 } from '@angular/core';
 import {ComunicacionOficialDTO} from 'app/domain/comunicacionOficialDTO';
-import {Sandbox as RadicarComunicacionesSandBox} from 'app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-sandbox';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {Observable} from 'rxjs/Observable';
-import {ConstanteDTO} from '../../../domain/constanteDTO';
 import {Store} from '@ngrx/store';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
-import {
-  sedeDestinatarioEntradaSelector,
-  tipoDestinatarioEntradaSelector
-} from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
-import {getArrayData as DependenciaGrupoSelector} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Subscription} from 'rxjs/Subscription';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {TaskForm} from '../../../shared/interfaces/task-form.interface';
 import {TaskTypes} from '../../../shared/type-cheking-clasess/class-types';
-import {getMediosRecepcionVentanillaData} from '../../../infrastructure/state-management/constanteDTO-state/selectors/medios-recepcion-selectors';
-import {getDestinatarioPrincial} from '../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-destinatario-selectors';
 import 'rxjs/add/operator/skipWhile';
-import {Sandbox as ComunicacionOficialSandbox} from '../../../infrastructure/state-management/comunicacionOficial-state/comunicacionOficialDTO-sandbox';
 import {
-  getArrayData as getFuncionarioArrayData,
-  getSelectedDependencyGroupFuncionario
+    getSelectedDependencyGroupFuncionario
 } from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
-import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
-import {FuncionarioDTO} from '../../../domain/funcionarioDTO';
-import {Sandbox as DependenciaSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
-import {Sandbox as PaisSandbox} from '../../../infrastructure/state-management/paisDTO-state/paisDTO-sandbox';
-import {Sandbox as FuncionariosSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
-import {
-  getTipoDocumentoArrayData, getTipoPersonaArrayData, getTipoDestinatarioArrayData
-} from 'app/infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
 import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
-import {ComunicacionOficialEntradaDTV} from "../../../shared/data-transformers/comunicacionOficialEntradaDTV";
 import {RadicacionSalidaDTV} from "../../../shared/data-transformers/radicacionSalidaDTV";
-import {AbstractControl, FormControl, Validators} from "@angular/forms";
-import {ExtendValidators} from "../../../shared/validators/custom-validators";
+import {AbstractControl, Validators} from "@angular/forms";
 import {
   COMUNICACION_EXTERNA, DESTINATARIO_EXTERNO, DESTINATARIO_INTERNO,
   RADICACION_SALIDA
@@ -47,14 +26,11 @@ import {
 import * as moment from "moment";
 import {RadicarSuccessAction} from "app/infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-actions";
 import {RsTicketRadicado} from "./components/rs-ticket-radicado/rs-ticket-radicado.component";
-import {after} from "selenium-webdriver/testing";
-import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
-import {go} from "@ngrx/router-store";
-import {ROUTES_PATH} from "../../../app.route-names";
 import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-salida.service";
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
+import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 
 
 declare const require: any;
@@ -69,7 +45,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   type = TaskTypes.TASK_FORM;
 
-  formStatusIcon = 'assignment';
   tabIndex = 0;
   editable = true;
   printStyle: string = printStyles;
@@ -96,10 +71,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
    readonly tipoRadicacion = RADICACION_SALIDA;
 
   constructor(
-    private _store: Store<RootState>
-    ,private _changeDetectorRef: ChangeDetectorRef
-    ,private _sandbox:RadicacionSalidaService
-    ,private _taskSandbox:TaskSandBox) {
+    protected _store: Store<RootState>
+    ,protected _changeDetectorRef: ChangeDetectorRef
+    ,protected _sandbox:RadicacionSalidaService
+    ,protected _taskSandbox:TaskSandBox) {
 
   }
 
@@ -110,12 +85,16 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       if(this.task !== null){
 
+        console.log(this.task);
+
         this.taskFilter = this.task.nombre+'-datos-contactos-show-form';
 
         ViewFilterHook.addFilter(this.taskFilter,() => false);
       }
       this.restore();
     });
+
+
 
 
     this.dependencySubscription =  this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependency => {
@@ -137,6 +116,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
    this._changeDetectorRef.detectChanges();
   }
+
+
 
   ngAfterContentInit() {
    this.formsTabOrder.push(this.datosGenerales);

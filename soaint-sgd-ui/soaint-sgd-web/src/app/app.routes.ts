@@ -26,6 +26,7 @@ import {CorregirRadicacionComponent} from './ui/page-components/corregir-radicac
 import {RedirectSeleccionarDocumentoComponent} from "./ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component";
 import {CrearUnidadDocumentalComponent} from "./ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component";
 import {DisposicionFinalComponent} from './ui/page-components/disposicion-final/disposicion-final.component';
+import {RadicarDocumentoProducidoComponent} from "./ui/page-components/radicacion-salida/radicar-documento-producido.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -47,7 +48,7 @@ export const routes: Routes = [
       },
       {
         path: ROUTES_PATH.radicarDocumentoSalida,
-        component: RadicarSalidaComponent,
+        component: RadicarDocumentoProducidoComponent,
         canDeactivate: [TareaDtoGuard]
       },
       {
