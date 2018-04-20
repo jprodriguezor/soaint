@@ -6,11 +6,15 @@ import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import {getArrayData as sedeAdministrativaArrayData} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-selectors';
 import {getArrayData as DependenciaGrupoSelector} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-selectors';
-import {getArrayData as getFuncionarioArrayData} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
+import {
+  getArrayData as getFuncionarioArrayData,
+  getAuthenticatedFuncionario, getSelectedDependencyGroupFuncionario
+} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors';
 import {Sandbox as FuncionariosSandbox} from 'app/infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {FuncionarioDTO} from '../../../../../domain/funcionarioDTO';
 import {ViewFilterHook} from "../../../../../shared/ViewHooksHelper";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
   selector: 'rs-datos-remitente',
@@ -28,9 +32,8 @@ export class DatosRemitenteComponent implements OnInit {
   dependenciaGrupoSuggestions$: Observable<ConstanteDTO[]>;
   funcionariosSuggestions$: Observable<FuncionarioDTO[]>;
 
-  @Input() defautlData?;
 
-  @Input() datosRemitente?;
+  @Input() loadCurrentUserData = false;
 
 
   constructor(private _store: Store<State>,
@@ -40,13 +43,35 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
-    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
-
+    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData).share();
+    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector).share().share();
+    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData).share();
 
     this.initForm();
-    this.listenForChanges();
+
+
+    this.sedeAdministrativaSuggestions$
+
+      .subscribe(sedes => {
+
+        combineLatest(this._store.select(getSelectedDependencyGroupFuncionario),this._store.select(getAuthenticatedFuncionario))
+          .subscribe(([dependency,funcionario]) =>{
+
+            this.form.get('sedeAdministrativa').setValue(sedes.find( sedeDto => sedeDto.codigo == dependency.codSede ));
+
+
+            ViewFilterHook.addFilter('rdpdr-dependency-selected', () => dependency);
+
+            ViewFilterHook.addFilter('rdpdr-funcionario-selected',() => funcionario);
+          });
+
+      });
+
+
+
+   this.listenForChanges();
+
+
   }
 
   initForm() {
@@ -60,15 +85,50 @@ export class DatosRemitenteComponent implements OnInit {
   listenForChanges() {
     this.form.get('sedeAdministrativa').valueChanges.subscribe((value) => {
       if (value) {
+
         this.form.get('dependenciaGrupo').reset();
         this._dependenciaGrupoSandbox.loadDispatch({codigo: value.id});
+
+        const dependency = ViewFilterHook.applyFilter('rdpdr-dependency-selected',false);
+
+        if( dependency !== false){
+
+          this.dependenciaGrupoSuggestions$.subscribe(deps => {
+
+          let  found = deps.find( dep => dep.codigo == dependency.codigo);
+
+            if (found)
+              this.form.get('dependenciaGrupo').setValue(found);
+          });
+
+          ViewFilterHook.removeFilter('rdpdr-dependency-selected');
+        }
+
       }
     });
 
     this.form.get('dependenciaGrupo').valueChanges.subscribe((value) => {
+
       if (value) {
         this.form.get('funcionarioGrupo').reset();
         this._funcionarioSandbox.loadAllFuncionariosDispatch({codDependencia: value.codigo});
+
+        const funcionario = ViewFilterHook.applyFilter('rdpdr-funcionario-selected',false);
+
+        if( funcionario !== false){
+
+          this.funcionariosSuggestions$.subscribe( funcs =>{
+
+            let found = funcs.find( f => f.id == funcionario.id);
+
+            if(found)
+              this.form.get('funcionarioGrupo').setValue(found);
+
+          } );
+
+          ViewFilterHook.removeFilter('rdpdr-funcionario-selected');
+
+        }
       }
     });
   }

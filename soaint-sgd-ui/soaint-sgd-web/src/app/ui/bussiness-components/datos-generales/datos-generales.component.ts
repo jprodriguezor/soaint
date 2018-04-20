@@ -159,6 +159,8 @@ export class DatosGeneralesComponent implements OnInit {
 
     this.dataDefault.subscribe( datosGenerales => {
 
+
+
       this.form.get("tipoComunicacion").setValue(datosGenerales.tipoComunicacion);
       if(datosGenerales.tipologiaDocumental)
       this.form.get("tipologiaDocumental").setValue(datosGenerales.tipologiaDocumental);

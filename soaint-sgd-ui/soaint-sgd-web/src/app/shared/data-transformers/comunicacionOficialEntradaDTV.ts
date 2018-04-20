@@ -2,7 +2,7 @@ import {AgentDTO} from '../../domain/agentDTO';
 import {ContactoDTO} from '../../domain/contactoDTO';
 import {
   COMUNICACION_INTERNA,
-  DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO,
+  DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO, DESTINATARIO_INTERNO, DESTINATARIO_PRINCIPAL,
   TIPO_AGENTE_DESTINATARIO,
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO,
   TIPO_REMITENTE_INTERNO
@@ -37,7 +37,8 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
         fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
-        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
+        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : DESTINATARIO_INTERNO
+        ,
       };
       agentes.push(tipoAgente);
     });

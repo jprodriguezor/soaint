@@ -1,7 +1,7 @@
 import {AgentDTO} from "../../domain/agentDTO";
 import {
   COMUNICACION_EXTERNA,
-  COMUNICACION_INTERNA,
+  COMUNICACION_INTERNA, DESTINATARIO_EXTERNO, DESTINATARIO_PRINCIPAL,
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO,
   TIPO_REMITENTE_INTERNO
 } from "../bussiness-properties/radicacion-properties";
@@ -32,7 +32,8 @@ export class AgenteInternoDTV implements AgenteDTV{
       codDependencia: remitente.dependenciaGrupo ? remitente.dependenciaGrupo.codigo : null,
       fecAsignacion: null,
       codTipAgent: TIPO_AGENTE_REMITENTE,
-      codEstado: null
+      codEstado: null,
+      indOriginal:remitente.tipoDestinatario ? remitente.tipoDestinatario.codigo : null,
     };
   }
 }

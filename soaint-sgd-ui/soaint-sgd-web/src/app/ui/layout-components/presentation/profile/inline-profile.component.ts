@@ -43,7 +43,7 @@ export class InlineProfileComponent {
     event.preventDefault();
   }
 
-  public _onSecurityRole(): void {
+  public _onSecurityRole(event): void {
     this.onSecurityRole.emit();
     event.preventDefault();
   }

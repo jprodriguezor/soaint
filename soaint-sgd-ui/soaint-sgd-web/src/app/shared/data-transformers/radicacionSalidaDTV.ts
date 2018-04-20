@@ -2,7 +2,7 @@ import {AgentDTO} from '../../domain/agentDTO';
 import {RadicacionBase} from './radicacionBase';
 import {
   DATOS_CONTACTO_PRINCIPAL,
-  DATOS_CONTACTO_SECUNDARIO,
+  DATOS_CONTACTO_SECUNDARIO, DESTINATARIO_EXTERNO, DESTINATARIO_INTERNO,
   TIPO_AGENTE_DESTINATARIO, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
 } from '../bussiness-properties/radicacion-properties';
 import {RadicacionSalidaFormInterface} from '../interfaces/data-transformers/radicacionSalidaForm.interface';
@@ -51,7 +51,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
-        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
+        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : DESTINATARIO_INTERNO,
       };
       agentes.push(tipoAgente);
     });
@@ -73,7 +73,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
-        indOriginal: agenteExt.tipoDestinatario ? agenteExt.tipoDestinatario.codigo : null,
+        indOriginal: agenteExt.tipoDestinatario ? agenteExt.tipoDestinatario.codigo : DESTINATARIO_EXTERNO,
         datosContactoList: this.transformContactData(agenteExt.datosContactoList),
       };
       agentes.push(tipoAgente);

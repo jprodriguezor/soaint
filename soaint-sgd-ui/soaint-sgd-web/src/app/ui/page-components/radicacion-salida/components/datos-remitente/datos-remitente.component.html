@@ -16,7 +16,7 @@
                           formControlName="sedeAdministrativa"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          [disabled]="datosRemitente !== null"
+                          [disabled]="loadCurrentUserData"
               >
               </p-dropdown>
             </div>
@@ -34,7 +34,7 @@
                           formControlName="dependenciaGrupo"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          [disabled]="datosRemitente !== null"
+                          [disabled]="loadCurrentUserData"
               >
               </p-dropdown>
             </div>
@@ -52,7 +52,7 @@
                           formControlName="funcionarioGrupo"
                           placeholder="Seleccione"
                           [autoWidth]="false"
-                          [disabled]="datosRemitente !== null"
+                          [disabled]="loadCurrentUserData"
               >
               </p-dropdown>
             </div>

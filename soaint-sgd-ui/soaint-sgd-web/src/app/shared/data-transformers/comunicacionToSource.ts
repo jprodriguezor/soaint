@@ -23,6 +23,7 @@ import {
 } from "../bussiness-properties/radicacion-properties";
 import {ApiBase} from "../../infrastructure/api/api-base";
 import {environment} from "../../../environments/environment";
+import {tipoDestinatarioEntradaSelector} from "../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors";
 
 export class ComunicacionToSource {
 
@@ -51,9 +52,11 @@ export class ComunicacionToSource {
             }
           }),
           date: this.comunicacion.correspondencia.fecRadicado,
-          destinatarioInterno:destinatarioInterno,
-          destinatarioExt:agentList.filter( (agent,index) => index > 0 && agent.codTipoRemite == TIPO_REMITENTE_EXTERNO),
-          remitente : this.comunicacion.agenteList[0]
+          datosContacto:{
+            listaDestinatariosInternos : destinatarioInterno,
+            listaDestinatariosExternos : agentList.filter( (agent,index) =>  index > 0 && agent.codTipoRemite == TIPO_REMITENTE_EXTERNO)
+          },
+
         };
       }
     )
@@ -112,13 +115,14 @@ export class ComunicacionToSource {
      combineLatest(
        this._api.list(environment.dependenciaGrupo_endpoint+"/all-dependencias").map( entities => entities.dependencias.find(entity => entity.codigo == agente.codDependencia)),
        this.store.select(SedesAdminintrativas).map( entities => entities.find(entity => entity.codigo == agente.codSede)),
-        (dependenciaGrupo,sedeAdministrativa) => {
+       this.store.select(tipoDestinatarioEntradaSelector).map( entities => { console.log("entities",entities) ;return  entities.find(entity => entity.codigo == agente.indOriginal)}),
+        (dependenciaGrupo,sedeAdministrativa,tipoDestinatario) => {
 
          return {
            ideAgente : agente.ideAgente,
-           tipoDestinatario : agente.codTipAgent,
-           sedeAdministrativa: sedeAdministrativa,
-           dependenciaGrupo:dependenciaGrupo
+           tipoDestinatario : tipoDestinatario,
+           sede: sedeAdministrativa,
+           dependencia:dependenciaGrupo
          };
        }
      )

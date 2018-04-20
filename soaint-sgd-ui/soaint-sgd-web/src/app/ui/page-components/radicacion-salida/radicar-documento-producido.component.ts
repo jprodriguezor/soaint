@@ -23,7 +23,9 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent{
 
   comunicacionUnsubscriber:Subscription;
 
-  generales:Subject<any> = new Subject;
+  datosGenerales$:Subject<any> = new Subject;
+  datosContacto$:Subject<any> = new Subject;
+
 
   constructor(
     protected _store: Store<RootState>
@@ -52,7 +54,13 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent{
 
         obj.transform().subscribe( resp => {  console.log("tareaData:",this.task);
 
-          this.generales.next(Object.assign(resp.generales,{reqDigit:2,radicadosReferidos:[{nombre:this.task.variables.numeroRadicado}]}));
+
+        resp.generales.reqDigit = 2;
+        resp.generales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+
+         this.datosGenerales$.next(resp.generales);
+
+         this.datosContacto$.next(resp.datosContacto);
 
         });
 

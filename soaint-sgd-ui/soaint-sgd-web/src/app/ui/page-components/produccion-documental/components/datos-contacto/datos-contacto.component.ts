@@ -53,8 +53,10 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
   validations: any = {};
 
- @Input() listaDestinatariosInternos: DestinatarioDTO[] = [];
- @Input() listaDestinatariosExternos: DestinatarioDTO[] = [];
+  @Input() dataDefault:Observable<any> = Observable.empty();
+
+ listaDestinatariosInternos: DestinatarioDTO[] = [];
+ listaDestinatariosExternos: DestinatarioDTO[] = [];
 
   destinatarioInterno: DestinatarioDTO = null;
   destinatarioExterno: DestinatarioDTO = null;
@@ -108,6 +110,14 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
 
     if(!this.showForm())
       this.form = null;
+
+    this.dataDefault.subscribe(data =>{  console.log(data.listaDestinatariosInternos);
+
+      this.listaDestinatariosInternos = data.listaDestinatariosInternos;
+      this.listaDestinatariosExternos= data.listaDestinatariosExternos;
+
+
+    })
 
   }
 
