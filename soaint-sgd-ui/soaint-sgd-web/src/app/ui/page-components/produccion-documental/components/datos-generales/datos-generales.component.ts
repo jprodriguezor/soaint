@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -26,7 +36,7 @@ import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-manag
 
 @Component({
   selector: 'pd-datos-generales',
-  templateUrl: './datos-generales.component.html'
+  templateUrl: './datos-generales.component.html',
 })
 
 export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
@@ -197,8 +207,15 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
     if ('pdf' === this.pd_currentVersion.tipo) {
       this.idecmDocumentoRadicado = this.pd_currentVersion.id;
-        this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version}));
-    } else {
+      this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({
+        id: this.pd_currentVersion.id,
+        version: this.pd_currentVersion.version
+      }));
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+     else {
         this.loadHtmlVersion();
     }
   }
@@ -347,6 +364,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     const anexo = this.listaAnexos[index];
     this.idecmDocumentoRadicado = anexo.id;
     this.showPdfViewer(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
+
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
 
@@ -368,6 +386,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   showPdfViewer(pdfUrl: string) {
     this.documentPreviewUrl = pdfUrl;
     this.documentPreview = true;
+
   }
 
   tipoComunicacionChange(event) {
