@@ -27,6 +27,7 @@ export  interface  RadicacionFormInterface{
     idePpdDocumento: any,
   },
   remitente: {
+  ideAgente?: any,
   tipoPersona?: any,
   nit?: any,
   actuaCalidad?: any,

@@ -22,7 +22,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
     (<RadicacionEntradaFormInterface>this.source).agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
-        ideAgente: null,
+        ideAgente: agenteInt.ideAgente,
         codTipoRemite: null,
         codTipoPers: null,
         nombre: null,

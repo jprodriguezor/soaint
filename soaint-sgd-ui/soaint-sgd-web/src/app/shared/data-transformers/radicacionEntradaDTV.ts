@@ -81,7 +81,7 @@ export class RadicacionEntradaDTV {
         prefijoCuadrante: (direccion) ? direccion.prefijoCuadrante : null,
         bis: (direccion) ? direccion.bis : null,
         orientacion: (direccion) ? direccion.orientacion : null,
-        direccion: this.GetDireccionText(contacto),
+        direccion: contacto.direccion || null,
         noVia: (direccion) ? direccion.noVia : null,
         prefijoCuadrante_se: (direccion) ? direccion.prefijoCuadrante_se : null,
         placa: contacto.nroPlaca,
@@ -126,6 +126,7 @@ export class RadicacionEntradaDTV {
 
   getRemitenteInternoForm(remitente: AgentDTO) {
     return {
+      ideAgente: remitente.ideAgente,
       tipoPersona: null,
       nit: null,
       actuaCalidad: null,
@@ -140,6 +141,7 @@ export class RadicacionEntradaDTV {
 
   getRemitenteExternoForm(remitente: AgentDTO) {
     return {
+      ideAgente: remitente.ideAgente,
       tipoPersona: {codigo: remitente.codTipoPers},
       nit: remitente.nit,
       actuaCalidad: {codigo: remitente.codEnCalidad},
@@ -167,6 +169,7 @@ export class RadicacionEntradaDTV {
     const destinatarios = [];
     this.source.agenteList.filter((agente: AgentDTO) => agente.codTipAgent === TIPO_AGENTE_DESTINATARIO).forEach((destinatario: AgentDTO) => {
       destinatarios.push({
+        ideAgente: destinatario.ideAgente,
         tipoDestinatario: {codigo: destinatario.indOriginal},
         sedeAdministrativa: {codigo: destinatario.codSede},
         dependenciaGrupo: {codigo: destinatario.codDependencia}
