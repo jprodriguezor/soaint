@@ -1309,7 +1309,10 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(CMCOR_TIPOLOGIA_DOCUMENTAL));
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_LENGTH).toString());
-                documentoDTO.setNroRadicado(qResult.getPropertyValueByQueryName(CMCOR_NRO_RADICADO).toString());
+                String nroRadicado = qResult.getPropertyValueByQueryName(CMCOR_NRO_RADICADO);
+                if (ObjectUtils.isEmpty(nroRadicado))
+                    nroRadicado = "";
+                documentoDTO.setNroRadicado(nroRadicado);
                 documentoDTO.setNombreRemitente(qResult.getPropertyValueByQueryName(CMCOR_NOMBRE_REMITENTE) != null ? qResult.getPropertyValueByQueryName(CMCOR_NOMBRE_REMITENTE).toString() : null);
 
                 documentosLista.add(documentoDTO);
@@ -1335,10 +1338,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         if (!ObjectUtils.isEmpty(documento.getIdDocumento())) {
             where = true;
-            String idDocumentoPadre = ObjectUtils.isEmpty(documento.getIdDocumentoPadre())
-                    ? documento.getIdDocumento() : documento.getIdDocumentoPadre();
+
             query += " WHERE " + PropertyIds.OBJECT_ID + " = '" + documento.getIdDocumento() + "'" +
-                    " OR " + CMCOR_ID_DOC_PRINCIPAL + " = '" + idDocumentoPadre + "'";
+                    " OR " + CMCOR_ID_DOC_PRINCIPAL + " = '" + documento.getIdDocumento() + "'";
         }
         if (!ObjectUtils.isEmpty(documento.getNroRadicado())) {
 
@@ -2090,7 +2092,7 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     @Override
-    public void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException {
+    public void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) {
 
         /*documentos.forEach(document -> {
             ContentStream contentStream = document.getContentStream();
