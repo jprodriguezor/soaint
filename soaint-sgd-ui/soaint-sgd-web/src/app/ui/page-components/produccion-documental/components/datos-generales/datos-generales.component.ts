@@ -72,6 +72,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   @Input()
   idecmDocumentoRadicado: string;
 
+
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
               private _dependenciaSandbox: DependenciaSandbox,
@@ -111,6 +112,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.listenForErrors();
+
   }
 
   updateStatus(currentStatus: StatusDTO) {
@@ -194,6 +196,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
 
     if ('pdf' === this.pd_currentVersion.tipo) {
+      this.idecmDocumentoRadicado = this.pd_currentVersion.id;
         this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version}));
     } else {
         this.loadHtmlVersion();
@@ -342,6 +345,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   mostrarAnexo(index: number) {
     const anexo = this.listaAnexos[index];
+    this.idecmDocumentoRadicado = anexo.id;
     this.showPdfViewer(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
