@@ -2108,18 +2108,4 @@ public class ContentControlAlfresco implements ContentControl {
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
         }
     }
-
-    private void subirDocumentoPrincipalAnexo(String idUnidadDocumental, DocumentoDTO documento, MensajeRespuesta respuesta, Session session) throws BusinessException {
-        //Se definen las propiedades del documento a subir
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
-        properties.put(CMCOR_ID_DOC_PRINCIPAL, documento.getIdDocumentoPadre() != null ? documento.getIdDocumentoPadre() : "");
-        properties.put(CMCOR_TIPO_DOCUMENTO, documento.getIdDocumentoPadre() != null ? "Anexo" : "Principal");
-
-        properties.put(PropertyIds.NAME, documento.getNombreDocumento());
-        Carpeta carpeta = new Carpeta();
-        carpeta.setFolder(getUDFolderById(idUnidadDocumental, session));
-        String idDoc = crearDocumentoDevolverId(documento, respuesta, documento.getDocumento(), properties, new ArrayList<>(), carpeta);
-
-    }
 }
