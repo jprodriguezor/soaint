@@ -30,6 +30,10 @@ import { ComunicacionOficialEntradaDTV } from '../../../shared/data-transformers
 import { CorrespondenciaApiService } from '../../../infrastructure/api/correspondencia.api';
 import { AnexoDTO } from '../../../domain/anexoDTO';
 import { getDestinatarioPrincial } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-selectors';
+import { afterTaskComplete } from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
+import { ConstanteDTO } from '../../../domain/constanteDTO';
+import { TIPO_AGENTE_DESTINATARIO } from '../../../shared/bussiness-properties/radicacion-properties';
+import { LoadDatosRemitenteAction } from '../../../infrastructure/state-management/constanteDTO-state/constanteDTO-actions';
 
 @Component({
   selector: 'app-corregir-radicacion',
@@ -45,7 +49,9 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   formRemitente: FormGroup;
 
   task: TareaDTO;
+  closedTask:  Observable<boolean> ;
   activeTaskUnsubscriber: Subscription;
+  validDatosGeneralesUnsubscriber: Subscription;
   readonly = false;
 
   radicacionEntradaFormData: RadicacionEntradaFormInterface = null;
@@ -97,6 +103,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   }
 
   Init() {
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
         this.task = activeTask;
         this.restore();
@@ -155,6 +162,10 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this.stateGenerales.radicadosReferidos = this.radicacionEntradaFormData.radicadosReferidos;
     this.stateGenerales.Init();
     this.formsTabOrder.push(this.stateGenerales.form);
+    this.validDatosGeneralesUnsubscriber = this.stateGenerales.form.statusChanges.filter(value => value === 'VALID').first()
+    .subscribe(() => {
+      this._store.dispatch(new LoadDatosRemitenteAction())
+  });
   }
 
   InitRemitente() {
@@ -171,9 +182,13 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this.formsTabOrder.push(this.stateDestinatario.form);
   }
 
-  actualizarComunicacion() {
+  actualizarComunicacion(): void {
     const payload = this.GetComunicacionPayload();
-    this._comunicacionOficialApi.actualizarComunicacion(payload);
+    this._correspondenciaService.actualizarComunicacion(payload)
+    .subscribe(response => {
+      this.disableEditionOnForms();
+      console.log(response);
+    });
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
@@ -181,10 +196,9 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
       parametros: {
       }
     });
-    this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
-  GetComunicacionPayload(): any {
+  GetComunicacionPayload(): ComunicacionOficialDTO {
     const radicacionEntradaFormPayload: any = {
       destinatario: this.stateDestinatario.form.value,
       generales: JSON.parse(JSON.stringify(this.stateGenerales.form.getRawValue())),
@@ -202,6 +216,13 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     return comunicacionOficialDTV.getComunicacionOficial();
   }
 
+  disableEditionOnForms() {
+    this.disabled = true;
+    this.stateGenerales.form.disable();
+    this.stateRemitente.form.disable();
+    this.stateDestinatario.form.disable();
+  }
+
   HasDocuments() {
     if (this.comunicacion && this.comunicacion.ppdDocumentoList) {
       return (this.comunicacion.ppdDocumentoList[0].ideEcm) ? true : false;
@@ -211,6 +232,16 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
 
   IsDisabled() {
     return (this.formsTabOrder[this.tabIndex] && this.formsTabOrder[this.tabIndex].valid);
+  }
+
+  EsInvalido() {
+    if (this.formsTabOrder.length) {
+      const formularioInvalido = this.formsTabOrder.find(_form => _form.valid === false);
+      if (formularioInvalido) {
+        return true;
+      }
+    }
+    return false;
   }
 
   uploadVersionDocumento(doc: VersionDocumentoDTO) {

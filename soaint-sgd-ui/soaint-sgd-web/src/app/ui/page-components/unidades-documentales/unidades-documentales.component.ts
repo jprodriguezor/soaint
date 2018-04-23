@@ -27,7 +27,12 @@ export class UnidadesDocumentalesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.State.InitData();
+    this.State.InitForm([
+      'dependencia',
+      'serie',
+    ]);
+    this.State.OpcionSeleccionada = 0 // abrir
+    this.State.InitPropiedadesTarea();
   }
 
 

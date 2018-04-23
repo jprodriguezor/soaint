@@ -221,7 +221,7 @@ public class CorrespondenciaClient {
     public Response actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) {
         log.info("Comunicacion - [trafic] - comunicacion with endpoint: " + endpoint);
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/correspondencia-web-api/correspondencia")
+        return wt.path("/correspondencia-web-api/correspondencia/actualizar-comunicacion")
                 .request()
                 .put(Entity.json(comunicacionOficialDTO));
     }

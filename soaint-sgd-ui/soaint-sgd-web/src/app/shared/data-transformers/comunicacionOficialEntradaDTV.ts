@@ -7,7 +7,6 @@ import {
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO,
   TIPO_REMITENTE_INTERNO
 } from '../bussiness-properties/radicacion-properties';
-
 import {RadicacionBase} from "./radicacionBase";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
 
@@ -21,7 +20,7 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 
     (<RadicacionEntradaFormInterface>this.source).agentesDestinatario.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
-        ideAgente: null,
+        ideAgente: agenteInt.ideAgente,
         codTipoRemite: null,
         codTipoPers: null,
         nombre: null,
@@ -55,6 +54,13 @@ export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
         nroPlaca: contact.placa || null,
         codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
         codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
+        /*codBis:contact.bis ? contact.bis : null,
+        codOrientacion : contact.orientacion ? contact.orientacion : null,
+        noVia:contact.noVia,
+        codPrefijoCuadrantSe: contact.prefijoCuadrante_se ? contact.prefijoCuadrante_se : null,
+        codOrientacionSe: contact.orientacion_se ? contact.orientacion_se : null,
+        codTipoComplemento: contact.complementoTipo ? contact.complementoTipo : null,
+        codTipoComplementoAdicional: contact.complementoAdicional ? contact.complementoAdicional : null,*/
         codPostal: null,
         direccion: contact.direccion || null,
         celular: contact.celular || null,

@@ -34,6 +34,11 @@ import java.util.List;
                 "FROM TvsDepartamento t " +
                 "INNER JOIN t.pais p " +
                 "WHERE TRIM(p.codPais) = TRIM(:COD_PAIS) AND TRIM(t.auditColumns.estado) = TRIM(:ESTADO)"),
+        @NamedQuery(name = "TvsDepartamento.existeDepartamentoByCodDep", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
+                "(t.ideDepar, t.nombreDepar, t.codDepar) " +
+                "FROM TvsDepartamento t " +
+                "INNER JOIN t.tvsMunicipioList m " +
+                "WHERE TRIM(t.codDepar) = TRIM(:COD_DEP)"),
         @NamedQuery(name = "TvsDepartamento.findByCodMunic", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO" +
                 "(t.ideDepar, t.nombreDepar, t.codDepar) " +
                 "FROM TvsDepartamento t " +

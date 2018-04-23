@@ -294,26 +294,29 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
-            FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
-            String nomCompleto = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1()).concat(" ").concat(funcionarioDTO.getValApellido2());
+            String funcionario = "No existe.";
+            if (funcionarioControl.existFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()))){
+                FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+                funcionario = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1().concat(" ").concat(funcionarioDTO.getValApellido2()));
+            }
 
             return CorrespondenciaFullDTO.newInstance()
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
                     .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .descDependencia(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodDependencia()).getDescOrg())
+                    .descDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodDependencia()))
                     .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
                     .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
                     .codEstado(correspondenciaDTO.getCodEstado())
                     .descEstado(this.consultarNombreEnumCorrespondencia(correspondenciaDTO.getCodEstado()))
                     .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .descFuncRadica(nomCompleto)
+                    .descFuncRadica(funcionario)
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
                     .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                     .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
-                    .descSede(organigramaAdministrativoControl.consultarElementoByCodOrg(correspondenciaDTO.getCodSede()).getDescOrg())
+                    .descSede(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()))
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
                     .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
                     .codTipoDoc(correspondenciaDTO.getCodTipoDoc())

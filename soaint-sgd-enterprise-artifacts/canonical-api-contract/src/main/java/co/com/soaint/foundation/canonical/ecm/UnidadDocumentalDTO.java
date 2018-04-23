@@ -33,6 +33,7 @@ public class UnidadDocumentalDTO {
     private String id;
     private String faseArchivo;
     private Calendar fechaExtremaInicial;
+    private Calendar fechaAutoCierre;
     private String soporte;
     private String codigoUnidadDocumental;
     private String nombreUnidadDocumental;

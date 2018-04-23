@@ -39,7 +39,7 @@ export class DatosRemitenteStateService {
     // Listas de subscripcion
     contacts: Array<any> = [];
     dependenciasGrupoList: Array<any> = [];
-    subscriptionTipoDocumentoPersona: Array<ConstanteDTO> = [];
+    subscriptionTipoDocumentoPersona = [];
     subscribers: Array<Subscription> = [];
 
     disabled = true;
@@ -71,15 +71,16 @@ export class DatosRemitenteStateService {
 
     initForm(): void {
         this.form = this.formBuilder.group({
+            'ideAgente': [this.dataform.ideAgente],
             'tipoPersona': [{value: this.dataform.tipoPersona.codigo, disabled: !this.disabled}, Validators.required],
             'nit': [{value: this.dataform.nit, disabled: !this.disabled}],
             'actuaCalidad': [{value: this.dataform.actuaCalidad.codigo, disabled: !this.disabled}],
-            'tipoDocumento': [{value: this.dataform.tipoDocumento.codigo, disabled: !this.disabled}],
-            'razonSocial': [{value: this.dataform.razonSocial, disabled: !this.disabled}, Validators.required],
-            'nombreApellidos': [{value: this.dataform.nombreApellidos, disabled: !this.disabled}, Validators.required],
+            'tipoDocumento': [{value: null, disabled: !this.disabled}],
+            'razonSocial': [{value: this.dataform.razonSocial, disabled: !this.disabled}],
+            'nombreApellidos': [{value: this.dataform.nombreApellidos, disabled: !this.disabled}],
             'nroDocumentoIdentidad': [{value: this.dataform.nroDocumentoIdentidad, disabled: !this.disabled}],
-            'sedeAdministrativa': [{value: this.dataform.sedeAdministrativa, disabled: !this.disabled}, Validators.required],
-            'dependenciaGrupo': [{value: this.dataform.dependenciaGrupo, disabled: !this.disabled}, Validators.required],
+            'sedeAdministrativa': [{value: this.dataform.sedeAdministrativa, disabled: !this.disabled}],
+            'dependenciaGrupo': [{value: this.dataform.dependenciaGrupo, disabled: !this.disabled}],
         });
         setTimeout(() => {
           this.onSelectTipoPersona(this.dataform.tipoPersona.codigo);
@@ -118,9 +119,10 @@ export class DatosRemitenteStateService {
           tipoPersona: true
         };
       }
-
+      const requiredControls = [];
       if (value === PERSONA_ANONIMA) {
         this.visibility['tipoPersona'] = true;
+        requiredControls.push('tipoPersona');
 
       } else if (value === PERSONA_JURIDICA && this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['nit'] = true;
@@ -132,22 +134,31 @@ export class DatosRemitenteStateService {
         this.visibility['tipoDocumento'] = true;
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo === TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
-          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[0]);
-        }).unsubscribe();
+          const tipoDocumento = this.subscriptionTipoDocumentoPersona.find(_item => _item.codigo === this.dataform.tipoDocumento.codigo);
+          this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona[tipoDocumento]);
+        });
         this.visibility['personaJuridica'] = true;
+        requiredControls.push('razonSocial');
       } else if (value === PERSONA_NATURAL && this.tipoComunicacion === COMUNICACION_EXTERNA) {
         this.visibility['nombreApellidos'] = true;
         this.visibility['departamento'] = true;
         this.visibility['nroDocumentoIdentidad'] = true;
         this.visibility['datosContacto'] = true;
         this.visibility['tipoDocumento'] = true;
-
         this.tipoDocumentoSuggestions$.subscribe(docs => {
           this.subscriptionTipoDocumentoPersona = docs.filter(doc => doc.codigo !== TPDOC_NRO_IDENTIFICACION_TRIBUTARIO);
           this.form.get('tipoDocumento').setValue(this.subscriptionTipoDocumentoPersona.filter(doc => doc.codigo === TPDOC_CEDULA_CIUDADANIA)[0]);
-        }).unsubscribe();
-
+        });
+        requiredControls.push('nombreApellidos');
       }
+      this.SetFormRequiredControls(requiredControls);
+    }
+
+    SetFormRequiredControls(requiredControls: string[]) {
+      requiredControls.forEach(_control => {
+        this.form.controls[_control].setValidators(Validators.required);
+      });
+      this.form.updateValueAndValidity();
     }
 
     setTipoComunicacion() {

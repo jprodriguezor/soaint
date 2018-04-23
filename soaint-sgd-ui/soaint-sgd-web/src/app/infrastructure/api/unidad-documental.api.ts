@@ -12,7 +12,7 @@ export class UnidadDocumentalApiService {
   constructor(private _api: ApiBase) {
   }
 
-  Listar(payload: any): Observable<UnidadDocumentalDTO[]> {
+  Listar(payload: UnidadDocumentalDTO): Observable<UnidadDocumentalDTO[]> {
     return this._api.post(environment.listar_unidad_documental_endpoint, payload)
     .map((resp) => resp.response.unidadDocumental);
   }
