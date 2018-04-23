@@ -328,7 +328,7 @@ public class EcmIntegrationServicesClientRest {
      * @return MensajeRespuesta Mensaje de respuesta
      */
     @POST
-    @Path("/listarUnidadDocumentalECM/")
+    @Path("/listarUnidadesDocumentalesECM/")
     public MensajeRespuesta listarUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
         logger.info("processing rest request - Listar Unidades Documentales ECM");
         try {
