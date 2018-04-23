@@ -107,7 +107,7 @@ public class UnidadDocumentalGatewayApi {
     @GET
     @Path("/detalle-unidad-documental/{id}")
     @JWTTokenSecurity
-    public Response detalleUnidadDocumental(@PathParam("id") final int idUnidadDocumental) {
+    public Response detalleUnidadDocumental(@PathParam("id") final String idUnidadDocumental) {
 
         log.info("DetalleUnidadDocumentalGatewayApi - [trafic] - detalle unidad documental");
         Response response = ecmClient.DetalleUnidadDocumental(idUnidadDocumental);

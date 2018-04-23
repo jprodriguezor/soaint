@@ -169,7 +169,7 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response DetalleUnidadDocumental(int idUnidadDocumental) {
+    public Response DetalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
