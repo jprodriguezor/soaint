@@ -2,3 +2,10 @@
   max-height:300px;
   overflow-y: auto;
 }
+
+.material-icons.checked{
+  color:green;
+}
+.material-icons.close{
+  color:red;
+}

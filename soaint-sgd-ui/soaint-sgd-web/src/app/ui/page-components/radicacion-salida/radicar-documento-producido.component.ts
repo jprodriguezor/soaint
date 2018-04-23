@@ -13,71 +13,72 @@ import {ComunicacionToSource} from "../../../shared/data-transformers/comunicaci
 import {ApiBase} from "../../../infrastructure/api/api-base";
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
+import {getTipoComunicacionArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
 
 @Component({
   selector: 'app-radicar-documento-producido',
   templateUrl: './radicar-documento-producido.component.html',
   styleUrls: ['./radicar-salida.component.css']
 })
-export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent{
+export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent {
 
-  comunicacionUnsubscriber:Subscription;
+  comunicacionUnsubscriber: Subscription;
 
-  datosGenerales$:Subject<any> = new Subject;
-  datosContacto$:Subject<any> = new Subject;
+  datosGenerales$: Subject<any> = new Subject;
+  datosContacto$: Subject<any> = new Subject;
+
+  ideEcm;
 
 
   constructor(
     protected _store: Store<RootState>
-    ,protected _changeDetectorRef: ChangeDetectorRef
-    ,protected _sandbox:RadicacionSalidaService
-    ,protected _taskSandbox:TaskSandBox
-  ,private _asignacionSandbox:AsignacionSandbox
-  ,private _api:ApiBase
+    , protected _changeDetectorRef: ChangeDetectorRef
+    , protected _sandbox: RadicacionSalidaService
+    , protected _taskSandbox: TaskSandBox
+    , private _asignacionSandbox: AsignacionSandbox
+    , private _api: ApiBase
   ) {
 
-    super(_store,_changeDetectorRef,_sandbox,_taskSandbox);
+    super(_store, _changeDetectorRef, _sandbox, _taskSandbox);
   }
 
-  ngOnInit(){
+  ngOnInit() {
 
     super.ngOnInit();
 
-    ViewFilterHook.addFilter("app-datos-direccion-show-block-dist-dig",() => false);
+    ViewFilterHook.addFilter("app-datos-direccion-show-block-dist-dig", () => false);
 
-    this._asignacionSandbox.obtenerComunicacionPorNroRadicado(this.task.variables.numeroRadicado)
-      .subscribe(comunicacion => {
+    this._taskSandbox.getTareaPersisted(this.task.variables.idInstancia, '0000').map(r => r.payload)
+      .subscribe(resp => {
 
-        console.log("comunicacion cruda",comunicacion);
+      resp.datosGenerales.reqDigit = 2;
+      resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+      resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
 
-       let obj = new ComunicacionToSource(comunicacion,this._store,this._api);
+      this.datosGenerales$.next(resp.datosGenerales);
+      this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
 
-        obj.transform().subscribe( resp => {  console.log("tareaData:",this.task);
-
-
-        resp.generales.reqDigit = 2;
-        resp.generales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-
-         this.datosGenerales$.next(resp.generales);
-
-         this.datosContacto$.next(resp.datosContacto);
-
-        });
-
-
-      })
-
-
+      this.datosContacto$.next(resp.datosContacto);
+    });
 
 
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
 
     super.ngOnDestroy();
 
     ViewFilterHook.removeFilter("app-datos-direccion-show-block-dist-dig");
 
+  }
+
+  protected buildTaskCompleteParameters(generales:any,noRadicado:any):any{
+
+    return {
+      codDependencia:this.dependencySelected.codigo,
+      numeroRadicado:noRadicado,
+      requiereDistribucion:generales.reqDistFisica ? "1" : "2"
+    }
   }
 
 }

@@ -203,13 +203,19 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         idProceso: this.task.idProceso,
         idDespliegue: this.task.idDespliegue,
         idTarea: this.task.idTarea,
-        parametros: {
-          codDependencia: this.dependencySelected.codigo,
-          requiereDigitalizacion: requiereDigitalizacion,
-          numeroRadicado: response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null,
-        }
+        parametros: this.buildTaskCompleteParameters(valueGeneral,response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null)
+
       });
     });
+  }
+
+  protected buildTaskCompleteParameters(generales:any,noRadicado:any):any{
+
+    return {
+      codDependencia:this.dependencySelected.codigo,
+      numeroRadicado:noRadicado,
+      requiereDigitalizacion:generales.reqDigit
+    }
   }
 
   private createTicketDestInterno(destinatario:any):RsTicketRadicado{

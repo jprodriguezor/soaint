@@ -171,8 +171,11 @@ export class DatosGeneralesComponent implements OnInit {
       this.form.get("inicioConteo").setValue(datosGenerales.inicioConteo);
       this.form.get("tiempoRespuesta").setValue(datosGenerales.tiempoRespuesta);
       this.form.get("asunto").setValue(datosGenerales.asunto);
+      this.form.get("reqDigit").setValue(datosGenerales.reqDigit);
+      this.form.get("reqDistFisica").setValue(datosGenerales.reqDistFisica);
 
-      this.descripcionAnexos = datosGenerales.descripcionAnexos;
+
+      this.descripcionAnexos = datosGenerales.listaAnexos;
       this.radicadosReferidos = datosGenerales.radicadosReferidos;
 
 

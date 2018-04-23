@@ -115,6 +115,8 @@ export class DatosRemitenteComponent implements OnInit {
 
         const funcionario = ViewFilterHook.applyFilter('rdpdr-funcionario-selected',false);
 
+        console.log(funcionario);
+
         if( funcionario !== false){
 
           this.funcionariosSuggestions$.subscribe( funcs =>{

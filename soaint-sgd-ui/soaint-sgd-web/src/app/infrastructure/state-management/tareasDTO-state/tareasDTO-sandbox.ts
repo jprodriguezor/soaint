@@ -231,6 +231,12 @@ export class Sandbox {
     this._store.dispatch(new actions.LoadAction(payload));
   }
 
+  getTareaPersisted(idProceso,idTarea){
+
+    return this._api.list(environment.taskStatus_endpoint+'/'+idProceso+'/'+idTarea);
+
+  }
+
 
 }
 

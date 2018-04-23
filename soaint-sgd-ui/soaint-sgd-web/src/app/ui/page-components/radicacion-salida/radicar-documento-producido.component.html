@@ -35,6 +35,10 @@
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
           <rs-datos-remitente #datosRemitente  [loadCurrentUserData]="true"  ></rs-datos-remitente>
         </p-tabPanel>
+
+        <p-tabPanel header="Visualizar Docuemntos">
+          <app-documentos-ecm-list [(idDocumentECM)]="ideEcm"></app-documentos-ecm-list>
+        </p-tabPanel>
       </p-tabView>
 
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
