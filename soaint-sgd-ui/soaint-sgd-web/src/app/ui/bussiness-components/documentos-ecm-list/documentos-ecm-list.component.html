@@ -21,7 +21,7 @@
             <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
             <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true">
               <ng-template let-col let-row="rowData" pTemplate="body">
-                {{row.fechaCreacion|date:'dd/mm/yyyy'}}
+                {{row.fechaCreacion | date:'dd/mm/yyyy'}}
               </ng-template>
             </p-column>
             <p-column  header="Ver Documento">

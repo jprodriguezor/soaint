@@ -9,8 +9,8 @@ const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 // const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-//const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-//const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -53,7 +53,7 @@ export const environment = {
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
-  radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
+  radicarSalida_endpoint: `${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -79,6 +79,7 @@ export const environment = {
   obtenerDocumento_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documento/`,
   obtenerDocumento_asociados_endpoint: `${host}/digitalizar-documento-gateway-api/obtener-documentos-asociados`,
   obtenerComunicacion_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/`,
+  obtenerComunicacionfull_endpoint: `${host}/correspondencia-gateway-api/obtener-comunicacion/full`,
   obtenerContactoDestinatarioExterno_endpoint: `${host}/correspondencia-gateway-api/contactos-destinatario-externo`,
   registrarObservaciones_endpoint: `${host}/correspondencia-gateway-api/registrarObservacion`,
   obtenerConstantesPorCodigo_endpoint: `${host}/correspondencia-gateway-api/constantes`,
@@ -97,7 +98,7 @@ export const environment = {
 
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
-
+  listarAnexos_endpoint: `${host}/correspondencia-gateway-api/listar-anexos/`,
     // Produccion Documental
   pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
   pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
@@ -119,7 +120,10 @@ export const environment = {
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
   crear_unbidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
-
+  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
+  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
+  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
+  detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
 };
 
 export const process_info = {

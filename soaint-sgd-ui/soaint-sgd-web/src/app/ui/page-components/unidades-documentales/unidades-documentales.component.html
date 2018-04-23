@@ -44,7 +44,7 @@
                   <label for="serie"><span class="text-danger">*</span>Serie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="(State.ListadoSeries | async | dropdownItemSerie)"
+                  <p-dropdown [options]="(State.ListadoSeries | dropdownItemSerie)"
                               id="serie"
                               formControlName="serie"
                               placeholder="Seleccione"
@@ -173,7 +173,11 @@
             <p-column field="descriptor1" header="Descriptor 1"></p-column>
             <p-column field="descriptor2" header="Descriptor 2"></p-column>
             <p-column field="faseArchivo" header="Fase archivo"></p-column>
-            <p-column field="estado" header="Estado"></p-column>
+            <p-column field="inactivo" header="Estado">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | toActiveString}}
+              </ng-template>
+            </p-column>
             <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
             <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
             <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
