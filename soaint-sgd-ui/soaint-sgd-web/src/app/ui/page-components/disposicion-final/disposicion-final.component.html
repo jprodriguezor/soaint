@@ -263,3 +263,17 @@
         </p-panel>
     </div>
 </div>
+
+<p-dialog 
+    [visible]="state.AbrirDetalle | async" 
+    modal="modal" 
+    [responsive]="true" 
+    [closable]="true"
+    positionTop="20"
+    [style]="{'position':'absolute'}"
+    [width]="800"
+    (onHide)="state.CerrarDetalle()">
+    <p-header>
+    </p-header>
+    <app-detalle-unidad-conservacion [state]="state"></app-detalle-unidad-conservacion>
+</p-dialog>
