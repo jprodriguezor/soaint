@@ -33,43 +33,45 @@ public interface ContentControl extends Serializable {
     //* properties ECM *
     //******************
 
-    //cmcor: CM_Unidad_Administrativa
-    String CMCOR_DEP_CODIGO = "cmcor:CodigoDependencia";
-    String CMCOR_DEP_CODIGO_UAP = "cmcor:CodigoUnidadAdminPadre";
+    // CM_Unidad_Administrativa
+    String CMCOR_DEP_CODIGO = CMCOR + "CodigoDependencia";
+    String CMCOR_DEP_CODIGO_UAP = CMCOR + "CodigoUnidadAdminPadre";
 
-    //cmcor:CM_Unidad_Documental
-    String CMCOR_UD_ACCION = "cmcor:accion";
-    String CMCOR_UD_FECHA_INICIAL = "cmcor:fechaInicial";
-    String CMCOR_UD_INACTIVO = "cmcor:inactivo";
-    String CMCOR_UD_UBICACION_TOPOGRAFICA = "cmcor:ubicacionTopografica";
-    String CMCOR_UD_FECHA_FINAL = "cmcor:fechaFinal";
-    String CMCOR_UD_FECHA_CIERRE = "cmcor:fechaCierre";
-    String CMCOR_UD_ID = "cmcor:id";
-    String CMCOR_UD_FASE_ARCHIVO = "cmcor:faseArchivo";
-    String CMCOR_UD_SOPORTE = "cmcor:soporte";
-    String CMCOR_UD_CODIGO = "cmcor:codigoUnidadDocumental";
-    String CMCOR_UD_DESCRIPTOR_2 = "cmcor:descriptor2";
-    String CMCOR_UD_DESCRIPTOR_1 = "cmcor:descriptor1";
-    String CMCOR_UD_CERRADA = "cmcor:cerrada";
-    String CMCOR_UD_OBSERVACIONES = "cmcor:observaciones";
-    String CMCOR_UD_FECHA_AUTO_CIERRE = "cmcor:fechaAutoCierre";
+    //CM_Unidad_Documental
+    String CMCOR_UD_ACCION = CMCOR + "accion";
+    String CMCOR_UD_FECHA_INICIAL = CMCOR + "fechaInicial";
+    String CMCOR_UD_INACTIVO = CMCOR + "inactivo";
+    String CMCOR_UD_UBICACION_TOPOGRAFICA = CMCOR + "ubicacionTopografica";
+    String CMCOR_UD_FECHA_FINAL = CMCOR + "fechaFinal";
+    String CMCOR_UD_FECHA_CIERRE = CMCOR + "fechaCierre";
+    String CMCOR_UD_ID = CMCOR + "id";
+    String CMCOR_UD_FASE_ARCHIVO = CMCOR + "faseArchivo";
+    String CMCOR_UD_SOPORTE = CMCOR + "soporte";
+    String CMCOR_UD_CODIGO = CMCOR + "codigoUnidadDocumental";
+    String CMCOR_UD_DESCRIPTOR_2 = CMCOR + "descriptor2";
+    String CMCOR_UD_DESCRIPTOR_1 = CMCOR + "descriptor1";
+    String CMCOR_UD_CERRADA = CMCOR + "cerrada";
+    String CMCOR_UD_OBSERVACIONES = CMCOR + "observaciones";
+    String CMCOR_UD_FECHA_AUTO_CIERRE = CMCOR + "fechaAutoCierre";
+    String CMCOR_UD_DISPOSICION = CMCOR + "disposicion";
+    String CMCOR_UD_ESTADO = CMCOR + "estado";
 
-    //cmcor:CM_Unidad_Base
-    String CMCOR_UB_CODIGO = "cmcor:CodigoBase";
+    //CM_Unidad_Base
+    String CMCOR_UB_CODIGO = CMCOR + "CodigoBase";
 
-    //cmcor:CM_Serie
-    String CMCOR_SER_CODIGO = "cmcor:CodigoSerie";
+    //CM_Serie
+    String CMCOR_SER_CODIGO = CMCOR + "CodigoSerie";
 
-    //cmcor:CM_SubSerie
-    String CMCOR_SS_CODIGO = "cmcor:CodigoSubserie";
+    //CM_SubSerie
+    String CMCOR_SS_CODIGO = CMCOR + "CodigoSubserie";
 
     //CM_DocumentoPersonalizado
-    String CMCOR_NRO_RADICADO = "cmcor:NroRadicado";
-    String CMCOR_NOMBRE_REMITENTE = "cmcor:NombreRemitente";
-    String CMCOR_TIPOLOGIA_DOCUMENTAL = "cmcor:TipologiaDocumental";
-    String CMCOR_TIPO_DOCUMENTO = "cmcor:xTipo";
-    String CMCOR_NUMERO_REFERIDO = "cmcor:xNumeroReferido";
-    String CMCOR_ID_DOC_PRINCIPAL = "cmcor:xIdentificadorDocPrincipal";
+    String CMCOR_NRO_RADICADO = CMCOR + "NroRadicado";
+    String CMCOR_NOMBRE_REMITENTE = CMCOR + "NombreRemitente";
+    String CMCOR_TIPOLOGIA_DOCUMENTAL = CMCOR + "TipologiaDocumental";
+    String CMCOR_TIPO_DOCUMENTO = CMCOR + "xTipo";
+    String CMCOR_NUMERO_REFERIDO = CMCOR + "xNumeroReferido";
+    String CMCOR_ID_DOC_PRINCIPAL = CMCOR + "xIdentificadorDocPrincipal";
 
     // ECM sms Error
     String ECM_ERROR = "ECM_ERROR";
