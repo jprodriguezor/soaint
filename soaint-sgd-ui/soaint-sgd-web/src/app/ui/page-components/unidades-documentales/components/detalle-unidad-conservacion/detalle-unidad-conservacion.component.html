@@ -1,4 +1,4 @@
-<div *ngIf="State.UnidadDocumentalSeleccionada">
+<div *ngIf="state.UnidadDocumentalSeleccionada">
 <p-panel header="Datos unidad documental" leftIcon="ui-icon-assignment">
   <div class="ui-g ui-fluid">   
       <div class="ui-sm-12 ui-g-6 ui-lg-12">
@@ -8,7 +8,7 @@
                   <label for="idunidaddocumental">Identificador principal unidad documental</label>
               </div>
               <div class="ui-g-12">
-                  <input type="text" pInputText   id="idunidaddocumental" [(ngModel)]="State.UnidadDocumentalSeleccionada.identificador" />
+                  <input type="text" pInputText   id="idunidaddocumental" [(ngModel)]="state.UnidadDocumentalSeleccionada.identificador" />
               </div>
           </div>
       </div>
@@ -18,7 +18,7 @@
                 <label for="nombre">Nombre unidad documental</label>
             </div>
             <div class="ui-g-12">
-                <input type="text" pInputText   id="nombre" [(ngModel)]="State.UnidadDocumentalSeleccionada.nombre" />
+                <input type="text" pInputText   id="nombre" [(ngModel)]="state.UnidadDocumentalSeleccionada.nombre" />
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
               <label for="descriptor1">Descriptor 1</label>
           </div>
           <div class="ui-g-12">
-              <input type="text" pInputText   id="descriptor1" [(ngModel)]="State.UnidadDocumentalSeleccionada.descriptor1" />
+              <input type="text" pInputText   id="descriptor1" [(ngModel)]="state.UnidadDocumentalSeleccionada.descriptor1" />
           </div>
       </div>
   </div>
@@ -38,7 +38,7 @@
             <label for="descriptor2">Descriptor 2</label>
         </div>
         <div class="ui-g-12">
-            <input type="text" pInputText   id="descriptor2" [(ngModel)]="State.UnidadDocumentalSeleccionada.descriptor2" />
+            <input type="text" pInputText   id="descriptor2" [(ngModel)]="state.UnidadDocumentalSeleccionada.descriptor2" />
         </div>
     </div>
   </div>
@@ -51,7 +51,7 @@
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="State.UnidadDocumentalSeleccionada.unidadesConservacion"
+                       [value]="state.UnidadDocumentalSeleccionada.unidadesConservacion"
                        emptyMessage="No se encontraron resultados ">
             <p-column field="item" header="Item"></p-column>
             <p-column field="nombreSerieSubserie" header="Nombre serie/subserie"></p-column>

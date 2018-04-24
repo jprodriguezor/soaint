@@ -8,7 +8,7 @@ import { StateUnidadDocumentalService } from 'app/ui/page-components/unidades-do
 })
 export class DetalleUnidadConservacionComponent implements OnInit {
 
-  @Input() State: StateUnidadDocumentalService;
+  @Input() state: StateUnidadDocumentalService;
 
   constructor() { }
 
