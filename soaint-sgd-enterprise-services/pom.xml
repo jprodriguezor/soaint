@@ -46,6 +46,7 @@
             <hostname>${wildfly-hostname}</hostname>
             <username>${wildfly-username}</username>
             <password>${wildfly-password}</password>
+            <timeout>${wildfly-timeout}</timeout>
           </configuration>
           <executions>
             <!-- Deploy the application on install -->
