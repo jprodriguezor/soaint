@@ -1,11 +1,7 @@
 package co.com.soaint.correspondencia;
 
-import co.com.soaint.correspondencia.business.boundary.GestionarConstantes;
 import co.com.soaint.correspondencia.business.boundary.GestionarTarea;
-import co.com.soaint.correspondencia.business.control.ConstantesControl;
 import co.com.soaint.correspondencia.business.control.TareaControl;
-import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ConstantesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.TareaDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -39,52 +36,20 @@ public class GestionarTareaTest extends  JPAHibernateTest {
     public void test_guardarEstadoTarea_success() throws SystemException {
 
         //given
-        String estado = "ACTIVO";
-        String idInstanciaProceso = "ACTIVO";
-        String idTareaProceso = "ACTIVO";
+        BigInteger idTarea = new BigInteger("60");
+        String idInstanciaProceso = "99059";
+        String idTareaProceso = "0000";
         String payload = "[{}]";
         TareaDTO tareaDTO = TareaDTO.newInstance()
                 .idTareaProceso(idTareaProceso)
                 .idInstanciaProceso(idInstanciaProceso)
+                .ideTarea(idTarea)
                 .payload(payload)
                 .build();
         //when
-        tareaControl.guardarEstadoTarea(tareaDTO);
+//        tareaControl.guardarEstadoTarea(tareaDTO);
         //then
-            assertEquals(2, );
-            assertEquals("CODIGO1", constantes.get(0).getCodigo());
-
-    }
-
-    @Test
-    public void  testTvsConstantes_listarConstantesByCodigoAndEstado_success() throws SystemException {
-        String estado = "ACTIVO";
-        String codigo = "CODIGO1";
-
-        List<ConstanteDTO> constantes = constantesControl.listarConstantesByCodigoAndEstado(codigo,estado);
-        assertEquals(1, constantes.size());
-        assertEquals("NOMBRE1", constantes.get(0).getNombre());
-
-    }
-
-    @Test
-    public void  testTvsConstantes_listarConstantesByCodPadreAndEstado_success() throws SystemException {
-        String estado = "ACTIVO";
-        String codpadre = "CODIGOPADRE1";
-
-        List<ConstanteDTO> constantes = constantesControl.listarConstantesByCodPadreAndEstado(codpadre,estado);
-        assertEquals(1, constantes.size());
-        assertEquals("NOMBRE1", constantes.get(0).getNombre());
-
-    }
-
-    @Test
-    public void  testTvsConstantes_listarConstantesByCodigo_success() throws SystemException {
-        String[] codigos = {"CA-TID"};
-
-        ConstantesDTO constantes = constantesControl.listarConstantesByCodigo(codigos);
-        assertEquals(1, constantes.getConstantes().size());
-        assertEquals("CA-TID", constantes.getConstantes().get(0).getCodigo());
+            assertEquals("0000", tareaDTO.getIdTareaProceso());
 
     }
 }
