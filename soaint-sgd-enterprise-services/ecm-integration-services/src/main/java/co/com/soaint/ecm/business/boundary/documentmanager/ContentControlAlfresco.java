@@ -566,9 +566,10 @@ public class ContentControlAlfresco implements ContentControl {
      * @return Mensaje de respuesta
      */
     @Override
-    public MensajeRespuesta listarUnidadDocumental(final UnidadDocumentalDTO dto,
+    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO dto,
                                                    final Session session) throws BusinessException {
         final MensajeRespuesta respuesta = new MensajeRespuesta();
+        dto = ObjectUtils.isEmpty(dto) ? UnidadDocumentalDTO.newInstance().build() : dto;
         final List<UnidadDocumentalDTO> unidadDocumentalDTOS = buscarUnidadesDocumentales(dto, session, false);
         respuesta.setMensaje("Listado seleccionado correctamente");
         respuesta.setCodMensaje("00000");
