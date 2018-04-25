@@ -22,7 +22,7 @@ export class UnidadDocumentalApiService {
    }
 
    crear(unidadDocumental: UnidadDocumentalDTO) {
-     return this._api.post('', unidadDocumental);
+     return this._api.post(environment.crear_unidad_documental, unidadDocumental);
    }
 
   abrirUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {

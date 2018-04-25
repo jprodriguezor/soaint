@@ -15,6 +15,7 @@ import {ContactoDTO} from "../../domain/contactoDTO";
 import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacionForm.interface";
 import {AgenteFactoryDTV} from "./agentesDTV";
 import {DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO} from "../bussiness-properties/radicacion-properties";
+import {isNullOrUndefined} from "util";
 
 export  abstract class RadicacionBase {
 
@@ -83,7 +84,8 @@ export  abstract class RadicacionBase {
 
   getListaReferidos(): Array<ReferidoDTO> {
     const referidosList = [];
-    this.source.radicadosReferidos.forEach(referido => {
+    if(!isNullOrUndefined(this.source.radicadosReferidos))
+     this.source.radicadosReferidos.forEach(referido => {
       referidosList.push({
         ideReferido: referido.ideReferido,
         nroRadRef: referido.nombre

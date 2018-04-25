@@ -15,7 +15,7 @@ import {
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
   TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL,
-  TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO
+  TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO, TASK_COMPLETAR_DATOS_DISTRIBUCION
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -192,6 +192,10 @@ export class Sandbox {
 
       case TASK_CREAR_UNIDAD_DOCUMENTAL :
         this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.crearUnidadDocumental}`, task]));
+        break;
+
+      case TASK_COMPLETAR_DATOS_DISTRIBUCION:
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.completarDatosDistribucion}`, task]));
         break;
 
       default:

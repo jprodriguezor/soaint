@@ -24,11 +24,6 @@
         <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
           <pd-datos-contacto #datosContacto [taskData]="task"  [dataDefault]="datosContacto$" ></pd-datos-contacto>
-
-          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value">
-            <app-form-envio  #datosEnvio ></app-form-envio>
-          </div>
-
         </p-tabPanel>
 
 

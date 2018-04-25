@@ -14,6 +14,7 @@ import {ApiBase} from "../../../infrastructure/api/api-base";
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
 import {getTipoComunicacionArrayData} from "../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'app-radicar-documento-producido',
@@ -52,7 +53,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
       .subscribe(resp => {
 
       resp.datosGenerales.reqDigit = 2;
-      resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+      if(!isNullOrUndefined(this.task.variables.numeroRadicado))
+        resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
       resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
 
       this.datosGenerales$.next(resp.datosGenerales);
@@ -79,6 +81,17 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
       numeroRadicado:noRadicado,
       requiereDistribucion:generales.reqDistFisica ? "1" : "2"
     }
+  }
+
+  radicacionButtonIsShown():boolean {
+
+    const conditions: boolean[] = [
+      this.datosGenerales.form.valid,
+      this.datosRemitente.form.valid,
+      this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+    ];
+
+    return conditions.every(condition => condition);
   }
 
 }

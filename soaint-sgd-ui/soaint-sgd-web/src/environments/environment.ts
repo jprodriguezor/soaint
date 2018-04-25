@@ -28,6 +28,8 @@ export const environment = {
   tipoComunicacionSalida_endpoint: `${host}/tipo-comunicacion-salida-gateway-api`,
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
   soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
+  modalidadCorreo_endpoint: `${host}/modalidad-correo-gateway-api`,
+  claseEnvio_endpoint: `${host}/clase-envio-gateway-api`,
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
