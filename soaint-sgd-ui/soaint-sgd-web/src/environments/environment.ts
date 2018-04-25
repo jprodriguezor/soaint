@@ -118,8 +118,9 @@ export const environment = {
 
   ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`,
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
-  crear_unbidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
+  crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
+  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
   abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
   cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
   reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,

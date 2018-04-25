@@ -252,7 +252,7 @@
                                       class="ui-button ui-button-icon ui-button-success"
                               ></button>
                             </ng-template>
-                          </p-column>
+                        </p-column>
                         <p-column  header="Disposición" [sortable]="true"></p-column>                      
                         <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>                      
                         <p-column  header="Notas" ></p-column>                      
@@ -263,3 +263,17 @@
         </p-panel>
     </div>
 </div>
+
+<p-dialog 
+    [visible]="state.AbrirDetalle | async" 
+    modal="modal" 
+    [responsive]="true" 
+    [closable]="true"
+    positionTop="20"
+    [style]="{'position':'absolute'}"
+    [width]="800"
+    (onHide)="state.CerrarDetalle()">
+    <p-header>
+    </p-header>
+    <app-detalle-unidad-conservacion [state]="state"></app-detalle-unidad-conservacion>
+</p-dialog>

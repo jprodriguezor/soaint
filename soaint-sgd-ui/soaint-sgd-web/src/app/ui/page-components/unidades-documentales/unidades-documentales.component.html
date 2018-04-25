@@ -11,7 +11,7 @@
               (click)="State.Reactivar()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
-              (click)="State.Finalizar()"></button>
+              (click)="Finalizar()"></button>
     </div>
 
     <div taskBody>
@@ -53,8 +53,8 @@
                   >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                    *ngIf="State.formBuscar.get('serie').touched && State.formBuscar.get('serie').hasError('required')">
-                    Este campo es obligatorio
+                  *ngIf="State.validations.serie">
+                  {{ State.validations.serie }}
                   </div>
                 </div>
               </div>
@@ -62,19 +62,21 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
               <div class="ui-g form-group">
                 <div class="ui-g-12">
-                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                  <label for="serie"><span class="text-danger">*</span>Subserie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
                   <p-dropdown [options]="(State.ListadoSubseries | dropdownItemSubserie)"
                               id="subserie"
                               formControlName="subserie"
                               placeholder="Seleccione"
-                              [autoWidth]="false">
+                              [autoWidth]="false"
+                              (onBlur)="State.OnBlurEvents('subserie')"
+                              >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                  *ngIf="State.EsRequerido()">
-                  Este campo es obligatorio
-                </div>
+                  *ngIf="State.validations.subserie">
+                  {{ State.validations.subserie }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -178,17 +180,29 @@
                 {{i | toActiveString}}
               </ng-template>
             </p-column>
-            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
-            <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
-            <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaCierre" header="Fecha cierre trámite">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
             <p-column field="soporte" header="Soporte"></p-column>
-            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+            <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                 <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>
-            </p-column>
+            </p-column> -->
           </p-dataTable>
         </div>
       </p-panel>
@@ -208,6 +222,6 @@ positionTop="20"
 <p-header>
 
 </p-header>
-<app-detalle-unidad-conservacion [State]="State"></app-detalle-unidad-conservacion>
+<app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
 </p-dialog>
 

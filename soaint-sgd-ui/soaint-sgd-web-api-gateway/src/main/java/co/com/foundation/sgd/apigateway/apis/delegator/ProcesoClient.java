@@ -58,7 +58,7 @@ public class ProcesoClient {
         parametros.put("fechaVencimiento", itemDevolucion.getCorrespondencia().getFecVenGestion());
         parametros.put("idAgente", itemDevolucion.getAgente().getIdeAgente().toString());
         parametros.put("estadoFinal", itemDevolucion.getAgente().getCodEstado());
-        parametros.put("codDependencia", itemDevolucion.getAgente().getCodDependencia());
+        parametros.put("codDependencia", itemDevolucion.getCorrespondencia().getCodDependencia());
         entradaProceso.setParametros(parametros);
         return this.iniciarTercero(entradaProceso);
     }

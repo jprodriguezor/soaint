@@ -478,13 +478,7 @@ export class AsignarComunicacionesComponent implements OnInit, OnDestroy {
       });
 
       if (failChecks.length > 0) {
-        //this._store.dispatch(new PushNotificationAction({
-        //  severity: 'warn',
-        //  summary: WARN_REDIRECTION
-        //}));
-
         this.redireccionesFallidas = failChecks;
-
       } else {
         this.rejectComunicationsAction(this.selectedComunications, $event);
       }
