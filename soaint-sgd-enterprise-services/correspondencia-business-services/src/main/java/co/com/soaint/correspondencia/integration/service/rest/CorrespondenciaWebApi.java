@@ -5,6 +5,7 @@ import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -194,5 +195,17 @@ public class CorrespondenciaWebApi {
     public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         log.info("processing rest request - radicar correspondencia salida");
         return boundary.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+    }
+
+    /**
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @POST
+    @Path("/correspondencia/enviar-correo")
+    public Boolean sendMail() throws BusinessException, SystemException {
+        log.info("processing rest request - enviar correo radicar correspondencia");
+        return boundary.sendMail();
     }
 }

@@ -10,13 +10,18 @@ import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+import co.com.foundation.cartridge.email.model.Attachment;
+import co.com.foundation.cartridge.email.model.MailRequestDTO;
+import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +30,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -1021,5 +1030,74 @@ public class CorrespondenciaControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     *
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public Boolean sendMail() throws BusinessException, SystemException {
+        log.info("processing rest request - enviar correo radicar correspondencia");
+//        return true;
+
+        HashMap<String,String> parameters = new HashMap<String, String>();
+        MailRequestDTO request = new MailRequestDTO( "template_1" );
+        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+
+        request.setSubject("Correo de prueba");
+        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
+
+        String[] dest =  {"dionyuci@gmail.com"};
+        request.setTo(dest);
+        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
+        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+        request.setAttachmentsList(attachmentsList);
+
+        parameters.put("#USER#","Dionisio");
+        parameters.put("#CODE#","D10N7");
+
+        request.setParameters( parameters );
+
+        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
+        Boolean send = false;
+        try {
+            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
+            send = MailServiceProxy.getInstance().sendEmail( request );
+        }catch (Exception e){
+            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
+            throw new BusinessException("system.error.correo.enviado");
+        }
+
+        return send;
+
+//        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(documentoDTO.getNroRadicado());
+//
+//        String endpoint = "http://192.168.1.81:28080/ecm-integration-services/apis/ecm";
+//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+//
+//        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado("454").build();
+//        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
+//                .request()
+//                .post(Entity.json(dto));
+//
+//        if (response.getStatus() == HttpStatus.OK.value()) {
+//            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
+//            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
+//                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
+//                documentoDTOList.forEach(documento -> {
+//
+//                });
+//            } else{
+//                throw ExceptionBuilder.newBuilder()
+//                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
+//                        .buildSystemException();
+//            }
+//
+//        }
+//
+//
+
     }
 }
