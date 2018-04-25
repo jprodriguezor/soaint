@@ -155,6 +155,6 @@ public class GestionarCorrespondencia {
      * @throws SystemException
      */
     public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
-        return control.sendMail();
+        return control.sendMail(nroRadicado);
     }
 }
