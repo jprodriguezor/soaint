@@ -15,6 +15,9 @@ export const ActionTypes = {
   COMPLETE_TASK: type('[TareaDTO] CompleteTaskAction'),
   COMPLETE_TASK_SUCCESS: type('[TareaDTO] CompleteTaskSuccessAction'),
   COMPLETE_TASK_FAIL: type('[TareaDTO] CompleteTaskFailAction'),
+  COMPLETE_BACK_TASK: type('[TareaDTO] CompleteBackTaskAction'),
+  COMPLETE_BACK_TASK_SUCCESS: type('[TareaDTO] CompleteBackTaskSuccessAction'),
+  COMPLETE_BACK_TASK_FAIL: type('[TareaDTO] CompleteBackTaskFailAction'),
   ABORT_TASK: type('[TareaDTO] AbortTaskAction'),
   ABORT_TASK_SUCCESS: type('[TareaDTO] AbortTaskSuccessAction'),
   ABORT_TASK_FAIL: type('[TareaDTO] AbortTaskFailAction'),
@@ -108,6 +111,27 @@ export class CompleteTaskSuccessAction implements Action {
 
 export class CompleteTaskFailAction implements Action {
   type = ActionTypes.COMPLETE_TASK_FAIL;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class CompleteBackTaskAction implements Action {
+  type = ActionTypes.COMPLETE_BACK_TASK;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class CompleteBackTaskSuccessAction implements Action {
+  type = ActionTypes.COMPLETE_BACK_TASK_SUCCESS;
+
+  constructor(public payload?: any) {
+  }
+}
+
+export class CompleteBackTaskFailAction implements Action {
+  type = ActionTypes.COMPLETE_BACK_TASK_FAIL;
 
   constructor(public payload?: any) {
   }

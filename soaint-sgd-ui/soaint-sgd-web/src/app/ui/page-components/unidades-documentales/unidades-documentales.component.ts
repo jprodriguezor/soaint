@@ -59,8 +59,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
         this.task = activeTask;
         if (!this.task) {
           this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
-        }
-        if (this.task.variables.codDependencia) {
+        } else if (this.task.variables.codDependencia) {
             const codDependencia = this.task.variables.codDependencia
             this.state.formBuscar.controls['dependencia'].setValue(codDependencia);
             this.state.GetListadosSeries();
@@ -70,7 +69,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   }
 
   Finalizar() {
-    this._taskSandBox.completeTaskDispatch({
+    this._taskSandBox.completeBackTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
       idTarea: this.task.idTarea,
