@@ -16,8 +16,8 @@ import org.jboss.resteasy.util.GenericType;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -43,7 +43,6 @@ public class DigitalizarDocumentoGatewayApi {
         super();
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
-
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

@@ -23,6 +23,8 @@ export const getNextTask = (state: rootStore.State) => state.tareas.nextTask;
 
 export const taskStats = (state: rootStore.State) => state.tareas.stats;
 
+//export  const completeTask = ()
+
 
 export const getArrayData = createSelector(getEntities, getGrupoIds, (entities, ids) => {
   return ids.map(id => entities[id]);

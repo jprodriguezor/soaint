@@ -9,6 +9,7 @@ import {
 } from '../bussiness-properties/radicacion-properties';
 import {RadicacionBase} from "./radicacionBase";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
+import {DireccionDTO} from "../../domain/DireccionDTO";
 
 export class ComunicacionOficialEntradaDTV  extends  RadicacionBase{
 

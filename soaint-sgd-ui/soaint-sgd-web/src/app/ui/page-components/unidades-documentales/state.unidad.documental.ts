@@ -374,12 +374,11 @@ export class StateUnidadDocumentalService implements TaskForm {
     }
 
     Finalizar() {
-        this._taskSandBox.completeTaskDispatch({
-            idProceso: this.task.idProceso,
-            idDespliegue: this.task.idDespliegue,
-            idTarea: this.task.idTarea,
-            parametros: this.taskVariables
-        });
+            this._taskSandBox.abortTaskDispatch({
+              idProceso: this.task.idProceso,
+              idDespliegue: this.task.idDespliegue,
+              instanciaProceso: this.task.idInstanciaProceso
+            });
     }
 
     save(): Observable<any> {

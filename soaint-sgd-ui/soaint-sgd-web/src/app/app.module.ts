@@ -53,8 +53,8 @@ import { DatosDestinatarioInternoComponent } from './ui/page-components/radicaci
 import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remitentes/datos-remitentes.component';
 import { DetalleUnidadConservacionComponent } from './ui/page-components/unidades-documentales/components/detalle-unidad-conservacion/detalle-unidad-conservacion.component';
 import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component';
-import {ProcesoService} from "./infrastructure/api/proceso.service";
-import {SolicitudCreacionUdService} from "./infrastructure/api/solicitud-creacion-ud.service";
+import {ProcesoService} from './infrastructure/api/proceso.service';
+import {SolicitudCreacionUdService} from './infrastructure/api/solicitud-creacion-ud.service';
 import { ListaDocumentosArchivadosComponent } from './ui/page-components/archivar-documento/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
 import { CrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component';
 import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/lista-solicitud-crear-ud/lista-solicitud-crear-ud.component';
@@ -63,7 +63,7 @@ import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archiva
 import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
 import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component';
 import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
-import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
+import {TicketRadicadoComponent} from './ui/bussiness-components/ticket-radicado/ticket-radicado.component';
 import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
 import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-generales-edit/datos-generales-edit.component";
 import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";

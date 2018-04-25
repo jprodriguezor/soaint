@@ -78,9 +78,9 @@ export class Sandbox extends CacheResponse {
 
       return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload, response);
+          this.cacheResponse(payload, response, endpoint);
           return response;
-        }));
+        }), endpoint);
     }
     return Observable.of([]).delay(400);
     // return Observable.of(this.getMock()).delay(400);

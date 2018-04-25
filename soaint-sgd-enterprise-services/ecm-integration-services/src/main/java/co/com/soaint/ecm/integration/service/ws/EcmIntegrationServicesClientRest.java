@@ -123,7 +123,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/obtenerDocumentosAdjuntosECM/")
     public MensajeRespuesta obtenerDocumentoPrincipalAdjunto(@RequestBody DocumentoDTO documento) throws IOException {
-        logger.info("processing rest request - Buscar Documento en el ECM: " + documento.getNombreDocumento());
+        logger.info("processing rest request - Buscar Documento en el ECM: {}",documento);
         try {
             return fEcmManager.obtenerDocumentosAdjuntos(documento);
         } catch (IOException e) {
@@ -289,7 +289,7 @@ public class EcmIntegrationServicesClientRest {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
             throw e;
         }

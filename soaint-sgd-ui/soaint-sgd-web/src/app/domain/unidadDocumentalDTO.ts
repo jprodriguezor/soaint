@@ -24,4 +24,5 @@ export interface  UnidadDocumentalDTO {
     disposicion?: string;
     accion?: string;
     seleccionado?: boolean;
+    observacion?: string;
 }

@@ -69,6 +69,8 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
 
   ngOnChanges(): void {
     this.loadDocumentos();
+
+   this._changeDetectorRef.detectChanges();
   }
 
   loadDocumentos() {
@@ -81,6 +83,7 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
           this.documentsList = response.documentoDTOList;
         }
         this.loading = false;
+        this._changeDetectorRef.detectChanges();
       });
     }
   }

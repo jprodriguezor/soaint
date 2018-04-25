@@ -144,7 +144,6 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-
     public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 

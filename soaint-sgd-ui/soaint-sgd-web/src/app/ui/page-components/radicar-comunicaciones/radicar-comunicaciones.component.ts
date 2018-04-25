@@ -173,6 +173,8 @@ export class RadicarComunicacionesComponent implements OnInit, AfterContentInit,
 
     if (this.datosRemitente.datosContactos) {
       radicacionEntradaFormPayload.datosContactos = this.datosRemitente.datosContactos.contacts;
+
+      console.log(radicacionEntradaFormPayload.datosContactos);
     }
 
     const comunicacionOficialDTV = new ComunicacionOficialEntradaDTV(radicacionEntradaFormPayload, this._store);

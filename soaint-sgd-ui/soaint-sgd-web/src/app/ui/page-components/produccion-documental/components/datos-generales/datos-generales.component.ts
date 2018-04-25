@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
@@ -22,10 +32,11 @@ import {DocumentoEcmDTO} from '../../../../../domain/documentoEcmDTO';
 import {FileUpload} from 'primeng/primeng';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 import {DocumentUploaded} from '../../events/DocumentUploaded';
+import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
 
 @Component({
   selector: 'pd-datos-generales',
-  templateUrl: './datos-generales.component.html'
+  templateUrl: './datos-generales.component.html',
 })
 
 export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
@@ -66,8 +77,11 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   nombreSede = '';
   nombreDependencia = '';
 
+  @ViewChild("alertItem") alertItem;
+
   @Input()
-  documentoRadicadoUrl: string;
+  idecmDocumentoRadicado: string;
+
 
   constructor(private _store: Store<State>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -93,17 +107,22 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         return this._dependenciaSandbox.loadDependencies({});
       })
       .subscribe((results) => {
+
+
         if (this.taskData && this.taskData.variables) {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
           this._changeDetectorRef.detectChanges();
         }
-      });
+
+      }
+      );
 
     this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.listenForErrors();
+
   }
 
   updateStatus(currentStatus: StatusDTO) {
@@ -151,11 +170,13 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   }
 
   obtenerDocumentoRadicado() {
-    if (this.documentoRadicadoUrl) {
-      this.showPdfViewer(this.documentoRadicadoUrl);
-    } else {
-      console.log('No se pudo mostrar el documento del radicado asociado');
-    }
+
+    // console.log(this.taskData);
+    // if (this.documentoRadicadoUrl) {
+    this.documentPreview = true;
+    // } else {
+    //   console.log('No se pudo mostrar el documento del radicado asociado');
+    // }
   }
 
   loadHtmlVersion() {
@@ -185,8 +206,16 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     this.pd_currentVersion = Object.assign({}, this.listaVersionesDocumento[index]);
 
     if ('pdf' === this.pd_currentVersion.tipo) {
-        this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({id: this.pd_currentVersion.id, version: this.pd_currentVersion.version}));
-    } else {
+      this.idecmDocumentoRadicado = this.pd_currentVersion.id;
+      this.showPdfViewer(this._produccionDocumentalApi.obtenerVersionDocumentoUrl({
+        id: this.pd_currentVersion.id,
+        version: this.pd_currentVersion.version
+      }));
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+     else {
         this.loadHtmlVersion();
     }
   }
@@ -229,9 +258,14 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       }
       formData.append('nombreDocumento', doc.nombre);
       formData.append('tipoDocumento', doc.tipo);
-      formData.append('sede', this.taskData.variables.nombreSede);
-      formData.append('dependencia', this.taskData.variables.nombreDependencia);
-      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      if(this.taskData !== null){
+        formData.append('sede', this.taskData.variables.nombreSede);
+        formData.append('dependencia', this.taskData.variables.nombreDependencia);
+        formData.append('codigoDependencia', this.taskData.variables.codDependencia);
+        formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+        formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
+      }
+
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirVersionDocumento(formData).subscribe(
       resp => {
@@ -245,7 +279,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           console.log(versiones);
           this.listaVersionesDocumento = [...versiones];
           console.log(this.listaVersionesDocumento);
-          this.form.get('tipoPlantilla').reset();
+        //  this.form.get('tipoPlantilla').reset();
           this.resetCurrentVersion();
           this.messagingService.publish(new DocumentUploaded(docEcmResp));
         } else {
@@ -260,19 +294,39 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
     return this.listaVersionesDocumento;
   }
 
+  selectAnexo(){
+
+    if(!this.form.get('tipoAnexo').value){
+
+      this.alertItem.ShowMessage("Debe de seleccionar un tipo de anexo");
+
+      return false;
+
+    }
+  }
+
   agregarAnexo(event?, anexoUploader?: FileUpload) {
     const anexo: AnexoDTO = {
       id: (new Date()).toTimeString(), descripcion: this.form.get('descripcion').value,
       soporte: this.form.get('soporte').value, tipo: this.form.get('tipoAnexo').value
     };
+
     if (event && anexoUploader) {
+
+
       anexo.file = event.files[0];
       const formData = new FormData();
       formData.append('documento', anexo.file, anexo.file.name);
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
+      if(this.taskData !== null){
       formData.append('sede', this.taskData.variables.nombreSede);
+      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
       formData.append('dependencia', this.taskData.variables.nombreDependencia);
+      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
+
+      }
       let docEcmResp: DocumentoEcmDTO = null;
       this._produccionDocumentalApi.subirAnexo(formData).subscribe(
         resp => {
@@ -308,7 +362,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   mostrarAnexo(index: number) {
     const anexo = this.listaAnexos[index];
+    this.idecmDocumentoRadicado = anexo.id;
     this.showPdfViewer(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
+
     // window.open(this._produccionDocumentalApi.obtenerDocumentoUrl({id: anexo.id}));
   }
 
@@ -330,6 +386,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   showPdfViewer(pdfUrl: string) {
     this.documentPreviewUrl = pdfUrl;
     this.documentPreview = true;
+
   }
 
   tipoComunicacionChange(event) {
