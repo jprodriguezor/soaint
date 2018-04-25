@@ -1,6 +1,5 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
