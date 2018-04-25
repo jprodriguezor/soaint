@@ -17,7 +17,7 @@ export class UnidadDocumentalApiService {
     .map((resp) => resp.response.unidadDocumental);
   }
 
-  GetDetalleUnidadDocumental(payload: number): Observable<UnidadDocumentalDTO> {
+  GetDetalleUnidadDocumental(payload: string): Observable<UnidadDocumentalDTO> {
     return this._api.list(environment.detalle_unidad_documental_endpoint + payload)
     .map(response => response.response.unidadDocumental);
   }

@@ -45,7 +45,7 @@ export class StateUnidadDocumentalService implements TaskForm {
     ListadoSubseries: SubserieDTO[];
 
     // generales
-    UnidadDocumentalSeleccionada: Observable<UnidadDocumentalDTO>;
+    UnidadDocumentalSeleccionada: UnidadDocumentalDTO;
     formBuscar: FormGroup;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
@@ -146,9 +146,13 @@ export class StateUnidadDocumentalService implements TaskForm {
         }
     }
 
-    GetDetalleUnidadUnidadDocumental(payload: any) {
-        this.UnidadDocumentalSeleccionada = this.unidadDocumentalApiService.GetDetalleUnidadDocumental(payload);
-        this.AbrirDetalle = true;
+    GetDetalleUnidadUnidadDocumental(index: string) {
+        const unidadDocumentalIndex = this.ListadoUnidadDocumental[index];
+        this.unidadDocumentalApiService.GetDetalleUnidadDocumental(unidadDocumentalIndex.id)
+        .subscribe(response => {
+            this.UnidadDocumentalSeleccionada = response;
+            this.AbrirDetalle = true;
+        });
     }
 
     GetListadoTiposDisposicion() {

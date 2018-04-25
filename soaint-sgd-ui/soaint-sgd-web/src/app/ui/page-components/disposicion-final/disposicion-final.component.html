@@ -246,6 +246,13 @@
                         <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
                         <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>  
+                        <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+                            <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                              <button type="button" pButton label="Ver" (click)="state.GetDetalleUnidadUnidadDocumental(i)"
+                                      class="ui-button ui-button-icon ui-button-success"
+                              ></button>
+                            </ng-template>
+                          </p-column>
                         <p-column  header="Disposición" [sortable]="true"></p-column>                      
                         <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>                      
                         <p-column  header="Notas" ></p-column>                      
