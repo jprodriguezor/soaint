@@ -149,12 +149,12 @@ public class GestionarCorrespondencia {
     }
 
     /**
-     *
+     * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public Boolean sendMail() throws BusinessException, SystemException {
+    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
         return control.sendMail();
     }
 }

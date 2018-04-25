@@ -1033,44 +1033,44 @@ public class CorrespondenciaControl {
     }
 
     /**
-     *
+     * @param nroRadicado
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    public Boolean sendMail() throws BusinessException, SystemException {
+    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - enviar correo radicar correspondencia");
-//        return true;
+        return true;
 
-        HashMap<String,String> parameters = new HashMap<String, String>();
-        MailRequestDTO request = new MailRequestDTO( "template_1" );
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
-
-        request.setSubject("Correo de prueba");
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
-
-        String[] dest =  {"dionyuci@gmail.com"};
-        request.setTo(dest);
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
-        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
-        request.setAttachmentsList(attachmentsList);
-
-        parameters.put("#USER#","Dionisio");
-        parameters.put("#CODE#","D10N7");
-
-        request.setParameters( parameters );
-
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
-        Boolean send = false;
-        try {
-            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
-            send = MailServiceProxy.getInstance().sendEmail( request );
-        }catch (Exception e){
-            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
-            throw new BusinessException("system.error.correo.enviado");
-        }
-
-        return send;
+//        HashMap<String,String> parameters = new HashMap<String, String>();
+//        MailRequestDTO request = new MailRequestDTO( "template_1" );
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+//
+//        request.setSubject("Correo de prueba");
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
+//
+//        String[] dest =  {"dionyuci@gmail.com"};
+//        request.setTo(dest);
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
+//        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+//        request.setAttachmentsList(attachmentsList);
+//
+//        parameters.put("#USER#","Dionisio");
+//        parameters.put("#CODE#","D10N7");
+//
+//        request.setParameters( parameters );
+//
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
+//        Boolean send = false;
+//        try {
+//            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
+//            send = MailServiceProxy.getInstance().sendEmail( request );
+//        }catch (Exception e){
+//            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
+//            throw new BusinessException("system.error.correo.enviado");
+//        }
+//
+//        return send;
 
 //        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(documentoDTO.getNroRadicado());
 //
