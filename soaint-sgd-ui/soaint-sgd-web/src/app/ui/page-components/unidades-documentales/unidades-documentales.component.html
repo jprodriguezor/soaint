@@ -44,7 +44,7 @@
                   <label for="serie"><span class="text-danger">*</span>Serie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="(State.ListadoSeries | async | dropdownItemSerie)"
+                  <p-dropdown [options]="(State.ListadoSeries | dropdownItemSerie)"
                               id="serie"
                               formControlName="serie"
                               placeholder="Seleccione"
@@ -173,18 +173,22 @@
             <p-column field="descriptor1" header="Descriptor 1"></p-column>
             <p-column field="descriptor2" header="Descriptor 2"></p-column>
             <p-column field="faseArchivo" header="Fase archivo"></p-column>
-            <p-column field="estado" header="Estado"></p-column>
+            <p-column field="inactivo" header="Estado">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | toActiveString}}
+              </ng-template>
+            </p-column>
             <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
             <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
             <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
             <p-column field="soporte" header="Soporte"></p-column>
-            <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+            <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                 <button type="button" pButton label="Ver" (click)="State.GetDetalleUnidadUnidadDocumental(i)"
                         class="ui-button ui-button-icon ui-button-success"
                 ></button>
               </ng-template>
-            </p-column> -->
+            </p-column>
           </p-dataTable>
         </div>
       </p-panel>

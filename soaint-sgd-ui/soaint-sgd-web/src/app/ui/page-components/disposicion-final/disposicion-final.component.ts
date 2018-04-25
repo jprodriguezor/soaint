@@ -37,7 +37,7 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
       this.state.InitForm([
-        'tipoDisposicionFinal',
+        // 'tipoDisposicionFinal',
         'sede',
         'dependencia',
       ]);
@@ -51,6 +51,7 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
         'dependencia',
         'serie',
       ]);
+      this.state.Listar();
     }
 
     ngOnDestroy() {

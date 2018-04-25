@@ -39,7 +39,7 @@ public class DocumentoDTO implements Serializable {
     private String nombreDocumento;
     private String idDocumentoPadre;
     private Date fechaCreacion;
-    private String tipoDocumento;
+    private String tipoDocumento;//application/pdf, text/html
     private String tamano;
     private String tipoPadreAdjunto;//xTipo = principal o anexo
     private String versionLabel;

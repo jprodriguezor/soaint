@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.websocket.server.PathParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -103,4 +104,14 @@ public class UnidadDocumentalGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    @GET
+    @Path("/detalle-unidad-documental/{id}")
+    @JWTTokenSecurity
+    public Response detalleUnidadDocumental(@PathParam("id") final String idUnidadDocumental) {
+
+        log.info("DetalleUnidadDocumentalGatewayApi - [trafic] - detalle unidad documental");
+        Response response = ecmClient.DetalleUnidadDocumental(idUnidadDocumental);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 }

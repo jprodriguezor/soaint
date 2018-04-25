@@ -21,6 +21,7 @@ export interface  UnidadDocumentalDTO {
     codigoSede?: string;
     nombreSede?: string;
     cerrada?: boolean;
+    disposicion?: string;
     accion?: string;
     seleccionado?: boolean;
 }

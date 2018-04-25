@@ -2,7 +2,7 @@
 
     <div class="ui-g">
       <div class="ui-sm-6 ui-g-6">
-        <h2>Archivar documento</h2>
+        <h2>Disposición Final</h2>
       </div>
   
       <div class="ui-sm-6 ui-g-6 text-right">
@@ -61,7 +61,7 @@
                         <div class="ui-sm-12 ui-g-6 ui-lg-6">
                             <div class="ui-g form-group">
                                 <div class="ui-g-12">
-                                    <label for="sede">Dependencia</label>
+                                    <label for="sede"><span class="text-danger">*</span>Dependencia</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
                                     <p-dropdown [options]="state.dependencias | dropdownItem"
@@ -86,7 +86,7 @@
                                     <label for="sede">Serie</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <p-dropdown [options]="state.series$ | async | dropdownItem"
+                                    <p-dropdown [options]="state.ListadoSeries | dropdownItemSerie"
                                                 id="serie"
                                                 formControlName="serie"
                                                 placeholder="Seleccione"
@@ -106,7 +106,7 @@
                                     <label for="sede">Subserie</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <p-dropdown [options]="state.subseries$ | async | dropdownItem"
+                                    <p-dropdown [options]="state.ListadoSubseries | dropdownItemSubserie"
                                                 id="subserie"
                                                 formControlName="subserie"
                                                 placeholder="Seleccione"
@@ -186,7 +186,7 @@
                         <div class="ui-sm-12 ui-g-6 ui-lg-6">
                             <div class="ui-g form-group">
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Limpiar()" ></button>
+                                    <button pButton label="Buscar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Limpiar()" ></button>
                                     <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Listar()" [disabled]="state.formBuscar.invalid"></button>
                                 </div>
                             </div>
@@ -237,11 +237,22 @@
                         <p-column field="descriptor1" header="Descriptor 1" [sortable]="true"></p-column>
                         <p-column field="descriptor2" header="Descriptor 2" [sortable]="true"></p-column>
                         <p-column field="faseArchivo" header="Fase archivo" [sortable]="true"></p-column>  
-                        <p-column field="estado" header="Estado" [sortable]="true"></p-column>
+                        <p-column field="inactivo" header="Estado">
+                            <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                              {{i | toActiveString}}
+                            </ng-template>
+                          </p-column>                        
                         <p-column field="fechaExternaInicial" header="Fecha externa inicial" [sortable]="true"></p-column>
                         <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
                         <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>  
+                        <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+                            <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                              <button type="button" pButton label="Ver" (click)="state.GetDetalleUnidadUnidadDocumental(i)"
+                                      class="ui-button ui-button-icon ui-button-success"
+                              ></button>
+                            </ng-template>
+                          </p-column>
                         <p-column  header="Disposición" [sortable]="true"></p-column>                      
                         <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>                      
                         <p-column  header="Notas" ></p-column>                      

@@ -41,11 +41,11 @@ export class StateUnidadDocumentalService implements TaskForm {
     tiposDisposicionFinal$: Observable<ConstanteDTO[]> = Observable.of([]);
     sedes$: Observable<ConstanteDTO[]> = Observable.of([]);
     dependencias: DependenciaDTO[] = [];
-    ListadoSeries: Observable<SerieDTO[]>;
+    ListadoSeries: SerieDTO[];
     ListadoSubseries: SubserieDTO[];
 
     // generales
-    UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
+    UnidadDocumentalSeleccionada: UnidadDocumentalDTO;
     formBuscar: FormGroup;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
@@ -137,7 +137,7 @@ export class StateUnidadDocumentalService implements TaskForm {
                         switch (_control) {
                             case 'sede' : this.GetListadoDependencias(value.id); break;
                             case 'dependencia': this.GetListadosSeries(); break;
-                            case 'serie': this.GetSubSeries(value.codigo); break;
+                            case 'serie': this.GetSubSeries(); break;
                         }
                     }
                   }))
@@ -146,9 +146,13 @@ export class StateUnidadDocumentalService implements TaskForm {
         }
     }
 
-    GetDetalleUnidadUnidadDocumental(payload: any) {
-        this.UnidadDocumentalSeleccionada = this.unidadDocumentalApiService.GetDetalleUnidadDocumental(payload);
-        this.AbrirDetalle = true;
+    GetDetalleUnidadUnidadDocumental(index: string) {
+        const unidadDocumentalIndex = this.ListadoUnidadDocumental[index];
+        this.unidadDocumentalApiService.GetDetalleUnidadDocumental(unidadDocumentalIndex.id)
+        .subscribe(response => {
+            this.UnidadDocumentalSeleccionada = response;
+            this.AbrirDetalle = true;
+        });
     }
 
     GetListadoTiposDisposicion() {
@@ -166,24 +170,27 @@ export class StateUnidadDocumentalService implements TaskForm {
         .subscribe(resp => {
             this.dependencias = resp.filter(_item => _item.ideSede === sedeId);
         });
-        ;
     }
 
     GetListadosSeries() {
         this.formBuscar.controls['serie'].reset();
-        this.ListadoSeries = this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: this.formBuscar.controls['dependencia'].value,
+        this.serieSubserieApiService.ListarSerieSubserie({
+            idOrgOfc: this.formBuscar.controls['dependencia'].value.codigo,
         })
-        .map(map => map.listaSerie);
+        .map(map => map.listaSerie)
+        .subscribe(resp => {
+            this.ListadoSeries = resp;
+        });
         this.ListadoSubseries = [];
     }
 
-    GetSubSeries(serie: string) {
+    GetSubSeries() {
         this.formBuscar.controls['subserie'].reset();
-        if (serie) {
+        const codigoserie = this.formBuscar.controls['serie'].value;
+        if (codigoserie) {
             this.serieSubserieApiService.ListarSerieSubserie({
-                idOrgOfc: this.formBuscar.controls['dependencia'].value,
-                codSerie: serie,
+                idOrgOfc: this.formBuscar.controls['dependencia'].value.codigo,
+                codSerie: codigoserie,
             })
             .map(map => map.listaSubSerie)
             .subscribe(result => {
@@ -226,7 +233,6 @@ export class StateUnidadDocumentalService implements TaskForm {
         this.unidadDocumentalApiService.Listar(this.GetPayload())
         .subscribe(response => {
             const ListadoMapeado =  response.reduce((_listado, _current) => {
-                _current.estado = (_current.inactivo) ? 'Inactivo' : 'Activo';
                 _current.seleccionado = true;
                 switch (_current.soporte) {
                     case 'fisico': _current.soporte = 'Físico'; break;
@@ -258,8 +264,10 @@ export class StateUnidadDocumentalService implements TaskForm {
 
     GetPayload(accionSeleccionada?: UnidadDocumentalAccion): UnidadDocumentalDTO {
 
-        const payload: UnidadDocumentalDTO = {
-            codigoDependencia: this.formBuscar.controls['dependencia'].value,
+        const payload: UnidadDocumentalDTO = {};
+
+        if (this.formBuscar.controls['dependencia'].value) {
+            payload.codigoDependencia = this.formBuscar.controls['dependencia'].value.codigo;
         }
         if (!isNullOrUndefined(accionSeleccionada)) {
             payload.accion = UnidadDocumentalAccion[accionSeleccionada]

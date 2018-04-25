@@ -7,6 +7,7 @@ import {ConstantCodePipe} from './constant-code-pipe.pipe';
 import { CountryPhonePipe } from './countryPhone-input.pipe';
 import { MobilePhonePipe } from './mobile-input.pipe';
 import { DateFormatPipe, DateTimeFormatPipe } from './date.pipe';
+import { ToActiveString } from './boolean-transform.pipe';
 
 export const PIPES = [
     EllipsisPipe,
@@ -21,6 +22,7 @@ export const PIPES = [
     DropdownItemPipeSerie,
     DropdownItemPipeSubserie,
     DropdownItemPipeSingle,
+    ToActiveString,
 ];
 
 export const PIPES_AS_PROVIDERS = [
