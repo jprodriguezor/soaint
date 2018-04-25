@@ -32,7 +32,7 @@ import { DependenciaApiService } from '../../../infrastructure/api/dependencia.a
 import { DependenciaDTO } from '../../../domain/dependenciaDTO';
 
 @Injectable()
-export class StateUnidadDocumentalService implements TaskForm {
+export class StateUnidadDocumentalService {
 
     ListadoUnidadDocumental: UnidadDocumentalDTO[] = [];
     unidadesSeleccionadas: UnidadDocumentalDTO[] = [];
@@ -57,10 +57,6 @@ export class StateUnidadDocumentalService implements TaskForm {
     AbrirDetalle: boolean;
     FechaExtremaFinal: Date;
     MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
-
-    // tarea
-    task: TareaDTO;
-    taskVariables: VariablesTareaDTO = {};
 
     constructor(
         private fb: FormBuilder,
@@ -107,17 +103,7 @@ export class StateUnidadDocumentalService implements TaskForm {
         this.formBuscar.reset();
     }
 
-    InitPropiedadesTarea() {
-        this._store.select(getActiveTask).subscribe((activeTask) => {
-            this.task = activeTask;
-            if (this.task.variables.codDependencia) {
-                const codDependencia = this.task.variables.codDependencia
-                this.formBuscar.controls['dependencia'].setValue(codDependencia);
-                this.GetListadosSeries();
-                this.Listar();
-            }
-        });
-    }
+
 
     SetFormCamposRequeridos(camposRequeridos: string[]) {
         if (camposRequeridos.length) {
@@ -175,7 +161,7 @@ export class StateUnidadDocumentalService implements TaskForm {
     GetListadosSeries() {
         this.formBuscar.controls['serie'].reset();
         this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: this.formBuscar.controls['dependencia'].value.codigo,
+            idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
         })
         .map(map => map.listaSerie)
         .subscribe(resp => {
@@ -189,7 +175,7 @@ export class StateUnidadDocumentalService implements TaskForm {
         const codigoserie = this.formBuscar.controls['serie'].value;
         if (codigoserie) {
             this.serieSubserieApiService.ListarSerieSubserie({
-                idOrgOfc: this.formBuscar.controls['dependencia'].value.codigo,
+                idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
                 codSerie: codigoserie,
             })
             .map(map => map.listaSubSerie)
@@ -230,7 +216,7 @@ export class StateUnidadDocumentalService implements TaskForm {
 
     Listar(value?: any) {
         this.OpcionSeleccionada = (value) ? value : this.OpcionSeleccionada;
-        this.unidadDocumentalApiService.Listar(this.GetPayload())
+        this.unidadDocumentalApiService.Listar(this.GetPayload(this.OpcionSeleccionada))
         .subscribe(response => {
             const ListadoMapeado =  response.reduce((_listado, _current) => {
                 _current.seleccionado = true;
@@ -267,7 +253,7 @@ export class StateUnidadDocumentalService implements TaskForm {
         const payload: UnidadDocumentalDTO = {};
 
         if (this.formBuscar.controls['dependencia'].value) {
-            payload.codigoDependencia = this.formBuscar.controls['dependencia'].value.codigo;
+            payload.codigoDependencia = (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value;
         }
         if (!isNullOrUndefined(accionSeleccionada)) {
             payload.accion = UnidadDocumentalAccion[accionSeleccionada]
@@ -373,16 +359,6 @@ export class StateUnidadDocumentalService implements TaskForm {
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
     }
 
-    Finalizar() {
-            this._taskSandBox.abortTaskDispatch({
-              idProceso: this.task.idProceso,
-              idDespliegue: this.task.idDespliegue,
-              instanciaProceso: this.task.idInstanciaProceso
-            });
-    }
 
-    save(): Observable<any> {
-        return Observable.of(true).delay(5000);
-    }
 
 }

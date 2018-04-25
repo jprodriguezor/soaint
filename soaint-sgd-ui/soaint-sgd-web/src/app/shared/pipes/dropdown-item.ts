@@ -44,7 +44,6 @@ export class DropdownItemPipeFullName implements PipeTransform {
 export class DropdownItemPipeSerie implements PipeTransform {
   transform(value, args?) {
     // ES6 array destructuring
-    console.log(value);
     if (value) {
       return value.map(item => {
         return {
