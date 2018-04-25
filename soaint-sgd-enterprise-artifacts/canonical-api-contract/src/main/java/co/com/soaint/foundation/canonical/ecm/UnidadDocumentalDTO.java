@@ -39,6 +39,8 @@ public class UnidadDocumentalDTO {
     private String nombreUnidadDocumental;
     private String descriptor2;
     private String descriptor1;
+    private String estado;
+    private String disposicion;
     private Calendar fechaExtremaFinal;
     private Boolean cerrada;
 
