@@ -13,6 +13,8 @@ import { VariablesTareaDTO } from '../produccion-documental/models/StatusDTO';
 import { getActiveTask } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { TaskForm } from '../../../shared/interfaces/task-form.interface';
 import { Observable } from 'rxjs/Observable';
+import { ROUTES_PATH } from '../../../app.route-names';
+import { go } from '@ngrx/router-store';
 
 @Component({
   selector: 'app-unidades-documentales',
@@ -21,6 +23,9 @@ import { Observable } from 'rxjs/Observable';
 })
 export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
 
+  // contiene:
+  // formulario, configuración y validación
+  // operaciones sobre unidades documentales como: abrir, cerrar, reactivar, aprobar, rechazar
   State: StateUnidadDocumentalService;
 
    // tarea
@@ -52,7 +57,9 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   InitPropiedadesTarea() {
     this._store.select(getActiveTask).subscribe((activeTask) => {
         this.task = activeTask;
-        if (this.task.variables.codDependencia) {
+        if (!this.task) {
+          this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+        } else if (this.task.variables.codDependencia) {
             const codDependencia = this.task.variables.codDependencia
             this.state.formBuscar.controls['dependencia'].setValue(codDependencia);
             this.state.GetListadosSeries();
@@ -62,10 +69,11 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   }
 
   Finalizar() {
-    this._taskSandBox.abortTaskDispatch({
+    this._taskSandBox.completeBackTaskDispatch({
       idProceso: this.task.idProceso,
       idDespliegue: this.task.idDespliegue,
-      instanciaProceso: this.task.idInstanciaProceso
+      idTarea: this.task.idTarea,
+      parametros: {}
     });
 }
 

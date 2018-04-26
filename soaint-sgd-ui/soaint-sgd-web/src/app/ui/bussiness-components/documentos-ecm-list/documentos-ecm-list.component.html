@@ -21,7 +21,7 @@
             <p-column field="tipoDocumento" header="Tipo" [sortable]="true"></p-column>
             <p-column field="fechaCreacion" header="Fecha de ultima modificacion" [sortable]="true">
               <ng-template let-col let-row="rowData" pTemplate="body">
-                {{row.fechaCreacion | date:'dd/mm/yyyy'}}
+                {{row.fechaCreacion|date:'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column  header="Ver Documento">
@@ -34,7 +34,7 @@
                 <p-fileUpload *ngIf="row.tipoPadreAdjunto==='Principal'" #uploader
                               (onSelect)="selectFile(uploader)"
                               (onRemove)="clearFileList(uploader)"
-                              (onUpload)="onUpload($event)" 
+                              (onUpload)="onUpload($event)"
                               customUpload="true"
                               (uploadHandler)="uploadHandler($event, uploader)"
                               [styleClass]="selectedFile"

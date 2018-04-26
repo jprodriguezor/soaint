@@ -7,6 +7,7 @@ import {SerieService} from "../../../../../infrastructure/api/serie.service";
 import {Observable} from "rxjs/Observable";
 import {ConfirmationService} from "primeng/primeng";
 import {UnidadDocumentalDTO} from "../../../../../domain/unidadDocumentalDTO";
+import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unidad-documental.api";
 
 
 @Component({
@@ -27,7 +28,7 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
 
   unidadesDocumentales$:Observable<UnidadDocumentalDTO[]>;
 
-  constructor(private fb:FormBuilder,store:Store<RootState>,serieService:SerieService,private confirmationService:ConfirmationService) {
+  constructor(private fb:FormBuilder,store:Store<RootState>,serieService:SerieService,private confirmationService:ConfirmationService,private udService:UnidadDocumentalApiService) {
 
     super(store,serieService);
 
@@ -115,7 +116,18 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
       icon: 'fa fa-question-circle',
       accept: () => {
 
-
+        this.udService.crear({
+          ubicacionTopografica:this.formAsignarUT.value,
+          codigoSede:this.dependenciaSelected.codSede,
+          codigoDependencia:this.dependenciaSelected.codigo,
+          codigoSerie:this.form.get('serie').value,
+          codigoSubSerie:this.form.get('subserie').value,
+          id:this.form.get('identificador').value,
+          nombreUnidadDocumental:this.form.get('nombre').value,
+          descriptor1:this.form.get('descriptor1').value,
+          descriptor2:this.form.get('descriptor2').value,
+          observacion:this.form.get('observacion').value
+        });
       },
       reject: () => {
 

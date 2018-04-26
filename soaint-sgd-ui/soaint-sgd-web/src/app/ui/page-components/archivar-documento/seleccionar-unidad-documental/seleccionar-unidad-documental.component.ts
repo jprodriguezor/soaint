@@ -27,6 +27,7 @@ import {afterTaskComplete} from "../../../../infrastructure/state-management/tar
 import {go} from "@ngrx/router-store";
 import {ROUTES_PATH} from "../../../../app.route-names";
 import {Guid} from "../../../../infrastructure/utils/guid-generator";
+import {UnidadDocumentalApiService} from "../../../../infrastructure/api/unidad-documental.api";
 
 
 @Component({
@@ -75,7 +76,13 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   currentPage:number = 1;
 
-   constructor(private formBuilder: FormBuilder,private confirmationService:ConfirmationService, private serieSubSerieService:SerieService,private _store:Store<RootState>,private _solicitudUDService:SolicitudCreacionUdService) {
+   constructor(
+     private formBuilder: FormBuilder
+     ,private confirmationService:ConfirmationService
+     , private serieSubSerieService:SerieService
+     ,private _store:Store<RootState>
+     ,private _solicitudUDService:SolicitudCreacionUdService
+     ,private _udService:UnidadDocumentalApiService) {
 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -181,10 +188,6 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
    return this.operation;
    }
 
-   buscarUnidadDocumental(){
-
-     this.visiblePopup = true;
-   }
 
    next(){
 
@@ -209,6 +212,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
        icon: 'fa fa-question-circle',
        accept: () => {
 
+         //this._udService.archivarDocumento({});
 
        },
        reject: () => {
@@ -257,6 +261,20 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
     private archivarDocumento(){
 
+      this.visiblePopup = true;
+
+    }
+
+    buscarUnidadDocumental(){
+
+    //  this.visiblePopup = true;
+
+      this.unidadesDocumentales$ = this._udService.Listar({
+        codigoSerie:this.form.get('serie').value,
+        codigoSubSerie: this.form.get('subserie').value,
+        id: this.form.get('identificador').value,
+        nombreUnidadDocumental:this.form.get('nombre').value
+      });
     }
 
 

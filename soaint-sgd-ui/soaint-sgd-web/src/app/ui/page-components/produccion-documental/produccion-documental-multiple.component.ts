@@ -9,7 +9,11 @@ import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {FuncionarioDTO} from 'app/domain/funcionarioDTO';
 import {ProyectorDTO} from 'app/domain/ProyectorDTO';
 import {TareaDTO} from 'app/domain/tareaDTO';
-import {getActiveTask} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import {
+  getActiveTask,
+  getArrayData,
+  getEntities, getReadyTasksArrayData
+} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import {Subscription} from 'rxjs/Subscription';
 import {createSelector} from 'reselect';
@@ -17,6 +21,15 @@ import {EntradaProcesoDTO} from '../../../domain/EntradaProcesoDTO';
 import {PROCESS_DATA} from './providers/ProcessData';
 import {Sandbox as DependenciaGrupoSandbox} from '../../../infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {Sandbox as FuncionarioSandbox} from '../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-sandbox';
+import {
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
+} from "../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
+import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {TASK_PRODUCIR_DOCUMENTO} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'produccion-documental-multiple',
@@ -36,13 +49,17 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   fechaRadicacion: string;
   listaProyectores: ProyectorDTO[] = [];
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
+  sedeAdministrativas:ConstanteDTO[];
+
   dependencias: Array<any> = [];
   funcionarios$: Observable<FuncionarioDTO[]>;
+  funcionarios:FuncionarioDTO[];
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
   subscribers: Array<Subscription> = [];
   authPayload: { usuario: string, pass: string } | {};
   authPayloadUnsubscriber: Subscription;
+
 
   constructor(private _store: Store<RootState>,
               private _produccionDocumentalApi: ProduccionDocumentalApiService,
@@ -77,8 +94,33 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
 
     const payload: EntradaProcesoDTO = Object.assign(entradaProceso, this.authPayload);
 
-    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(() => {
+    this._produccionDocumentalApi.ejecutarProyeccionMultiple(payload).subscribe(response => {
       this.form.disable();
+
+      this.subscribers.push(
+        afterTaskComplete.subscribe(() => {
+
+          this.subscribers.push(
+            combineLatest(
+              this._store.select(getAuthenticatedFuncionario)
+                .map( funcionario => this.funcionarios.find( func => func.id == funcionario.id)),
+              this._store.select(getSelectedDependencyGroupFuncionario)
+            ).switchMap(([funcionario,dependency])=> {
+
+              return this._taskSandBox.loadData(null,dependency)
+                .map( tasks => tasks.find( task => task.nombre == TASK_PRODUCIR_DOCUMENTO && task.estado == "RESERVADO"));
+            })
+              .subscribe( task => {
+
+                console.log("task filtrada",task);
+
+                if(!isNullOrUndefined(task)){
+
+                  this._taskSandBox.startTaskDispatch(task);
+                }
+              })
+          );
+        }));
 
       this._taskSandBox.completeTaskDispatch({
         idProceso: this.task.idProceso,
@@ -86,6 +128,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         idTarea: this.task.idTarea,
         parametros: {}
       });
+
+
+
     });
   }
 
@@ -129,6 +174,23 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
     this.funcionarios$ = this._funcionarioSandBox.loadAllFuncionariosByRol({codDependencia: this.form.get('dependencia').value.codigo, rol: 'Proyector'}).map(res => {
       return res.funcionarios
     });
+
+    this.subscribers.push( this.funcionarios$.subscribe(funcionarioList => {
+
+      this.funcionarios = funcionarioList;
+
+      const funcionarioSelected = ViewFilterHook.applyFilter('pmd-funcionario-selected',null);
+
+      ViewFilterHook.removeFilter('pmd-funcionario-selected');
+
+      if(funcionarioSelected !== null){
+
+        this.form.get('funcionario').setValue(funcionarioSelected);
+
+      }
+
+    }));
+
   }
 
   initForm() {
@@ -142,6 +204,26 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
+
+    this.initForm();
+
+   this.subscribers.push( this.sedesAdministrativas$.subscribe(sedesDto=> {
+
+      this.sedeAdministrativas = sedesDto;
+
+      combineLatest(this._store.select(getSelectedDependencyGroupFuncionario),this._store.select(getAuthenticatedFuncionario))
+        .subscribe(([dependency,funcionario]) =>{
+
+          this.form.get('sede').setValue(this.sedeAdministrativas.find( sedeDto => sedeDto.codigo == dependency.codSede ));
+
+          ViewFilterHook.addFilter('pdm-dependency-selected', () => this.dependencias.find( dependencia => dependencia.codigo == dependency.codigo));
+
+         ViewFilterHook.addFilter('pmd-funcionario-selected',() => this.funcionarios.find(func => func.id == funcionario.id));
+        });
+
+      }
+    ));
+
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.subscribers.push(this._store.select(getActiveTask).subscribe(activeTask => {
       this._changeDetector.markForCheck();
@@ -150,8 +232,19 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         this.numeroRadicado = this.task.variables.numeroRadicado;
         this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
+      else{
+     /*  afterTaskComplete.subscribe( (taskGenerated) => {
+
+          // write your implementation here
+
+        // this._taskSandBox.startTask(taskGenerated);
+
+        });*/
+      }
+
+
     }));
-    this.initForm();
+
     this.listenForErrors();
     this.listenForChanges();
   }
@@ -162,6 +255,18 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
       if (sede) {
         const depedenciaSubscription: Subscription = this._dependenciaGrupoSandbox.loadData({codigo: sede.id}).subscribe(dependencias => {
           this.dependencias = dependencias.organigrama;
+
+          const dependencySelected = ViewFilterHook.applyFilter('pdm-dependency-selected',null);
+
+          ViewFilterHook.removeFilter('pdm-dependency-selected');
+
+          if(dependencySelected !== null){
+
+            this.form.get('dependencia').setValue(dependencySelected);
+
+            this.dependenciaChange();
+          }
+
           depedenciaSubscription.unsubscribe();
         });
       }
@@ -203,5 +308,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
 
   ngOnDestroy() {
     this.subscribers.forEach(subsc => subsc.unsubscribe());
+
+    this.authPayloadUnsubscriber.unsubscribe();
   }
 }

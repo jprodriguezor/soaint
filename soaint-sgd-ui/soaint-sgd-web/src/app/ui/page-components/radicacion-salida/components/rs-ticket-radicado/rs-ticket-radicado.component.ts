@@ -8,7 +8,6 @@ import {
 
 export class RsTicketRadicado implements  TicketRadicado {
 
-
   constructor(
     public tipoDestinatario: string
   , public  anexos: string
@@ -50,6 +49,8 @@ export class RsTicketRadicadoComponent implements OnInit {
   }
 
   setDataTicketRadicado(ticket: RsTicketRadicado) {
+
+    console.log(ticket);
 
     this.ticket = ticket;
   }

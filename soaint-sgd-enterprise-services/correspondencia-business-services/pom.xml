@@ -285,7 +285,7 @@
         <!--<dependency>
             <groupId>co.com.foundation.soaint.interoperability</groupId>
             <artifactId>Mail-Cartridge</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            &lt;!&ndash;<version>1.0-SNAPSHOT</version>&ndash;&gt;
             &lt;!&ndash;<scope>provided</scope>&ndash;&gt;
         </dependency>-->
     </dependencies>

@@ -63,7 +63,7 @@
     <div class="card card-w-title">
       <p-panel header="Unidades documentales solicitadas" [style]="{border: 'none'}">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true" [value]="(solicitudes$|async)" (onRowSelect) = "selectRow($event,tq)" #tq>
+                     [paginator]="true" [rows]="10" [responsive]="true" [value]="(solicitudes$|async)" (onRowSelect) = "selectRow($event)" #tq>
           <p-column [style]="{width: '40px'}">
             <ng-template pTemplate="body">
               <p-radioButton></p-radioButton>
