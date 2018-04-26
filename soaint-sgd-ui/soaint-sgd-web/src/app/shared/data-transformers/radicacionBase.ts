@@ -16,6 +16,7 @@ import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacio
 import {AgenteFactoryDTV} from "./agentesDTV";
 import {DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO} from "../bussiness-properties/radicacion-properties";
 import {isNullOrUndefined} from "util";
+import {DireccionDTO} from "../../domain/DireccionDTO";
 
 export  abstract class RadicacionBase {
 

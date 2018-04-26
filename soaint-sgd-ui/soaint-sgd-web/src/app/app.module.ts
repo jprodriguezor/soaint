@@ -73,11 +73,11 @@ import { AlertComponent } from './ui/bussiness-components/notifications/alert/al
 import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
 import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
 
-import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
 import { ArchivarDocumentoComponent } from './ui/page-components/organizacion-archivo/archivar-documento/archivar-documento.component';
 import {SeleccionarDocumentosComponent} from "./ui/page-components/organizacion-archivo/archivar-documento/components/seleccionar-documentos/seleccionar-documentos.component";
 import {DireccionToTextPipe} from './ui/bussiness-components/datos-direccion/direccion-to-text.pipe';
 import { DisposicionFinalComponent } from './ui/page-components/disposicion-final/disposicion-final.component';
+import {AdjuntarDocumentoComponent} from "./ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component";
 
 @NgModule({
   imports: [
