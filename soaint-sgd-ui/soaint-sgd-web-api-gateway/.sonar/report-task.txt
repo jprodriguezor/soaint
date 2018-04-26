@@ -1,0 +1,6 @@
+projectKey=correspondencia:ecm-integration-services
+serverUrl=http://192.168.3.128:9000
+serverVersion=7.0.0.36138
+dashboardUrl=http://192.168.3.128:9000/dashboard/index/correspondencia:ecm-integration-services
+ceTaskId=AWMDC9o3C5DSoMmWSZS9
+ceTaskUrl=http://192.168.3.128:9000/api/ce/task?id=AWMDC9o3C5DSoMmWSZS9
