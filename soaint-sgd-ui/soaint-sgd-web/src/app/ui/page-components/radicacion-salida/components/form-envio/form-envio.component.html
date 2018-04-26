@@ -10,7 +10,11 @@
                   <label >Clase de Envio</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-dropdown></p-dropdown>
+                  <p-dropdown
+                    [options]="claseEnvio$ | async | dropdownItem"
+                    id="clase_envio"
+                    formControlName="clase_envio"
+                  ></p-dropdown>
                 </div>
               </div>
             </div>
@@ -20,7 +24,11 @@
                   <label >Modalidad de Correo</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-dropdown></p-dropdown>
+                  <p-dropdown
+                    [options]="modalidadCorreo$ | async | dropdownItem"
+                    id="modalidad_correo"
+                    formControlName="modalidad_correo"
+                  ></p-dropdown>
                 </div>
               </div>
             </div>

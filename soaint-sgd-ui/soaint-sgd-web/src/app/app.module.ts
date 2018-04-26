@@ -52,26 +52,30 @@ import { DatosDestinatarioExternoComponent } from './ui/page-components/radicaci
 import { DatosDestinatarioInternoComponent } from './ui/page-components/radicacion-salida/components/datos-destinatario/datos-destinatario-interno/datos-destinatario-interno.component';
 import { DatosRemitentesComponent } from './ui/bussiness-components/datos-remitentes/datos-remitentes.component';
 import { DetalleUnidadConservacionComponent } from './ui/page-components/unidades-documentales/components/detalle-unidad-conservacion/detalle-unidad-conservacion.component';
-import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/archivar-documento/redirect-seleccionar-documento/redirect-seleccionar-documento.component';
-import {ProcesoService} from './infrastructure/api/proceso.service';
-import {SolicitudCreacionUdService} from './infrastructure/api/solicitud-creacion-ud.service';
-import { ListaDocumentosArchivadosComponent } from './ui/page-components/archivar-documento/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
-import { CrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/crear-unidad-documental.component';
-import { ListaSolicitudCrearUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/lista-solicitud-crear-ud/lista-solicitud-crear-ud.component';
-import { NoTramitarCreacionUdComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
-import { FormCrearUnidadDocumentalComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
-import { UdTramitadasComponent } from './ui/page-components/archivar-documento/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
-import { AdjuntarDocumentoComponent } from './ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component';
+import { RedirectSeleccionarDocumentoComponent } from './ui/page-components/organizacion-archivo/redirect-seleccionar-documento/redirect-seleccionar-documento.component';
+import {ProcesoService} from "./infrastructure/api/proceso.service";
+import {SolicitudCreacionUdService} from "./infrastructure/api/solicitud-creacion-ud.service";
+import { ListaDocumentosArchivadosComponent } from './ui/page-components/organizacion-archivo/archivar-documento/components/seleccionar-unidad-documental/lista-documentos-archivados/lista-documentos-archivados.component';
+import { CrearUnidadDocumentalComponent } from './ui/page-components/organizacion-archivo/crear-unidad-documental/crear-unidad-documental.component';
+import { ListaSolicitudCrearUdComponent } from './ui/page-components/organizacion-archivo/crear-unidad-documental/lista-solicitud-crear-ud/lista-solicitud-crear-ud.component';
+import { NoTramitarCreacionUdComponent } from './ui/page-components/organizacion-archivo/crear-unidad-documental/no-tramitar-creacion-ud/no-tramitar-creacion-ud.component';
+import { FormCrearUnidadDocumentalComponent } from './ui/page-components/organizacion-archivo/crear-unidad-documental/form-crear-unidad-documental/form-crear-unidad-documental.component';
+import { UdTramitadasComponent } from './ui/page-components/organizacion-archivo/crear-unidad-documental/ud-tramitadas/ud-tramitadas.component';
 import { RsTicketRadicadoComponent } from './ui/page-components/radicacion-salida/components/rs-ticket-radicado/rs-ticket-radicado.component';
-import {TicketRadicadoComponent} from './ui/bussiness-components/ticket-radicado/ticket-radicado.component';
+import {TicketRadicadoComponent} from "./ui/bussiness-components/ticket-radicado/ticket-radicado.component";
 import { DistribucionComponent } from './ui/page-components/radicacion-salida/components/distribucion/distribucion.component';
-import {DatosGeneralesEditComponent} from './ui/bussiness-components/datos-generales-edit/datos-generales-edit.component';
-import {DatosRemitenteEditComponent} from './ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component';
-import {DatosDestinatarioEditComponent} from './ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component';
-import {RadicacionSalidaService} from './infrastructure/api/radicacion-salida.service';
-import {UnidadDocumentalApiService} from './infrastructure/api/unidad-documental.api';
+import {DatosGeneralesEditComponent} from "./ui/bussiness-components/datos-generales-edit/datos-generales-edit.component";
+import {DatosRemitenteEditComponent} from "./ui/bussiness-components/datos-remitente-edit/datos-remitente-edit.component";
+import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-destinatario-edit/datos-destinatario-edit.component";
+import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
+import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
 import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
+
+import {DireccionToTextPipe} from "./ui/bussiness-components/datos-direccion/direccion-to-text.pipe";
+import { ArchivarDocumentoComponent } from './ui/page-components/organizacion-archivo/archivar-documento/archivar-documento.component';
+import {SeleccionarDocumentosComponent} from "./ui/page-components/organizacion-archivo/archivar-documento/components/seleccionar-documentos/seleccionar-documentos.component";
 import {DireccionToTextPipe} from './ui/bussiness-components/datos-direccion/direccion-to-text.pipe';
 import { DisposicionFinalComponent } from './ui/page-components/disposicion-final/disposicion-final.component';
 
@@ -185,7 +189,10 @@ import { DisposicionFinalComponent } from './ui/page-components/disposicion-fina
     DatosGeneralesEditComponent,
     DatosRemitenteEditComponent,
     DatosDestinatarioEditComponent,
-    AlertComponent
+    AlertComponent,
+    FormEnvioComponent,
+    ArchivarDocumentoComponent,
+    SeleccionarDocumentosComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

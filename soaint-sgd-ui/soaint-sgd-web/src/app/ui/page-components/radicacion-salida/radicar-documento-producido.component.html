@@ -1,0 +1,62 @@
+<div class="ui-fluid radicar-comunicaciones">
+  <app-task-container>
+    <div customActions>
+      <button pButton type="button" label="Cancelar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
+              (click)="abort()"></button>
+
+      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
+              (click)="save().subscribe()"></button>
+
+      <button pButton type="button" label="Radicar" style="width: auto; margin-bottom: 10px"
+              [disabled]="!radicacionButtonIsShown()"
+              (click)="radicarSalida()"></button>
+
+      <button pButton type="button" label="Ver etiqueta" style="width: auto; margin-bottom: 10px" *ngIf="radicacion"
+              (click)="showTicketRadicado()"></button>
+    </div>
+
+    <div taskBody>
+      <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
+        <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
+          <app-datos-generales #datosGenerales (onChangeTipoDistribucion)="changeValidationAbility($event)" [tipoRadicacion]="tipoRadicacion" [dataDefault]="datosGenerales$"  ></app-datos-generales>
+        </p-tabPanel>
+
+        <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">
+          <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
+          <pd-datos-contacto #datosContacto [taskData]="task"  [dataDefault]="datosContacto$" ></pd-datos-contacto>
+        </p-tabPanel>
+
+
+        <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
+          <rs-datos-remitente #datosRemitente  [loadCurrentUserData]="true"  ></rs-datos-remitente>
+        </p-tabPanel>
+
+        <p-tabPanel header="Visualizar Docuemntos">
+          <app-documentos-ecm-list [(idDocumentECM)]="ideEcm"></app-documentos-ecm-list>
+        </p-tabPanel>
+      </p-tabView>
+
+      <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
+        <button pButton type="button" label="Siguiente" style="width: 150px; float: right"
+                (click)="openNext()" icon="ui-icon-arrow-forward" *ngIf="tabIndex < 2">
+        </button>
+        <button pButton label="Anterior" style="width: 150px; float: left"
+                (click)="openPrev()" icon="ui-icon-arrow-back" *ngIf="tabIndex > 0">
+        </button>
+      </div>
+
+      <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
+                (onHide)="hideTicketRadicado()" [width]="520">
+        <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
+
+        <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button pButton type="button" class="ui-button-primary" [printelement]="'ticket'" printDirective
+                    [inlineStyles]="printStyle" label="Imprimir"></button>
+          </div>
+        </p-footer>
+
+      </p-dialog>
+    </div>
+  </app-task-container>
+</div>

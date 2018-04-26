@@ -110,7 +110,7 @@
           </div>
         </div>
         <div class="ui-g ui-fluid">
-          <div class="ui-g-12 margin-20" *ngIf="form.controls['creada'].value == 1">
+          <div class="ui-g-12 margin-20"  *ngIf="false">
             <p-panel header="Relacionar unidad documental fisica" [style]="{border: 'none'}">
               <div class="ui-g ui-fluid" [formGroup]="filterUDForm">
                 <div class="ui-g-12">
@@ -213,7 +213,7 @@
               </div>
             </p-panel>
           </div>
-          <div class="ui-g-12" *ngIf="form.controls['creada'].value == 0">
+          <div class="ui-g-12" *ngIf="false">
             <p-panel header="Asignar ubicacion topografica" [style]="{border: 'none'}">
               <div class="ui-g ui-fluid" [formGroup]="formAsignarUT">
                 <div class="ui-g-12">
@@ -261,7 +261,7 @@
               </div>
             </p-panel>
           </div>
-          <div class="ui-g-12 text-right" *ngIf="form.controls['creada'].value == 0">
+          <div class="ui-g-12 text-right">
             <button type="button" label="Crear UD" pButton style="width: auto" (click)="crearUD()"></button>
           </div>
         </div>

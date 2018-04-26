@@ -52,12 +52,11 @@ export class DatosGeneralesComponent implements OnInit {
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
   metricasTiempoTipologia$: Observable<any>;
-  defaultSelectionMediosRecepcion$: Observable<any>;
 
-  // default values Metricas por Tipologia
-  medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
   tiempoRespuestaMetricaTipologia$: Observable<number> = Observable.of(null);
   codUnidaTiempoMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
+
+  @Input() dataDefault:Observable<any> = Observable.empty() ;
 
   @Input()
   editable = true;
@@ -157,6 +156,31 @@ export class DatosGeneralesComponent implements OnInit {
         delete this.visibility.numeroGuia;
       }
     });
+
+    this.dataDefault.subscribe( datosGenerales => {
+
+
+
+      this.form.get("tipoComunicacion").setValue(datosGenerales.tipoComunicacion);
+      if(datosGenerales.tipologiaDocumental)
+      this.form.get("tipologiaDocumental").setValue(datosGenerales.tipologiaDocumental);
+      this.form.get("unidadTiempo").setValue(datosGenerales.unidadTiempo);
+      this.form.get("medioRecepcion").setValue(datosGenerales.medioRecepcion);
+      this.form.get("empresaMensajeria").setValue(datosGenerales.empresaMensajeria);
+      this.form.get("numeroGuia").setValue(datosGenerales.numeroGuia);
+      this.form.get("inicioConteo").setValue(datosGenerales.inicioConteo);
+      this.form.get("tiempoRespuesta").setValue(datosGenerales.tiempoRespuesta);
+      this.form.get("asunto").setValue(datosGenerales.asunto);
+      this.form.get("reqDigit").setValue(datosGenerales.reqDigit);
+      this.form.get("reqDistFisica").setValue(datosGenerales.reqDistFisica);
+
+
+      this.descripcionAnexos = datosGenerales.listaAnexos;
+      this.radicadosReferidos = datosGenerales.radicadosReferidos;
+
+
+    });
+
     this.listenForErrors();
   }
 
@@ -245,6 +269,11 @@ export class DatosGeneralesComponent implements OnInit {
         delete this.validations[control];
       }
     });
+  }
+
+  showBlockDistribucionDig(){
+
+    return ViewFilterHook.applyFilter("app-datos-direccion-show-block-dist-dig",true);
   }
 
 }

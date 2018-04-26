@@ -14,7 +14,8 @@ import {AgentDTO} from "../../domain/agentDTO";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacionForm.interface";
 import {AgenteFactoryDTV} from "./agentesDTV";
-import { DireccionDTO } from "../../domain/DireccionDTO";
+import {DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO} from "../bussiness-properties/radicacion-properties";
+import {isNullOrUndefined} from "util";
 
 export  abstract class RadicacionBase {
 
@@ -51,6 +52,8 @@ export  abstract class RadicacionBase {
       fecVenGestion: null,
       codEstado: null,
       inicioConteo: generales.inicioConteo || '',
+      codClaseEnvio:null,
+      codModalidadEnvio:null,
     };
 
     this._store.select(getAuthenticatedFuncionario).subscribe(funcionario => {
@@ -81,7 +84,8 @@ export  abstract class RadicacionBase {
 
   getListaReferidos(): Array<ReferidoDTO> {
     const referidosList = [];
-    this.source.radicadosReferidos.forEach(referido => {
+    if(!isNullOrUndefined(this.source.radicadosReferidos))
+     this.source.radicadosReferidos.forEach(referido => {
       referidosList.push({
         ideReferido: referido.ideReferido,
         nroRadRef: referido.nombre
@@ -106,14 +110,12 @@ export  abstract class RadicacionBase {
 
   abstract  getAgentesDestinatario(): Array<AgentDTO>;
 
-   getRemitente(): AgentDTO {
+   getRemitente():AgentDTO{
 
      const tipoComunicacion = this.source.generales.tipoComunicacion.codigo ;
 
      return AgenteFactoryDTV.getAgente(tipoComunicacion).getRemitente(this.source.remitente);
    }
-
-
 
   getComunicacionOficial(): ComunicacionOficialDTO {
 
@@ -125,6 +127,40 @@ export  abstract class RadicacionBase {
       referidoList: this.getListaReferidos(),
       datosContactoList: this.getDatosContactos()
     };
+  }
+
+  transformContactData(contactOrigin): Array<ContactoDTO> {
+    const contactos = [];
+    contactOrigin.forEach((contact) => {
+      contactos.push({
+        ideContacto: null,
+        nroViaGeneradora: contact.noViaPrincipal || null,
+        nroPlaca: contact.placa || null,
+        codTipoVia: contact.tipoVia ? contact.tipoVia.codigo : null,
+        codPrefijoCuadrant: contact.prefijoCuadrante ? contact.prefijoCuadrante.codigo : null,
+        /*codBis:contact.bis ? contact.bis : null,
+        codOrientacion : contact.orientacion ? contact.orientacion : null,
+        noVia:contact.noVia,
+        codPrefijoCuadrantSe: contact.prefijoCuadrante_se ? contact.prefijoCuadrante_se : null,
+        codOrientacionSe: contact.orientacion_se ? contact.orientacion_se : null,
+        codTipoComplemento: contact.complementoTipo ? contact.complementoTipo : null,
+        codTipoComplementoAdicional: contact.complementoAdicional ? contact.complementoAdicional : null,*/
+        codPostal: null,
+        direccion: contact.direccion || null,
+        celular: contact.celular || null,
+        telFijo: contact.numeroTel || null,
+        extension: null,
+        corrElectronico: contact.correoEle || null,
+        codPais: contact.pais ? contact.pais.codigo : null,
+        codDepartamento: contact.departamento ? contact.departamento.codigo : null,
+        codMunicipio: contact.municipio ? contact.municipio.codigo : null,
+        provEstado: contact.provinciaEstado ? contact.provinciaEstado : null,
+        ciudad: contact.ciudad ? contact.ciudad : null,
+        principal: contact.principal ? DATOS_CONTACTO_PRINCIPAL : DATOS_CONTACTO_SECUNDARIO
+      });
+    });
+
+    return contactos;
   }
 
   getDatosContactos(): Array<ContactoDTO> {

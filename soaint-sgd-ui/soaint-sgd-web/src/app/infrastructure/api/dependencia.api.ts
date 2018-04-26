@@ -14,12 +14,13 @@ export class DependenciaApiService extends CacheResponse {
    }
 
   Listar(payload: any): Observable<DependenciaDTO[]> {
+
     const endpoint = environment.dependencias_endpoint;
+
     return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-          this.cacheResponse(payload, response);
-          return response.dependencias;
-        }), endpoint);
+               return response.dependencias;
+        }),endpoint );
   }
 
   ListarPorSede(payload: string): Observable<any> {
