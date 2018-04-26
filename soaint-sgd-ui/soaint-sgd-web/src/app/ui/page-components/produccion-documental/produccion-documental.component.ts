@@ -195,6 +195,8 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
       this.taskCurrentStatus.gestionarProduccion.listaObservaciones = this.gestionarProduccion.listaObservaciones;
       this.taskCurrentStatus.gestionarProduccion.cantObservaciones = this.gestionarProduccion.cantObservaciones;
+
+      console.log("before save:",this.taskCurrentStatus);
       return this.taskCurrentStatus;
   }
 
