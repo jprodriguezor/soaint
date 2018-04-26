@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Sandbox as TaskSandbox} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox";
 import {TareaDTO} from "../../../../../domain/tareaDTO";
@@ -12,9 +12,7 @@ import {Store} from "@ngrx/store";
   templateUrl: './distribucion.component.html',
   styleUrls: ['./distribucion.component.css']
 })
-export class DistribucionComponent implements OnInit {
-
-  form:FormGroup;
+export class DistribucionComponent implements OnInit,OnDestroy {
 
   task:TareaDTO;
 
@@ -22,10 +20,7 @@ export class DistribucionComponent implements OnInit {
 
   constructor(private fb:FormBuilder,private _taskSandbox:TaskSandbox,private _store:Store<RootState>) {
 
-    this.form = this.fb.group({
-      clase_envio:[null,Validators.required],
-      modalidad_correo:[null,Validators.required],
-    })
+
   }
 
   ngOnInit() {
@@ -37,10 +32,21 @@ export class DistribucionComponent implements OnInit {
     });
   }
 
-  finalizar(){
+  ngOnDestroy(){
 
+    this.activeTaskUnsubscriber.unsubscribe();
   }
 
+  save(){
+
+    this._taskSandbox.completeTaskDispatch({
+      idProceso: this.task.idProceso,
+      idDespliegue: this.task.idDespliegue,
+      idTarea: this.task.idTarea,
+      parametros: []
+
+    });
+  }
 
 
 }

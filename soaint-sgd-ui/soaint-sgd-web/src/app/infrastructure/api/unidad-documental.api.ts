@@ -35,4 +35,18 @@ export class UnidadDocumentalApiService {
     return this._api.post(environment.reactivar_unidad_documental_endpoint, payload);
   }
 
+  noTramitarUnidadesDocumentales(payload: any){
+
+    //return this._api.post("",payload)
+
+    return Observable.of(true);
+
+  }
+
+  listarUnidadesDocumentales(payload:any):Observable<any[]>{
+
+    return this._api.post(environment.listar_unidad_documental_endpoint,payload)
+      .map( response => response.response.unidadDocumental);
+  }
+
 }

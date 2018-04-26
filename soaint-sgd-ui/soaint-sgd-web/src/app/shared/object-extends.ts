@@ -1,3 +1,4 @@
+import {isNullOrUndefined} from "util";
 
 export class  ObjectHelper {
 
@@ -11,10 +12,13 @@ export class  ObjectHelper {
 
    return Object.keys(a).every( key => {
 
-      if(a[key] === undefined ){
+      if(isNullOrUndefined(a[key])){
 
-         return b[key] === undefined;
+         return isNullOrUndefined(b[key] );
       }
+
+     if(isNullOrUndefined(b[key]))
+       return false;
 
      if(typeof a[key] === 'object'){
 
@@ -27,7 +31,7 @@ export class  ObjectHelper {
 
       if( typeof a[key] !== 'function') {
 
-        return a[key].toString().trim() === b[key].toString().trim();
+         return a[key].toString().trim() === b[key].toString().trim();
       }
 
        return typeof  b[key] !== 'function';

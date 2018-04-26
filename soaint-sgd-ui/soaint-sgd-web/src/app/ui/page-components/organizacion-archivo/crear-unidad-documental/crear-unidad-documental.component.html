@@ -7,11 +7,11 @@
 
       <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)"></app-lista-solicitud-crear-ud>
 
-      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD" [solicitud]="solicitudSelected" ></app-no-tramitar-creacion-ud>
+      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD" [solicitud]="solicitudSelected"  (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-no-tramitar-creacion-ud>
 
-      <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD"></app-form-crear-unidad-documental>
+      <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD" [solicitud]="solicitudSelected"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-form-crear-unidad-documental>
 
-      <app-ud-tramitadas></app-ud-tramitadas>
+      <app-ud-tramitadas [solicitudesProcesadas]="solicitudesProcesadas$" ></app-ud-tramitadas>
 
       <p-dialog header="Alerta" [(visible)]="visiblePopup" modal="modal" >
         <div class="text-center">
