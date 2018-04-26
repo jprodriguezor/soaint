@@ -18,8 +18,9 @@
                                              [constantesList]="constantes"></app-detalles-datos-destinatario>
           </p-tabPanel>
           <p-tabPanel header="Vista previa del documento" leftIcon="ui-icon-assignment" no-padding *ngIf="ideEcm">
-            <div style="overflow-y: scroll;max-height: 100%" *ngIf="docSrc">
-              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>
+            <div style="overflow-y: scroll;max-height: 100%" *ngIf="ideEcm">
+              <app-documentos-ecm-list [idDocumentECM]="ideEcm"></app-documentos-ecm-list>
+              <!--<pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5"></pdf-viewer>-->
             </div>
           </p-tabPanel>
           <p-tabPanel header="Observaciones" leftIcon="ui-icon-assignment">

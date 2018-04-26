@@ -25,22 +25,26 @@ export class DetallesDatosRemitenteComponent {
 
 
   constructor() {
+
+
   }
 
   getPais(codigoPais): string {
-    const pais = this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais);
-    if (pais) {
-      return pais.departamento.pais.nombre;
+    if(this.municipiosList !== undefined){
+      const pais = this.municipiosList.find((municipio) => municipio.departamento.pais.codigo === codigoPais);
+      if (pais) {
+        return pais.departamento.pais.nombre;
+      }
     }
     return '';
   }
 
   getDepartamento(codigoDepartamento): string {
-    return this.municipiosList.find((municipio) => municipio.departamento.codigo === codigoDepartamento).departamento.nombre;
+    return this.municipiosList !== undefined ? this.municipiosList.find((municipio) => municipio.departamento.codigo === codigoDepartamento).departamento.nombre: '';
   }
 
   getMunicipio(codigoMunicipio): string {
-    return this.municipiosList.find((municipio) => municipio.codigo === codigoMunicipio).nombre;
+    return this.municipiosList !== undefined ? this.municipiosList.find((municipio) => municipio.codigo === codigoMunicipio).nombre: '';
   }
 
 }

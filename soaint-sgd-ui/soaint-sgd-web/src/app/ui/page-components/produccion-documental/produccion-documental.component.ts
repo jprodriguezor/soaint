@@ -23,6 +23,8 @@ import {MessagingService} from '../../../shared/providers/MessagingService';
 import {DocumentDownloaded} from './events/DocumentDownloaded';
 import {environment} from '../../../../environments/environment';
 import {DocumentUploaded} from './events/DocumentUploaded';
+import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {AlertComponent} from "../../bussiness-components/notifications/alert/alert.component";
 
 @Component({
   selector: 'produccion-documental',
@@ -37,17 +39,18 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   taskVariables: VariablesTareaDTO;
   idEstadoTarea = '0000';
   status = 1;
-
+  closedTask: Observable<boolean> ;
 
   @ViewChild('datosGenerales') datosGenerales;
   @ViewChild('datosContacto') datosContacto;
   @ViewChild('gestionarProduccion') gestionarProduccion;
+  @ViewChild('messageAlert') messageAlert:AlertComponent;
 
   tipoComunicacionSelected: ConstanteDTO;
   funcionarioLog: FuncionarioDTO;
   subscription: Subscription;
 
-  documentoRadicadoUrl: string;
+  idecmRadicado: string;
   pdfViewer = false;
 
   tabIndex = 0;
@@ -63,21 +66,12 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               private _changeDetectorRef: ChangeDetectorRef,
               private messagingService: MessagingService,
               private pdMessageService: PdMessageService) {
+
+
       this.route.params.subscribe( params => {
           this.status = parseInt(params.status, 10) || 0;
       } );
-      this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
-          this.refreshView();
-          this.guardarEstadoTarea();
-      });
-    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
-      this.tipoComunicacionSelected = tipoComunicacion;
-    });
-    this.authPayloadUnsubscriber = this._store.select(createSelector((s: RootState) => s.auth.profile, (profile) => {
-      return profile ? {usuario: profile.username, pass: profile.password} : {};
-    })).subscribe((value) => {
-      this.authPayload = value;
-    });
+
   }
 
   private initCurrentStatus() {
@@ -106,6 +100,23 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   }
 
   ngOnInit(): void {
+
+    this.closedTask = afterTaskComplete.map(() => true).startWith(false);
+
+    this.documentSubscription = this.messagingService.of(DocumentUploaded).subscribe(() => {
+      this.refreshView();
+      this.guardarEstadoTarea();
+    });
+    this.subscription = this.pdMessageService.getMessage().subscribe(tipoComunicacion => {
+      this.tipoComunicacionSelected = tipoComunicacion;
+    });
+    this.authPayloadUnsubscriber = this._store.select(createSelector((s: RootState) => s.auth.profile, (profile) => {
+      return profile ? {usuario: profile.username, pass: profile.password} : {};
+    })).subscribe((value) => {
+      this.authPayload = value;
+    });
+
+
         this._store.select(getAuthenticatedFuncionario).subscribe((funcionario) => {
           this.funcionarioLog = funcionario;
         });
@@ -118,7 +129,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
                 res => {
                     if (res.ideEcm) {
                         console.log('Encontrado documento asociado')
-                        this.documentoRadicadoUrl = `${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
+                        this.idecmRadicado = res.ideEcm //`${environment.pd_gestion_documental.obtenerDocumentoPorId}/?identificadorDoc=${res.ideEcm}`;
                         this.pdfViewer = true;
                         this.refreshView();
                     } else {
@@ -157,7 +168,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
-    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(response => { console.log(response); });
+    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(()=>{});
   }
 
   updateEstadoTarea() {
@@ -203,6 +214,13 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
   }
 
     continuarProceso() {
+
+      if(!this.ExistsDestinatario()){
+
+        this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe introducir al menos un destinatario'}));
+        return false;
+      }
+
         if (!this.hasAprobador()) {
             console.log(`No hay aprobador`);
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe especificar al menos un aprobador'}));
@@ -226,7 +244,20 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         this.terminarTarea();
     }
 
+    private ExistsDestinatario(){
+
+     return this.datosContacto.listaDestinatariosExternos ? this.datosContacto.listaDestinatariosExternos.length : 0 +
+            this.datosContacto.listaDestinatariosInternos ? this.datosContacto.listaDestinatariosInternos.length : 0 > 0;
+
+    }
+
   aprobarDocumento() {
+
+    if(!this.ExistsDestinatario()){
+
+      this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe introducir al menos un destinatario'}));
+      return false;
+    }
       switch (this.status) {
           case 1 : {
               this.taskVariables = {aprobado : 1, listaProyector : [], listaRevisor : [], listaAprobador : [] };
@@ -246,8 +277,10 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
               break;
           }
       }
-      this.updateEstadoTarea();
-      this.terminarTarea();
+
+        this.updateEstadoTarea();
+        this.terminarTarea();
+
   }
 
     cancelarTarea() {
@@ -269,27 +302,39 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
     }
 
     puedeAprobar() {
-        const valid = this.status > 1
-            || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length);
-        return valid && this.isValid();
+
+        let rules:boolean[] = [
+          this.status > 1  || (1 === this.status && 1 === this.gestionarProduccion.listaProyectores.length),
+          this.isValid(),
+        //  this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
+        ];
+
+        return rules.every( condition => condition);
     }
 
     hasAprobador() {
-        return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
+
+       return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
     }
 
 
 
     isValid(): boolean {
        let valid = true;
-       valid = valid && this.datosGenerales.isValid();
 
-       return valid;
+      let rules:boolean[] = [
+        valid && this.datosGenerales.isValid(),
+      ];
+
+
+      return rules.every( condition => condition);
     }
 
     ngOnDestroy(): void {
         this.authPayloadUnsubscriber.unsubscribe();
         this.documentSubscription.unsubscribe();
+        this.subscription.unsubscribe();
+        // this.taksCompleteSubscriber.unsubscribe();
     }
 
     save(): Observable<any> {

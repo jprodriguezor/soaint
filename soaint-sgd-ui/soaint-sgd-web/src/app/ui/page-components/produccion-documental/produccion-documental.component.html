@@ -1,6 +1,6 @@
 <div class="ui-fluid produccion-documental">
   <app-task-container>
-    <div customActions>
+    <div customActions  *ngIf="!(closedTask | async)">
       <button pButton type="button" label="Guardar"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"
@@ -28,7 +28,7 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="tabIndex = $event.index">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <pd-datos-generales #datosGenerales [documentoRadicadoUrl]="documentoRadicadoUrl"></pd-datos-generales>
+          <pd-datos-generales #datosGenerales [idecmDocumentoRadicado]="idecmRadicado"></pd-datos-generales>
           <br/>
         </p-tabPanel>
         <p-tabPanel header="Datos destinatario" leftIcon="ui-icon-assignment">
@@ -41,5 +41,6 @@
     </div>
   </app-task-container>
 </div>
+<app-alert #messageAlert [width]="400" [height]="150"></app-alert>
 
 

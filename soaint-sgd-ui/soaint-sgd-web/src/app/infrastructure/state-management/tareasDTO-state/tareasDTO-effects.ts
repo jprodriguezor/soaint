@@ -125,6 +125,16 @@ export class Effects {
   // .withLatestFrom(this._store$.select(s => s.tareas.nextTask))
   // .filter(([action, nextTask]) => nextTask !== null )
   // .map(([action, nextTask]) => new actions.ContinueWithNextTaskAction(nextTask))
+  @Effect()
+  completeBackTask: Observable<Action> = this.actions$
+  .ofType(actions.ActionTypes.COMPLETE_BACK_TASK)
+  .map(toPayload)
+  .switchMap(
+    (payload) => this._sandbox.completeTask(payload)
+      .mergeMap((response: any) => [new actions.CompleteBackTaskSuccessAction(response), go(['/' + ROUTES_PATH.workspace])])
+      .catch((error) => Observable.of(new actions.CompleteBackTaskFailAction({error})))
+    );
+
 
   @Effect()
   abortTask: Observable<Action> = this.actions$
@@ -135,6 +145,7 @@ export class Effects {
         .mergeMap((response: any) => [new actions.AbortTaskSuccessAction(response), go(['/' + ROUTES_PATH.workspace])])
         .catch((error) => Observable.of(new actions.AbortTaskFailAction({error})))
     );
+    
 
 
 }

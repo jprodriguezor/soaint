@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter} from '@angular/core';
+import {Component, ChangeDetectorRef, ViewChild, Output, EventEmitter, Input} from '@angular/core';
 
 import {CargaMasivaService} from '../providers/carga-masiva.service';
 import {ResultUploadDTO} from '../domain/ResultUploadDTO';
@@ -28,6 +28,9 @@ enum UploadStatus {
 })
 
 export class CargaMasivaUploaderComponent {
+
+  @Input() taskName = '';
+  @Input() processName = '';
 
   uploadFile: any;
   url: string;

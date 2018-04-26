@@ -1,10 +1,11 @@
+import { isNullOrUndefined } from "util";
 
 export class  ObjectHelper {
 
   static  similar( obj1:Object,obj2:Object): boolean{
 
-    if(obj1 === undefined)
-       return obj2 === undefined;
+    if(isNullOrUndefined(obj1))
+       return isNullOrUndefined(obj2);
 
     let a = Object.keys(obj1).length >= Object.keys(obj2).length ? obj1 : obj2;
     let b = Object.keys(obj1).length < Object.keys(obj2).length ? obj1 : obj2;
