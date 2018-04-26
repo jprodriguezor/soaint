@@ -34,11 +34,7 @@ public class TipoDestinatarioGatewayApi {
 	public Response list() {
 
 		log.info("TipoDestinatarioGatewayApi - [trafic] - listing tipo destinatario");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("TipoDestinatarioGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

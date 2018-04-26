@@ -33,11 +33,7 @@ public class TipoViaGatewayApi {
     @JWTTokenSecurity
     public Response list() {
         log.info("TipoViaGatewayApi - [trafic] - listing TipoVia");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("TipoViaGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

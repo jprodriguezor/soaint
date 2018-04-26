@@ -34,11 +34,7 @@ public class SedeAdministrativaGatewayApi {
     public Response list() {
 
         log.info("SedeAdministrativaGatewayApi - [trafic] - listing SedeAdministrativa");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("SedeAdministrativaGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

@@ -34,11 +34,7 @@ public class OrientacionGatewayApi {
     public Response list() {
 
         log.info("OrientacionGatewayApi - [trafic] - listing Orientacion");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("OrientacionGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

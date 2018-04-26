@@ -34,11 +34,7 @@ public class TipoPersonaGatewayApi {
 	public Response list() {
 
 		log.info("TipoPersonaGatewayApi - [trafic] - listing TipoPersona");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("TipoPersonaGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

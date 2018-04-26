@@ -35,11 +35,7 @@ public class TipoAnexosGatewayApi {
 	public Response list() {
 
 		log.info("TipoAnexosGatewayApi - [trafic] - listing TipoAnexos");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("TipoAnexosGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

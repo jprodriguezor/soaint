@@ -34,11 +34,7 @@ public class TipoComplementoGatewayApi {
     public Response list() {
 
         log.info("TipoComplementoGatewayApi - [trafic] - listing TipoComplemento");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("TipoComplementoGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

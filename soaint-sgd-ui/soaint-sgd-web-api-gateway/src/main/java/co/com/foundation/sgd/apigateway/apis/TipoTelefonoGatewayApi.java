@@ -33,11 +33,7 @@ public class TipoTelefonoGatewayApi {
 	@JWTTokenSecurity
 	public Response list() {
 		log.info("TipoTelefonoGatewayApi - [trafic] - listing TipoTelefono");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("TipoTelefonoGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

@@ -34,11 +34,7 @@ public class TipoDocumentoGatewayApi {
 	public Response list() {
 
 		log.info("TipoDocumentoGatewayApi - [trafic] - listing TipoDocumento");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("TipoDocumentoGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

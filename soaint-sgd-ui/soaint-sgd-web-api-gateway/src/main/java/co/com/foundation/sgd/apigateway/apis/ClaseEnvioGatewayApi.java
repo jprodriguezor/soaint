@@ -5,6 +5,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ClaseEnvioClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.ModalidadCorreoClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.SoporteAnexosClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.foundation.sgd.utils.ApiUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -38,11 +39,7 @@ public class ClaseEnvioGatewayApi {
     public Response list() {
 
         log.info("ModalidadCorreoGatewayApi - [trafic] - listing ModalidadCorreo");
-        Response response = client.list();
-        String responseContent = response.readEntity(String.class);
-        log.info("ModalidadCorreoGatewayApi - [content] : " + responseContent);
-
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        return ApiUtils.getResponseClient(client);
     }
 
 

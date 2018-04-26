@@ -32,13 +32,8 @@ public class BisGatewayApi {
     @Path("/")
     @JWTTokenSecurity
     public Response list() {
-
         log.info("BisGatewayApi - [trafic] - listing Bis");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("BisGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }

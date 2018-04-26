@@ -34,11 +34,7 @@ public class PaisGatewayApi {
 	public Response list() {
 
 		log.info("PaisGatewayApi - [trafic] - listing Pais");
-		//Response response = client.list();
-		//String responseContent = response.readEntity(String.class);
-		//log.info("PaisGatewayApi - [content] : " + responseContent);
 		return ApiUtils.getResponseClient(client);
-		//return Response.status( response.getStatus() ).entity(responseContent).build();
 	}
 
 }

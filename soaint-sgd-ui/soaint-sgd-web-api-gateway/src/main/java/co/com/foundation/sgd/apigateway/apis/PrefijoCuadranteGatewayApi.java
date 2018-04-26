@@ -34,11 +34,7 @@ public class PrefijoCuadranteGatewayApi {
     public Response list() {
 
         log.info("PrefijoCuadranteGatewayApi - [trafic] - listing PrefijoCuadrante");
-        //Response response = client.list();
-        //String responseContent = response.readEntity(String.class);
-        //log.info("PrefijoCuadranteGatewayApi - [content] : " + responseContent);
         return ApiUtils.getResponseClient(client);
-        //return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }
