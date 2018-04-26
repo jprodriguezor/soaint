@@ -401,7 +401,6 @@ public class CorrespondenciaGatewayApi {
     @Path("/actualizar-comunicacion")
     @JWTTokenSecurity
     public Response actualizarComunicacion(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
-
         log.info("CorrespondenciaGatewayApi - [trafic] - comunicacion");
         Response response = client.actualizarComunicacion(comunicacionOficial);
         String responseContent = response.readEntity(String.class);

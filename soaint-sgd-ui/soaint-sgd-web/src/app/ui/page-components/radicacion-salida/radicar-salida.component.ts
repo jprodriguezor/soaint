@@ -53,8 +53,6 @@ import {go} from "@ngrx/router-store";
 import {ROUTES_PATH} from "../../../app.route-names";
 import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-salida.service";
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
-import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
-import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 
 
 declare const require: any;
@@ -78,7 +76,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   @ViewChild('datosContacto') datosContacto;
   @ViewChild('ticketRadicado') ticketRadicado;
   @ViewChild('datosRemitente') datosRemitente;
-  @ViewChild('datosEnvio') datosEnvio;
 
   task: TareaDTO;
   taskFilter?:string;
@@ -88,10 +85,12 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
   formsTabOrder: Array<any> = [];
   activeTaskUnsubscriber: Subscription;
   dependencySubscription:Subscription;
-  reqDigitInmediataUnsubscriber:Subscription;
+  afterCompleteTaskSubscriber:Subscription;
   dependencySelected?:DependenciaDTO;
 
-   formContactDataShown:Subscription;
+
+
+  formContactDataShown:Subscription;
 
    readonly tipoRadicacion = RADICACION_SALIDA;
 
@@ -134,6 +133,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     });
 
+   this.afterCompleteTaskSubscriber =  afterTaskComplete.subscribe( ()=> this._store.dispatch(go(['/'+ROUTES_PATH.workspace])));
 
    this._changeDetectorRef.detectChanges();
   }
@@ -146,23 +146,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   ngAfterViewInit() {
     console.log('AFTER VIEW INIT...');
-
-    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
-      .subscribe(value => {
-        console.log(value);
-        // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
-        if (value && value === 2) {
-          const payload: LoadNextTaskPayload = {
-            idProceso: this.task.idProceso,
-            idInstanciaProceso: this.task.idInstanciaProceso,
-            idDespliegue: this.task.idDespliegue
-          };
-          this._store.dispatch(new ScheduleNextTaskAction(payload));
-        } else {
-          this._store.dispatch(new ScheduleNextTaskAction(null));
-        }
-
-      });
   }
 
   radicarSalida() {
@@ -175,7 +158,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
        destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
        destinatarioExt:this.datosContacto.listaDestinatariosExternos,
        remitente:this.datosRemitente.form.value,
-       datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
     };
 
 
@@ -192,20 +174,18 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       const valueGeneral = this.datosGenerales.form.value;
 
-      let predicate = (destinatario) => destinatario.tipoDestinatario.nombre == "Principal";
+      this.datosContacto.listaDestinatariosInternos.forEach(destinatario => {
 
-      let destinatarioPrincipal = this.datosContacto.listaDestinatariosInternos.find(predicate);
+        console.log('destinatario');
+        console.log(destinatario);
 
-      if(destinatarioPrincipal === undefined){
-        destinatarioPrincipal = this.datosContacto.listaDestinatariosExternos.find(predicate);
+       this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatario));
+      });
 
-        if(destinatarioPrincipal !== undefined)
-          this.ticketRadicado.setDataTicketRadicado(this.createTicketDestExterno(destinatarioPrincipal));
-      }
-      else{
+      this.datosContacto.listaDestinatariosExternos.forEach(destinatario => {
 
-        this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
-      }
+        this.ticketRadicado.setDataTicketRadicado(this.createTicketDestExterno(destinatario));
+      });
 
       this.disableEditionOnForms();
 
@@ -215,8 +195,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       }));
 
        let requiereDigitalizacion = valueGeneral.reqDigit;
-
-       console.log(requiereDigitalizacion);
 
         this._taskSandbox.completeTaskDispatch({
         idProceso: this.task.idProceso,
@@ -235,6 +213,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     const valueGeneral = this.datosGenerales.form.value;
     const valueRemitente = this.datosRemitente.form.value;
+
+
+
 
      return new RsTicketRadicado(
       DESTINATARIO_INTERNO,
@@ -256,13 +237,12 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     const valueGeneral = this.datosGenerales.form.value;
     const valueRemitente = this.datosRemitente.form.value;
 
-
     return new RsTicketRadicado(
       DESTINATARIO_EXTERNO,
-     this.datosGenerales.descripcionAnexos.length.toString(),
-     valueGeneral.numeroFolio.toString(),
-     this.radicacion.correspondencia.nroRadicado.toString(),
-     this.radicacion.correspondencia.fecRadicado.toString(),
+     this.datosGenerales.descripcionAnexos.length,
+     valueGeneral.numeroFolio,
+     this.radicacion.correspondencia.nroRadicado,
+     this.radicacion.correspondencia.fecRadicado,
      destinatario.nombre,
      valueRemitente.sedeAdministrativa.nombre,
      valueRemitente.dependenciaGrupo.nombre,
@@ -386,8 +366,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     this.activeTaskUnsubscriber.unsubscribe();
 
-    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    this.afterCompleteTaskSubscriber.unsubscribe();
 
+    this.dependencySubscription.unsubscribe();
   }
 
   radicacionButtonIsShown():boolean{
@@ -395,7 +376,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       const conditions:boolean[] = [
       this.datosGenerales.form.valid,
       this.datosRemitente.form.valid,
-      !this.datosGenerales.form.get("reqDistFisica").value || ( this.datosEnvio !== undefined && this.datosEnvio.form.valid),
       this.datosContacto.listaDestinatariosExternos.length + this.datosContacto.listaDestinatariosInternos.length > 0
     ];
 

@@ -24,13 +24,16 @@ export interface RadicacionEntradaFormInterface extends  RadicacionFormInterface
     direccion?: any,
     provinciaEstado?: any,
     ciudad?: any,
+    ideDocumento: any,
+    idePpdDocumento: any
   }>,
   destinatario?: {
+    ideAgente?: any,
     tipoDestinatario: any,
     sedeAdministrativa: any,
     dependenciaGrupo: any,
     destinatarioPrincipal: any
   },
-  agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }>,
+  agentesDestinatario: Array<{ ideAgente?: any, tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }>,
 
 }

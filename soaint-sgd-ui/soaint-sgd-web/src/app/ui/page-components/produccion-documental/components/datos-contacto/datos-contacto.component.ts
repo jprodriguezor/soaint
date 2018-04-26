@@ -198,6 +198,7 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
             tempDestinatario.tipoDestinatario = this.seachTipoDestinatario(agente.indOriginal);
             tempDestinatario.tipoPersona = this.searchTipoPersona(agente.codTipoPers);
             tempDestinatario.nombre = (agente.nombre) ? agente.nombre : '';
+            tempDestinatario.nroDocumentoIdentidad = agente.nroDocuIdentidad;
             tempDestinatario.tipoDocumento = this.searchTipoDocumento(agente.codTipDocIdent);
             tempDestinatario.nit = (agente.nit) ? agente.nit : '';
             tempDestinatario.actuaCalidad = (agente.codEnCalidad) ? agente.codEnCalidad : null;
@@ -213,9 +214,12 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
             tempDestinatario.municipio = null;
             tempDestinatario.isBacken = true;
             const contactos = [];
+
+
+
+
             this.transformToDestinatarioContacts(agente.datosContactoList || [])
-              .subscribe(contact => {
-                console.log('contact', contact);
+              .subscribe(contact => {  console.log("Enter here");
                 contactos.push(contact);
               }, null, () => {
                 tempDestinatario.datosContactoList = contactos;
@@ -225,14 +229,18 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
                   this.datosRemitentesExterno.initFormByDestinatario(this.destinatarioExterno);
                   this.indexSelectExterno = -1;
                   this.destinatarioExternoDialogVisible = true;
-                } else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
+                  console.log(this.destinatarioExternoDialogVisible);
+                }
+                else if (agente.codTipoRemite === TIPO_REMITENTE_INTERNO) {
                   tempDestinatario.interno = true;
                   this.destinatarioInterno = tempDestinatario;
                   this.datosRemitentesInterno.initFormByDestinatario(this.destinatarioInterno);
                   this.indexSelectInterno = -1;
                   this.destinatarioInternoDialogVisible = true;
                 }
-              })
+              });
+
+
           }
         });
       }
@@ -240,30 +248,43 @@ export class PDDatosContactoComponent implements OnInit, OnDestroy,OnChanges {
     }
   }
 
+
+
   transformToDestinatarioContacts(contacts): Observable<any[]> {
-    return Observable.create(obs => {
-        contacts.forEach(contact => obs.next(contact));
-        obs.complete();
-      })
+
+    //console.log(contacts);
+
+    return  Observable.create(obs => {
+      contacts.forEach(contact => obs.next(contact));
+      obs.complete();
+    })
       .flatMap(contact => {
-        return Observable.combineLatest(
+
+        let obs = Observable.combineLatest(
           Observable.of(contact),
           this.searchPais(contact.codPais).take(1),
-          this.searchDepartamento(contact.codDepartamento).skip(1).take(1),
-          this.searchMunicipio(contact.codMunicipio).skip(1).take(1)
-        )
-      })
-      .map(([contact, pais, dpto, mncpio]) => {
-        return {
-          pais: pais,
-          departamento: dpto,
-          municipio: mncpio,
-          numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
-          celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
-          correoEle: isNullOrUndefined(contact.correoEle) ? '' : contact.correoEle,
-          direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion
-        };
+          this.searchDepartamento(contact.codDepartamento).take(1),
+          this.searchMunicipio(contact.codMunicipio).take(1),
+          (contact, pais, dpto, mncpio) =>{
+
+            console.log("contact",contact);
+
+            return {
+              pais: pais,
+              departamento: dpto,
+              municipio: mncpio,
+              numeroTel: isNullOrUndefined(contact.telFijo) ? '' : contact.telFijo,
+              celular: isNullOrUndefined(contact.celular) ? '' : contact.celular,
+              correoEle: isNullOrUndefined(contact.corrElectronico) ? '' : contact.corrElectronico,
+              direccion: isNullOrUndefined(contact.direccion) ? '' : contact.direccion,
+              principal:contact.principal
+            };
+          }
+        );
+
+        return obs;
       });
+
   }
 
   seachTipoDestinatario(indOriginal) {

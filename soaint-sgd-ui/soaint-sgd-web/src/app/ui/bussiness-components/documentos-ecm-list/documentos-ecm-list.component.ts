@@ -20,7 +20,8 @@ import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-documentos-ecm-list',
-  templateUrl: './documentos-ecm-list.component.html'
+  templateUrl: './documentos-ecm-list.component.html',
+  styleUrls:['./documentos-ecm-list.css']
 })
 export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -68,6 +69,8 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
 
   ngOnChanges(): void {
     this.loadDocumentos();
+
+   this._changeDetectorRef.detectChanges();
   }
 
   loadDocumentos() {
@@ -80,6 +83,7 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
           this.documentsList = response.documentoDTOList;
         }
         this.loading = false;
+        this._changeDetectorRef.detectChanges();
       });
     }
   }

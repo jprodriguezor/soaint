@@ -56,12 +56,7 @@ export const routes: Routes = [
         canActivate: [AuthenticatedGuard],
         canDeactivate: [TareaDtoGuard]
       },
-      {
-        path: ROUTES_PATH.adjuntarDocumento,
-        component: DigitalizarDocumentoComponent,
-        canActivate: [AuthenticatedGuard],
-        canDeactivate: [TareaDtoGuard]
-      },
+
       {
         path: ROUTES_PATH.documentosTramite,
         component: DocumentosTramiteComponent,
@@ -108,11 +103,6 @@ export const routes: Routes = [
         component: CrearUnidadDocumentalComponent,
         canActivate:[AuthenticatedGuard]
       },
-      {
-      	path: ROUTES_PATH.disposicionFinal,
-        component: DisposicionFinalComponent,
-        canActivate: [AuthenticatedGuard]
-      }
     ]
   },
   {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
@@ -155,6 +145,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.seleccionarDocumentos,
     component: SeleccionarDocumentosComponent,
+    canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: ROUTES_PATH.disposicionFinal,
+    component: DisposicionFinalComponent,
     canActivate: [AuthenticatedGuard]
   },
   {

@@ -221,6 +221,23 @@ public class OrganigramaAdministrativoControl {
 
     /**
      *
+     * @param codOrg
+     * @return
+     */
+    public String consultarNombreElementoByCodOrg(String codOrg){
+        try {
+            return em.createNamedQuery("TvsOrganigramaAdministrativo.consultarNombreElementoByCodOrg", String.class)
+                    .setParameter("COD_ORG", codOrg)
+                    .getSingleResult();
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+        }
+        return null;
+
+    }
+
+    /**
+     *
      * @param codigosOrg
      * @return
      */

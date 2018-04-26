@@ -6,6 +6,7 @@ export interface  UnidadDocumentalDTO {
     fechaExtremaFinal?: Date;
     soporte?: string;
     inactivo?: boolean;
+    estado?: string; // depende de inactivo, solo para mostrar
     ubicacionTopografica?: string;
     faseArchivo?: string;
     descriptor1?: string;
@@ -20,7 +21,8 @@ export interface  UnidadDocumentalDTO {
     codigoSede?: string;
     nombreSede?: string;
     cerrada?: boolean;
+    disposicion?: string;
     accion?: string;
     seleccionado?: boolean;
-    observacion?:string;
+    observacion?: string;
 }

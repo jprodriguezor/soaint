@@ -1,17 +1,17 @@
 <div class="ui-fluid">
   <app-task-container>
     <div customActions>
-      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
+      <button [disabled]="!State.HabilitarOpcion(0)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
               (click)="State.Abrir()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
+      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
               (click)="State.Cerrar()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(3)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
+      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
               (click)="State.Reactivar()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
-              (click)="State.Finalizar()"></button>
+              (click)="Finalizar()"></button>
     </div>
 
     <div taskBody>
@@ -19,9 +19,9 @@
         <div class="ui-g ui-fluid">   
             <div class="ui-sm-12 ui-g-6 ui-lg-12">
                 <div class="ui-g form-group">
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="3" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
                
                 </div>
               </div>      
@@ -32,10 +32,10 @@
         <div class="ui-g ui-fluid">         
          
         </div>
-        <form 
-         [formGroup]="State.formBuscar" 
-         novalidate 
-         (ngSubmit)="State.Buscar(State.formBuscar)"
+        <form
+         [formGroup]="State.formBuscar"
+         novalidate
+         (ngSubmit)="State.Listar(null)"
          >
           <div class="ui-g ui-fluid">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
@@ -44,7 +44,7 @@
                   <label for="serie"><span class="text-danger">*</span>Serie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="(State.ListadoSeries | async | dropdownItemSerie)"
+                  <p-dropdown [options]="(State.ListadoSeries | dropdownItemSerie)"
                               id="serie"
                               formControlName="serie"
                               placeholder="Seleccione"
@@ -53,8 +53,8 @@
                   >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                    *ngIf="State.formBuscar.get('serie').touched && State.formBuscar.get('serie').hasError('required')">
-                    Este campo es obligatorio
+                  *ngIf="State.validations.serie">
+                  {{ State.validations.serie }}
                   </div>
                 </div>
               </div>
@@ -62,19 +62,21 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
               <div class="ui-g form-group">
                 <div class="ui-g-12">
-                  <label for="serie"><span class="text-danger">*</span>Serie</label>
+                  <label for="serie"><span class="text-danger">*</span>Subserie</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
                   <p-dropdown [options]="(State.ListadoSubseries | dropdownItemSubserie)"
                               id="subserie"
                               formControlName="subserie"
                               placeholder="Seleccione"
-                              [autoWidth]="false">
+                              [autoWidth]="false"
+                              (onBlur)="State.OnBlurEvents('subserie')"
+                              >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                  *ngIf="State.EsRequerido()">
-                  Este campo es obligatorio
-                </div>
+                  *ngIf="State.validations.subserie">
+                  {{ State.validations.subserie }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,7 +125,7 @@
       <div class="ui-g btn-content">
         <button pButton type="button" label="Buscar" [disabled]="State.formBuscar.invalid" 
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
-        (click)="State.Buscar()"></button>
+        (click)="State.Listar(null)"></button>
 
         <button pButton type="button" label="Limpiar"
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
@@ -136,7 +138,7 @@
       </p-panel>
 
       <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
-        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="State.HabilitarOpcion(2)">
+        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="State.HabilitarOpcion(1)">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
@@ -159,30 +161,40 @@
             </div>
          </div>
         <div class="ui-fluid">
-          <p-dataTable selectionMode="single"
+          <p-dataTable selectionMode="multiple"
+                      [(selection)]="State.unidadesSeleccionadas"
                        [paginator]="true"
                        [rows]="10"
                        [responsive]="true"
-                       [value]="State.ListadoUnidadDocumental$ | async"
+                       [value]="State.ListadoUnidadDocumental"
                        emptyMessage="No se encontraron resultados ">
-            <p-column field="seleccionado" header="">
-              <ng-template pTemplate="header">
-                <p-checkbox name="seleccionartodos"  (onChange)="State.SeleccionarTodos($event)"></p-checkbox>
-              </ng-template>
-              <ng-template let-col let-unidad="rowData" pTemplate="editor">
-                <p-checkbox [(ngModel)]="unidad[col.field].seleccionado"></p-checkbox>
-              </ng-template>
-            </p-column>
+            <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
             <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
             <p-column field="codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
             <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
             <p-column field="descriptor1" header="Descriptor 1"></p-column>
             <p-column field="descriptor2" header="Descriptor 2"></p-column>
             <p-column field="faseArchivo" header="Fase archivo"></p-column>
-            <p-column field="inactivo" header="Estado"></p-column>
-            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial"></p-column>
-            <p-column field="fechaExtremaFinal" header="Fecha extrema final"></p-column>
-            <p-column field="fechaCierre" header="Fecha cierre trámite"></p-column>
+            <p-column field="inactivo" header="Estado">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | toActiveString}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaCierre" header="Fecha cierre trámite">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
             <p-column field="soporte" header="Soporte"></p-column>
             <!-- <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
               <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
@@ -210,6 +222,6 @@ positionTop="20"
 <p-header>
 
 </p-header>
-<app-detalle-unidad-conservacion [State]="State"></app-detalle-unidad-conservacion>
+<app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
 </p-dialog>
 

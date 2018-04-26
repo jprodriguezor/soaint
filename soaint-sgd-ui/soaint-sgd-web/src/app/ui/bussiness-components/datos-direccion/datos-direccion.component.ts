@@ -1,5 +1,17 @@
 
-import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  AfterViewInit,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  ViewChildren, QueryList, ChangeDetectionStrategy
+} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -27,6 +39,11 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {Dropdown} from "primeng/primeng";
+import {
+  DATOS_CONTACTO_PRINCIPAL,
+  DATOS_CONTACTO_SECUNDARIO
+} from "../../../shared/bussiness-properties/radicacion-properties";
 import { LocalizacionApiService } from '../../../infrastructure/api/localizacion.api';
 enum FormContextEnum {
   SAVE,
@@ -53,8 +70,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
+  direccionText:Observable<string>;
 
-  validations: any = {};
+   validations: any = {};
   visibility: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;
@@ -123,7 +141,10 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this.loadComponent.emit(this);
 
     // para el caso de lista con datos incompletos
-    if (this.contactsDefault) {
+    if (this.contactsDefault && this.contactsDefault.length > 0) {
+
+      console.log("contact default",this.contactsDefault);
+
       this.CompletarDatosContacto();
     }
 
@@ -289,7 +310,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   saveDireccionData() {
-    let direccion = '';
     const tipoVia = this.form.get('tipoVia');
     const noViaPrincipal = this.form.get('noViaPrincipal');
     const prefijoCuadrante = this.form.get('prefijoCuadrante');
@@ -310,62 +330,65 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (pais.value && pais.value.codigo.toUpperCase() === 'CO') {
 
       if (tipoVia.value) {
-        direccion += tipoVia.value.nombre;
-        value['tipoVia'] = tipoVia.value;
+           value['tipoVia'] = tipoVia.value;
+
         tipoVia.reset();
       }
       if (noViaPrincipal.value) {
-        direccion += ' ' + noViaPrincipal.value;
-        value['noViaPrincipal'] = noViaPrincipal.value;
+           value['noViaPrincipal'] = noViaPrincipal.value;
+
         noViaPrincipal.reset();
       }
       if (prefijoCuadrante.value) {
-        direccion += ' ' + prefijoCuadrante.value.nombre;
-        value['prefijoCuadrante'] = prefijoCuadrante.value;
+           value['prefijoCuadrante'] = prefijoCuadrante.value;
+
         prefijoCuadrante.reset();
       }
       if (bis.value) {
-        direccion += ' ' + bis.value.nombre;
-        value['bis'] = bis.value;
+            value['bis'] = bis.value;
+
         bis.reset();
       }
       if (orientacion.value) {
-        direccion += ' ' + orientacion.value.nombre;
-        value['orientacion'] = orientacion.value;
+              value['orientacion'] = orientacion.value;
+
         orientacion.reset();
       }
       if (noVia.value) {
-        direccion += ' ' + noVia.value;
-        value['noVia'] = noVia.value;
+            value['noVia'] = noVia.value;
+
         noVia.reset();
       }
       if (prefijoCuadrante_se.value) {
-        direccion += ' ' + prefijoCuadrante_se.value.nombre;
-        value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
+           value['prefijoCuadrante_se'] = prefijoCuadrante_se.value;
+
+
         prefijoCuadrante_se.reset();
       }
       if (placa.value) {
-        direccion += ' ' + placa.value;
-        value['placa'] = placa.value;
+            value['placa'] = placa.value;
+
         placa.reset();
       }
       if (orientacion_se.value) {
-        direccion += ' ' + orientacion_se.value.nombre;
-        value['orientacion_se'] = orientacion_se.value;
+            value['orientacion_se'] = orientacion_se.value;
+
+
         orientacion_se.reset();
       }
       if (tipoComplemento.value) {
-        direccion += ' ' + tipoComplemento.value.nombre;
-        value['complementoTipo'] = tipoComplemento.value;
+           value['complementoTipo'] = tipoComplemento.value;
+
         tipoComplemento.reset();
       }
       if (complementoAdicional.value) {
-        direccion += ' ' + complementoAdicional.value;
-        value['complementoAdicional'] = complementoAdicional.value;
+          value['complementoAdicional'] = complementoAdicional.value;
+
+
         complementoAdicional.reset();
       }
 
-      value['direccion'] = direccion === '' ? null : direccion;
+      value['direccion'] = JSON.stringify(value);
 
     } else {
       value['direccion'] = direccionText.value;
@@ -396,15 +419,9 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   hasDireccionPrincipal(){
-    let result = false;
-    if(this.contacts.length > 0){
-      this.contacts.forEach(values => {
-        if (values.principal === true) {
-          result = true;
-        }
-      });
-    }
-    return result;
+
+    return  this.contacts.some( (contact,index) => contact.principal === true && index !== this.editIndexContext)
+
   }
   onFilterPais(event) {
 
@@ -434,14 +451,14 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.form.valid) {
 
       const principal = this.form.get('principal');
-      if (principal.value === true && this.hasDireccionPrincipal() === true ){
+      if(principal.value === true && this.hasDireccionPrincipal() === true ){
 
         this._store.dispatch(new PushNotificationAction({
           severity: 'warn',
           summary: 'Recuerde que únicamente puede existir una dirección principal'
         }));
 
-      } else {
+      }else {
         if (this.formContext === FormContextEnum.CREATE) {
           this.contacts = [this.saveAndRetriveContact(), ...this.contacts];
         } else {
@@ -468,7 +485,11 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-    this.refreshView();
+
+      this.refreshView();
+
+
+
   }
 
   addColombiaByDefault() {
@@ -479,6 +500,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
      .subscribe((values) => {
        this.paises = values;
        this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
+
        setTimeout(() => subscription.unsubscribe());
      });
 
@@ -492,39 +514,70 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     this._changeDetectorRef.detectChanges();
   }
 
+  toggleDireccionForm(checked:boolean){
+
+    if(!checked || this.formContext != FormContextEnum.SAVE)
+      return ;
+
+    console.log(this.contacts[this.editIndexContext]);
+
+    this.form.get("principal").setValue(this.contacts[this.editIndexContext].principal);
+
+
+    let direccionData = JSON.parse(this.contacts[this.editIndexContext].direccion);
+
+
+      if(isNullOrUndefined(direccionData))
+      return;
+
+    Object.keys(direccionData).forEach( key => {
+
+      if(isNullOrUndefined(direccionData[key]))
+        return;
+
+      let control = this.form.get(key);
+
+      if(control) {
+
+        control.setValue(direccionData[key]);
+      }
+
+    });
+  }
+
   CompletarDatosContacto() {
 
-    this.paisSuggestions$
-    .subscribe((result: any) => {
-      this.contacts = this.contacts
-      .reduce((_listado, _contact) => {
-        const pais = result.find(_item => _item.codigo === _contact.pais.codigo);
-        _contact.pais.nombre = (pais) ? pais.nombre : '';
-        _listado.push(_contact);
-        return _listado;
-      }, []);
-    });
 
-    this._localizacionService.ListarMunicipiosActivos({})
-    .subscribe((result: any) => {
-      this.contacts = this.contacts
-      .reduce((_listado, _contact) => {
-        const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
-        _contact.municipio.nombre = (municipio) ? municipio.nombre : '';
-        _listado.push(_contact);
-        return _listado;
-      }, []);
-    });
 
-    this._localizacionService.ListarDepartamentosActivos({})
+ this._localizacionService.ListarMunicipiosActivos({})
+
     .subscribe((result: any) => {
-      this.contacts = this.contacts
+
+       this.contacts = this.contacts
       .reduce((_listado, _contact) => {
-        const departamento = result.find(_item => _item.codigo === _contact.departamento.codigo);
-        _contact.departamento.nombre = (departamento) ? departamento.nombre : '';
-        _listado.push(_contact);
-        return _listado;
+        if (result) {
+          if(!isNullOrUndefined(_contact.municipio)) {
+            const municipio = result.find(_item => _item.codigo === _contact.municipio.codigo);
+            if (municipio) {
+              const departamento = municipio.departamento;
+              const pais = departamento.pais;
+              if (!isNullOrUndefined(_contact.municipio) )
+                _contact.municipio.nombre = _contact.municipio.nombre ?  _contact.municipio.nombre : (municipio) ? municipio.nombre : '';
+              if (!isNullOrUndefined(_contact.departamento) )
+                _contact.departamento.nombre =_contact.departamento.nombre ? _contact.departamento.nombre : (departamento) ? departamento.nombre : '';
+              if (!isNullOrUndefined(_contact.pais) )
+                _contact.pais.nombre =  _contact.pais.nombre ? _contact.pais.nombre : (pais) ? pais.nombre : '';
+              _listado.push(_contact);
+            }
+          }
+          return _listado;
+        } else {
+          return this.contacts;
+        }
       }, []);
+      this._changeDetectorRef.detectChanges();
     });
-   }
+  }
 }
+
+

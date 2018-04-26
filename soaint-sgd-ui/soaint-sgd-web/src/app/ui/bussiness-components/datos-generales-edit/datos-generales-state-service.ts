@@ -34,14 +34,14 @@ export class DatosGeneralesStateService {
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }> = [];
   constantesAnexos: ConstanteDTO[];
 
-  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
-  unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
-  tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
-  soporteAnexosSuggestions$: Observable<any[]>;
-  medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
-  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
-  metricasTiempoTipologia$: Observable<any>;
-  defaultSelectionMediosRecepcion$: Observable<any>;
+  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  unidadTiempoSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  tipoAnexosSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  soporteAnexosSuggestions$: Observable<any[]> = Observable.of(null);
+  medioRecepcionSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  metricasTiempoTipologia$: Observable<any> = Observable.of(null);
+  defaultSelectionMediosRecepcion$: Observable<any> = Observable.of(null);
 
   // default values Metricas por Tipologia
   medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
@@ -96,7 +96,9 @@ export class DatosGeneralesStateService {
         'tipoAnexos': [{value: null, disabled: this.disabled}],
         'soporteAnexos': [{value: null, disabled: this.disabled}],
         'tipoAnexosDescripcion': [{value: null, disabled: this.disabled}, Validators.maxLength(300)],
-        'hasAnexos': [{value: this.dataform.hasAnexos, disabled: this.disabled}]
+        'hasAnexos': [{value: this.dataform.hasAnexos, disabled: this.disabled}],
+        'ideDocumento': [{value: this.dataform.ideDocumento, disabled: this.disabled}],
+        'idePpdDocumento': [{value: this.dataform.idePpdDocumento, disabled: this.disabled}],
       });
 
   }
@@ -161,21 +163,23 @@ export class DatosGeneralesStateService {
     this.soporteAnexosSuggestions$ = this._contantesService.Listar({key: 'soporteAnexo' })
     this.soporteAnexosSuggestions$
     .subscribe((result) => {
-      this.constantesAnexos = [...result];
-      this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
-      this.tipoAnexosSuggestions$
-      .subscribe(resultsoporte => {
-        this.constantesAnexos = [...result].concat(resultsoporte);
-        this.descripcionAnexos = this.descripcionAnexos
-        .reduce((_listado, _anexo) => {
-          const codAnexo = this.constantesAnexos.find(item => item.codigo === _anexo.tipoAnexo.codigo);
-          const codTipoSoporte = this.constantesAnexos.find(item => item.codigo === _anexo.soporteAnexo.codigo);
-          _anexo.tipoAnexo.nombre = codAnexo.nombre;
-          _anexo.soporteAnexo.nombre = codTipoSoporte.nombre;
-          _listado.push(_anexo);
-          return _listado;
-        }, []);
-      });
+      if (result) {
+        this.constantesAnexos = [...result];
+        this.tipoAnexosSuggestions$ = this._contantesService.Listar({key: 'tipoAnexos' });
+        this.tipoAnexosSuggestions$
+        .subscribe(resultsoporte => {
+          this.constantesAnexos = [...result].concat(resultsoporte);
+          this.descripcionAnexos = this.descripcionAnexos
+          .reduce((_listado, _anexo) => {
+            const codAnexo = this.constantesAnexos.find(item => item.codigo === _anexo.tipoAnexo.codigo);
+            const codTipoSoporte = this.constantesAnexos.find(item => item.codigo === _anexo.soporteAnexo.codigo);
+            _anexo.tipoAnexo.nombre = codAnexo.nombre;
+            _anexo.soporteAnexo.nombre = codTipoSoporte.nombre;
+            _listado.push(_anexo);
+            return _listado;
+          }, []);
+        });
+      }
     });
     this._constSandbox.loadDatosGeneralesDispatch();
     this._store.dispatch(new SedeAdministrativaLoadAction());

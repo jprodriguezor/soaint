@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 public class ECMClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
+    private String record_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL);
 
     public ECMClient() {
         super();
@@ -139,10 +140,42 @@ public class ECMClient {
 
     public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-
         return wt.path("/listarUnidadesDocumentalesECM")
                 .request()
                 .post(Entity.json(unidadDocumentalDTO));
+    }
+
+
+    public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
+
+        return wt.path("/abrirUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response cerrarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
+
+        return wt.path("/cerrarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response reactivarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
+
+        return wt.path("/reactivarUnidadesDocumentalesECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response DetalleUnidadDocumental(String idUnidadDocumental) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
+                .request()
+                .get();
     }
 
 }
