@@ -30,6 +30,8 @@ export class FormEnvioComponent implements OnInit {
 
   ngOnInit() {
 
+    console.log("Enter here");
+
     this._sandbox.loaddatosEnvioDispatch();
 
     this.modalidadCorreo$ = this._store.select(getModalidadCorreoArrayData);

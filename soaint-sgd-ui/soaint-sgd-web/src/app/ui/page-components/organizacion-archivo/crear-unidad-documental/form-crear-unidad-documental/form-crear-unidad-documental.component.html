@@ -10,7 +10,12 @@
                   <label >Serie</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-dropdown [options] = "(seriesObservable$|async|dropdownItemSerie)" (onChange)="selectSerie($event)" formControlName="serie"></p-dropdown>
+                  <p-dropdown
+                    [options] = "(seriesObservable$|async|dropdownItemSerie)"
+                    (onChange)="selectSerie($event)"
+                    formControlName="serie"
+                    [autoWidth]="false"
+                  ></p-dropdown>
                   <div class="ui-message ui-messages-error"  *ngIf="form.controls['serie'].invalid && form.controls['serie'].touched">
                    <p *ngIf="form.controls['serie'].hasError('required')">
                      Debe  de Seleccionar un numero de serie
@@ -25,7 +30,11 @@
                   <label >Subserie</label>
                 </div>
                 <div class="ui-g-12">
-                  <p-dropdown [options] = (subseriesObservable$|async|dropdownItemSubserie)  formControlName="subserie"></p-dropdown>
+                  <p-dropdown
+                    [options] = (subseriesObservable$|async|dropdownItemSubserie)
+                    formControlName="subserie"
+                    [autoWidth]="false"
+                  ></p-dropdown>
                   <div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">
                     <p *ngIf="form.controls['subserie'].hasError('required')">
                       Debe  de Seleccionar un numero de serie
