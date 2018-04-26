@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
         locations = {"/META-INF/core-config.xml"}
 )
 @Log4j2
-public class TvsTareaTest extends JPAHibernateTest {
+public class TvsTareaTest extends JPAHibernateContextTest {
 
     @Test
     public void test_guardarEstadoTarea_success() throws SystemException {
@@ -48,11 +48,12 @@ public class TvsTareaTest extends JPAHibernateTest {
     @Test
     public void test_findByIdInstanciaProcesoAndIdTareaProceso_success() {
         //given
+        String namedQuery = "TvsTarea.findByIdInstanciaProcesoAndIdTareaProceso";
         String instanciaProceso = "99059";
         String tareaProceso = "0000";
 
         //when
-        TvsTarea tarea = em.createNamedQuery("TvsTarea.findByIdInstanciaProcesoAndIdTareaProceso", TvsTarea.class)
+        TvsTarea tarea = createNamedQuery(namedQuery, TvsTarea.class)
                 .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
                 .setParameter("ID_TAREA_PROCESO", tareaProceso)
                 .getSingleResult();
