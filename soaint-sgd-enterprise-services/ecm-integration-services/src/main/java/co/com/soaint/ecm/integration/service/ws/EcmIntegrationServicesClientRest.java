@@ -1,10 +1,8 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
+import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,6 @@ public class EcmIntegrationServicesClientRest {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
-
     /**
      * Crear estructura del ECM
      *
@@ -70,7 +67,6 @@ public class EcmIntegrationServicesClientRest {
     @Path("/subirDocumentoRelacionECM/{selector}")
     public MensajeRespuesta subirDocumentoPrincipalAdjuntoECM(@RequestBody DocumentoDTO documento,
                                                               @PathParam("selector") String selector) throws IOException {
-
         logger.info("processing rest request - Subir Documento Adjunto al ECM " + documento.getNombreDocumento());
         try {
             return fEcmManager.subirDocumentoPrincipalAdjunto(documento, selector);
@@ -78,7 +74,23 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Subir Documento Adjunto ECM ", e);
             throw e;
         }
+    }
 
+    /**
+     * Crear link de documento en el ECM
+     *
+     * @return identificador del documento en el ecm
+     */
+    @POST
+    @Path("/crearLinkDocumento/")
+    public MensajeRespuesta crearLinkDocumentosApoyo(@RequestBody DocumentoDTO documento) throws IOException {
+        logger.info("processing rest request - Crear Link de Documento en la carpeta Documentos de Apoyo para el documento: {}", documento.getNombreDocumento());
+        try {
+            return fEcmManager.crearLinkDocumentosApoyo(documento);
+        } catch (IOException e) {
+            logger.error("Error en operacion - Crear Link de Documento en la carpeta Documentos de Apoyo ", e);
+            throw e;
+        }
     }
 
     /**
@@ -91,9 +103,7 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/subirVersionarDocumentoGeneradoECM/{selector}")
     public MensajeRespuesta subirVersionarDocumentoGeneradoECM(@RequestBody DocumentoDTO documento,
-                                                               @PathParam("selector") String selector
-    ) throws IOException {
-
+                                                               @PathParam("selector") String selector) throws IOException {
         logger.info("processing rest request - Subir Versionar Documento Generado al ECM " + documento.getNombreDocumento());
         try {
 
@@ -102,7 +112,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Subir Versionar Documento Generado al ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -122,7 +131,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -134,7 +142,6 @@ public class EcmIntegrationServicesClientRest {
     @POST
     @Path("/obtenerVersionesDocumentos/{idDoc}")
     public MensajeRespuesta obtenerVersionesDocumento(@PathParam("idDoc") String idDoc) throws IOException {
-
         logger.info("processing rest request - Buscar Versiones del Documento en el ECM dado id: " + idDoc);
         try {
             return fEcmManager.obtenerVersionesDocumentos(idDoc);
@@ -142,7 +149,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Buscar Versiones de Documento en el ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -161,7 +167,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -180,7 +185,6 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Modificar Documento ECM ", e);
             throw e;
         }
-
     }
 
     /**
@@ -196,7 +200,6 @@ public class EcmIntegrationServicesClientRest {
     public MensajeRespuesta moverDocumentoECM(@QueryParam("moverDocumento") final String moverDocumento,
                                               @QueryParam("carpetaFuente") final String carpetaFuente,
                                               @QueryParam("carpetaDestino") final String carpetaDestino) {
-
         logger.info("processing rest request - Mover Documento ECM");
         try {
             return fEcmManager.moverDocumento(moverDocumento, carpetaFuente, carpetaDestino);
@@ -216,7 +219,6 @@ public class EcmIntegrationServicesClientRest {
     @Path("/descargarDocumentoECM/")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response descargarDocumentoECM(@QueryParam("identificadorDoc") final String identificadorDoc) {
-
         logger.info("processing rest request - Descargar Documento ECM");
         try {
             DocumentoDTO documentoDTO = new DocumentoDTO();
@@ -240,7 +242,6 @@ public class EcmIntegrationServicesClientRest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response descargarDocumentoVersionECM(@QueryParam("identificadorDoc") final String identificadorDoc,
                                                  @QueryParam("version") final String version) {
-
         logger.info("processing rest request - Descargar Documento ECM");
         try {
             DocumentoDTO documentoDTO = new DocumentoDTO();
@@ -262,7 +263,6 @@ public class EcmIntegrationServicesClientRest {
     @DELETE
     @Path("/eliminarDocumentoECM/{idDocumento}")
     public boolean eliminarDocumentoECM(@PathParam("idDocumento") String idDocumento) {
-
         logger.info("processing rest request - Eliminar Documento ECM");
         try {
             boolean respuesta;
@@ -278,7 +278,6 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
-
     /**
      * Operacion para devolver series o subseries
      *
@@ -287,7 +286,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/devolverSerieOSubserieECM/")
-    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws Exception {
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO)  {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
@@ -295,8 +294,162 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
             throw e;
         }
-
     }
 
+
+    /*
+    * UNIDADES DOCUMENTALES
+    */
+
+    /**
+     * Crear unidad documental en el ECM
+     *
+     * @param unidadDocumentalDTO Unidad a crear
+     * @return Mensaje de respuesta
+     */
+    @POST
+    @Path("/crearUnidadDocumentalECM/")
+    public MensajeRespuesta crearUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Crear Unidad Documental ECM");
+        try {
+            return fEcmManager.crearUnidadDocumental(unidadDocumentalDTO);
+        } catch (Exception e) {
+            logger.error("Error en operacion - crearUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto que contiene el criterio de Busqueda
+     * @return MensajeRespuesta Mensaje de respuesta
+     */
+    @POST
+    @Path("/listarUnidadesDocumentalesECM/")
+    public MensajeRespuesta listarUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        logger.info("processing rest request - Listar Unidades Documentales ECM");
+        try {
+            return fEcmManager.listarUnidadDocumental(unidadDocumentalDTO);
+        } catch (Exception e) {
+            logger.error("Error en operacion - listarUnidadDocumentalECM(unidadDocumentalDTO) ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento     Id Documento
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    @GET
+    @Path("/obtenerDetallesDocumentoECM/{idDoc}")
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(@PathParam("idDoc") String idDocumento) {
+        logger.info("Ejecutando metodo MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento)");
+        try {
+            return fEcmManager.obtenerDetallesDocumentoDTO(idDocumento);
+        } catch (Exception e) {
+            logger.error("Error en operacion - obtenerDetallesDocumentoDTO ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental   Id de la unidad documental
+     * @return MensajeRespuesta
+     */
+    @GET
+    @Path("/listaDocumentosDTOUnidadDocumental/{idUnidadDocumental}")
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentoDTO(UnidadDocumentalDTO dto)");
+        try {
+            return fEcmManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental     Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    @GET
+    @Path("/verDetalleUnidadDocumentalECM/{idUnidadDocumental}")
+    public MensajeRespuesta detallesUnidadDocumentalECM(@PathParam("idUnidadDocumental") String idUnidadDocumental) {
+        logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumentalECM(String idUnidadDocumental)");
+        try {
+            return fEcmManager.detallesUnidadDocumental(idUnidadDocumental);
+        } catch (Exception e) {
+            logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTO            Documento a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @POST
+    @Path("/subirDocumentoUnidadDocumentalECM/")
+    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO,
+                                                              @RequestBody DocumentoDTO documentoDTO) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        try {
+            return fEcmManager.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO);
+        } catch (Exception e) {
+            logger.error("Error en operacion - subirDocumentoUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTOS           Lista de documentos a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @POST
+    @Path("/subirDocumentosUnidadDocumentalECM/")
+    public MensajeRespuesta subirDocumentosUnidadDocumentalECM(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO,
+                                                               @RequestBody List<DocumentoDTO> documentoDTOS) {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTOS)");
+        try {
+            return fEcmManager.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS);
+        } catch (Exception e) {
+            logger.error("Error en operacion - subirDocumentosUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            return respuesta;
+        }
+    }
 }
 

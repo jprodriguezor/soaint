@@ -1,6 +1,9 @@
 package co.com.soaint.foundation.canonical.ecm;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -21,10 +24,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
-@ToString
 public class DocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String idDocumento;
     private String nroRadicado;
     private String tipologiaDocumental;
@@ -36,10 +39,15 @@ public class DocumentoDTO implements Serializable {
     private String nombreDocumento;
     private String idDocumentoPadre;
     private Date fechaCreacion;
-    private String tipoDocumento;
+    private String tipoDocumento;//application/pdf, text/html
     private String tamano;
     private String tipoPadreAdjunto;//xTipo = principal o anexo
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
+
+    @Override
+    public String toString() {
+        return nombreDocumento;
+    }
 }

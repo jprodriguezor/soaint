@@ -16,6 +16,7 @@
     -->
 
     <context:component-scan base-package="co.com.soaint.ecm.business"/>
+    <context:component-scan base-package="co.com.soaint.ecm.component"/>
     <context:component-scan base-package="co.com.soaint.ecm.integration"/>
     <context:component-scan base-package="co.com.soaint.ecm.domain.entity"/>
     <context:component-scan base-package="co.com.soaint.ecm.business.boundary.documentmanager.configuration"/>
