@@ -115,6 +115,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
    cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
    reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
+   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
  };
 export const process_info = {
   'proceso.correspondencia-entrada': {
@@ -147,6 +148,6 @@ export const process_info = {
   },
 'proceso.gestion-unidades-documentales': {
     displayValue: 'Gestión de unidades documentales',
-    show: false
+    show: true
   }
 };
