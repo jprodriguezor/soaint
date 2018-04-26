@@ -237,7 +237,7 @@ public class ContentControlAlfresco implements ContentControl {
                 } else if (isNumeric(aFormatoCadenaArray)) {
                     //El formato no cumple con los requerimientos minimos
                     logger.info("El formato no cumple con los requerimientos.");
-                    formatoFinal = null;
+                    formatoFinal = new StringBuilder();
                     break;
                 } else {
                     formatoFinal.append(aFormatoCadenaArray);
