@@ -2,22 +2,100 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Creado por Dasiel
  */
 @Service
-public interface ContentControl {
+public interface ContentControl extends Serializable {
+
+    // Class Properties ECM
+    String CLASE_BASE = "claseBase";
+    String CLASE_DEPENDENCIA = "claseDependencia";
+    String CLASE_SERIE = "claseSerie";
+    String CLASE_SUBSERIE = "claseSubserie";
+    String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
+    String CMCOR = "cmcor:";
+
+    //******************
+    //* properties ECM *
+    //******************
+
+    // CM_Unidad_Administrativa
+    String CMCOR_DEP_CODIGO = CMCOR + "CodigoDependencia";
+    String CMCOR_DEP_CODIGO_UAP = CMCOR + "CodigoUnidadAdminPadre";
+
+    //CM_Unidad_Documental
+    String CMCOR_UD_ACCION = CMCOR + "accion";
+    String CMCOR_UD_FECHA_INICIAL = CMCOR + "fechaInicial";
+    String CMCOR_UD_INACTIVO = CMCOR + "inactivo";
+    String CMCOR_UD_UBICACION_TOPOGRAFICA = CMCOR + "ubicacionTopografica";
+    String CMCOR_UD_FECHA_FINAL = CMCOR + "fechaFinal";
+    String CMCOR_UD_FECHA_CIERRE = CMCOR + "fechaCierre";
+    String CMCOR_UD_ID = CMCOR + "id";
+    String CMCOR_UD_FASE_ARCHIVO = CMCOR + "faseArchivo";
+    String CMCOR_UD_SOPORTE = CMCOR + "soporte";
+    String CMCOR_UD_CODIGO = CMCOR + "codigoUnidadDocumental";
+    String CMCOR_UD_DESCRIPTOR_2 = CMCOR + "descriptor2";
+    String CMCOR_UD_DESCRIPTOR_1 = CMCOR + "descriptor1";
+    String CMCOR_UD_CERRADA = CMCOR + "cerrada";
+    String CMCOR_UD_OBSERVACIONES = CMCOR + "observaciones";
+    String CMCOR_UD_FECHA_AUTO_CIERRE = CMCOR + "fechaAutoCierre";
+    String CMCOR_UD_DISPOSICION = CMCOR + "disposicion";
+    String CMCOR_UD_ESTADO = CMCOR + "estado";
+
+    //CM_Unidad_Base
+    String CMCOR_UB_CODIGO = CMCOR + "CodigoBase";
+
+    //CM_Serie
+    String CMCOR_SER_CODIGO = CMCOR + "CodigoSerie";
+
+    //CM_SubSerie
+    String CMCOR_SS_CODIGO = CMCOR + "CodigoSubserie";
+
+    //CM_DocumentoPersonalizado
+    String CMCOR_NRO_RADICADO = CMCOR + "NroRadicado";
+    String CMCOR_NOMBRE_REMITENTE = CMCOR + "NombreRemitente";
+    String CMCOR_TIPOLOGIA_DOCUMENTAL = CMCOR + "TipologiaDocumental";
+    String CMCOR_TIPO_DOCUMENTO = CMCOR + "xTipo";
+    String CMCOR_NUMERO_REFERIDO = CMCOR + "xNumeroReferido";
+    String CMCOR_ID_DOC_PRINCIPAL = CMCOR + "xIdentificadorDocPrincipal";
+
+    // ECM sms Error
+    String ECM_ERROR = "ECM_ERROR";
+    String ECM_ERROR_DUPLICADO = "ECM ERROR DUPLICADO";
+    String EXISTE_CARPETA = "Existe la Carpeta: ";
+
+    // ECM sms
+    String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
+    String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
+    String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
+    String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
+    String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
+    String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
+    String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
+    String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
+    String CONTENT_DISPOSITION = "Content-Disposition";
+    String DOCUMENTO = "documento";
+    String APPLICATION_PDF = "application/pdf";
+    String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
+    String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
+    String AVISO_CREA_DOC = "### Se va a crear el documento..";
+    String AVISO_CREA_DOC_ID = "### Documento creado con id ";
+    String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
+    String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
+    String SEPARADOR = "---";
 
     /**
      * Obtener objeto conexion
@@ -38,29 +116,38 @@ public interface ContentControl {
     /**
      * Subir documento Principal Adjuntos al ECM
      *
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @param documentoDTO Objeto qeu contiene los metadatos de los documentos ECM
-     * @param selector               Selector que dice donde se va a gauardar el documento
+     * @param selector     Selector que dice donde se va a gauardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
     MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws IOException;
 
     /**
+     * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
+     *
+     * @param session   Objeto de conexion a Alfresco
+     * @param documento Objeto que contiene los datos del documento
+     * @return
+     */
+    MensajeRespuesta crearLinkDocumentosApoyo(Session session, DocumentoDTO documento);
+
+    /**
      * Subir Versionar documento Generado al ECM
      *
-     * @param session                Objeto conexion
-     * @param documento              documento a subir/versionar
-     * @param selector               parametro que indica donde se va a guardar el documento
+     * @param session   Objeto conexion
+     * @param documento documento a subir/versionar
+     * @param selector  parametro que indica donde se va a guardar el documento
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session,  DocumentoDTO documento, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) throws IOException;
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
      *
-     * @param session        Objeto conexion
+     * @param session   Objeto conexion
      * @param documento DTO que contiene los datos de la búsqueda
      * @return Lista de documentos adjuntos
      * @throws IOException exception
@@ -95,7 +182,7 @@ public interface ContentControl {
      * Descargar documento
      *
      * @param documentoDTO Objeto que contiene metadatos del documento en el ECM
-     * @param session                Objeto conexion
+     * @param session      Objeto conexion
      * @return Se retorna el documento
      */
     MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException;
@@ -127,5 +214,113 @@ public interface ContentControl {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-     MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) ;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session);
+
+    /**
+     * Servicio que crea las unidades documentales del ECM
+     *
+     * @param unidadDocumentalDTO Objeto dependencia que contiene los datos necesarios para realizar la busqueda
+     * @param session             Objeto de conexion
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Listar las Unidades Documentales del ECM
+     *
+     * @return Mensaje de respuesta
+     */
+    MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idDocumento Id Documento
+     * @param session     Objeto conexion de Alfresco
+     * @return MensajeRespuesta con los detalles del documento
+     */
+    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
+
+    /**
+     * Metodo para listar los documentos de una Unidad Documental
+     *
+     * @param idUnidadDocumental La unidad documental
+     * @param session            Objeto conexion de Alfresco
+     */
+    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param idUnidadDocumental Id Unidad Documental
+     * @return MensajeRespuesta      Unidad Documntal
+     */
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idUnidadDocumental Id de la Unidad Documental
+     * @param session            Objeto conexion de Alfresco
+     * @return UnidadDocumentalDTO si existe, null si no existe
+     */
+    UnidadDocumentalDTO findUDById(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo que devuelve una Unidad Documental con sus Documentos
+     *
+     * @param idUnidadDocumental Id Unidad Documental
+     * @return UnidadDocumentalDTO      Unidad Documental
+     */
+    UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idProperty Id de la Unidad Documental
+     * @param session    Objeto conexion de Alfresco
+     * @return Folder si existe, null si no existe
+     */
+    Folder getUDFolderById(String idProperty, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param session             Objeto conexion de Alfresco
+     * @return boolean true/false
+     */
+    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param folder Obj ECm
+     * @return List<DocumentoDTO> Lista de los documentos de la carpeta
+     */
+    List<DocumentoDTO> getDocumentsFromFolder(Folder folder);
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param documentoDTOS       Lista de documentos a guardar
+     * @param session             Obj conexion de alfresco
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS, Session session);
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO Obj Unidad Documental
+     * @param documentoDTO        Documento a guardar
+     * @param session             Obj conexion de alfresco
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO, Session session);
+
+    void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
+
+    Map<String, Object> obtenerPropiedadesDocumento(Document document);
 }
