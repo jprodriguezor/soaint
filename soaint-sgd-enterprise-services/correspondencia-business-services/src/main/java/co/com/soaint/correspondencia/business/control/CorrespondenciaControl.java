@@ -12,9 +12,9 @@ import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
-import co.com.foundation.cartridge.email.model.Attachment;
+/*import co.com.foundation.cartridge.email.model.Attachment;
 import co.com.foundation.cartridge.email.model.MailRequestDTO;
-import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
+import co.com.foundation.cartridge.email.proxy.MailServiceProxy;*/
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
