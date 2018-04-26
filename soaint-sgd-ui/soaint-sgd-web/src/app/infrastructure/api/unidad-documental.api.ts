@@ -14,7 +14,13 @@ export class UnidadDocumentalApiService {
 
   Listar(payload: UnidadDocumentalDTO): Observable<UnidadDocumentalDTO[]> {
     return this._api.post(environment.listar_unidad_documental_endpoint, payload)
-    .map((resp) => resp.response.unidadDocumental);
+    .map((resp) => {
+      if (resp.response) {
+        return resp.response.unidadDocumental
+      } else {
+        return Observable.of([]);
+      }
+    });
   }
 
   GetDetalleUnidadDocumental(payload: string): Observable<UnidadDocumentalDTO> {

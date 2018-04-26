@@ -218,17 +218,21 @@ export class StateUnidadDocumentalService {
         this.OpcionSeleccionada = (value) ? value : this.OpcionSeleccionada;
         this.unidadDocumentalApiService.Listar(this.GetPayload(this.OpcionSeleccionada))
         .subscribe(response => {
-            const ListadoMapeado =  response.reduce((_listado, _current) => {
-                _current.seleccionado = true;
-                switch (_current.soporte) {
-                    case 'fisico': _current.soporte = 'Físico'; break;
-                    case 'electronico': _current.soporte = 'Electrónico'; break;
-                    case 'hibrido': _current.soporte = 'Híbrido'; break;
-                }
-                _listado.push(_current);
-                return _listado;
-            }, []);
-            this.ListadoUnidadDocumental = [...ListadoMapeado];
+            let ListadoMapeado =  [];
+            if(response.length) {
+                ListadoMapeado = response.reduce((_listado, _current) => {
+                    _current.seleccionado = true;
+                    switch (_current.soporte) {
+                        case 'fisico': _current.soporte = 'Físico'; break;
+                        case 'electronico': _current.soporte = 'Electrónico'; break;
+                        case 'hibrido': _current.soporte = 'Híbrido'; break;
+                    }
+                    _listado.push(_current);
+                    return _listado;
+                }, []);
+               
+            } 
+            this.ListadoUnidadDocumental = [...ListadoMapeado];            
         });
     }
 

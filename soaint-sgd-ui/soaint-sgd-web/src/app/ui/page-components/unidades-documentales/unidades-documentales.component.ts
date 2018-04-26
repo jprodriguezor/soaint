@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, IterableDiffers, DoCheck } from '@angular/core';
 import { StateUnidadDocumentalService } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
 import { FormBuilder } from '@angular/forms';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
@@ -21,7 +21,7 @@ import { go } from '@ngrx/router-store';
   templateUrl: './unidades-documentales.component.html',
   styleUrls: ['./unidades-documentales.component.css'],
 })
-export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
+export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck {
 
   // contiene:
   // formulario, configuración y validación
@@ -32,13 +32,19 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   task: TareaDTO;
   taskVariables: VariablesTareaDTO = {};
 
+  // control de cambios en array
+  differ: any;
+
   constructor(
     private state: StateUnidadDocumentalService,
     private _store: Store<State>,
     private _taskSandBox: TaskSandBox,
+    private _differs: IterableDiffers,
+    private _detectChanges: ChangeDetectorRef
 
   ) {
     this.State = this.state;
+    this.differ = _differs.find([]).create(null);
   }
 
   ngOnInit() {
@@ -52,6 +58,13 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
     ]);
     this.InitPropiedadesTarea();
 
+  }
+
+  ngDoCheck() {
+    const change = this.differ.diff(this.state.ListadoUnidadDocumental);
+    if (change) {
+      this._detectChanges.detectChanges();
+    }
   }
 
   InitPropiedadesTarea() {
