@@ -4,6 +4,7 @@ import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -111,7 +112,22 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void obtenerDetallesDocumentoDTO() {
+    public void test_obtenerDetallesDocumentoDTO_success() {
+
+        //Prueba Existosa para obtenerdetalles de documento
+        try {
+            assertEquals("00000",contentControlAlfresco.obtenerDetallesDocumentoDTO(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(),conexion.getSession()).getCodMensaje());
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
+
+        //Prueba cuadno viene vacio el idDocumento
+        try {
+            assertEquals("11111",contentControlAlfresco.obtenerDetallesDocumentoDTO(null,conexion.getSession()).getCodMensaje());
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
