@@ -1,13 +1,14 @@
 <div class="ui-fluid radicar-comunicaciones">
   <app-task-container>
     <div customActions>
-        <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" ></button>
+      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"  (click)="save()" [disabled]="formEnvio.form.invalid || task === null" ></button>
     </div>
     <div taskBody>
 
       <div class="ui-fluid">
-        <app-form-envio></app-form-envio>
+        <app-form-envio #formEnvio ></app-form-envio>
       </div>
+
     </div>
   </app-task-container>
 

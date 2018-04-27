@@ -21,8 +21,8 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
     if(datosEnvio !== undefined){
 
-      correspondencia.codClaseEnvio = datosEnvio.clase_envio;
-      correspondencia.codModalidadEnvio = datosEnvio.modalidad_correo;
+      correspondencia.codClaseEnvio = datosEnvio.clase_envio.codigo;
+      correspondencia.codModalidadEnvio = datosEnvio.modalidad_correo.codigo;
     }
 
      return correspondencia;

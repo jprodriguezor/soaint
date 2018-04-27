@@ -85,6 +85,13 @@ export class DatosDestinatarioStateService {
       this.tipoDestinatarioInput$.subscribe( result => {
         this.agentesDestinatario = this.agentesDestinatario
         .reduce((_listado, _tipo) => {
+          if (_tipo.tipoDestinatario.codigo === DESTINATARIO_PRINCIPAL) {
+            this.form.get('destinatarioPrincipal').setValue({
+              tipoDestinatario: _tipo.tipoDestinatario,
+              sedeAdministrativa: _tipo.sedeAdministrativa,
+              dependenciaGrupo: _tipo.dependenciaGrupo
+            });
+          }
           const destinatario = result.find(_item => _item.codigo === _tipo.tipoDestinatario.codigo);
           _tipo.tipoDestinatario.nombre = destinatario.nombre;
           _listado.push(_tipo);

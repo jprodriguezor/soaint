@@ -22,27 +22,41 @@ import { PushNotificationAction } from '../../../infrastructure/state-management
 import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.enum';
 import { MensajeRespuestaDTO } from '../../../domain/MensajeRespuestaDTO';
 import { ChangeDetectorRef, Injectable, ApplicationRef } from '@angular/core';
-
-
+import { isNullOrUndefined } from 'util';
+import { ConstanteDTO } from '../../../domain/constanteDTO';
+import { sedeDestinatarioEntradaSelector } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
+import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
+import {Subscription} from 'rxjs/Subscription';
+import { DependenciaApiService } from '../../../infrastructure/api/dependencia.api';
+import { DependenciaDTO } from '../../../domain/dependenciaDTO';
 
 @Injectable()
-export class StateUnidadDocumentalService implements TaskForm {
+export class StateUnidadDocumentalService {
 
     ListadoUnidadDocumental: UnidadDocumentalDTO[] = [];
     unidadesSeleccionadas: UnidadDocumentalDTO[] = [];
-    ListadoSeries: Observable<SerieDTO[]>;
+
+    // dropdowns
+    tiposDisposicionFinal$: Observable<ConstanteDTO[]> = Observable.of([]);
+    sedes$: Observable<ConstanteDTO[]> = Observable.of([]);
+    dependencias: DependenciaDTO[] = [];
+    ListadoSeries: SerieDTO[];
     ListadoSubseries: SubserieDTO[];
-    UnidadDocumentalSeleccionada: DetalleUnidadDocumentalDTO;
-    OpcionSeleccionada: number;
-    AbrirDetalle: boolean;
-    task: TareaDTO;
-    taskVariables: VariablesTareaDTO = {};
-    FechaExtremaFinal: Date;
+
+    // generales
+    UnidadDocumentalSeleccionada: UnidadDocumentalDTO;
+    formBuscar: FormGroup;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
-    MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
+    validations: any = {};
+    subscribers: Array<Subscription> = [];
 
-    formBuscar: FormGroup;
+    // gestionar unidad documental
+    OpcionSeleccionada: number;
+    AbrirDetalle: boolean;
+    FechaExtremaFinal: Date;
+    MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
 
     constructor(
         private fb: FormBuilder,
@@ -52,74 +66,126 @@ export class StateUnidadDocumentalService implements TaskForm {
         private _dependenciaSandbox: Sandbox,
         private _taskSandBox: TaskSandBox,
         private confirmationService: ConfirmationService,
-        private _appRef: ApplicationRef
+        private _appRef: ApplicationRef,
+        private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+        private _dependenciaApiService: DependenciaApiService
     ) {
     }
 
     OnBlurEvents(control: string) {
         const formControl = this.formBuscar.get(control);
-        if (control === 'serie') {
-            this.GetSubSeries(formControl.value);
-        } else if (control === 'subserie') {
-            this.SubscribirSubserie();
+        if (formControl.touched && formControl.invalid) {
+          const error_keys = Object.keys(formControl.errors);
+          const last_error_key = error_keys[error_keys.length - 1];
+          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+        } else {
+            this.validations[control] = '';
         }
     }
 
-    InitData() {
-        this.InitForm();
-        this.OpcionSeleccionada = 0 // abrir
-        this.InitPropiedadesTarea();
-    }
 
-    InitForm() {
+    InitForm(camposRequeridos: string[]) {
        this.formBuscar = this.fb.group({
-        serie: [null, [Validators.required]],
+        tipoDisposicionFinal: [null],
+        sede: [null],
+        dependencia: [null],
+        serie: [null],
         subserie: [null],
         identificador: [''],
         nombre: [''],
         descriptor1: [''],
         descriptor2: [''],
        });
+       this.SetFormCamposRequeridos(camposRequeridos);
     }
 
     ResetForm() {
         this.formBuscar.reset();
     }
 
-    InitPropiedadesTarea() {
-        this._store.select(getActiveTask).subscribe((activeTask) => {
-            this.task = activeTask;
-            if (this.task.variables.codDependencia) {
-                const codDependencia = this.task.variables.codDependencia
-                this.GetListadosSeries(codDependencia);
-                this.Listar();
-            }
+
+
+    SetFormCamposRequeridos(camposRequeridos: string[]) {
+        if (camposRequeridos.length) {
+            camposRequeridos.forEach(_control => {
+                this.formBuscar.controls[_control].setValidators(Validators.required);
+            });
+            this.formBuscar.updateValueAndValidity();
+        }
+    }
+
+    SetFormSubscriptions(controls: string[]) {
+        if (controls.length) {
+            controls.forEach(_control => {
+                this.subscribers.push(
+                this.formBuscar.get(_control).valueChanges.distinctUntilChanged().subscribe(value => {
+                    if (value !== null) {
+                        switch (_control) {
+                            case 'sede' : this.GetListadoDependencias(value.id); break;
+                            case 'dependencia': this.GetListadosSeries(); break;
+                            case 'serie': this.GetSubSeries(); break;
+                        }
+                    }
+                  }))
+            });
+            this.formBuscar.updateValueAndValidity();
+        }
+    }
+
+    GetDetalleUnidadUnidadDocumental(index: string) {
+        const unidadDocumentalIndex = this.ListadoUnidadDocumental[index];
+        this.unidadDocumentalApiService.GetDetalleUnidadDocumental(unidadDocumentalIndex.id)
+        .subscribe(response => {
+            this.UnidadDocumentalSeleccionada = response;
+            this.AbrirDetalle = true;
         });
     }
 
-    GetDetalleUnidadUnidadDocumental(payload: any) {
-        this.UnidadDocumentalSeleccionada = this.unidadDocumentalApiService.GetDetalleUnidadDocumental(payload);
-        this.AbrirDetalle = true;
+    GetListadoTiposDisposicion() {
+        this.tiposDisposicionFinal$ = Observable.of([]);
     }
 
-    GetListadosSeries(codDependencia: string) {
-        this.ListadoSeries = this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: codDependencia,
+    GetListadoSedes() {
+        this._store.dispatch(new SedeAdministrativaLoadAction());
+        this.sedes$ = this._store.select(sedeDestinatarioEntradaSelector);
+    }
+
+    GetListadoDependencias(sedeId: any) {
+        this.formBuscar.controls['dependencia'].reset();
+        this._dependenciaApiService.Listar({})
+        .subscribe(resp => {
+            this.dependencias = resp.filter(_item => _item.ideSede === sedeId);
+        });
+    }
+
+    GetListadosSeries() {
+        this.formBuscar.controls['serie'].reset();
+        this.serieSubserieApiService.ListarSerieSubserie({
+            idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
         })
-        .map(map => map.listaSerie);
+        .map(map => map.listaSerie)
+        .subscribe(resp => {
+            this.ListadoSeries = resp;
+        });
         this.ListadoSubseries = [];
     }
 
-    GetSubSeries(serie: string) {
-        if (serie) {
+    GetSubSeries() {
+        this.formBuscar.controls['subserie'].reset();
+        const codigoserie = this.formBuscar.controls['serie'].value;
+        if (codigoserie) {
             this.serieSubserieApiService.ListarSerieSubserie({
-                idOrgOfc: this.task.variables.codDependencia,
-                codSerie: serie,
+                idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
+                codSerie: codigoserie,
             })
             .map(map => map.listaSubSerie)
             .subscribe(result => {
                 this.ListadoSubseries =  result;
-            })
+                if (result) {
+                    this.formBuscar.controls['subserie'].setValidators(Validators.required);
+                    this.formBuscar.updateValueAndValidity();
+                }
+            });
         }
     }
 
@@ -150,20 +216,23 @@ export class StateUnidadDocumentalService implements TaskForm {
 
     Listar(value?: any) {
         this.OpcionSeleccionada = (value) ? value : this.OpcionSeleccionada;
-        this.unidadDocumentalApiService.Listar(this.GetPayload())
+        this.unidadDocumentalApiService.Listar(this.GetPayload(this.OpcionSeleccionada))
         .subscribe(response => {
-            const ListadoMapeado =  response.reduce((_listado, _current) => {
-                _current.estado = (_current.inactivo) ? 'Inactivo' : 'Activo';
-                _current.seleccionado = true;
-                switch (_current.soporte) {
-                    case 'fisico': _current.soporte = 'Físico'; break;
-                    case 'electronico': _current.soporte = 'Electrónico'; break;
-                    case 'hibrido': _current.soporte = 'Híbrido'; break;
-                }
-                _listado.push(_current);
-                return _listado;
-            }, []);
-            this.ListadoUnidadDocumental = [...ListadoMapeado];
+            let ListadoMapeado =  [];
+            if(response.length) {
+                ListadoMapeado = response.reduce((_listado, _current) => {
+                    _current.seleccionado = true;
+                    switch (_current.soporte) {
+                        case 'fisico': _current.soporte = 'Físico'; break;
+                        case 'electronico': _current.soporte = 'Electrónico'; break;
+                        case 'hibrido': _current.soporte = 'Híbrido'; break;
+                    }
+                    _listado.push(_current);
+                    return _listado;
+                }, []);
+               
+            } 
+            this.ListadoUnidadDocumental = [...ListadoMapeado];            
         });
     }
 
@@ -183,22 +252,15 @@ export class StateUnidadDocumentalService implements TaskForm {
         }
     }
 
-    GetPayload(): UnidadDocumentalDTO {
+    GetPayload(accionSeleccionada?: UnidadDocumentalAccion): UnidadDocumentalDTO {
 
-        const cerrada =
-        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
-            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? true
-            : false ;
-        const estado =
-        ((UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Abrir])
-            || (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[UnidadDocumentalAccion.Reactivar]))
-            ? true
-            : false ;
-        const payload: UnidadDocumentalDTO = {
-            cerrada: cerrada,
-            inactivo: estado,
-            codigoDependencia: this.task.variables.codDependencia,
+        const payload: UnidadDocumentalDTO = {};
+
+        if (this.formBuscar.controls['dependencia'].value) {
+            payload.codigoDependencia = (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value;
+        }
+        if (!isNullOrUndefined(accionSeleccionada)) {
+            payload.accion = UnidadDocumentalAccion[accionSeleccionada]
         }
 
         if (this.formBuscar.controls['serie'].value) {
@@ -301,17 +363,6 @@ export class StateUnidadDocumentalService implements TaskForm {
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
     }
 
-    Finalizar() {
-        this._taskSandBox.completeTaskDispatch({
-            idProceso: this.task.idProceso,
-            idDespliegue: this.task.idDespliegue,
-            idTarea: this.task.idTarea,
-            parametros: this.taskVariables
-        });
-    }
 
-    save(): Observable<any> {
-        return Observable.of(true).delay(5000);
-    }
 
 }

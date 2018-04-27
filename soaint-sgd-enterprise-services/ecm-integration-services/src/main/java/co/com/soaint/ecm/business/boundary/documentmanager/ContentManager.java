@@ -2,6 +2,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
+import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -374,11 +375,11 @@ public class ContentManager {
      *
      * @return Mensaje de respuesta
      */
-    public MensajeRespuesta listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+    public MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.listarUnidadesDocumentales(unidadDocumentalDTO, conexion.getSession());
+        return contentControl.listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
     }
 
     /**
@@ -400,7 +401,7 @@ public class ContentManager {
      * @param idUnidadDocumental   Id de la unidad documental
      */
     public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
-        logger.info("### Listando las Unidades Documentales listarUnidadesDocumentales method");
+        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());
@@ -417,5 +418,33 @@ public class ContentManager {
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.detallesUnidadDocumental(idUnidadDocumental, conexion.getSession());
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTOS           Lista de documentos a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS) {
+        logger.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS, conexion.getSession());
+    }
+
+    /**
+     * Metodo para devolver la Unidad Documental
+     *
+     * @param unidadDocumentalDTO     Obj Unidad Documental
+     * @param documentoDTO            Documento a guardar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
+        logger.info("### Ejecutando MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO, conexion.getSession());
     }
 }

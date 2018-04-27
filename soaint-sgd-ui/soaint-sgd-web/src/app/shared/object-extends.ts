@@ -4,8 +4,8 @@ export class  ObjectHelper {
 
   static  similar( obj1:Object,obj2:Object): boolean{
 
-    if(obj1 === undefined)
-       return obj2 === undefined;
+    if(isNullOrUndefined(obj1))
+       return isNullOrUndefined(obj2);
 
     let a = Object.keys(obj1).length >= Object.keys(obj2).length ? obj1 : obj2;
     let b = Object.keys(obj1).length < Object.keys(obj2).length ? obj1 : obj2;
@@ -31,7 +31,7 @@ export class  ObjectHelper {
 
       if( typeof a[key] !== 'function') {
 
-         return a[key].toString().trim() === b[key].toString().trim();
+        return a[key].toString().trim() === b[key].toString().trim();
       }
 
        return typeof  b[key] !== 'function';

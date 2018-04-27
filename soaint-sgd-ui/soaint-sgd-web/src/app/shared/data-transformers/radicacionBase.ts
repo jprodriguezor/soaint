@@ -16,6 +16,7 @@ import {RadicacionFormInterface} from "../interfaces/data-transformers/radicacio
 import {AgenteFactoryDTV} from "./agentesDTV";
 import {DATOS_CONTACTO_PRINCIPAL, DATOS_CONTACTO_SECUNDARIO} from "../bussiness-properties/radicacion-properties";
 import {isNullOrUndefined} from "util";
+import {DireccionDTO} from "../../domain/DireccionDTO";
 
 export  abstract class RadicacionBase {
 
@@ -166,6 +167,53 @@ export  abstract class RadicacionBase {
   getDatosContactos(): Array<ContactoDTO> {
 
     return null;
+  }
+
+  GetDireccionText(contact): string {
+    let direccion: DireccionDTO  = {};
+    let direccionText = '';
+    try {
+      direccion =  JSON.parse(contact.direccion);
+    } catch (e) {
+      return direccionText;
+    }
+    if (direccion) {
+      if (direccion.tipoVia) {
+        direccionText += direccion.tipoVia.nombre;
+      }
+      if (direccion.noViaPrincipal) {
+        direccionText += ' ' + direccion.noViaPrincipal;
+      }
+      if (direccion.prefijoCuadrante) {
+        direccionText += ' ' + direccion.prefijoCuadrante.nombre;
+      }
+      if (direccion.bis) {
+        direccionText += ' ' + direccion.bis.nombre;
+      }
+      if (direccion.orientacion) {
+        direccionText += ' ' + direccion.orientacion.nombre;
+      }
+      if (direccion.noVia) {
+        direccionText += ' ' + direccion.noVia;
+      }
+      if (direccion.prefijoCuadrante_se) {
+        direccionText += ' ' + direccion.prefijoCuadrante_se.nombre;
+      }
+      if (direccion.placa) {
+        direccionText += ' ' + direccion.placa;
+      }
+      if (direccion.orientacion_se) {
+        direccionText += ' ' + direccion.orientacion_se.nombre;
+      }
+      if (direccion.complementoTipo) {
+        direccionText += ' ' + direccion.complementoTipo.nombre;
+      }
+      if (direccion.complementoAdicional) {
+        direccionText += ' ' + direccion.complementoAdicional;
+      }
+
+    }
+    return direccionText;
   }
 
 }

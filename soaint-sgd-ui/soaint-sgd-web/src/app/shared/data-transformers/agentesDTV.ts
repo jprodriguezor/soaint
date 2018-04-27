@@ -1,24 +1,24 @@
-import {AgentDTO} from "../../domain/agentDTO";
+import {AgentDTO} from '../../domain/agentDTO';
 import {
   COMUNICACION_EXTERNA,
   COMUNICACION_INTERNA, DESTINATARIO_EXTERNO, DESTINATARIO_PRINCIPAL,
   TIPO_AGENTE_REMITENTE, TIPO_REMITENTE_EXTERNO,
   TIPO_REMITENTE_INTERNO
-} from "../bussiness-properties/radicacion-properties";
+} from '../bussiness-properties/radicacion-properties';
 
 
-export interface  AgenteDTV{
+export interface  AgenteDTV {
 
-  getRemitente(remitente:any):AgentDTO;
+  getRemitente(remitente: any): AgentDTO;
 }
 
 
-export class AgenteInternoDTV implements AgenteDTV{
+export class AgenteInternoDTV implements AgenteDTV {
 
-  getRemitente(remitente:any):AgentDTO{
+  getRemitente(remitente: any): AgentDTO {
 
     return {
-      ideAgente: null,
+      ideAgente: remitente.ideAgente,
       codTipoRemite: TIPO_REMITENTE_INTERNO,
       codTipoPers: null,
       nombre: null,
@@ -38,12 +38,12 @@ export class AgenteInternoDTV implements AgenteDTV{
   }
 }
 
-export class AgenteExternoDTV implements AgenteDTV{
+export class AgenteExternoDTV implements AgenteDTV {
 
-  getRemitente(remitente:any):AgentDTO{
+  getRemitente(remitente: any): AgentDTO {
 
     return  {
-      ideAgente: null,
+      ideAgente: remitente.ideAgente,
       codTipoRemite: TIPO_REMITENTE_EXTERNO,
       codTipoPers: remitente.tipoPersona ? remitente.tipoPersona.codigo : null,
       nombre: remitente.nombreApellidos || null,
@@ -64,11 +64,11 @@ export class AgenteExternoDTV implements AgenteDTV{
   }
 }
 
-export class AgenteFactoryDTV{
+export class AgenteFactoryDTV {
 
-  static getAgente(tipo:string):AgenteDTV{
+  static getAgente(tipo: string): AgenteDTV {
 
-    switch(tipo) {
+    switch (tipo) {
 
       case COMUNICACION_INTERNA: return new AgenteInternoDTV();
 

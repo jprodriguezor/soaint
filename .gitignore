@@ -8,3 +8,5 @@ target/
 !pom.xml
 soaint-sgd-enterprise-services/bpm-integration-services/src/main/java/co/com/soaint/bpm/services/App.java
 soaint-sgd-enterprise-artifacts/resources/reports/Planilla_Distribucion.jasper
+soaint-sgd-enterprise-services/correspondencia-business-services/.sonar/
+soaint-sgd-enterprise-artifacts/resources/reports/Planilla_Distribucion.jasper

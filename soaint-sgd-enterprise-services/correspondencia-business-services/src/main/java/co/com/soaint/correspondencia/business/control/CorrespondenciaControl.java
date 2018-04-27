@@ -5,16 +5,23 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+/*import co.com.foundation.cartridge.email.model.Attachment;
+import co.com.foundation.cartridge.email.model.MailRequestDTO;
+import co.com.foundation.cartridge.email.proxy.MailServiceProxy;*/
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +29,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -47,28 +59,34 @@ public class CorrespondenciaControl {
     private EntityManager em;
 
     @Autowired
-    AgenteControl agenteControl;
+    private AgenteControl agenteControl;
 
     @Autowired
-    ConstantesControl constanteControl;
+    private ConstantesControl constanteControl;
 
     @Autowired
-    PpdDocumentoControl ppdDocumentoControl;
+    private FuncionariosControl funcionarioControl;
 
     @Autowired
-    AnexoControl anexoControl;
+    private OrganigramaAdministrativoControl organigramaAdministrativoControl;
 
     @Autowired
-    DatosContactoControl datosContactoControl;
+    private PpdDocumentoControl ppdDocumentoControl;
 
     @Autowired
-    ReferidoControl referidoControl;
+    private AnexoControl anexoControl;
 
     @Autowired
-    DserialControl dserialControl;
+    private DatosContactoControl datosContactoControl;
 
     @Autowired
-    AsignacionControl asignacionControl;
+    private ReferidoControl referidoControl;
+
+    @Autowired
+    private DserialControl dserialControl;
+
+    @Autowired
+    private AsignacionControl asignacionControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -93,6 +111,35 @@ public class CorrespondenciaControl {
 
     // ----------------------
 
+    /**
+     * @param codigo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String consultarNombreEnumCorrespondencia(String codigo) throws BusinessException, SystemException {
+
+            if (codigo.equals(EstadoCorrespondenciaEnum.ASIGNACION.getCodigo()))
+                return EstadoCorrespondenciaEnum.ASIGNACION.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo()))
+                return EstadoCorrespondenciaEnum.REGISTRADO.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.SIN_ASIGNAR.getCodigo()))
+                return EstadoCorrespondenciaEnum.SIN_ASIGNAR.getNombre();
+            else if (codigo.equals(EstadoCorrespondenciaEnum.RADICADO.getCodigo()))
+                return EstadoCorrespondenciaEnum.RADICADO.getNombre();
+            else return null;
+    }
+
+    /**
+     * @param nroRadicado
+     * @param codSede
+     * @param codTipoCmc
+     * @param anno
+     * @param consecutivo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
     private String procesarNroRadicado(String nroRadicado, String codSede, String codTipoCmc, String anno, String consecutivo) throws BusinessException, SystemException {
         String nRadicado = nroRadicado;
         try {
@@ -256,23 +303,29 @@ public class CorrespondenciaControl {
     public CorrespondenciaFullDTO correspondenciaTransformToFull(CorrespondenciaDTO correspondenciaDTO) throws SystemException, BusinessException{
         log.info("processing rest request - CorrespondenciaControl-correspondenciaTransformToFull");
         try{
+            String funcionario = "No existe.";
+            if (funcionarioControl.existFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()))){
+                FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+                funcionario = funcionarioDTO.getNomFuncionario().concat(" ").concat(funcionarioDTO.getValApellido1().concat(" ").concat(funcionarioDTO.getValApellido2()));
+            }
+
             return CorrespondenciaFullDTO.newInstance()
                     .codClaseEnvio(correspondenciaDTO.getCodClaseEnvio())
                     .descClaseEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodClaseEnvio()))
                     .codDependencia(correspondenciaDTO.getCodDependencia())
-                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodDependencia()))
+                    .descDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodDependencia()))
                     .codEmpMsj(correspondenciaDTO.getCodEmpMsj())
                     .descEmpMsj(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEmpMsj()))
                     .codEstado(correspondenciaDTO.getCodEstado())
-                    .descEstado(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodEstado()))
+                    .descEstado(this.consultarNombreEnumCorrespondencia(correspondenciaDTO.getCodEstado()))
                     .codFuncRadica(correspondenciaDTO.getCodFuncRadica())
-                    .descFuncRadica(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodFuncRadica()))
+                    .descFuncRadica(funcionario)
                     .codMedioRecepcion(correspondenciaDTO.getCodMedioRecepcion())
                     .descMedioRecepcion(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodMedioRecepcion()))
                     .codModalidadEnvio(correspondenciaDTO.getCodModalidadEnvio())
                     .descModalidadEnvio(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodModalidadEnvio()))
                     .codSede(correspondenciaDTO.getCodSede())
-                    .descSede(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodSede()))
+                    .descSede(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()))
                     .codTipoCmc(correspondenciaDTO.getCodTipoCmc())
                     .descTipoCmc(constanteControl.consultarNombreConstanteByCodigo(correspondenciaDTO.getCodTipoCmc()))
                     .codTipoDoc(correspondenciaDTO.getCodTipoDoc())
@@ -291,7 +344,6 @@ public class CorrespondenciaControl {
                     .reqDistFisica(correspondenciaDTO.getReqDistFisica())
                     .tiempoRespuesta(correspondenciaDTO.getTiempoRespuesta())
                     .build();
-            //pendiente construir transform de listaa de agenteFullDTO
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
@@ -564,17 +616,17 @@ public class CorrespondenciaControl {
      * @return
      */
     public ComunicacionOficialFullDTO consultarComunicacionOficialFullByCorrespondencia(CorrespondenciaFullDTO correspondenciaFullDTO) throws SystemException, BusinessException {
-        log.info("processing rest request - CorrespondenciaControl-consultarComunicacionOficialFullByCorrespondencia");
+
         List<AgenteFullDTO> agenteFullDTOList = agenteControl.consultarAgentesFullByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - CorrespondenciaControl-agenteControl.consultarAgentesFullByCorrespondencia OK");
+
         List<DatosContactoFullDTO> datosContactoDTOList = datosContactoControl.consultarDatosContactoFullByAgentes(agenteFullDTOList);
-            log.info("processing rest request - datosContactoControl.consultarDatosContactoFullByAgentes OK");
+
         List<PpdDocumentoDTO> ppdDocumentoDTOList = ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-            log.info("processing rest request - ppdDocumentoControl.consultarPpdDocumentosByCorrespondencia OK");
+
         List<AnexoDTO> anexoList = anexoControl.consultarAnexosByPpdDocumentos(ppdDocumentoDTOList);
-            log.info("processing rest request - anexoControl.consultarAnexosByPpdDocumentos OK");
+
         List<ReferidoDTO> referidoList = referidoControl.consultarReferidosByCorrespondencia(correspondenciaFullDTO.getIdeDocumento());
-        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
+//        log.info("processing rest request - referidoControl.consultarReferidosByCorrespondencia OK");
 
         return ComunicacionOficialFullDTO.newInstance()
                 .correspondencia(correspondenciaFullDTO)
@@ -978,5 +1030,74 @@ public class CorrespondenciaControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - enviar correo radicar correspondencia");
+        return true;
+
+//        HashMap<String,String> parameters = new HashMap<String, String>();
+//        MailRequestDTO request = new MailRequestDTO( "template_1" );
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+//
+//        request.setSubject("Correo de prueba");
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
+//
+//        String[] dest =  {"dionyuci@gmail.com"};
+//        request.setTo(dest);
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
+//        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+//        request.setAttachmentsList(attachmentsList);
+//
+//        parameters.put("#USER#","Dionisio");
+//        parameters.put("#CODE#","D10N7");
+//
+//        request.setParameters( parameters );
+//
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
+//        Boolean send = false;
+//        try {
+//            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
+//            send = MailServiceProxy.getInstance().sendEmail( request );
+//        }catch (Exception e){
+//            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
+//            throw new BusinessException("system.error.correo.enviado");
+//        }
+//
+//        return send;
+
+//        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(documentoDTO.getNroRadicado());
+//
+//        String endpoint = "http://192.168.1.81:28080/ecm-integration-services/apis/ecm";
+//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+//
+//        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado("454").build();
+//        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
+//                .request()
+//                .post(Entity.json(dto));
+//
+//        if (response.getStatus() == HttpStatus.OK.value()) {
+//            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
+//            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
+//                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
+//                documentoDTOList.forEach(documento -> {
+//
+//                });
+//            } else{
+//                throw ExceptionBuilder.newBuilder()
+//                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
+//                        .buildSystemException();
+//            }
+//
+//        }
+//
+//
+
     }
 }

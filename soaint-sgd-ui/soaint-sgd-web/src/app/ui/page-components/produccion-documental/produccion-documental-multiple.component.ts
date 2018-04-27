@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
@@ -30,7 +30,6 @@ import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
 import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 import {TASK_PRODUCIR_DOCUMENTO} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {isNullOrUndefined} from "util";
-import {Dropdown} from "primeng/primeng";
 
 @Component({
   selector: 'produccion-documental-multiple',
@@ -50,15 +49,16 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   fechaRadicacion: string;
   listaProyectores: ProyectorDTO[] = [];
   sedesAdministrativas$: Observable<ConstanteDTO[]>;
-  dependendencias$:Observable<any[]>;
+  sedeAdministrativas:ConstanteDTO[];
+
   dependencias: Array<any> = [];
   funcionarios$: Observable<FuncionarioDTO[]>;
+  funcionarios:FuncionarioDTO[];
   tiposPlantilla$: Observable<ConstanteDTO[]>;
 
   subscribers: Array<Subscription> = [];
   authPayload: { usuario: string, pass: string } | {};
   authPayloadUnsubscriber: Subscription;
-
 
 
   constructor(private _store: Store<RootState>,
@@ -103,8 +103,7 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
           this.subscribers.push(
             combineLatest(
               this._store.select(getAuthenticatedFuncionario)
-                .switchMap( funcionario => this.funcionarios$.map( funcionarios => funcionarios.find(func => func.id == funcionario.id)),(outValue,innerValue) => innerValue)
-                ,
+                .map( funcionario => this.funcionarios.find( func => func.id == funcionario.id)),
               this._store.select(getSelectedDependencyGroupFuncionario)
             ).switchMap(([funcionario,dependency])=> {
 
@@ -129,6 +128,9 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         idTarea: this.task.idTarea,
         parametros: {}
       });
+
+
+
     });
   }
 
@@ -171,11 +173,13 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   dependenciaChange() {
     this.funcionarios$ = this._funcionarioSandBox.loadAllFuncionariosByRol({codDependencia: this.form.get('dependencia').value.codigo, rol: 'Proyector'}).map(res => {
       return res.funcionarios
-    }).share();
+    });
 
     this.subscribers.push( this.funcionarios$.subscribe(funcionarioList => {
 
-         const funcionarioSelected = ViewFilterHook.applyFilter('pmd-funcionario-selected',null);
+      this.funcionarios = funcionarioList;
+
+      const funcionarioSelected = ViewFilterHook.applyFilter('pmd-funcionario-selected',null);
 
       ViewFilterHook.removeFilter('pmd-funcionario-selected');
 
@@ -199,27 +203,22 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit(): void {
+    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({});
 
     this.initForm();
 
-    this.sedesAdministrativas$ = this._produccionDocumentalApi.getSedes({}).share();
+   this.subscribers.push( this.sedesAdministrativas$.subscribe(sedesDto=> {
 
-    this.subscribers.push(
-
-      this.sedesAdministrativas$
-
-        .subscribe(sedes => {
+      this.sedeAdministrativas = sedesDto;
 
       combineLatest(this._store.select(getSelectedDependencyGroupFuncionario),this._store.select(getAuthenticatedFuncionario))
         .subscribe(([dependency,funcionario]) =>{
 
-          this.form.get('sede').setValue(sedes.find( sedeDto => sedeDto.codigo == dependency.codSede ));
+          this.form.get('sede').setValue(this.sedeAdministrativas.find( sedeDto => sedeDto.codigo == dependency.codSede ));
 
-          console.log("dependency",dependency);
+          ViewFilterHook.addFilter('pdm-dependency-selected', () => this.dependencias.find( dependencia => dependencia.codigo == dependency.codigo));
 
-            ViewFilterHook.addFilter('pdm-dependency-selected', () => dependency);
-
-            ViewFilterHook.addFilter('pmd-funcionario-selected',() => funcionario);
+         ViewFilterHook.addFilter('pmd-funcionario-selected',() => this.funcionarios.find(func => func.id == funcionario.id));
         });
 
       }
@@ -233,6 +232,17 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
         this.numeroRadicado = this.task.variables.numeroRadicado;
         this.fechaRadicacion = this.task.variables.fechaRadicacion;
       }
+      else{
+     /*  afterTaskComplete.subscribe( (taskGenerated) => {
+
+          // write your implementation here
+
+        // this._taskSandBox.startTask(taskGenerated);
+
+        });*/
+      }
+
+
     }));
 
     this.listenForErrors();
@@ -247,17 +257,14 @@ export class ProduccionDocumentalMultipleComponent implements OnInit, OnDestroy 
           this.dependencias = dependencias.organigrama;
 
           const dependencySelected = ViewFilterHook.applyFilter('pdm-dependency-selected',null);
-          console.log("dependencySelected",dependencySelected);
+
           ViewFilterHook.removeFilter('pdm-dependency-selected');
 
           if(dependencySelected !== null){
 
-            let foundDependecia = this.dependencias.find(dependency => dependency.codigo = dependencySelected.codigo);
-
-            this.form.get('dependencia').setValue(foundDependecia);
+            this.form.get('dependencia').setValue(dependencySelected);
 
             this.dependenciaChange();
-
           }
 
           depedenciaSubscription.unsubscribe();

@@ -127,6 +127,7 @@ public class ProduccionDocumentalGatewayApi {
             documentoDTO.setTipoDocumento(formDataInput.getFormDataPart("tipoDocumento", String.class, null));
             documentoDTO.setSede(formDataInput.getFormDataPart("sede", String.class, null));
             documentoDTO.setDependencia(formDataInput.getFormDataPart("dependencia", String.class, null));
+            documentoDTO.setCodigoDependencia(formDataInput.getFormDataPart("codigoDependencia", String.class, null));
 
             clientResponse = this.clientECM.uploadVersionDocumento(documentoDTO, "PD");
             log.info(clientResponse);

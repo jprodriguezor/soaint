@@ -207,6 +207,10 @@ export class Sandbox {
     this._store.dispatch(new actions.CompleteTaskAction(payload));
   }
 
+  completeBackTaskDispatch(payload: any) {
+    this._store.dispatch(new actions.CompleteBackTaskAction(payload));
+  }
+
   abortTaskDispatch(payload: any) {
     this._store.dispatch(new actions.AbortTaskAction(payload));
   }

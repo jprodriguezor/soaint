@@ -23,6 +23,7 @@ import {ROUTES_PATH} from "../../../../../../app.route-names";
 import {UnidadDocumentalApiService} from "../../../../../../infrastructure/api/unidad-documental.api";
 import {ArchivarDocumentoModel} from "../../models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "../../models/solicitud-creacio-ud.model";
+import {isNullOrUndefined, isUndefined} from "util";
 
 
 @Component({
@@ -113,9 +114,15 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
         this.seriesObservable$ = this
           .serieSubSerieService
           .getSeriePorDependencia(result.codigo)
-          .map(list => {list.unshift({
-            codigoSerie:null,nombreSerie:"Seleccione"});
-          return list});
+          .map(list => {
+
+            if(isNullOrUndefined(list))
+              list = [];
+
+            list.unshift({codigoSerie:null,nombreSerie:"Seleccione"});
+
+          return list;
+          });
         this.dependenciaSelected = result;
     });
 
@@ -209,10 +216,10 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
     //  this.visiblePopup = true;
 
       this.unidadesDocumentales$ = this._udService.Listar({
-        codSerie:this.form.get('serie').value,
-        codSubserie: this.form.get('subserie').value,
-        identificador: this.form.get('identificador').value,
-        nombre:this.form.get('nombre').value
+        codigoSerie:this.form.get('serie').value,
+        codigoSubSerie: this.form.get('subserie').value,
+        id: this.form.get('identificador').value,
+        nombreUnidadDocumental:this.form.get('nombre').value
       });
     }
 

@@ -27,6 +27,7 @@ import "rxjs/add/operator/filter";
 import {AutoComplete} from "primeng/components/autocomplete/autocomplete";
 import {isNullOrUndefined} from 'util';
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {Dropdown} from "primeng/primeng";
 import {
   DATOS_CONTACTO_PRINCIPAL,
   DATOS_CONTACTO_SECUNDARIO
@@ -58,7 +59,8 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
 
-  validations: any = {};
+
+   validations: any = {};
   visibility: any = {};
 
   paisSuggestions$: Observable<PaisDTO[]>;

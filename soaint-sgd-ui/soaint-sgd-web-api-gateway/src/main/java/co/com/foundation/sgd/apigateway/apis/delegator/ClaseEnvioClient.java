@@ -12,11 +12,11 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 @Log4j2
 
-public class ClaseEnvioClient {
+public class ClaseEnvioClient implements ApiClient{
 
     private String endpoint  =  SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    @Value("${contants.modalidadcorreo.value}")
+    @Value("${contants.claseenvio.value}")
     private String tipoValue = "";
 
     public ClaseEnvioClient() {

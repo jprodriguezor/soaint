@@ -18,7 +18,7 @@ public interface IProcesarFichero {
 
     String obtenerCodigoBarra(File fileEntry) throws IOException, FormatException, ChecksumException;
 
-    void leerDirectorioEvento() throws IOException, FormatException, ChecksumException, SystemException;
+    void leerDirectorioEvento(String origen, String destino) throws IOException, FormatException, ChecksumException, SystemException;
 
     MensajeGenericoDigitalizarDTO leerDirectorio(MensajeGenericoDigitalizarDTO entradaDigitalizar) throws IOException, FormatException, ChecksumException, SystemException;
 }

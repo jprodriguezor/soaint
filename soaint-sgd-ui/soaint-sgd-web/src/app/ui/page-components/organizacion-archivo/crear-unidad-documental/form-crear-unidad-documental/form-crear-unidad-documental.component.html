@@ -14,7 +14,6 @@
                     [options] = "(seriesObservable$|async|dropdownItemSerie)"
                     (onChange)="selectSerie($event)"
                     formControlName="serie"
-                    placeholder="Seleccione"
                     [autoWidth]="false"
                   ></p-dropdown>
                   <div class="ui-message ui-messages-error"  *ngIf="form.controls['serie'].invalid && form.controls['serie'].touched">
@@ -34,7 +33,6 @@
                   <p-dropdown
                     [options] = (subseriesObservable$|async|dropdownItemSubserie)
                     formControlName="subserie"
-                    placeholder="Seleccione"
                     [autoWidth]="false"
                   ></p-dropdown>
                   <div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">

@@ -34,14 +34,14 @@ export class DatosGeneralesStateService {
   descripcionAnexos: Array<{ tipoAnexo: ConstanteDTO, descripcion: string, soporteAnexo: ConstanteDTO }> = [];
   constantesAnexos: ConstanteDTO[];
 
-  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]>;
-  unidadTiempoSuggestions$: Observable<ConstanteDTO[]>;
-  tipoAnexosSuggestions$: Observable<ConstanteDTO[]>;
-  soporteAnexosSuggestions$: Observable<any[]>;
-  medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
-  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
-  metricasTiempoTipologia$: Observable<any>;
-  defaultSelectionMediosRecepcion$: Observable<any>;
+  tipoComunicacionSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  unidadTiempoSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  tipoAnexosSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  soporteAnexosSuggestions$: Observable<any[]> = Observable.of(null);
+  medioRecepcionSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]> = Observable.of(null);
+  metricasTiempoTipologia$: Observable<any> = Observable.of(null);
+  defaultSelectionMediosRecepcion$: Observable<any> = Observable.of(null);
 
   // default values Metricas por Tipologia
   medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
