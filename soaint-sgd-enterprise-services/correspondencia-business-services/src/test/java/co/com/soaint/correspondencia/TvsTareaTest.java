@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.math.BigInteger;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by gyanet on 04/04/2018.
@@ -77,5 +76,49 @@ public class TvsTareaTest extends JPAHibernateContextTest {
         //then
         assertNotNull(tareas);
         assertEquals(3, tareas.size());
+    }
+
+    @Test
+    public void test_existByIdInstanciaProcesoAndIdTareaProceso_success() {
+        //given
+        String namedQuery = "TvsTarea.existByIdInstanciaProcesoAndIdTareaProceso";
+        String instanciaProceso = "99059";
+        String tareaProceso = "0000";
+
+        //when
+        Long count = createNamedQuery(namedQuery, Long.class)
+                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
+                .setParameter("ID_TAREA_PROCESO", tareaProceso)
+                .getSingleResult();
+
+        //then
+        assertNotNull(count);
+        assertTrue(count > 0);
+    }
+
+    @Test
+    public void test_updatePayloadByIdInstanciaProcesoAndIdTareaProceso_success() {
+        //given
+        String namedQueryUpdate = "TvsTarea.updatePayloadByIdInstanciaProcesoAndIdTareaProceso";
+        String namedQueryFindAll = "TvsTarea.findByIdInstanciaProcesoAndIdTareaProceso";
+        String instanciaProceso = "99059";
+        String tareaProceso = "0000";
+        String payload = "newPayload";
+
+        //when
+        createNamedQuery(namedQueryUpdate)
+                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
+                .setParameter("ID_TAREA_PROCESO", tareaProceso)
+                .setParameter("PAYLOAD", payload)
+                .executeUpdate();
+
+        List<TvsTarea> tareas = createNamedQuery(namedQueryFindAll, TvsTarea.class)
+                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
+                .setParameter("ID_TAREA_PROCESO", tareaProceso)
+                .getResultList();
+
+        //then
+        assertNotNull(tareas);
+        tareas.forEach(tarea -> assertEquals(payload, tarea.getPayload()));
     }
 }

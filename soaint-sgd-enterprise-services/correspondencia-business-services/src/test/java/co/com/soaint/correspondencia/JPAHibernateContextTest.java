@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.io.File;
@@ -34,5 +35,9 @@ public abstract class JPAHibernateContextTest {
 
     protected <T> TypedQuery<T> createNamedQuery(String namedQuery, Class<T> clazz) {
         return em.createNamedQuery(namedQuery, clazz);
+    }
+
+    protected Query createNamedQuery(String namedQuery) {
+        return em.createNamedQuery(namedQuery);
     }
 }
