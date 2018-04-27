@@ -13,7 +13,7 @@ import {Subscription} from "rxjs/Subscription";
   selector: 'app-form-envio',
   templateUrl: './form-envio.component.html',
 })
-export class FormEnvioComponent implements OnInit,OnDestroy {
+export class FormEnvioComponent implements OnInit{
 
   form:FormGroup;
 
@@ -22,8 +22,6 @@ export class FormEnvioComponent implements OnInit,OnDestroy {
   claseEnvio$:Observable<ConstanteDTO[]>;
 
  @Output()  onChangeFormStatus:EventEmitter<boolean> = new EventEmitter;
-
-  subscription: Subscription;
 
   constructor(private fb:FormBuilder,private _sandbox:ConstantesSandbox,private _store:Store<RootState>) {
 
@@ -35,20 +33,11 @@ export class FormEnvioComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
 
-    console.log("Enter here");
-
     this._sandbox.loaddatosEnvioDispatch();
 
     this.modalidadCorreo$ = this._store.select(getModalidadCorreoArrayData);
     this.claseEnvio$ = this._store.select(getClaseEnvioArrayData);
-
-    this.subscription = this.form.valueChanges.subscribe( () =>this.onChangeFormStatus.emit(this.form.valid));
-
   }
 
-  ngOnDestroy(){
-
-    this.subscription.unsubscribe();
-  }
 
 }
