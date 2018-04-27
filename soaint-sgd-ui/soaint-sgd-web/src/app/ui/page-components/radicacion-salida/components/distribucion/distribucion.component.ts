@@ -49,8 +49,8 @@ export class DistribucionComponent implements OnInit {
       .obtenerComunicacionPorNroRadicado(noRadicado)
       .switchMap( comunicacion => {
 
-        comunicacion.correspondencia.codModalidadEnvio =  this.formEnvio.form.get('modalidad_correo').value;
-        comunicacion.correspondencia.codClaseEnvio =  this.formEnvio.form.get('clase_envio').value;
+        comunicacion.correspondencia.codModalidadEnvio =  this.formEnvio.form.get('modalidad_correo').value.codigo;
+        comunicacion.correspondencia.codClaseEnvio =  this.formEnvio.form.get('clase_envio').value.codigo;
 
 
        return this._comunicacionSandbox.actualizarComunicacion(comunicacion);
