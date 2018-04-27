@@ -25,6 +25,7 @@ import {environment} from '../../../../environments/environment';
 import {DocumentUploaded} from './events/DocumentUploaded';
 import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 import {AlertComponent} from "../../bussiness-components/notifications/alert/alert.component";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'produccion-documental',
@@ -223,7 +224,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         return false;
       }
 
-        if (!this.hasAprobador()) {
+       if (!this.hasAprobador()) {
             console.log(`No hay aprobador`);
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe especificar al menos un aprobador'}));
             return false;
@@ -316,7 +317,16 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     hasAprobador() {
 
-       return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
+    const listaProyectores = this.gestionarProduccion.getListaProyectores();
+
+      return listaProyectores.length  > 1 // this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
+    }
+
+    showContinuarButton():boolean{
+
+      const listaProyectores = this.gestionarProduccion.getListaProyectores();
+
+     return this.status === 1 && !isNullOrUndefined(this.task) ;
     }
 
 
