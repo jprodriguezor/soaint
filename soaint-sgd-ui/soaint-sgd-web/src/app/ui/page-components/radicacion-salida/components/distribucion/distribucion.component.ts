@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Sandbox as TaskSandbox} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox";
 import {Sandbox as AsignacionSandbox} from "../../../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
@@ -21,6 +21,8 @@ export class DistribucionComponent implements OnInit {
   task:TareaDTO;
 
   activeTaskUnsubscriber:Subscription;
+
+  @ViewChild('formEnvio') formEnvio;
 
   constructor(
     private fb:FormBuilder,
@@ -45,7 +47,14 @@ export class DistribucionComponent implements OnInit {
 
     this._asignacionSandbox
       .obtenerComunicacionPorNroRadicado(noRadicado)
-      .switchMap( comunicacion => this._comunicacionSandbox.actualizarComunicacion(comunicacion))
+      .switchMap( comunicacion => {
+
+        comunicacion.correspondencia.codModalidadEnvio =  this.formEnvio.form.get('modalidad_correo').value;
+        comunicacion.correspondencia.codClaseEnvio =  this.formEnvio.form.get('clase_envio').value;
+
+
+       return this._comunicacionSandbox.actualizarComunicacion(comunicacion);
+      })
       .subscribe(() => {
 
         this._taskSandbox.completeTaskDispatch({
@@ -58,13 +67,6 @@ export class DistribucionComponent implements OnInit {
         });
       });
 
-  }
-
-  checkFormValid(isValid:boolean){
-
-    console.log(isValid);
-
-    this.validForm = isValid;
   }
 
 
