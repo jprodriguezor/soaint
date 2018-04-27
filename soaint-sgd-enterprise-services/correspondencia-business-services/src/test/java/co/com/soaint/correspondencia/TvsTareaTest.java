@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -62,5 +63,19 @@ public class TvsTareaTest extends JPAHibernateContextTest {
         assertNotNull(tarea);
         assertEquals(tarea.getIdInstanciaProceso(), "99059");
         assertEquals(tarea.getIdTareaProceso(), "0000");
+    }
+
+    @Test
+    public void test_findAll_success() {
+        //given
+        String namedQuery = "TvsTarea.findAll";
+
+        //when
+        List<TvsTarea> tareas = createNamedQuery(namedQuery, TvsTarea.class)
+                .getResultList();
+
+        //then
+        assertNotNull(tareas);
+        assertEquals(3, tareas.size());
     }
 }
