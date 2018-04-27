@@ -1,7 +1,7 @@
 <div class="ui-fluid radicar-comunicaciones">
   <app-task-container>
     <div customActions>
-      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"  (click)="save()" [disabled]="formEnvio.form.invalid || task === null" ></button>
+      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"  (click)="save()" [disabled]="formEnvio.form.invalid "  *ngIf="showButtonSave$|async"></button>
     </div>
     <div taskBody>
 
