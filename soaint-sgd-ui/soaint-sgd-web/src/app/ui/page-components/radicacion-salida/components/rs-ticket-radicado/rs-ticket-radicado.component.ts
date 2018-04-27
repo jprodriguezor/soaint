@@ -21,6 +21,7 @@ export class RsTicketRadicado implements  TicketRadicado {
   , public  destinatarioSede?: string
   , public  destinatarioGrupo?: string) {
 
+
   }
 
   isInterno(): boolean {

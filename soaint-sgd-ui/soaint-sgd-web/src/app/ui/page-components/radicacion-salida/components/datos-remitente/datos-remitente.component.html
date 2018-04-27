@@ -15,7 +15,9 @@
                           id="sedeAdministrativa"
                           formControlName="sedeAdministrativa"
                           placeholder="Seleccione"
-                          [autoWidth]="false">
+                          [autoWidth]="false"
+                          [disabled]="loadCurrentUserData"
+              >
               </p-dropdown>
             </div>
           </div>
@@ -31,7 +33,9 @@
                           id="dependenciaGrupo"
                           formControlName="dependenciaGrupo"
                           placeholder="Seleccione"
-                          [autoWidth]="false">
+                          [autoWidth]="false"
+                          [disabled]="loadCurrentUserData"
+              >
               </p-dropdown>
             </div>
           </div>
@@ -47,7 +51,9 @@
                           id="funcionarioGrupo"
                           formControlName="funcionarioGrupo"
                           placeholder="Seleccione"
-                          [autoWidth]="false">
+                          [autoWidth]="false"
+                          [disabled]="loadCurrentUserData"
+              >
               </p-dropdown>
             </div>
           </div>

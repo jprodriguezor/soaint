@@ -1,17 +1,5 @@
 
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  AfterViewInit,
-  OnInit,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-  ViewChildren, QueryList, ChangeDetectionStrategy
-} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, AfterViewInit , OnInit,Output, EventEmitter, ViewChild, ElementRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from 'app/domain/constanteDTO';
 import {Store} from '@ngrx/store';
@@ -70,7 +58,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   @ViewChild('paisAutoComplete') paisAutoComplete: AutoComplete;
   @ViewChild('departamentoAutoComplete') departamentoAutoComplete: AutoComplete;
   @ViewChild('municipioAutoComplete') municipioAutoComplete: AutoComplete;
-  direccionText:Observable<string>;
+
 
    validations: any = {};
   visibility: any = {};
@@ -485,11 +473,7 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-
-      this.refreshView();
-
-
-
+    this.refreshView();
   }
 
   addColombiaByDefault() {
@@ -500,7 +484,6 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
      .subscribe((values) => {
        this.paises = values;
        this.form.get('pais').setValue(values.find(value => value.codigo === 'CO'));
-
        setTimeout(() => subscription.unsubscribe());
      });
 
@@ -579,5 +562,3 @@ export class DatosDireccionComponent implements OnInit, OnDestroy, AfterViewInit
     });
   }
 }
-
-

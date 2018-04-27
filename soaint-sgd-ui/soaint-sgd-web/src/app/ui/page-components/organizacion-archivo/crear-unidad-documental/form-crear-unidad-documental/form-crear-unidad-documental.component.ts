@@ -87,8 +87,6 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
             return list;
           })
         : Observable.empty();
-
-
     }
 
   relacionarUD(){
@@ -117,7 +115,7 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries{
       accept: () => {
 
         this.udService.crear({
-          ubicacionTopografica:this.formAsignarUT.value,
+          //ubicacionTopografica:this.formAsignarUT.value,
           codigoSede:this.dependenciaSelected.codSede,
           codigoDependencia:this.dependenciaSelected.codigo,
           codigoSerie:this.form.get('serie').value,

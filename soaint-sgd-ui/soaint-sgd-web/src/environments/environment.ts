@@ -28,6 +28,8 @@ export const environment = {
   tipoComunicacionSalida_endpoint: `${host}/tipo-comunicacion-salida-gateway-api`,
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
   soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
+  modalidadCorreo_endpoint: `${host}/modalidad-correo-gateway-api`,
+  claseEnvio_endpoint: `${host}/clase-envio-gateway-api`,
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
@@ -53,7 +55,7 @@ export const environment = {
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
-  radicarSalida_endpoint: `${host}/correspondencia-gateway-api/radicar_salida`,
+  radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
   obtenerFuncionario_endpoint: `${host}/funcionario-gateway-api`,
   listarFuncionarios_endpoint: `${host}/funcionario-gateway-api/funcionarios`,
@@ -68,6 +70,8 @@ export const environment = {
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
+
+
   carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
   carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
   carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,

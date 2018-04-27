@@ -12,6 +12,14 @@
                        inmutable="true"
                        emptyMessage="No tiene documentos asociados">
             <!--<p-header>Redirecciones / Devoluciones Fallidas</p-header>-->
+            <p-column  header="Principal" [sortable]="true" *ngIf="!versionar">
+              <ng-template let-row="rowData" pTemplate="item">
+                <div style="text-align: center">
+                <i class="material-icons checked" *ngIf="row.tipoPadreAdjunto==='Principal'"  >checked</i>
+                <i class="material-icons red" *ngIf="row.tipoPadreAdjunto!='Principal'" >close</i>
+                </div>
+              </ng-template>
+            </p-column>
             <p-column field="nombreDocumento" header="Nombre" [sortable]="true"></p-column>
             <p-column field="tamano" header="Tamaño" [sortable]="true">
               <ng-template let-col let-row="rowData" pTemplate="body">

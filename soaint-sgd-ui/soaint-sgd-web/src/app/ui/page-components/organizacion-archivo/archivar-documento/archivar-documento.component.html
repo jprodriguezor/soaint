@@ -1,0 +1,28 @@
+<div class="ui-fluid archivar-documento">
+  <app-task-container>
+    <div customActions>
+       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()"  [disabled]="!buttonSaveIsEnabled()"></button>
+    </div>
+      <div taskBody>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <div class="card card-w-title">
+              <app-seleccionar-unidad-documental   *ngIf="currentPage === 1" [archivarDocumentoModel]="archivarDocumentoModel" [solicitudModel]="solicitudUDModel"  (onChangeSection)="toggleEnableButtonNext($event)" ></app-seleccionar-unidad-documental>
+
+              <app-seleccionar-documentos *ngIf="currentPage  === 2" [archivarDocumentoModel]= "archivarDocumentoModel"></app-seleccionar-documentos>
+
+              <div class="ui-g ui-fluid">
+                <div class="ui-g-12" style="padding-top: 20px">
+                  <button *ngIf="currentPage===1" pButton type="button" label="Siguiente"  [disabled]="!enableButtonNext" (click)="next()"
+                          style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px"></button>
+
+                    <button *ngIf="currentPage === 2" type="button" pButton label="Anterior" (click)="prev()" style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px"></button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </app-task-container>
+</div>
