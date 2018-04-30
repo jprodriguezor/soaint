@@ -75,6 +75,31 @@ public class DatosContactoControl {
     }
 
     /**
+     * @param agenteDTOList
+     * @return
+     */
+    public List<DatosContactoDTO> consultarDatosContactoByAgentesCorreo(List<AgenteDTO> agenteDTOList) throws SystemException {
+        List<DatosContactoDTO> datosContactoDTOList = new ArrayList<>();
+        try {
+            agenteDTOList.stream().forEach(agenteDTO -> {
+                    em.createNamedQuery("TvsDatosContacto.findByIdeAgente", DatosContactoDTO.class)
+                            .setParameter("IDE_AGENTE", agenteDTO.getIdeAgente())
+                            .getResultList()
+                            .stream()
+                            .forEach(datosContactoDTOList::add);
+
+            });
+            return datosContactoDTOList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param contactoDTO
      * @return
      */
