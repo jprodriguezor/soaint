@@ -1047,11 +1047,9 @@ public class CorrespondenciaControl {
         request.setSubject(asunto);
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
         String endpoint = System.getProperty("ecm-api-endpoint");
-        //TODO: Remover este endpoint cableado.
-        //String endpoint = "http://192.168.1.81:28080/ecm-integration-services/apis/ecm";
+
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        //TODO: hacer dinamico la obtencion del numero de radicado
-        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado("1040EE2018000030").build();
+        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
         Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
                 .request()
                 .post(Entity.json(dto));
