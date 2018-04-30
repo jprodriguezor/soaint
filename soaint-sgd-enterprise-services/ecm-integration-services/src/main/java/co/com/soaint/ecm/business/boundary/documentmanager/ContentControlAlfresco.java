@@ -1303,12 +1303,17 @@ public class ContentControlAlfresco implements ContentControl {
                 } else {
                     documentoDTO.setTipoPadreAdjunto("Principal");
                 }
+                Document document = (Document) session.getObject(session.createObjectId(idDocumento));
                 documentoDTO.setNombreDocumento(qResult.getPropertyValueByQueryName(PropertyIds.NAME));
                 GregorianCalendar newGregCal = qResult.getPropertyValueByQueryName(PropertyIds.CREATION_DATE);
                 documentoDTO.setFechaCreacion(newGregCal.getTime());
                 documentoDTO.setTipologiaDocumental(qResult.getPropertyValueByQueryName(CMCOR_TIPOLOGIA_DOCUMENTAL));
                 documentoDTO.setTipoDocumento(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_MIME_TYPE).toString());
                 documentoDTO.setTamano(qResult.getPropertyValueByQueryName(PropertyIds.CONTENT_STREAM_LENGTH).toString());
+
+                File file = convertInputStreamToFile(document.getContentStream());
+                byte[] data = FileUtils.readFileToByteArray(file);
+                documentoDTO.setDocumento(data);
                 String nroRadicado = qResult.getPropertyValueByQueryName(CMCOR_NRO_RADICADO);
                 if (ObjectUtils.isEmpty(nroRadicado))
                     nroRadicado = "";

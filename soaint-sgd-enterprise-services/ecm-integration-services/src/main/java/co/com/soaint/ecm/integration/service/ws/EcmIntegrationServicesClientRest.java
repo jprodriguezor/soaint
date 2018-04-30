@@ -286,7 +286,7 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/devolverSerieOSubserieECM/")
-    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws Exception {
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
