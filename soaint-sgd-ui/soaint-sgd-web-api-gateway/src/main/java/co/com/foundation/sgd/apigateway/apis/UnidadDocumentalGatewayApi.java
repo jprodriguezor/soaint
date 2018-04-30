@@ -87,7 +87,7 @@ public class UnidadDocumentalGatewayApi {
         }
         catch (Exception ex) {
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            return Response.ok().entity(respuestaEntity).build();
             log.info(ex.getMessage());
         }
 
@@ -105,7 +105,7 @@ public class UnidadDocumentalGatewayApi {
         }
         catch (Exception ex) {
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            return Response.ok().entity(respuestaEntity).build();
             log.info(ex.getMessage());
         }
     }
@@ -123,7 +123,7 @@ public class UnidadDocumentalGatewayApi {
         }
         catch (Exception ex) {
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            return Response.ok().entity(respuestaEntity).build();
             log.info(ex.getMessage());
         }
     }
