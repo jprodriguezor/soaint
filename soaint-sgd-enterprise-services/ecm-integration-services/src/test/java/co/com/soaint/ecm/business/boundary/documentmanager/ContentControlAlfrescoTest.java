@@ -180,6 +180,11 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void listarUnidadDocumental() {
+        try {
+            assertEquals("0000",contentControlAlfresco.listarUnidadDocumental(unidadDocumentalDTO,conexion.getSession()).getCodMensaje());
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

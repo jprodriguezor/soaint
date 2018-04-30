@@ -566,7 +566,7 @@ public class ContentControlAlfresco implements ContentControl {
         final MensajeRespuesta respuesta = new MensajeRespuesta();
         final List<UnidadDocumentalDTO> unidadDocumentalDTOS = buscarUnidadesDocumentales(dto, session, false);
         respuesta.setMensaje("Listado seleccionado correctamente");
-        respuesta.setCodMensaje("00000");
+        respuesta.setCodMensaje("0000");
         Map<String, Object> map = new HashMap<>();
         map.put("unidadDocumental", unidadDocumentalDTOS);
         respuesta.setResponse(map);
