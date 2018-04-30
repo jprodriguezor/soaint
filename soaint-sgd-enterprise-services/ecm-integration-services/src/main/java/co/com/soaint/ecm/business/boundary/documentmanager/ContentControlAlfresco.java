@@ -580,10 +580,9 @@ public class ContentControlAlfresco implements ContentControl {
 
     private List<UnidadDocumentalDTO> buscarUnidadesDocumentales(UnidadDocumentalDTO dto, Session session, boolean all) throws BusinessException {
         try {
-            List<UnidadDocumentalDTO> unidadDocumentalDTOS;
-            if (!ObjectUtils.isEmpty(dto.getAccion())) {
-                AccionUsuario accionUsuario = AccionUsuario.valueOf(dto.getAccion().toUpperCase());
-                unidadDocumentalDTOS = listarUnidadDocumental(accionUsuario, session);
+            final boolean isDtoEmpty = ObjectUtils.isEmpty(dto);
+            if (!isDtoEmpty && !StringUtils.isEmpty(dto.getAccion())) {
+                return listarUnidadDocumentalPorAccion(dto, session);
             } else {
                 String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
                 boolean where = false;
@@ -592,56 +591,55 @@ public class ContentControlAlfresco implements ContentControl {
                     query += " WHERE " + CMCOR_UD_ID + " IS NOT NULL";
                     where = true;
                 }
-                if (!ObjectUtils.isEmpty(dto.getCodigoUnidadDocumental())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_CODIGO + " = '" + dto.getCodigoUnidadDocumental() + "'";
-                    where = true;
+                if (!isDtoEmpty) {
+                    if (!ObjectUtils.isEmpty(dto.getCodigoUnidadDocumental())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_CODIGO + " = '" + dto.getCodigoUnidadDocumental() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getDescriptor2())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_2 + " LIKE '%" + dto.getDescriptor2() + "%'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getSoporte())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_SOPORTE + " = '" + dto.getSoporte() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getInactivo())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_INACTIVO + " = '" + dto.getInactivo() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getDescriptor1())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_1 + " LIKE '%" + dto.getDescriptor1() + "%'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getCerrada())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_CERRADA + " = '" + dto.getCerrada() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getCodigoSerie())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_SER_CODIGO + " = '" + dto.getCodigoSerie() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getCodigoSubSerie())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_SS_CODIGO + " = '" + dto.getCodigoSubSerie() + "'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getNombreUnidadDocumental())) {
+                        query += (!where ? " WHERE " : " AND ") + PropertyIds.NAME + " LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
+                        where = true;
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_DEP_CODIGO + " = '" + dto.getCodigoDependencia() + "'";
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getEstado())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
+                    }
+                    if (!ObjectUtils.isEmpty(dto.getDisposicion())) {
+                        query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DISPOSICION + " = '" + dto.getDisposicion() + "'";
+                    }
                 }
-                if (!ObjectUtils.isEmpty(dto.getDescriptor2())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_2 + " LIKE '%" + dto.getDescriptor2() + "%'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getSoporte())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_SOPORTE + " = '" + dto.getSoporte() + "'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getInactivo())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_INACTIVO + " = '" + dto.getInactivo() + "'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getDescriptor1())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DESCRIPTOR_1 + " LIKE '%" + dto.getDescriptor1() + "%'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getCerrada())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_CERRADA + " = '" + dto.getCerrada() + "'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getCodigoSerie())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_SER_CODIGO + " = '" + dto.getCodigoSerie() + "'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getCodigoSubSerie())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_SS_CODIGO + " = '" + dto.getCodigoSubSerie() + "'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getNombreUnidadDocumental())) {
-                    query += (!where ? " WHERE " : " AND ") + PropertyIds.NAME + " LIKE '%" + dto.getNombreUnidadDocumental() + "%'";
-                    where = true;
-                }
-                if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_DEP_CODIGO + " = '" + dto.getCodigoDependencia() + "'";
-                }
-                if (!ObjectUtils.isEmpty(dto.getEstado())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
-                }
-                if (!ObjectUtils.isEmpty(dto.getDisposicion())) {
-                    query += (!where ? " WHERE " : " AND ") + CMCOR_UD_DISPOSICION + " = '" + dto.getDisposicion() + "'";
-                }
-                unidadDocumentalDTOS = listarUnidadDocumental(query, dto, session);
+                return listarUnidadDocumental(query, dto, session);
             }
-
-            return unidadDocumentalDTOS;
-
         } catch (Exception e) {
             logger.error("Error al Listar las Unidades Documentales");
             throw new BusinessException("Error al Listar las Unidades Documentales");
@@ -667,13 +665,16 @@ public class ContentControlAlfresco implements ContentControl {
     /**
      * Listar las Unidades Documentales del ECM
      *
-     * @param accionUsuario Resultado se muestra segun la accion a realizar
+     * @param dto Resultado se muestra segun la accion a realizar
      * @return List<UnidadDocumentalDTO> Lst
      */
-    private List<UnidadDocumentalDTO> listarUnidadDocumental(AccionUsuario accionUsuario, Session session) throws BusinessException {
+    private List<UnidadDocumentalDTO> listarUnidadDocumentalPorAccion(UnidadDocumentalDTO dto, Session session) throws BusinessException {
         try {
+            AccionUsuario accionUsuario = AccionUsuario.valueOf(dto.getAccion().toUpperCase());
             String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
                     " WHERE " + CMCOR_UD_FECHA_INICIAL + " IS NOT NULL AND " + CMCOR_UD_SOPORTE + " IS NOT NULL";
+            String dependencyCode = dto.getCodigoDependencia();
+            query += !StringUtils.isEmpty(dependencyCode) ? " AND " + CMCOR_DEP_CODIGO + " LIKE '" + dependencyCode + "%'" : "";
             switch (accionUsuario) {
                 case ABRIR:
                 case REACTIVAR:
@@ -723,7 +724,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> mapResponsonse = new HashMap<>();
             mapResponsonse.put("documentoDTO", transformarDocumento((Document) cmisObjectDocument));
             mensajeRespuesta.setMensaje("Documento devuelto correctamente");
-            mensajeRespuesta.setCodMensaje("00000");
+            mensajeRespuesta.setCodMensaje("0000");
             mensajeRespuesta.setResponse(mapResponsonse);
 
             return mensajeRespuesta;
@@ -909,8 +910,8 @@ public class ContentControlAlfresco implements ContentControl {
                 fechaInicial : folder.getPropertyValue(CMCOR_UD_FECHA_INICIAL));
 
         Calendar fechaFinal = !ObjectUtils.isEmpty(unidadDocumentalDTO.getFechaExtremaFinal()) ? unidadDocumentalDTO.getFechaExtremaFinal() : null;
-        props.put(CMCOR_UD_FECHA_INICIAL, (!isEmptyFolder && !ObjectUtils.isEmpty(fechaFinal) || isEmptyFolder) ?
-                fechaFinal : folder.getPropertyValue(CMCOR_UD_FECHA_INICIAL));
+        props.put(CMCOR_UD_FECHA_FINAL, (!isEmptyFolder && !ObjectUtils.isEmpty(fechaFinal) || isEmptyFolder) ?
+                fechaFinal : folder.getPropertyValue(CMCOR_UD_FECHA_FINAL));
 
         Calendar fechaAutoCierre = !ObjectUtils.isEmpty(unidadDocumentalDTO.getFechaAutoCierre()) ? unidadDocumentalDTO.getFechaAutoCierre() : null;
         props.put(CMCOR_UD_FECHA_AUTO_CIERRE, (!isEmptyFolder && !ObjectUtils.isEmpty(fechaAutoCierre) || isEmptyFolder) ?
