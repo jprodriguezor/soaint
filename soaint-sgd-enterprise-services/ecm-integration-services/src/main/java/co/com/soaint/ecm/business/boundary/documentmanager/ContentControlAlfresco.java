@@ -370,9 +370,9 @@ public class ContentControlAlfresco implements ContentControl {
                 logger.error("Oopss... No se ha especificado el codigo de la dependencia");
                 throw new BusinessException("No se ha especificado el codigo de la dependencia");
             }
-            String queryString = "SELECT * FROM cmcor:CM_Serie WHERE " + CMCOR_DEP_CODIGO + " = '" + dependenciaTrdDTO.getIdOrgOfc() + "'";
+            String queryString = "SELECT * FROM cmcor:CM_Serie WHERE " + CMCOR_DEP_CODIGO + " LIKE '" + dependenciaTrdDTO.getIdOrgOfc() + "%'";
             queryString += (!StringUtils.isEmpty(dependenciaTrdDTO.getCodSerie())) ?
-                    " AND " + CMCOR_SER_CODIGO + " = '" + dependenciaTrdDTO.getCodSerie() + "'" : "";
+                    " AND " + CMCOR_SER_CODIGO + " LIKE '" + dependenciaTrdDTO.getCodSerie() + "%'" : "";
             ItemIterable<QueryResult> results = session.query(queryString, false);
             if (results.getPageNumItems() > 0) {
                 List<SerieDTO> serieLista = new ArrayList<>();
@@ -392,10 +392,8 @@ public class ContentControlAlfresco implements ContentControl {
                         serieLista.add(serieLista.size(), serieDTO);
                     }
                 }
-
                 dependenciaTrdDTO.setListaSerie(serieLista);
                 dependenciaTrdDTO.setListaSubSerie(subSerieLista);
-
                 respuesta.setCodMensaje("0000");
                 respuesta.setMensaje("Series o Subseries devueltas correctamente");
                 List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
