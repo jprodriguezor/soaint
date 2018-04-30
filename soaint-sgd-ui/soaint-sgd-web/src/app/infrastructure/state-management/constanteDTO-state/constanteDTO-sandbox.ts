@@ -80,7 +80,7 @@ export class Sandbox extends CacheResponse {
         break;
     }
 
-    if (endpoint !== null) {
+    if (endpoint !== null) { console.log(endpoint);
 
       return this.getResponse(payload,this._api.list(endpoint, payload), endpoint);
     }

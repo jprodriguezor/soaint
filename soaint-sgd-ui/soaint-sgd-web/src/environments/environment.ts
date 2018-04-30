@@ -70,6 +70,8 @@ export const environment = {
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
+
+
   carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
   carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
   carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
