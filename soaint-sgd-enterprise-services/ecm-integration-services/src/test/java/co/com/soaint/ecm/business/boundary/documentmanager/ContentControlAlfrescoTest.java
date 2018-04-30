@@ -1,8 +1,10 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +40,8 @@ public class ContentControlAlfrescoTest {
     private MensajeRespuesta mensajeRespuesta1;
     private DocumentoDTO documentoDTO1;
     private DocumentoDTO documentoDTO2;
+    private ContenidoDependenciaTrdDTO dependenciaTrdDTO;
+    private UnidadDocumentalDTO unidadDocumentalDTO;
     @Before
     public void Setup() {
         conexion = new Conexion();
@@ -101,6 +107,28 @@ public class ContentControlAlfrescoTest {
         documentoDTO2.setCodigoSede("1000");
         documentoDTO2.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
         documentoDTO2.setCodigoDependencia("10001040");
+
+
+        //Se crea el objeto que contiene la dependencia de prueba dependenciaTrdDTO
+        dependenciaTrdDTO=new ContenidoDependenciaTrdDTO();
+        dependenciaTrdDTO.setIdOrgAdm("1000");
+        dependenciaTrdDTO.setIdOrgOfc("10001010");
+
+        //Se llenan los datos de la unidad documental
+        unidadDocumentalDTO=new UnidadDocumentalDTO();
+        unidadDocumentalDTO.setInactivo(true);
+        //Calendar calendar
+        Calendar gregorianCalendar= GregorianCalendar.getInstance();
+        unidadDocumentalDTO.setFechaCierre(gregorianCalendar);
+        unidadDocumentalDTO.setId("1118");
+        unidadDocumentalDTO.setFechaExtremaInicial(gregorianCalendar);
+        unidadDocumentalDTO.setSoporte("electronico");
+        unidadDocumentalDTO.setNombreUnidadDocumental("UnidadDocumentalTest");
+        unidadDocumentalDTO.setFechaExtremaFinal(gregorianCalendar);
+        unidadDocumentalDTO.setCerrada(true);
+        unidadDocumentalDTO.setCodigoSubSerie("02312");
+        unidadDocumentalDTO.setCodigoSerie("0231");
+        unidadDocumentalDTO.setCodigoDependencia("10001040");
     }
 
     @After
@@ -120,11 +148,34 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void devolverSerieSubSerie() {
+    public void test_devolverSerieSubSerie_success() {
+    //Prueba Existosa para devolver serie subserie
+        try {
+            assertEquals("0000", contentControlAlfresco.devolverSerieSubSerie(dependenciaTrdDTO, conexion.getSession()).getCodMensaje());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Prueba ara cuadno se pasa vacio el objeto contenidoDependenciaTrdDTO
+        ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO=new ContenidoDependenciaTrdDTO();
+        try {
+            contentControlAlfresco.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
+        } catch (Exception e) {
+            e.printStackTrace();
+        assertEquals("No se ha especificado el codigo de la dependencia",e.getMessage());
+        }
     }
 
     @Test
-    public void crearUnidadDocumental() {
+    public void test_crearUnidadDocumental_success() {
+       //Crear unidad documental
+        try {
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO,conexion.getSession());
+            assertEquals("0000",mensajeRespuesta.getCodMensaje());
+            UnidadDocumentalDTO unidadDocumentalDTO=(UnidadDocumentalDTO)mensajeRespuesta.getResponse().get("unidadDocumental");
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),conexion.getSession());
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
