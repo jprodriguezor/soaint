@@ -1,6 +1,8 @@
 package co.com.soaint.correspondencia;
 
 import co.com.soaint.foundation.canonical.correspondencia.PlantillaDTO;
+import co.com.soaint.foundation.canonical.correspondencia.ConstanteDTO;
+
 import co.com.soaint.correspondencia.domain.entity.TvsPlantilla;
 
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by gyanet on 04/04/2018.
@@ -55,12 +58,17 @@ public class TvsPlantillaTest extends JPAHibernateContextTest {
         String estado = "A";
 
         //when
-        List<PlantillaDTO> plantillaByestado= createNamedQuery(namedQuery, PlantillaDTO.class)
+        List<ConstanteDTO> plantillaByestado= createNamedQuery(namedQuery, ConstanteDTO.class)
            .setParameter("ESTADO", estado)
-                .getResultList();
+            .getResultList();
+        int size=plantillaByestado.size();
+        ConstanteDTO ss=plantillaByestado.get(0);
 
         //then
         assertNotNull(plantillaByestado);
+        assertEquals(1,size);
+        assertTrue(size>0);
+
 
 
     }
