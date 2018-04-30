@@ -718,7 +718,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> mapResponsonse = new HashMap<>();
             mapResponsonse.put("documentoDTO", transformarDocumento((Document) cmisObjectDocument));
             mensajeRespuesta.setMensaje("Documento devuelto correctamente");
-            mensajeRespuesta.setCodMensaje("00000");
+            mensajeRespuesta.setCodMensaje("0000");
             mensajeRespuesta.setResponse(mapResponsonse);
 
             return mensajeRespuesta;
