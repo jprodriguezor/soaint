@@ -543,11 +543,11 @@ public class RecordServices implements IRecordServices {
             where = true;
             query += " WHERE rmc:xSeccion = '" + dto.getCodigoDependencia() + "'";
         }
-        if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
+        if (!ObjectUtils.isEmpty(dto.getCodigoSerie())) {
             query += (where ? " AND " : " WHERE ") + "rmc:xCodSerie = '" + dto.getCodigoSerie() + "'";
             where = true;
         }
-        if (!ObjectUtils.isEmpty(dto.getCodigoDependencia())) {
+        if (!ObjectUtils.isEmpty(dto.getCodigoSubSerie())) {
             query += (where ? " AND " : " WHERE ") + "rmc:xCodSubSerie = '" + dto.getCodigoSubSerie() + "'";
         }
 
