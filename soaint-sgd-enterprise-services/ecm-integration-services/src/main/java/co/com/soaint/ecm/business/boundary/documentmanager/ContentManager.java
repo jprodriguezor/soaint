@@ -335,25 +335,13 @@ public class ContentManager {
      * @param contenidoDependenciaTrdDTO Objeto que contiene los datos para realizar la busqueda
      * @return Objeto response
      */
-    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
-        MensajeRespuesta response = new MensajeRespuesta();
+    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws Exception {
         logger.info("### Obteniendo las series y subseries del content..");
-
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de devolver serie o subserie..");
-            response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
-            logger.info("Series o subseries devueltas exitosamente");
-
-        } catch (Exception e) {
-            logger.error("Error obteniendo las series o subseries", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error obteniendo las series o subseries");
-
-        }
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        logger.info("### Se invoca el metodo de devolver serie o subserie..");
+        MensajeRespuesta response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
+        logger.info("Series o subseries devueltas exitosamente");
         return response;
     }
 
