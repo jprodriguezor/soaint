@@ -292,7 +292,10 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
         } catch (Exception e) {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
-            throw e;
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("1112");
+            respuesta.setMensaje("Error del Sistema: " + e.getMessage());
+            return respuesta;
         }
     }
 
