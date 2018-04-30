@@ -86,7 +86,7 @@ public class TvsTareaTest extends JPAHibernateContextTest {
         String tareaProceso = "0000";
 
         //when
-        Long count = createNamedQuery(namedQuery, Long.class)
+        Long count = createNamedQuery(namedQuery,Long.class)
                 .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
                 .setParameter("ID_TAREA_PROCESO", tareaProceso)
                 .getSingleResult();
