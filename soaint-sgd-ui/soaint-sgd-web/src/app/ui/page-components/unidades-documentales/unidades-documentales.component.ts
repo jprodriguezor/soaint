@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, IterableDiffers, DoCheck } from '@angular/core';
-import { StateUnidadDocumentalService } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UnidadDocumentalApiService } from 'app/infrastructure/api/unidad-documental.api';
 import { Store } from '@ngrx/store';
@@ -27,7 +27,7 @@ import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
   templateUrl: './unidades-documentales.component.html',
   styleUrls: ['./unidades-documentales.component.css'],
 })
-export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck {
+export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
 
   // contiene:
   // formulario, configuración y validación
@@ -46,26 +46,23 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck 
   OpcionSeleccionada: number;
   requiereSubserie: boolean;
 
-  // control de cambios en array
-  differ: any;
 
   constructor(
     private state: StateUnidadDocumentalService,
     private _store: Store<State>,
     private _taskSandBox: TaskSandBox,
-    private _differs: IterableDiffers,
     private _detectChanges: ChangeDetectorRef,
     private fb: FormBuilder,
 
   ) {
     this.State = this.state;
-    this.differ = _differs.find([]).create(null);
   }
 
   ngOnInit() {
     this.OpcionSeleccionada = 0 // abrir
     this.InitForm();
-    this.SetFormSubscriptions();
+    this.SetFormSubscriptions();        
+    this.SetListadoSubscriptions(); // solucion para el problema de actualización del componente datatable de primeng
     this.InitPropiedadesTarea();
 
   }
@@ -100,22 +97,26 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck 
     const subserie = 'subserie';
     this.subscribers.push(
         this.formBuscar.get('serie').valueChanges.distinctUntilChanged().subscribe(value => {
-          this.formBuscar.controls[subserie].reset();  
-          this.State.GetSubSeries(value, this.codDependencia)
-          .subscribe(result => {
-            this.State.ListadoSubseries =  !isNullOrUndefined(result) ? result : [];
-            if(this.State.ListadoSubseries.length) {
-              setTimeout(() => {
-                this.formBuscar.controls[subserie].setValidators([Validators.required]);
-                this.formBuscar.controls[subserie].updateValueAndValidity();
-              }, 0);
-            } else {
-              this.formBuscar.controls[subserie].clearValidators();
-              this.formBuscar.controls[subserie].updateValueAndValidity();
-              this.validations[subserie] = '';
-            }            
-           });         
+          if (value) {
+            this.formBuscar.controls[subserie].reset();  
+            this.State.GetSubSeries(value, this.codDependencia)
+            .subscribe(result => {
+              this.State.ListadoSubseries =  !isNullOrUndefined(result) ? result : [];
+              if(this.State.ListadoSubseries.length) {
+                setTimeout(() => {
+                  this.formBuscar.controls[subserie].setValidators([Validators.required]);
+                  this.formBuscar.controls[subserie].updateValueAndValidity();
+                }, 0);
+              }     
+             });        
+          } 
         }));
+    }
+
+    SetListadoSubscriptions() {
+      this.subscribers.push(this.State.ListadoActualizado$.subscribe(()=>{
+        this._detectChanges.detectChanges();
+      }));
     }
 
   ResetForm() {
@@ -123,8 +124,11 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck 
     this.State.ListadoSubseries = [];
     this.State.ListadoUnidadDocumental = [];
     this.validations = [];
+    this.formBuscar.controls['subserie'].clearValidators();
+    this.formBuscar.controls['subserie'].updateValueAndValidity();
     this._detectChanges.detectChanges();
   }
+
 
   HabilitarOpcion(opcion: number) {
     if (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[opcion]) {
@@ -166,13 +170,6 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck 
     return payload;
   }
 
-  ngDoCheck() {
-    const change = this.differ.diff(this.State.ListadoUnidadDocumental);
-    if (change) {
-      this._detectChanges.detectChanges();
-    }
-  }
-
   InitPropiedadesTarea() {
     this._store.select(getActiveTask).subscribe((activeTask) => {
         this.task = activeTask;
@@ -184,7 +181,6 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit, DoCheck 
             .subscribe(resp => {
               this.State.ListadoSeries = resp;
             });          
-            this.State.Listar(this.GetPayload(UnidadDocumentalAccion.Abrir));
         }
     });
   }

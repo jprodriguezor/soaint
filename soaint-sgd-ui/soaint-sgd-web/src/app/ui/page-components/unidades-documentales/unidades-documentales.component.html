@@ -19,9 +19,9 @@
         <div class="ui-g ui-fluid">   
             <div class="ui-sm-12 ui-g-6 ui-lg-12">
                 <div class="ui-g form-group">
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="OpcionSeleccionada" ></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="OpcionSeleccionada"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="OpcionSeleccionada"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
                
                 </div>
               </div>      
