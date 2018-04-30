@@ -60,6 +60,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
 
   ngOnInit() {
     this.OpcionSeleccionada = 0 // abrir
+    this.State.ListadoUnidadDocumental = [];
     this.InitForm();
     this.SetFormSubscriptions();        
     this.SetListadoSubscriptions(); // solucion para el problema de actualización del componente datatable de primeng

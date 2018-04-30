@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class UnidadDocumentalGatewayApi {
 
     @Autowired
     private ECMClient ecmClient;
+
+    private String MensajeErrorGenerico = "Ocurrió un error inesperado con el servicio ECM";
 
     public UnidadDocumentalGatewayApi() {
         super();
@@ -76,21 +79,35 @@ public class UnidadDocumentalGatewayApi {
     @JWTTokenSecurity
     public Response abrirUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
 
-        log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
-        Response response = ecmClient.abrirUnidadDocumental(unidadesDocumentalesDTO);
-        String responseContent = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        try{
+            log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
+            Response response = ecmClient.abrirUnidadDocumental(unidadesDocumentalesDTO);
+            String responseContent = response.readEntity(String.class);
+            return Response.status(response.getStatus()).entity(responseContent).build();
+        }
+        catch (Exception ex) {
+            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
+            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            log.info(ex.getMessage());
+        }
+
     }
 
     @POST
     @Path("/cerrar-unidades-documentales")
     @JWTTokenSecurity
     public Response cerrarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
-
-        log.info("CerrarUnidadesDocumentalesGatewayApi - [trafic] - cerrar unidades documentales");
-        Response response = ecmClient.cerrarUnidadDocumental(unidadesDocumentalesDTO);
-        String responseContent = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        try {
+            log.info("CerrarUnidadesDocumentalesGatewayApi - [trafic] - cerrar unidades documentales");
+            Response response = ecmClient.cerrarUnidadDocumental(unidadesDocumentalesDTO);
+            String responseContent = response.readEntity(String.class);
+            return Response.status(response.getStatus()).entity(responseContent).build();
+        }
+        catch (Exception ex) {
+            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
+            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            log.info(ex.getMessage());
+        }
     }
 
     @POST
@@ -98,10 +115,17 @@ public class UnidadDocumentalGatewayApi {
     @JWTTokenSecurity
     public Response reactivarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
 
-        log.info("ReactivarUnidadesDocumentalesGatewayApi - [trafic] - reactivar unidades documentales");
-        Response response = ecmClient.reactivarUnidadDocumental(unidadesDocumentalesDTO);
-        String responseContent = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseContent).build();
+        try {
+            log.info("ReactivarUnidadesDocumentalesGatewayApi - [trafic] - reactivar unidades documentales");
+            Response response = ecmClient.reactivarUnidadDocumental(unidadesDocumentalesDTO);
+            String responseContent = response.readEntity(String.class);
+            return Response.status(response.getStatus()).entity(responseContent).build();
+        }
+        catch (Exception ex) {
+            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
+            return Response.status(Response.Status.NOT_FOUND).entity(respuestaEntity).build();
+            log.info(ex.getMessage());
+        }
     }
 
     @GET
