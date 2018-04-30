@@ -8,7 +8,6 @@ import { SerieSubserieApiService } from 'app/infrastructure/api/serie-subserie.a
 import { SerieDTO } from 'app/domain/serieDTO';
 import { SubserieDTO } from 'app/domain/subserieDTO';
 import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-documentales/models/enums/unidad.documental.accion.enum';
-import { DetalleUnidadDocumentalDTO } from 'app/ui/page-components/unidades-documentales/models/DetalleUnidadDocumentalDTO';
 import { TaskForm } from 'app/shared/interfaces/task-form.interface';
 import { TareaDTO } from 'app/domain/tareaDTO';
 import { Sandbox } from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
@@ -46,7 +45,6 @@ export class StateUnidadDocumentalService {
 
     // generales
     UnidadDocumentalSeleccionada: UnidadDocumentalDTO;
-    formBuscar: FormGroup;
     EsSubserieRequerido: boolean;
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
     validations: any = {};
@@ -59,7 +57,6 @@ export class StateUnidadDocumentalService {
     MensajeIngreseFechaExtremaFinal = 'Por favor ingrese la fecha extrema final para proceder al cierre.';
 
     constructor(
-        private fb: FormBuilder,
         private unidadDocumentalApiService: UnidadDocumentalApiService,
         private serieSubserieApiService: SerieSubserieApiService,
         private _store: Store<State>,
@@ -70,66 +67,6 @@ export class StateUnidadDocumentalService {
         private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
         private _dependenciaApiService: DependenciaApiService
     ) {
-    }
-
-    OnBlurEvents(control: string) {
-        const formControl = this.formBuscar.get(control);
-        if (formControl.touched && formControl.invalid) {
-          const error_keys = Object.keys(formControl.errors);
-          const last_error_key = error_keys[error_keys.length - 1];
-          this.validations[control] = VALIDATION_MESSAGES[last_error_key];
-        } else {
-            this.validations[control] = '';
-        }
-    }
-
-
-    InitForm(camposRequeridos: string[]) {
-       this.formBuscar = this.fb.group({
-        tipoDisposicionFinal: [null],
-        sede: [null],
-        dependencia: [null],
-        serie: [null],
-        subserie: [null],
-        identificador: [''],
-        nombre: [''],
-        descriptor1: [''],
-        descriptor2: [''],
-       });
-       this.SetFormCamposRequeridos(camposRequeridos);
-    }
-
-    ResetForm() {
-        this.formBuscar.reset();
-    }
-
-
-
-    SetFormCamposRequeridos(camposRequeridos: string[]) {
-        if (camposRequeridos.length) {
-            camposRequeridos.forEach(_control => {
-                this.formBuscar.controls[_control].setValidators(Validators.required);
-            });
-            this.formBuscar.updateValueAndValidity();
-        }
-    }
-
-    SetFormSubscriptions(controls: string[]) {
-        if (controls.length) {
-            controls.forEach(_control => {
-                this.subscribers.push(
-                this.formBuscar.get(_control).valueChanges.distinctUntilChanged().subscribe(value => {
-                    if (value !== null) {
-                        switch (_control) {
-                            case 'sede' : this.GetListadoDependencias(value.id); break;
-                            case 'dependencia': this.GetListadosSeries(); break;
-                            case 'serie': this.GetSubSeries(); break;
-                        }
-                    }
-                  }))
-            });
-            this.formBuscar.updateValueAndValidity();
-        }
     }
 
     GetDetalleUnidadUnidadDocumental(index: string) {
@@ -151,72 +88,36 @@ export class StateUnidadDocumentalService {
     }
 
     GetListadoDependencias(sedeId: any) {
-        this.formBuscar.controls['dependencia'].reset();
         this._dependenciaApiService.Listar({})
         .subscribe(resp => {
             this.dependencias = resp.filter(_item => _item.ideSede === sedeId);
         });
     }
 
-    GetListadosSeries() {
-        this.formBuscar.controls['serie'].reset();
-        this.serieSubserieApiService.ListarSerieSubserie({
-            idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
+    GetListadosSeries(codigodependencia): Observable<SerieDTO[]> {
+        return this.serieSubserieApiService.ListarSerieSubserie({
+            idOrgOfc: codigodependencia,
         })
-        .map(map => map.listaSerie)
-        .subscribe(resp => {
-            this.ListadoSeries = resp;
-        });
-        this.ListadoSubseries = [];
+        .map(map => map.listaSerie);
     }
 
-    GetSubSeries() {
-        this.formBuscar.controls['subserie'].reset();
-        const codigoserie = this.formBuscar.controls['serie'].value;
-        if (codigoserie) {
-            this.serieSubserieApiService.ListarSerieSubserie({
-                idOrgOfc: (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value,
+    GetSubSeries(codigoserie: string, codigodependencia: string): Observable<SubserieDTO[]>{
+        this.ListadoSubseries = [];
+          return this.serieSubserieApiService.ListarSerieSubserie({
+                idOrgOfc: codigodependencia,
                 codSerie: codigoserie,
             })
             .map(map => map.listaSubSerie)
-            .subscribe(result => {
-                this.ListadoSubseries =  result;
-                if (result) {
-                    this.formBuscar.controls['subserie'].setValidators(Validators.required);
-                    this.formBuscar.updateValueAndValidity();
-                }
-            });
-        }
     }
 
-    HabilitarOpcion(opcion: number) {
-        if (UnidadDocumentalAccion[this.OpcionSeleccionada] === UnidadDocumentalAccion[opcion]) {
-            return true;
-        }
-        return false;
-    }
 
-    SubscribirSubserie() {
-         const length = (this.ListadoSubseries) ? this.ListadoSubseries.length : 0;
-         if ((length) && (!this.formBuscar.controls['subserie'].value)) {
-           this.formBuscar.controls['subserie'].setErrors({incorrect: true});
-           this.EsSubserieRequerido = true;
-         } else {
-           this.EsSubserieRequerido = false;
-         }
-    }
-
-    EsRequerido() {
-        return this.EsSubserieRequerido;
-    }
 
     CerrarDetalle() {
         this.AbrirDetalle = false;
     }
 
-    Listar(value?: any) {
-        this.OpcionSeleccionada = (value) ? value : this.OpcionSeleccionada;
-        this.unidadDocumentalApiService.Listar(this.GetPayload(this.OpcionSeleccionada))
+    Listar(payload?: UnidadDocumentalDTO, value?: any) {
+        this.unidadDocumentalApiService.Listar(payload)
         .subscribe(response => {
             let ListadoMapeado =  [];
             if(response.length) {
@@ -251,41 +152,7 @@ export class StateUnidadDocumentalService {
             this.ListadoUnidadDocumental = [...listadoMapeado];
         }
     }
-
-    GetPayload(accionSeleccionada?: UnidadDocumentalAccion): UnidadDocumentalDTO {
-
-        const payload: UnidadDocumentalDTO = {};
-
-        if (this.formBuscar.controls['dependencia'].value) {
-            payload.codigoDependencia = (this.formBuscar.controls['dependencia'].value.codigo) ? this.formBuscar.controls['dependencia'].value.codigo : this.formBuscar.controls['dependencia'].value;
-        }
-        if (!isNullOrUndefined(accionSeleccionada)) {
-            payload.accion = UnidadDocumentalAccion[accionSeleccionada]
-        }
-
-        if (this.formBuscar.controls['serie'].value) {
-            payload.codigoSerie = this.formBuscar.controls['serie'].value;
-        }
-        if (this.formBuscar.controls['subserie'].value) {
-            payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
-        }
-        if (this.formBuscar.controls['identificador'].value) {
-            payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
-        }
-        if (this.formBuscar.controls['nombre'].value) {
-            payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
-        }
-        if (this.formBuscar.controls['descriptor1'].value) {
-            payload.descriptor1 = this.formBuscar.controls['descriptor1'].value;
-        }
-        if (this.formBuscar.controls['descriptor2'].value) {
-            payload.descriptor1 = this.formBuscar.controls['descriptor2'].value;
-        }
-
-        return payload;
-    }
-
-
+ 
     GetUnidadesSeleccionadas(): UnidadDocumentalDTO[] {
         const ListadoFiltrado = this.unidadesSeleccionadas
             if (!ListadoFiltrado.length) {

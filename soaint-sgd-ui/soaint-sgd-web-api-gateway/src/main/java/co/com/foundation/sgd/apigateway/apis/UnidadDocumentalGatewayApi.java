@@ -50,10 +50,10 @@ public class UnidadDocumentalGatewayApi {
     @POST
     @Path("/crear-unidad-documental")
     @JWTTokenSecurity
-    public Response crearUnidadDocumental(@RequestBody ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO ) {
+    public Response crearUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
 
         log.info("UnidadDocumentalGatewayApi - [trafic] - creating unidad documental");
-        Response response = ecmClient.listarSeriesSubseriePorDependencia(contenidoDependenciaTrdDTO);
+        Response response = ecmClient.crearUnidadDocumental(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
         log.info("UnidadDocumentalGatewayApi - [content] : " + responseContent);
 

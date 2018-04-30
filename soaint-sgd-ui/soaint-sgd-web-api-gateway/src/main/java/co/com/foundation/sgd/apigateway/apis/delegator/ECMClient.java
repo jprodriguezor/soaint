@@ -138,6 +138,13 @@ public class ECMClient {
                 .post(Entity.json(contenidoDependenciaTrdDTO));
     }
 
+    public Response crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/crearUnidadDocumentalECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
     public Response listarUnidadesDocumentales(UnidadDocumentalDTO unidadDocumentalDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/listarUnidadesDocumentalesECM")
@@ -177,5 +184,4 @@ public class ECMClient {
                 .request()
                 .get();
     }
-
 }
