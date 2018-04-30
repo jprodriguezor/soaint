@@ -282,6 +282,7 @@
             <version>${spring-framework.version}</version>
             <scope>test</scope>
         </dependency>
+
         <!--<dependency>
             <groupId>co.com.foundation.soaint.interoperability</groupId>
             <artifactId>Mail-Cartridge</artifactId>
