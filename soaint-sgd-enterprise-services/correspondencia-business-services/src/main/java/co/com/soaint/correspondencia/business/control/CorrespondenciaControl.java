@@ -1089,12 +1089,16 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-        List<DatosContactoDTO> datosContactoDTOS = datosContactoControl.consultarDatosContactoByAgentesCorreo(destinatariosList);
-
         destinatariosList.forEach(agenteDTO -> {
-            if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+            if (agenteDTO.getIndOriginal().equals("TP-DESP")) {
                 parameters.put("#USER#", agenteDTO.getIndOriginal());
+            }
         });
+
+        List<DatosContactoDTO> datosContactoDTOS = datosContactoControl.consultarDatosContactoByAgentesCorreo(destinatariosList);
+        if (datosContactoDTOS == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
+                .withMessage("No existen datos de contacto para enviar correo.")
+                .buildSystemException();
 
         final List<String> destinatarios = new ArrayList<String>();
         datosContactoDTOS.forEach(datosContactoDTO -> {
