@@ -19,6 +19,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
+import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
@@ -544,6 +545,14 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error("Ocurrio un error al crear la Unidad Documental");
             throw new BusinessException("Ocurrio un error al crear la Unidad Documental");
         }
+    }
+
+    public MensajeRespuesta eliminarUnidadDocumental(String id,Session session) throws BusinessException {
+        MensajeRespuesta mensajeRespuesta=new MensajeRespuesta();
+        Folder udFolderById = getUDFolderById(id, session);
+        if (udFolderById != null)
+        udFolderById.deleteTree(true, UnfileObject.DELETE, true);
+        return mensajeRespuesta;
     }
 
     /**
