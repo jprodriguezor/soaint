@@ -70,5 +70,22 @@ public class TvsPaisTest extends JPAHibernateContextTest {
         assertTrue(paislist.size()>0);
 
     }
+    @Test
+    public void test_TvsPaisfindByCod_success() {
+
+        //given
+        String namedQuery="TvsPais.findByCod";
+        int codPais=1;
+
+        //when
+        PaisDTO pais=createNamedQuery(namedQuery,PaisDTO.class)
+                .setParameter("COD_PAIS",codPais)
+                .getSingleResult();
+        //then
+        assertNotNull(pais);
+
+
+
+    }
 
 }
