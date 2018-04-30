@@ -158,7 +158,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", contentControlAlfresco.devolverSerieSubSerie(dependenciaTrdDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Ocurrio un error en el Servidor");
+            logger.error("Ocurrio un error en el Servidor",e);
         }
         //Prueba para cuadno se pasa vacio el objeto contenidoDependenciaTrdDTO
         ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO = new ContenidoDependenciaTrdDTO();
@@ -167,7 +167,7 @@ public class ContentControlAlfrescoTest {
         } catch (Exception e) {
             e.printStackTrace();
             assertEquals("No se ha especificado el codigo de la dependencia", e.getMessage());
-            logger.error("Ocurrio un error en el Servidor");
+            logger.error("Ocurrio un error en el Servidor",e);
         }
     }
 
