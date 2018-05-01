@@ -41,7 +41,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/listado-serie-subserie")
     @JWTTokenSecurity
     public Response listarSerie(@RequestBody ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO ) {
-
         log.info("UnidadDocumentalGatewayApi - [trafic] - listing series");
         Response response = ecmClient.listarSeriesSubseriePorDependencia(contenidoDependenciaTrdDTO);
         String responseContent = response.readEntity(String.class);
@@ -54,7 +53,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/crear-unidad-documental")
     @JWTTokenSecurity
     public Response crearUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
-
         log.info("UnidadDocumentalGatewayApi - [trafic] - creating unidad documental");
         Response response = ecmClient.crearUnidadDocumental(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
@@ -67,7 +65,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/listar-unidad-documental")
     @JWTTokenSecurity
     public Response listarUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO ) {
-
         log.info("ListarUnidadesDocumentalesGatewayApi - [trafic] - listing unidades documentales");
         Response response = ecmClient.listarUnidadesDocumentales(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
@@ -78,7 +75,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/abrir-unidades-documentales")
     @JWTTokenSecurity
     public Response abrirUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
-
         try{
             log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
             Response response = ecmClient.abrirUnidadDocumental(unidadesDocumentalesDTO);
@@ -86,11 +82,10 @@ public class UnidadDocumentalGatewayApi {
             return Response.status(response.getStatus()).entity(responseContent).build();
         }
         catch (Exception ex) {
+            log.info(ex.getMessage());
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
             return Response.ok().entity(respuestaEntity).build();
-            log.info(ex.getMessage());
         }
-
     }
 
     @POST
@@ -104,9 +99,9 @@ public class UnidadDocumentalGatewayApi {
             return Response.status(response.getStatus()).entity(responseContent).build();
         }
         catch (Exception ex) {
+            log.info(ex.getMessage());
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
             return Response.ok().entity(respuestaEntity).build();
-            log.info(ex.getMessage());
         }
     }
 
@@ -114,7 +109,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/reactivar-unidades-documentales")
     @JWTTokenSecurity
     public Response reactivarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
-
         try {
             log.info("ReactivarUnidadesDocumentalesGatewayApi - [trafic] - reactivar unidades documentales");
             Response response = ecmClient.reactivarUnidadDocumental(unidadesDocumentalesDTO);
@@ -122,9 +116,9 @@ public class UnidadDocumentalGatewayApi {
             return Response.status(response.getStatus()).entity(responseContent).build();
         }
         catch (Exception ex) {
+            log.info(ex.getMessage());
             MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
             return Response.ok().entity(respuestaEntity).build();
-            log.info(ex.getMessage());
         }
     }
 
@@ -132,7 +126,6 @@ public class UnidadDocumentalGatewayApi {
     @Path("/detalle-unidad-documental/{id}")
     @JWTTokenSecurity
     public Response detalleUnidadDocumental(@PathParam("id") final String idUnidadDocumental) {
-
         log.info("DetalleUnidadDocumentalGatewayApi - [trafic] - detalle unidad documental");
         Response response = ecmClient.DetalleUnidadDocumental(idUnidadDocumental);
         String responseContent = response.readEntity(String.class);

@@ -4,8 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.AccionUsuario;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
@@ -60,9 +59,12 @@ public class AutoCloseTaskProcessor implements Serializable {
 
                 if (compareTo >= 0) {
                     String idUD = udFolder.getPropertyValue(ContentControl.CMCOR_UD_ID);
-                    recordServices.abrirCerrarReactivarUnidadDocumental(idUD, AccionUsuario.CERRAR);
+                    UnidadDocumentalDTO documentalDTO = new UnidadDocumentalDTO();
+                    documentalDTO.setId(idUD);
+                    documentalDTO.setAccion(AccionUsuario.CERRAR.name());
+                    recordServices.gestionarUnidadDocumentalECM(documentalDTO);
                 }
-            } catch (BusinessException | SystemException e) {
+            } catch (Exception e) {
                 logger.error("Ocurrio un error al cerrar la unidad documental {}", udFolder.getName());
                 logger.error("### Mensaje de Error: " + e.getMessage());
             }
