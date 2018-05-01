@@ -1034,18 +1034,18 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
     public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
-        log.info("processing rest request - enviar correo radicar correspondencia");
+        log.info("processing rest request - dentro enviar correo radicar correspondencia salida");
 
         HashMap<String,String> parameters = new HashMap<String, String>();
         MailRequestDTO request = new MailRequestDTO( "PA001" );
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+        log.info("processing rest request - template: "+request.getTemplate());
 
         CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(nroRadicado);
-        log.info("processing rest request - ideDocumento correspondencia"+correspondenciaDTO.getIdeDocumento().toString());
+        log.info("processing rest request - ideDocumento correspondencia: "+correspondenciaDTO.getIdeDocumento().toString());
 
         String asunto = "Respuesta "+nroRadicado+" "+correspondenciaDTO.getFecRadicado()+".";
         request.setSubject(asunto);
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
+        log.info("processing rest request - asunto: "+request.getSubject());
 
         String endpoint = System.getProperty("ecm-api-endpoint");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -1078,29 +1078,38 @@ public class CorrespondenciaControl {
         final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
         log.info("Destinatarios list" + destinatariosList.toString());
 
-//        destinatariosList.forEach(agenteDTO -> log.info("Destinatarios" + agenteDTO.getIdeAgente().toString() + agenteDTO.getCodTipAgent().toString()));
-//        for (AgenteDTO agenteDTO : destinatariosList) {
-//            log.info("getIndOriginal " + agenteDTO.getIndOriginal());
-//            for (DatosContactoDTO datosContactoDTO : agenteDTO.getDatosContactoList()) {
-//                log.info("getCorrElectronico " + datosContactoDTO.getCorrElectronico());
-//            }
-//        }
         if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-        destinatariosList.forEach(agenteDTO -> {
-            if (agenteDTO.getIndOriginal().equals("TP-DESP")) {
-                parameters.put("#USER#", agenteDTO.getIndOriginal());
+        List<DatosContactoDTO> datosContactoDTOS = new ArrayList<>();
+        final List<String> destinatarios = new ArrayList<String>();
+
+        destinatariosList.forEach((AgenteDTO agenteDTO) -> {
+            if (agenteDTO.getCodTipoRemite().equals("INT")){
+                try {
+                    FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
+                    destinatarios.add(funcionarioDTO.getCorrElectronico());
+                } catch (Exception ex) {
+                    log.error("Business Control - a system error has occurred", ex);
+                }
+            } else{
+                try{
+                    List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
+                    for (DatosContactoDTO contactoDTO : datosContacto) {
+                        datosContactoDTOS.add(contactoDTO);
+                    }
+                }catch (Exception ex) {
+                    log.error("Business Control - a system error has occurred", ex);
+                }
             }
+
+            if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                else parameters.put("#USER#", agenteDTO.getIndOriginal());
         });
 
-        List<DatosContactoDTO> datosContactoDTOS = datosContactoControl.consultarDatosContactoByAgentesCorreo(destinatariosList);
-        if (datosContactoDTOS == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
-                .withMessage("No existen datos de contacto para enviar correo.")
-                .buildSystemException();
-
-        final List<String> destinatarios = new ArrayList<String>();
+        if (datosContactoDTOS == null || destinatariosList.isEmpty())
         datosContactoDTOS.forEach(datosContactoDTO -> {
             destinatarios.add(datosContactoDTO.getCorrElectronico());
         });
@@ -1109,10 +1118,8 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-        //TODO: remover esta direccion cableada
-        String[] dest =  {"giselle.designe@gmail.com"};
-//        request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
-        request.setTo(dest);
+//        String[] dest =  {"giselle.designe@gmail.com"};
+        request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
         parameters.put("#USER#", "Giselle Yanet");
