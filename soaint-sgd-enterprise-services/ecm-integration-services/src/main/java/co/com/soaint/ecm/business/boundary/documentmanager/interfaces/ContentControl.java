@@ -52,7 +52,6 @@ public interface ContentControl extends Serializable {
     String CMCOR_UD_DESCRIPTOR_1 = CMCOR + "descriptor1";
     String CMCOR_UD_CERRADA = CMCOR + "cerrada";
     String CMCOR_UD_OBSERVACIONES = CMCOR + "observaciones";
-    String CMCOR_UD_FECHA_AUTO_CIERRE = CMCOR + "fechaAutoCierre";
     String CMCOR_UD_DISPOSICION = CMCOR + "disposicion";
     String CMCOR_UD_ESTADO = CMCOR + "estado";
 

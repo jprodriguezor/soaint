@@ -41,20 +41,17 @@ public class AutoCloseTaskProcessor implements Serializable {
 
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
-                " WHERE " + ContentControl.CMCOR_UD_FECHA_AUTO_CIERRE + " IS NOT NULL" +
+                " WHERE " + ContentControl.CMCOR_UD_FECHA_CIERRE + " IS NOT NULL" +
                 " AND " + ContentControl.CMCOR_UD_CERRADA + " = 'false'";
 
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
 
-        for (QueryResult queryResult :
-                queryResults) {
-
-            String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
-            Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-
+        queryResults.forEach(queryResult -> {
+            final String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
+            final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
             try {
 
-                final Calendar calendar = udFolder.getPropertyValue(ContentControl.CMCOR_UD_FECHA_AUTO_CIERRE);
+                final Calendar calendar = udFolder.getPropertyValue(ContentControl.CMCOR_UD_FECHA_CIERRE);
                 final int compareTo = Utilities.comparaFecha(GregorianCalendar.getInstance(), calendar);
 
                 if (compareTo >= 0) {
@@ -68,6 +65,6 @@ public class AutoCloseTaskProcessor implements Serializable {
                 logger.error("Ocurrio un error al cerrar la unidad documental {}", udFolder.getName());
                 logger.error("### Mensaje de Error: " + e.getMessage());
             }
-        }
+        });
     }
 }
