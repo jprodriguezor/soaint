@@ -1064,6 +1064,8 @@ public class CorrespondenciaControl {
                     documentoDTOList.forEach(documento -> {
                         Attachment doc =  new Attachment();
                         doc.setAttachments(documento.getDocumento());
+                        doc.setContentTypeattachment(documento.getTipoDocumento());
+                        doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
                     });
                 }
@@ -1090,7 +1092,7 @@ public class CorrespondenciaControl {
                 try {
                     FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
                     destinatarios.add(funcionarioDTO.getCorrElectronico());
-                } catch (Exception ex) {
+                 } catch (Exception ex) {
                     log.error("Business Control - a system error has occurred", ex);
                 }
             } else{
@@ -1106,7 +1108,7 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                 if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                else parameters.put("#USER#", agenteDTO.getIndOriginal());
+                else parameters.put("#USER#", agenteDTO.getNombre());
         });
 
         if (datosContactoDTOS == null || destinatariosList.isEmpty())
@@ -1122,9 +1124,9 @@ public class CorrespondenciaControl {
         request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
-        parameters.put("#USER#", "Giselle Yanet");
-        parameters.put("#ORG#","Organigrama Prueba");
-//        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
+//        parameters.put("#USER#", "Giselle Yanet");
+//        parameters.put("#ORG#","Organigrama Prueba");
+        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
 
         request.setParameters( parameters );
 
