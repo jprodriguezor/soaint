@@ -1041,98 +1041,99 @@ public class CorrespondenciaControl {
         log.info("processing rest request - template: "+request.getTemplate());
 
         CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(nroRadicado);
-        log.info("processing rest request - ideDocumento correspondencia: "+correspondenciaDTO.getIdeDocumento().toString());
+//        log.info("processing rest request - ideDocumento correspondencia: "+correspondenciaDTO.getIdeDocumento().toString());
 
         String asunto = "Respuesta "+nroRadicado+" "+correspondenciaDTO.getFecRadicado()+".";
         request.setSubject(asunto);
         log.info("processing rest request - asunto: "+request.getSubject());
 
-        String endpoint = System.getProperty("ecm-api-endpoint");
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
-        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
-                .request()
-                .post(Entity.json(dto));
-
+//        String endpoint = System.getProperty("ecm-api-endpoint");
+//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+//        co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
+//        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
+//                .request()
+//                .post(Entity.json(dto));
+//
         ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
-        if (response.getStatus() == HttpStatus.OK.value()) {
-            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
-            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
-                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
-                log.info("processing rest request - documentoDTOList.size(): "+documentoDTOList.size());
-
-                if (mensajeRespuesta.getDocumentoDTOList() != null || !mensajeRespuesta.getDocumentoDTOList().isEmpty()) {
-                    documentoDTOList.forEach(documento -> {
-                        Attachment doc =  new Attachment();
-                        doc.setAttachments(documento.getDocumento());
-                        doc.setContentTypeattachment(documento.getTipoDocumento());
-                        doc.setNameAttachments(documento.getNombreDocumento());
-                        attachmentsList.add(doc);
-                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
-                    });
-                }
-            } else{
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
-                        .buildSystemException();
-            }
-        }
+//        if (response.getStatus() == HttpStatus.OK.value()) {
+//            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
+//            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
+//                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
+//                log.info("processing rest request - documentoDTOList.size(): "+documentoDTOList.size());
+//
+//                if (mensajeRespuesta.getDocumentoDTOList() != null || !mensajeRespuesta.getDocumentoDTOList().isEmpty()) {
+//                    documentoDTOList.forEach(documento -> {
+//                        Attachment doc =  new Attachment();
+//                        doc.setAttachments(documento.getDocumento());
+//                        doc.setContentTypeattachment(documento.getTipoDocumento());
+//                        doc.setNameAttachments(documento.getNombreDocumento());
+//                        attachmentsList.add(doc);
+//                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
+//                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
+//                    });
+//                }
+//            } else{
+//                throw ExceptionBuilder.newBuilder()
+//                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
+//                        .buildSystemException();
+//            }
+//        }
         request.setAttachmentsList(attachmentsList);
 
-        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
-        log.info("Destinatarios list" + destinatariosList.toString());
+//        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
+//        log.info("Destinatarios list" + destinatariosList.toString());
+//
+//        if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
+//                .withMessage("No existen destinatarios para enviar correo.")
+//                .buildSystemException();
+//
+//        List<DatosContactoDTO> datosContactoDTOS = new ArrayList<>();
+//        final List<String> destinatarios = new ArrayList<String>();
+//
+//        destinatariosList.forEach((AgenteDTO agenteDTO) -> {
+//
+//            if (agenteDTO.getCodTipoRemite().equals("INT")){
+//                try {
+//                    FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
+//                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+//                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+//                        else parameters.put("#USER#", funcionarioDTO.getNomFuncionario());
+//                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionarioDTO.getNomFuncionario().toString());
+//                    destinatarios.add(funcionarioDTO.getCorrElectronico());
+//                 } catch (Exception ex) {
+//                    log.error("Business Control - a system error has occurred", ex);
+//                }
+//            } else{
+//                try{
+//                    if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+//                        if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+//                        else parameters.put("#USER#", agenteDTO.getNombre());
+//                    log.info("processing rest request - agenteDTO.getNombre(): "+agenteDTO.getNombre().toString());
+//
+//                    List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
+//                    for (DatosContactoDTO contactoDTO : datosContacto) {
+//                        datosContactoDTOS.add(contactoDTO);
+//                    }
+//                }catch (Exception ex) {
+//                    log.error("Business Control - a system error has occurred", ex);
+//                }
+//            }
+//        });
+//
+//        if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
+//        datosContactoDTOS.forEach(datosContactoDTO -> {
+//            destinatarios.add(datosContactoDTO.getCorrElectronico());
+//        });
+//
+//        log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
+//
+//        if (destinatarios == null || destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
+//                .withMessage("No existen destinatarios para enviar correo.")
+//                .buildSystemException();
 
-        if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
-                .withMessage("No existen destinatarios para enviar correo.")
-                .buildSystemException();
-
-        List<DatosContactoDTO> datosContactoDTOS = new ArrayList<>();
-        final List<String> destinatarios = new ArrayList<String>();
-
-        destinatariosList.forEach((AgenteDTO agenteDTO) -> {
-
-            if (agenteDTO.getCodTipoRemite().equals("INT")){
-                try {
-                    FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", funcionarioDTO.getNomFuncionario());
-                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionarioDTO.getNomFuncionario().toString());
-                    destinatarios.add(funcionarioDTO.getCorrElectronico());
-                 } catch (Exception ex) {
-                    log.error("Business Control - a system error has occurred", ex);
-                }
-            } else{
-                try{
-                    if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                        if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", agenteDTO.getNombre());
-                    log.info("processing rest request - agenteDTO.getNombre(): "+agenteDTO.getNombre().toString());
-
-                    List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
-                    for (DatosContactoDTO contactoDTO : datosContacto) {
-                        datosContactoDTOS.add(contactoDTO);
-                    }
-                }catch (Exception ex) {
-                    log.error("Business Control - a system error has occurred", ex);
-                }
-            }
-        });
-
-        if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
-        datosContactoDTOS.forEach(datosContactoDTO -> {
-            destinatarios.add(datosContactoDTO.getCorrElectronico());
-        });
-
-        log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
-
-        if (destinatarios == null || destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
-                .withMessage("No existen destinatarios para enviar correo.")
-                .buildSystemException();
-
-//        String[] dest =  {"giselle.designe@gmail.com"};
-        request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
+        String[] dest =  {"giselle.designe@gmail.com"};
+        request.setTo(dest);
+//        request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
 //        parameters.put("#USER#", "Giselle Yanet");
