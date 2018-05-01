@@ -1059,6 +1059,7 @@ public class CorrespondenciaControl {
             MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
             if (mensajeRespuesta.getCodMensaje().equals("0000")) {
                 final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
+                log.info("processing rest request - documentoDTOList.size(): "+documentoDTOList.size());
 
                 if (mensajeRespuesta.getDocumentoDTOList() != null || !mensajeRespuesta.getDocumentoDTOList().isEmpty()) {
                     documentoDTOList.forEach(documento -> {
@@ -1067,6 +1068,8 @@ public class CorrespondenciaControl {
                         doc.setContentTypeattachment(documento.getTipoDocumento());
                         doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
+                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
+                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
                     });
                 }
             } else{
@@ -1088,15 +1091,25 @@ public class CorrespondenciaControl {
         final List<String> destinatarios = new ArrayList<String>();
 
         destinatariosList.forEach((AgenteDTO agenteDTO) -> {
+
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
                     FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
+                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                        else parameters.put("#USER#", funcionarioDTO.getNomFuncionario());
+                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionarioDTO.getNomFuncionario().toString());
                     destinatarios.add(funcionarioDTO.getCorrElectronico());
                  } catch (Exception ex) {
                     log.error("Business Control - a system error has occurred", ex);
                 }
             } else{
                 try{
+                    if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+                        if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                        else parameters.put("#USER#", agenteDTO.getNombre());
+                    log.info("processing rest request - agenteDTO.getNombre(): "+agenteDTO.getNombre().toString());
+
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
                     for (DatosContactoDTO contactoDTO : datosContacto) {
                         datosContactoDTOS.add(contactoDTO);
@@ -1105,18 +1118,16 @@ public class CorrespondenciaControl {
                     log.error("Business Control - a system error has occurred", ex);
                 }
             }
-
-            if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                else parameters.put("#USER#", agenteDTO.getNombre());
         });
 
-        if (datosContactoDTOS == null || destinatariosList.isEmpty())
+        if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
         datosContactoDTOS.forEach(datosContactoDTO -> {
             destinatarios.add(datosContactoDTO.getCorrElectronico());
         });
 
-        if (destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
+        log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
+
+        if (destinatarios == null || destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
