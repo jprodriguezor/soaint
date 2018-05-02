@@ -15,9 +15,7 @@ export class Sandbox extends CacheResponse {
   }
   loadData(payload: any) {
 
-    const endpoint = environment.pais_endpoint;
-
-   return this.getResponse(payload, this._api.list(endpoint, payload)
+   return this.getResponse(payload, this._api.list(environment.pais_endpoint, payload)
      .map((response) => {
        let  paises ={
          paises: response.paises.sort((pais1, pais2):number => {
@@ -27,8 +25,10 @@ export class Sandbox extends CacheResponse {
          })
        };
 
-          return paises;
-     }),endpoint);
+       this.cacheResponse(payload,paises);
+
+       return paises;
+     }));
   }
 
   filterDispatch(query) {

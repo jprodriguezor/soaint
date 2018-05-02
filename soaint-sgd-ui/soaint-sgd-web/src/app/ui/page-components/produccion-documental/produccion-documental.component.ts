@@ -25,7 +25,6 @@ import {environment} from '../../../../environments/environment';
 import {DocumentUploaded} from './events/DocumentUploaded';
 import {afterTaskComplete} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 import {AlertComponent} from "../../bussiness-components/notifications/alert/alert.component";
-import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'produccion-documental',
@@ -196,8 +195,6 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       this.taskCurrentStatus.gestionarProduccion.startIndex = this.gestionarProduccion.startIndex;
       this.taskCurrentStatus.gestionarProduccion.listaObservaciones = this.gestionarProduccion.listaObservaciones;
       this.taskCurrentStatus.gestionarProduccion.cantObservaciones = this.gestionarProduccion.cantObservaciones;
-
-      console.log("before save:",this.taskCurrentStatus);
       return this.taskCurrentStatus;
   }
 
@@ -224,7 +221,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
         return false;
       }
 
-       if (!this.hasAprobador()) {
+        if (!this.hasAprobador()) {
             console.log(`No hay aprobador`);
             this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Debe especificar al menos un aprobador'}));
             return false;
@@ -249,8 +246,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     private ExistsDestinatario(){
 
-     return this.datosContacto.listaDestinatariosExternos ? this.datosContacto.listaDestinatariosExternos.length : 0 +
-            this.datosContacto.listaDestinatariosInternos ? this.datosContacto.listaDestinatariosInternos.length : 0 > 0;
+    const lenght1 = isNullOrUndefined(this.datosContacto.listaDestinatariosInternos) ? 0 : this.datosContacto.listaDestinatariosInternos.length;
+
+    const lenght2 = isNullOrUndefined(this.datosContacto.listaDestinatariosExternos) ? 0 : this.datosContacto.listaDestinatariosExternos.length;
+
+    console.log("long 1",lenght1);
+    console.log("long 2",lenght2);
+    console.log("total", lenght1 + lenght2);
+     return  lenght1 + lenght2 > 0;
 
     }
 
@@ -317,16 +320,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     hasAprobador() {
 
-    const listaProyectores = this.gestionarProduccion.getListaProyectores();
-
-      return listaProyectores.length  > 1 // this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
-    }
-
-    showContinuarButton():boolean{
-
-      const listaProyectores = this.gestionarProduccion.getListaProyectores();
-
-     return this.status === 1 && !isNullOrUndefined(this.task) ;
+       return this.gestionarProduccion.getListaProyectores().filter((el: ProyectorDTO) => 'aprobador' === el.rol.rol).length > 0;
     }
 
 

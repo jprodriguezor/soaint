@@ -20,6 +20,4 @@ export interface CorrespondenciaDTO {
   fecVenGestion: string;
   codEstado: string;
   inicioConteo: string;
-  codClaseEnvio:string;
-  codModalidadEnvio:string;
 }

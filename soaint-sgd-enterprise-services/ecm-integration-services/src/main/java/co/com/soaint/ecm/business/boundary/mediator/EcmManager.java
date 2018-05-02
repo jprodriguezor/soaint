@@ -264,9 +264,20 @@ public class EcmManager {
      * @param contenidoDependenciaTrdDTO Objeto que contiene los parametro de búsqueda
      * @return contenidoDependenciaTrdDTO
      */
-    public MensajeRespuesta devolverSerieSubserie(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws Exception {
+    public MensajeRespuesta devolverSerieSubserie(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
         logger.info("### Obteniendo las series o subseries dada la dependencia del content..");
-        return contentManager.devolverSeriesSubseries(contenidoDependenciaTrdDTO);
+        MensajeRespuesta response = new MensajeRespuesta();
+        try {
+
+            response = contentManager.devolverSeriesSubseries(contenidoDependenciaTrdDTO);
+
+        } catch (Exception e) {
+            response.setCodMensaje("22222");
+            response.setMensaje("Error al obtener las series o subseries documento");
+            logger.error(ECM_ERROR, e);
+        }
+
+        return response;
     }
 
     /**

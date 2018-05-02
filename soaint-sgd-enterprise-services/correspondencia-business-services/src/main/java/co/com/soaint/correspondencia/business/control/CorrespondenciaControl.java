@@ -1094,8 +1094,8 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
-                    List<FuncionarioDTO> funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
-                    FuncionarioDTO funcionario = funcionarioDTO.get(0);
+                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+                    log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
                         else parameters.put("#USER#", funcionario.getNomFuncionario());
@@ -1108,8 +1108,8 @@ public class CorrespondenciaControl {
                 try{
                     if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                         if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", agenteDTO.getNombre());
-                    log.info("processing rest request - agenteDTO.getNombre(): "+agenteDTO.getNombre().toString());
+                        else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                    log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
                     for (DatosContactoDTO contactoDTO : datosContacto) {

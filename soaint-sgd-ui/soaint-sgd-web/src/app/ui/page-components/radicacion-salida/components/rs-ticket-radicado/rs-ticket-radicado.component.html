@@ -4,7 +4,7 @@
       <div style="position: absolute; float: left;">
         <img width="115" src="assets/layout/images/logo.png">
       </div>
-      <div class="row-container ui-g ui-fluid" style="width: 440px; float: right">
+      <div class="row-container" style="width: 440px; float: right">
         <div class="ui-g-5 text-right" style="clear: both"><b>No radicado</b></div>
         <div class="ui-g-1 text-right"></div>
         <div class="ui-g-6 text-left">{{ ticket.noRadicado }}</div>
@@ -70,14 +70,14 @@
     <div class="ui-g-12" style="display: flex; justify-content: center;">
 
       <div class="ui-g-2 text-left" style="padding-left: 10px"> <b>Anexo</b></div>
-      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ ticket.anexos }}</div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ anexos }}</div>
 
       <div class="ui-g-2 text-left" style="padding-left: 10px"><b>Folios</b></div>
-      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ ticket.folios }}</div>
+      <div class="ui-g-2 text-left" style="padding-right: 10px"> {{ folios }}</div>
 
     </div>
 
-    <ngx-barcode [bc-height]="28" [bc-format]="'CODE128B'" [bc-value]="ticket.noRadicado" [bc-display-value]="true"
+    <ngx-barcode [bc-height]="28" [bc-format]="'CODE128B'" [bc-value]="noRadicado" [bc-display-value]="true"
                  [bc-margin-left]="0" [bc-margin-bottom]="0" [bc-margin-right]="0" [bc-margin-top]="0" [bc-text-margin]="0" [bc-text-align]="0"
                  style="margin: 0 auto"></ngx-barcode>
 

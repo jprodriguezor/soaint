@@ -1,0 +1,25 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="card card-w-title">
+      <p-panel header="Unidades documentales tramitadas" [style]="{border: 'none'}">
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
+                     [paginator]="true" [rows]="10" [responsive]="true" [value]="solicitudesProcesadas|async">
+          <p-column  header="Nombre serie/subserie">
+            <ng-template pTemplate="body" let-row="rowData">
+            {{row.codigoSerie}}/{{row.codigoSubSerie}}
+            </ng-template>
+          </p-column>
+          <p-column field="id" header="Identificador unidad documental"></p-column>
+          <p-column field="nombreUnidadDocumental" header="Nombre de la unidad documental"></p-column>
+          <p-column field="descriptor1" header="Descriptor 1"></p-column>
+          <p-column field="descriptor2" header="Descriptor 2"></p-column>
+          <p-column field="observaciones" header="Observaciones"></p-column>
+          <p-column header="Caja"></p-column>
+          <p-column header="Carpeta"></p-column>
+          <p-column header="Unidad documental fisica relacionada"></p-column>
+          <p-column header="Accion" field="accion"></p-column>
+        </p-dataTable>
+      </p-panel>
+    </div>
+  </div>
+</div>

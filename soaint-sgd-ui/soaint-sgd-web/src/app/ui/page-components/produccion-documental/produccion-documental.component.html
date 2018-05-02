@@ -5,7 +5,9 @@
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="guardarEstadoTarea()"
       ></button>
-      <button pButton type="button" label="Cerrar" *ngIf="task"
+      <button pButton type="button" label="C
+
+      errar" *ngIf="task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               (click)="cancelarTarea()"
       ></button>
@@ -19,7 +21,7 @@
               [disabled]="!puedeAprobar()"
               (click)="aprobarDocumento()"
       ></button>
-      <button pButton type="button" label="Continuar" *ngIf="showContinuarButton()"
+      <button pButton type="button" label="Continuar" *ngIf="status === 1 && task"
               style="width: auto; margin-bottom: 10px;float:right;margin-left: 12px"
               [disabled]="!isValid()"
               (click)="continuarProceso()"

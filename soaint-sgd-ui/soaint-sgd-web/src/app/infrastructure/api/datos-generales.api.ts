@@ -20,9 +20,11 @@ export class DatosGeneralesApiService  extends CacheResponse{
       .map(response => {
         const res = RulesServer.extractFromResponse(response, 'co.com.soaint.sgd.model.MedioRecepcion');
 
-       return res;
+        this.cacheResponse({payload: JSON.stringify(payload)},res);
 
-      }),end_point) ;
+        return res;
+
+      })) ;
 
     // return Observable.of({
     //   tiempoRespuesta: '10',

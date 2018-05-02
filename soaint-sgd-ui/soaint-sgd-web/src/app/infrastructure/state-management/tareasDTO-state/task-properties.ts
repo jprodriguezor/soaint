@@ -17,6 +17,5 @@ export const TASK_RADICACION_SALIDA = 'Radicar COF Salida';
 export const TASK_RADICACION_DOCUMENTO_SALIDA = 'Radicar Documento Producido';
 export const TASK_ARCHIVAR_DOCUMENTO = 'Archivar Documento';
 export const TASK_CREAR_UNIDAD_DOCUMENTAL = 'Crear Unidad Documental';
-export const TASK_COMPLETAR_DATOS_DISTRIBUCION = 'Completar Datos Distribucion';
 
 

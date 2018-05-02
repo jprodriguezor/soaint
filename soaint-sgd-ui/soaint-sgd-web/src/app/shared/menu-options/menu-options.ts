@@ -9,7 +9,7 @@ export const MENU_OPTIONS = [
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
   {label: 'Archivar Documento', icon: 'subject', routerLink: ['/' + ROUTES_PATH.archivarDocumento]},
   {label: 'Seleccionar Documentos', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarDocumentos]},
-  // {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]},
+  {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]},
 
 ];
 
