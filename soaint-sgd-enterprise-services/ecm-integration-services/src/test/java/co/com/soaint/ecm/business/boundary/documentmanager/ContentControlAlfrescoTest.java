@@ -293,7 +293,8 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void movDocumento() {
+    public void testMovDocumentoSuccess() {
+        contentControlAlfresco.movDocumento(conexion.getSession(),mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(),"Comunicaciones Oficiales Externas Recibidas 2018","1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
     }
 
     @Test
