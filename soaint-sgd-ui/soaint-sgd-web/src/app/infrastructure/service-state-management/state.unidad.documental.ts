@@ -169,7 +169,7 @@ export class StateUnidadDocumentalService {
     Abrir() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'abrir' } });
             this.unidadDocumentalApiService.abrirUnidadesDocumentales(payload)
             .subscribe(response => {
                 this.ManageActionResponse(response);
@@ -191,6 +191,7 @@ export class StateUnidadDocumentalService {
                             const item = {
                                 id: current.id,
                                 fechaExtremaFinal: current.fechaCierre,
+                                accion: 'cerrar'
                             }
                             listado.push(current);
                         }
@@ -203,7 +204,7 @@ export class StateUnidadDocumentalService {
                 }
               });
            } else {
-                 payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
+                 payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'cerrar' } });
                  this.SubmitCerrar(payload);
            }
 
@@ -220,7 +221,7 @@ export class StateUnidadDocumentalService {
     Reactivar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'reactivar'} });
             this.unidadDocumentalApiService.reactivarUnidadesDocumentales(payload)
             .subscribe(response => {
                this.ManageActionResponse(response);

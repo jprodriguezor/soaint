@@ -158,7 +158,7 @@ public class ECMClient {
         }
         dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("abrir"));
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
+        return wt.path("/abrirUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(dtoList));
     }
@@ -170,7 +170,7 @@ public class ECMClient {
         }
         dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("cerrar"));
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
+        return wt.path("/cerrarUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(dtoList));
     }
@@ -182,7 +182,7 @@ public class ECMClient {
         }
         dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("reactivar"));
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
+        return wt.path("/reactivarUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(dtoList));
     }

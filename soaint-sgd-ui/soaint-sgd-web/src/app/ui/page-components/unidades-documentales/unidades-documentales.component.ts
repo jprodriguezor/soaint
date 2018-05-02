@@ -44,7 +44,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   subscribers: Array<Subscription> = [];
   codDependencia: string;
   OpcionSeleccionada: number;
-  requiereSubserie: boolean;
+  mostrarAjustarFechaCierre: boolean;
 
 
   constructor(
@@ -60,6 +60,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
 
   ngOnInit() {
     this.OpcionSeleccionada = 0 // abrir
+    this.mostrarAjustarFechaCierre = false;
     this.State.ListadoUnidadDocumental = [];
     this.InitForm();
     this.SetFormSubscriptions();        
@@ -115,7 +116,15 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
     }
 
     SetListadoSubscriptions() {
-      this.subscribers.push(this.State.ListadoActualizado$.subscribe(()=>{
+      this.subscribers.push(this.State.ListadoActualizado$.subscribe(()=>{ 
+        if (UnidadDocumentalAccion.Cerrar === UnidadDocumentalAccion[UnidadDocumentalAccion[this.OpcionSeleccionada]]) {
+          const FechaCierre = this.State.ListadoUnidadDocumental.find(_item => _item.soporte === 'Físico' && _item.fechaCierre === null);
+          if(FechaCierre) {
+            this.mostrarAjustarFechaCierre = true;
+          } else {
+            this.mostrarAjustarFechaCierre = false;
+          }
+        }    
         this._detectChanges.detectChanges();
       }));
     }
@@ -124,6 +133,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
     this.formBuscar.reset();
     this.State.ListadoSubseries = [];
     this.State.ListadoUnidadDocumental = [];
+    this.State.unidadesSeleccionadas = [];
     this.validations = [];
     this.formBuscar.controls['subserie'].clearValidators();
     this.formBuscar.controls['subserie'].updateValueAndValidity();
@@ -157,7 +167,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
        payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
     }
     if (this.formBuscar.controls['identificador'].value) {
-       payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
+       payload.id = this.formBuscar.controls['identificador'].value;
     }
     if (this.formBuscar.controls['nombre'].value) {
        payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;

@@ -15,7 +15,7 @@
   <div class="ui-g ui-fluid">
     <div class="ui-g-12" >
         <p-panel header="Buscar unidad documental" leftIcon="ui-icon-assignment">
-            <form [formGroup]="state.formBuscar" novalidate>
+            <form [formGroup]="formBuscar" novalidate>
                 <div class="ui-g ui-fluid">
                     <div class="ui-sm-12 ui-g-3 ui-lg-3">
                         <div class="ui-g form-group">
@@ -28,7 +28,7 @@
                                             formControlName="tipoDisposicionFinal"
                                             placeholder="Seleccione"
                                             [autoWidth]="false"
-                                            (onBlur)="state.OnBlurEvents('tipoDisposicionFinal')">
+                                            (onBlur)="OnBlurEvents('tipoDisposicionFinal')">
                                 </p-dropdown>
                                 <div class="ui-message ui-messages-error"
                                     *ngIf="validations.tipoDisposicionFinal">
@@ -49,7 +49,7 @@
                                                 formControlName="sede"
                                                 placeholder="Seleccione"
                                                 [autoWidth]="false"
-                                                (onBlur)="state.OnBlurEvents('sede')">
+                                                (onBlur)="OnBlurEvents('sede')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.sede">
@@ -69,7 +69,7 @@
                                                 formControlName="dependencia"
                                                 placeholder="Seleccione"
                                                 [autoWidth]="false"
-                                                (onBlur)="state.OnBlurEvents('dependencia')">
+                                                (onBlur)="OnBlurEvents('dependencia')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.dependencia">
@@ -91,7 +91,7 @@
                                                 formControlName="serie"
                                                 placeholder="Seleccione"
                                                 [autoWidth]="false"
-                                                (onBlur)="state.OnBlurEvents('serie')">
+                                                (onBlur)="OnBlurEvents('serie')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.serie">
@@ -111,7 +111,7 @@
                                                 formControlName="subserie"
                                                 placeholder="Seleccione"
                                                 [autoWidth]="false"
-                                                (onBlur)="state.OnBlurEvents('subserie')">
+                                                (onBlur)="OnBlurEvents('subserie')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.subserie">
@@ -130,7 +130,7 @@
                                 <label for="tipoDisposicionFinal">Identificador unidad documental</label>
                             </div>
                             <div class="ui-g-12 md-dropdownfield">
-                                <input type="text" pInputText id="identificador" formControlName="identificador" (onBlur)="state.OnBlurEvents('identificador')" />
+                                <input type="text" pInputText id="identificador" formControlName="identificador" (onBlur)="OnBlurEvents('identificador')" />
                                 <div class="ui-message ui-messages-error"
                                     *ngIf="validations.identificador">
                                     {{ validations.identificador }}
@@ -145,7 +145,7 @@
                                     <label for="sede">Nombre unidad documental</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <input type="text" pInputText id="nombreUnidadDocumental" formControlName="nombre" (onBlur)="state.OnBlurEvents('nombre')"/>
+                                    <input type="text" pInputText id="nombreUnidadDocumental" formControlName="nombre" (onBlur)="OnBlurEvents('nombre')"/>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.nombre">
                                         {{ validations.nombre }}
@@ -159,7 +159,7 @@
                                     <label for="sede">Descriptor 1</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <input type="text" pInputText id="descriptor1" formControlName="descriptor1" (onBlur)="state.OnBlurEvents('descriptor1')"/>
+                                    <input type="text" pInputText id="descriptor1" formControlName="descriptor1" (onBlur)="OnBlurEvents('descriptor1')"/>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.descriptor1">
                                         {{ validations.descriptor1 }}
@@ -175,7 +175,7 @@
                                     <label for="sede">Descriptor 2</label>
                                 </div>
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <input type="text" pInputText id="descriptor2" formControlName="descriptor2" (onBlur)="state.OnBlurEvents('descriptor2')"/>
+                                    <input type="text" pInputText id="descriptor2" formControlName="descriptor2" (onBlur)="OnBlurEvents('descriptor2')"/>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.descriptor2">
                                         {{ validations.descriptor2 }}
@@ -186,7 +186,7 @@
                         <div class="ui-sm-12 ui-g-6 ui-lg-6">
                             <div class="ui-g form-group">
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.ResetForm()" ></button>
+                                    <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="ResetForm()" ></button>
                                     <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Listar()" [disabled]="formBuscar.invalid"></button>
                                 </div>
                             </div>

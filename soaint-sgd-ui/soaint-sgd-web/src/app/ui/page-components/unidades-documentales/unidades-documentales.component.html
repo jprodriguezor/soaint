@@ -127,7 +127,7 @@
       <div class="ui-g btn-content">
         <button pButton type="button" label="Buscar" [disabled]="formBuscar.invalid" 
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
-        (click)="Listar(null)"></button>
+        (click)="Listar()"></button>
 
         <button pButton type="button" label="Limpiar"
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
@@ -155,7 +155,7 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">               
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton type="button" label="Agregar"
+                        <button pButton type="button" label="Agregar" [disabled] = "mostrarAjustarFechaCierre"
                         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
                         (click)="State.Agregar()"></button>                    
                       </div>                    
@@ -172,7 +172,7 @@
                        emptyMessage="No se encontraron resultados ">
             <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
             <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
-            <p-column field="codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="id" header="Identificador unidad documental"></p-column>
             <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
             <p-column field="descriptor1" header="Descriptor 1"></p-column>
             <p-column field="descriptor2" header="Descriptor 2"></p-column>
