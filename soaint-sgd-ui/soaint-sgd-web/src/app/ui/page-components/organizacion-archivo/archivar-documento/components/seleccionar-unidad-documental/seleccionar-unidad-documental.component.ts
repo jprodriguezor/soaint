@@ -9,6 +9,7 @@ import {SerieService} from "../../../../../../infrastructure/api/serie.service";
 
 
 import {
+  getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from "../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {DependenciaDTO} from "../../../../../../domain/dependenciaDTO";
@@ -129,24 +130,33 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
    this.afterTaskCompleteSubscriptor =  afterTaskComplete.subscribe( t => this._store.dispatch(go(['/' + ROUTES_PATH.workspace])));
   }
 
+
   addSolicitud(){
 
      if(this.form.valid) {
 
        let nro = this.solicitudes.length;
 
-       this.solicitudModel.Solicitudes.push({
-         codSerie: this.getControlValue("serie"),
-         codSubserie: this.getControlValue("subserie"),
-         descriptor1: this.getControlValue("descriptor1"),
-         descriptor2: this.getControlValue("descriptor2"),
-         identificadorUD: this.getControlValue("identificador"),
-         nombreUD: this.getControlValue("nombre"),
-         observaciones: this.getControlValue("observaciones"),
-         fechaHora: new Date().getTime(),
-         nro: nro,
-         estado: "",
+       this._store.select(getAuthenticatedFuncionario).subscribe( funcionario => {
+
+         this.solicitudModel.Solicitudes.push({
+           codigoSerie: this.getControlValue("serie"),
+           codigoSubSerie: this.getControlValue("subserie"),
+           descriptor1: this.getControlValue("descriptor1"),
+           descriptor2: this.getControlValue("descriptor2"),
+           id: this.getControlValue("identificador"),
+           nombreUnidadDocumental: this.getControlValue("nombre"),
+           observaciones: this.getControlValue("observaciones"),
+           fechaHora: new Date().getTime(),
+           nro: nro,
+           estado: "",
+           solicitante: funcionario.nombre
+         });
+
+         this.unidadesDocumentales$ = Observable.of(this.solicitudModel.Solicitudes);
        });
+
+
      }
 
 

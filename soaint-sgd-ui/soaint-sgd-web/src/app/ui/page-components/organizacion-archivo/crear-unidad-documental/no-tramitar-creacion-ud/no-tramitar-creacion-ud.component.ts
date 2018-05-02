@@ -49,8 +49,8 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 ngOnChanges(){
 
    this.form.setValue({
-     'identificador':this.solicitud.identificadorUD,
-     'nombre':this.solicitud.nombreUD,
+     'identificador':this.solicitud.id,
+     'nombre':this.solicitud.nombreUnidadDocumental,
      'descriptor1':this.solicitud.descriptor1,
      'descriptor2':this.solicitud.descriptor2,
      'motivo' : null,
@@ -70,10 +70,10 @@ ngOnChanges(){
          //ubicacionTopografica:this.formAsignarUT.value,
          codigoSede:this.dependenciaSelected.codSede,
          codigoDependencia:this.dependenciaSelected.codigo,
-         codigoSerie:this.solicitud.codSerie,
-         codigoSubSerie:this.solicitud.codSubserie,
-         id:this.solicitud.identificadorUD,
-         nombreUnidadDocumental:this.solicitud.nombreUD,
+         codigoSerie:this.solicitud.codigoSerie,
+         codigoSubSerie:this.solicitud.codigoSubSerie,
+         id:this.solicitud.id,
+         nombreUnidadDocumental:this.solicitud.nombreUnidadDocumental,
          descriptor1:   this.solicitud.descriptor1,
          descriptor2:   this.solicitud.descriptor2,
          motivo: !isNullOrUndefined(this.form.get('motivo')) ? this.form.get('motivo').value: "",

@@ -131,7 +131,8 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
           nombreUnidadDocumental:this.form.get('nombre').value,
           descriptor1: !isNullOrUndefined(this.form.get('descriptor1')) ? this.form.get('descriptor1').value: "",
           descriptor2: !isNullOrUndefined(this.form.get('descriptor2')) ? this.form.get('descriptor2').value: "",
-          observacion:this.form.get('observaciones').value
+          observaciones:this.form.get('observaciones').value,
+          accion:"Creación UD"
         };
 
         this.udService.crear(data)
@@ -154,17 +155,17 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
 
       this.subseriesObservable$ = this.dependenciaSelected$.switchMap( dependencia => this
         ._serieSubserieService
-        .getSubseriePorDependenciaSerie(dependencia.codigo,this.solicitud.codSerie)
+        .getSubseriePorDependenciaSerie(dependencia.codigo,this.solicitud.codigoSerie)
         .map(list => {
           list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
           return list;
         }),(out,inner) => inner );
 
 
-      this.form.get("serie").setValue(this.solicitud.codSerie);
-      this.form.get('subserie').setValue(this.solicitud.codSubserie);
-      this.form.get('identificador').setValue(this.solicitud.identificadorUD);
-      this.form.get("nombre").setValue(this.solicitud.nombreUD);
+      this.form.get("serie").setValue(this.solicitud.codigoSerie);
+      this.form.get('subserie').setValue(this.solicitud.codigoSubSerie);
+      this.form.get('identificador').setValue(this.solicitud.id);
+      this.form.get("nombre").setValue(this.solicitud.nombreUnidadDocumental);
       this.form.get("descriptor1").setValue(this.solicitud.descriptor1);
       this.form.get("descriptor2").setValue(this.solicitud.descriptor2);
       this.form.get("observaciones").setValue(this.solicitud.observaciones);

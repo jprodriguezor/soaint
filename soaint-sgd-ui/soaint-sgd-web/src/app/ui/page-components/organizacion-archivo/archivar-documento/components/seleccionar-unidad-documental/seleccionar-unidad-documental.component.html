@@ -146,7 +146,7 @@
             <div class="ui-g ui-fluid">
               <div class="ui-g-12">
                 <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                             [paginator]="true" [rows]="10" [responsive]="true" [(value)]="solicitudModel.Solicitudes">
+                             [paginator]="true" [rows]="10" [responsive]="true" [value]="unidadesDocumentales$|async">
                   <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
                   <p-column  header="Item" [style]="{'width':'50px'}">
                     <ng-template pTemplate="body" let-index="rowIndex">
@@ -155,11 +155,11 @@
                   </p-column>
                   <p-column header="Nombre Serie/Subserie" [sortable]="true" >
                     <ng-template pTemplate="body" let-row="rowData">
-                      {{row.codSerie}}/{{row.codSubserie}}
+                      {{row.codigoSerie}}/{{row.codigoSubSerie}}
                     </ng-template>
                   </p-column>
-                  <p-column header="Identificador unidad documental" [sortable]="true" field="identificadorUD"> </p-column>
-                  <p-column header="Nombre unidad documental" [sortable]="true" field="nombreUD"></p-column>
+                  <p-column header="Identificador unidad documental" [sortable]="true" field="id"> </p-column>
+                  <p-column header="Nombre unidad documental" [sortable]="true" field="nombreUnidadDocumental"></p-column>
                   <p-column header="Descriptor 1" [sortable]="true" field="descriptor1"></p-column>
                   <p-column header="Descriptor 2" [sortable]="true" [style]="{'width':'110px'}" field="descriptor2"></p-column>
                   <p-column header="Observaciones" [sortable]="true" field="observaciones"></p-column>
