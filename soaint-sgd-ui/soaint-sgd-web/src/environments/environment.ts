@@ -125,9 +125,7 @@ export const environment = {
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
-  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidades-documentales`,
-  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidades-documentales`,
-  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidades-documentales`,
+  gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
 };
 
