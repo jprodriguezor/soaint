@@ -223,14 +223,11 @@ public class FuncionariosControl {
      * @throws SystemException
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public FuncionarioDTO consultarFuncionarioByNroIdentificacion(String nroIdentificacion) throws BusinessException, SystemException {
+    public List<FuncionarioDTO> consultarFuncionarioByNroIdentificacion(String nroIdentificacion) throws BusinessException, SystemException {
         try {
-            FuncionarioDTO funcionario = em.createNamedQuery("Funcionarios.findByNroIdentificacion", FuncionarioDTO.class)
+            return em.createNamedQuery("Funcionarios.findByNroIdentificacion", FuncionarioDTO.class)
                     .setParameter("NRO_IDENTIFICACION", nroIdentificacion)
-                    .getSingleResult();
-
-            funcionario.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionario.getIdeFunci()));
-            return funcionario;
+                    .getResultList();
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()

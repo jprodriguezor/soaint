@@ -1094,12 +1094,13 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
-                    FuncionarioDTO funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
+                    List<FuncionarioDTO> funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
+                    FuncionarioDTO funcionario = funcionarioDTO.get(0);
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", funcionarioDTO.getNomFuncionario());
-                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionarioDTO.getNomFuncionario().toString());
-                    destinatarios.add(funcionarioDTO.getCorrElectronico());
+                        else parameters.put("#USER#", funcionario.getNomFuncionario());
+                    log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionario.getNomFuncionario().toString());
+                    destinatarios.add(funcionario.getCorrElectronico());
                  } catch (Exception ex) {
                     log.error("Business Control - a system error has occurred", ex);
                 }
