@@ -169,11 +169,8 @@ export class StateUnidadDocumentalService {
     Abrir() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
-            this.unidadDocumentalApiService.abrirUnidadesDocumentales(payload)
-            .subscribe(response => {
-                this.ManageActionResponse(response);
-            });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'abrir' } });
+            this.GestionarUnidadesDocumentales(payload);
         }
     }
 
@@ -191,6 +188,7 @@ export class StateUnidadDocumentalService {
                             const item = {
                                 id: current.id,
                                 fechaExtremaFinal: current.fechaCierre,
+                                accion: 'cerrar'
                             }
                             listado.push(current);
                         }
@@ -203,7 +201,7 @@ export class StateUnidadDocumentalService {
                 }
               });
            } else {
-                 payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
+                 payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'cerrar' } });
                  this.SubmitCerrar(payload);
            }
 
@@ -211,21 +209,22 @@ export class StateUnidadDocumentalService {
     }
 
     SubmitCerrar(payload: any) {
-        this.unidadDocumentalApiService.cerrarUnidadesDocumentales(payload)
-        .subscribe(response => {
-            this.ManageActionResponse(response);
-        });
+        this.GestionarUnidadesDocumentales(payload);
     }
 
     Reactivar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
-            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
-            this.unidadDocumentalApiService.reactivarUnidadesDocumentales(payload)
-            .subscribe(response => {
-               this.ManageActionResponse(response);
-            });
+            const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'reactivar'} });
+            this.GestionarUnidadesDocumentales(payload);
         }
+    }
+
+    GestionarUnidadesDocumentales(payload: any) {
+        this.unidadDocumentalApiService.gestionarUnidadesDocumentales(payload)
+        .subscribe(response => {
+           this.ManageActionResponse(response);
+        });
     }
 
     ManageActionResponse(response: MensajeRespuestaDTO) {

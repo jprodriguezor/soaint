@@ -144,41 +144,15 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
-        log.info("AbrirUnidadesDocumentalesECMClient - [trafic] - abrir unidades documentales");
-        if (ObjectUtils.isEmpty(dtoList)) {
-            dtoList = new ArrayList<>();
-        }
-        dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("abrir"));
+    public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
+        log.info("AbrirCerrarReactivarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
         return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(dtoList));
     }
 
-    public Response cerrarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
-        log.info("CerrarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
-        if (ObjectUtils.isEmpty(dtoList)) {
-            dtoList = new ArrayList<>();
-        }
-        dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("cerrar"));
-        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
-                .request()
-                .put(Entity.json(dtoList));
-    }
 
-    public Response reactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
-        log.info("ReactivarUnidadesDocumentalesECMClient - [trafic] - reactivar unidades documentales");
-        if (ObjectUtils.isEmpty(dtoList)) {
-            dtoList = new ArrayList<>();
-        }
-        dtoList.forEach(unidadDocumentalDTO -> unidadDocumentalDTO.setAccion("reactivar"));
-        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
-                .request()
-                .put(Entity.json(dtoList));
-    }
 
     public Response DetalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

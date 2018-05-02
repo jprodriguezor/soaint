@@ -26,15 +26,23 @@ export class UnidadDocumentalApiService {
      return this._api.post('', unidadDocumental);
    }
 
-  abrirUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
-    return this._api.post(environment.abrir_unidad_documental_endpoint, payload)
+  gestionarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
+    return this._api.post(environment.gestionar_unidades_documentales_endpoint, payload)
   }
-  cerrarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
-    return this._api.post(environment.cerrar_unidad_documental_endpoint, payload);
+  
+
+  noTramitarUnidadesDocumentales(payload: any){
+
+    //return this._api.post("",payload)
+
+    return Observable.of(true);
+
   }
 
-  reactivarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
-    return this._api.post(environment.reactivar_unidad_documental_endpoint, payload);
+  listarUnidadesDocumentales(payload:any):Observable<any[]>{
+
+    return this._api.post(environment.listar_unidad_documental_endpoint,payload)
+      .map( response => response.response.unidadDocumental);
   }
 
 }
