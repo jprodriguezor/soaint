@@ -189,7 +189,7 @@ public class ContentControlAlfresco implements ContentControl {
                     props.put(CMCOR_SER_CODIGO, serieCode);
                     props.put(CMCOR_SS_CODIGO, subSerieCode);
                     props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
-                    props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+                    props.put(PropertyIds.OBJECT_TYPE_ID, F_CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
                     break;
                 default:
                     break;
@@ -520,7 +520,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
 
                 final Map<String, Object> props = new HashMap<>();
-                props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
+                props.put(PropertyIds.OBJECT_TYPE_ID, F_CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL));
                 props.putAll(updateProperties(null, unidadDocumentalDTO));
 
                 logger.info("Making the folder!!!");
@@ -1990,7 +1990,7 @@ public class ContentControlAlfresco implements ContentControl {
      */
     private void llenarPropiedadesCarpeta(String tipoCarpeta, String clase, Map<String, Object> props, String codOrg, Carpeta folderFather, String idOrgOfc) {
 
-        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
+        props.put(PropertyIds.OBJECT_TYPE_ID, F_CMCOR + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put(tipoCarpeta, codOrg);
 
@@ -2019,7 +2019,7 @@ public class ContentControlAlfresco implements ContentControl {
      * @param codOrg codigo
      */
     private void llenarPropiedadesCarpeta(String clase, Map<String, Object> props, String codOrg) {
-        props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(clase));
+        props.put(PropertyIds.OBJECT_TYPE_ID, F_CMCOR + configuracion.getPropiedad(clase));
         props.put(PropertyIds.DESCRIPTION, configuracion.getPropiedad(clase));
         props.put(CMCOR_UB_CODIGO, codOrg);
     }
