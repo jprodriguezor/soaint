@@ -1,15 +1,20 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.foundation.cartridge.email.model.Attachment;
-import co.com.foundation.cartridge.email.model.MailRequestDTO;
-import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
+import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
+import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaFullDTO;
+import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
+
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
+/*import co.com.foundation.cartridge.email.model.Attachment;
+import co.com.foundation.cartridge.email.model.MailRequestDTO;
+import co.com.foundation.cartridge.email.proxy.MailServiceProxy;*/
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
@@ -24,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -979,7 +985,7 @@ public class CorrespondenciaControl {
 
             if (comunicacionOficialDTO.getAnexoList() != null) {
                 ppdDocumento.setCorAnexoList(new ArrayList<>());
-                comunicacionOficialDTO.getAnexoList().forEach(anexoDTO -> {
+                comunicacionOficialDTO.getAnexoList().stream().forEach(anexoDTO -> {
                     CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
                     corAnexo.setPpdDocumento(ppdDocumento);
                     ppdDocumento.getCorAnexoList().add(corAnexo);
@@ -990,7 +996,7 @@ public class CorrespondenciaControl {
             correspondencia.getPpdDocumentoList().add(ppdDocumento);
 
             if (comunicacionOficialDTO.getReferidoList() != null)
-                comunicacionOficialDTO.getReferidoList().forEach(referidoDTO -> {
+                comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
                     CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
                     corReferido.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorReferidoList().add(corReferido);
@@ -1034,92 +1040,64 @@ public class CorrespondenciaControl {
      */
     public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - enviar correo radicar correspondencia");
-        //return true;
-        Boolean send = false;
+        return true;
 
-        HashMap<String,String> parameters = new HashMap<String, String>();
-        MailRequestDTO request = new MailRequestDTO( "PA001" );
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+//        HashMap<String,String> parameters = new HashMap<String, String>();
+//        MailRequestDTO request = new MailRequestDTO( "template_1" );
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTemplate());
+//
+//        request.setSubject("Correo de prueba");
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
+//
+//        String[] dest =  {"dionyuci@gmail.com"};
+//        request.setTo(dest);
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
+//        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+//        request.setAttachmentsList(attachmentsList);
+//
+//        parameters.put("#USER#","Dionisio");
+//        parameters.put("#CODE#","D10N7");
+//
+//        request.setParameters( parameters );
+//
+//        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
+//        Boolean send = false;
+//        try {
+//            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
+//            send = MailServiceProxy.getInstance().sendEmail( request );
+//        }catch (Exception e){
+//            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
+//            throw new BusinessException("system.error.correo.enviado");
+//        }
+//
+//        return send;
 
-        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(nroRadicado);
-
-        String asunto = "Respuesta "+nroRadicado+" "+correspondenciaDTO.getFecRadicado()+".";
-        request.setSubject(asunto);
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getSubject());
-        String endpoint = System.getProperty("ecm-api-endpoint");
-
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
-        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
-                .request()
-                .post(Entity.json(dto));
-
-        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
-
-        if (response.getStatus() == HttpStatus.OK.value()) {
-            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
-            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
-                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
-
-                if (!mensajeRespuesta.getDocumentoDTOList().isEmpty()) {
-                    documentoDTOList.forEach(documento -> {
-                        Attachment doc =  new Attachment();
-                        doc.setAttachments(documento.getDocumento());
-                        attachmentsList.add(doc);
-
-                    });
-                }
-
-            } else{
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
-                        .buildSystemException();
-            }
-
-        }
-
-        request.setAttachmentsList(attachmentsList);
-
-        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
-        if (destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
-                .withMessage("No existen destinatarios para enviar correo.")
-                .buildSystemException();
-
-        final List<String> destinatarios = new ArrayList<String>();
-        destinatariosList.forEach(agenteDTO -> {
-            agenteDTO.getDatosContactoList().listIterator().forEachRemaining(datosContactoDTO -> {
-             destinatarios.add(datosContactoDTO.getCorrElectronico());
-            });
-        });
-
-        String destPrincipal = "";
-        final List<AgenteDTO> remitentesList= this.agenteControl.listarRemitentesByIdeDocumento(correspondenciaDTO.getIdeDocumento());
-        final List<String> remitentes = new ArrayList<String>();
-        remitentesList.stream().forEach(agenteDTO -> {
-            agenteDTO.getDatosContactoList().listIterator().forEachRemaining(datosContactoDTO -> {
-                remitentes.add(datosContactoDTO.getCorrElectronico());
-                if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                    parameters.put("#USER#", agenteDTO.getIndOriginal());
-            });
-        });
-        //TODO: remover esta direccion cableada
-        String[] dest =  {"giselle.designe@gmail.com"};
-        request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
-
-        parameters.put("#USER#",remitentesList.get(0).getNombre());
-        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
-
-        request.setParameters( parameters );
-
-        log.info("processing rest request - enviar correo radicar correspondencia"+request.getParameters());
-        try {
-            log.info("processing rest request - enviar correo radicar correspondencia- preparando enviar...");
-            return MailServiceProxy.getInstance().sendEmail2(request);
-        }catch (Exception e){
-            log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
-            throw new BusinessException("system.error.correo.enviado");
-        }
+//        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(documentoDTO.getNroRadicado());
+//
+//        String endpoint = "http://192.168.1.81:28080/ecm-integration-services/apis/ecm";
+//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+//
+//        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado("454").build();
+//        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
+//                .request()
+//                .post(Entity.json(dto));
+//
+//        if (response.getStatus() == HttpStatus.OK.value()) {
+//            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
+//            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
+//                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
+//                documentoDTOList.forEach(documento -> {
+//
+//                });
+//            } else{
+//                throw ExceptionBuilder.newBuilder()
+//                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
+//                        .buildSystemException();
+//            }
+//
+//        }
+//
+//
 
     }
 }

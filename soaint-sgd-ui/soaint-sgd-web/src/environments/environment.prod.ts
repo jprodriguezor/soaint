@@ -19,8 +19,6 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    tipoComunicacionSalida_endpoint: `${host}/tipo-comunicacion-salida-gateway-api`,
    tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
    soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
-   modalidadCorreo_endpoint: `${host}/modalidad-correo-gateway-api`,
-   claseEnvio_endpoint: `${host}/clase-envio-gateway-api`,
    sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
    mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
    dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
@@ -91,7 +89,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
 
    actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
    restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
-   listarAnexos_endpoint: `${host}/correspondencia-gateway-api/listar-anexos/`,
+
    // Produccion Documental
    pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
    pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
@@ -117,7 +115,6 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
    cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
    reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
-   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
  };
 export const process_info = {
   'proceso.correspondencia-entrada': {

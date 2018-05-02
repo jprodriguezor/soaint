@@ -4,11 +4,11 @@
       <div class="ui-sm-6 ui-g-6">
         <h2>Disposición Final</h2>
       </div>
-
+  
       <div class="ui-sm-6 ui-g-6 text-right">
         <button pButton type="button" label="Aprobar" style="width:auto;margin-bottom:10px;"></button>
-        <button pButton type="button" label="Rechazar" style="width:auto;margin-bottom:10px;"></button>
-        </div>
+        <button pButton type="button" label="Rechazar" style="width:auto;margin-bottom:10px;"></button>    
+        </div>  
     </div>
   </div>
 
@@ -31,8 +31,8 @@
                                             (onBlur)="state.OnBlurEvents('tipoDisposicionFinal')">
                                 </p-dropdown>
                                 <div class="ui-message ui-messages-error"
-                                    *ngIf="validations.tipoDisposicionFinal">
-                                    {{ validations.tipoDisposicionFinal }}
+                                    *ngIf="state.validations.tipoDisposicionFinal">
+                                    {{ state.validations.tipoDisposicionFinal }}
                                 </div>
                             </div>
                         </div>
@@ -52,8 +52,8 @@
                                                 (onBlur)="state.OnBlurEvents('sede')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
-                                        *ngIf="validations.sede">
-                                        {{ validations.sede }}
+                                        *ngIf="state.validations.sede">
+                                        {{ state.validations.sede }}
                                     </div>
                                 </div>
                             </div>
@@ -72,8 +72,8 @@
                                                 (onBlur)="state.OnBlurEvents('dependencia')">
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
-                                        *ngIf="validations.dependencia">
-                                        {{ validations.dependencia }}
+                                        *ngIf="state.validations.dependencia">
+                                        {{ state.validations.dependencia }}
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.serie">
-                                        {{ validations.serie }}
+                                        {{ state.validations.serie }}
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                                     </p-dropdown>
                                     <div class="ui-message ui-messages-error"
                                         *ngIf="validations.subserie">
-                                        {{ validations.subserie }}
+                                        {{ state.validations.subserie }}
                                     </div>
                                 </div>
                             </div>
@@ -132,8 +132,8 @@
                             <div class="ui-g-12 md-dropdownfield">
                                 <input type="text" pInputText id="identificador" formControlName="identificador" (onBlur)="state.OnBlurEvents('identificador')" />
                                 <div class="ui-message ui-messages-error"
-                                    *ngIf="validations.identificador">
-                                    {{ validations.identificador }}
+                                    *ngIf="state.validations.identificador">
+                                    {{ state.validations.identificador }}
                                 </div>
                             </div>
                         </div>
@@ -147,8 +147,8 @@
                                 <div class="ui-g-12 md-dropdownfield">
                                     <input type="text" pInputText id="nombreUnidadDocumental" formControlName="nombre" (onBlur)="state.OnBlurEvents('nombre')"/>
                                     <div class="ui-message ui-messages-error"
-                                        *ngIf="validations.nombre">
-                                        {{ validations.nombre }}
+                                        *ngIf="state.validations.nombre">
+                                        {{ state.validations.nombre }}
                                     </div>
                                 </div>
                             </div>
@@ -161,8 +161,8 @@
                                 <div class="ui-g-12 md-dropdownfield">
                                     <input type="text" pInputText id="descriptor1" formControlName="descriptor1" (onBlur)="state.OnBlurEvents('descriptor1')"/>
                                     <div class="ui-message ui-messages-error"
-                                        *ngIf="validations.descriptor1">
-                                        {{ validations.descriptor1 }}
+                                        *ngIf="state.validations.descriptor1">
+                                        {{ state.validations.descriptor1 }}
                                     </div>
                                 </div>
                             </div>
@@ -177,8 +177,8 @@
                                 <div class="ui-g-12 md-dropdownfield">
                                     <input type="text" pInputText id="descriptor2" formControlName="descriptor2" (onBlur)="state.OnBlurEvents('descriptor2')"/>
                                     <div class="ui-message ui-messages-error"
-                                        *ngIf="validations.descriptor2">
-                                        {{ validations.descriptor2 }}
+                                        *ngIf="state.validations.descriptor2">
+                                        {{ state.validations.descriptor2 }}
                                     </div>
                                 </div>
                             </div>
@@ -186,14 +186,14 @@
                         <div class="ui-sm-12 ui-g-6 ui-lg-6">
                             <div class="ui-g form-group">
                                 <div class="ui-g-12 md-dropdownfield">
-                                    <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.ResetForm()" ></button>
-                                    <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Listar()" [disabled]="formBuscar.invalid"></button>
+                                    <button pButton label="Buscar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Limpiar()" ></button>
+                                    <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Listar()" [disabled]="state.formBuscar.invalid"></button>
                                 </div>
                             </div>
-                        </div>
+                        </div>                    
                     </div>
                 </div>
-            </form>
+            </form>            
         </p-panel>
 
         <br/>
@@ -206,14 +206,14 @@
                             <label for="sede">Ejecutar selección</label>
                         </div>
                         <div class="ui-g-12 md-dropdownfield">
-                            <p-dropdown
+                            <p-dropdown 
                                         id="ejecutarSeleccion"
                                         placeholder="Seleccione"
                                         [autoWidth]="false">
                             </p-dropdown>
                         </div>
                     </div>
-                </div>
+                </div>                
                 <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <button pButton label="Ejecutar" style="width:auto;margin-left:5px;margin-top:20px;" type="button"></button>
                 </div>
@@ -221,10 +221,10 @@
 
             <div class="ui-g ui-fluid" style="margin-bottom: 16px">
                 <div class="ui-sm-12 ui-g-12 ui-lg-12">
-                    <p-dataTable
-                        [paginator]="true"
-                        [rows]="10"
-                        [responsive]="true"
+                    <p-dataTable 
+                        [paginator]="true" 
+                        [rows]="10" 
+                        [responsive]="true" 
                         [value]="state.ListadoUnidadDocumental"
                         dataKey="dependencia"
                         [(selection)]="state.unidadesSeleccionadas"
@@ -236,16 +236,16 @@
                         <p-column field="nombreUnidadDocumental" header="Nombre unidad documental" [sortable]="true"></p-column>
                         <p-column field="descriptor1" header="Descriptor 1" [sortable]="true"></p-column>
                         <p-column field="descriptor2" header="Descriptor 2" [sortable]="true"></p-column>
-                        <p-column field="faseArchivo" header="Fase archivo" [sortable]="true"></p-column>
+                        <p-column field="faseArchivo" header="Fase archivo" [sortable]="true"></p-column>  
                         <p-column field="inactivo" header="Estado">
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                               {{i | toActiveString}}
                             </ng-template>
-                          </p-column>
+                          </p-column>                        
                         <p-column field="fechaExternaInicial" header="Fecha externa inicial" [sortable]="true"></p-column>
                         <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
-                        <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
+                        <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>  
                         <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                               <button type="button" pButton label="Ver" (click)="state.GetDetalleUnidadUnidadDocumental(i)"
@@ -253,10 +253,10 @@
                               ></button>
                             </ng-template>
                         </p-column>
-                        <p-column  header="Disposición" [sortable]="true"></p-column>
-                        <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>
-                        <p-column  header="Notas" ></p-column>
-
+                        <p-column  header="Disposición" [sortable]="true"></p-column>                      
+                        <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>                      
+                        <p-column  header="Notas" ></p-column>                      
+                    
                     </p-dataTable>
                 </div>
             </div>
@@ -264,10 +264,10 @@
     </div>
 </div>
 
-<p-dialog
-    [visible]="state.AbrirDetalle | async"
-    modal="modal"
-    [responsive]="true"
+<p-dialog 
+    [visible]="state.AbrirDetalle | async" 
+    modal="modal" 
+    [responsive]="true" 
     [closable]="true"
     positionTop="20"
     [style]="{'position':'absolute'}"
