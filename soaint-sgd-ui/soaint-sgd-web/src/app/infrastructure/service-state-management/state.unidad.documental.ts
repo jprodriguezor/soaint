@@ -170,10 +170,7 @@ export class StateUnidadDocumentalService {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
             const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'abrir' } });
-            this.unidadDocumentalApiService.abrirUnidadesDocumentales(payload)
-            .subscribe(response => {
-                this.ManageActionResponse(response);
-            });
+            this.GestionarUnidadesDocumentales(payload);
         }
     }
 
@@ -212,21 +209,22 @@ export class StateUnidadDocumentalService {
     }
 
     SubmitCerrar(payload: any) {
-        this.unidadDocumentalApiService.cerrarUnidadesDocumentales(payload)
-        .subscribe(response => {
-            this.ManageActionResponse(response);
-        });
+        this.GestionarUnidadesDocumentales(payload);
     }
 
     Reactivar() {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         if (unidadesSeleccionadas.length) {
             const payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, accion: 'reactivar'} });
-            this.unidadDocumentalApiService.reactivarUnidadesDocumentales(payload)
-            .subscribe(response => {
-               this.ManageActionResponse(response);
-            });
+            this.GestionarUnidadesDocumentales(payload);
         }
+    }
+
+    GestionarUnidadesDocumentales(payload: any) {
+        this.unidadDocumentalApiService.gestionarUnidadesDocumentales(payload)
+        .subscribe(response => {
+           this.ManageActionResponse(response);
+        });
     }
 
     ManageActionResponse(response: MensajeRespuestaDTO) {
