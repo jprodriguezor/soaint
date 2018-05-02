@@ -1094,8 +1094,8 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
-                    List<FuncionarioDTO> funcionarioDTO = funcionarioControl.consultarFuncionarioByNroIdentificacion(agenteDTO.getNroDocuIdentidad());
-                    FuncionarioDTO funcionario = funcionarioDTO.get(0);
+                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+//                    FuncionarioDTO funcionario = funcionarioDTO.get(0);
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
                         else parameters.put("#USER#", funcionario.getNomFuncionario());

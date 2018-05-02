@@ -1,13 +1,14 @@
 export class  SolicitudCreacionUDDto
 {
-codSerie : string;
-codSubserie : string;
-identificadorUD : string;
-nombreUD : string;
+codigoSerie : string;
+codigoSubSerie : string;
+id : string;
+nombreUnidadDocumental : string;
 descriptor1 : string;
 descriptor2 : string;
 observaciones: string;
 estado: string;
 fechaHora?:number;
 nro?:number;
+solicitante?:string
 }

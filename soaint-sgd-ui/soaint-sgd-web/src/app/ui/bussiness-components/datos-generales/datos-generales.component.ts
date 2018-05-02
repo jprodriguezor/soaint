@@ -174,10 +174,22 @@ export class DatosGeneralesComponent implements OnInit {
       this.form.get("reqDigit").setValue(datosGenerales.reqDigit);
       this.form.get("reqDistFisica").setValue(datosGenerales.reqDistFisica);
 
+      this._store.select(getSoporteAnexoArrayData).subscribe( soportes => {
 
-      this.descripcionAnexos = datosGenerales.listaAnexos;
+        this.descripcionAnexos = datosGenerales.listaAnexos.map( anexo => {
+
+          return {
+            tipoAnexo : anexo.tipo,
+            soporteAnexo : soportes.find( soporte => soporte.codigo == anexo.soporte),
+            descripcion: anexo.descripcion}
+        })
+      });
+
+
+      this.descripcionAnexos = datosGenerales.listaAnexos.map( anexo => {
+        return { tipoAnexo : anexo.tipo, soporteAnexo : { nombre : anexo.soporte},descripcion: anexo.descripcion}
+      });
       this.radicadosReferidos = datosGenerales.radicadosReferidos;
-
 
     });
 

@@ -8,4 +8,5 @@ export  class  SolicitudCreacionUDModel{
   descriptor2 : string;
   observaciones: string;
   estado: string;
+
 }
