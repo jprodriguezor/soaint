@@ -400,7 +400,7 @@ public class ContentManager {
      *
      * @param idUnidadDocumental   Id de la unidad documental
      */
-    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws Exception {
         logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();

@@ -31,6 +31,12 @@ import javax.persistence.*;
                 "t.telFijo, t.extension, t.corrElectronico, t.codPais, t.codDepartamento, t.codMunicipio, " +
                 "t.provEstado, t.principal, t.ciudad) " +
                 "FROM TvsDatosContacto t INNER JOIN t.corAgente co " +
+                "WHERE co.ideAgente = :IDE_AGENTE"),
+        @NamedQuery(name = "TvsDatosContacto.findDatosContactoByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO " +
+                "(t.ideContacto,  t.nroViaGeneradora, t.nroPlaca, t.codTipoVia, t.codPrefijoCuadrant, t.codPostal, t.direccion, t.celular, " +
+                "t.telFijo, t.extension, t.corrElectronico, t.codPais, t.codDepartamento, t.codMunicipio, " +
+                "t.provEstado, t.principal, t.ciudad) " +
+                "FROM TvsDatosContacto t INNER JOIN t.corAgente co " +
                 "WHERE co.ideAgente = :IDE_AGENTE")})
 @javax.persistence.TableGenerator(name = "TVS_DATOS_CONTACTO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_DATOS_CONTACTO_SEQ", allocationSize = 1)
