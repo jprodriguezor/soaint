@@ -74,7 +74,8 @@ export class ConstanteApiService extends CacheResponse {
     if (endpoint !== null) {
       return this.getResponse(payload, this._api.list(endpoint, payload)
         .map(response => {
-           return response.constantes;
+          this.cacheResponse(payload, response, endpoint);
+          return response.constantes;
         }), endpoint);
     }
 

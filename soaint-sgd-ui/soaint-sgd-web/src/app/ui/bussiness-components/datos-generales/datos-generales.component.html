@@ -215,7 +215,7 @@
           </div>
         </div>
 
-        <div class="ui-sm-12 ui-g-12 ui-lg-12" *ngIf="showBlockDistribucionDig()">
+        <div class="ui-sm-12 ui-g-12 ui-lg-12">
           <div class="ui-sm-12 ui-md-12 ui-g-6 ui-lg-6">
             <div style="padding: 20px 0 0 10px">
 
@@ -249,6 +249,42 @@
             </div>
           </div>
         </div>
+
+        <!---------------------------------- Datos de envio ---------------------------------->
+        <div class="ui-g-12" *ngIf="showDistributionFields()" style="margin: 30px 0;">
+          <div class="ui-g-6 ui-sm-6">
+            <div class="ui-g form-group">
+              <div class="ui-g-3">
+                <label >Clase de envio</label>
+              </div>
+              <div class="ui-g-9">
+                <p-dropdown ></p-dropdown>
+                <!--<div class="ui-message ui-messages-error"  *ngIf="form.controls['serie'].invalid && form.controls['serie'].touched">-->
+                <!--<p *ngIf="form.controls['serie'].hasError('required')">-->
+                <!--Debe  de Seleccionar un numero de serie-->
+                <!--</p>-->
+                <!--</div>-->
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-6 ui-sm-6">
+            <div class="ui-g form-group">
+              <div class="ui-g-3">
+                <label >Modalidad de Correo</label>
+              </div>
+              <div class="ui-g-9">
+                <p-dropdown ></p-dropdown>
+                <!--<div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">-->
+                <!--<p *ngIf="form.controls['subserie'].hasError('required')">-->
+                <!--Debe  de Seleccionar un numero de serie-->
+                <!--</p>-->
+                <!--</div>-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
 
@@ -296,7 +332,7 @@
               <ng-template let-radref="rowData" let-i="rowIndex" pTemplate="item">
                 <button type="button" icon="ui-icon-close" pButton (click)="deleteRadicadoReferido(i)"
                         class="ui-button ui-button-icon ui-button-danger"
-                        [disabled]="!showBlockDistribucionDig()"
+                        *ngIf="editable === true"
                 ></button>
               </ng-template>
             </p-column>
@@ -328,73 +364,68 @@
     <div class="card card-w-title">
       <h1>Descripción anexos</h1>
 
-      <div *ngIf="showBlockDistribucionDig()">
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexos">Tipo anexos</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="tipoAnexosSuggestions$ | async | dropdownItem"
+                        id="tipoAnexos"
+                        placeholder="Seleccione"
+                        formControlName="tipoAnexos"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
 
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tipoAnexos">Tipo anexos</label>
-            </div>
-            <div class="ui-g-12">
-              <p-dropdown [options]="tipoAnexosSuggestions$ | async | dropdownItem"
-                          id="tipoAnexos"
-                          placeholder="Seleccione"
-                          formControlName="tipoAnexos"
-                          [filter]="true"
-                          [autoWidth]="false"
-              >
-              </p-dropdown>
-
-            </div>
           </div>
         </div>
+      </div>
 
-        <div class="ui-sm-12 ui-g-6 ui-lg-6">
-          <div class="ui-g form-group">
-            <div class="ui-g-12">
-              <label for="tipoAnexos">Soporte</label>
-            </div>
-            <div class="ui-g-12">
-              <p-dropdown [options]="soporteAnexosSuggestions$ | async | dropdownItem"
-                          id="soporteAnexos"
-                          placeholder="Seleccione"
-                          formControlName="soporteAnexos"
-                          [filter]="true"
-                          [autoWidth]="false"
-              >
-              </p-dropdown>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+            <label for="tipoAnexos">Soporte</label>
+          </div>
+          <div class="ui-g-12">
+            <p-dropdown [options]="soporteAnexosSuggestions$ | async | dropdownItem"
+                        id="soporteAnexos"
+                        placeholder="Seleccione"
+                        formControlName="soporteAnexos"
+                        [filter]="true"
+                        [autoWidth]="false"
+            >
+            </p-dropdown>
 
-            </div>
           </div>
         </div>
+      </div>
 
-        <div class="ui-sm-12 ui-g-12 ui-g-12">
-          <div class="form-group" style="display: flex; margin: 16px">
-            <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
+      <div class="ui-sm-12 ui-g-12 ui-g-12">
+        <div class="form-group" style="display: flex; margin: 16px">
+          <div class="md-inputfield" style="flex-grow: 1; margin-top: 8px">
                  <textarea [rows]="3" pInputTextarea
                            id="descripcionAnexos"
                            placeholder="Descripción"
                            autoResize="false"
                            formControlName="tipoAnexosDescripcion"
                  ></textarea>
-              <div class="ui-message ui-messages-error"
-                   *ngIf="validations.tipoAnexosDescripcion">
-                {{ validations.tipoAnexosDescripcion }}
-              </div>
+            <div class="ui-message ui-messages-error"
+                 *ngIf="validations.tipoAnexosDescripcion">
+              {{ validations.tipoAnexosDescripcion }}
             </div>
+          </div>
 
-            <span style="float: right; margin-top: 30px">
+          <span style="float: right; margin-top: 30px">
                   <button pButton type="button" label="Agregar" (click)="addTipoAnexosDescripcion()"
                           style="width: auto; margin-left: 12px;"
                           *ngIf="editable === true"
                           [disabled]="!form.get('tipoAnexos').value || !form.get('soporteAnexos').value"
                   ></button>
               </span>
-          </div>
         </div>
-
       </div>
-
 
       <div class="ui-g-12">
         <p-dataTable selectionMode="single"
@@ -411,7 +442,7 @@
           <p-column field="tipoAnexo.nombre" header="Tipo anexos" [sortable]="true"></p-column>
           <p-column field="soporteAnexo.nombre" header="Soporte anexos" [sortable]="true"></p-column>
           <p-column field="descripcion" header="Descripción" [sortable]="true"></p-column>
-          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="showBlockDistribucionDig()">
+          <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
             <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
               <button type="button" icon="ui-icon-close" pButton (click)="deleteTipoAnexoDescripcion(i)"
                       class="ui-button ui-button-icon ui-button-danger"

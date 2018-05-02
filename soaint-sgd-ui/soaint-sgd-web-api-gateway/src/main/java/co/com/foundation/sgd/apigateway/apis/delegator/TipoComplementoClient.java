@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
  */
 @ApiDelegator
 @Log4j2
-public class TipoComplementoClient implements ApiClient {
+public class TipoComplementoClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 

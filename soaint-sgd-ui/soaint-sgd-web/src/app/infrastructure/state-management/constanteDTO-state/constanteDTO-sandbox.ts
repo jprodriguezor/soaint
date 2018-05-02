@@ -72,17 +72,15 @@ export class Sandbox extends CacheResponse {
       case 'soporteAnexo':
         endpoint = environment.soporteAnexo_endpoint;
         break;
-      case 'modalidadCorreo':
-        endpoint = environment.modalidadCorreo_endpoint;
-        break;
-      case 'claseEnvio':
-        endpoint = environment.claseEnvio_endpoint;
-        break;
     }
 
-    if (endpoint !== null) { console.log(endpoint);
+    if (endpoint !== null) {
 
-      return this.getResponse(payload,this._api.list(endpoint, payload), endpoint);
+      return this.getResponse(payload, this._api.list(endpoint, payload)
+        .map(response => {
+          this.cacheResponse(payload, response, endpoint);
+          return response;
+        }), endpoint);
     }
     return Observable.of([]).delay(400);
     // return Observable.of(this.getMock()).delay(400);
@@ -106,11 +104,6 @@ export class Sandbox extends CacheResponse {
 
   loadDatosRemitenteDispatch() {
     this._store.dispatch(new actions.LoadDatosRemitenteAction());
-  }
-
-  loaddatosEnvioDispatch(){
-
-    this._store.dispatch(new actions.LoadDatosEnvioAction());
   }
 
 }
