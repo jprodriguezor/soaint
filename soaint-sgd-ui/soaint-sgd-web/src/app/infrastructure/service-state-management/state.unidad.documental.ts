@@ -14,27 +14,30 @@ import { Sandbox } from 'app/infrastructure/state-management/dependenciaGrupoDTO
 import { getActiveTask } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { async } from '@angular/core/testing';
 import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
-import { VariablesTareaDTO } from '../produccion-documental/models/StatusDTO';
-import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
+import { UnidadDocumentalDTO } from '../../domain/unidadDocumentalDTO';
 import { ConfirmationService } from 'primeng/primeng';
-import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
-import { EstadoUnidadDocumental } from './models/enums/estado.unidad.documental.enum';
-import { MensajeRespuestaDTO } from '../../../domain/MensajeRespuestaDTO';
+import { PushNotificationAction } from '../../infrastructure/state-management/notifications-state/notifications-actions';
+import { MensajeRespuestaDTO } from 'app/domain/MensajeRespuestaDTO';
 import { ChangeDetectorRef, Injectable, ApplicationRef } from '@angular/core';
 import { isNullOrUndefined } from 'util';
-import { ConstanteDTO } from '../../../domain/constanteDTO';
-import { sedeDestinatarioEntradaSelector } from '../../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
+import { ConstanteDTO } from 'app/domain/constanteDTO';
+import { sedeDestinatarioEntradaSelector } from '../../infrastructure/state-management/radicarComunicaciones-state/radicarComunicaciones-selectors';
 import {Sandbox as DependenciaGrupoSandbox} from 'app/infrastructure/state-management/dependenciaGrupoDTO-state/dependenciaGrupoDTO-sandbox';
 import {LoadAction as SedeAdministrativaLoadAction} from 'app/infrastructure/state-management/sedeAdministrativaDTO-state/sedeAdministrativaDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
-import { DependenciaApiService } from '../../../infrastructure/api/dependencia.api';
-import { DependenciaDTO } from '../../../domain/dependenciaDTO';
+import { DependenciaApiService } from '../../infrastructure/api/dependencia.api';
+import { DependenciaDTO } from 'app/domain/dependenciaDTO';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class StateUnidadDocumentalService {
 
     ListadoUnidadDocumental: UnidadDocumentalDTO[] = [];
     unidadesSeleccionadas: UnidadDocumentalDTO[] = [];
+
+    // 
+    private ListadoActualizadoSubject = new Subject<void>();
+    public ListadoActualizado$ = this.ListadoActualizadoSubject.asObservable();
 
     // dropdowns
     tiposDisposicionFinal$: Observable<ConstanteDTO[]> = Observable.of([]);
@@ -117,6 +120,7 @@ export class StateUnidadDocumentalService {
     }
 
     Listar(payload?: UnidadDocumentalDTO, value?: any) {
+        this.unidadesSeleccionadas = [];
         this.unidadDocumentalApiService.Listar(payload)
         .subscribe(response => {
             let ListadoMapeado =  [];
@@ -133,7 +137,8 @@ export class StateUnidadDocumentalService {
                 }, []);
                
             } 
-            this.ListadoUnidadDocumental = [...ListadoMapeado];            
+            this.ListadoUnidadDocumental = [...ListadoMapeado]; 
+            this.ListadoActualizadoSubject.next();           
         });
     }
 
@@ -198,7 +203,7 @@ export class StateUnidadDocumentalService {
                 }
               });
            } else {
-                 payload = unidadesSeleccionadas.map(_map => { return { idUnidadDocumental: _map.id, } });
+                 payload = unidadesSeleccionadas.map(_map => { return { id: _map.id, } });
                  this.SubmitCerrar(payload);
            }
 

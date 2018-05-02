@@ -203,9 +203,9 @@ public class CorrespondenciaWebApi {
      * @throws BusinessException
      * @throws SystemException
      */
-    @POST
+    @GET
     @Path("/correspondencia/enviar-correo/{nro_radicado}")
-    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
+    public Boolean sendMail(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - enviar correo radicar correspondencia");
         return boundary.sendMail(nroRadicado);
     }
