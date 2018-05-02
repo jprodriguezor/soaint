@@ -61,6 +61,8 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
    // Carga masiva endpoint
+
+
    carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
    carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
    carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
@@ -114,9 +116,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
    listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
    archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
-   abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidades-documentales`,
-   cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidades-documentales`,
-   reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidades-documentales`,
+   gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
    detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
  };
 export const process_info = {
