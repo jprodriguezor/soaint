@@ -41,12 +41,20 @@ import java.util.List;
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
                 "FROM Funcionarios f " +
                 "WHERE TRIM(f.loginName) = TRIM(:LOGIN_NAME)"),
+        @NamedQuery(name = "Funcionarios.findByNroIdentificacion", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
+                "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
+                "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
+                "FROM Funcionarios f " +
+                "WHERE TRIM(f.nroIdentificacion) = TRIM(:NRO_IDENTIFICACION)"),
         @NamedQuery(name = "Funcionarios.findByIdeFunci", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO " +
                 "(f.ideFunci, f.codTipDocIdent, f.nroIdentificacion, f.nomFuncionario, f.valApellido1, f.valApellido2, " +
                 "f.corrElectronico, f.loginName, f.auditColumns.estado) " +
                 "FROM Funcionarios f " +
                 "WHERE f.ideFunci = :IDE_FUNCI"),
         @NamedQuery(name = "Funcionarios.consultarCredencialesByIdeFunci", query = "SELECT f.credenciales " +
+                "FROM Funcionarios f " +
+                "WHERE f.ideFunci = :IDE_FUNCI"),
+        @NamedQuery(name = "Funcionarios.existFuncionarioByIdeFunci", query = "SELECT count(*)" +
                 "FROM Funcionarios f " +
                 "WHERE f.ideFunci = :IDE_FUNCI"),
         @NamedQuery(name = "Funcionarios.consultarLoginNameByIdeFunci", query = "SELECT f.loginName " +

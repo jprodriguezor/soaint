@@ -66,6 +66,8 @@ export class Effects {
       this._sandbox.loadData({key: 'tipoDocumento'}),
       this._sandbox.loadData({key: 'tipologiaDocumental'}),
       this._sandbox.loadData({key: 'soporteAnexo'}),
+      this._sandbox.loadData({key: 'claseEnvio'}),
+      this._sandbox.loadData({key: 'modalidadCorreo'}),
 
       (tipoComunicacion,
        mediosRecepcion,
@@ -73,7 +75,8 @@ export class Effects {
        unidadTiempo,
        tipoDocumento,
        tipologiaDocumental,
-       soporteAnexo) => {
+       soporteAnexo,
+      ) => {
         return {
           tipoComunicacion: {key: 'tipoComunicacion', data: tipoComunicacion},
           mediosRecepcion: {key: 'mediosRecepcion', data: mediosRecepcion},
@@ -169,5 +172,30 @@ export class Effects {
         .catch((error) => Observable.of(new actions.LoadFailAction({error}))
         )
     );
+
+  @Effect()
+    loadDatosEnvio: Observable<Action> = this.actions$
+      .ofType(actions.ActionTypes.LOAD_DATOS_ENVIO)
+      .map<Action, void>(toPayload)
+      .distinctUntilChanged()
+      .switchMap(() => Observable.combineLatest(
+        this._sandbox.loadData({key:'modalidadCorreo'}),
+        this._sandbox.loadData({key:'claseEnvio'}),
+        (modalidadCorreo,claseEnvio) => {
+          return {
+            claseEnvio : {key:"claseEnvio",data:claseEnvio},
+            modalidadCorreo: {key:"modalidadCorreo",data:modalidadCorreo},
+          }
+        })
+        .take(1)
+        .mergeMap((data:any) => {
+          return [
+            new actions.LoadSuccessAction(data.claseEnvio),
+            new actions.LoadSuccessAction(data.modalidadCorreo),
+
+          ];
+        })
+        .catch(error => Observable.of(new actions.LoadFailAction({error})))
+      );
 
 }

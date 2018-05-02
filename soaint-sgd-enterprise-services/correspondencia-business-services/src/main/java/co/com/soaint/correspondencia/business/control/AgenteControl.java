@@ -52,11 +52,66 @@ public class AgenteControl {
     @Autowired
     DatosContactoControl datosContactoControl;
 
+    @Autowired
+    ConstantesControl constanteControl;
+
+    @Autowired
+    private OrganigramaAdministrativoControl organigramaAdministrativoControl;
+
     @Value("${radicado.max.num.redirecciones}")
     private int numMaxRedirecciones;
 
     @Value("${radicado.req.dist.fisica}")
     private String reqDistFisica;
+
+    /**
+     * @param codigo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String consultarNombreEnumEstadoAgente(String codigo) throws BusinessException, SystemException {
+
+        if (codigo.equals(EstadoAgenteEnum.ASIGNADO.getCodigo()))
+            return EstadoAgenteEnum.ASIGNADO.getNombre();
+        else if (codigo.equals(EstadoAgenteEnum.DEVUELTO.getCodigo()))
+            return EstadoAgenteEnum.DEVUELTO.getNombre();
+        else if (codigo.equals(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo()))
+            return EstadoAgenteEnum.SIN_ASIGNAR.getNombre();
+        else if (codigo.equals(EstadoAgenteEnum.TRAMITADO.getCodigo()))
+            return EstadoAgenteEnum.TRAMITADO.getNombre();
+        else return null;
+    }
+
+    /**
+     * @param codigo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String consultarNombreEnumTipoAgente(String codigo) throws BusinessException, SystemException {
+
+        if (codigo.equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+            return TipoAgenteEnum.DESTINATARIO.getNombre();
+        else if (codigo.equals(TipoAgenteEnum.REMITENTE.getCodigo()))
+            return TipoAgenteEnum.REMITENTE.getNombre();
+        else return null;
+    }
+
+    /**
+     * @param codigo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String consultarNombreEnumTipoRemitente(String codigo) throws BusinessException, SystemException {
+
+        if (codigo.equals(TipoRemitenteEnum.EXTERNO.getCodigo()))
+            return TipoRemitenteEnum.EXTERNO.getNombre();
+        else if (codigo.equals(TipoRemitenteEnum.INTERNO.getCodigo()))
+            return TipoRemitenteEnum.INTERNO.getNombre();
+        else return null;
+    }
 
     /**
      * @param ideDocumento
@@ -70,6 +125,26 @@ public class AgenteControl {
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.REMITENTE.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteFullDTO> listarRemitentesFullByIdeDocumento(BigInteger ideDocumento) throws SystemException {
+        try {
+            List<AgenteDTO> agenteDTOS = listarRemitentesByIdeDocumento(ideDocumento);
+            return  agenteListTransformToFull(agenteDTOS);
+
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -321,6 +396,89 @@ public class AgenteControl {
         listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
         listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
         return agenteDTOList;
+    }
+
+    /**
+     * @param agenteDTO
+     * @return
+     */
+    public AgenteFullDTO agenteTransformToFull(AgenteDTO agenteDTO) throws SystemException, BusinessException{
+        try{
+            return AgenteFullDTO.newInstance()
+                    .codCortesia(agenteDTO.getCodCortesia())
+                    .descCortesia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodCortesia()))
+                    .codDependencia(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()))
+                    .descDependencia(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodDependencia()))
+                    .codEnCalidad(agenteDTO.getCodEnCalidad())
+                    .descEnCalidad(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodEnCalidad()))
+                    .codEstado(agenteDTO.getCodEstado())
+                    .descEstado(this.consultarNombreEnumEstadoAgente(agenteDTO.getCodEstado()))
+                    .codSede(agenteDTO.getCodSede())
+                    .descSede(organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodSede()))
+                    .codTipAgent(agenteDTO.getCodTipAgent())
+                    .descTipAgent(this.consultarNombreEnumTipoAgente(agenteDTO.getCodTipAgent()))
+                    .codTipDocIdent(agenteDTO.getCodTipDocIdent())
+                    .descTipDocIdent(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodTipDocIdent()))
+                    .codTipoPers(agenteDTO.getCodTipoPers())
+                    .descTipoPers(constanteControl.consultarNombreConstanteByCodigo(agenteDTO.getCodTipoPers()))
+                    .codTipoRemite(agenteDTO.getCodTipoRemite())
+                    .descTipoRemite(this.consultarNombreEnumTipoRemitente(agenteDTO.getCodTipoRemite()))
+                    .fecAsignacion(agenteDTO.getFecAsignacion())
+                    .ideAgente(agenteDTO.getIdeAgente())
+                    .indOriginal(agenteDTO.getIndOriginal())
+                    .nit(agenteDTO.getNit())
+                    .nombre(agenteDTO.getNombre())
+                    .nroDocuIdentidad(agenteDTO.getNroDocuIdentidad())
+                    .numDevoluciones(agenteDTO.getNumDevoluciones())
+                    .numRedirecciones(agenteDTO.getNumRedirecciones())
+                    .razonSocial(agenteDTO.getRazonSocial())
+                    .datosContactoList(datosContactoControl.datosContactoListTransformToFull(agenteDTO.getDatosContactoList()))
+                    .build();
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param agenteList
+     * @return
+     */
+    public List<AgenteFullDTO> agenteListTransformToFull(List<AgenteDTO> agenteList) throws SystemException, BusinessException{
+        try{
+            List<AgenteFullDTO> agenteFullDTOList = new ArrayList<>();
+            for (AgenteDTO agenteDTO:agenteList){
+                agenteFullDTOList.add(agenteTransformToFull(agenteDTO));
+            }
+
+            return agenteFullDTOList;
+
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param idDocumento
+     * @return
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteFullDTO> consultarAgentesFullByCorrespondencia(BigInteger idDocumento) throws SystemException, BusinessException {
+
+        List<AgenteDTO> agenteDTOList = new ArrayList<>();
+        listarRemitentesByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+        listarDestinatariosByIdeDocumento(idDocumento).stream().forEach(agenteDTOList::add);
+
+        return agenteListTransformToFull(agenteDTOList);
     }
 
     /**

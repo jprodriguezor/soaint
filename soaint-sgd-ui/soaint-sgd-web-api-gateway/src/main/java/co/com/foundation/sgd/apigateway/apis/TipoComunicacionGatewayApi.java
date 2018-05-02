@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.TipoComunicacionClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
+import co.com.foundation.sgd.utils.ApiUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,6 @@ public class TipoComunicacionGatewayApi {
         Response response = tipoComunicacionClient.list(tipoCoValue);
         String responseContent = response.readEntity(String.class);
         log.info("TipoComunicacionGatewayApi - [content] : " + responseContent);
-
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 

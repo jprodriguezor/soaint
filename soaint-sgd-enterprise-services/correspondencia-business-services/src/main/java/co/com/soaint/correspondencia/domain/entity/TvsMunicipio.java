@@ -37,7 +37,11 @@ import java.math.BigInteger;
         @NamedQuery(name = "TvsMunicipio.findAllByCodigos", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
                 "(t.ideMunic, t.nombreMunic, t.codMunic) " +
                 "FROM TvsMunicipio t " +
-                "WHERE TRIM(t.codMunic) IN :CODIGOS")})
+                "WHERE TRIM(t.codMunic) IN :CODIGOS"),
+        @NamedQuery(name = "TvsMunicipio.findByCodMun", query = "SELECT  NEW co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO" +
+                "(t.ideMunic, t.nombreMunic, t.codMunic) " +
+                "FROM TvsMunicipio t " +
+                "WHERE TRIM(t.codMunic) = TRIM(:COD_MUN)")})
 public class TvsMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;

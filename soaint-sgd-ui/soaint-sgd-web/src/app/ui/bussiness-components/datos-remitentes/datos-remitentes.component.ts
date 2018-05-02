@@ -49,7 +49,7 @@ import {createChangeDetectorRef} from "@angular/core/src/view/refs";
   templateUrl: './datos-remitentes.component.html',
   changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class DatosRemitentesComponent implements OnInit,OnDestroy {
+export class DatosRemitentesComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   validations: any = {};
@@ -104,7 +104,7 @@ export class DatosRemitentesComponent implements OnInit,OnDestroy {
 
   }
 
-   internalInit(): void {
+  internalInit(): void {
     this.initForm();
     this.initByTipoComunicacion();
     this.form.enable();

@@ -1,0 +1,45 @@
+<p-panel header="Datos de envio" [style]="{border:'none'}">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+      <div class="card card-w-title">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12" [formGroup] = "form">
+            <div class="ui-g-6 ui-sm-12 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Clase de Envio</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown
+                    [options]="claseEnvio$ | async | dropdownItem"
+                    id="clase_envio"
+                    formControlName="clase_envio"
+                    placeholder="Seleccione una Clase de Envio"
+                    [autoWidth]="false"
+                  ></p-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-6 ui-sm-12 ui-lg-6">
+              <div class="ui-g form-group">
+                <div class="ui-g-12">
+                  <label >Modalidad de Correo</label>
+                </div>
+                <div class="ui-g-12">
+                  <p-dropdown
+                    [options]="modalidadCorreo$ | async | dropdownItem"
+                    id="modalidad_correo"
+                    formControlName="modalidad_correo"
+                    placeholder="Seleccione una Modaliadad de Correo"
+                    [autoWidth]="false"
+                  ></p-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-panel>
+

@@ -5,7 +5,7 @@
               (click)="abort()"></button>
 
       <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" *ngIf="!radicacion"
-              (click)="save().subscribe()"></button>
+              (click)="saveTask()"></button>
 
       <!--<button pButton type="button" label="Probar Edit Radicado" style="width: auto; margin-bottom: 10px"-->
       <!--(click)="testEditRadicado()"></button>-->
@@ -26,12 +26,17 @@
 
         <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
-          <pd-datos-contacto #datosContacto [taskData]="task"  ></pd-datos-contacto>
+          <pd-datos-contacto #datosContacto [taskData]="task"   ></pd-datos-contacto>
+
+          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value">
+            <app-form-envio  #datosEnvio ></app-form-envio>
+          </div>
+
         </p-tabPanel>
 
         <p-tabPanel header="Datos remitente" leftIcon="ui-icon-assignment">
           <rs-datos-remitente #datosRemitente></rs-datos-remitente>
-        </p-tabPanel>
+       </p-tabPanel>
       </p-tabView>
 
       <div class="ui-g-12" style="margin-top: 10px; margin-bottom: 10px">
@@ -44,7 +49,7 @@
       </div>
 
       <p-dialog [(visible)]="barCodeVisible" modal="modal" [responsive]="true" [contentStyle]="{'overflow':'visible'}"
-                (onHide)="hideTicketRadicado()">
+                (onHide)="hideTicketRadicado()" [width]="520">
         <rs-ticket-radicado id="ticket" #ticketRadicado ></rs-ticket-radicado>
 
         <p-footer>

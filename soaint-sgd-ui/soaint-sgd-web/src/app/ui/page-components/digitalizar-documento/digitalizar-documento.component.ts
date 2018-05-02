@@ -174,8 +174,6 @@ export class DigitalizarDocumentoComponent implements OnInit, OnDestroy {
           }
         }
       });
-
-
     }
 
   }

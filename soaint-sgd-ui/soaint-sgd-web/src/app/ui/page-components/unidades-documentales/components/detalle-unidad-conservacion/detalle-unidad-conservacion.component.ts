@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { StateUnidadDocumentalService } from 'app/ui/page-components/unidades-documentales/state.unidad.documental';
+import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
 
 @Component({
   selector: 'app-detalle-unidad-conservacion',

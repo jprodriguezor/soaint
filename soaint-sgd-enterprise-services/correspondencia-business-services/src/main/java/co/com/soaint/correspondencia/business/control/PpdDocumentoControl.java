@@ -1,17 +1,22 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.PpdDocumento;
+import co.com.soaint.foundation.canonical.correspondencia.DatosContactoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.DatosContactoFullDTO;
 import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoDTO;
+import co.com.soaint.foundation.canonical.correspondencia.PpdDocumentoFullDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +35,60 @@ public class PpdDocumentoControl {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    ConstantesControl constantesControl;
+
+    /**
+     * @param ppdDocumentoDTO
+     * @return
+     */
+    public PpdDocumentoFullDTO datosContactoTransformToFull(PpdDocumentoDTO ppdDocumentoDTO) throws SystemException, BusinessException{
+        try{
+            return PpdDocumentoFullDTO.newInstance()
+                    .asunto(ppdDocumentoDTO.getAsunto())
+                    .codEstDoc(ppdDocumentoDTO.getCodEstDoc())
+                    .descEstDoc(constantesControl.consultarNombreConstanteByCodigo(ppdDocumentoDTO.getCodEstDoc()))
+                    .codTipoDoc(ppdDocumentoDTO.getCodTipoDoc())
+                    .descTipoDoc(constantesControl.consultarNombreConstanteByCodigo(ppdDocumentoDTO.getCodTipoDoc()))
+                    .fecDocumento(ppdDocumentoDTO.getFecDocumento())
+                    .ideEcm(ppdDocumentoDTO.getIdeEcm())
+                    .idePpdDocumento(ppdDocumentoDTO.getIdePpdDocumento())
+                    .nroAnexos(ppdDocumentoDTO.getNroAnexos())
+                    .nroFolios(ppdDocumentoDTO.getNroFolios())
+                    .build();
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ppdDocumentoDTOList
+     * @return
+     */
+    public List<PpdDocumentoFullDTO> ppdDocumentoListTransformToFull(List<PpdDocumentoDTO> ppdDocumentoDTOList) throws SystemException, BusinessException {
+        try{
+            List<PpdDocumentoFullDTO> ppdDocumentoFullDTOList = new ArrayList<>();
+            for (PpdDocumentoDTO ppdDocumentoDTO:ppdDocumentoDTOList){
+                ppdDocumentoFullDTOList.add(datosContactoTransformToFull(ppdDocumentoDTO));
+            }
+
+            return ppdDocumentoFullDTOList;
+
+            //pendiente construir transform de lista de contactoFullDTO
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(e)
+                    .buildSystemException();
+        }
+    }
 
     /**
      * @param idDocumento

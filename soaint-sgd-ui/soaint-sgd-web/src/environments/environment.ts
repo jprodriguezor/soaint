@@ -6,11 +6,11 @@
 // const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 export const environment = {
   production: false,
@@ -28,6 +28,8 @@ export const environment = {
   tipoComunicacionSalida_endpoint: `${host}/tipo-comunicacion-salida-gateway-api`,
   tipoAnexos_endpoint: `${host}/tipo-anexos-gateway-api`,
   soporteAnexo_endpoint: `${host}/soporte-anexos-gateway-api`,
+  modalidadCorreo_endpoint: `${host}/modalidad-correo-gateway-api`,
+  claseEnvio_endpoint: `${host}/clase-envio-gateway-api`,
   sedeAdministrativa_endpoint: `${host}/sede-administrativa-gateway-api`,
   mediosRecepcion_endpoint: `${host}/medios-recepcion-gateway-api`,
   dependenciaGrupo_endpoint: `${host}/dependencia-grupo-gateway-api`,
@@ -68,6 +70,8 @@ export const environment = {
   verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
   // Carga masiva endpoint
+
+
   carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
   carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
   carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
@@ -121,9 +125,9 @@ export const environment = {
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
-  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
-  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
-  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
+  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidades-documentales`,
+  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidades-documentales`,
+  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
 };
 
@@ -134,7 +138,7 @@ export const process_info = {
   },
   'proceso.correspondencia-salida': {
     displayValue: 'Correspondencia de salida',
-    show: false
+    show: true
   },
   'proceso.gestion-planillas': {
     displayValue: 'Gestion de planillas',
@@ -162,7 +166,7 @@ export const process_info = {
   },
   'process.archivar-documento': {
     displayValue : 'Organización y Archivo',
-    show: false,
+    show: true,
   }
 
 };

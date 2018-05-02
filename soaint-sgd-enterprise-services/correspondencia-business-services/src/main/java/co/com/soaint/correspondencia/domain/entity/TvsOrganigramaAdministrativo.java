@@ -51,6 +51,10 @@ import java.util.Date;
                 "FROM TvsOrganigramaAdministrativo t " +
                 "INNER JOIN TvsOrganigramaAdministrativo t1 ON t.ideOrgaAdminPadre = t1.ideOrgaAdmin " +
                 "WHERE t.codOrg = :COD_ORG"),
+        @NamedQuery(name = "TvsOrganigramaAdministrativo.consultarNombreElementoByCodOrg", query = "SELECT t.nomOrg " +
+                "FROM TvsOrganigramaAdministrativo t " +
+                "INNER JOIN TvsOrganigramaAdministrativo t1 ON t.ideOrgaAdminPadre = t1.ideOrgaAdmin " +
+                "WHERE t.codOrg = :COD_ORG"),
         @NamedQuery(name = "TvsOrganigramaAdministrativo.consultarElementosByCodigosOrg", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.OrganigramaItemDTO" +
                 "(t.ideOrgaAdmin, t.codOrg, t.nomOrg, t.ideOrgaAdminPadre, t1.nomOrg, t.indEsActivo, t.codNivel, t.descOrg, t1.codNivel) " +
                 "FROM TvsOrganigramaAdministrativo t " +

@@ -52,12 +52,11 @@ export class DatosGeneralesComponent implements OnInit {
   medioRecepcionSuggestions$: Observable<ConstanteDTO[]>;
   tipologiaDocumentalSuggestions$: Observable<ConstanteDTO[]>;
   metricasTiempoTipologia$: Observable<any>;
-  defaultSelectionMediosRecepcion$: Observable<any>;
 
-  // default values Metricas por Tipologia
-  medioRecepcionMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
   tiempoRespuestaMetricaTipologia$: Observable<number> = Observable.of(null);
   codUnidaTiempoMetricaTipologia$: Observable<ConstanteDTO> = Observable.of(null);
+
+  @Input() dataDefault:Observable<any> = Observable.empty() ;
 
   @Input()
   editable = true;
@@ -99,8 +98,6 @@ export class DatosGeneralesComponent implements OnInit {
         'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
         'inicioConteo': [null],
         'reqDistFisica': [{value: null, disabled: !this.editable}],
-        'clase_envio'  : [null],
-        'modalidad_correo'  : [null],
         'reqDigit': [{value: '1', disabled: !this.editable}],
         'tiempoRespuesta': [{value: null, disabled: !this.editable}],
         'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
@@ -110,14 +107,6 @@ export class DatosGeneralesComponent implements OnInit {
         'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
         'hasAnexos': [{value: null, disabled: !this.editable}]
       });
-
-      if(this.tipoRadicacion == RADICACION_SALIDA){
-
-        this.form.setValidators([
-          ExtendValidators.requiredIf('reqDistFisica',true,'clase_envio'),
-          ExtendValidators.requiredIf('reqDistFisica',true,'modalidad_correo'),
-        ]);
-      };
 
   }
 
@@ -167,6 +156,43 @@ export class DatosGeneralesComponent implements OnInit {
         delete this.visibility.numeroGuia;
       }
     });
+
+    this.dataDefault.subscribe( datosGenerales => {
+
+
+
+      this.form.get("tipoComunicacion").setValue(datosGenerales.tipoComunicacion);
+      if(datosGenerales.tipologiaDocumental)
+      this.form.get("tipologiaDocumental").setValue(datosGenerales.tipologiaDocumental);
+      this.form.get("unidadTiempo").setValue(datosGenerales.unidadTiempo);
+      this.form.get("medioRecepcion").setValue(datosGenerales.medioRecepcion);
+      this.form.get("empresaMensajeria").setValue(datosGenerales.empresaMensajeria);
+      this.form.get("numeroGuia").setValue(datosGenerales.numeroGuia);
+      this.form.get("inicioConteo").setValue(datosGenerales.inicioConteo);
+      this.form.get("tiempoRespuesta").setValue(datosGenerales.tiempoRespuesta);
+      this.form.get("asunto").setValue(datosGenerales.asunto);
+      this.form.get("reqDigit").setValue(datosGenerales.reqDigit);
+      this.form.get("reqDistFisica").setValue(datosGenerales.reqDistFisica);
+
+      this._store.select(getSoporteAnexoArrayData).subscribe( soportes => {
+
+        this.descripcionAnexos = datosGenerales.listaAnexos.map( anexo => {
+
+          return {
+            tipoAnexo : anexo.tipo,
+            soporteAnexo : soportes.find( soporte => soporte.codigo == anexo.soporte),
+            descripcion: anexo.descripcion}
+        })
+      });
+
+
+      this.descripcionAnexos = datosGenerales.listaAnexos.map( anexo => {
+        return { tipoAnexo : anexo.tipo, soporteAnexo : { nombre : anexo.soporte},descripcion: anexo.descripcion}
+      });
+      this.radicadosReferidos = datosGenerales.radicadosReferidos;
+
+    });
+
     this.listenForErrors();
   }
 
@@ -257,10 +283,9 @@ export class DatosGeneralesComponent implements OnInit {
     });
   }
 
-  showDistributionFields():boolean{
+  showBlockDistribucionDig(){
 
-    return this.tipoRadicacion == RADICACION_SALIDA && this.form.get('reqDistFisica').value;
+    return ViewFilterHook.applyFilter("app-datos-direccion-show-block-dist-dig",true);
   }
-
 
 }
