@@ -321,6 +321,11 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     return this._sandbox.quickSave(tareaDto);
   }
 
+  saveTask(){
+
+    this.save().subscribe();
+  }
+
   restore() {
     console.log('RESTORE...');
     if (this.task) {
@@ -330,26 +335,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
           return;
         }
 
+        this.restoreByPayload(results);
+
         // generales
-        this.datosGenerales.form.patchValue(results.generales);
-        this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
-        this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
 
-        // remitente
-        this.datosRemitente.form.patchValue(results.remitente);
-
-        // destinatario
-        this.datosContacto.listaDestinatariosExternos = results.destinatariosExternos;
-        this.datosContacto.listaDestinatariosInternos= results.destinatariosInternos;
-
-        if (results.datosContactos) {
-          const retry = setInterval(() => {
-            if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-              this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
-              clearInterval(retry);
-            }
-          }, 400);
-        }
 
         // if (results.contactInProgress) {
         //   const retry = setInterval(() => {
@@ -361,6 +350,29 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         // }
 
       });
+    }
+  }
+
+  protected restoreByPayload(results){
+
+    this.datosGenerales.form.patchValue(results.generales);
+    this.datosGenerales.descripcionAnexos = results.descripcionAnexos;
+    this.datosGenerales.radicadosReferidos = results.radicadosReferidos;
+
+    // remitente
+    this.datosRemitente.form.patchValue(results.remitente);
+
+    // destinatario
+    this.datosContacto.listaDestinatariosExternos = results.destinatariosExternos;
+    this.datosContacto.listaDestinatariosInternos= results.destinatariosInternos;
+
+    if (results.datosContactos) {
+      const retry = setInterval(() => {
+        if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+          this.datosRemitente.datosContactos.contacts = [...results.datosContactos];
+          clearInterval(retry);
+        }
+      }, 400);
     }
   }
 

@@ -48,23 +48,47 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     super.ngOnInit();
 
     ViewFilterHook.addFilter("app-datos-direccion-show-block-dist-dig", () => false);
-
-    this._taskSandbox.getTareaPersisted(this.task.variables.idInstancia, '0000').map(r => r.payload)
-      .subscribe(resp => {
-
-      resp.datosGenerales.reqDigit = 2;
-      if(!isNullOrUndefined(this.task.variables.numeroRadicado))
-        resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-      resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
-
-      this.datosGenerales$.next(resp.datosGenerales);
-      this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
-
-      this.datosContacto$.next(resp.datosContacto);
-    });
-
-
   }
+
+  restore() {
+    console.log('RESTORE...');
+    if (this.task) {
+      this._sandbox.quickRestore(this.task.idInstanciaProceso, this.task.idTarea).take(1).subscribe(response => {
+        const results = response.payload;
+        if (!results) {
+
+          this._taskSandbox.getTareaPersisted(this.task.variables.idInstancia, '0000').map(r => r.payload)
+            .subscribe(resp => {
+
+              resp.datosGenerales.reqDigit = 2;
+              if(!isNullOrUndefined(this.task.variables.numeroRadicado))
+                resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
+
+              this.datosGenerales$.next(resp.datosGenerales);
+              this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
+
+              this.datosContacto$.next(resp.datosContacto);
+            });
+
+          return;
+        }
+
+       this.restoreByPayload(results);
+
+        // if (results.contactInProgress) {
+        //   const retry = setInterval(() => {
+        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
+        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
+        //       clearInterval(retry);
+        //     }
+        //   }, 400)
+        // }
+
+      });
+    }
+  }
+
 
   ngOnDestroy() {
 

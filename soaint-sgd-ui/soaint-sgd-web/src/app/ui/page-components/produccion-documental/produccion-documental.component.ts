@@ -249,8 +249,14 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
 
     private ExistsDestinatario(){
 
-     return this.datosContacto.listaDestinatariosExternos ? this.datosContacto.listaDestinatariosExternos.length : 0 +
-            this.datosContacto.listaDestinatariosInternos ? this.datosContacto.listaDestinatariosInternos.length : 0 > 0;
+    const lenght1 = isNullOrUndefined(this.datosContacto.listaDestinatariosInternos) ? 0 : this.datosContacto.listaDestinatariosInternos.length;
+
+    const lenght2 = isNullOrUndefined(this.datosContacto.listaDestinatariosExternos) ? 0 : this.datosContacto.listaDestinatariosExternos.length;
+
+    console.log("long 1",lenght1);
+    console.log("long 2",lenght2);
+    console.log("total", lenght1 + lenght2);
+     return  lenght1 + lenght2 > 0;
 
     }
 
