@@ -70,7 +70,7 @@ import {DatosDestinatarioEditComponent} from "./ui/bussiness-components/datos-de
 import {RadicacionSalidaService} from "./infrastructure/api/radicacion-salida.service";
 import {UnidadDocumentalApiService} from "./infrastructure/api/unidad-documental.api";
 import { AlertComponent } from './ui/bussiness-components/notifications/alert/alert.component';
-import { UI_STATE_SERVICES } from './ui/_ui-state-service.include';
+import { UI_STATE_SERVICES } from 'app/infrastructure/_ui-state-service.include';
 import { FormEnvioComponent } from './ui/page-components/radicacion-salida/components/form-envio/form-envio.component';
 
 import { ArchivarDocumentoComponent } from './ui/page-components/organizacion-archivo/archivar-documento/archivar-documento.component';

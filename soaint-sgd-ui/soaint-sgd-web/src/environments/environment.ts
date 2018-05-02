@@ -3,11 +3,11 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 // const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
@@ -125,9 +125,9 @@ export const environment = {
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
-  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidad-documental`,
-  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidad-documental`,
-  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidad-documental`,
+  abrir_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/abrir-unidades-documentales`,
+  cerrar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/cerrar-unidades-documentales`,
+  reactivar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/reactivar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
 };
 

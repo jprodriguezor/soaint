@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Creado por Dasiel
@@ -51,7 +52,6 @@ public interface ContentControl extends Serializable {
     String CMCOR_UD_DESCRIPTOR_1 = CMCOR + "descriptor1";
     String CMCOR_UD_CERRADA = CMCOR + "cerrada";
     String CMCOR_UD_OBSERVACIONES = CMCOR + "observaciones";
-    String CMCOR_UD_FECHA_AUTO_CIERRE = CMCOR + "fechaAutoCierre";
     String CMCOR_UD_DISPOSICION = CMCOR + "disposicion";
     String CMCOR_UD_ESTADO = CMCOR + "estado";
 
@@ -248,7 +248,7 @@ public interface ContentControl extends Serializable {
      * @param idUnidadDocumental La unidad documental
      * @param session            Objeto conexion de Alfresco
      */
-    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws Exception;
 
     /**
      * Metodo para devolver la Unidad Documental
@@ -265,7 +265,7 @@ public interface ContentControl extends Serializable {
      * @param session            Objeto conexion de Alfresco
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    UnidadDocumentalDTO findUDById(String idUnidadDocumental, Session session) throws BusinessException;
+    Optional<UnidadDocumentalDTO> findUDById(String idUnidadDocumental, Session session);
 
     /**
      * Metodo que devuelve una Unidad Documental con sus Documentos
@@ -273,7 +273,7 @@ public interface ContentControl extends Serializable {
      * @param idUnidadDocumental Id Unidad Documental
      * @return UnidadDocumentalDTO      Unidad Documental
      */
-    UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws BusinessException;
+    UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws Exception;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -282,7 +282,7 @@ public interface ContentControl extends Serializable {
      * @param session    Objeto conexion de Alfresco
      * @return Folder si existe, null si no existe
      */
-    Folder getUDFolderById(String idProperty, Session session) throws BusinessException;
+    Optional<Folder> getUDFolderById(String idProperty, Session session);
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -291,7 +291,7 @@ public interface ContentControl extends Serializable {
      * @param session             Objeto conexion de Alfresco
      * @return boolean true/false
      */
-    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM

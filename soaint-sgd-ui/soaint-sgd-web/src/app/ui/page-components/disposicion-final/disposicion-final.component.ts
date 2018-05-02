@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import { ConstanteDTO } from 'app/domain/constanteDTO';
 import { UnidadDocumentalDTO } from '../../../domain/unidadDocumentalDTO';
 import { UnidadDocumentalApiService } from '../../../infrastructure/api/unidad-documental.api';
-import { StateUnidadDocumentalService } from '../unidades-documentales/state.unidad.documental';
+import { StateUnidadDocumentalService } from 'app/infrastructure/service-state-management/state.unidad.documental';
 import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {Subscription} from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
