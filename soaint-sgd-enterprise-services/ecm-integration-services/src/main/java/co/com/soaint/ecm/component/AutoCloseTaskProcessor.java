@@ -4,8 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.AccionUsuario;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
-import co.com.soaint.foundation.framework.exceptions.SystemException;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
 import org.apache.chemistry.opencmis.client.api.QueryResult;
@@ -42,30 +41,30 @@ public class AutoCloseTaskProcessor implements Serializable {
 
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
-                " WHERE " + ContentControl.CMCOR_UD_FECHA_AUTO_CIERRE + " IS NOT NULL" +
+                " WHERE " + ContentControl.CMCOR_UD_FECHA_CIERRE + " IS NOT NULL" +
                 " AND " + ContentControl.CMCOR_UD_CERRADA + " = 'false'";
 
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
 
-        for (QueryResult queryResult :
-                queryResults) {
-
-            String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
-            Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-
+        queryResults.forEach(queryResult -> {
+            final String objectId = queryResult.getPropertyValueById(PropertyIds.OBJECT_ID);
+            final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
             try {
 
-                final Calendar calendar = udFolder.getPropertyValue(ContentControl.CMCOR_UD_FECHA_AUTO_CIERRE);
+                final Calendar calendar = udFolder.getPropertyValue(ContentControl.CMCOR_UD_FECHA_CIERRE);
                 final int compareTo = Utilities.comparaFecha(GregorianCalendar.getInstance(), calendar);
 
                 if (compareTo >= 0) {
                     String idUD = udFolder.getPropertyValue(ContentControl.CMCOR_UD_ID);
-                    recordServices.abrirCerrarReactivarUnidadDocumental(idUD, AccionUsuario.CERRAR);
+                    UnidadDocumentalDTO documentalDTO = new UnidadDocumentalDTO();
+                    documentalDTO.setId(idUD);
+                    documentalDTO.setAccion(AccionUsuario.CERRAR.name());
+                    recordServices.gestionarUnidadDocumentalECM(documentalDTO);
                 }
-            } catch (BusinessException | SystemException e) {
+            } catch (Exception e) {
                 logger.error("Ocurrio un error al cerrar la unidad documental {}", udFolder.getName());
                 logger.error("### Mensaje de Error: " + e.getMessage());
             }
-        }
+        });
     }
 }

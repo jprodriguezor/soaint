@@ -74,15 +74,6 @@ import java.util.List;
                 "INNER JOIN c.dctAsigUltimoList dau " +
                 "WHERE c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
-//        @NamedQuery(name = "CorAgente.findDestinatariosFullByIdeDocumentoAndCodDependencia", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteFullDTO " +
-//                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-//                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
-//                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, dau.numRedirecciones, dau.numDevoluciones) " +
-//                "FROM CorAgente c " +
-//                "INNER JOIN c.corCorrespondencia co " +
-//                "INNER JOIN c.dctAsigUltimoList dau " +
-//                "WHERE c.codDependencia = :COD_DEPENDENCIA AND c.codTipAgent = :COD_TIP_AGENT " +
-//                "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
