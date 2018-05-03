@@ -152,7 +152,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    },
    'process.archivar-documento': {
      displayValue : 'Organización y Archivo',
-     show: true,
+     show: false,
    }
 
  };
