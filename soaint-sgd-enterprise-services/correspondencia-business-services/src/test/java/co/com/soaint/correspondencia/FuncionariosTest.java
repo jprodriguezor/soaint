@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -73,6 +74,96 @@ public class FuncionariosTest extends JPAHibernateContextTest {
         //then
         assertNotNull(funcionarios);
         assertTrue(funcionarios.size()>0);
+
+    }
+    @Test
+    public void test_FuncionariosfindByLoginName_success() {
+        //given
+        String namedQuery = "Funcionarios.findByLoginName";
+        String loginname="LOGIN_NAME";
+
+
+        //when
+        FuncionarioDTO funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("LOGIN_NAME",loginname)
+                .getSingleResult();
+
+        //then
+        assertNotNull(funcionarios);
+        assertEquals(funcionarios.getLoginName(),loginname);
+
+    }
+    @Test
+    public void test_FuncionariosfindByNroIdentificacion_success() {
+        //given
+        String namedQuery = "Funcionarios.findByNroIdentificacion";
+        String num="NRO_IDENTIFICACION";
+
+
+        //when
+        List<FuncionarioDTO >funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("NRO_IDENTIFICACION",num)
+                .getResultList();
+        //then
+        assertNotNull(funcionarios);
+        assertTrue(funcionarios.size()>0);
+        assertEquals(2,funcionarios.size());
+
+    }
+    @Test
+    public void test_FuncionariosfindByIdeFunci_success() {
+        //given
+        String namedQuery = "Funcionarios.findByIdeFunci";
+        BigInteger idfunc = BigInteger.ONE;
+        //when
+        FuncionarioDTO funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("IDE_FUNCI",idfunc )
+                .getSingleResult();
+        //then
+        assertNotNull(funcionarios);
+        assertEquals(funcionarios.getIdeFunci(),idfunc);
+    }
+    public void test_FuncionariosconsultarCredencialesByIdeFunci_success() {
+        //given
+        String namedQuery = "Funcionarios.consultarCredencialesByIdeFunci";
+        BigInteger idfunc = BigInteger.ONE;
+
+
+        //when
+        FuncionarioDTO funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("IDE_FUNCI",idfunc )
+                .getSingleResult();
+        //then
+        assertNotNull(funcionarios);
+        assertEquals(funcionarios.getIdeFunci(),idfunc);
+
+    }
+    public void test_FuncionariosexistFuncionarioByIdeFunci_success() {
+        //given
+        String namedQuery = "Funcionarios.existFuncionarioByIdeFunci";
+        BigInteger idfunc = BigInteger.ONE;
+
+        //when
+        FuncionarioDTO funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("IDE_FUNCI",idfunc )
+                .getSingleResult();
+        //then
+        assertNotNull(funcionarios);
+        assertEquals(funcionarios.getIdeFunci(),idfunc);
+
+    }
+    public void test_FuncionariosconsultarLoginNameByIdeFunci_success() {
+        //given
+        String namedQuery = "Funcionarios.consultarLoginNameByIdeFunci";
+        BigInteger idfunc = BigInteger.ONE;
+
+        //when
+        FuncionarioDTO funcionarios = createNamedQuery(namedQuery, FuncionarioDTO.class)
+                .setParameter("IDE_FUNCI",idfunc )
+                .getSingleResult();
+        //then
+        assertNotNull(funcionarios);
+        assertEquals(funcionarios.getIdeFunci(),idfunc);
 
     }
 
