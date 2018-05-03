@@ -263,7 +263,7 @@ public class RecordServices implements IRecordServices {
             gestionarUnidadDocumental(unidadDocumentalDTO);
         }
         final MensajeRespuesta respuesta = new MensajeRespuesta();
-        respuesta.setMensaje("Success");
+        respuesta.setMensaje("Operación realizada satisfactoriamente");
         respuesta.setCodMensaje("0000");
         return respuesta;
     }
