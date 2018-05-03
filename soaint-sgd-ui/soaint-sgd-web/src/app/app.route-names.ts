@@ -26,6 +26,5 @@ export const ROUTES_PATH = {
   securityRole: 'security-role',
   gestionUnidadDocumental: 'gestion-unidad-documental',
   crearUnidadDocumental: 'crear-unidad-documental',
-  disposicionFinal: 'disposicion-final',
-  completarDatosDistribucion:"completar-datos-distribucion"
+  disposicionFinal: 'disposicion-final'
 };

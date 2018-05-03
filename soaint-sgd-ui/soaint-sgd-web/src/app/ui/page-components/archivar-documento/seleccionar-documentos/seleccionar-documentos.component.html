@@ -1,0 +1,185 @@
+<div class="page-title">
+  <h2>Archivar documento</h2>
+</div>
+
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12" [formGroup]="form">
+    <div class="card card-w-title">
+      <p-panel header="Datos unidad documental" [style]="{border: 'none'}">
+
+      </p-panel>
+      <p-panel header="Documetos para archivar" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+              <p-column header="Identificador unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Descriptor 1" [sortable]="true"></p-column>
+              <p-column header="Descriptor 2" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Estado" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Siguiente"
+                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+              <p-column header="Identificador unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Descriptor 1" [sortable]="true"></p-column>
+              <p-column header="Descriptor 2" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Estado" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Siguiente"
+                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+              <p-column header="Identificador unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Descriptor 1" [sortable]="true"></p-column>
+              <p-column header="Descriptor 2" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Estado" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Siguiente"
+                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+      </p-panel>
+      <p-panel header="Documetos archivados" [style]="{border: 'none'}">
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+              <p-column header="Identificador unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Descriptor 1" [sortable]="true"></p-column>
+              <p-column header="Descriptor 2" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Estado" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Siguiente"
+                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+        <div class="ui-g ui-fluid">
+          <div class="ui-g-12">
+            <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                         [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+              <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+              <p-column header="Nombre Serie/Subserie" [sortable]="true"></p-column>
+              <p-column header="Identificador unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Nombre unidad documental" [sortable]="true">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{correspondencia['correspondencia'][col.field] | date:'dd/MM/yyyy hh:mm a'}}
+                </ng-template>
+              </p-column>
+              <p-column header="Descriptor 1" [sortable]="true"></p-column>
+              <p-column header="Descriptor 2" [sortable]="true"
+                        [style]="{'width':'110px'}">
+                <ng-template let-col let-correspondencia="rowData" pTemplate="body">
+                  {{getCodEstadoLabel(correspondencia['agenteList'][0].codEstado)}}
+                </ng-template>
+              </p-column>
+              <p-column header="Observaciones" [sortable]="true"></p-column>
+              <p-column header="Estado" [sortable]="true"></p-column>
+            </p-dataTable>
+          </div>
+          <div class="ui-g-12" style="padding-top: 20px">
+            <button pButton type="button" label="Siguiente"
+                    style="width: 120px;margin-bottom: 10px;float:right;margin-left: 12px">
+            </button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </div>
+</div>
+
+
+

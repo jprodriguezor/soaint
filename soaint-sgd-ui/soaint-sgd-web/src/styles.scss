@@ -67,16 +67,6 @@ tbody tr {
   display: none !important;
 }
 
-.row-container::before,.row-container::after{
-  clear:both;
-  display: block;
-  margin: 10px 0;
-}
-
-.clear{
-  clear:both;
-}
-
 @media print {
 
   @page {
@@ -307,13 +297,9 @@ span.table-text-custom {
 
 .margin-20{
   margin: 20px 0;
-}
+} 
 
 .ui-tooltip-text.ui-shadow.ui-corner-all {
   /* ptooltip  css*/
 }
 
-
-.po-static{
-  position: static;
-}

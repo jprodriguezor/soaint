@@ -289,16 +289,13 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/devolverSerieOSubserieECM/")
-    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO) {
+    public MensajeRespuesta devolverSerieSubserie(@RequestBody ContenidoDependenciaTrdDTO dependenciaTrdDTO)  {
         logger.info("processing rest request - Obtener las series o subseries de la dependencia con código " + dependenciaTrdDTO.getIdOrgOfc());
         try {
             return fEcmManager.devolverSerieSubserie(dependenciaTrdDTO);
         } catch (Exception e) {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
-            MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
-            rs.setMensaje(e.getMessage());
-            return rs;
+            throw e;
         }
     }
 
