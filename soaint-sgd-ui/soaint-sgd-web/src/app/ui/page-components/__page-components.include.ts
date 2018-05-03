@@ -17,9 +17,9 @@ import {CargarPlanillasComponent} from './cargar-planillas/cargar-planillas.comp
 import {EditarPlanillaComponent} from '../bussiness-components/editar-planilla/editar-planilla.component';
 import {PRODUCCION_DOCUMENTAL_COMPONENTS} from './produccion-documental/_pd-components.include';
 import {PlanillaGeneradaComponent} from '../bussiness-components/planilla-generada/planilla-generada.component';
-import {SeleccionarUnidadDocumentalComponent} from './archivar-documento/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
-import {SeleccionarDocumentosComponent} from './archivar-documento/seleccionar-documentos/seleccionar-documentos.component';
+import {SeleccionarUnidadDocumentalComponent} from './organizacion-archivo/archivar-documento/components/seleccionar-unidad-documental/seleccionar-unidad-documental.component';
 import { DisposicionFinalComponent } from './disposicion-final/disposicion-final.component';
+import {RadicarDocumentoProducidoComponent} from "./radicacion-salida/radicar-documento-producido.component";
 
 /**
  * All state updates are handled through dispatched actions in 'container'
@@ -51,8 +51,8 @@ export const PAGE_COMPONENTS = [
   EditarPlanillaComponent,
   PlanillaGeneradaComponent,
   SeleccionarUnidadDocumentalComponent,
-  SeleccionarDocumentosComponent,
   DisposicionFinalComponent,
+  RadicarDocumentoProducidoComponent,
   ...CARGA_MASIVA_COMPONENTS,
   ...PRODUCCION_DOCUMENTAL_COMPONENTS
 ];
