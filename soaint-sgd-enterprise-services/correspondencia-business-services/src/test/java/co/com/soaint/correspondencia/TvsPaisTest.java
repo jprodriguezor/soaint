@@ -66,21 +66,21 @@ public class TvsPaisTest extends JPAHibernateContextTest {
 
     }
 
-//    @Test
-//    public void test_TvsPaisfindByCod_success() {
-//
-//        //given
-//        String namedQuery = "TvsPais.findByCod";
-//        String codPais = "CUBA";
-//
-//        //when
-//        PaisDTO pais = createNamedQuery(namedQuery, PaisDTO.class)
-//                .setParameter("COD_PAIS", codPais)
-//                .getSingleResult();
-//        //then
-//        assertNotNull(pais);
-//        assertEquals(codPais, pais.getCodigo());
-//
-//    }
+   /* @Test
+    public void test_TvsPaisfindByCod_success() {
+
+       //given
+       String namedQuery = "TvsPais.findByCod";
+       String codPais = "CUBA";
+
+        //when
+       PaisDTO pais = createNamedQuery(namedQuery, PaisDTO.class)
+                .setParameter("COD_PAIS", codPais)
+                .getSingleResult();
+        //then
+        assertNotNull(pais);
+       assertEquals(codPais, pais.getCodigo());
+
+   }*/
 
 }
