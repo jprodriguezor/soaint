@@ -8,7 +8,7 @@ import {DetallesDatosGeneralesComponent} from './detalles-asignacion/detalles-da
 import {DetallesDatosRemitenteComponent} from './detalles-asignacion/detalles-datos-remitente/detalles-datos-remitente.component';
 import {DetallesDatosDestinatarioComponent} from './detalles-asignacion/detalles-datos-destinatario/detalles-datos-destinatario.component';
 import {DocumentosTramiteComponent} from '../page-components/documentos-tramite/documentos-tramite.component';
-import {DestinatarioSalidaComponent} from './destinatario-salida/destinatario-salida.component';
+import {DestinatarioSalidaComponent} from './../bussiness-components/gestionar-comunicacion/destinatario-salida/destinatario-salida.component';
 import {ActualizarDatosGeneralesComponent} from './actualizar-datos-generales/actualizar-datos-generales.component';
 import {DocumentosECMListComponent} from './documentos-ecm-list/documentos-ecm-list.component';
 import {RedireccionesRecursivasTrazaComponent} from './redirecciones-recursivas-traza/redirecciones-recursivas-traza.component';
