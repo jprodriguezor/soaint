@@ -34,9 +34,13 @@ export class DatosRemitenteComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData);
-    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector);
-    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData);
+
+   this._funcionarioSandbox.loadAllFuncionariosDispatch();
+
+    this.sedeAdministrativaSuggestions$ = this._store.select(sedeAdministrativaArrayData).share();
+    this.dependenciaGrupoSuggestions$ = this._store.select(DependenciaGrupoSelector).share().share();
+    this.funcionariosSuggestions$ = this._store.select(getFuncionarioArrayData).share();
+
     this.initForm();
     this.listenForChanges();
   }

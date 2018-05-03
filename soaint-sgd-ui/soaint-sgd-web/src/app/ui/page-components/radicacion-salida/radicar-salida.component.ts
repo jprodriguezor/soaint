@@ -53,6 +53,7 @@ import {go} from "@ngrx/router-store";
 import {ROUTES_PATH} from "../../../app.route-names";
 import {RadicacionSalidaService} from "../../../infrastructure/api/radicacion-salida.service";
 import {DependenciaDTO} from "../../../domain/dependenciaDTO";
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 
 
 declare const require: any;
@@ -133,8 +134,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     });
 
-   this.afterCompleteTaskSubscriber =  afterTaskComplete.subscribe( ()=> this._store.dispatch(go(['/'+ROUTES_PATH.workspace])));
-
    this._changeDetectorRef.detectChanges();
   }
 
@@ -146,6 +145,22 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   ngAfterViewInit() {
     console.log('AFTER VIEW INIT...');
+
+    this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
+      .subscribe(value => {
+        console.log(value);
+        // Habilitando o desabilitando la tarea que se ejecutará secuencialmente a la actual
+        if (value && value === 2) {
+          const payload: LoadNextTaskPayload = {
+            idProceso: this.task.idProceso,
+            idInstanciaProceso: this.task.idInstanciaProceso,
+            idDespliegue: this.task.idDespliegue
+          };
+          this._store.dispatch(new ScheduleNextTaskAction(payload));
+        } else {
+          this._store.dispatch(new ScheduleNextTaskAction(null));
+        }
+      });
   }
 
   radicarSalida() {
@@ -164,6 +179,12 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
 
     this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+
+    if(comunicacionOficialDTV.hasError){
+
+      this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Es probable que exista un destinarario externo que no tenga correo. Revise porfavor!'}));
+      return false;
+    }
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
