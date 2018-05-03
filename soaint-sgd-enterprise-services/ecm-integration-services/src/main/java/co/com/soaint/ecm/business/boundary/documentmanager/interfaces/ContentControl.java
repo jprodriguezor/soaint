@@ -214,7 +214,7 @@ public interface ContentControl extends Serializable {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws BusinessException, Exception;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws Exception;
 
     /**
      * Servicio que crea las unidades documentales del ECM

@@ -34,9 +34,6 @@ export interface State {
   actuaCalidad: ConstanteDTOStateInterface;
   causalDevolucion: ConstanteDTOStateInterface;
   soporteAnexo: ConstanteDTOStateInterface;
-  modalidadCorreo: ConstanteDTOStateInterface;
-  claseEnvio: ConstanteDTOStateInterface;
-
 }
 
 const initialState: State = {
@@ -57,9 +54,7 @@ const initialState: State = {
   tipoComplemento: new ConstanteDTOStateInstance(),
   actuaCalidad: new ConstanteDTOStateInstance(),
   causalDevolucion: new ConstanteDTOStateInstance(),
-  soporteAnexo: new ConstanteDTOStateInstance(),
-  modalidadCorreo: new ConstanteDTOStateInstance(),
-  claseEnvio: new ConstanteDTOStateInstance(),
+  soporteAnexo: new ConstanteDTOStateInstance()
 };
 
 /**

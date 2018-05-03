@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 @ApiDelegator
 @Log4j2
-public class SedeAdministrativaClient implements ApiClient{
+public class SedeAdministrativaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 

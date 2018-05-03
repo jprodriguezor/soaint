@@ -1,14 +1,7 @@
 import {AgentDTO} from '../../domain/agentDTO';
 import {RadicacionBase} from './radicacionBase';
-import {
-  DATOS_CONTACTO_PRINCIPAL,
-  DATOS_CONTACTO_SECUNDARIO, DESTINATARIO_EXTERNO, DESTINATARIO_INTERNO,
-  TIPO_AGENTE_DESTINATARIO, TIPO_REMITENTE_EXTERNO, TIPO_REMITENTE_INTERNO
-} from '../bussiness-properties/radicacion-properties';
+import {TIPO_AGENTE_DESTINATARIO} from '../bussiness-properties/radicacion-properties';
 import {RadicacionSalidaFormInterface} from '../interfaces/data-transformers/radicacionSalidaForm.interface';
-import {CorrespondenciaDTO} from "../../domain/correspondenciaDTO";
-import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
-import {ContactoDTO} from "../../domain/contactoDTO";
 import {isNullOrUndefined} from "util";
 
 export class RadicacionSalidaDTV extends  RadicacionBase {
@@ -39,7 +32,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
     (<RadicacionSalidaFormInterface>this.source).destinatarioInterno.forEach(agenteInt => {
       const tipoAgente: AgentDTO = {
         ideAgente: null,
-        codTipoRemite: TIPO_REMITENTE_INTERNO,
+        codTipoRemite: agenteInt.tipoDestinatario.codigo,
         codTipoPers: null,
         nombre: null,
         razonSocial: null,
@@ -53,7 +46,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
-        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : DESTINATARIO_INTERNO,
+        indOriginal: agenteInt.tipoDestinatario ? agenteInt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
     });
@@ -69,7 +62,7 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
 
       const tipoAgente: AgentDTO = {
         ideAgente: null,
-        codTipoRemite: TIPO_REMITENTE_EXTERNO,
+        codTipoRemite: agenteExt.tipoDestinatario.codigo,
         codTipoPers: agenteExt.tipoPersona.codTipoPers,
         nombre: agenteExt.Nombre,
         razonSocial: null,
@@ -83,14 +76,11 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
         fecAsignacion: null,
         codTipAgent: TIPO_AGENTE_DESTINATARIO,
         codEstado: null,
-        indOriginal: agenteExt.tipoDestinatario ? agenteExt.tipoDestinatario.codigo : DESTINATARIO_EXTERNO,
-        datosContactoList: this.transformContactData(agenteExt.datosContactoList),
+        indOriginal: agenteExt.tipoDestinatario ? agenteExt.tipoDestinatario.codigo : null,
       };
       agentes.push(tipoAgente);
     });
 
     return agentes;
   }
-
-
 }

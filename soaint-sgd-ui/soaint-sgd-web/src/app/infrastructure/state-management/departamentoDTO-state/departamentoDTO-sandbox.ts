@@ -30,9 +30,11 @@ export class Sandbox extends CacheResponse{
             return 0;
           })
         };
-         return res;
+        this.cacheResponse(payload,res);
 
-      }),departamento_endpoint);
+        return res;
+
+      }));
 
   }
 

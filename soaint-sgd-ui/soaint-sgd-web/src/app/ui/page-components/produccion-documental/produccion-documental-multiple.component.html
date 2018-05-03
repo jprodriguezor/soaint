@@ -43,7 +43,7 @@
                   <label for="sede"><span class="text-danger">*</span>Sede</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="sedesAdministrativas$|async|dropdownItem"
+                  <p-dropdown [options]="sedeAdministrativas| dropdownItem"
                               id="sede"
                               formControlName="sede"
                               placeholder="Seleccione"
@@ -87,7 +87,7 @@
                   <label for="funcionario"><span class="text-danger">*</span>Funcionario que proyecta</label>
                 </div>
                 <div class="ui-g-12 md-dropdownfield">
-                  <p-dropdown [options]="funcionarios$|async| dropdownItemFullName"
+                  <p-dropdown [options]="funcionarios | dropdownItemFullName"
                               id="funcionario"
                               formControlName="funcionario"
                               placeholder="Seleccione"
