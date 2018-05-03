@@ -63,7 +63,6 @@ public class AgenteDTO implements Serializable {
      * @param codEnCalidad
      * @param ideFunci
      * @param codTipDocIdent
-     * @param ideFunci
      * @param nroDocuIdentidad
      * @param codSede
      * @param codDependencia
