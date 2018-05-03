@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -23,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -271,31 +273,54 @@ public class ContentControlAlfrescoTest {
                     findUDById(unidadDocumentalDTO.getId(), conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
-                    assertEquals(unidadDocumentalDTO.getId(), unidadDocumentalDTO1.getId()));
+                    assertNotNull( unidadDocumentalDTO1.getId()));
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
         } catch (BusinessException e) {
-            e.printStackTrace();
+           logger.error("Error: {}",e);
         }
     }
-
     @Test
-    public void listarDocsDadoIdUD() {
-    }
-
-    @Test
-    public void getUDFolderById() {
-    }
-
-    @Test
-    public void actualizarUnidadDocumental() {
+    public void testEliminardocumentoSuccess() {
+        mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
+        //Probar documento se sube correctamente
+        assertEquals("0000", mensajeRespuesta1.getCodMensaje());
+        contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
     }
 
     @Test
     public void testMovDocumentoSuccess() {
         contentControlAlfresco.movDocumento(conexion.getSession(),mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(),"Comunicaciones Oficiales Externas Recibidas 2018","1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
     }
+
+    @Test
+    public void getUDFolderById() {
+        try {
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+                    crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            //Obtener la unidad documental
+
+            final Optional<Folder> optionalDocumentalDTO = contentControlAlfresco.
+                    getUDFolderById(unidadDocumentalDTO.getId(), conexion.getSession());
+
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertEquals(unidadDocumentalDTO.getId(), unidadDocumentalDTO1.getId()));
+
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
+        } catch (BusinessException e) {
+            logger.error("Error: {}",e);
+        }
+    }
+
+    @Test
+    public void actualizarUnidadDocumental() {
+    }
+
+
 
     @Test
     public void generarArbol() {
@@ -333,13 +358,6 @@ public class ContentControlAlfrescoTest {
     public void modificarMetadatosDocumento() {
     }
 
-    @Test
-    public void testEliminardocumentoSuccess() {
-        mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
-        //Probar documento se sube correctamente
-        assertEquals("0000", mensajeRespuesta1.getCodMensaje());
-        contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
-    }
 
     @Test
     public void obtenerPropiedadesDocumento() {
@@ -351,5 +369,9 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void listaDocumentosDTOUnidadDocumental() {
+    }
+    @Test
+    public void listarDocsDadoIdUD() {
+
     }
 }
