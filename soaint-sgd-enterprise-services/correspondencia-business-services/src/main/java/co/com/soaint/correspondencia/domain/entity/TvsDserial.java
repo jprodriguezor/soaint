@@ -29,7 +29,8 @@ import java.util.Date;
     @NamedQuery(name = "TvsDserial.findAll", query = "SELECT t FROM TvsDserial t"),
         @NamedQuery(name = "TvsDserial.consultarConsecutivoRadicado", query = "SELECT MAX(t.valConsecutivoRad) " +
                 "FROM TvsDserial t " +
-                "WHERE t.codSede = :COD_SEDE AND t.codCmc = :COD_CMC AND t.valAno = :ANNO AND NOT t.valConsecutivoRad BETWEEN :RESERVADO_I AND :RESERVADO_F " +
+                "WHERE t.codSede = :COD_SEDE AND t.codCmc = :COD_CMC " +
+                "AND t.valAno = :ANNO AND NOT t.valConsecutivoRad BETWEEN :RESERVADO_I AND :RESERVADO_F " +
                 "GROUP BY t.codSede, t.codCmc, t.valAno")
 })
 @javax.persistence.TableGenerator(name = "TVS_DSERIAL_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
