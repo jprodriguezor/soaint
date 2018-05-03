@@ -31,6 +31,7 @@ import {DependenciaDTO} from "../../../domain/dependenciaDTO";
 import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
 
 
 declare const require: any;
@@ -113,7 +114,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     });
 
-
    this._changeDetectorRef.detectChanges();
   }
 
@@ -142,7 +142,6 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         } else {
           this._store.dispatch(new ScheduleNextTaskAction(null));
         }
-
       });
   }
 
@@ -163,6 +162,12 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
 
     this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+
+    if(comunicacionOficialDTV.hasError){
+
+      this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Es probable que exista un destinarario externo que no tenga correo. Revise porfavor!'}));
+      return false;
+    }
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;

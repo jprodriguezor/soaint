@@ -88,13 +88,22 @@ public class UnidadDocumentalGatewayApi {
         }
     }
 
-
     @GET
     @Path("/detalle-unidad-documental/{id}")
     @JWTTokenSecurity
     public Response detalleUnidadDocumental(@PathParam("id") final String idUnidadDocumental) {
         log.info("DetalleUnidadDocumentalGatewayApi - [trafic] - detalle unidad documental");
         Response response = ecmClient.DetalleUnidadDocumental(idUnidadDocumental);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/listar-documentos-por-archivar")
+    @JWTTokenSecurity
+    public Response documentosPorArchivar() {
+        log.info("DocumentosPorArchivarGatewayApi - [trafic] - Listar documentos por archivar");
+        Response response = ecmClient.documentosPorArchivar();
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

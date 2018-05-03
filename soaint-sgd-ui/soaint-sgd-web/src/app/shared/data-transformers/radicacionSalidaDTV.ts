@@ -9,9 +9,11 @@ import {RadicacionSalidaFormInterface} from '../interfaces/data-transformers/rad
 import {CorrespondenciaDTO} from "../../domain/correspondenciaDTO";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
 import {ContactoDTO} from "../../domain/contactoDTO";
+import {isNullOrUndefined} from "util";
 
 export class RadicacionSalidaDTV extends  RadicacionBase {
 
+  hasError:boolean = false;
 
   getCorrespondencia():CorrespondenciaDTO{
 
@@ -57,6 +59,14 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
     });
 
     (<RadicacionSalidaFormInterface>this.source).destinatarioExt.forEach(agenteExt => {
+
+      const datosContactos = this.transformContactData(agenteExt.datosContactoList);
+
+      if(!this.hasError && !this.source.generales.reqDistFisica){
+
+        this.hasError = datosContactos.every( contact => isNullOrUndefined(contact.corrElectronico));
+      }
+
       const tipoAgente: AgentDTO = {
         ideAgente: null,
         codTipoRemite: TIPO_REMITENTE_EXTERNO,
