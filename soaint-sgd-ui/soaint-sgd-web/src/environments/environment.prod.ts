@@ -117,37 +117,42 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
    detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
  };
-export const process_info = {
-  'proceso.correspondencia-entrada': {
-    displayValue: 'Correspondencia de entrada',
-    show: true
-  },
-'proceso.correspondencia-salida': {
-    displayValue: 'Correspondencia de salida',
-    show: false
-  },
-  'proceso.gestion-planillas': {
-    displayValue: 'Gestion de planillas',
-    show: false
-  },
-  'proceso.gestor-devoluciones': {
-    displayValue: 'Gestor de devoluciones',
-    show: false
-  },
-  'proceso.produccion-documental': {
-    displayValue: 'Producción documental',
-    show: false
-  },
-  'proceso.produccion-multiples-documentos': {
-    displayValue: 'Producción de multiples documentos',
-    show: true
-  },
-  'proceso.recibir-gestionar-doc': {
-    displayValue: 'Recibir y gestionar documento',
-    show: false
-  },
-'proceso.gestion-unidades-documentales': {
-    displayValue: 'Gestión de unidades documentales',
-    show: false
-  }
-};
+ export const process_info = {
+   'proceso.correspondencia-entrada': {
+     displayValue: 'Correspondencia de entrada',
+     show: true
+   },
+   'proceso.correspondencia-salida': {
+     displayValue: 'Correspondencia de salida',
+     show: true
+   },
+   'proceso.gestion-planillas': {
+     displayValue: 'Gestion de planillas',
+     show: false
+   },
+   'proceso.gestor-devoluciones': {
+     displayValue: 'Gestor de devoluciones',
+     show: false
+   },
+   'proceso.produccion-documental': {
+     displayValue: 'Producción documental',
+     show: false
+   },
+   'proceso.produccion-multiples-documentos': {
+     displayValue: 'Producción de multiples documentos',
+     show: true
+   },
+   'proceso.recibir-gestionar-doc': {
+     displayValue: 'Recibir y gestionar documento',
+     show: false
+   },
+   'proceso.gestion-unidades-documentales': {
+     displayValue: 'Gestión de unidades documentales',
+     show: true
+   },
+   'process.archivar-documento': {
+     displayValue : 'Organización y Archivo',
+     show: true,
+   }
+
+ };
