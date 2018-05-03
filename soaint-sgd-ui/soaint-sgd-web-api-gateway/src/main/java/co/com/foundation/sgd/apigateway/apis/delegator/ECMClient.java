@@ -159,12 +159,16 @@ public class ECMClient {
                 .put(Entity.json(dtoList));
     }
 
-
-
     public Response DetalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-
         return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
+                .request()
+                .get();
+    }
+
+    public Response documentosPorArchivar() {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/devolverDocumentosPorArchivarECM/")
                 .request()
                 .get();
     }
