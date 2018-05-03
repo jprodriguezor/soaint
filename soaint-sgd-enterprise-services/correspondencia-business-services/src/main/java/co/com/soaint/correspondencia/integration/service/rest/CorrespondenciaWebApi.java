@@ -219,7 +219,7 @@ public class CorrespondenciaWebApi {
      * @throws SystemException
      */
     @POST
-    @Path("/correspondencia/crear-solicitud-um/")
+    @Path("/correspondencia/crear-solicitud-um")
     public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         return SolicitudUnidadDocumentalDTO.newInstance().build();
@@ -237,10 +237,10 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/obtener-solicitud-um")
-    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudUnidadDocumental(@QueryParam("fecha_ini") final String codigoSede,
-                                                                               @QueryParam("fecha_ini") final String codigoDependencia,
+    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudUnidadDocumental(@QueryParam("cod_sede") final String codigoSede,
+                                                                               @QueryParam("cod_dependencia") final String codigoDependencia,
                                                                                @QueryParam("fecha_ini") final String fechaI,
-                                                                               @QueryParam("fecha_ini") final String fechaF) throws BusinessException, SystemException {
+                                                                               @QueryParam("fecha_fin") final String fechaF) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
 
         try {
@@ -268,7 +268,7 @@ public class CorrespondenciaWebApi {
      * @throws SystemException
      */
     @PUT
-    @Path("/correspondencia/obtener-solicitud-um")
+    @Path("/correspondencia/actualizar-solicitud-um")
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
         return SolicitudUnidadDocumentalDTO.newInstance().build();
