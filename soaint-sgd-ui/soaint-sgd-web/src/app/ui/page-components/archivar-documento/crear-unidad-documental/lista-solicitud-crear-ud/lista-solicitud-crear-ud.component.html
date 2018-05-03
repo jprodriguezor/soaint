@@ -78,11 +78,11 @@
           <p-column field="solicitante" header="Usuario solicitante"></p-column>
           <p-column  header="Nombre serie/subserie" [style]="{width:'100px'}">
             <ng-template pTemplate="body" let-row="rowData" >
-               {{row.codSerie}}/{{row.codSubserie}}
+               {{row.codigoSerie}}/{{row.codigoSubSerie}}
             </ng-template>
           </p-column>
-          <p-column field="identificadorUD" header="Identificador unidad documental"></p-column>
-          <p-column field="nombreUD" header="Nombre de la unidad documental"></p-column>
+          <p-column field="id" header="Identificador unidad documental"></p-column>
+          <p-column field="nombreUnidadDocumental" header="Nombre de la unidad documental"></p-column>
           <p-column field="descriptor1" header="Descriptor 1"></p-column>
           <p-column field="descriptor2" header="Descriptor 2"></p-column>
           <p-column field="observaciones" header="Observaciones"></p-column>

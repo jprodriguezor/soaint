@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from "rxjs/Observable";
+import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unidad-documental.api";
 
 @Component({
   selector: 'app-ud-tramitadas',
@@ -7,11 +8,12 @@ import {Observable} from "rxjs/Observable";
 })
 export class UdTramitadasComponent implements OnInit {
 
-  @Input() unidadesDocumentales$?:Observable<any[]>;
+  @Input() solicitudesProcesadas:Observable<any[]>;
 
-  constructor() { }
+  constructor(private _udService:UnidadDocumentalApiService) { }
 
   ngOnInit() {
-  }
+
+     }
 
 }

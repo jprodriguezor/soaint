@@ -217,6 +217,33 @@ public class FuncionariosControl {
     }
 
     /**
+     * @param nroIdentificacion
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<FuncionarioDTO> consultarFuncionarioByNroIdentificacion(String nroIdentificacion) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("Funcionarios.findByNroIdentificacion", FuncionarioDTO.class)
+                    .setParameter("NRO_IDENTIFICACION", nroIdentificacion)
+                    .getResultList();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("funcionarios.funcionario_not_exist_by_ideFunci")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param ideFunci
      * @return
      * @throws BusinessException

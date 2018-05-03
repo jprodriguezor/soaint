@@ -14,6 +14,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -65,7 +66,7 @@ public class ECMClient {
     }
 
 
-    public MensajeRespuesta uploadDocument(DocumentoDTO documentoDTO, String tipoComunicacion){
+    public MensajeRespuesta uploadDocument(DocumentoDTO documentoDTO, String tipoComunicacion) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         Response response = wt.path("/subirDocumentoRelacionECM/" + tipoComunicacion)
@@ -76,8 +77,7 @@ public class ECMClient {
     }
 
 
-
-    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String,InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList){
+    public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String, InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList) {
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();
         try {
             files.forEach((key, part) -> {
@@ -87,22 +87,22 @@ public class ECMClient {
                     documentoAsociadoECMDTO.setDependencia(dependencia);
                     documentoAsociadoECMDTO.setSede(sede);
                     InputStream result = part.getBody(InputStream.class, null);
-                    documentoAsociadoECMDTO.setDocumento( IOUtils.toByteArray(result));
+                    documentoAsociadoECMDTO.setDocumento(IOUtils.toByteArray(result));
                     documentoAsociadoECMDTO.setTipoDocumento("application/pdf");
                     documentoAsociadoECMDTO.setNombreDocumento(key);
                     documentoAsociadoECMDTO.setIdDocumentoPadre(parentId);
                     documentoAsociadoECMDTO.setNroRadicado(numero);
                     documentoAsociadoECMDTO.setNroRadicadoReferido(referidoList);
 
-                }catch (Exception e){
-                    log.info("Error generando el documento ",e);
+                } catch (Exception e) {
+                    log.info("Error generando el documento ", e);
                 }
 
                 MensajeRespuesta asociadoResponse = this.uploadDocument(documentoAsociadoECMDTO, tipoComunicacion);
                 mensajeRespuestas.add(asociadoResponse);
 
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Se ha generado un error al subir los documentos asociados: ", e);
         }
         return mensajeRespuestas;
@@ -132,7 +132,6 @@ public class ECMClient {
 
     public Response listarSeriesSubseriePorDependencia(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-
         return wt.path("/devolverSerieOSubserieECM")
                 .request()
                 .post(Entity.json(contenidoDependenciaTrdDTO));
@@ -145,30 +144,15 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-
-    public Response abrirUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
+    public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
+        log.info("AbrirCerrarReactivarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-
-        return wt.path("/abrirUnidadesDocumentalesECM")
+        return wt.path("/abrirCerrarReactivarUnidadesDocumentalesECM")
                 .request()
-                .post(Entity.json(unidadDocumentalDTO));
+                .put(Entity.json(dtoList));
     }
 
-    public Response cerrarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
-        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
 
-        return wt.path("/cerrarUnidadesDocumentalesECM")
-                .request()
-                .post(Entity.json(unidadDocumentalDTO));
-    }
-
-    public Response reactivarUnidadDocumental(List<UnidadDocumentalDTO> unidadDocumentalDTO) {
-        WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
-
-        return wt.path("/reactivarUnidadesDocumentalesECM")
-                .request()
-                .post(Entity.json(unidadDocumentalDTO));
-    }
 
     public Response DetalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);

@@ -1,13 +1,13 @@
 <div class="ui-fluid">
   <app-task-container>
     <div customActions>
-      <button [disabled]="!State.HabilitarOpcion(0)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
+      <button [disabled]="!HabilitarOpcion(0)" pButton type="button" label="Abrir" style="width: auto; margin-bottom: 10px"
               (click)="State.Abrir()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(1)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
+      <button [disabled]="!HabilitarOpcion(1)" pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px"              
               (click)="State.Cerrar()"></button>
 
-      <button [disabled]="!State.HabilitarOpcion(2)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
+      <button [disabled]="!HabilitarOpcion(2)" pButton type="button" label="Reactivar" style="width: auto; margin-bottom: 10px" 
               (click)="State.Reactivar()"></button>
 
      <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
@@ -19,9 +19,9 @@
         <div class="ui-g ui-fluid">   
             <div class="ui-sm-12 ui-g-6 ui-lg-12">
                 <div class="ui-g form-group">
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
-                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="State.OpcionSeleccionada" (ngModelChange)="State.Listar($event)"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="0" label="Abrir Unidad documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="1" label="Cerrar Unidad Documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
+                    <p-radioButton name="gestionAseguir" class="p-radio" value="2" label="Reactivar Unidad Documental" [(ngModel)]="OpcionSeleccionada" (ngModelChange)="ResetForm()"></p-radioButton>
                
                 </div>
               </div>      
@@ -33,9 +33,9 @@
          
         </div>
         <form
-         [formGroup]="State.formBuscar"
+         [formGroup]="formBuscar"
          novalidate
-         (ngSubmit)="State.Listar(null)"
+         (ngSubmit)="Listar()"
          >
           <div class="ui-g ui-fluid">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
@@ -49,12 +49,13 @@
                               formControlName="serie"
                               placeholder="Seleccione"
                               [autoWidth]="false"
-                              (onBlur)="State.OnBlurEvents('serie')"
+                              (onChange)="OnBlurEvents('serie')"
+                              (onBlur)="OnBlurEvents('serie')"
                   >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                  *ngIf="State.validations.serie">
-                  {{ State.validations.serie }}
+                  *ngIf="validations.serie">
+                  {{ validations.serie }}
                   </div>
                 </div>
               </div>
@@ -70,12 +71,13 @@
                               formControlName="subserie"
                               placeholder="Seleccione"
                               [autoWidth]="false"
-                              (onBlur)="State.OnBlurEvents('subserie')"
+                              (onChange)="OnBlurEvents('subserie')"
+                              (onBlur)="OnBlurEvents('subserie')"
                               >
                   </p-dropdown>
                   <div class="ui-message ui-messages-error"
-                  *ngIf="State.validations.subserie">
-                  {{ State.validations.subserie }}
+                  *ngIf="validations.subserie">
+                  {{ validations.subserie }}
                   </div>
                 </div>
               </div>
@@ -123,13 +125,13 @@
     </div>
     <div class="ui-sm-12 ui-g-3 ui-lg-6" style="position: relative;">
       <div class="ui-g btn-content">
-        <button pButton type="button" label="Buscar" [disabled]="State.formBuscar.invalid" 
+        <button pButton type="button" label="Buscar" [disabled]="formBuscar.invalid" 
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
-        (click)="State.Listar(null)"></button>
+        (click)="Listar()"></button>
 
         <button pButton type="button" label="Limpiar"
         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left;"
-        (click)="State.ResetForm()"></button>
+        (click)="ResetForm()"></button>
       </div>      
     </div>
            
@@ -138,7 +140,7 @@
       </p-panel>
 
       <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
-        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="State.HabilitarOpcion(1)">
+        <div class="ui-fluid" style="display: inline-table; width: 100%;" *ngIf="HabilitarOpcion(1)">
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
@@ -153,7 +155,7 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">               
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton type="button" label="Agregar"
+                        <button pButton type="button" label="Agregar" [disabled] = "mostrarAjustarFechaCierre"
                         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
                         (click)="State.Agregar()"></button>                    
                       </div>                    
@@ -170,7 +172,7 @@
                        emptyMessage="No se encontraron resultados ">
             <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
             <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
-            <p-column field="codigoUnidadDocumental" header="Identificar unidad documental"></p-column>
+            <p-column field="id" header="Identificador unidad documental"></p-column>
             <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
             <p-column field="descriptor1" header="Descriptor 1"></p-column>
             <p-column field="descriptor2" header="Descriptor 2"></p-column>

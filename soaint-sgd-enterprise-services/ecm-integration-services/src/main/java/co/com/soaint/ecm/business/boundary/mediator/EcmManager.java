@@ -316,7 +316,7 @@ public class EcmManager {
      *
      * @param idUnidadDocumental   Id de la unidad documental
      */
-    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws Exception {
         logger.info("### Listando los documentos de la UD con id {}", idUnidadDocumental);
         logger.info("Ejecutando metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(UnidadDocumentalDTO dto)");
         return contentManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
