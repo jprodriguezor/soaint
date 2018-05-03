@@ -155,7 +155,7 @@
             <div class="ui-sm-12 ui-g-3 ui-lg-3">
                 <div class="ui-g form-group">
                     <div class="ui-g-12">
-                        <button pButton type="button" label="Agregar" [disabled] = "mostrarAjustarFechaCierre"
+                        <button pButton type="button" label="Agregar" [attr.disabled] = "desactivarAjustarFechaCierre"
                         style="width: 120px; margin-right: 15px; margin-bottom: 10px;float: left; vertical-align: bottom;"
                         (click)="State.Agregar()"></button>
                       </div>
@@ -178,8 +178,8 @@
             <p-column field="descriptor2" header="Descriptor 2"></p-column>
             <p-column field="faseArchivo" header="Fase archivo"></p-column>
             <p-column field="inactivo" header="Estado">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | toActiveString}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | toActiveString}}
               </ng-template>
             </p-column>
             <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
