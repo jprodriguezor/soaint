@@ -78,10 +78,12 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
     const controllers = this.form.controls;
 
-        const map =[
+      const map =[
       {origin:'fechaInicio',source:'fechaInicio'},
       {origin:'fechaFin',source:'fechaFin'},
       ];
+
+      console.log(this.task.variables);
 
     this.solicitudes$ = Observable.of(
 
@@ -115,7 +117,7 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   selectAction(evt?){
 
-  let actionEvent = Object.assign({},
+  const actionEvent = Object.assign({},
      {solicitud:this.solicitudSelected},
      {action:this.dropdowns.toArray()[this.solicitudSelected.nro].value},
      {nativeEvent:evt}
