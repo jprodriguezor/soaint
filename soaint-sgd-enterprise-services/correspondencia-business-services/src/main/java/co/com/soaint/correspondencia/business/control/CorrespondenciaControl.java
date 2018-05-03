@@ -1094,11 +1094,15 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
-                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(agenteDTO.getIdeFunci());
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", funcionario.getNomFuncionario());
+                        if (agenteDTO.getIndOriginal()!=null){
+                            if (agenteDTO.getIndOriginal().equals("TP-DESP")){
+                                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                                else parameters.put("#USER#", funcionario.getNomFuncionario());
+                            }
+                        }
+
                     log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionario.getNomFuncionario().toString());
                     destinatarios.add(funcionario.getCorrElectronico());
                  } catch (Exception ex) {
@@ -1106,10 +1110,12 @@ public class CorrespondenciaControl {
                 }
             } else{
                 try{
-                    if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                        if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
-                    log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                    if (agenteDTO.getIndOriginal()!=null){
+                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                    }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
                     for (DatosContactoDTO contactoDTO : datosContacto) {
