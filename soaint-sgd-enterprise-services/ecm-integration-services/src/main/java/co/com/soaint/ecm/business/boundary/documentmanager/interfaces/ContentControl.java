@@ -239,7 +239,7 @@ public interface ContentControl extends Serializable {
      * @param session     Objeto conexion de Alfresco
      * @return MensajeRespuesta con los detalles del documento
      */
-    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
+    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws Exception;
 
     /**
      * Metodo para listar los documentos de una Unidad Documental
@@ -298,7 +298,7 @@ public interface ContentControl extends Serializable {
      * @param folder Obj ECm
      * @return List<DocumentoDTO> Lista de los documentos de la carpeta
      */
-    List<DocumentoDTO> getDocumentsFromFolder(Folder folder);
+    List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws Exception;
 
     /**
      * Metodo para devolver la Unidad Documental
@@ -323,4 +323,6 @@ public interface ContentControl extends Serializable {
     void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
 
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
+
+    MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception;
 }

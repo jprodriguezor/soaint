@@ -376,7 +376,7 @@ public class ContentManager {
      * @param idDocumento     Id Documento
      * @return MensajeRespuesta con los detalles del documento
      */
-    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws Exception {
         logger.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
@@ -434,5 +434,12 @@ public class ContentManager {
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO, conexion.getSession());
+    }
+
+    public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
+        logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.getDocumentosPorArchivar(conexion.getSession());
     }
 }
