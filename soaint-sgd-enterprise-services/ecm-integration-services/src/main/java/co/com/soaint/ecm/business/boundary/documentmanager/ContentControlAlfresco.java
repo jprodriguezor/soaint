@@ -426,7 +426,7 @@ public class ContentControlAlfresco implements ContentControl {
         Optional<Folder> optionalFolder = getUDFolderById(unidadDocumentalDTO.getId(), session);
         if (optionalFolder.isPresent()) {
             logger.error("Ya existe una unidad documental con el id {}", unidadDocumentalDTO.getId());
-            throw new BusinessException("Ya existe una unidad documental con el id " + unidadDocumentalDTO.getId());
+            throw new BusinessException("Ya existe la unidad documental con id " + unidadDocumentalDTO.getId());
         }
 
         try {
@@ -514,7 +514,7 @@ public class ContentControlAlfresco implements ContentControl {
                     if (cmisObject instanceof Folder && udName.equals(folderName)) {
                         logger.error("Ya existe una Carpeta con el nombre {}", nombreUnidadDocumental);
                         response.setCodMensaje("1111");
-                        response.setMensaje("Ya existe una Carpeta con el nombre " + nombreUnidadDocumental + " en el ECM");
+                        response.setMensaje("Ya existe la unidad documental de nombre " + nombreUnidadDocumental + " en el ECM");
                         return response;
                     }
                 }
@@ -641,7 +641,7 @@ public class ContentControlAlfresco implements ContentControl {
         for (QueryResult queryResult :
                 queryResults) {
             final String idUnidadDocumental = queryResult.getPropertyValueByQueryName(CMCOR_UD_ID);
-            if (idUnidadDocumental.trim().isEmpty()) {
+            if (!idUnidadDocumental.trim().isEmpty()) {
                 final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
                 final Folder folder = (Folder) session.getObject(session.getObject(objectId));
                 if (ObjectUtils.isEmpty(dto) || hasDatesInRange(folder, dto)) {
@@ -663,7 +663,8 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             AccionUsuario accionUsuario = AccionUsuario.valueOf(dto.getAccion().toUpperCase());
             String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
-                    " WHERE " + CMCOR_UD_FECHA_INICIAL + " IS NOT NULL";
+                    " WHERE " + CMCOR_UD_FECHA_INICIAL + " IS NOT NULL" +
+                    " AND " + CMCOR_UD_SOPORTE + " IS NOT NULL AND " + CMCOR_UD_ID + " IS NOT NULL";
             final String dependencyCode = dto.getCodigoDependencia();
             final String serieCode = dto.getCodigoSerie();
             final String subSerieCode = dto.getCodigoSubSerie();
@@ -681,10 +682,14 @@ public class ContentControlAlfresco implements ContentControl {
                     break;
             }
             final List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadDocumental(query, null, session);
-            return unidadDocumentalDTOS.stream()
-                    .filter(unidadDocumentalDTO ->
-                            StringUtils.isEmpty(unidadDocumentalDTO.getEstado()) || unidadDocumentalDTO.getEstado().trim().isEmpty())
-                    .collect(Collectors.toList());
+            final List<UnidadDocumentalDTO> udTmp = new ArrayList<>();
+            unidadDocumentalDTOS.forEach(unidadDocumentalDTO -> {
+                final String soporte = unidadDocumentalDTO.getSoporte();
+                if (!StringUtils.isEmpty(soporte) && !soporte.trim().isEmpty()) {
+                    udTmp.add(udTmp.size(), unidadDocumentalDTO);
+                }
+            });
+            return udTmp;
 
         } catch (Exception e) {
             throw new BusinessException("ECM ERROR: " + e.getMessage());
@@ -2152,7 +2157,8 @@ public class ContentControlAlfresco implements ContentControl {
     public MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception {
         logger.info("Se buscan los documentos por Archivar");
 
-        final String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL);
+        final String query = "SELECT * FROM " + CMCOR + configuracion.getPropiedad(CLASE_UNIDAD_DOCUMENTAL) +
+                " AND " + CMCOR_UD_ID + " IS NOT NULL";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
 
