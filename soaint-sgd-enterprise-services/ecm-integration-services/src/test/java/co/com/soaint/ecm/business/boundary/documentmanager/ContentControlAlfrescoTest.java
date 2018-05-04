@@ -286,7 +286,7 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
         //Probar documento se sube correctamente
         assertEquals("0000", mensajeRespuesta1.getCodMensaje());
-        contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        assertTrue(contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession()));
     }
 
     @Test
@@ -337,13 +337,15 @@ public class ContentControlAlfrescoTest {
         }
     }
 
-
     @Test
-    public void generarArbol() {
-    }
+    public void testObtenerDocumentosAdjuntosSuccess() {
+        //Probar que sube documento EE correctemante
+        //Adicionar como documento hijo del documento de prueba principal
+        documentoDTO1.setIdDocumentoPadre(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
+        mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
+        assertNotNull(contentControlAlfresco.obtenerDocumentosAdjuntos(conexion.getSession(), documentoDTO).getDocumentoDTOList());
+        contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
 
-    @Test
-    public void obtenerDocumentosAdjuntos() {
     }
 
     @Test
@@ -390,5 +392,9 @@ public class ContentControlAlfrescoTest {
     @Test
     public void listarDocsDadoIdUD() {
 
+    }
+
+    @Test
+    public void generarArbol() {
     }
 }
