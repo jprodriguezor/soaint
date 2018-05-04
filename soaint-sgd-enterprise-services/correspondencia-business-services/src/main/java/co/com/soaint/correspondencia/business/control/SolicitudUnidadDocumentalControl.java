@@ -109,12 +109,14 @@ public class SolicitudUnidadDocumentalControl {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
         try {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaFin);
-            cal.add(Calendar.DATE, 1);
+            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+                throw ExceptionBuilder.newBuilder()
+                .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
+                .buildBusinessException();
+
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", SolicitudUnidadDocumentalDTO.class)
                     .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", cal.getTime(), TemporalType.DATE)
+                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
                     .setParameter("COD_SEDE", codSede)
                     .setParameter("COD_DEP", codDependencia)
                     .getResultList();
@@ -126,9 +128,47 @@ public class SolicitudUnidadDocumentalControl {
             }
 
             return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
+
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - actualizarSolicitudUnidadDocumental");
+
+        try{
+            TvsSolicitudUnidadDocumental unidadDocumental = TvsSolicitudUnidadDocumental.newInstance()
+                    .ideSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())
+                    .id(solicitudUnidadDocumentalDTO.getId())
+                    .nro(solicitudUnidadDocumentalDTO.getNro())
+                    .idSolicitante(solicitudUnidadDocumentalDTO.getIdSolicitante())
+                    .idConstante(solicitudUnidadDocumentalDTO.getIdConstante())
+                    .fecHora(solicitudUnidadDocumentalDTO.getFechaHora())
+                    .estado(solicitudUnidadDocumentalDTO.getEstado())
+                    .descriptor2(solicitudUnidadDocumentalDTO.getDescriptor2())
+                    .descriptor1(solicitudUnidadDocumentalDTO.getDescriptor1())
+                    .codSubserie(solicitudUnidadDocumentalDTO.getCodigoSubSerie())
+                    .codSerie(solicitudUnidadDocumentalDTO.getCodigoSerie())
+                    .codSede(solicitudUnidadDocumentalDTO.getCodigoSede())
+                    .codDependencia(solicitudUnidadDocumentalDTO.getCodigoDependencia())
+                    .accion(solicitudUnidadDocumentalDTO.getAccion())
+                    .nombreUD(solicitudUnidadDocumentalDTO.getNombreUnidadDocumental())
+                    .observaciones(solicitudUnidadDocumentalDTO.getObservaciones())
+                    .build();
+
+            em.merge(unidadDocumental);
+            em.flush();
+
+            return solicitudUnidadDocumentalDTO;
+
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
