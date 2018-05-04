@@ -17,7 +17,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.ws.rs.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,5 +210,84 @@ public class CorrespondenciaWebApi {
     public Boolean sendMail(@PathParam("nro_radicado") final String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - enviar correo radicar correspondencia");
         return boundary.sendMail(nroRadicado);
+    }
+
+    /**
+     * @param solicitudUnidadDocumental
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @POST
+    @Path("/correspondencia/crear-solicitud-um")
+    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+        return SolicitudUnidadDocumentalDTO.newInstance().build();
+//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+    }
+
+    /**
+     * @param codigoSede
+     * @param codigoDependencia
+     * @param fechaI
+     * @param fechaF
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-solicitud-um")
+    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudUnidadDocumental(@QueryParam("cod_sede") final String codigoSede,
+                                                                               @QueryParam("cod_dependencia") final String codigoDependencia,
+                                                                               @QueryParam("fecha_ini") final String fechaI,
+                                                                               @QueryParam("fecha_fin") final String fechaF) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicial = dateFormat.parse(fechaI);
+            Date fechaFinal = dateFormat.parse(fechaF);
+
+            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
+            solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
+            return solicitudUnidadDocumentalDTOList;
+        } catch (ParseException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+
+//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+    }
+
+    /**
+     * @param solicitudUnidadDocumentalDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @PUT
+    @Path("/correspondencia/actualizar-solicitud-um")
+    public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - updateSolicitudUnidadDocumental");
+        return SolicitudUnidadDocumentalDTO.newInstance().build();
+//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+    }
+
+    /**
+     * @param codigoDependencia
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-solicitud-um/{codigo-dependencia}")
+    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudesNoTramitadasUDporCodigoDependencia(@PathParam("codigo-dependencia") final String codigoDependencia) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+        List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
+        solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
+        return solicitudUnidadDocumentalDTOList;
+//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
     }
 }

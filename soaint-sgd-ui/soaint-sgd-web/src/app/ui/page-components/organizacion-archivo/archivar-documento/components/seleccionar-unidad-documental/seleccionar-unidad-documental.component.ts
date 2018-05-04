@@ -7,7 +7,7 @@ import {State as RootState} from "../../../../../../infrastructure/redux-store/r
 import {Store} from "@ngrx/store";
 import {SerieService} from "../../../../../../infrastructure/api/serie.service";
 
-
+ 
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario

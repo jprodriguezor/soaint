@@ -200,14 +200,14 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", contentControlAlfresco.
                     obtenerDetallesDocumentoDTO(mensajeRespuesta.getDocumentoDTOList().get(0).
                             getIdDocumento(), conexion.getSession()).getCodMensaje());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         //Prueba cuadno viene vacio el idDocumento
         try {
             assertEquals("11111", contentControlAlfresco.obtenerDetallesDocumentoDTO(null, conexion.getSession()).getCodMensaje());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -268,7 +268,7 @@ public class ContentControlAlfrescoTest {
             //Obtener la unidad documental
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
-                    findUDById(unidadDocumentalDTO.getId(), conexion.getSession());
+                    getUDById(unidadDocumentalDTO.getId(), conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertEquals(unidadDocumentalDTO.getId(), unidadDocumentalDTO1.getId()));

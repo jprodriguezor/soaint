@@ -23,7 +23,7 @@ import java.util.List;
 @Builder(builderMethodName="newInstance")
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/constantes/1.0.0")
+@XmlRootElement(namespace = "http://soaint.com/domain-artifacts/asignaciones/1.0.0")
 public class AsignacionesDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -122,14 +122,17 @@ public class EcmIntegrationServicesClientRest {
      */
     @POST
     @Path("/obtenerDocumentosAdjuntosECM/")
-    public MensajeRespuesta obtenerDocumentoPrincipalAdjunto(@RequestBody DocumentoDTO documento) throws IOException {
+    public MensajeRespuesta obtenerDocumentoPrincipalAdjunto(@RequestBody DocumentoDTO documento) {
 
         logger.info("processing rest request - Buscar Documento en el ECM: {}",documento);
         try {
             return fEcmManager.obtenerDocumentosAdjuntos(documento);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
-            throw e;
+            MensajeRespuesta rs = new MensajeRespuesta();
+            rs.setCodMensaje("1224");
+            rs.setMensaje(e.getMessage());
+            return rs;
         }
     }
 
@@ -274,7 +277,7 @@ public class EcmIntegrationServicesClientRest {
             return respuesta;
         } catch (RuntimeException e) {
             logger.error("Error servicio eliminando documento ", e);
-            throw e;
+            return false;
         }
     }
 
@@ -299,10 +302,28 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
+    /**
+     * Operacion para devolver los documentos por archivar
+     */
+    @GET
+    @Path("/devolverDocumentosPorArchivarECM/")
+    public MensajeRespuesta getDocumentosPorArchivarECM() {
+        logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
+        try {
+            return fEcmManager.getDocumentosPorArchivar();
+        } catch (Exception e) {
+            logger.error("Error en operacion - getDocumentosPorArchivarECM ECM ", e);
+            MensajeRespuesta rs = new MensajeRespuesta();
+            rs.setCodMensaje("1224");
+            rs.setMensaje(e.getMessage());
+            return rs;
+        }
+    }
+
 
     /*
-    * UNIDADES DOCUMENTALES
-    */
+     * UNIDADES DOCUMENTALES
+     */
 
     /**
      * Crear unidad documental en el ECM
@@ -320,7 +341,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - crearUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -341,7 +362,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - listarUnidadDocumentalECM(unidadDocumentalDTO) ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -362,7 +383,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - obtenerDetallesDocumentoDTO ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -383,7 +404,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - Devolver Listado de Documentos de una unidad documental ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -404,7 +425,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - detallesUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -427,7 +448,7 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - subirDocumentoUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }
@@ -450,7 +471,28 @@ public class EcmIntegrationServicesClientRest {
             logger.error("Error en operacion - subirDocumentosUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @PUT
+    @Path("/modificarUnidadesDocumentalesECM/")
+    public MensajeRespuesta modificarUnidadesDocumentalesECM(@RequestBody List<UnidadDocumentalDTO> unidadDocumentalDTOS) {
+        logger.info("Ejecutando metodo MensajeRespuesta modificarUnidadesDocumentalesECM(List<UnidadDocumentalDTO> documentoDTOS)");
+        try {
+            return fEcmManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
+        } catch (Exception e) {
+            logger.error("Error en operacion - modificarUnidadesDocumentalesECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }

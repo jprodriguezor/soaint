@@ -1,5 +1,5 @@
 import {Store} from '@ngrx/store';
-import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
+import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
 import {Component, OnInit} from '@angular/core';
 
 

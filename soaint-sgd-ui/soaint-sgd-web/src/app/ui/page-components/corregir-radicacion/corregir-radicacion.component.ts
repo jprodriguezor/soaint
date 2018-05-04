@@ -177,6 +177,7 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
   }
 
   InitDestinatario() {
+    this.stateDestinatario.idAgenteDevolucion = this.task.variables.idAgente;
     this.stateDestinatario.agentesDestinatario =  [...this.radicacionEntradaFormData.agentesDestinatario];
     this.stateDestinatario.Init();
     this.formsTabOrder.push(this.stateDestinatario.form);
@@ -187,7 +188,6 @@ export class CorregirRadicacionComponent implements OnInit, OnDestroy {
     this._correspondenciaService.actualizarComunicacion(payload)
     .subscribe(response => {
       this.disableEditionOnForms();
-      console.log(response);
     });
     this._taskSandBox.completeTaskDispatch({
       idProceso: this.task.idProceso,

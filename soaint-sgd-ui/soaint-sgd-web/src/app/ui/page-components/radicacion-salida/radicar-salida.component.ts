@@ -131,7 +131,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this.reqDigitInmediataUnsubscriber = this.datosGenerales.form.get('reqDigit').valueChanges
       .subscribe(value => {
         console.log(value);
-        // Habilitando o desabilitando la tarea que se ejecutar√° secuencialmente a la actual
+        // Habilitando o desabilitando la tarea que se ejecutar· secuencialmente a la actual
         if (value && value === 2) {
           const payload: LoadNextTaskPayload = {
             idProceso: this.task.idProceso,

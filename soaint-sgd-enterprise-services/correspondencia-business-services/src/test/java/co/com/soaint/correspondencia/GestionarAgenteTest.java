@@ -145,7 +145,7 @@ public class GestionarAgenteTest {
         }
         //Then
         catch (Exception ex){
-//            assertTrue(ex.getCause() instanceof SystemException);
+            assertTrue(ex.getCause() instanceof SystemException);
             log.error("GestionarAgenteTest - a system error has occurred", ex);
         }
     }

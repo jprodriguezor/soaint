@@ -2,7 +2,6 @@ package co.com.foundation.sgd.apigateway.apis;
 
 import co.com.foundation.sgd.apigateway.apis.delegator.OrientacionClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
-import co.com.foundation.sgd.utils.ApiUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -34,7 +33,11 @@ public class OrientacionGatewayApi {
     public Response list() {
 
         log.info("OrientacionGatewayApi - [trafic] - listing Orientacion");
-        return ApiUtils.getResponseClient(client);
+        Response response = client.list();
+        String responseContent = response.readEntity(String.class);
+        log.info("OrientacionGatewayApi - [content] : " + responseContent);
+
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
 }
