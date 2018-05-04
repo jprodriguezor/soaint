@@ -443,4 +443,48 @@ public class CorrespondenciaGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
+    /**---------------------------  Metodos de solicitud de creacion de unidad documental ----- **/
+
+    @POST
+    @Path("/crear-solicitud-unidad-documental")
+    @JWTTokenSecurity
+
+    public  Response crearSolicitudUnidad(@RequestBody SolicitudUnidadDocumentalDTO solicitud){
+
+        log.info("UnidadDocumentalGatewayApi: Crear Solicitude de Unidaddes documentales");
+
+        Response response = client.crearSolicitudUnidadDocuemntal(solicitud);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/listar-solicitud-unidad-documental")
+    @JWTTokenSecurity
+
+    public  Response listarSolicitudUnidad(@QueryParam("codSede") final String codSede,
+                                           @QueryPama("codDependencia") final String codDependencia,
+                                           @DefaultValue(null) @QueryParam("fechaIni") final String fechaIni,
+                                           @DefaultValue(null) @QueryParam("fechaFin") final String fechaFin ){
+
+        log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
+
+        Response response = client.listarSolicitudUnidadDocumental(solicitud);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @PUT
+    @Path("/actualizar-solicitud-unidad-documental")
+    @JWTTokenSecurity
+
+    public  Response actualizarSolicitudUnidad(@RequestBody SolicitudUnidadDocumentalDTO solicitud){
+
+        log.info("UnidadDocumentalGatewayApi: Actualizar Solicitude de Unidaddes documentales");
+
+        Response response = client.actualizarSolicitudUnidadDcoumental(solicitud);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
 }
