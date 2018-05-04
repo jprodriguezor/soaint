@@ -442,4 +442,17 @@ public class ContentManager {
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.getDocumentosPorArchivar(conexion.getSession());
     }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+        logger.info("processing rest request - modificar las unidades documentales en el ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.modificarUnidadesDocumentales(unidadDocumentalDTOS, conexion.getSession());
+    }
 }

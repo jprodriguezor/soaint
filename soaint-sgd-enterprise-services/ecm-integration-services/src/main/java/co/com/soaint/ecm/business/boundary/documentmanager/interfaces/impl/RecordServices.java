@@ -22,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -272,7 +271,7 @@ public class RecordServices implements IRecordServices {
     public Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws Exception {
         final Conexion conexion = contentControl.obtenerConexion();
         final Optional<UnidadDocumentalDTO> optionalUnidadDocumentalDTO = contentControl.
-                findUDById(idUnidadDocumental, conexion.getSession());
+                getUDById(idUnidadDocumental, conexion.getSession());
         if (optionalUnidadDocumentalDTO.isPresent()) {
             final UnidadDocumentalDTO unidadDocumentalDTO = optionalUnidadDocumentalDTO.get();
             final Optional<Folder> optionalFolder = obtenerRecordCategory(unidadDocumentalDTO, conexion.getSession());

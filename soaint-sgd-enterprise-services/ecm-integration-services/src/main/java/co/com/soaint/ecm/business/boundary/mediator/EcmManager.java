@@ -354,4 +354,15 @@ public class EcmManager {
         logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
         return contentManager.getDocumentosPorArchivar();
     }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+        logger.info("processing rest request - modificar las unidades documentales en el ECM");
+        return contentManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
+    }
 }

@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -322,8 +321,8 @@ public class EcmIntegrationServicesClientRest {
 
 
     /*
-    * UNIDADES DOCUMENTALES
-    */
+     * UNIDADES DOCUMENTALES
+     */
 
     /**
      * Crear unidad documental en el ECM
@@ -469,6 +468,27 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS);
         } catch (Exception e) {
             logger.error("Error en operacion - subirDocumentosUnidadDocumentalECM ", e);
+            MensajeRespuesta respuesta = new MensajeRespuesta();
+            respuesta.setCodMensaje("11111");
+            respuesta.setMensaje(e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    @PUT
+    @Path("/modificarUnidadesDocumentalesECM/")
+    public MensajeRespuesta modificarUnidadesDocumentalesECM(@RequestBody List<UnidadDocumentalDTO> unidadDocumentalDTOS) {
+        logger.info("Ejecutando metodo MensajeRespuesta modificarUnidadesDocumentalesECM(List<UnidadDocumentalDTO> documentoDTOS)");
+        try {
+            return fEcmManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
+        } catch (Exception e) {
+            logger.error("Error en operacion - modificarUnidadesDocumentalesECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
             respuesta.setMensaje(e.getMessage());
