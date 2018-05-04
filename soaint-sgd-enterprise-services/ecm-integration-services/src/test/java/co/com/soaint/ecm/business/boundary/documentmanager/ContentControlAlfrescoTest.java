@@ -273,14 +273,15 @@ public class ContentControlAlfrescoTest {
                     findUDById(unidadDocumentalDTO.getId(), conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
-                    assertNotNull( unidadDocumentalDTO1.getId()));
+                    assertNotNull(unidadDocumentalDTO1.getId()));
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
         } catch (BusinessException e) {
-           logger.error("Error: {}",e);
+            logger.error("Error: {}", e);
         }
     }
+
     @Test
     public void testEliminardocumentoSuccess() {
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
@@ -291,11 +292,11 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testMovDocumentoSuccess() {
-        contentControlAlfresco.movDocumento(conexion.getSession(),mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(),"Comunicaciones Oficiales Externas Recibidas 2018","1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
     }
 
     @Test
-    public void getUDFolderById() {
+    public void testGetUDFolderByIdSuccess() {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -307,19 +308,18 @@ public class ContentControlAlfrescoTest {
                     getUDFolderById(unidadDocumentalDTO.getId(), conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
-                    assertEquals(unidadDocumentalDTO.getId(), unidadDocumentalDTO1.getId()));
+                    assertNotNull(unidadDocumentalDTO1.getId()));
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
         } catch (BusinessException e) {
-            logger.error("Error: {}",e);
+            logger.error("Error: {}", e);
         }
     }
 
     @Test
     public void actualizarUnidadDocumental() {
     }
-
 
 
     @Test
@@ -370,6 +370,7 @@ public class ContentControlAlfrescoTest {
     @Test
     public void listaDocumentosDTOUnidadDocumental() {
     }
+
     @Test
     public void listarDocsDadoIdUD() {
 
