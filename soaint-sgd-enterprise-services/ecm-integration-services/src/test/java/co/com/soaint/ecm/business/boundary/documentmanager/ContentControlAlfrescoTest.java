@@ -23,8 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -318,7 +317,24 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void actualizarUnidadDocumental() {
+    public void testActualizarUnidadDocumentalSuccess() {
+        try {
+            //Se crea la Unidad Documental
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTOInsertada = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            //Modificar el valor de la UD
+            unidadDocumentalDTOInsertada.setNombreUnidadDocumental("OtroNombreParaProbar");
+            //Verifico si se hizo la modificacion
+            assertTrue(contentControlAlfresco.actualizarUnidadDocumental(unidadDocumentalDTOInsertada, conexion.getSession()));
+
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
+        } catch (BusinessException e) {
+            logger.error("Error: {}", e);
+        } catch (Exception e) {
+            logger.error("Error actualizando la UD: {}", e);
+        }
     }
 
 
