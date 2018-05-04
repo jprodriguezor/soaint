@@ -107,4 +107,14 @@ public class UnidadDocumentalGatewayApi {
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
+
+    @PUT
+    @Path("/modificar-unidades-documentales")
+    @JWTTokenSecurity
+    public Response modificarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO) {
+        log.info("ModificarUnidadesDocumentalesGatewayApi - [trafic] - Modificar Unidades Documentales");
+        Response response = ecmClient.modificarUnidadesDocumentales(unidadesDocumentalesDTO);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
 }
