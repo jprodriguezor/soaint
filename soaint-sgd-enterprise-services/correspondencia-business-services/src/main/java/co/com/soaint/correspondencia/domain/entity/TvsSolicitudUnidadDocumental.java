@@ -28,7 +28,8 @@ import java.util.List;
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
     @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
-        @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t")
+    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT t FROM TvsSolicitudUnidadDocumental t " +
+            "WHERE t.codDependencia = :COD_DEP AND t.codDependencia = :COD_SEDE AND t.fecHora BETWEEN :FECHA_INI AND :FECHA_FIN")
         })
 @TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
