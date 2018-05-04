@@ -464,8 +464,8 @@ public class CorrespondenciaGatewayApi {
 
     public  Response listarSolicitudUnidad(@QueryParam("codSede") final String codSede,
                                            @QueryParam("codDependencia") final String codDependencia,
-                                           @DefaultValue(null) @QueryParam("fechaIni") final String fechaIni,
-                                           @DefaultValue(null) @QueryParam("fechaFin") final String fechaFin ){
+                                           @QueryParam("fechaIni") final String fechaIni,
+                                           @QueryParam("fechaFin") final String fechaFin ){
 
         log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
 
