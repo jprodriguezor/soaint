@@ -131,6 +131,8 @@ public class CorAgente implements Serializable {
     private String codCortesia;
     @Column(name = "COD_EN_CALIDAD")
     private String codEnCalidad;
+    @Column(name = "IDE_FUNCI")
+    private BigInteger ideFunci;
     @Column(name = "COD_TIP_DOC_IDENT")
     private String codTipDocIdent;
     @Column(name = "NRO_DOCU_IDENTIDAD")
