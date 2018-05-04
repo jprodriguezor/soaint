@@ -158,16 +158,22 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
        datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
     };
 
-
     const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
 
-    this.radicacion = comunicacionOficialDTV.getComunicacionOficial();
+    const  radicacion = comunicacionOficialDTV.getComunicacionOficial();
 
     if(comunicacionOficialDTV.hasError){
 
+      console.log(this.datosContacto.listaDestinatariosInternos);
+
+      this.hideTicketRadicado();
+
       this._store.dispatch(new PushNotificationAction({severity: 'error', summary: 'Es probable que exista un destinarario externo que no tenga correo. Revise porfavor!'}));
+
       return false;
     }
+
+    this.radicacion = radicacion;
 
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
@@ -211,6 +217,10 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         parametros: this.buildTaskCompleteParameters(valueGeneral,response.correspondencia.nroRadicado ? response.correspondencia.nroRadicado : null)
 
       });
+    },() => {
+
+      this.radicacion = null;
+      this.hideTicketRadicado();
     });
   }
 

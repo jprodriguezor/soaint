@@ -6,7 +6,8 @@
      tipoDestinatario: any,
      sedeAdministrativa: any,
      dependenciaGrupo: any,
-     destinatarioPrincipal: any
+     destinatarioPrincipal: any,
+     funcionario:any
    }>,
    destinatarioExt:Array<{
      tipoDestinatario: any,
