@@ -1138,13 +1138,10 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-//        String[] dest =  new String[]{"giselle.designe@gmail.com"};
-//        request.setTo(dest);
         request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
-//        parameters.put("#USER#", "Giselle Yanet");
-        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
+        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodDependencia()));
 
         request.setParameters( parameters );
 
