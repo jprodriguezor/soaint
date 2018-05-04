@@ -44,7 +44,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
   subscribers: Array<Subscription> = [];
   codDependencia: string;
   OpcionSeleccionada: number;
-  mostrarAjustarFechaCierre: boolean;
+  desactivarAjustarFechaCierre: boolean;
 
 
   constructor(
@@ -60,7 +60,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
 
   ngOnInit() {
     this.OpcionSeleccionada = 0 // abrir
-    this.mostrarAjustarFechaCierre = false;
+    this.desactivarAjustarFechaCierre = true;
     this.State.ListadoUnidadDocumental = [];
     this.InitForm();
     this.SetFormSubscriptions();        
@@ -100,7 +100,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
     this.subscribers.push(
         this.formBuscar.get('serie').valueChanges.distinctUntilChanged().subscribe(value => {
           if (value) {
-            this.formBuscar.controls[subserie].reset();  
+            this.ResetControlSubserie();
             this.State.GetSubSeries(value, this.codDependencia)
             .subscribe(result => {
               this.State.ListadoSubseries =  !isNullOrUndefined(result) ? result : [];
@@ -120,23 +120,30 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
         if (UnidadDocumentalAccion.Cerrar === UnidadDocumentalAccion[UnidadDocumentalAccion[this.OpcionSeleccionada]]) {
           const FechaCierre = this.State.ListadoUnidadDocumental.find(_item => _item.soporte === 'Físico' && _item.fechaCierre === null);
           if(FechaCierre) {
-            this.mostrarAjustarFechaCierre = true;
+            this.desactivarAjustarFechaCierre = true;
           } else {
-            this.mostrarAjustarFechaCierre = false;
+            this.desactivarAjustarFechaCierre = false;
           }
         }    
         this._detectChanges.detectChanges();
       }));
     }
 
+  ResetControlSubserie() {
+    const subserie = 'subserie';
+    this.formBuscar.controls[subserie].reset(); 
+    this.formBuscar.controls[subserie].clearValidators();
+    this.formBuscar.controls[subserie].updateValueAndValidity();
+    this.validations[subserie] = '';
+  }
+
   ResetForm() {
     this.formBuscar.reset();
     this.State.ListadoSubseries = [];
     this.State.ListadoUnidadDocumental = [];
     this.State.unidadesSeleccionadas = [];
+    this.ResetControlSubserie();
     this.validations = [];
-    this.formBuscar.controls['subserie'].clearValidators();
-    this.formBuscar.controls['subserie'].updateValueAndValidity();
     this._detectChanges.detectChanges();
   }
 

@@ -335,25 +335,13 @@ public class ContentManager {
      * @param contenidoDependenciaTrdDTO Objeto que contiene los datos para realizar la busqueda
      * @return Objeto response
      */
-    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
-        MensajeRespuesta response = new MensajeRespuesta();
+    public MensajeRespuesta devolverSeriesSubseries(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws Exception {
         logger.info("### Obteniendo las series y subseries del content..");
-
-        try {
-            Conexion conexion;
-            new Conexion();
-            logger.info(MSGCONEXION);
-            conexion = contentControl.obtenerConexion();
-            logger.info("### Se invoca el metodo de devolver serie o subserie..");
-            response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
-            logger.info("Series o subseries devueltas exitosamente");
-
-        } catch (Exception e) {
-            logger.error("Error obteniendo las series o subseries", e);
-            response.setCodMensaje("2222");
-            response.setMensaje("Error obteniendo las series o subseries");
-
-        }
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        logger.info("### Se invoca el metodo de devolver serie o subserie..");
+        MensajeRespuesta response = contentControl.devolverSerieSubSerie(contenidoDependenciaTrdDTO, conexion.getSession());
+        logger.info("Series o subseries devueltas exitosamente");
         return response;
     }
 
@@ -388,7 +376,7 @@ public class ContentManager {
      * @param idDocumento     Id Documento
      * @return MensajeRespuesta con los detalles del documento
      */
-    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws Exception {
         logger.info("### mostrando la UnidadDocumental obtenerDetallesDocumentoDTO(String idDocumento) method");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
@@ -446,5 +434,25 @@ public class ContentManager {
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO, conexion.getSession());
+    }
+
+    public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
+        logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.getDocumentosPorArchivar(conexion.getSession());
+    }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+        logger.info("processing rest request - modificar las unidades documentales en el ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.modificarUnidadesDocumentales(unidadDocumentalDTOS, conexion.getSession());
     }
 }

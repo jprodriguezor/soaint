@@ -264,20 +264,9 @@ public class EcmManager {
      * @param contenidoDependenciaTrdDTO Objeto que contiene los parametro de búsqueda
      * @return contenidoDependenciaTrdDTO
      */
-    public MensajeRespuesta devolverSerieSubserie(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) {
+    public MensajeRespuesta devolverSerieSubserie(ContenidoDependenciaTrdDTO contenidoDependenciaTrdDTO) throws Exception {
         logger.info("### Obteniendo las series o subseries dada la dependencia del content..");
-        MensajeRespuesta response = new MensajeRespuesta();
-        try {
-
-            response = contentManager.devolverSeriesSubseries(contenidoDependenciaTrdDTO);
-
-        } catch (Exception e) {
-            response.setCodMensaje("22222");
-            response.setMensaje("Error al obtener las series o subseries documento");
-            logger.error(ECM_ERROR, e);
-        }
-
-        return response;
+        return contentManager.devolverSeriesSubseries(contenidoDependenciaTrdDTO);
     }
 
     /**
@@ -306,7 +295,7 @@ public class EcmManager {
      * @param idDocumento     Id Documento
      * @return MensajeRespuesta con los detalles del documento
      */
-    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws BusinessException {
+    public MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento) throws Exception {
         logger.info("### Mostrando el documento con id {}", idDocumento);
         return contentManager.obtenerDetallesDocumentoDTO(idDocumento);
     }
@@ -356,5 +345,24 @@ public class EcmManager {
     public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
         logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
         return contentManager.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO);
+    }
+
+    /**
+     * Operacion para devolver los documentos por archivar
+     */
+    public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
+        logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
+        return contentManager.getDocumentosPorArchivar();
+    }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+        logger.info("processing rest request - modificar las unidades documentales en el ECM");
+        return contentManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
     }
 }

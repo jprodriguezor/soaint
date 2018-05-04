@@ -1,0 +1,73 @@
+<p-panel header="Adjuntar documentos para archivar" [style]="{border: 'none'}">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+
+      <p-fileUpload chooseLabel="Buscar" uploadLabel="Subir" cancelLabel="Cancelar"></p-fileUpload>
+      <div class="text-right padding-top">
+        <button type="button" label="Refrescar" pButton style="width: auto"></button>
+      </div>
+      <div class="padding-top">
+        <p-dataTable  emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                      [responsive]="true" [value]="[]">
+          <p-column header="ID"></p-column>
+          <p-column header="Nombre"></p-column>
+          <p-column >
+            <ng-template pTemplate="body">
+              <button type="button" pButton label="Ver Detalles"></button>
+              <button type="button" pButton label="Eliminar"></button>
+            </ng-template>
+          </p-column>
+        </p-dataTable>
+      </div>
+      <div class="text-right padding-top">
+        <button type="button" pButton label="Agregar" class="text-right" style="width: auto" ></button>
+      </div>
+    </div>
+  </div>
+</p-panel>
+<div  class="ui-g ui-fluid">
+  <div class="ui-g-12 padding-top">
+    <p-panel header="Documentos para archivar">
+      <label class="ui-float-label" style="margin: 10px 5px;" >
+        No. Solicitud
+        <input type="text" pInputText placeholder="Probando" size="30" style="width: auto">
+      </label>
+      <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
+        <p-column >
+          <ng-template  pTemplate="body">
+            <p-checkbox></p-checkbox>
+          </ng-template>
+        </p-column>
+        <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
+        <p-column header="Identificador de documento" [sortable]="true"></p-column>
+        <p-column header="Nombre/asunto documento" [sortable]="true"></p-column>
+        <p-column header="Ver" >
+          <ng-template pTemplate="body">
+            <a href="">Ver</a>
+          </ng-template>
+        </p-column>
+        <p-column header="Tipologia Documental" >
+          <ng-template pTemplate="body">
+            <p-dropdown [options]="[]" placeholder="Seleccione" ></p-dropdown>
+          </ng-template>
+        </p-column>
+
+      </p-dataTable>
+    </p-panel>
+    <div class="text-right">
+      <p-confirmDialog #cd>
+        <p-footer>
+          <button type="button" pButton icon="fa-close" label="No" (click)="cd.reject()"></button>
+          <button type="button" pButton icon="fa-check" label="Si" (click)="cd.accept()"></button>
+        </p-footer>
+      </p-confirmDialog>
+      <div class="padding-top">
+        <button type="button" label="Archivar Documentos" pButton style="width:auto" (click)="confirmArchivarDocumentos()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12 padding-top">
+    <app-lista-documentos-archivados></app-lista-documentos-archivados>
+  </div>
+</div>

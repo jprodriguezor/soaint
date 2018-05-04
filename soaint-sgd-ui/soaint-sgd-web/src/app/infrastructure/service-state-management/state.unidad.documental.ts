@@ -52,6 +52,7 @@ export class StateUnidadDocumentalService {
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
     validations: any = {};
     subscribers: Array<Subscription> = [];
+    ultimolistarPayload: UnidadDocumentalDTO = {};
 
     // gestionar unidad documental
     OpcionSeleccionada: number;
@@ -114,29 +115,16 @@ export class StateUnidadDocumentalService {
     }
 
 
-
     CerrarDetalle() {
         this.AbrirDetalle = false;
     }
 
     Listar(payload?: UnidadDocumentalDTO, value?: any) {
+        this.ultimolistarPayload = payload;
         this.unidadesSeleccionadas = [];
         this.unidadDocumentalApiService.Listar(payload)
         .subscribe(response => {
-            let ListadoMapeado =  [];
-            if(response.length) {
-                ListadoMapeado = response.reduce((_listado, _current) => {
-                    _current.seleccionado = true;
-                    switch (_current.soporte) {
-                        case 'fisico': _current.soporte = 'Físico'; break;
-                        case 'electronico': _current.soporte = 'Electrónico'; break;
-                        case 'hibrido': _current.soporte = 'Híbrido'; break;
-                    }
-                    _listado.push(_current);
-                    return _listado;
-                }, []);
-               
-            } 
+            let ListadoMapeado = response.length ? response : [];            
             this.ListadoUnidadDocumental = [...ListadoMapeado]; 
             this.ListadoActualizadoSubject.next();           
         });
@@ -230,7 +218,7 @@ export class StateUnidadDocumentalService {
     ManageActionResponse(response: MensajeRespuestaDTO) {
         const mensajeRespuesta: MensajeRespuestaDTO = response;
         const mensajeSeverity = (mensajeRespuesta.codMensaje === '0000') ? 'success' : 'error';
-        this.Listar();
+        this.Listar(this.ultimolistarPayload);
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
     }
 

@@ -127,6 +127,7 @@
 <div class="ui-fluid" style="margin-top: 60px">
 
 
+
   <p-dataTable [value]="listaDestinatariosInternos" selectionMode="single"
                [paginator]="true" [rows]="10" [responsive]="true"
                emptyMessage="No se encontraron resultados">
@@ -201,7 +202,7 @@
 
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button pButton type="button" class="ui-button-primary"
+      <button pButton type="button" class="ui-button-primary po-static"
               label="Cerrar" (click)="hideAddDestinatarioExternoPopup()"></button>
     </div>
   </p-footer>

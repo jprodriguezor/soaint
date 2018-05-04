@@ -73,7 +73,7 @@ public class RecordIntegratioServicesClientRest {
             logger.error("Error en operacion - crearCarpetaRecord ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             throw e;
         }
     }
@@ -94,7 +94,7 @@ public class RecordIntegratioServicesClientRest {
             logger.error("Error en operacion - cerrarUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setCodMensaje("11111");
-            respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
+            respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
     }

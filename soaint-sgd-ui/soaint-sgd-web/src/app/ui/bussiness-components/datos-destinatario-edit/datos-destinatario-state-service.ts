@@ -28,7 +28,8 @@ export class DatosDestinatarioStateService {
 
     selectedagenteDestinatario: any;
     canInsert = false;
-    agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO }> = [];
+    agentesDestinatario: Array<{ tipoDestinatario: ConstanteDTO, sedeAdministrativa: ConstanteDTO, dependenciaGrupo: ConstanteDTO, ideAgente?: number }> = [];
+    idAgenteDevolucion: number;
 
     sedeAdministrativaInput$: Observable<ConstanteDTO[]> = Observable.empty();
     tipoDestinatarioInput$: Observable<ConstanteDTO[]> = Observable.empty();
@@ -217,6 +218,13 @@ export class DatosDestinatarioStateService {
       const agente = [...this.agentesDestinatario];
       agente.splice(index, 1);
       this.agentesDestinatario = agente;
+    }
+
+    EsAgenteDevolucion(index: any) {
+      const valido = (
+        !this.agentesDestinatario[index].ideAgente  || //nuevos agentes
+        this.agentesDestinatario[index].ideAgente == this.idAgenteDevolucion);
+      return valido;
     }
 
     confirmSubstitucionDestinatarioPrincipal() {

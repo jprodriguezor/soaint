@@ -13,7 +13,12 @@
      tipoPersona: any,
      Nombre: any,
      TipoDocumento:any,
-     destinatarioPrincipal: any
-   }>
+     destinatarioPrincipal: any,
+     datosContactoList:any[],
+   }>,
+   datosEnvio?:{
+     clase_envio:any,
+     modalidad_correo: any,
+   }
 
  }

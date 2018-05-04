@@ -96,6 +96,7 @@ public interface ContentControl extends Serializable {
     String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     String SEPARADOR = "---";
+    String F_CMCOR = "F:cmcor:";
 
     /**
      * Obtener objeto conexion
@@ -214,7 +215,7 @@ public interface ContentControl extends Serializable {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session);
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws BusinessException, Exception;
 
     /**
      * Servicio que crea las unidades documentales del ECM
@@ -239,7 +240,7 @@ public interface ContentControl extends Serializable {
      * @param session     Objeto conexion de Alfresco
      * @return MensajeRespuesta con los detalles del documento
      */
-    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws BusinessException;
+    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws Exception;
 
     /**
      * Metodo para listar los documentos de una Unidad Documental
@@ -264,7 +265,7 @@ public interface ContentControl extends Serializable {
      * @param session            Objeto conexion de Alfresco
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    Optional<UnidadDocumentalDTO> findUDById(String idUnidadDocumental, Session session);
+    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, Session session);
 
     /**
      * Metodo que devuelve una Unidad Documental con sus Documentos
@@ -298,7 +299,7 @@ public interface ContentControl extends Serializable {
      * @param folder Obj ECm
      * @return List<DocumentoDTO> Lista de los documentos de la carpeta
      */
-    List<DocumentoDTO> getDocumentsFromFolder(Folder folder);
+    List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws Exception;
 
     /**
      * Metodo para devolver la Unidad Documental
@@ -323,4 +324,17 @@ public interface ContentControl extends Serializable {
     void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
 
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
+
+    /**
+     * Operacion para devolver los documentos por archivar
+     */
+    MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception;
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws Exception;
 }
