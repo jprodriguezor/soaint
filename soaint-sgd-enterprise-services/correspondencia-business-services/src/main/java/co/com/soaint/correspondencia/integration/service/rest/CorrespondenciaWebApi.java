@@ -222,6 +222,21 @@ public class CorrespondenciaWebApi {
     @Path("/correspondencia/crear-solicitud-um")
     public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
+
+//        funcionarioDTO.setEstado("A");
+//        Funcionarios funcionario = funcionarioTransform(funcionarioDTO);
+//        funcionario.setTvsOrgaAdminXFunciPkList(new ArrayList<>());
+//        for (DependenciaDTO dependenciaDTO : funcionarioDTO.getDependencias()) {
+//            TvsOrgaAdminXFunciPkPk tvsOrgaAdminXFunciPkPk = new TvsOrgaAdminXFunciPkPk();
+//            tvsOrgaAdminXFunciPkPk.setCodOrgaAdmi(dependenciaDTO.getCodDependencia());
+//            tvsOrgaAdminXFunciPkPk.setFuncionario(funcionario);
+//            funcionario.getTvsOrgaAdminXFunciPkList().add(TvsOrgaAdminXFunciPk.newInstance()
+//                    .tvsOrgaAdminXFunciPkPk(tvsOrgaAdminXFunciPkPk)
+//                    .build());
+//        }
+//        em.persist(funcionario);
+//        em.flush();
+
         return SolicitudUnidadDocumentalDTO.newInstance().build();
 //        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
     }

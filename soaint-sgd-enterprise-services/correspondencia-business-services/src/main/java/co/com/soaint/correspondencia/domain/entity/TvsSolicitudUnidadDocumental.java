@@ -27,7 +27,8 @@ import java.util.List;
 @Entity
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
-    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t")
+    @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
+        @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t")
         })
 @TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
@@ -38,7 +39,7 @@ public class TvsSolicitudUnidadDocumental implements Serializable {
     @Basic(optional = false)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_CORRESPONDENCIA_GENERATOR")
     @Column(name = "IDE_SOLICITUD")
-    private BigInteger ideSolicitud;
+    private String ideSolicitud;
     @Basic(optional = false)
     @Column(name = "ID")
     private String id;
@@ -80,5 +81,5 @@ public class TvsSolicitudUnidadDocumental implements Serializable {
     @Column(name = "ACCION")
     private String accion;
     @Column(name = "OBSERVACIONES")
-    private Date observaciones;
+    private String observaciones;
 }
