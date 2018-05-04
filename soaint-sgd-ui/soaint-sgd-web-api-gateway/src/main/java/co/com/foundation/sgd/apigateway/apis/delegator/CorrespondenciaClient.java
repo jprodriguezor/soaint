@@ -270,5 +270,5 @@ public class CorrespondenciaClient {
                 .request()
                 .put(Entity.json(solicitud));
     }
-    /** --------------------- Fin -------------------------------*//
+    /** --------------------- Fin -------------------------------*/
 }
