@@ -269,7 +269,7 @@ public class ContentControlAlfrescoTest {
             //Obtener la unidad documental
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
-                    findUDById(unidadDocumentalDTO.getId(), conexion.getSession());
+                    getUDById(unidadDocumentalDTO.getId(), conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));

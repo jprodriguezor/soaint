@@ -164,4 +164,12 @@ public class ECMClient {
                 .request()
                 .get();
     }
+
+    public Response modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadesDocumentalesDTO) {
+        log.info("ModificarUnidadesDocumentalesGatewayApi - [trafic] - Modificar Unidades Documentales");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/modificarUnidadesDocumentalesECM")
+                .request()
+                .put(Entity.json(unidadesDocumentalesDTO));
+    }
 }

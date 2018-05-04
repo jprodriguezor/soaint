@@ -215,7 +215,7 @@ public interface ContentControl extends Serializable {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws Exception;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws BusinessException, Exception;
 
     /**
      * Servicio que crea las unidades documentales del ECM
@@ -265,7 +265,7 @@ public interface ContentControl extends Serializable {
      * @param session            Objeto conexion de Alfresco
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    Optional<UnidadDocumentalDTO> findUDById(String idUnidadDocumental, Session session);
+    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, Session session);
 
     /**
      * Metodo que devuelve una Unidad Documental con sus Documentos
@@ -325,5 +325,16 @@ public interface ContentControl extends Serializable {
 
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
 
+    /**
+     * Operacion para devolver los documentos por archivar
+     */
     MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception;
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws Exception;
 }
