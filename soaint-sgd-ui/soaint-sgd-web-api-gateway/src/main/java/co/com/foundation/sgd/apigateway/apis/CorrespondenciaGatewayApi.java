@@ -449,11 +449,11 @@ public class CorrespondenciaGatewayApi {
     @Path("/crear-solicitud-unidad-documental")
     @JWTTokenSecurity
 
-    public  Response crearSolicitudUnidad(@RequestBody SolicitudUnidadDocumentalDTO solicitud){
+    public  Response crearSolicitudUnidad(@RequestBody SolicitudesUnidadDocumentalDTO solicitudes){
 
         log.info("UnidadDocumentalGatewayApi: Crear Solicitude de Unidaddes documentales");
 
-        Response response = client.crearSolicitudUnidadDocuemntal(solicitud);
+        Response response = client.crearSolicitudUnidadDocuemntal(solicitudes);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
