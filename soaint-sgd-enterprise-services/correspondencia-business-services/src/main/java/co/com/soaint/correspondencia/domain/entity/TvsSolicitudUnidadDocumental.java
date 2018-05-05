@@ -29,7 +29,7 @@ import java.util.List;
 @NamedQueries({
     @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT t FROM TvsSolicitudUnidadDocumental t " +
-            "WHERE t.codDependencia = :COD_DEP AND t.codDependencia = :COD_SEDE AND t.fecHora BETWEEN :FECHA_INI AND :FECHA_FIN"),
+            "WHERE t.codDependencia = :COD_DEP AND t.codDependencia = :COD_SEDE AND t.fecHora >= :FECHA_INI AND t.fecHora <= :FECHA_FIN"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+

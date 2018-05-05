@@ -220,7 +220,7 @@ public class CorrespondenciaWebApi {
      */
     @POST
     @Path("/correspondencia/crear-solicitud-um")
-    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
+    public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
 
         return boundary.crearSolicitudUnidadDocumental(solicitudUnidadDocumental);
