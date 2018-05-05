@@ -250,7 +250,7 @@ public class OrganigramaAdministrativoControl {
         } catch (Exception e){
             log.error("Business Control - a system error has occurred", e);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("correspondencia.error consultando nombre del funcionario consultarNombreFuncionarioByCodOrg")
+                    .withMessage("correspondencia.error consultando nombre del funcionario del Organo Administrativo - consultarNombreFuncionarioByCodOrg")
                     .buildSystemException();
         }
     }

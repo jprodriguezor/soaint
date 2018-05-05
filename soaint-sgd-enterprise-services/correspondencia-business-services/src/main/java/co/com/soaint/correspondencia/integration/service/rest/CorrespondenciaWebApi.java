@@ -262,7 +262,6 @@ public class CorrespondenciaWebApi {
                     .withRootException(ex)
                     .buildSystemException();
         }
-
 //        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
     }
 
@@ -294,6 +293,5 @@ public class CorrespondenciaWebApi {
 //        List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
 //        solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
 //        return solicitudUnidadDocumentalDTOList;
-////        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
 //    }
 }
