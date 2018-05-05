@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.foundation.cartridge.email.model.Attachment;
 import co.com.foundation.cartridge.email.model.MailRequestDTO;
-//import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
@@ -82,6 +81,9 @@ public class CorrespondenciaControl {
 
     @Autowired
     private AsignacionControl asignacionControl;
+
+    @Autowired
+    private SolicitudUnidadDocumentalControl solicitudUnidadDocumentalControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -1138,13 +1140,10 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-//        String[] dest =  new String[]{"giselle.designe@gmail.com"};
-//        request.setTo(dest);
         request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
-//        parameters.put("#USER#", "Giselle Yanet");
-        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
+        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodDependencia()));
 
         request.setParameters( parameters );
 

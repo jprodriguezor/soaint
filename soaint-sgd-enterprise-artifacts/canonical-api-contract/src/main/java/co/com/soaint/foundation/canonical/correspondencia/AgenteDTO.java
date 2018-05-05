@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class AgenteDTO implements Serializable {
     private String nit;
     private String codCortesia;
     private String codEnCalidad;
-    private BigInteger ideFunci;
+    private BigInteger ideFunci = null;
     private String codTipDocIdent;
     private String nroDocuIdentidad;
     private String codSede;
@@ -72,7 +73,7 @@ public class AgenteDTO implements Serializable {
      * @param indOriginal
      */
     public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
-                     String nit, String codCortesia, String codEnCalidad,BigInteger ideFunci, String codTipDocIdent, String nroDocuIdentidad,
+                     String nit, String codCortesia, String codEnCalidad, BigInteger ideFunci, String codTipDocIdent, String nroDocuIdentidad,
                      String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
                      String indOriginal){
         this.ideAgente = ideAgente;
@@ -118,7 +119,7 @@ public class AgenteDTO implements Serializable {
     }
 
     public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
-                     String nit, String codCortesia, String codEnCalidad, String codTipDocIdent, String nroDocuIdentidad,
+                     String nit, String codCortesia, String codEnCalidad, BigInteger ideFunci, String codTipDocIdent, String nroDocuIdentidad,
                      String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
                      String indOriginal, Long numRedirecciones, Long numDevoluciones) {
         this.ideAgente = ideAgente;
@@ -129,6 +130,7 @@ public class AgenteDTO implements Serializable {
         this.nit = nit;
         this.codCortesia = codCortesia;
         this.codEnCalidad = codEnCalidad;
+        this.ideFunci = ideFunci;
         this.codTipDocIdent = codTipDocIdent;
         this.nroDocuIdentidad = nroDocuIdentidad;
         this.codSede = codSede;

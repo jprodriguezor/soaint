@@ -222,8 +222,8 @@ public class CorrespondenciaWebApi {
     @Path("/correspondencia/crear-solicitud-um")
     public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
-        return SolicitudUnidadDocumentalDTO.newInstance().build();
-//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+
+        return boundary.crearSolicitudUnidadDocumental(solicitudUnidadDocumental);
     }
 
     /**
@@ -237,7 +237,8 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/obtener-solicitud-um")
-    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudUnidadDocumental(@QueryParam("cod_sede") final String codigoSede,
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(
+                                                                               @QueryParam("cod_sede") final String codigoSede,
                                                                                @QueryParam("cod_dependencia") final String codigoDependencia,
                                                                                @QueryParam("fecha_ini") final String fechaI,
                                                                                @QueryParam("fecha_fin") final String fechaF) throws BusinessException, SystemException {
@@ -248,9 +249,13 @@ public class CorrespondenciaWebApi {
             Date fechaInicial = dateFormat.parse(fechaI);
             Date fechaFinal = dateFormat.parse(fechaF);
 
+//            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codEstado, nroRadicado);
+
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-            solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
-            return solicitudUnidadDocumentalDTOList;
+            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
+            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
+
+            return solicitudesUnidadDocumentalDTO;
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -275,19 +280,19 @@ public class CorrespondenciaWebApi {
 //        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
     }
 
-    /**
-     * @param codigoDependencia
-     * @return
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    @GET
-    @Path("/correspondencia/obtener-solicitud-um/{codigo-dependencia}")
-    public List<SolicitudUnidadDocumentalDTO> obtenerSolicitudesNoTramitadasUDporCodigoDependencia(@PathParam("codigo-dependencia") final String codigoDependencia) throws BusinessException, SystemException {
-        log.info("processing rest request - crearSolicitudUnidadDocumental");
-        List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-        solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
-        return solicitudUnidadDocumentalDTOList;
-//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
-    }
+//    /**
+//     * @param codigoDependencia
+//     * @return
+//     * @throws BusinessException
+//     * @throws SystemException
+//     */
+//    @GET
+//    @Path("/correspondencia/obtener-solicitud-um/{codigo-dependencia}")
+//    public SolicitudesUnidadDocumentalDTO obtenerSolicitudesNoTramitadasUDporCodigoDependencia(@PathParam("codigo-dependencia") final String codigoDependencia) throws BusinessException, SystemException {
+//        log.info("processing rest request - crearSolicitudUnidadDocumental");
+//        List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
+//        solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
+//        return solicitudUnidadDocumentalDTOList;
+////        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+//    }
 }
