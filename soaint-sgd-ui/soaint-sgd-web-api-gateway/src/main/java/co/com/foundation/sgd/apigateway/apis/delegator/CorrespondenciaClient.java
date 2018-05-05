@@ -236,14 +236,14 @@ public class CorrespondenciaClient {
     }
 
     /**------------------------------  Metodos de Solicitud de Creacion de Unidad Dcoumental --------------------------*/
-    public Response crearSolicitudUnidadDocuemntal(SolicitudUnidadDocumentalDTO solicitud){
+    public Response crearSolicitudUnidadDocuemntal(SolicitudesUnidadDocumentalDTO solicitudes){
 
         log.info("Delegator: crear Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/correspondencia-web-api/correspondencia/crear-solicitud-um")
                 .request()
-                .post(Entity.json(solicitud));
+                .post(Entity.json(solicitudes));
     }
 
     public Response listarSolicitudUnidadDocumental(String codSede,String codDependencia,String fechaIni,String fechaFin){
