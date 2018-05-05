@@ -279,19 +279,4 @@ public class CorrespondenciaWebApi {
 //        return SolicitudUnidadDocumentalDTO.newInstance().build();
         return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
-
-//    /**
-//     * @param codigoDependencia
-//     * @return
-//     * @throws BusinessException
-//     * @throws SystemException
-//     */
-//    @GET
-//    @Path("/correspondencia/obtener-solicitud-um/{codigo-dependencia}")
-//    public SolicitudesUnidadDocumentalDTO obtenerSolicitudesNoTramitadasUDporCodigoDependencia(@PathParam("codigo-dependencia") final String codigoDependencia) throws BusinessException, SystemException {
-//        log.info("processing rest request - crearSolicitudUnidadDocumental");
-//        List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-//        solicitudUnidadDocumentalDTOList.add(SolicitudUnidadDocumentalDTO.newInstance().build());
-//        return solicitudUnidadDocumentalDTOList;
-//    }
 }

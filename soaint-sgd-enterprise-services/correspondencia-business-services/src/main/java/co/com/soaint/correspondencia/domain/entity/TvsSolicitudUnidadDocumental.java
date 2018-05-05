@@ -36,22 +36,21 @@ import java.util.List;
             "t.idSolicitante = :ID_SOL, t.estado = :EST , t.accion = :ACC , t.observaciones = :OBS " +
             "WHERE t.ideSolicitud = :IDE_SOL")
         })
-@TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
+@javax.persistence.TableGenerator(name = "COR_SOLICITUD_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_SOLICITUD_SEQ", allocationSize = 1)
 public class TvsSolicitudUnidadDocumental implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_CORRESPONDENCIA_GENERATOR")
-    @Column(name = "IDE_SOLICITUD")
-    private String ideSolicitud;
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_SOLICITUD_GENERATOR")
     @Column(name = "ID")
+    private BigInteger ideSolicitud;
+    @Basic(optional = false)
+    @Column(name = "ID_UM")
     private String id;
     @Column(name = "ID_CONSTANTE")
     private String idConstante;
-    @Basic(optional = false)
     @Column(name = "FEC_HORA")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecHora;

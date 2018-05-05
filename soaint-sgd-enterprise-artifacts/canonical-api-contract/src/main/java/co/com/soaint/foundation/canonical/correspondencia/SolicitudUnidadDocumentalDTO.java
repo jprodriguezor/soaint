@@ -32,8 +32,6 @@ public class SolicitudUnidadDocumentalDTO implements Serializable {
     private String idSolicitud;
     private String id;
     private String idConstante;
-    @JsonFormat
-    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaHora;
     private String nombreUnidadDocumental;
     private String descriptor1;

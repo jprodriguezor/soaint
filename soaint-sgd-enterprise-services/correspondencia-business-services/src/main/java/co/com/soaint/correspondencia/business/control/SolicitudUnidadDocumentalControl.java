@@ -16,6 +16,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,11 +44,11 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
             for (SolicitudUnidadDocumentalDTO s : solicitudesUnidadDocumentalDTO.getSolicitudesUnidadDocumentalDTOS()) {
+                s.setFechaHora(new Date());
                 this.insertarSolicitudUnidadDocumental(s);
             }
             em.flush();
@@ -67,12 +69,29 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void insertarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
             TvsSolicitudUnidadDocumental unidadDocumental = this.tvsSolicitudUnidadDocumentalTransform(solicitudUnidadDocumental);
             em.persist(unidadDocumental);
+//            em.createNamedQuery("TvsSolicitudUM.actualizarSolicitudUnidadDocumental")
+//                    .setParameter("ID_SOL", solicitudUnidadDocumental.getIdSolicitud())
+//                    .setParameter("ID", solicitudUnidadDocumental.getId())
+//                    .setParameter("", solicitudUnidadDocumental.getIdSolicitante())
+//                    .setParameter("ID_CONST", solicitudUnidadDocumental.getIdConstante())
+//                    .setParameter("", solicitudUnidadDocumental.getCodigoSede())
+//                    .setParameter("", solicitudUnidadDocumental.getCodigoDependencia())
+//                    .setParameter("", solicitudUnidadDocumental.getCodigoSerie())
+//                    .setParameter("", solicitudUnidadDocumental.getCodigoSubSerie())
+//                    .setParameter("DESCRIPTOR1", solicitudUnidadDocumental.getDescriptor1())
+//                    .setParameter("DESCRIPTOR2", solicitudUnidadDocumental.getDescriptor2())
+//                    .setParameter("NOMBREUD", solicitudUnidadDocumental.getNombreUnidadDocumental())
+//                    .setParameter("NRO", solicitudUnidadDocumental.getNro())
+//                    .setParameter("FECH", solicitudUnidadDocumental.getFechaHora())
+//                    .setParameter("", solicitudUnidadDocumental.getAccion())
+//                    .setParameter("", solicitudUnidadDocumental.getEstado())
+//                    .setParameter("", solicitudUnidadDocumental.getObservaciones())
+//                    .executeUpdate();
 
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -91,8 +110,12 @@ public class SolicitudUnidadDocumentalControl {
      */
     public TvsSolicitudUnidadDocumental tvsSolicitudUnidadDocumentalTransform(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws SystemException, BusinessException{
         try {
+
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//            Date fecha = dateFormat.parse(solicitudUnidadDocumental.getFechaHora().toString()); // Ya viene como Date
+
             return TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(solicitudUnidadDocumental.getIdSolicitud())
+                    .ideSolicitud(new BigInteger(solicitudUnidadDocumental.getIdSolicitud()))
                     .id(solicitudUnidadDocumental.getId())
                     .nombreUD(solicitudUnidadDocumental.getNombreUnidadDocumental())
                     .accion(solicitudUnidadDocumental.getAccion())
