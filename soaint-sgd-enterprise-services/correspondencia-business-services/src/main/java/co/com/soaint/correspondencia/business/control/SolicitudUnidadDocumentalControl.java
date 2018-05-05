@@ -37,21 +37,43 @@ public class SolicitudUnidadDocumentalControl {
     private EntityManager em;
 
     /**
+      * @param solicitudesUnidadDocumentalDTO
+      * @return
+      * @throws SystemException
+      * @throws BusinessException
+      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+        try {
+            for (SolicitudUnidadDocumentalDTO s : solicitudesUnidadDocumentalDTO.getSolicitudesUnidadDocumentalDTOS()) {
+                this.insertarSolicitudUnidadDocumental(s);
+            }
+            em.flush();
+
+            return true;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
       * @param solicitudUnidadDocumental
       * @return
       * @throws SystemException
       * @throws BusinessException
       */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
+    public void insertarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
             TvsSolicitudUnidadDocumental unidadDocumental = this.tvsSolicitudUnidadDocumentalTransform(solicitudUnidadDocumental);
-
             em.persist(unidadDocumental);
-            em.flush();
 
-            return solicitudUnidadDocumental;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
