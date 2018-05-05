@@ -32,6 +32,9 @@ public class GestionarCorrespondencia {
     @Autowired
     CorrespondenciaControl control;
 
+    @Autowired
+    private GestionarSolicitudUnidadDocumental gestionarSolicitudUnidadDocumental;
+
     // ----------------------
 
     /**
@@ -156,5 +159,39 @@ public class GestionarCorrespondencia {
      */
     public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
         return control.sendMail(nroRadicado);
+    }
+
+    /**
+     *
+     * @param unidadDocumentalDTO
+     * * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO unidadDocumentalDTO)throws SystemException, BusinessException{
+        return gestionarSolicitudUnidadDocumental.crearSolicitudUnidadDocumental(unidadDocumentalDTO);
+    }
+
+    /**
+     *
+     * @param fechaIni
+     * @param fechaFin
+     * @param codDependencia
+     * @param codSede
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
+        return gestionarSolicitudUnidadDocumental.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaIni, fechaFin, codSede, codDependencia);
+    }
+
+    /**
+     * @param solicitudUnidadDocumentalDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
+        return gestionarSolicitudUnidadDocumental.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 }

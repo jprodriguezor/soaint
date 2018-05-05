@@ -29,28 +29,28 @@ import java.util.List;
         @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
         @NamedQuery(name = "CorAgente.findByIdeDocumento", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findByNroRadicado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "WHERE co.nroRadicado = :NRO_RADICADO AND c.codTipAgent = 'TP-AGEE'"),
         @NamedQuery(name = "CorAgente.findByIdeAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "WHERE c.ideAgente = :IDE_AGENTE"),
         @NamedQuery(name = "CorAgente.findByIdeDocumentoAndCodDependenciaAndCodEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
@@ -58,7 +58,7 @@ import java.util.List;
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodDependenciaAndCodEstado", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, dau.numRedirecciones, dau.numDevoluciones) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
@@ -67,7 +67,7 @@ import java.util.List;
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodDependencia", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, dau.numRedirecciones, dau.numDevoluciones) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
@@ -76,7 +76,7 @@ import java.util.List;
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal, dau.numRedirecciones, dau.numDevoluciones) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
@@ -85,7 +85,7 @@ import java.util.List;
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findRemitentesByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
-                "c.codEnCalidad, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
                 "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
                 "FROM CorAgente c " +
                 "INNER JOIN c.corCorrespondencia co " +
@@ -131,6 +131,8 @@ public class CorAgente implements Serializable {
     private String codCortesia;
     @Column(name = "COD_EN_CALIDAD")
     private String codEnCalidad;
+    @Column(name = "IDE_FUNCI")
+    private BigInteger ideFunci;
     @Column(name = "COD_TIP_DOC_IDENT")
     private String codTipDocIdent;
     @Column(name = "NRO_DOCU_IDENTIDAD")

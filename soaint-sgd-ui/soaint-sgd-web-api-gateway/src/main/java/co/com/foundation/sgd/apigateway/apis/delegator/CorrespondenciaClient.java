@@ -234,4 +234,41 @@ public class CorrespondenciaClient {
                 .request()
                 .get();
     }
+
+    /**------------------------------  Metodos de Solicitud de Creacion de Unidad Dcoumental --------------------------*/
+    public Response crearSolicitudUnidadDocuemntal(SolicitudUnidadDocumentalDTO solicitud){
+
+        log.info("Delegator: crear Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
+
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/crear-solicitud-um")
+                .request()
+                .post(Entity.json(solicitud));
+    }
+
+    public Response listarSolicitudUnidadDocumental(String codSede,String codDependencia,String fechaIni,String fechaFin){
+
+        log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
+
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um")
+                .queryParam("cod_sede", codSede)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("fecha_ini", fechaIni)
+                .queryParam("fecha_fin", fechaFin)
+                .request()
+                .get();
+    }
+
+    public Response actualizarSolicitudUnidadDcoumental(SolicitudUnidadDocumentalDTO solicitud){
+
+        log.info("Delegator: actualizar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
+
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/correspondencia-web-api/correspondencia/actualizar-solicitud-um")
+                .request()
+                .put(Entity.json(solicitud));
+    }
+    /** --------------------- Fin -------------------------------*/
 }
