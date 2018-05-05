@@ -238,6 +238,25 @@ public class OrganigramaAdministrativoControl {
 
     /**
      *
+     * @param codOrg
+     * @return
+     */
+    public List<String> consultarNombreFuncionarioByCodOrg(String codOrg) throws SystemException {
+        try {
+            return em.createNamedQuery("TvsOrgaAdminXFunciPk.findFuncByCodOrgaAdmi", String.class)
+                    .setParameter("COD_ORG", codOrg)
+                    .getResultList();
+
+        } catch (Exception e){
+            log.error("Business Control - a system error has occurred", e);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.error consultando nombre del funcionario consultarNombreFuncionarioByCodOrg")
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     *
      * @param codigosOrg
      * @return
      */
