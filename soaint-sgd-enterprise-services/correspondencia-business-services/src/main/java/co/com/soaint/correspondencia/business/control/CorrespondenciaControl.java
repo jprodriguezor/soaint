@@ -1129,6 +1129,9 @@ public class CorrespondenciaControl {
             }
         });
 
+        if (!parameters.containsKey("#USER#"))
+            throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
+
         if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
         datosContactoDTOS.forEach(datosContactoDTO -> {
             destinatarios.add(datosContactoDTO.getCorrElectronico());

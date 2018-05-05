@@ -249,13 +249,13 @@ public class CorrespondenciaWebApi {
             Date fechaInicial = dateFormat.parse(fechaI);
             Date fechaFinal = dateFormat.parse(fechaF);
 
-//            return boundary.listarCorrespondenciaByPeriodoAndCodDependenciaAndCodEstadoAndNroRadicado(fechaInicial, fechaFinal, codDependencia, codEstado, nroRadicado);
+            return boundary.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaInicial,fechaFinal,codigoSede,codigoDependencia);
 
-            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
-            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
-
-            return solicitudesUnidadDocumentalDTO;
+//            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
+//            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
+//            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
+//
+//            return solicitudesUnidadDocumentalDTO;
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -276,8 +276,9 @@ public class CorrespondenciaWebApi {
     @Path("/correspondencia/actualizar-solicitud-um")
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
-        return SolicitudUnidadDocumentalDTO.newInstance().build();
-//        return boundary.radicarCorrespondenciaSalida(solicitudUnidadDocumental);
+
+//        return SolicitudUnidadDocumentalDTO.newInstance().build();
+        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 
 //    /**

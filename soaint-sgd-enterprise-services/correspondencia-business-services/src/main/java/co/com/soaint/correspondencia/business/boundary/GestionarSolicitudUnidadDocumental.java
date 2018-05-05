@@ -55,4 +55,14 @@ public class GestionarSolicitudUnidadDocumental {
         return control.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaIni, fechaFin, codSede, codDependencia);
     }
 
+    /**
+     * @param solicitudUnidadDocumentalDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
+        return control.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+    }
+
 }

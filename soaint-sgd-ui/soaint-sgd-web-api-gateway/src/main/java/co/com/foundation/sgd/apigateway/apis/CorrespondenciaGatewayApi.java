@@ -463,13 +463,13 @@ public class CorrespondenciaGatewayApi {
     @JWTTokenSecurity
 
     public  Response listarSolicitudUnidad(@QueryParam("codSede") final String codSede,
-                                           @QueryPama("codDependencia") final String codDependencia,
-                                           @DefaultValue(null) @QueryParam("fechaIni") final String fechaIni,
-                                           @DefaultValue(null) @QueryParam("fechaFin") final String fechaFin ){
+                                           @QueryParam("codDependencia") final String codDependencia,
+                                           @QueryParam("fechaIni") final String fechaIni,
+                                           @QueryParam("fechaFin") final String fechaFin ){
 
         log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
 
-        Response response = client.listarSolicitudUnidadDocumental(solicitud);
+        Response response = client.listarSolicitudUnidadDocumental(codSede,codDependencia,fechaIni,fechaFin);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
