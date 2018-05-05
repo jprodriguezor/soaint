@@ -77,7 +77,7 @@ public class SolicitudUnidadDocumentalControl {
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("Error insertando Solicitud de Unidad Documental.")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -112,7 +112,7 @@ public class SolicitudUnidadDocumentalControl {
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("Error convirtiendo Solicitud de Unidad Documental.")
                     .withRootException(ex)
                     .buildSystemException();
         }
