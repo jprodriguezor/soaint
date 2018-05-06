@@ -8,7 +8,6 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,6 @@ public class SolicitudUnidadDocumentalControl {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
             for (SolicitudUnidadDocumentalDTO s : solicitudesUnidadDocumentalDTO.getSolicitudesUnidadDocumentalDTOS()) {
-                s.setFechaHora(new Date());
                 this.insertarSolicitudUnidadDocumental(s);
             }
             em.flush();
@@ -74,25 +72,6 @@ public class SolicitudUnidadDocumentalControl {
         try {
             TvsSolicitudUnidadDocumental unidadDocumental = this.tvsSolicitudUnidadDocumentalTransform(solicitudUnidadDocumental);
             em.persist(unidadDocumental);
-//            em.createNamedQuery("TvsSolicitudUM.actualizarSolicitudUnidadDocumental")
-//                    .setParameter("ID_SOL", solicitudUnidadDocumental.getIdSolicitud())
-//                    .setParameter("ID", solicitudUnidadDocumental.getId())
-//                    .setParameter("", solicitudUnidadDocumental.getIdSolicitante())
-//                    .setParameter("ID_CONST", solicitudUnidadDocumental.getIdConstante())
-//                    .setParameter("", solicitudUnidadDocumental.getCodigoSede())
-//                    .setParameter("", solicitudUnidadDocumental.getCodigoDependencia())
-//                    .setParameter("", solicitudUnidadDocumental.getCodigoSerie())
-//                    .setParameter("", solicitudUnidadDocumental.getCodigoSubSerie())
-//                    .setParameter("DESCRIPTOR1", solicitudUnidadDocumental.getDescriptor1())
-//                    .setParameter("DESCRIPTOR2", solicitudUnidadDocumental.getDescriptor2())
-//                    .setParameter("NOMBREUD", solicitudUnidadDocumental.getNombreUnidadDocumental())
-//                    .setParameter("NRO", solicitudUnidadDocumental.getNro())
-//                    .setParameter("FECH", solicitudUnidadDocumental.getFechaHora())
-//                    .setParameter("", solicitudUnidadDocumental.getAccion())
-//                    .setParameter("", solicitudUnidadDocumental.getEstado())
-//                    .setParameter("", solicitudUnidadDocumental.getObservaciones())
-//                    .executeUpdate();
-
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
@@ -110,12 +89,7 @@ public class SolicitudUnidadDocumentalControl {
      */
     public TvsSolicitudUnidadDocumental tvsSolicitudUnidadDocumentalTransform(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws SystemException, BusinessException{
         try {
-
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            Date fecha = dateFormat.parse(solicitudUnidadDocumental.getFechaHora().toString()); // Ya viene como Date
-
             return TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(new BigInteger(solicitudUnidadDocumental.getIdSolicitud()))
                     .id(solicitudUnidadDocumental.getId())
                     .nombreUD(solicitudUnidadDocumental.getNombreUnidadDocumental())
                     .accion(solicitudUnidadDocumental.getAccion())
@@ -126,7 +100,7 @@ public class SolicitudUnidadDocumentalControl {
                     .descriptor1(solicitudUnidadDocumental.getDescriptor1())
                     .descriptor2(solicitudUnidadDocumental.getDescriptor2())
                     .estado(solicitudUnidadDocumental.getEstado())
-                    .fecHora(solicitudUnidadDocumental.getFechaHora())
+                    .fecHora(new Date())
                     .idConstante(solicitudUnidadDocumental.getIdConstante())
                     .idSolicitante(solicitudUnidadDocumental.getIdSolicitante())
                     .nro(solicitudUnidadDocumental.getNro())
@@ -151,7 +125,6 @@ public class SolicitudUnidadDocumentalControl {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
         try {
             if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
@@ -180,7 +153,7 @@ public class SolicitudUnidadDocumentalControl {
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("BD query Error obteniendo las solicitudes.")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -191,7 +164,7 @@ public class SolicitudUnidadDocumentalControl {
 
         try{
             TvsSolicitudUnidadDocumental unidadDocumental = TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())
+                    .ideSolicitud(new BigInteger(solicitudUnidadDocumentalDTO.getIdSolicitud()))
                     .id(solicitudUnidadDocumentalDTO.getId())
                     .nro(solicitudUnidadDocumentalDTO.getNro())
                     .idSolicitante(solicitudUnidadDocumentalDTO.getIdSolicitante())
