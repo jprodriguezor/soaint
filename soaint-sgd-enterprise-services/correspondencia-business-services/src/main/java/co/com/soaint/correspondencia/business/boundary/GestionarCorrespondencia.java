@@ -167,7 +167,7 @@ public class GestionarCorrespondencia {
      * * @throws BusinessException
      * @throws SystemException
      */
-    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO unidadDocumentalDTO)throws SystemException, BusinessException{
+    public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO unidadDocumentalDTO)throws SystemException, BusinessException{
         return gestionarSolicitudUnidadDocumental.crearSolicitudUnidadDocumental(unidadDocumentalDTO);
     }
 

@@ -33,12 +33,12 @@ public class GestionarSolicitudUnidadDocumental {
 
     /**
      *
-     * @param unidadDocumentalDTO
+     * @param unidadesDocumentalDTO
      * * @throws BusinessException
      * @throws SystemException
      */
-    public SolicitudUnidadDocumentalDTO crearSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO unidadDocumentalDTO)throws SystemException, BusinessException{
-       return control.crearSolicitudUnidadDocumental(unidadDocumentalDTO);
+    public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO unidadesDocumentalDTO)throws SystemException, BusinessException{
+       return control.crearSolicitudUnidadDocumental(unidadesDocumentalDTO);
     }
 
     /**
