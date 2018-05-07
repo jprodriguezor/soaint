@@ -371,6 +371,16 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
+    public void testmodificarMetadatosDocumentoSuccess() {
+
+        assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+    }
+
+    @Test
+    public void obtenerPropiedadesDocumento() {
+    }
+
+    @Test
     public void crearLinkDocumentosApoyo() {
     }
 
@@ -384,15 +394,6 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void subirDocumentoUnidadDocumentalECM() {
-    }
-
-    @Test
-    public void modificarMetadatosDocumento() {
-    }
-
-
-    @Test
-    public void obtenerPropiedadesDocumento() {
     }
 
     @Test
