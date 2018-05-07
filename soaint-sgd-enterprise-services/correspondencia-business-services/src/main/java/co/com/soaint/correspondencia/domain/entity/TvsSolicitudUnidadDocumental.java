@@ -52,7 +52,7 @@ public class TvsSolicitudUnidadDocumental implements Serializable {
     @Column(name = "ID_CONSTANTE")
     private String idConstante;
     @Column(name = "FEC_HORA")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecHora;
     @Basic(optional = false)
     @Column(name = "NOMBRE_UNIDAD_DOCUMENTAL")
