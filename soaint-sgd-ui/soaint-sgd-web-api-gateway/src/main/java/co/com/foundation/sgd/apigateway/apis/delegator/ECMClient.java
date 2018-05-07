@@ -159,7 +159,7 @@ public class ECMClient {
                 .put(Entity.json(dtoList));
     }
 
-    public Response DetalleUnidadDocumental(String idUnidadDocumental) {
+    public Response detalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
                 .request()
@@ -171,5 +171,21 @@ public class ECMClient {
         return wt.path("/devolverDocumentosPorArchivarECM/")
                 .request()
                 .get();
+    }
+
+    public Response modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadesDocumentalesDTO) {
+        log.info("ModificarUnidadesDocumentalesGatewayApi - [trafic] - Modificar Unidades Documentales");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/modificarUnidadesDocumentalesECM")
+                .request()
+                .put(Entity.json(unidadesDocumentalesDTO));
+    }
+
+    public Response subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        log.info("SubirDocumentosUnidadDocumentalGatewayApi - [trafic] - Subir Documentos a Unidades Documentales");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosUnidadDocumentalECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
     }
 }

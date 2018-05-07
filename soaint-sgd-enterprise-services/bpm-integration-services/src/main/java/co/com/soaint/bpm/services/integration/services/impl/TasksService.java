@@ -372,13 +372,32 @@ public class TasksService implements ITaskServices {
      */
     @Override
     public List<RespuestaTareaDTO> listarTareasEstadosPorUsuario(EntradaProcesoDTO entrada) throws SystemException {
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosOperaciones.estadosActivos(estadosEnviados);
         try {
             log.info("iniciar - listar tareas estados usuarios: {}", entrada);
             taskService = engine.obtenerEngine(entrada).getTaskService();
             List<TaskSummary> tasks = taskService.getTasksOwnedByStatus(entrada.getUsuario(), estadosActivos, formatoIdioma);
-            return crearListadoTareasRespuesta(tasks);
+            for (TaskSummary task : tasks) {
+
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(task.getId())
+                        .estado(estadosOperaciones.estadoRespuesta(task.getStatusId()))
+                        .idProceso(task.getProcessId())
+                        .idDespliegue(task.getDeploymentId())
+                        .nombre(task.getName())
+                        .prioridad(task.getPriority())
+                        .idInstanciaProceso(task.getProcessInstanceId())
+                        .fechaCreada(task.getCreatedOn())
+                        .tiempoActivacion(task.getActivationTime())
+                        .tiempoExpiracion(task.getExpirationTime())
+                        .descripcion(task.getDescription())
+                        .build();
+                tareas.add(respuestaTarea);
+
+            }
+            return tareas;
         } catch (Exception e) {
             log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
@@ -400,6 +419,8 @@ public class TasksService implements ITaskServices {
     @Override
 
     public List<RespuestaTareaDTO> listarTareasPorInstanciaProceso(EntradaProcesoDTO entrada) throws SystemException {
+
+        List<RespuestaTareaDTO> tareas = new ArrayList<>();
         Iterator<EstadosEnum> estadosEnviados = entrada.getEstados().iterator();
         List<Status> estadosActivos = estadosOperaciones.estadosActivos(estadosEnviados);
         try {
@@ -407,7 +428,24 @@ public class TasksService implements ITaskServices {
             taskService = engine.obtenerEngine(entrada).getTaskService();
 
             List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(entrada.getInstanciaProceso(), estadosActivos, formatoIdioma);
-            return crearListadoTareasRespuesta(tasks);
+            for (TaskSummary task : tasks) {
+                RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
+                        .idTarea(task.getId())
+                        .estado(estadosOperaciones.estadoRespuesta(task.getStatusId()))
+                        .idProceso(task.getProcessId())
+                        .idDespliegue(task.getDeploymentId())
+                        .nombre(task.getName())
+                        .prioridad(task.getPriority())
+                        .idInstanciaProceso(task.getProcessInstanceId())
+                        .fechaCreada(task.getCreatedOn())
+                        .tiempoActivacion(task.getActivationTime())
+                        .tiempoExpiracion(task.getExpirationTime())
+                        .descripcion(task.getDescription())
+                        .build();
+                tareas.add(respuestaTarea);
+
+            }
+            return tareas;
         } catch (Exception e) {
             log.error(errorSistema);
             throw ExceptionBuilder.newBuilder()
@@ -532,32 +570,5 @@ public class TasksService implements ITaskServices {
             log.info("fin - listar - tareas estados instancias proceso ");
         }
     }
-    /**
-     * Metodo utilitario para generar un listado de tareas a partir de otro listado
-     * @param tasks
-     * @return retorna un listado de RespuestaTareaDTO
-     */
-    private List<RespuestaTareaDTO> crearListadoTareasRespuesta(List<TaskSummary> tasks) {
-        List<RespuestaTareaDTO> tareas = new ArrayList<>();
-        for (TaskSummary task : tasks) {
-            RespuestaTareaDTO respuestaTarea = RespuestaTareaDTO.newInstance()
-                    .idTarea(task.getId())
-                    .estado(estadosOperaciones.estadoRespuesta(task.getStatusId()))
-                    .idProceso(task.getProcessId())
-                    .idDespliegue(task.getDeploymentId())
-                    .nombre(task.getName())
-                    .prioridad(task.getPriority())
-                    .idInstanciaProceso(task.getProcessInstanceId())
-                    .fechaCreada(task.getCreatedOn())
-                    .tiempoActivacion(task.getActivationTime())
-                    .tiempoExpiracion(task.getExpirationTime())
-                    .descripcion(task.getDescription())
-                    .build();
-            tareas.add(respuestaTarea);
-
-        }
-        return tareas;
-    }
-
 }
 

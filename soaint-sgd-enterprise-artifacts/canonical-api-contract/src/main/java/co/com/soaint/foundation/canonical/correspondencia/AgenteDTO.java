@@ -1,5 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class AgenteDTO implements Serializable {
     private String nit;
     private String codCortesia;
     private String codEnCalidad;
+    private BigInteger ideFunci = null;
     private String codTipDocIdent;
     private String nroDocuIdentidad;
     private String codSede;
@@ -60,6 +62,7 @@ public class AgenteDTO implements Serializable {
      * @param nit
      * @param codCortesia
      * @param codEnCalidad
+     * @param ideFunci
      * @param codTipDocIdent
      * @param nroDocuIdentidad
      * @param codSede
@@ -69,6 +72,29 @@ public class AgenteDTO implements Serializable {
      * @param codTipAgent
      * @param indOriginal
      */
+    public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
+                     String nit, String codCortesia, String codEnCalidad, BigInteger ideFunci, String codTipDocIdent, String nroDocuIdentidad,
+                     String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
+                     String indOriginal){
+        this.ideAgente = ideAgente;
+        this.codTipoRemite = codTipoRemite;
+        this.codTipoPers = codTipoPers;
+        this.nombre = nombre;
+        this.razonSocial = razonSocial;
+        this.nit = nit;
+        this.codCortesia = codCortesia;
+        this.codEnCalidad = codEnCalidad;
+        this.ideFunci = ideFunci;
+        this.codTipDocIdent = codTipDocIdent;
+        this.nroDocuIdentidad = nroDocuIdentidad;
+        this.codSede = codSede;
+        this.codDependencia = codDependencia;
+        this.codEstado = codEstado;
+        this.fecAsignacion = fecAsignacion;
+        this.codTipAgent = codTipAgent;
+        this.indOriginal = indOriginal;
+        this.datosContactoList = new ArrayList<>();
+    }
     public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
                      String nit, String codCortesia, String codEnCalidad, String codTipDocIdent, String nroDocuIdentidad,
                      String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
@@ -93,7 +119,7 @@ public class AgenteDTO implements Serializable {
     }
 
     public AgenteDTO(BigInteger ideAgente, String codTipoRemite, String codTipoPers, String nombre, String razonSocial,
-                     String nit, String codCortesia, String codEnCalidad, String codTipDocIdent, String nroDocuIdentidad,
+                     String nit, String codCortesia, String codEnCalidad, BigInteger ideFunci, String codTipDocIdent, String nroDocuIdentidad,
                      String codSede, String codDependencia, String codEstado, Date fecAsignacion, String codTipAgent,
                      String indOriginal, Long numRedirecciones, Long numDevoluciones) {
         this.ideAgente = ideAgente;
@@ -104,6 +130,7 @@ public class AgenteDTO implements Serializable {
         this.nit = nit;
         this.codCortesia = codCortesia;
         this.codEnCalidad = codEnCalidad;
+        this.ideFunci = ideFunci;
         this.codTipDocIdent = codTipDocIdent;
         this.nroDocuIdentidad = nroDocuIdentidad;
         this.codSede = codSede;

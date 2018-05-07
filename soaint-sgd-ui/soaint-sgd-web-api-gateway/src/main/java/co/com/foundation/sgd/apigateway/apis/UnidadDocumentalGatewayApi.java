@@ -93,7 +93,7 @@ public class UnidadDocumentalGatewayApi {
     @JWTTokenSecurity
     public Response detalleUnidadDocumental(@PathParam("id") final String idUnidadDocumental) {
         log.info("DetalleUnidadDocumentalGatewayApi - [trafic] - detalle unidad documental");
-        Response response = ecmClient.DetalleUnidadDocumental(idUnidadDocumental);
+        Response response = ecmClient.detalleUnidadDocumental(idUnidadDocumental);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
@@ -104,6 +104,26 @@ public class UnidadDocumentalGatewayApi {
     public Response documentosPorArchivar() {
         log.info("DocumentosPorArchivarGatewayApi - [trafic] - Listar documentos por archivar");
         Response response = ecmClient.documentosPorArchivar();
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @PUT
+    @Path("/modificar-unidades-documentales")
+    @JWTTokenSecurity
+    public Response modificarUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO) {
+        log.info("ModificarUnidadesDocumentalesGatewayApi - [trafic] - Modificar Unidades Documentales");
+        Response response = ecmClient.modificarUnidadesDocumentales(unidadesDocumentalesDTO);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/subir-documentos-unidad-documental")
+    @JWTTokenSecurity
+    public Response subirDocumentosUnidadDocumental(@RequestBody UnidadDocumentalDTO unidadDocumentalDTO) {
+        log.info("SubirDocumentosUnidadDocumentalGatewayApi - [trafic] - Subir Documentos a Unidades Documentales");
+        Response response = ecmClient.subirDocumentosUnidadDocumental(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

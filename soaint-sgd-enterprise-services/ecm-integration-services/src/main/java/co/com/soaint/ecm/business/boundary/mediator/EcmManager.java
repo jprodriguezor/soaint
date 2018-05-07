@@ -1,7 +1,6 @@
 package co.com.soaint.ecm.business.boundary.mediator;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.ContentManager;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.InfrastructureException;
@@ -301,23 +300,12 @@ public class EcmManager {
     }
 
     /**
-     * Metodo para listar los documentos de una Unidad Documental
-     *
-     * @param idUnidadDocumental   Id de la unidad documental
-     */
-    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws Exception {
-        logger.info("### Listando los documentos de la UD con id {}", idUnidadDocumental);
-        logger.info("Ejecutando metodo MensajeRespuesta listaDocumentosDTOUnidadDocumental(UnidadDocumentalDTO dto)");
-        return contentManager.listaDocumentosDTOUnidadDocumental(idUnidadDocumental);
-    }
-
-    /**
      * Metodo para devolver la Unidad Documental
      *
      * @param idUnidadDocumental     Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
-    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws Exception {
         logger.info("### Mostrando la Unidad Documental con id {}", idUnidadDocumental);
         logger.info("Ejecutando metodo MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
         return contentManager.detallesUnidadDocumental(idUnidadDocumental);
@@ -327,24 +315,11 @@ public class EcmManager {
      * Metodo para devolver la Unidad Documental
      *
      * @param unidadDocumentalDTO     Obj Unidad Documental
-     * @param documentoDTOS           Lista de documentos a guardar
      * @return MensajeRespuesta       Unidad Documental
      */
-    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS) {
-        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS)");
-        return contentManager.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS);
-    }
-
-    /**
-     * Metodo para devolver la Unidad Documental
-     *
-     * @param unidadDocumentalDTO     Obj Unidad Documental
-     * @param documentoDTO            Documento a guardar
-     * @return MensajeRespuesta       Unidad Documental
-     */
-    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
-        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
-        return contentManager.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO);
+    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
+        logger.info("Ejecutando metodo MensajeRespuesta subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
+        return contentManager.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO);
     }
 
     /**
@@ -353,5 +328,16 @@ public class EcmManager {
     public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
         logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
         return contentManager.getDocumentosPorArchivar();
+    }
+
+    /**
+     * Metodo para Modificar Unidades Documentales
+     *
+     * @param unidadDocumentalDTOS    Lista de unidades a modificar
+     * @return MensajeRespuesta       Unidad Documental
+     */
+    public MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+        logger.info("processing rest request - modificar las unidades documentales en el ECM");
+        return contentManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
     }
 }
