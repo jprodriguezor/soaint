@@ -1115,8 +1115,8 @@ public class CorrespondenciaControl {
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
-                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
+                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
                     }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
