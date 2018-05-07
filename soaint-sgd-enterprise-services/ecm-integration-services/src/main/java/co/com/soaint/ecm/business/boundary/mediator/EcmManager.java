@@ -340,4 +340,15 @@ public class EcmManager {
         logger.info("processing rest request - modificar las unidades documentales en el ECM");
         return contentManager.modificarUnidadesDocumentales(unidadDocumentalDTOS);
     }
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param documentoDTOS Lista de documentos a archivar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) {
+        logger.info("processing rest request - Subir Documentos temporales ECM");
+        return contentManager.subirDocumentosTemporalesUD(documentoDTOS);
+    }
 }

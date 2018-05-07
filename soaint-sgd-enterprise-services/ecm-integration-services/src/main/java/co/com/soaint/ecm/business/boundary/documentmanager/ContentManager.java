@@ -427,4 +427,17 @@ public class ContentManager {
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.modificarUnidadesDocumentales(unidadDocumentalDTOS, conexion.getSession());
     }
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param documentoDTOS Lista de documentos a archivar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) {
+        logger.info("processing rest request - Subir Documentos temporales ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.subirDocumentosTemporalesUD(documentoDTOS, conexion.getSession());
+    }
 }

@@ -321,6 +321,27 @@ public class EcmIntegrationServicesClientRest {
         }
     }
 
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param documentoDTOS Lista de documentos a archivar
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/subirDocumentosTemporalesECM/")
+    public MensajeRespuesta subirDocumentosTemporalesUDECM(List<DocumentoDTO> documentoDTOS) {
+        logger.info("processing rest request - Subir Documentos temporales ECM");
+        try {
+            return fEcmManager.subirDocumentosTemporalesUD(documentoDTOS);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Subir Documentos temporales ECM ", e);
+            MensajeRespuesta rs = new MensajeRespuesta();
+            rs.setCodMensaje("1224");
+            rs.setMensaje(e.getMessage());
+            return rs;
+        }
+    }
+
 
     /*
      * UNIDADES DOCUMENTALES

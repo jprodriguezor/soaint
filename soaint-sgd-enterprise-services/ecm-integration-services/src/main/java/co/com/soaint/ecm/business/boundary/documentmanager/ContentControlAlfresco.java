@@ -2064,6 +2064,11 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     @Override
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) {
+        return null;
+    }
+
+    @Override
     public void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) {
         documentos.forEach(document -> {
             ContentStream contentStream = document.getContentStream();
