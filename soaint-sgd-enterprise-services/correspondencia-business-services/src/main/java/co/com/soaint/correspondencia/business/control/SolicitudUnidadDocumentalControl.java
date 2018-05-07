@@ -136,13 +136,16 @@ public class SolicitudUnidadDocumentalControl {
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
         try {
             log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo");
-            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
-                throw ExceptionBuilder.newBuilder()
-                .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
-                .buildBusinessException();
 
-            Timestamp fecIn = new Timestamp(fechaIni.getTime());
-            Timestamp fecFin = new Timestamp(fechaFin.getTime());
+            if (fechaIni != null && fechaIni != null) {
+                if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
+                            .buildBusinessException();
+            }
+
+            Timestamp fecIn = fechaIni == null ? null : new Timestamp(fechaIni.getTime());
+            Timestamp fecFin = fechaFin == null ? null : new Timestamp(fechaFin.getTime());
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", SolicitudUnidadDocumentalDTO.class)
                     .setParameter("FECHA_INI", fecIn)
