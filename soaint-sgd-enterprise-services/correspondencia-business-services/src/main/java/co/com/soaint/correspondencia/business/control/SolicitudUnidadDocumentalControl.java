@@ -148,12 +148,6 @@ public class SolicitudUnidadDocumentalControl {
                     .setParameter("COD_DEP", codDependencia)
                     .getResultList();
 
-            if (solicitudUnidadDocumentalDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_sede")
-                        .buildBusinessException();
-            }
-
             return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
 
         } catch (BusinessException e) {
