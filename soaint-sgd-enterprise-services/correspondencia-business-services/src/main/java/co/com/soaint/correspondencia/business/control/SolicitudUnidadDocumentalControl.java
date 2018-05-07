@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -153,6 +154,51 @@ public class SolicitudUnidadDocumentalControl {
         } catch (BusinessException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("BD query Error obteniendo las solicitudes.")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param fechaSolicitud
+     * @param ideSolicitante
+     * @param codSede
+     * @param codDependencia
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(Date fechaSolicitud, String ideSolicitante,String codSede, String codDependencia) throws BusinessException, SystemException {
+        try {
+            log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante");
+
+
+            Date fechaIni = null;
+            Date fechaFin = null;
+
+            if(fechaSolicitud != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(fechaSolicitud);
+                calendar.add(Calendar.DATE, 1);
+
+                fechaIni = new Date(fechaSolicitud.getTime());;
+                fechaFin = calendar.getTime();;
+            }
+
+            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitante", SolicitudUnidadDocumentalDTO.class)
+                    .setParameter("FECHA_INI", fechaIni, TemporalType.TIMESTAMP)
+                    .setParameter("FECHA_FIN", fechaFin, TemporalType.TIMESTAMP)
+                    .setParameter("ID_SOL", ideSolicitante)
+                    .setParameter("COD_SEDE", codSede)
+                    .setParameter("COD_DEP", codDependencia)
+                    .getResultList();
+
+            return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
+
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
