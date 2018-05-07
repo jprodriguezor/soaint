@@ -12,9 +12,14 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.*;
+import javax.xml.ws.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -220,10 +225,10 @@ public class CorrespondenciaWebApi {
      */
     @POST
     @Path("/correspondencia/crear-solicitud-um")
-    public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
+    public ResponseEntity<ResponseStatus> crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
-
-        return boundary.crearSolicitudUnidadDocumental(solicitudUnidadDocumental);
+        boundary.crearSolicitudUnidadDocumental(solicitudUnidadDocumental);
+        return new ResponseEntity<>( ResponseStatus.of(true), HttpStatus.CREATED );
     }
 
     /**

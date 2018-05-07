@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Date;
 public class SolicitudUnidadDocumentalDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String idSolicitud;
+    private BigInteger idSolicitud;
     private String id;
     private String idConstante;
     private Date fechaHora;
