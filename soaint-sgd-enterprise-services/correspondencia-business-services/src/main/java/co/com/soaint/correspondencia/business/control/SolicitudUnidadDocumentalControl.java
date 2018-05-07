@@ -16,11 +16,14 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static com.oracle.jrockit.jfr.ContentType.Timestamp;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,9 +135,12 @@ public class SolicitudUnidadDocumentalControl {
                 .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
                 .buildBusinessException();
 
+            Timestamp fecIn = new Timestamp(fechaIni.getTime());
+            Timestamp fecFin = new Timestamp(fechaFin.getTime());
+
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", SolicitudUnidadDocumentalDTO.class)
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
+                    .setParameter("FECHA_INI", fecIn, TemporalType.TIMESTAMP)
+                    .setParameter("FECHA_FIN", fecFin, TemporalType.TIMESTAMP)
                     .setParameter("COD_SEDE", codSede)
                     .setParameter("COD_DEP", codDependencia)
                     .getResultList();
