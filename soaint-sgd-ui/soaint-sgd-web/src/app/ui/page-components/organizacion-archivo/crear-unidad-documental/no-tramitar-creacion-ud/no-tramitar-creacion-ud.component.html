@@ -52,7 +52,7 @@
                   <label >Motivo del tramite</label>
                 </div>
                 <div class="ui-g-9 ui-sm-9">
-                  <p-dropdown formControlName="motivo" ></p-dropdown>
+                  <p-dropdown formControlName="motivo" [options]="motivo$|async|dropdownItemSingle" ></p-dropdown>
                 </div>
               </div>
             </div>

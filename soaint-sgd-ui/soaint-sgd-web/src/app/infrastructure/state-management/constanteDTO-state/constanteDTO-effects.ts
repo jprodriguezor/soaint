@@ -198,4 +198,25 @@ export class Effects {
         .catch(error => Observable.of(new actions.LoadFailAction({error})))
       );
 
+  @Effect()
+  loadMotivoNoCreacionUD: Observable<Action> = this.actions$
+    .ofType(actions.ActionTypes.LOAD_MOTIVO_NO_CREACION_UD)
+    .map<Action, void>(toPayload)
+    .distinctUntilChanged()
+    .switchMap(() => Observable.combineLatest(
+      this._sandbox.loadData({key:'motivoNoCreacionUd'}),
+      motivo => {
+        return {
+          motivoNoCreacionUD : {key:"motivoNoCreacionUD",data:motivo},
+        }
+      })
+      .take(1)
+      .mergeMap((data:any) => {
+        return [
+          new actions.LoadSuccessAction(data.motivoNoCreacionUD),
+        ];
+      })
+      .catch(error => Observable.of(new actions.LoadFailAction({error})))
+    );
+
 }
