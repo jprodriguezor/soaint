@@ -2,7 +2,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SolicitudCreacionUDDto} from "../../../../../domain/solicitudCreacionUDDto";
-import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unidad-documental.api";
 import {ConfirmationService} from "primeng/primeng";
 import {isNullOrUndefined} from "util";
 import {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -10,6 +9,10 @@ import {Store} from "@ngrx/store";
 import {Subscription} from "rxjs/Subscription";
 import {getSelectedDependencyGroupFuncionario} from "../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {DependenciaDTO} from "../../../../../domain/dependenciaDTO";
+import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
+import {ConstanteDTO} from "../../../../../domain/constanteDTO";
+import {Observable} from "rxjs/Observable";
+import  {Sandbox as ConstanteSandbox} from "../../../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox";
 
 @Component({
   selector: 'app-no-tramitar-creacion-ud',
@@ -22,6 +25,8 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
   dependenciaSelected:DependenciaDTO;
 
+  motivo$:Observable<ConstanteDTO[]>;
+
   unsubscriber:Subscription;
 
   @Input() solicitud:SolicitudCreacionUDDto;
@@ -30,9 +35,10 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
 
   constructor( private fb:FormBuilder
-              ,private _udService:UnidadDocumentalApiService
+              ,private _solicitudService:SolicitudCreacionUdService
               ,private _confirmationService:ConfirmationService
               ,private  _store:Store<RootState>
+              ,private  _sandbox: ConstanteSandbox
                ) {
 
     this.form = fb.group({
@@ -66,37 +72,22 @@ ngOnChanges(){
      icon: 'fa fa-question-circle',
      accept: () => {
 
-       const  data = {
-         //ubicacionTopografica:this.formAsignarUT.value,
-         codigoSede:this.dependenciaSelected.codSede,
-         codigoDependencia:this.dependenciaSelected.codigo,
-         codigoSerie:this.solicitud.codigoSerie,
-         codigoSubSerie:this.solicitud.codigoSubSerie,
-         id:this.solicitud.id,
-         nombreUnidadDocumental:this.solicitud.nombreUnidadDocumental,
-         descriptor1:   this.solicitud.descriptor1,
-         descriptor2:   this.solicitud.descriptor2,
-         motivo: !isNullOrUndefined(this.form.get('motivo')) ? this.form.get('motivo').value: "",
-         observaciones: !isNullOrUndefined(this.form.get('observaciones')) ? this.form.get('observaciones').value: "",
-       };
+       if(!isNullOrUndefined(this.form.get('motivo')))
+         this.solicitud.motivo =  this.form.get('motivo').value;
 
+       this.solicitud.accion = "No Tramitar UD";
 
-       this._udService.noTramitarUnidadesDocumentales(data)
+        this._solicitudService.actualizarSolicitudes(this.solicitud)
          .subscribe(() => {
-
-           this.onNoTramitarUnidadDocumental.emit(data)
-
+           this.onNoTramitarUnidadDocumental.emit(this.solicitud);
          }, error => {});
-
      },
-     reject: () => {
-
-     }
+     reject: () => {}
    });
-
  }
-
   ngOnInit(): void {
+
+    this._sandbox.loadMotivoNoCreacionUdDispatch();
 
     this.unsubscriber = this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
   }

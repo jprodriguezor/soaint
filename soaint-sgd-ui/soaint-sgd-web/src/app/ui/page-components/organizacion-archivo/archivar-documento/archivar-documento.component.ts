@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ArchivarDocumentoModel} from "./models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "./models/solicitud-creacio-ud.model";
 import {SolicitudCreacionUdService} from "../../../../infrastructure/api/solicitud-creacion-ud.service";
+import {UnidadDocumentalApiService} from "../../../../infrastructure/api/unidad-documental.api";
 
 @Component({
   selector: 'app-archivar-documento',
@@ -18,14 +19,19 @@ export class ArchivarDocumentoComponent implements OnInit {
 
    enableButtonNext:boolean = true;
 
+   showFinalizarButton:boolean;
 
-
-  constructor(private _solicitudService:SolicitudCreacionUdService) {
+  constructor(private _solicitudService:SolicitudCreacionUdService,private _udService:UnidadDocumentalApiService) {
 
     this.solicitudUDModel = new SolicitudCreacioUdModel(this._solicitudService);
   }
 
   ngOnInit() {
+
+      this._udService.listarDocumentosPorArchivar().subscribe( response => {
+
+        this.archivarDocumentoModel.Documentos = response.documentoDTOList
+      })
 
     }
 
@@ -55,6 +61,8 @@ export class ArchivarDocumentoComponent implements OnInit {
   toggleEnableButtonNext(section:string){
 
     this.enableButtonNext = section == "bUnidadDocumental";
+
+    this.showFinalizarButton = !this.enableButtonNext;
   }
 
   buttonSaveIsEnabled():boolean

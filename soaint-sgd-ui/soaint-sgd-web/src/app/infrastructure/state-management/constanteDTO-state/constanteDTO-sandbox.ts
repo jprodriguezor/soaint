@@ -78,6 +78,9 @@ export class Sandbox extends CacheResponse {
       case 'claseEnvio':
         endpoint = environment.claseEnvio_endpoint;
         break;
+      case 'motivoNoCreacionUd':
+        endpoint = environment.motivoNoCreacionUd_endpoint;
+        break;
     }
 
     if (endpoint !== null) {
@@ -111,6 +114,11 @@ export class Sandbox extends CacheResponse {
   loaddatosEnvioDispatch(){
 
     this._store.dispatch(new actions.LoadDatosEnvioAction());
+  }
+
+  loadMotivoNoCreacionUdDispatch(){
+
+    this._store.dispatch(new actions.LoadMotivoNocreacionUDAction());
   }
 
 }

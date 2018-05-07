@@ -6,6 +6,7 @@
               </div>
               <div [formGroup]="form">
                 <div class="ui-g-12">
+                  <!-- Campo Serie -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -23,6 +24,9 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Fin campo Serie -->
+
+                  <!-- Campo Subserie -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -39,6 +43,9 @@
                       </div>
                     </div>
                   </div>
+                  <!--- Fin Campo Subserie -->
+
+                  <!-- Campo Identificador de unidad documental -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -54,6 +61,9 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Fin Campo Identificador de unidad documental -->
+
+                  <!-- Campo Nombre de unidad documental -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -69,8 +79,11 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Fin Campo Nombre de unidad documental -->
+
                 </div>
                 <div class="ui-g-12">
+                  <!-- Campo Descriptor 1 -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -86,6 +99,9 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Fin Campo  Descriptor 1 -->
+
+                  <!-- Campo Descriptor 2 -->
                   <div class="ui-sm-12 ui-g-3 ui-lg-3">
                     <div class="ui-g form-group">
                       <div class="ui-g-12">
@@ -101,6 +117,7 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Fin Campo Descriptor 2 -->
 
                   <ng-template [ngIf]="operation=='bUnidadDocumental'">
                     <div class="ui-g-12 ui-g-6 ui-lg-6" [style.padding-top]="'40px'">
@@ -113,6 +130,7 @@
                     </div>
                   </ng-template>
                 </div>
+
                 <ng-template [ngIf] = "operation=='solicitarUnidadDocumental'">
                   <div class="ui-g-12">
                     <div class="ui-sm-12 ui-g-10 ui-lg-10">
@@ -146,8 +164,10 @@
             <div class="ui-g ui-fluid">
               <div class="ui-g-12">
                 <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                             [paginator]="true" [rows]="10" [responsive]="true" [value]="unidadesDocumentales$|async">
-                  <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
+                             [paginator]="true" [rows]="10" [responsive]="true" [value]="unidadesDocumentales$|async"
+                             (onRowSelect)="selectUnidadDocumental($event)"
+                >
+                  <p-column selectionMode="single" [style]="{'width':'50px'}" *ngIf="operation=='bUnidadDocumental'"></p-column>
                   <p-column  header="Item" [style]="{'width':'50px'}">
                     <ng-template pTemplate="body" let-index="rowIndex">
                       {{index + 1}}
