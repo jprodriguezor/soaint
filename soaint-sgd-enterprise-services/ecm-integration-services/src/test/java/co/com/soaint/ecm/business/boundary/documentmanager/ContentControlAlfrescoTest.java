@@ -227,7 +227,9 @@ public class ContentControlAlfrescoTest {
                     detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (BusinessException e) {
-            e.printStackTrace();
+            logger.error("Error BusinessException: {}", e);
+        } catch (Exception e) {
+            logger.error("Error Exception: {}", e);
         }
     }
 
@@ -269,7 +271,7 @@ public class ContentControlAlfrescoTest {
             //Obtener la unidad documental
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
-                    getUDById(unidadDocumentalDTO.getId(), conexion.getSession());
+                    getUDById(unidadDocumentalDTO.getId(),true, conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
@@ -277,6 +279,8 @@ public class ContentControlAlfrescoTest {
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
         } catch (BusinessException e) {
+            logger.error("Error: {}", e);
+        } catch (Exception e) {
             logger.error("Error: {}", e);
         }
     }
