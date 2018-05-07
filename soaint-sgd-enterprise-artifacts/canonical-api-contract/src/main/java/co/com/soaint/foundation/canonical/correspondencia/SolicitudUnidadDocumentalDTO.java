@@ -1,14 +1,14 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -29,19 +29,21 @@ import java.util.Date;
 public class SolicitudUnidadDocumentalDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String idSolicitud;
+    private BigInteger idSolicitud;
     private String id;
     private String idConstante;
-    @JsonFormat
-    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaHora;
+    @NotNull(message = "{error.correspondencia.nombreunidad.notnull}")
     private String nombreUnidadDocumental;
     private String descriptor1;
     private String descriptor2;
+    @NotNull(message = "{error.correspondencia.nro.notnull}")
     private String nro;
     private String codigoSerie;
     private String codigoSubSerie;
+    @NotNull(message = "{error.correspondencia.codSede.notnull}")
     private String codigoSede;
+    @NotNull(message = "{error.correspondencia.codDependencia.notnull}")
     private String codigoDependencia;
     private String idSolicitante;
     private String estado;

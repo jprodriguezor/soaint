@@ -21,7 +21,11 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(name = "TvsOrgaAdminXFunciPk.findCodOrgaAdmiByIdeFunci", query = "SELECT  t.tvsOrgaAdminXFunciPkPk.codOrgaAdmi " +
                 "FROM TvsOrgaAdminXFunciPk t " +
-                "WHERE t.tvsOrgaAdminXFunciPkPk.funcionario.ideFunci = :IDE_FUNCI")})
+                "WHERE t.tvsOrgaAdminXFunciPkPk.funcionario.ideFunci = :IDE_FUNCI"),
+        @NamedQuery(name = "TvsOrgaAdminXFunciPk.findFuncByCodOrgaAdmi", query = "SELECT  t.tvsOrgaAdminXFunciPkPk.funcionario.nomFuncionario " +
+                "FROM TvsOrgaAdminXFunciPk t " +
+                "WHERE t.tvsOrgaAdminXFunciPkPk.codOrgaAdmi = :COD_ORG")
+})
 public class TvsOrgaAdminXFunciPk implements Serializable {
 
     private static final long serialVersionUID = 1L;

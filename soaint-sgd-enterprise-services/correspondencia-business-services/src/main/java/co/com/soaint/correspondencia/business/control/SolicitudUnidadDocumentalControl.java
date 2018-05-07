@@ -8,18 +8,19 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static com.oracle.jrockit.jfr.ContentType.Timestamp;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +43,6 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Boolean crearSolicitudUnidadDocumental(SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
@@ -50,6 +50,7 @@ public class SolicitudUnidadDocumentalControl {
                 this.insertarSolicitudUnidadDocumental(s);
             }
             em.flush();
+
 
             return true;
         } catch (Exception ex) {
@@ -67,17 +68,16 @@ public class SolicitudUnidadDocumentalControl {
       * @throws SystemException
       * @throws BusinessException
       */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void insertarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
+            solicitudUnidadDocumental.setFechaHora(new Date());
             TvsSolicitudUnidadDocumental unidadDocumental = this.tvsSolicitudUnidadDocumentalTransform(solicitudUnidadDocumental);
             em.persist(unidadDocumental);
-
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("Error insertando Solicitud de Unidad Documental.")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -92,7 +92,6 @@ public class SolicitudUnidadDocumentalControl {
     public TvsSolicitudUnidadDocumental tvsSolicitudUnidadDocumentalTransform(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws SystemException, BusinessException{
         try {
             return TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(solicitudUnidadDocumental.getIdSolicitud())
                     .id(solicitudUnidadDocumental.getId())
                     .nombreUD(solicitudUnidadDocumental.getNombreUnidadDocumental())
                     .accion(solicitudUnidadDocumental.getAccion())
@@ -112,7 +111,7 @@ public class SolicitudUnidadDocumentalControl {
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("Error convirtiendo Solicitud de Unidad Documental.")
                     .withRootException(ex)
                     .buildSystemException();
         }
@@ -128,26 +127,26 @@ public class SolicitudUnidadDocumentalControl {
      * @throws BusinessException
      * @throws SystemException
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
         try {
-            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
-                throw ExceptionBuilder.newBuilder()
-                .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
-                .buildBusinessException();
+            log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo");
+
+            if (fechaIni != null && fechaIni != null) {
+                if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
+                            .buildBusinessException();
+            }
+
+            Timestamp fecIn = fechaIni == null ? null : new Timestamp(fechaIni.getTime());
+            Timestamp fecFin = fechaFin == null ? null : new Timestamp(fechaFin.getTime());
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", SolicitudUnidadDocumentalDTO.class)
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
+                    .setParameter("FECHA_INI", fecIn)
+                    .setParameter("FECHA_FIN", fecFin)
                     .setParameter("COD_SEDE", codSede)
                     .setParameter("COD_DEP", codDependencia)
                     .getResultList();
-
-            if (solicitudUnidadDocumentalDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_sede")
-                        .buildBusinessException();
-            }
 
             return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
 
@@ -157,7 +156,7 @@ public class SolicitudUnidadDocumentalControl {
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
+                    .withMessage("BD query Error obteniendo las solicitudes.")
                     .withRootException(ex)
                     .buildSystemException();
         }

@@ -14,6 +14,8 @@ import {SerieService} from "../../../../../infrastructure/api/serie.service";
 import {SerieDTO} from "../../../../../domain/serieDTO";
 import {Subscription} from "rxjs/Subscription";
 import {SupertypeSeries} from "../../shared/supertype-series";
+import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'app-lista-solicitud-crear-ud',
@@ -46,7 +48,7 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   currentAction?:string;
 
-  constructor(private fb:FormBuilder,private _store:Store<RootState>) {
+  constructor(private fb:FormBuilder,private _store:Store<RootState>,private solicitudService: SolicitudCreacionUdService) {
 
     this.formInit();
 
@@ -76,38 +78,21 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   filtrarSolicitud(){
 
-    const controllers = this.form.controls;
+    let request:any = {
+      codSede: this.dependenciaSelected.codSede,
+      codDependencia: this.dependenciaSelected.codigo,
+    };
 
-      const map =[
-      {origin:'fechaInicio',source:'fechaInicio'},
-      {origin:'fechaFin',source:'fechaFin'},
-      ];
+    if(!isNullOrUndefined(this.form.get("fechaInicio").value))
+      request.fechaIni = this.form.get("fechaInicio").value;
 
-      console.log(this.task.variables);
+    if(!isNullOrUndefined(this.form.get("fechaFin").value))
+      request.fechaFin = this.form.get("fechaFin").value;
 
-    this.solicitudes$ = Observable.of(
 
-     JSON.parse(this.task.variables.listaSolicitudes).filter(solicitud => {
 
-         for(let field of map ){
-            if( controllers[field.origin].value !== null  ){
-
-             let Origin = controllers[field.origin].value,
-             Source = solicitud[field.source];
-
-               switch (field.origin){
-                 case 'fechaInicio': if(Source >= (Origin as Date).getTime())
-                                       return false;
-                  break;
-                 case 'fechaFin' : if(Source <= (Origin as Date).getTime())
-                                     return false;
-                  break;
-                }
-              }
-           }
-       return true;
-      }
-      ));
+    this.solicitudes$ = this.solicitudService.listarSolicitudes(request);
+                           // .map( r => r.response.unidadesDocumental);
   }
 
   selectRow(evt){
