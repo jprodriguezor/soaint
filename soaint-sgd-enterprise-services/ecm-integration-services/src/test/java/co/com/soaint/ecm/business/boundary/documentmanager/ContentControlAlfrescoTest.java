@@ -349,13 +349,23 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testobtenerVersionesDocumentoSuccess() {
+    public void testSubirVersionarDocumentoGeneradoSuccess() {
+        //Probar obtener Versiones
+        //Adicionar documento para version
+        assertEquals("0000", contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE").getCodMensaje());
+
+        //Eliminar la version del documento
+        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+    }
+
+    @Test
+    public void testObtenerVersionesDocumentoSuccess() {
         //Probar obtener Versiones
         //Adicionar documento para version
         mensajeRespuesta1 = contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE");
 
         //Obtener Versiones de documento
-        assertEquals("0000",contentControlAlfresco.obtenerVersionesDocumento(conexion.getSession(), documentoDTO.getIdDocumento()).getCodMensaje());
+        assertEquals("0000", contentControlAlfresco.obtenerVersionesDocumento(conexion.getSession(), documentoDTO.getIdDocumento()).getCodMensaje());
         //Eliminar la version del documento
         contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
     }
@@ -374,10 +384,6 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void subirDocumentoUnidadDocumentalECM() {
-    }
-
-    @Test
-    public void subirVersionarDocumentoGenerado() {
     }
 
     @Test
