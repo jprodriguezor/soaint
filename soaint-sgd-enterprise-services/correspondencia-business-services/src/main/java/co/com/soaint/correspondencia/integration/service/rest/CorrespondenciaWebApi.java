@@ -249,13 +249,13 @@ public class CorrespondenciaWebApi {
             Date fechaInicial = dateFormat.parse(fechaI);
             Date fechaFinal = dateFormat.parse(fechaF);
 
-            return boundary.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaInicial,fechaFinal,codigoSede,codigoDependencia);
+//            return boundary.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaInicial,fechaFinal,codigoSede,codigoDependencia);
 
-//            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-//            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
-//            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
-//
-//            return solicitudesUnidadDocumentalDTO;
+            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
+            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
+            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
+
+            return solicitudesUnidadDocumentalDTO;
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
@@ -276,7 +276,7 @@ public class CorrespondenciaWebApi {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
 
-//        return SolicitudUnidadDocumentalDTO.newInstance().build();
-        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+        return SolicitudUnidadDocumentalDTO.newInstance().build();
+//        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 }
