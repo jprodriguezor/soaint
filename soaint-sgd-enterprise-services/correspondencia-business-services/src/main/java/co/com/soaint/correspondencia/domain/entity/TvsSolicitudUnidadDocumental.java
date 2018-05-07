@@ -28,30 +28,32 @@ import java.util.List;
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
     @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
-    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT t FROM TvsSolicitudUnidadDocumental t " +
-            "WHERE t.codDependencia = :COD_DEP AND t.codDependencia = :COD_SEDE AND t.fecHora BETWEEN :FECHA_INI AND :FECHA_FIN"),
+    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
+            "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            "FROM TvsSolicitudUnidadDocumental t " +
+            "WHERE t.codDependencia = :COD_DEP AND t.codSede = :COD_SEDE AND (:FECHA_INI IS NULL OR (t.fecHora >= :FECHA_INI AND t.fecHora <= :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+
             "t.idSolicitante = :ID_SOL, t.estado = :EST , t.accion = :ACC , t.observaciones = :OBS " +
             "WHERE t.ideSolicitud = :IDE_SOL")
         })
-@TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
+@javax.persistence.TableGenerator(name = "COR_SOLICITUD_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_SOLICITUD_SEQ", allocationSize = 1)
 public class TvsSolicitudUnidadDocumental implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_CORRESPONDENCIA_GENERATOR")
-    @Column(name = "IDE_SOLICITUD")
-    private String ideSolicitud;
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "COR_SOLICITUD_GENERATOR")
     @Column(name = "ID")
+    private BigInteger ideSolicitud;
+    @Basic(optional = false)
+    @Column(name = "ID_UM")
     private String id;
     @Column(name = "ID_CONSTANTE")
     private String idConstante;
-    @Basic(optional = false)
     @Column(name = "FEC_HORA")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecHora;

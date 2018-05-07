@@ -243,37 +243,22 @@ public interface ContentControl extends Serializable {
     MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws Exception;
 
     /**
-     * Metodo para listar los documentos de una Unidad Documental
-     *
-     * @param idUnidadDocumental La unidad documental
-     * @param session            Objeto conexion de Alfresco
-     */
-    MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental, Session session) throws Exception;
-
-    /**
      * Metodo para devolver la Unidad Documental
      *
      * @param idUnidadDocumental Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
-    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws BusinessException;
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws Exception;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
      *
      * @param idUnidadDocumental Id de la Unidad Documental
+     * @param fullDocuments  true para devolver todos los documentos, false de otro modo
      * @param session            Objeto conexion de Alfresco
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, Session session);
-
-    /**
-     * Metodo que devuelve una Unidad Documental con sus Documentos
-     *
-     * @param idUnidadDocumental Id Unidad Documental
-     * @return UnidadDocumentalDTO      Unidad Documental
-     */
-    UnidadDocumentalDTO listarDocsDadoIdUD(String idUnidadDocumental, Session session) throws Exception;
+    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, boolean fullDocuments, Session session) throws Exception;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -304,22 +289,10 @@ public interface ContentControl extends Serializable {
     /**
      * Metodo para devolver la Unidad Documental
      *
-     * @param unidadDocumentalDTO Obj Unidad Documental
-     * @param documentoDTOS       Lista de documentos a guardar
-     * @param session             Obj conexion de alfresco
+     * @param unidadDocumentalDTO     Obj Unidad Documental
      * @return MensajeRespuesta       Unidad Documental
      */
-    MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS, Session session);
-
-    /**
-     * Metodo para devolver la Unidad Documental
-     *
-     * @param unidadDocumentalDTO Obj Unidad Documental
-     * @param documentoDTO        Documento a guardar
-     * @param session             Obj conexion de alfresco
-     * @return MensajeRespuesta       Unidad Documental
-     */
-    MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO, Session session);
+    MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
     void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
 

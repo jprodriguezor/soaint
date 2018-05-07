@@ -27,6 +27,7 @@
         <class>co.com.soaint.correspondencia.domain.entity.TvsDserial</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsPlantilla</class>
         <class>co.com.soaint.correspondencia.domain.entity.TvsPlantillaMetadato</class>
+        <class>co.com.soaint.correspondencia.domain.entity.TvsSolicitudUnidadDocumental</class>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>
