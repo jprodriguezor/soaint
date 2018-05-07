@@ -262,7 +262,7 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testFindUDByIdSuccess() {
+    public void testFindUDByIdSuccess() throws Exception {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -279,8 +279,6 @@ public class ContentControlAlfrescoTest {
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
         } catch (BusinessException e) {
-            logger.error("Error: {}", e);
-        } catch (Exception e) {
             logger.error("Error: {}", e);
         }
     }
