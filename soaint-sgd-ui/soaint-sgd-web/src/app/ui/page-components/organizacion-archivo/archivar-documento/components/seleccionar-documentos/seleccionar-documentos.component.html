@@ -1,3 +1,4 @@
+<!-- Seccion de Adjuntar Dccumentos para archivar -->
 <p-panel header="Adjuntar documentos para archivar" [style]="{border: 'none'}">
   <div class="ui-g ui-fluid">
     <div class="ui-g-12">
@@ -25,35 +26,44 @@
     </div>
   </div>
 </p-panel>
+<!-- Fin de Seccion -->
+
 <div  class="ui-g ui-fluid">
   <div class="ui-g-12 padding-top">
-    <p-panel header="Documentos para archivar">
-      <label class="ui-float-label" style="margin: 10px 5px;" >
-        No. Solicitud
-        <input type="text" pInputText placeholder="Probando" size="30" style="width: auto">
-      </label>
-      <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                   [paginator]="true" [rows]="10" [responsive]="true" [value]="[]">
-        <p-column >
-          <ng-template  pTemplate="body">
-            <p-checkbox></p-checkbox>
-          </ng-template>
-        </p-column>
-        <p-column header="Fecha y hora de archivo" [sortable]="true"></p-column>
-        <p-column header="Identificador de documento" [sortable]="true"></p-column>
-        <p-column header="Nombre/asunto documento" [sortable]="true"></p-column>
-        <p-column header="Ver" >
-          <ng-template pTemplate="body">
-            <a href="">Ver</a>
-          </ng-template>
-        </p-column>
-        <p-column header="Tipologia Documental" >
-          <ng-template pTemplate="body">
-            <p-dropdown [options]="[]" placeholder="Seleccione" ></p-dropdown>
-          </ng-template>
-        </p-column>
+    <p-panel header="Documentos para archivar" [style]="{border:'none'}">
 
-      </p-dataTable>
+      <div class="documents-by-dependency" *ngFor="let docs of documentos$|async">
+        <label class="ui-float-label" style="margin: 10px 5px;" >
+          No. Solicitud
+          <input type="text" pInputText placeholder="Probando" size="30" style="width: auto">
+        </label>
+        <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                     [paginator]="true" [rows]="10" [responsive]="true" [value]="docs"
+                     (onRowSelect)="toggleDocuments($event,true)" (onRowUnselect)="toggleDocuments($event,false)"
+        >
+          <p-column [style]="{'width':'50px'}" selectionMode="multiple" >
+
+          </p-column>
+          <p-column header="Fecha y hora de archivo" [sortable]="true" >
+            <ng-template let-col let-row="rowData" pTemplate="body">
+              {{row.fechaCreacion | date:'dd/MM/yyyy HH:mm'}}
+            </ng-template>
+          </p-column>
+          <p-column header="Identificador de documento" [sortable]="true" field="nroRadicado"></p-column>
+          <p-column header="Nombre/asunto documento" [sortable]="true" field="nombreDocumento"></p-column>
+          <p-column header="Ver" >
+            <ng-template pTemplate="body" let-col let-row="rowData" pTemplate="body">
+              <a href="" (click)="ShowDocument(row.idDocumento)" >Ver</a>
+            </ng-template>
+          </p-column>
+          <p-column header="Tipologia Documental" >
+            <ng-template pTemplate="body">
+              <p-dropdown [options]="[]" placeholder="Seleccione" ></p-dropdown>
+            </ng-template>
+          </p-column>
+
+        </p-dataTable>
+      </div>
     </p-panel>
     <div class="text-right">
       <p-confirmDialog #cd>
@@ -68,6 +78,34 @@
     </div>
   </div>
   <div class="ui-g-12 padding-top">
-    <app-lista-documentos-archivados></app-lista-documentos-archivados>
+    <app-lista-documentos-archivados [listaDocumentos$]="documentosArchivados$" ></app-lista-documentos-archivados>
   </div>
 </div>
+
+<p-dialog [visible]="documentPreview" modal="modal" [responsive]="true" positionTop="20"
+          (onHide)="hidePdf()" [width]="1024">
+  <p-header>
+    Visor de PDF
+  </p-header>
+
+  <div class="ui-g ui-fluid">
+    <div class="ui-sm-12 ui-g-12 ui-lg-12">
+      <app-documentos-ecm-list [(idDocumentECM)]="idEcm" [versionar] = "false" ></app-documentos-ecm-list>
+      <!--<div style="overflow-y: scroll;max-height:500px">-->
+      <!--<pdf-viewer [src]="documentPreviewUrl" [show-all]="true" [zoom]="1.5"-->
+      <!--(after-load-complete)="afterLoadComplete($event)"-->
+      <!--&gt;</pdf-viewer>-->
+      <!--</div>-->
+    </div>
+  </div>
+
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button pButton type="button" label="Cerrar" style="width: auto; margin-bottom: 10px;margin-left: 12px"
+              (click)="hidePdf()"></button>
+      <!--<button pButton type="button" label="Descargar" style="width: auto; margin-bottom: 10px;margin-left: 12px"-->
+      <!--[disabled]="!documentLoaded"-->
+      <!--(click)="downloadPdf()"></button>-->
+    </div>
+  </p-footer>
+</p-dialog>

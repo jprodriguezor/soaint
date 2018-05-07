@@ -36,7 +36,7 @@ export interface State {
   soporteAnexo: ConstanteDTOStateInterface;
   modalidadCorreo: ConstanteDTOStateInterface;
   claseEnvio: ConstanteDTOStateInterface;
-
+  motivoNoCreacionUD : ConstanteDTOStateInterface;
 }
 
 const initialState: State = {
@@ -60,6 +60,7 @@ const initialState: State = {
   soporteAnexo: new ConstanteDTOStateInstance(),
   modalidadCorreo: new ConstanteDTOStateInstance(),
   claseEnvio: new ConstanteDTOStateInstance(),
+  motivoNoCreacionUD: new ConstanteDTOStateInstance(),
 };
 
 /**
