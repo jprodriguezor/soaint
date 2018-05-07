@@ -23,17 +23,22 @@ PendingRequestInterceptor extends HttpInterceptor {
     this.loadingService = this.injector.get(LoadingService)
   }
 
+  private extractFromRequest(request):any{
+
+    return {
+      url:request.url,
+      method:request.method,
+      _body:request._body
+    }
+  }
+
   private shouldBypass(request: any): boolean {
 
-    //console.log(this.requestQueuee.);
+    const rq = this.extractFromRequest(request);
 
-    // return this.filteredUrlPatterns.some(e => {
-    //   return e.test(url);
-    // });
+     return this.requestQueuee.some(e => {
+        return ObjectHelper.similar(rq,e)
 
-    return this.requestQueuee.some(e => {
-
-      return ObjectHelper.similar(request,e);
     });
   }
 
@@ -41,59 +46,39 @@ PendingRequestInterceptor extends HttpInterceptor {
 
       let r = (typeof url === 'object') ? url : Object.assign({url:url},options);
 
-    // const shouldBypass = this.shouldBypass(url.url || url);
-
-     const shouldBypass = this.shouldBypass(r);
+      const shouldBypass = this.shouldBypass(r);
 
     if (!shouldBypass) {
 
-     this.requestQueuee.push(r);
+      this.requestQueuee.push(this.extractFromRequest(r));
 
      if(this.requestQueuee.length == 1){
        this.loadingService.presentLoading();
      }
-
-      /*this.pendingRequests++;
-      if (1 === this.pendingRequests) {
-        this.loadingService.presentLoading();
-      }*/
     }
     return options;
   }
 
   responseIntercept(url, observable: Observable<Response>): Observable<Response> {
 
-    let r = typeof  url == 'object' ? url :{url:url};
+    let r = typeof  url == 'object' ? this.extractFromRequest(url) :{url:url};
 
     return observable.map((response: Response) => {
 
+      const index = this.requestQueuee.findIndex( request => ObjectHelper.similar(r,request));
 
-      const index = this.requestQueuee.indexOf(r);
+      this.requestQueuee.splice(index,1);
 
-     this.requestQueuee.splice(index,1);
-
-         if(this.requestQueuee.length == 0){
+       if(this.requestQueuee.length == 0){
         this.loadingService.dismissLoading();
       }
-
-      /*if (!shouldBypass) {
-        this.pendingRequests--;
-        if (0 === this.pendingRequests) {
-          this.loadingService.dismissLoading();
-        }
-      }*/
       return response;
     }).catch(error => {
 
         this.requestQueuee = [];
 
-      this.loadingService.dismissLoading();
+        this.loadingService.dismissLoading();
 
-        // const shouldBypass = this.shouldBypass(url.url || url);
-        // if (!shouldBypass) {
-        //   this.pendingRequests = 0;
-        //   this.loadingService.dismissLoading();
-        // }
         return Observable.throw(error);
       }
     )

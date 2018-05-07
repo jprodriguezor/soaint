@@ -18,5 +18,6 @@ export interface AgentDTO {
   indOriginal?: string;
   numRedirecciones?: number;
   numDevoluciones?: number;
-  datosContactoList?: ContactoDTO[]
+  datosContactoList?: ContactoDTO[],
+  ideFunci?:number
 }

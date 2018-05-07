@@ -271,7 +271,7 @@ public class RecordServices implements IRecordServices {
     public Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws Exception {
         final Conexion conexion = contentControl.obtenerConexion();
         final Optional<UnidadDocumentalDTO> optionalUnidadDocumentalDTO = contentControl.
-                getUDById(idUnidadDocumental, conexion.getSession());
+                getUDById(idUnidadDocumental, true, conexion.getSession());
         if (optionalUnidadDocumentalDTO.isPresent()) {
             final UnidadDocumentalDTO unidadDocumentalDTO = optionalUnidadDocumentalDTO.get();
             final Optional<Folder> optionalFolder = obtenerRecordCategory(unidadDocumentalDTO, conexion.getSession());
@@ -338,8 +338,6 @@ public class RecordServices implements IRecordServices {
 
     private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws Exception {
         final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
-        unidadDocumental.setCerrada(false);
-        unidadDocumental.setInactivo(false);
         if (isClosed) {
             final Calendar currentDay = GregorianCalendar.getInstance();
             final String idUnidadDocumental = unidadDocumental.getId();
@@ -352,42 +350,51 @@ public class RecordServices implements IRecordServices {
 
             closeOrOpenUnidadDocumentalRecord(unidadDocumental);
             unidadDocumental.setId(idUnidadDocumental);
+        } else {
+            unidadDocumental.setCerrada(true);
+            unidadDocumental.setInactivo(true);
         }
         actualizarUnidadDocumental(unidadDocumental);
     }
 
     private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws Exception {
         final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
-        unidadDocumental.setCerrada(true);
-        unidadDocumental.setInactivo(true);
         if (!isClosed) {
             final Conexion conexion = contentControl.obtenerConexion();
-            unidadDocumental = contentControl.
-                    listarDocsDadoIdUD(unidadDocumental.getId(), conexion.getSession());
+            final Optional<UnidadDocumentalDTO> optionalDto = contentControl.
+                    getUDById(unidadDocumental.getId(), false, conexion.getSession());
 
-            unidadDocumental.setCerrada(true);
-            unidadDocumental.setInactivo(true);
+            if (optionalDto.isPresent()) {
 
-            String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
-                    udRecordFolder.getId() : createAndRetrieveId(unidadDocumental);
+                unidadDocumental = optionalDto.get();
 
-            for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
-                //Se declara el record
-                String s = declararRecord(documentoDTO.getIdDocumento());
-                log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
-                //Se completa el record
-                String s1 = completeRecord(documentoDTO.getIdDocumento());
-                log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
-                //Se archiva el record
-                String s2 = fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
-                log.info("Archivando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s2);
+                unidadDocumental.setCerrada(true);
+                unidadDocumental.setInactivo(true);
+
+                String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
+                        udRecordFolder.getId() : createAndRetrieveId(unidadDocumental);
+
+                for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
+                    //Se declara el record
+                    String s = declararRecord(documentoDTO.getIdDocumento());
+                    log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
+                    //Se completa el record
+                    String s1 = completeRecord(documentoDTO.getIdDocumento());
+                    log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
+                    //Se archiva el record
+                    String s2 = fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
+                    log.info("Archivando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s2);
+                }
+
+                final String idUnidadDocumental = unidadDocumental.getId();
+                unidadDocumental.setId(idRecordFolder);
+                closeOrOpenUnidadDocumentalRecord(unidadDocumental);
+                unidadDocumental.setId(idUnidadDocumental);
+                unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
             }
-
-            final String idUnidadDocumental = unidadDocumental.getId();
-            unidadDocumental.setId(idRecordFolder);
-            closeOrOpenUnidadDocumentalRecord(unidadDocumental);
-            unidadDocumental.setId(idUnidadDocumental);
-            unidadDocumental.setFechaCierre(GregorianCalendar.getInstance());
+        } else {
+            unidadDocumental.setCerrada(false);
+            unidadDocumental.setInactivo(false);
         }
         actualizarUnidadDocumental(unidadDocumental);
     }

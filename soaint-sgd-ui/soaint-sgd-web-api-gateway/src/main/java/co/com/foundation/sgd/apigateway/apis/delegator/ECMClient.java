@@ -2,6 +2,7 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
+import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
@@ -9,15 +10,22 @@ import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.ObjectUtils;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 @ApiDelegator
 @Log4j2
@@ -151,7 +159,7 @@ public class ECMClient {
                 .put(Entity.json(dtoList));
     }
 
-    public Response DetalleUnidadDocumental(String idUnidadDocumental) {
+    public Response detalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
                 .request()
@@ -171,5 +179,13 @@ public class ECMClient {
         return wt.path("/modificarUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(unidadesDocumentalesDTO));
+    }
+
+    public Response subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        log.info("SubirDocumentosUnidadDocumentalGatewayApi - [trafic] - Subir Documentos a Unidades Documentales");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosUnidadDocumentalECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
     }
 }

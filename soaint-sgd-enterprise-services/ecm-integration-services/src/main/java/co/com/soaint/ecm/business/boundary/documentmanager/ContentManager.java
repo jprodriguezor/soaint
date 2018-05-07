@@ -2,7 +2,6 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
@@ -384,24 +383,12 @@ public class ContentManager {
     }
 
     /**
-     * Metodo para listar los documentos de una Unidad Documental
-     *
-     * @param idUnidadDocumental   Id de la unidad documental
-     */
-    public MensajeRespuesta listaDocumentosDTOUnidadDocumental(String idUnidadDocumental) throws Exception {
-        logger.info("### Listando las Unidades Documentales listarUnidadDocumental method");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.listaDocumentosDTOUnidadDocumental(idUnidadDocumental, conexion.getSession());
-    }
-
-    /**
      * Metodo para devolver la Unidad Documental
      *
      * @param idUnidadDocumental     Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
-    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws BusinessException {
+    public MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental) throws Exception {
         logger.info("### Ejecutando MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental)");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
@@ -412,28 +399,13 @@ public class ContentManager {
      * Metodo para devolver la Unidad Documental
      *
      * @param unidadDocumentalDTO     Obj Unidad Documental
-     * @param documentoDTOS           Lista de documentos a guardar
      * @return MensajeRespuesta       Unidad Documental
      */
-    public MensajeRespuesta subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, List<DocumentoDTO> documentoDTOS) {
-        logger.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS)");
+    public MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
+        logger.info("### Ejecutando MensajeRespuesta subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.subirDocumentosUnidadDocumental(unidadDocumentalDTO, documentoDTOS, conexion.getSession());
-    }
-
-    /**
-     * Metodo para devolver la Unidad Documental
-     *
-     * @param unidadDocumentalDTO     Obj Unidad Documental
-     * @param documentoDTO            Documento a guardar
-     * @return MensajeRespuesta       Unidad Documental
-     */
-    public MensajeRespuesta subirDocumentoUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, DocumentoDTO documentoDTO) {
-        logger.info("### Ejecutando MensajeRespuesta subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO)");
-        logger.info(MSGCONEXION);
-        Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.subirDocumentoUnidadDocumentalECM(unidadDocumentalDTO, documentoDTO, conexion.getSession());
+        return contentControl.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, conexion.getSession());
     }
 
     public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
