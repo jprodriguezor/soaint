@@ -349,7 +349,15 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void obtenerVersionesDocumento() {
+    public void testobtenerVersionesDocumentoSuccess() {
+        //Probar obtener Versiones
+        //Adicionar documento para version
+        mensajeRespuesta1 = contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE");
+
+        //Obtener Versiones de documento
+        assertEquals("0000",contentControlAlfresco.obtenerVersionesDocumento(conexion.getSession(), documentoDTO.getIdDocumento()).getCodMensaje());
+        //Eliminar la version del documento
+        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
     }
 
     @Test
