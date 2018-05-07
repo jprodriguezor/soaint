@@ -2,7 +2,6 @@ package co.com.soaint.correspondencia.business.control;
 
 import co.com.foundation.cartridge.email.model.Attachment;
 import co.com.foundation.cartridge.email.model.MailRequestDTO;
-//import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
@@ -82,6 +81,9 @@ public class CorrespondenciaControl {
 
     @Autowired
     private AsignacionControl asignacionControl;
+
+    @Autowired
+    private SolicitudUnidadDocumentalControl solicitudUnidadDocumentalControl;
 
     @Value("${radicado.rango.reservado}")
     private String[] rangoReservado;
@@ -1094,11 +1096,15 @@ public class CorrespondenciaControl {
 
             if (agenteDTO.getCodTipoRemite().equals("INT")){
                 try {
-                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(new BigInteger(correspondenciaDTO.getCodFuncRadica()));
+                    FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(agenteDTO.getIdeFunci());
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", funcionario.getNomFuncionario());
+                        if (agenteDTO.getIndOriginal()!=null){
+                            if (agenteDTO.getIndOriginal().equals("TP-DESP")){
+                                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                                else parameters.put("#USER#", funcionario.getNomFuncionario());
+                            }
+                        }
+
                     log.info("processing rest request - funcionarioDTO.getNomFuncionario(): "+funcionario.getNomFuncionario().toString());
                     destinatarios.add(funcionario.getCorrElectronico());
                  } catch (Exception ex) {
@@ -1106,10 +1112,12 @@ public class CorrespondenciaControl {
                 }
             } else{
                 try{
-                    if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                        if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
-                    log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                    if (agenteDTO.getIndOriginal()!=null){
+                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
+                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreElementoByCodOrg(agenteDTO.getCodDependencia()));
+                    }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
                     for (DatosContactoDTO contactoDTO : datosContacto) {
@@ -1120,6 +1128,9 @@ public class CorrespondenciaControl {
                 }
             }
         });
+
+        if (!parameters.containsKey("#USER#"))
+            throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
 
         if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
         datosContactoDTOS.forEach(datosContactoDTO -> {
@@ -1132,13 +1143,10 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-//        String[] dest =  new String[]{"giselle.designe@gmail.com"};
-//        request.setTo(dest);
         request.setTo(destinatarios.toArray(new String[destinatarios.size()]));
         log.info("processing rest request - enviar correo radicar correspondencia"+request.getTo());
 
-//        parameters.put("#USER#", "Giselle Yanet");
-        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodSede()));
+        parameters.put("#ORG#",this.organigramaAdministrativoControl.consultarNombreElementoByCodOrg(correspondenciaDTO.getCodDependencia()));
 
         request.setParameters( parameters );
 
