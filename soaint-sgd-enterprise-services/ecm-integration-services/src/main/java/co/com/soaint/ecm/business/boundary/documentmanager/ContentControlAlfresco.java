@@ -1512,7 +1512,6 @@ public class ContentControlAlfresco implements ContentControl {
             }
 
             Carpeta folderAlfresco;
-            //folderAlfresco = obtenerCarpetaPorNombre(documentoDTO.getSede(), session);
             folderAlfresco = obtenerCarpetaPorCodigoDependencia(documentoDTO.getCodigoDependencia(), session);
 
             if (!ObjectUtils.isEmpty(folderAlfresco.getFolder())) {
@@ -1551,7 +1550,6 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error(ERROR_TIPO_EXCEPTION, e);
             response.setCodMensaje("2222");
             response.setMensaje(e.getMessage());
-            //response.setMensaje(configuracion.getPropiedad(ECM_ERROR));
         }
     }
 
@@ -1912,7 +1910,7 @@ public class ContentControlAlfresco implements ContentControl {
     private DocumentoDTO transformarDocumento(Document document) throws Exception {
         final DocumentoDTO documentoDTO = new DocumentoDTO();
         String idDoc = document.getId();
-        documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(";")) : idDoc);
+        documentoDTO.setIdDocumento(idDoc.contains(";") ? idDoc.substring(0, idDoc.indexOf(';')) : idDoc);
         documentoDTO.setNroRadicado(document.getPropertyValue(CMCOR_NRO_RADICADO));
         documentoDTO.setTipologiaDocumental(document.getPropertyValue(CMCOR_TIPOLOGIA_DOCUMENTAL));
         documentoDTO.setNombreRemitente(document.getPropertyValue(CMCOR_NOMBRE_REMITENTE));
