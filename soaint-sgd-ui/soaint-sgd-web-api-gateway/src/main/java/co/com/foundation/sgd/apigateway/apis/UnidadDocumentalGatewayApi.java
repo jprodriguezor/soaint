@@ -99,7 +99,7 @@ public class UnidadDocumentalGatewayApi {
     }
 
     @GET
-    @Path("/listar-documentos-por-archivar")
+    @Path("/listar-documentos-por-archivar/{codigoDependencia}")
     @JWTTokenSecurity
     public Response documentosPorArchivar(@PathParam("codigoDependencia") final String codigoDependencia) {
         log.info("DocumentosPorArchivarGatewayApi - [trafic] - Listar documentos por archivar");
@@ -109,7 +109,7 @@ public class UnidadDocumentalGatewayApi {
     }
 
     @GET
-    @Path("/listar-documentos-archivados")
+    @Path("/listar-documentos-archivados/{codigoDependencia}")
     @JWTTokenSecurity
     public Response documentosArchivados(@PathParam("codigoDependencia") final String codigoDependencia) {
         log.info("DocumentosArchivadosGatewayApi - [trafic] - Listar documentos archivados");
