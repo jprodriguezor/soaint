@@ -387,6 +387,12 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
+    public void testObtenerConexionSuccess(){
+
+        assertNotNull(contentControlAlfresco.obtenerConexion());
+    }
+
+    @Test
     public void crearLinkDocumentosApoyo() {
 
     }
