@@ -152,7 +152,7 @@ public class UnidadDocumentalGatewayApi {
     }
 
     @GET
-    @Path("/restablecer_archivar_documento_rask/{proceso}/{tarea}")
+    @Path("/restablecer_archivar_documento_task/{proceso}/{tarea}")
     @JWTTokenSecurity
     public Response restablecerArchivarDocumentoTask(@PathParam("proceso") final String idproceso, @PathParam("tarea") final String idtarea) {
         log.info("UnidadDocumentalGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
