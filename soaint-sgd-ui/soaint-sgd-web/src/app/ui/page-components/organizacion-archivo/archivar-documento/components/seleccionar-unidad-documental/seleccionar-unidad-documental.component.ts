@@ -7,7 +7,7 @@ import {State as RootState} from "../../../../../../infrastructure/redux-store/r
 import {Store} from "@ngrx/store";
 import {SerieService} from "../../../../../../infrastructure/api/serie.service";
 
- 
+
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
@@ -25,7 +25,6 @@ import {UnidadDocumentalApiService} from "../../../../../../infrastructure/api/u
 import {ArchivarDocumentoModel} from "../../models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "../../models/solicitud-creacio-ud.model";
 import {isNullOrUndefined, isUndefined} from "util";
-import moment = require("moment");
 import {Guid} from "../../../../../../infrastructure/utils/guid-generator";
 
 
