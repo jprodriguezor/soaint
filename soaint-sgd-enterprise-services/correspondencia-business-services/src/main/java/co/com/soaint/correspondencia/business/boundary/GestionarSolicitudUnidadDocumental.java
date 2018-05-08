@@ -56,6 +56,20 @@ public class GestionarSolicitudUnidadDocumental {
     }
 
     /**
+     *
+     * @param fechaIni
+     * @param ideSolicitante
+     * @param codDependencia
+     * @param codSede
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(Date fechaIni, String ideSolicitante, String codSede, String codDependencia) throws BusinessException, SystemException {
+        return control.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(fechaIni, ideSolicitante, codSede, codDependencia);
+    }
+
+    /**
      * @param solicitudUnidadDocumentalDTO
      * @return
      * @throws BusinessException

@@ -3,6 +3,8 @@ import {Store} from '@ngrx/store';
 import {State as RootState} from 'app/infrastructure/redux-store/redux-reducers';
 import {LoadingService} from './infrastructure/utils/loading.service';
 import {Observable} from 'rxjs/Observable';
+import {ApiBase} from "./infrastructure/api/api-base";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+
 
   }
 

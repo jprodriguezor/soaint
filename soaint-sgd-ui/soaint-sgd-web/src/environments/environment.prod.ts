@@ -45,6 +45,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
    orientacion_endpoint: `${host}/orientacion-gateway-api`,
    tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
+   motivoNoCreacionUd_endpoint:"motivo-no-creacon-ud-gateway-api",
    radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
    radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
    listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
@@ -61,6 +62,8 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    verificarRedirecciones_rule_endpoint: `${host}/correspondencia-gateway-api/verificar-redirecciones`,
 
    // Carga masiva endpoint
+
+
    carga_masiva_endpoint_listar: `${host}/carga-masiva-gateway-api/listadocargamasiva`,
    carga_masiva_endpoint_estado: `${host}/carga-masiva-gateway-api/estadocargamasiva`,
    carga_masiva_endpoint_upload: `${host}/carga-masiva-gateway-api/cargar-fichero`,
@@ -116,6 +119,11 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
    gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
    detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
+   listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
+   listar_documentos_archivados: `${host}/unidad-documental-gateway-api/listar-documentos-archivados/`,
+   crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
+   listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
+   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
  };
  export const process_info = {
    'proceso.correspondencia-entrada': {
