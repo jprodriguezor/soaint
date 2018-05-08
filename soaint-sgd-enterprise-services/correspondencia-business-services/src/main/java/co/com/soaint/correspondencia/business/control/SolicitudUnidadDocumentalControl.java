@@ -208,14 +208,33 @@ public class SolicitudUnidadDocumentalControl {
         }
     }
 
+    /**
+     * @param IdSolicitud
+     * @return
+     */
+    public Boolean verificarByIdeSolicitud(BigInteger IdSolicitud) throws SystemException {
+        try {
+            long cantidad = em.createNamedQuery("TvsSolicitudUM.countByIdSolicitud", Long.class)
+                    .setParameter("IDE_SOL", IdSolicitud)
+                    .getSingleResult();
+            return cantidad > 0;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - actualizarSolicitudUnidadDocumental");
 
-//        if (!verificarByIdeSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())) {
-//            throw ExceptionBuilder.newBuilder()
-//                    .withMessage("solicitud.solicitud_not_exist_by_id")
-//                    .buildBusinessException();
-//        }
+        if (!verificarByIdeSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("solicitud.solicitud_not_exist_by_id")
+                    .buildBusinessException();
+        }
         try{
                 em.createNamedQuery("TvsSolicitudUM.actualizarSolicitudUnidadDocumental")
                 .setParameter("IDE_SOL", solicitudUnidadDocumentalDTO.getIdSolicitud())
