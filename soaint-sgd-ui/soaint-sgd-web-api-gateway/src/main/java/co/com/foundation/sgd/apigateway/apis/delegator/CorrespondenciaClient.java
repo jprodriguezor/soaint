@@ -246,7 +246,7 @@ public class CorrespondenciaClient {
                 .post(Entity.json(solicitudes));
     }
 
-    public Response listarSolicitudUnidadDocumental(String codSede,String codDependencia,String fechaIni,String fechaFin){
+    public Response listarSolicitudUnidadDocumental(String codSede,String codDependencia,String idSolicitante,String fechaSolicitud){
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
@@ -255,8 +255,8 @@ public class CorrespondenciaClient {
         return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um")
                 .queryParam("cod_sede", codSede)
                 .queryParam("cod_dependencia", codDependencia)
-                .queryParam("fecha_ini", fechaIni)
-                .queryParam("fecha_fin", fechaFin)
+                .queryParam("id_solicitante", idSolicitante)
+                .queryParam("fecha_in", fechaSolicitud)
                 .request()
                 .get();
     }
