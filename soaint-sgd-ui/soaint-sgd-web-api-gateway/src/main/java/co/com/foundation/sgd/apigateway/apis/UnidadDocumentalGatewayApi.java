@@ -9,6 +9,7 @@ import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -16,6 +17,7 @@ import javax.websocket.server.PathParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -147,5 +149,19 @@ public class UnidadDocumentalGatewayApi {
         Response response = ecmClient.subirDocumentosUnidadDocumental(unidadDocumentalDTO);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/restablecer_archivar_documento_rask/{proceso}/{tarea}")
+    @JWTTokenSecurity
+    public Response restablecerArchivarDocumentoTask(@PathParam("proceso") final String idproceso, @PathParam("tarea") final String idtarea) {
+        log.info("UnidadDocumentalGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
+        Response response = ecmClient.restablecerArchivarDocumentoTask(idproceso, idtarea);
+        String responseObject = response.readEntity(String.class);
+        if (response.getStatus() == HttpStatus.NO_CONTENT.value() || response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+            return Response.status(HttpStatus.OK.value()).entity(new ArrayList<>()).build();
+        }
+        return Response.status(response.getStatus()).entity(responseObject).build();
+
     }
 }
