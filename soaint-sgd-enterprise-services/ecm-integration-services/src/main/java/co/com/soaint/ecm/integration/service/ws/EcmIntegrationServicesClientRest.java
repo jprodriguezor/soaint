@@ -161,7 +161,7 @@ public class EcmIntegrationServicesClientRest {
      * @param metadatos metadatos del documento
      * @return identificador del documento en el ecm
      */
-    @POST
+    @PUT
     @Path("/modificarMetadatosDocumentoECM/")
     public MensajeRespuesta modificarMetadatosDocumentoECM(@RequestBody DocumentoDTO metadatos) throws IOException {
         logger.info("processing rest request - Subir Documento ECM " + metadatos.getIdDocumento());
@@ -169,24 +169,6 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.modificarMetadatosDocumento(metadatos);
         } catch (IOException e) {
             logger.error("Error en operacion - Modificar Metadatos Documento ECM ", e);
-            throw e;
-        }
-    }
-
-    /**
-     * Modificar  documento en el ECM
-     *
-     * @param metadatos metadatos del documento
-     * @return identificador del documento en el ecm
-     */
-    @POST
-    @Path("/modificarDocumentoECM/")
-    public MensajeRespuesta modificarDocumentoECM(@RequestBody DocumentoDTO metadatos) throws IOException {
-        logger.info("processing rest request - Modificar Documento ECM " + metadatos.getIdDocumento());
-        try {
-            return fEcmManager.modificarMetadatosDocumento(metadatos);
-        } catch (IOException e) {
-            logger.error("Error en operacion - Modificar Documento ECM ", e);
             throw e;
         }
     }

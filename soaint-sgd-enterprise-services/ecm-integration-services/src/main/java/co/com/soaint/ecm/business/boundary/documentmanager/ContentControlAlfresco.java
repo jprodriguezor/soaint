@@ -281,7 +281,7 @@ public class ContentControlAlfresco implements ContentControl {
             byte[] data = FileUtils.readFileToByteArray(file);
             documentoDTO1.setDocumento(data);
 
-            mensajeRespuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+            mensajeRespuesta.setCodMensaje(SUCCESS_COD);
             mensajeRespuesta.setMensaje("Documento Retornado con exito");
             documento.add(documentoDTO1);
             mensajeRespuesta.setDocumentoDTOList(documento);
@@ -391,7 +391,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 dependenciaTrdDTO.setListaSerie(serieLista);
                 dependenciaTrdDTO.setListaSubSerie(subSerieLista);
-                respuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+                respuesta.setCodMensaje(SUCCESS_COD);
                 respuesta.setMensaje("Series o Subseries devueltas correctamente");
                 List<ContenidoDependenciaTrdDTO> listaSerieSubSerie = new ArrayList<>();
                 listaSerieSubSerie.add(listaSerieSubSerie.size(), dependenciaTrdDTO);
@@ -426,7 +426,7 @@ public class ContentControlAlfresco implements ContentControl {
             logger.error("Ningun resultado coincide con el criterio de busqueda");
             throw new Exception("Ningun resultado coincide con el criterio de busqueda");
         }
-        response.setCodMensaje(SUCCESS_COD_MENSAJE);
+        response.setCodMensaje(SUCCESS_COD);
         response.setMensaje(OPERACION_COMPLETADA_SATISFACTORIAMENTE);
         response.getResponse().put("unidadDocumental", transformarUnidadDocumental(optionalFolder.get()));
         return response;
@@ -452,7 +452,7 @@ public class ContentControlAlfresco implements ContentControl {
         final String messaje = unidadDocumentalDTOS.isEmpty() ? "El sistema no encuentra la unidad documental que está " +
                 "buscando. Por favor, solicite su creación" : "Listado seleccionado correctamente";
         respuesta.setMensaje(messaje);
-        respuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+        respuesta.setCodMensaje(SUCCESS_COD);
         Map<String, Object> map = new HashMap<>();
         map.put("unidadDocumental", unidadDocumentalDTOS);
         respuesta.setResponse(map);
@@ -599,7 +599,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> mapResponsonse = new HashMap<>();
             mapResponsonse.put("documentoDTO", transformarDocumento((Document) cmisObjectDocument));
             mensajeRespuesta.setMensaje("Documento devuelto correctamente");
-            mensajeRespuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+            mensajeRespuesta.setCodMensaje(SUCCESS_COD);
             mensajeRespuesta.setResponse(mapResponsonse);
 
             return mensajeRespuesta;
@@ -624,7 +624,7 @@ public class ContentControlAlfresco implements ContentControl {
         final Optional<UnidadDocumentalDTO> optionalDto = getUDById(idUnidadDocumental, true, session);
         if (optionalDto.isPresent()) {
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+            respuesta.setCodMensaje(SUCCESS_COD);
             respuesta.setMensaje("Detalles Unidad Documental");
             respuesta.setResponse(new HashMap<>());
             respuesta.getResponse().put("unidadDocumental", optionalDto.get());
@@ -977,7 +977,7 @@ public class ContentControlAlfresco implements ContentControl {
             Document mvndocument = (Document) object;
             mvndocument.move(carpetaF.getFolder(), carpetaD.getFolder());
             response.setMensaje("OK");
-            response.setCodMensaje(SUCCESS_COD_MENSAJE);
+            response.setCodMensaje(SUCCESS_COD);
 
         } catch (CmisObjectNotFoundException e) {
             logger.error("*** Error al mover el documento *** ", e);
@@ -1115,7 +1115,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 bandera = 0;
                 response.setCodMensaje("OK");
-                response.setMensaje(SUCCESS_COD_MENSAJE);
+                response.setMensaje(SUCCESS_COD);
             }
         } catch (Exception e) {
             logger.error("Error al crear arbol content ", e);
@@ -1175,7 +1175,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 documentosLista.add(documentoDTO);
             }
-            response.setCodMensaje(SUCCESS_COD_MENSAJE);
+            response.setCodMensaje(SUCCESS_COD);
             response.setMensaje("OK");
             response.setDocumentoDTOList(documentosLista);
 
@@ -1254,7 +1254,7 @@ public class ContentControlAlfresco implements ContentControl {
                 documentoDTO.setTipoDocumento(version.getContentStreamMimeType());
                 versionesLista.add(documentoDTO);
             }
-            response.setCodMensaje(SUCCESS_COD_MENSAJE);
+            response.setCodMensaje(SUCCESS_COD);
             response.setMensaje("OK");
             response.setDocumentoDTOList(versionesLista);
         } catch (Exception e) {
@@ -1413,7 +1413,7 @@ public class ContentControlAlfresco implements ContentControl {
             Map<String, Object> response = new HashMap<>();
             response.put("unidadDocumental", unidadDocumentalDTO);
             return MensajeRespuesta.newInstance()
-                    .codMensaje(SUCCESS_COD_MENSAJE)
+                    .codMensaje(SUCCESS_COD)
                     .response(response)
                     .mensaje("Operacion realizada satisfactoriamente").build();
         } catch (Exception e) {
@@ -1472,7 +1472,7 @@ public class ContentControlAlfresco implements ContentControl {
             try {
                 pwc.checkIn(false, properties, contentStream, "nueva version");
                 Document docAux = (Document) session.getObject(documento.getIdDocumento());
-                response.setCodMensaje(SUCCESS_COD_MENSAJE);
+                response.setCodMensaje(SUCCESS_COD);
                 response.setMensaje("Documento versionado correctamente");
                 documento.setVersionLabel(docAux.getVersionLabel());
                 documentoDTOList.add(documento);
@@ -1530,7 +1530,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
                 //Creando el mensaje de respuesta
-                response.setCodMensaje(SUCCESS_COD_MENSAJE);
+                response.setCodMensaje(SUCCESS_COD);
                 response.setMensaje("Documento añadido correctamente");
                 logger.info(AVISO_CREA_DOC_ID + idDocumento);
             } else {
@@ -1715,7 +1715,7 @@ public class ContentControlAlfresco implements ContentControl {
             }
             idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
             //Creando el mensaje de respuesta
-            response.setCodMensaje(SUCCESS_COD_MENSAJE);
+            response.setCodMensaje(SUCCESS_COD);
             response.setMensaje("Documento añadido correctamente");
             logger.info(AVISO_CREA_DOC_ID + idDocumento);
 
@@ -1778,7 +1778,7 @@ public class ContentControlAlfresco implements ContentControl {
             object.updateProperties(updateProperties);
             logger.info("### Modificados los metadatos de correctamente");
             response.setMensaje("OK");
-            response.setCodMensaje(SUCCESS_COD_MENSAJE);
+            response.setCodMensaje(SUCCESS_COD);
 
         } catch (CmisObjectNotFoundException e) {
             logger.error("*** Error al modificar el documento *** ", e);
@@ -1945,7 +1945,7 @@ public class ContentControlAlfresco implements ContentControl {
             }
             final MensajeRespuesta respuesta = new MensajeRespuesta();
             respuesta.setResponse(new HashMap<>());
-            respuesta.setCodMensaje(SUCCESS_COD_MENSAJE);
+            respuesta.setCodMensaje(SUCCESS_COD);
             respuesta.setMensaje("Actualizacion realizada satisfactoriamente");
             respuesta.getResponse().put("unidadesDocumentales", lista);
             return respuesta;
@@ -1967,8 +1967,8 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return MensajeRespuesta.newInstance()
                 .documentoDTOList(dtos)
-                .codMensaje(SUCCESS_COD_MENSAJE)
-                .mensaje("Success")
+                .codMensaje(SUCCESS_COD)
+                .mensaje(SUCCESS)
                 .build();
     }
 
@@ -1989,8 +1989,8 @@ public class ContentControlAlfresco implements ContentControl {
         return MensajeRespuesta
                 .newInstance()
                 .documentoDTOList(response)
-                .codMensaje(SUCCESS_COD_MENSAJE)
-                .mensaje("OK").build();
+                .codMensaje(SUCCESS_COD)
+                .mensaje(SUCCESS).build();
     }
 
     @Override
@@ -2045,7 +2045,7 @@ public class ContentControlAlfresco implements ContentControl {
             }
         }
         return MensajeRespuesta.newInstance()
-                .codMensaje(SUCCESS_COD_MENSAJE).documentoDTOList(dtos)
+                .codMensaje(SUCCESS_COD).documentoDTOList(dtos)
                 .mensaje("Listado devuelto satisfactoriamente").build();
     }
 

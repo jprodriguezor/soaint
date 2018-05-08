@@ -97,8 +97,9 @@ public interface ContentControl extends Serializable {
     String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     String SEPARADOR = "---";
-    String SUCCESS_COD_MENSAJE = "0000";
+    String SUCCESS_COD = "0000";
     String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
+    String SUCCESS = "SUCCESS";
 
     /**
      * Obtener objeto conexion
