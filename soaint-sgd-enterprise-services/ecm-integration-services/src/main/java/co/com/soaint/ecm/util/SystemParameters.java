@@ -3,7 +3,7 @@ package co.com.soaint.ecm.util;
 /**
  * Clase utilitaria para devolver las constantes
  */
-public class SystemParameters {
+public final class SystemParameters {
 
     public static final String BUSINESS_PLATFORM_ENDPOINT = "ecm-endpoint";
     public static final String BUSINESS_PLATFORM_USER = "ecm-user";

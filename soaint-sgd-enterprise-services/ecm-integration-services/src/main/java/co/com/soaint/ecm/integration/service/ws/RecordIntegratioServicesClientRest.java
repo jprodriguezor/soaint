@@ -27,7 +27,6 @@ import java.util.List;
 public class RecordIntegratioServicesClientRest {
 
     private static final Logger logger = LogManager.getLogger(EcmIntegrationServicesClientRest.class.getName());
-    public static final String COD_MENSAJE = "11111";
 
     @Autowired
     private IRecordServices record;
@@ -73,7 +72,7 @@ public class RecordIntegratioServicesClientRest {
         } catch (RuntimeException e) {
             logger.error("Error en operacion - crearCarpetaRecord ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje(COD_MENSAJE);
+            respuesta.setCodMensaje("11111");
             respuesta.setMensaje(e.getMessage());
             throw e;
         }
@@ -94,7 +93,7 @@ public class RecordIntegratioServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - cerrarUnidadDocumentalECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje(COD_MENSAJE);
+            respuesta.setCodMensaje("11111");
             respuesta.setMensaje(e.getMessage());
             return respuesta;
         }
@@ -115,7 +114,7 @@ public class RecordIntegratioServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - cerrarUnidadesDocumentalesECM ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();
-            respuesta.setCodMensaje(COD_MENSAJE);
+            respuesta.setCodMensaje("11111");
             respuesta.setMensaje("Causa: " + e.getCause() + ", Mensaje: " + e.getMessage());
             return respuesta;
         }
