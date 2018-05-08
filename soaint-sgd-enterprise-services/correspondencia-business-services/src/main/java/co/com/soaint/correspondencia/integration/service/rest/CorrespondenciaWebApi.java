@@ -259,11 +259,39 @@ public class CorrespondenciaWebApi {
 
             return boundary.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(fechaInicial,fechaFinal,codigoSede,codigoDependencia);
 
-//            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = new ArrayList<>();
-//            SolicitudesUnidadDocumentalDTO solicitudesUnidadDocumentalDTO = new SolicitudesUnidadDocumentalDTO();
-//            solicitudesUnidadDocumentalDTO.setSolicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList);
-//
-//            return solicitudesUnidadDocumentalDTO;
+        } catch (ParseException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param codigoSede
+     * @param codigoDependencia
+     * @param ideSolicitante
+     * @param fechaI
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-solicitud-um-solicitante")
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(
+                                                                                    @QueryParam("cod_sede") final String codigoSede,
+                                                                                    @QueryParam("cod_dependencia") final String codigoDependencia,
+                                                                                    @QueryParam("id_solicitante") final String ideSolicitante,
+                                                                                    @QueryParam("fecha_in") final String fechaI) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicial = fechaI == null ? null : dateFormat.parse(fechaI);
+
+            return boundary.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(fechaInicial,ideSolicitante,codigoSede,codigoDependencia);
+
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
                     .withMessage("system.generic.error")
