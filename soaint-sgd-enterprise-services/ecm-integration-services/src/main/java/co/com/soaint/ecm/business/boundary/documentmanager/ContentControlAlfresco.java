@@ -2098,12 +2098,13 @@ public class ContentControlAlfresco implements ContentControl {
                 folder = optionalFolder.get();
             }
         }
-        if (!ObjectUtils.isEmpty(folder)) {
+        if (null!=folder) {
             byte[] bytes = documentoDTO.getDocumento();
             Map<String, Object> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
             ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
+
             Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
             documentoDTO = transformarDocumento(document);
             final String idDoc = document.getPropertyValue(PropertyIds.OBJECT_ID);
