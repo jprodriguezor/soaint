@@ -102,7 +102,7 @@ public class ContentManager {
      * @return Identificador del documento que se inserto
      * @throws InfrastructureException Excepcion que se lanza en error
      */
-    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) throws IOException {
+    public MensajeRespuesta crearLinkContent(DocumentoDTO documento) {
 
         logger.info("### Creando link del documento en el content..");
         MensajeRespuesta response = new MensajeRespuesta();

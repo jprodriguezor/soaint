@@ -39,6 +39,7 @@ import java.util.*;
 @BusinessControl
 public class RecordServices implements IRecordServices {
 
+    public static final String RECORDS = "/records/";
     @Autowired
     private ContentControl contentControl;
     String idSubCategoria = "";
@@ -412,7 +413,7 @@ public class RecordServices implements IRecordServices {
             if (!idRecord.isEmpty()) {
 
                 WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-                Response response = wt.path("/records/" + idRecord + "/complete")
+                Response response = wt.path(RECORDS + idRecord + "/complete")
                         .request()
                         .header(headerAuthorization, valueAuthorization + " " + encoding)
                         .header(headerAccept, valueApplicationType)
@@ -459,7 +460,7 @@ public class RecordServices implements IRecordServices {
             if (!idRecord.isEmpty() && !idRecordFolder.isEmpty()) {
                 recordFolder.put("targetParentId", idRecordFolder);
                 WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-                Response response = wt.path("/records/" + idRecord + "/file")
+                Response response = wt.path(RECORDS + idRecord + "/file")
                         .request()
                         .header(headerAuthorization, valueAuthorization + " " + encoding)
                         .header(headerAccept, valueApplicationType)
@@ -1026,7 +1027,7 @@ public class RecordServices implements IRecordServices {
     }
 
     private void eliminarObjECM(BaseTypeId type, String id) throws Exception {
-        final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? "/records/" : "/record-folders/") + id;
+        final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? RECORDS : "/record-folders/") + id;
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         try {
             Response response = wt.path(path)

@@ -7,7 +7,7 @@ import {State as RootState} from "../../../../../../infrastructure/redux-store/r
 import {Store} from "@ngrx/store";
 import {SerieService} from "../../../../../../infrastructure/api/serie.service";
 
- 
+
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
@@ -25,6 +25,7 @@ import {UnidadDocumentalApiService} from "../../../../../../infrastructure/api/u
 import {ArchivarDocumentoModel} from "../../models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "../../models/solicitud-creacio-ud.model";
 import {isNullOrUndefined, isUndefined} from "util";
+import {Guid} from "../../../../../../infrastructure/utils/guid-generator";
 
 
 @Component({
@@ -82,7 +83,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
      , private serieSubSerieService:SerieService
      ,private _store:Store<RootState>
      ,private _solicitudUDService:SolicitudCreacionUdService
-     ,private _udService:UnidadDocumentalApiService) {
+     ,private _udService:UnidadDocumentalApiService
+   ) {
 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -135,11 +137,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
      if(this.form.valid) {
 
-       let nro = this.solicitudes.length;
-
        this._store.select(getAuthenticatedFuncionario).subscribe( funcionario => {
 
          this.solicitudModel.Solicitudes.push({
+           codigoSede:this.dependenciaSelected.codSede,
+           codigoDependencia:this.dependenciaSelected.codigo,
            codigoSerie: this.getControlValue("serie"),
            codigoSubSerie: this.getControlValue("subserie"),
            descriptor1: this.getControlValue("descriptor1"),
@@ -147,10 +149,9 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
            id: this.getControlValue("identificador"),
            nombreUnidadDocumental: this.getControlValue("nombre"),
            observaciones: this.getControlValue("observaciones"),
-           fechaHora: new Date().getTime(),
-           nro: nro,
+           nro:  Guid.next(),
            estado: "",
-           solicitante: funcionario.nombre
+           idSolicitante: funcionario.id.toString()
          });
 
          this.unidadesDocumentales$ = Observable.of(this.solicitudModel.Solicitudes);
@@ -236,6 +237,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
     changeSection( section:string){
 
       this.onChangeSection.emit(section);
+    }
+
+    selectUnidadDocumental(evt){
+
+     this.archivarDocumentoModel.UnidadDocumental = evt.data;
     }
 
 

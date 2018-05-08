@@ -12,7 +12,8 @@ export const ActionTypes = {
   SELECT: type('[constanteDTO] SelectAction'),
   MULTI_SELECT: type('[constanteDTO] MultiSelectAction'),
   LOAD_CAUSAL_DEVOLUCION: type('[constanteDTO] LoadCausalDevolucionAction'),
-  LOAD_DATOS_ENVIO: type('[constanteDTO] LoadDatosEnvioAction')
+  LOAD_DATOS_ENVIO: type('[constanteDTO] LoadDatosEnvioAction'),
+  LOAD_MOTIVO_NO_CREACION_UD: type('[constanteDTO] LoadMotivoNocreacionUDAction'),
 };
 
 export interface GenericFilterAutocomplete {
@@ -90,6 +91,14 @@ export class LoadDatosEnvioAction implements Action {
   }
 }
 
+export class LoadMotivoNocreacionUDAction implements  Action{
+
+  type = ActionTypes.LOAD_MOTIVO_NO_CREACION_UD;
+
+  constructor(public payload?: any) {
+  }
+}
+
 export type Actions =
   FilterAction |
   LoadAction |
@@ -98,6 +107,8 @@ export type Actions =
   SelectAction |
   LoadDatosGeneralesAction |
   LoadDatosRemitenteAction |
-  LoadCausalDevolucionAction;
+  LoadCausalDevolucionAction |
+  LoadDatosEnvioAction |
+  LoadMotivoNocreacionUDAction;
 
 

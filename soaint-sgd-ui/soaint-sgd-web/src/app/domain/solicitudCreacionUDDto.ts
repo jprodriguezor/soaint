@@ -1,5 +1,7 @@
 export class  SolicitudCreacionUDDto
 {
+codigoSede:string;
+codigoDependencia:string;
 codigoSerie : string;
 codigoSubSerie : string;
 id : string;
@@ -8,7 +10,9 @@ descriptor1 : string;
 descriptor2 : string;
 observaciones: string;
 estado: string;
-fechaHora?:number;
-nro?:number;
-solicitante?:string
+fechaHora?:string;
+nro?:string;
+idSolicitante?:string;
+motivo?:string;
+accion?:string
 }

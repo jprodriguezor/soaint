@@ -97,6 +97,14 @@ public interface ContentControl extends Serializable {
     String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     String SEPARADOR = "---";
     String F_CMCOR = "F:cmcor:";
+    String WHERE = " WHERE ";
+    String AND = " AND ";
+    String SELECT_FROM = "SELECT * FROM ";
+    String F = " = 'F:";
+    String UNIDAD_DOCUMENTAL = "unidadDocumental";
+    String NINGUN_RESULTADO_COINCIDE_CON_EL_CRITERIO_DE_BUSQUEDA = "Ningun resultado coincide con el criterio de busqueda";
+    String LIKE = " LIKE '%";
+    String D_CMCOR_CM_DOCUMENTO_PERSONALIZADO = "D:cmcor:CM_DocumentoPersonalizado";
 
     /**
      * Obtener objeto conexion
