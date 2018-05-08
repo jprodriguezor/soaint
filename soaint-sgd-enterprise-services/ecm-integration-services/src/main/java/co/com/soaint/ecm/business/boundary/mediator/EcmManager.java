@@ -273,7 +273,7 @@ public class EcmManager {
      * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
         logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
         return contentManager.crearUnidadDocumental(unidadDocumentalDTO);
     }
@@ -325,9 +325,9 @@ public class EcmManager {
     /**
      * Operacion para devolver los documentos por archivar
      */
-    public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
+    public MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia) throws Exception {
         logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
-        return contentManager.getDocumentosPorArchivar();
+        return contentManager.getDocumentosPorArchivar(codigoDependencia);
     }
 
     /**
@@ -347,8 +347,19 @@ public class EcmManager {
      * @param documentoDTOS Lista de documentos a archivar
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) {
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) throws Exception {
         logger.info("processing rest request - Subir Documentos temporales ECM");
         return contentManager.subirDocumentosTemporalesUD(documentoDTOS);
+    }
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param codigoDependencia Codigo de la dependencia
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia) throws Exception {
+        logger.info("processing rest request - Obtener Documentos archivados ECM");
+        return contentManager.obtenerDocumentosArchivados(codigoDependencia);
     }
 }

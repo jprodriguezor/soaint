@@ -349,7 +349,7 @@ public class ContentManager {
      * @param unidadDocumentalDTO DTO que contiene los parametro de búsqueda
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws BusinessException {
+    public MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
         logger.info("### Creando la unidad documental {} ..", unidadDocumentalDTO);
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
@@ -408,11 +408,11 @@ public class ContentManager {
         return contentControl.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, conexion.getSession());
     }
 
-    public MensajeRespuesta getDocumentosPorArchivar() throws Exception {
+    public MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia) throws Exception {
         logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
-        return contentControl.getDocumentosPorArchivar(conexion.getSession());
+        return contentControl.getDocumentosPorArchivar(codigoDependencia, conexion.getSession());
     }
 
     /**
@@ -434,10 +434,23 @@ public class ContentManager {
      * @param documentoDTOS Lista de documentos a archivar
      * @return MensajeRespuesta
      */
-    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) {
+    public MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS) throws Exception {
         logger.info("processing rest request - Subir Documentos temporales ECM");
         logger.info(MSGCONEXION);
         Conexion conexion = contentControl.obtenerConexion();
         return contentControl.subirDocumentosTemporalesUD(documentoDTOS, conexion.getSession());
+    }
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param codigoDependencia Codigo de la dependencia
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia) throws Exception {
+        logger.info("processing rest request - Obtener Documentos archivados ECM");
+        logger.info(MSGCONEXION);
+        Conexion conexion = contentControl.obtenerConexion();
+        return contentControl.obtenerDocumentosArchivados(codigoDependencia, conexion.getSession());
     }
 }

@@ -166,9 +166,16 @@ public class ECMClient {
                 .get();
     }
 
-    public Response documentosPorArchivar() {
+    public Response documentosPorArchivar(final String codigoDependencia) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/devolverDocumentosPorArchivarECM/")
+        return wt.path("/devolverDocumentosPorArchivarECM/" + codigoDependencia)
+                .request()
+                .get();
+    }
+
+    public Response documentosArchivados(String codigoDependencia) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/obtenerDocumentosArchivadosECM/" + codigoDependencia)
                 .request()
                 .get();
     }

@@ -84,6 +84,7 @@ public interface ContentControl extends Serializable {
     String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
     String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
     String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
+    String DOCUMENTOS_POR_ARCHIVAR = "DOCUMENTOS POR ARCHIVAR";
     String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
     String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
     String CONTENT_DISPOSITION = "Content-Disposition";
@@ -96,6 +97,8 @@ public interface ContentControl extends Serializable {
     String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     String SEPARADOR = "---";
+    String SUCCESS_COD_MENSAJE = "0000";
+    String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
 
     /**
      * Obtener objeto conexion
@@ -223,7 +226,7 @@ public interface ContentControl extends Serializable {
      * @param session             Objeto de conexion
      * @return MensajeRespuesta
      */
-    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
     /**
      * Listar las Unidades Documentales del ECM
@@ -300,7 +303,7 @@ public interface ContentControl extends Serializable {
     /**
      * Operacion para devolver los documentos por archivar
      */
-    MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception;
+    MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia, Session session) throws Exception;
 
     /**
      * Metodo para Modificar Unidades Documentales
@@ -316,5 +319,13 @@ public interface ContentControl extends Serializable {
      * @param documentoDTOS Lista de documentos a archivar
      * @return MensajeRespuesta
      */
-    MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session);
+    MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) throws Exception;
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param codigoDependencia Codigo de la dependencia
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws Exception;
 }

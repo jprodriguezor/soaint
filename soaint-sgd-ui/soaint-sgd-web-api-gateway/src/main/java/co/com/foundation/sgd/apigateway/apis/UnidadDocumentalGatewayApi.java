@@ -101,9 +101,19 @@ public class UnidadDocumentalGatewayApi {
     @GET
     @Path("/listar-documentos-por-archivar")
     @JWTTokenSecurity
-    public Response documentosPorArchivar() {
+    public Response documentosPorArchivar(@PathParam("codigoDependencia") final String codigoDependencia) {
         log.info("DocumentosPorArchivarGatewayApi - [trafic] - Listar documentos por archivar");
-        Response response = ecmClient.documentosPorArchivar();
+        Response response = ecmClient.documentosPorArchivar(codigoDependencia);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/listar-documentos-archivados")
+    @JWTTokenSecurity
+    public Response documentosArchivados(@PathParam("codigoDependencia") final String codigoDependencia) {
+        log.info("DocumentosArchivadosGatewayApi - [trafic] - Listar documentos archivados");
+        Response response = ecmClient.documentosArchivados(codigoDependencia);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

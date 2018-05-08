@@ -177,7 +177,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", mensajeRespuesta.getCodMensaje());
             UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -307,13 +307,34 @@ public class EcmIntegrationServicesClientRest {
      * Operacion para devolver los documentos por archivar
      */
     @GET
-    @Path("/devolverDocumentosPorArchivarECM/")
-    public MensajeRespuesta getDocumentosPorArchivarECM() {
+    @Path("/devolverDocumentosPorArchivarECM/{codigoDependencia}")
+    public MensajeRespuesta getDocumentosPorArchivarECM(@PathParam("codigoDependencia") final String codigoDependencia) {
         logger.info("processing rest request - Obtener los documentos por archivar en el ECM");
         try {
-            return fEcmManager.getDocumentosPorArchivar();
+            return fEcmManager.getDocumentosPorArchivar(codigoDependencia);
         } catch (Exception e) {
             logger.error("Error en operacion - getDocumentosPorArchivarECM ECM ", e);
+            MensajeRespuesta rs = new MensajeRespuesta();
+            rs.setCodMensaje("1224");
+            rs.setMensaje(e.getMessage());
+            return rs;
+        }
+    }
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param codigoDependencia Codigo de la dependencia
+     * @return MensajeRespuesta
+     */
+    @GET
+    @Path("/obtenerDocumentosArchivadosECM/{codigoDependencia}")
+    public MensajeRespuesta obtenerDocumentosArchivadosECM(@PathParam("codigoDependencia") final String codigoDependencia) {
+        logger.info("processing rest request - Obtener documentos Archivados ECM");
+        try {
+            return fEcmManager.obtenerDocumentosArchivados(codigoDependencia);
+        } catch (Exception e) {
+            logger.error("Error en operacion - Obtener documentos Archivados ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
             rs.setCodMensaje("1224");
             rs.setMensaje(e.getMessage());
