@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
@@ -114,6 +115,16 @@ public class UnidadDocumentalGatewayApi {
     public Response documentosArchivados(@PathParam("codigoDependencia") final String codigoDependencia) {
         log.info("DocumentosArchivadosGatewayApi - [trafic] - Listar documentos archivados");
         Response response = ecmClient.documentosArchivados(codigoDependencia);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/subir-documentos-por-archivar")
+    @JWTTokenSecurity
+    public Response subirDocumentosPorArchivar(@RequestBody List<DocumentoDTO> documentoDTOS) {
+        log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
+        Response response = ecmClient.subirDocumentosPorArchivar(documentoDTOS);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

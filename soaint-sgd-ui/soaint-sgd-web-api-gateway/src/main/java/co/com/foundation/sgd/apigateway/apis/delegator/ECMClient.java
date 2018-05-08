@@ -195,4 +195,12 @@ public class ECMClient {
                 .request()
                 .post(Entity.json(unidadDocumentalDTO));
     }
+
+    public Response subirDocumentosPorArchivar(List<DocumentoDTO> documentoDTOS) {
+        log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosTemporalesECM")
+                .request()
+                .post(Entity.json(documentoDTOS));
+    }
 }
