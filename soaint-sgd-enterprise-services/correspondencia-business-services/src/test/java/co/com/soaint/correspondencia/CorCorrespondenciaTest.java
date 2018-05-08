@@ -144,54 +144,52 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
 
         //then
         assertNotNull(coresp);
-        
-
-
-    }
-
-
-
-    /*@Test
-    public void test_existByIdInstanciaProcesoAndIdTareaProceso_success() {
-        //given
-        String namedQuery = "TvsTarea.existByIdInstanciaProcesoAndIdTareaProceso";
-        String instanciaProceso = "99059";
-        String tareaProceso = "0000";
-
-        //when
-        Long count = createNamedQuery(namedQuery,Long.class)
-                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
-                .setParameter("ID_TAREA_PROCESO", tareaProceso)
-                .getSingleResult();
-
-        //then
-        assertNotNull(count);
-        assertTrue(count > 0);
     }
 
     @Test
-    public void test_updatePayloadByIdInstanciaProcesoAndIdTareaProceso_success() {
+    public void test_CorCorrespondenciaupdateEstado_success() {
         //given
-        String namedQueryUpdate = "TvsTarea.updatePayloadByIdInstanciaProcesoAndIdTareaProceso";
-        String namedQueryFindAll = "TvsTarea.findByIdInstanciaProcesoAndIdTareaProceso";
-        String instanciaProceso = "99059";
-        String tareaProceso = "0000";
-        String payload = "newPayload";
+        String namedQueryUpdate = "CorCorrespondencia.updateEstado";
+        String namedQuery = "CorCorrespondencia.findByNroRadicado";
+        String NRO_RADICADO = "1040TP-CMCOE2017000002";
+        String COD_ESTADO="AS";
 
         //when
         createNamedQuery(namedQueryUpdate)
-                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
-                .setParameter("ID_TAREA_PROCESO", tareaProceso)
-                .setParameter("PAYLOAD", payload)
+                .setParameter("NRO_RADICADO", NRO_RADICADO)
+                .setParameter("COD_ESTADO", COD_ESTADO)
                 .executeUpdate();
 
-        List<TvsTarea> tareas = createNamedQuery(namedQueryFindAll, TvsTarea.class)
-                .setParameter("ID_INSTANCIA_PROCESO", instanciaProceso)
-                .setParameter("ID_TAREA_PROCESO", tareaProceso)
+        List<CorrespondenciaDTO> coresp = createNamedQuery(namedQuery, CorrespondenciaDTO.class)
+                .setParameter("NRO_RADICADO", NRO_RADICADO)
                 .getResultList();
 
         //then
-        assertNotNull(tareas);
-        tareas.forEach(tarea -> assertEquals(payload, tarea.getPayload()));
-    }*/
+        assertNotNull(coresp);
+        assertEquals(NRO_RADICADO,coresp.get(0).getNroRadicado());
+
+    }
+    @Test
+    public void test_CorCorrespondenciaupdateIdeInstancia_success() {
+        //given
+        String namedQueryUpdate = "CorCorrespondencia.updateIdeInstancia";
+        String namedQuery = "CorCorrespondencia.findByNroRadicado";
+        String NRO_RADICADO = "1040TP-CMCOE2017000002";
+        String IDE_INSTANCIA="33144";
+
+        //when
+        createNamedQuery(namedQueryUpdate)
+                .setParameter("NRO_RADICADO", NRO_RADICADO)
+                .setParameter("IDE_INSTANCIA", IDE_INSTANCIA)
+                .executeUpdate();
+
+        List<CorrespondenciaDTO> coresp = createNamedQuery(namedQuery, CorrespondenciaDTO.class)
+                .setParameter("NRO_RADICADO", NRO_RADICADO)
+                .getResultList();
+
+        //then
+        assertNotNull(coresp);
+        assertEquals(NRO_RADICADO,coresp.get(0).getNroRadicado());
+
+    }
 }
