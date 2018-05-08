@@ -211,31 +211,32 @@ public class SolicitudUnidadDocumentalControl {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - actualizarSolicitudUnidadDocumental");
 
+//        if (!verificarByIdeSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())) {
+//            throw ExceptionBuilder.newBuilder()
+//                    .withMessage("solicitud.solicitud_not_exist_by_id")
+//                    .buildBusinessException();
+//        }
         try{
-            TvsSolicitudUnidadDocumental unidadDocumental = TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())
-                    .id(solicitudUnidadDocumentalDTO.getId())
-                    .nro(solicitudUnidadDocumentalDTO.getNro())
-                    .idSolicitante(solicitudUnidadDocumentalDTO.getIdSolicitante())
-                    .idConstante(solicitudUnidadDocumentalDTO.getIdConstante())
-                    .fecHora(solicitudUnidadDocumentalDTO.getFechaHora())
-                    .estado(solicitudUnidadDocumentalDTO.getEstado())
-                    .descriptor2(solicitudUnidadDocumentalDTO.getDescriptor2())
-                    .descriptor1(solicitudUnidadDocumentalDTO.getDescriptor1())
-                    .codSubserie(solicitudUnidadDocumentalDTO.getCodigoSubSerie())
-                    .codSerie(solicitudUnidadDocumentalDTO.getCodigoSerie())
-                    .codSede(solicitudUnidadDocumentalDTO.getCodigoSede())
-                    .codDependencia(solicitudUnidadDocumentalDTO.getCodigoDependencia())
-                    .accion(solicitudUnidadDocumentalDTO.getAccion())
-                    .nombreUD(solicitudUnidadDocumentalDTO.getNombreUnidadDocumental())
-                    .observaciones(solicitudUnidadDocumentalDTO.getObservaciones())
-                    .build();
+                em.createNamedQuery("TvsSolicitudUM.actualizarSolicitudUnidadDocumental")
+                .setParameter("IDE_SOL", solicitudUnidadDocumentalDTO.getIdSolicitud())
+                .setParameter("ID", solicitudUnidadDocumentalDTO.getId())
+                .setParameter("ID_CONST", solicitudUnidadDocumentalDTO.getIdConstante())
+                .setParameter("FECH", solicitudUnidadDocumentalDTO.getFechaHora())
+                .setParameter("NOMBREUD", solicitudUnidadDocumentalDTO.getNombreUnidadDocumental())
+                .setParameter("DESCP1", solicitudUnidadDocumentalDTO.getDescriptor1())
+                .setParameter("DESCP2", solicitudUnidadDocumentalDTO.getDescriptor2())
+                .setParameter("NRO", solicitudUnidadDocumentalDTO.getNro())
+                .setParameter("COD_SER", solicitudUnidadDocumentalDTO.getCodigoSerie())
+                .setParameter("COD_SUBS", solicitudUnidadDocumentalDTO.getCodigoSubSerie())
+                .setParameter("COD_SED", solicitudUnidadDocumentalDTO.getCodigoSede())
+                .setParameter("COD_DEP", solicitudUnidadDocumentalDTO.getCodigoDependencia())
+                .setParameter("ID_SOL", solicitudUnidadDocumentalDTO.getIdSolicitante())
+                .setParameter("EST", solicitudUnidadDocumentalDTO.getEstado())
+                .setParameter("ACC", solicitudUnidadDocumentalDTO.getAccion())
+                .setParameter("OBS", solicitudUnidadDocumentalDTO.getObservaciones())
+                .executeUpdate();
 
-            em.merge(unidadDocumental);
-            em.flush();
-
-            return solicitudUnidadDocumentalDTO;
-
+                return solicitudUnidadDocumentalDTO;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
