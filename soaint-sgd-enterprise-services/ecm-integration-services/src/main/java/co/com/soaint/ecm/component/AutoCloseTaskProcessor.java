@@ -4,6 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utiliti
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.AccionUsuario;
+import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ItemIterable;
@@ -41,8 +42,8 @@ public class AutoCloseTaskProcessor implements Serializable {
 
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
-                " WHERE " + ContentControl.CMCOR_UD_FECHA_CIERRE + " IS NOT NULL" +
-                " AND " + ContentControl.CMCOR_UD_CERRADA + " = 'false'";
+                " WHERE " + ConstantesECM.CMCOR_UD_FECHA_CIERRE + " IS NOT NULL" +
+                " AND " + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
 
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
 
@@ -51,11 +52,11 @@ public class AutoCloseTaskProcessor implements Serializable {
             final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
             try {
 
-                final Calendar calendar = udFolder.getPropertyValue(ContentControl.CMCOR_UD_FECHA_CIERRE);
+                final Calendar calendar = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_FECHA_CIERRE);
                 final int compareTo = Utilities.comparaFecha(GregorianCalendar.getInstance(), calendar);
 
                 if (compareTo >= 0) {
-                    String idUD = udFolder.getPropertyValue(ContentControl.CMCOR_UD_ID);
+                    String idUD = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
                     UnidadDocumentalDTO documentalDTO = new UnidadDocumentalDTO();
                     documentalDTO.setId(idUD);
                     documentalDTO.setAccion(AccionUsuario.CERRAR.name());
