@@ -2,6 +2,9 @@ package co.com.soaint.ecm.util;
 
 public final class ConstantesECM {
 
+
+
+
     private ConstantesECM(){}
 
     // Class Properties ECM
@@ -11,6 +14,16 @@ public final class ConstantesECM {
     public static final String CLASE_SUBSERIE = "claseSubserie";
     public static final String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
     public static final String CMCOR = "cmcor:";
+    public static final String F_CMCOR = "F:cmcor:";
+    public static final String WHERE = " WHERE ";
+    public static final String NO_SE_HA_ESPECIFICADO_EL_CODIGO_DE_LA_DEPENDENCIA = "No se ha especificado el codigo de la dependencia";
+    public static final String AND = " AND ";
+    public static final String NINGUN_RESULTADO_COINCIDE_CON_EL_CRITERIO_DE_BUSQUEDA = "Ningun resultado coincide con el criterio de busqueda";
+    public static final String UNIDAD_DOCUMENTAL = "unidadDocumental";
+    public static final String SELECT_FROM = "SELECT * FROM ";
+    public static final String LIKE = " LIKE '%";
+    public static final String D_CMCOR_CM_DOCUMENTO_PERSONALIZADO = "D:cmcor:CM_DocumentoPersonalizado";
+    public static final String F = " = 'F:";
 
     //******************
     //* properties ECM *
