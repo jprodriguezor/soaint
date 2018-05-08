@@ -166,9 +166,16 @@ public class ECMClient {
                 .get();
     }
 
-    public Response documentosPorArchivar() {
+    public Response documentosPorArchivar(final String codigoDependencia) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/devolverDocumentosPorArchivarECM/")
+        return wt.path("/devolverDocumentosPorArchivarECM/" + codigoDependencia)
+                .request()
+                .get();
+    }
+
+    public Response documentosArchivados(String codigoDependencia) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/obtenerDocumentosArchivadosECM/" + codigoDependencia)
                 .request()
                 .get();
     }
@@ -187,5 +194,13 @@ public class ECMClient {
         return wt.path("/subirDocumentosUnidadDocumentalECM")
                 .request()
                 .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response subirDocumentosPorArchivar(List<DocumentoDTO> documentoDTOS) {
+        log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosTemporalesECM")
+                .request()
+                .post(Entity.json(documentoDTOS));
     }
 }
