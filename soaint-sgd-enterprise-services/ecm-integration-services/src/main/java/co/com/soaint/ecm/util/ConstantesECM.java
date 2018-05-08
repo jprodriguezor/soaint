@@ -2,7 +2,7 @@ package co.com.soaint.ecm.util;
 
 public final class ConstantesECM {
 
-    private ConstantesECM(){}
+    public static final String ERROR_COD_MENSAJE = "1224";
 
     // Class Properties ECM
     public static final String CLASE_BASE = "claseBase";
@@ -83,4 +83,6 @@ public final class ConstantesECM {
     public static final String SUCCESS_COD = "0000";
     public static final String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
     public static final String SUCCESS = "SUCCESS";
+
+    private ConstantesECM(){}
 }

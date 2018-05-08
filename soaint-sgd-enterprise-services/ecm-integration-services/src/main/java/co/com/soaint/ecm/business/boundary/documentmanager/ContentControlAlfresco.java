@@ -1405,7 +1405,12 @@ public class ContentControlAlfresco implements ContentControl {
                     final Optional<Folder> sourceTarget = parents.parallelStream()
                             .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
                                     StringUtils.isEmpty(folder.getPropertyValue(ConstantesECM.CMCOR_UD_ID))).findFirst();
-                    sourceTarget.ifPresent(folder -> document.move(folder, targetFolder));
+                    sourceTarget.ifPresent(folder -> {
+                        document.move(folder, targetFolder);
+                        final Map<String, Object> properties = new HashMap<>();
+                        properties.put(ConstantesECM.CMCOR_UD_FECHA_FINAL, GregorianCalendar.getInstance());
+                        targetFolder.updateProperties(properties);
+                    });
                 }
             });
             unidadDocumentalDTO = transformarUnidadDocumental(targetFolder);
@@ -1995,16 +2000,6 @@ public class ContentControlAlfresco implements ContentControl {
     }
 
     @Override
-    public void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) {
-        documentos.forEach(document -> {
-            ContentStream contentStream = document.getContentStream();
-            Map<String, Object> properties = obtenerPropiedadesDocumento(document);
-            document.delete();
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
-        });
-    }
-
-    @Override
     public Map<String, Object> obtenerPropiedadesDocumento(Document document) {
         final Map<String, Object> map = new HashMap<>();
         map.put(PropertyIds.NAME, document.getName());
@@ -2085,7 +2080,7 @@ public class ContentControlAlfresco implements ContentControl {
         Folder folder = null;
         while (iterator.hasNext()) {
             final CmisObject next = iterator.next();
-            if(ConstantesECM.DOCUMENTOS_POR_ARCHIVAR.equals(next.getName())){
+            if (ConstantesECM.DOCUMENTOS_POR_ARCHIVAR.equals(next.getName())) {
                 folder = (Folder) next;
                 break;
             }

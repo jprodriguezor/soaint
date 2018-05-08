@@ -1,14 +1,13 @@
 package co.com.soaint.ecm.integration.service.ws;
 
 import co.com.soaint.ecm.business.boundary.mediator.EcmManager;
-import co.com.soaint.ecm.domain.entity.AccionUsuario;
+import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.ws.rs.*;
@@ -131,7 +130,7 @@ public class EcmIntegrationServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - Buscar Documento Adjunto en el ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
+            rs.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             rs.setMensaje(e.getMessage());
             return rs;
         }
@@ -279,7 +278,7 @@ public class EcmIntegrationServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - Devolver Serie Subserie ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
+            rs.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             rs.setMensaje(e.getMessage());
             return rs;
         }
@@ -297,7 +296,7 @@ public class EcmIntegrationServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - getDocumentosPorArchivarECM ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
+            rs.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             rs.setMensaje(e.getMessage());
             return rs;
         }
@@ -318,7 +317,7 @@ public class EcmIntegrationServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - Obtener documentos Archivados ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
+            rs.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             rs.setMensaje(e.getMessage());
             return rs;
         }
@@ -339,7 +338,7 @@ public class EcmIntegrationServicesClientRest {
         } catch (Exception e) {
             logger.error("Error en operacion - Subir Documentos temporales ECM ", e);
             MensajeRespuesta rs = new MensajeRespuesta();
-            rs.setCodMensaje("1224");
+            rs.setCodMensaje(ConstantesECM.ERROR_COD_MENSAJE);
             rs.setMensaje(e.getMessage());
             return rs;
         }
