@@ -154,7 +154,7 @@ public class UnidadDocumentalGatewayApi {
     @Path("/restablecer_archivar_documento_task/{proceso}/{tarea}")
     @JWTTokenSecurity
     public Response restablecerArchivarDocumentoTask(@PathParam("proceso") final String idproceso, @PathParam("tarea") final String idtarea) {
-        log.info("UnidadDocumentalGatewayApi - [trafic] - Restableciendo Correspondencia Entrada");
+        log.info("UnidadDocumentalGatewayApi - [trafic] - Restableciendo Correspondencia Entrada. proceso:" + idproceso + " tarea :" + idtarea);
         Response response = ecmClient.restablecerArchivarDocumentoTask(idproceso, idtarea);
         String responseObject = response.readEntity(String.class);
         if (response.getStatus() == HttpStatus.NO_CONTENT.value() || response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {

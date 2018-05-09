@@ -206,7 +206,7 @@ public class ECMClient {
     }
 
     public Response restablecerArchivarDocumentoTask(String idproceso, String idtarea) {
-        log.info("Unidad Documental - [trafic] - Invocando Servicio Remoto Salvar Tarea Archivar Documento: " + endpoint);
+        log.info("Unidad Documental - [trafic] - Invocando Servicio Remoto Salvar Tarea Archivar Documento: " + corresponencia_endpoint);
         WebTarget wt = ClientBuilder.newClient().target(corresponencia_endpoint);
         return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
