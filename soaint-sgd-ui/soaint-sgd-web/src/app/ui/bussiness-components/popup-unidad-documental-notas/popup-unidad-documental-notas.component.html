@@ -1,0 +1,49 @@
+<form [formGroup]="form" name="formDefault">  
+   <div class="ui-g ui-fluid">
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+              <label for="serie">Nombre serie/subserie</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+              <input type="text" pInputText id="descriptor2" formControlName="serie"/>
+          </div>
+      </div>
+      </div>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+              <label for="identificador">Identificador unidad documental</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+              <input type="text" pInputText id="identificador" formControlName="identificador"/>
+          </div>
+      </div>
+      </div>
+      <div class="ui-sm-12 ui-g-12 ui-lg-12">
+        <div class="ui-g form-group">
+          <div class="ui-g-12">
+              <label for="identificador">Identificador unidad documental</label>
+          </div>
+          <div class="ui-g-12 md-inputfield">
+            <textarea [rows]="3" pInputTextarea placeholder=""
+            autoResize="true" formControlName="observaciones"
+            (blur)="OnBlurEvents('observaciones')"
+          ></textarea>
+            <div class="ui-message ui-messages-error"
+                  *ngIf="validations.observacion">
+              {{ validations.observacion }}
+            </div>
+          </div>
+          
+      </div>
+      </div>
+      <div class="ui-sm-12 ui-g-6 ui-lg-6">
+        <div class="ui-g form-group">
+            <div class="ui-g-12 md-dropdownfield">
+                <button pButton label="Guardar" [disabled]="form.invalid" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="Guardar()" ></button>
+            </div>
+        </div>
+    </div>
+    </div>
+  </form>

@@ -127,6 +127,8 @@ export const environment = {
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
   gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
+  guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
+  
 };
 
 export const process_info = {
@@ -164,6 +166,10 @@ export const process_info = {
   },
   'process.archivar-documento': {
     displayValue : 'Organización y Archivo',
+    show: true,
+  },
+  'proceso.transferencia-documentales': {
+    displayValue : 'Transferencias documentales',
     show: true,
   }
 

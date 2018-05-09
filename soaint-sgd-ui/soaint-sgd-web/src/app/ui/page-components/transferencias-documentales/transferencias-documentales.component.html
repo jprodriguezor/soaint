@@ -1,0 +1,198 @@
+<div class="ui-fluid">
+  <app-task-container>
+    <div customActions>
+      <button pButton type="button" label="Aprobar" style="width: auto; margin-bottom: 10px"
+              (click)="State.AprobarTransferencia()"></button>
+
+      <button pButton type="button" label="Rechazar" style="width: auto; margin-bottom: 10px"
+              (click)="State.RechazarTransferencia()"></button>
+
+      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px"
+              (click)="guardarEstadoTarea()"></button>
+
+     <button pButton type="button" label="Finalizar" style="width: auto; margin-bottom: 10px"
+              (click)="Finalizar()"></button>
+    </div>
+
+    <div taskBody>
+      <p-panel header="Datos transferencia" leftIcon="ui-icon-assignment">
+        <div class="ui-g ui-fluid">
+
+        </div>
+        <form
+         [formGroup]="formTransferencia"
+         novalidate
+         (ngSubmit)="Listar()"
+         >
+          <div class="ui-g ui-fluid">
+            <div class="ui-sm-12 ui-g-2 ui-lg-2">
+              <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                      <label for="nombre">Fondo</label>
+                  </div>
+                  <div class="ui-g-12">
+                      <input type="text" pInputText   id="fondo" formControlName="fondo" />
+                  </div>
+              </div>
+          </div>
+          <div class="ui-sm-12 ui-g-2 ui-lg-2">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                    <label for="nombre">Sección</label>
+                </div>
+                <div class="ui-g-12">
+                    <input type="text" pInputText   id="seccion" formControlName="seccion" />
+                </div>
+            </div>
+        </div>
+
+            <div class="ui-sm-12 ui-g-2 ui-lg-2">
+              <div class="ui-g form-group">
+                  <div class="ui-g-12">
+                      <label for="idunidaddocumental">Tipo transferencia (Objeto)</label>
+                  </div>
+                  <div class="ui-g-12">
+                      <input type="text" pInputText   id="tipoTransferencia" formControlName="tipoTransferencia" />
+                  </div>
+              </div>
+          </div>
+          <div class="ui-sm-12 ui-g-3 ui-lg-3">
+            <div class="ui-g form-group">
+                <div class="ui-g-12">
+                    <label for="idunidaddocumental">Funcionario responsable</label>
+                </div>
+                <div class="ui-g-12">
+                    <input type="text" pInputText   id="funcionarioResponsable" formControlName="funcionarioResponsable" />
+                </div>
+            </div>
+        </div>
+        <div class="ui-sm-12 ui-g-3 ui-lg-3">
+          <div class="ui-g form-group">
+              <div class="ui-g-12">
+                  <label for="descriptor2">Fecha y hora aprobación</label>
+              </div>
+              <div class="ui-g-12">
+                  <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaAprobacion"
+                  id="fechaAprobacion" ></p-calendar>
+                </div>
+          </div>
+      </div>
+      <div class="ui-sm-12 ui-g-2 ui-lg-2">
+        <div class="ui-g form-group">
+            <div class="ui-g-12">
+                <label for="nombre">Subfondo</label>
+            </div>
+            <div class="ui-g-12">
+                <input type="text" pInputText   id="subfondo" formControlName="subfondo" />
+            </div>
+        </div>
+    </div>
+      <div class="ui-sm-12 ui-g-2 ui-lg-2">
+        <div class="ui-g form-group">
+            <div class="ui-g-12">
+                <label for="descriptor2">Subseccion</label>
+            </div>
+            <div class="ui-g-12">
+                <input type="text" pInputText   id="subseccion" formControlName="subseccion" />
+            </div>
+        </div>
+
+    </div>
+    <div class="ui-sm-12 ui-g-2 ui-lg-2">
+      <div class="ui-g form-group">
+          <div class="ui-g-12">
+              <label for="descriptor2">Nro. transferencia</label>
+          </div>
+          <div class="ui-g-12">
+              <input type="text" pInputText   id="nroTransferencia" formControlName="nroTransferencia" />
+          </div>
+      </div>
+
+  </div>
+  <div class="ui-sm-12 ui-g-3 ui-lg-3">
+    <div class="ui-g form-group">
+        <div class="ui-g-12">
+            <label for="descriptor2">Cargo funcionario</label>
+        </div>
+        <div class="ui-g-12">
+            <input type="text" pInputText   id="cargoFuncionario" formControlName="cargoFuncionario" />
+        </div>
+    </div>
+
+</div>
+<div *ngIf="status === 2" class="ui-sm-12 ui-g-3 ui-lg-3">
+  <div class="ui-g form-group">
+      <div class="ui-g-12">
+          <label for="descriptor2">Lugar Verificación</label>
+      </div>
+      <div class="ui-g-12">
+          <input type="text" pInputText   id="lugarVerificacion" formControlName="lugarVerificacion" />
+      </div>
+  </div>
+
+</div>
+          </div>
+        </form>
+      </p-panel>
+
+      <p-panel header="Resultado de búsqueda" leftIcon="ui-icon-assignment">
+        <div class="ui-fluid">
+          <p-dataTable selectionMode="multiple"
+                      [(selection)]="State.unidadesSeleccionadas"
+                       [paginator]="true"
+                       [rows]="10"
+                       [responsive]="true"
+                       [value]="State.ListadoUnidadDocumental"
+                       emptyMessage="No se encontraron resultados ">
+            <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
+            <p-column field="nombreSerie" header="Nombre serie/subserie"></p-column>
+            <p-column field="id" header="Identificador unidad documental"></p-column>
+            <p-column field="nombreUnidadDocumental" header="Nombre unidad documental"></p-column>
+            <p-column field="descriptor1" header="Descriptor 1"></p-column>
+            <p-column field="descriptor2" header="Descriptor 2"></p-column>
+            <p-column field="faseArchivo" header="Fase archivo"></p-column>
+            <p-column field="inactivo" header="Estado">
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | toActiveString}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaExtremaFinal" header="Fecha extrema final">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="fechaCierre" header="Fecha cierre trámite">
+              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                {{i | date: 'dd/MM/yyyy'}}
+              </ng-template>
+            </p-column>
+            <p-column field="soporte" header="Soporte"></p-column>
+            <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>
+            <p-column  header="Notas" ></p-column>
+          </p-dataTable>
+        </div>
+      </p-panel>
+    </div>
+  </app-task-container>
+</div>
+
+<p-dialog
+[visible]="State.AbrirDetalle | async"
+modal="modal"
+[responsive]="true"
+[closable]="true"
+positionTop="20"
+[style]="{'position':'absolute'}"
+[width]="800"
+(onHide)="State.CerrarDetalle()">
+<p-header>
+
+</p-header>
+<app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
+</p-dialog>
+

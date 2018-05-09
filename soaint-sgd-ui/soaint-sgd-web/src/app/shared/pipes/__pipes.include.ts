@@ -3,7 +3,7 @@
 import {EllipsisPipe} from './ellipsis';
 import {
   DropdownItemPipe, DropdownItemPipeFullName, DropdownItemPipeSerie, DropdownItemPipeSingle,
-  DropdownItemPipeSubserie
+  DropdownItemPipeSubserie, DropdownItemPipeString
 } from './dropdown-item';
 import {DropdownSingleItemPipe} from './dropdown-single-item';
 import {ConstantCodePipe} from './constant-code-pipe.pipe';
@@ -25,6 +25,7 @@ export const PIPES = [
     DropdownItemPipeSerie,
     DropdownItemPipeSubserie,
     DropdownItemPipeSingle,
+    DropdownItemPipeString,
     ToActiveString,
 ];
 

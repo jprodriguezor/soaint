@@ -69,3 +69,18 @@ export class DropdownItemPipeSubserie implements PipeTransform {
     }
   }
 }
+
+@Pipe({name: 'dropdownItemString'})
+export class DropdownItemPipeString implements PipeTransform {
+  transform(value, args?) {
+    // ES6 array destructuring
+    if (value) {
+      return value.map(item => {
+        return {
+          label: item,
+          value: item
+        };
+      });
+    }
+  }
+}

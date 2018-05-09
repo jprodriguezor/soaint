@@ -34,7 +34,6 @@ export class UnidadDocumentalApiService {
   gestionarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
     return this._api.post(environment.gestionar_unidades_documentales_endpoint, payload)
   }
-  
 
   noTramitarUnidadesDocumentales(payload: any){
 
@@ -44,10 +43,24 @@ export class UnidadDocumentalApiService {
 
   }
 
+  quickSave(payload: any) {
+    return this._api.post(environment.salvarCorrespondenciaEntrada_endpoint, payload);
+  }
+
   listarUnidadesDocumentales(payload:any):Observable<any[]>{
 
     return this._api.post(environment.listar_unidad_documental_endpoint,payload)
       .map( response => response.response.unidadDocumental);
+  }
+
+  ActualizarDisposicionFinal(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO> {
+    return Observable.of({
+      codMensaje: '00000',
+      contenidoDependenciaTrdDTOS: null,
+      documentoDTOList: null,
+      mensaje: 'Operación completada satisfactoriamente',
+      response: null,
+    });
   }
 
 }

@@ -27,5 +27,6 @@ export const ROUTES_PATH = {
   gestionUnidadDocumental: 'gestion-unidad-documental',
   crearUnidadDocumental: 'crear-unidad-documental',
   disposicionFinal: 'disposicion-final',
-  completarDatosDistribucion:"completar-datos-distribucion"
+  completarDatosDistribucion:"completar-datos-distribucion",
+  transferenciasDocumentales:"transferencia-documentales",
 };
