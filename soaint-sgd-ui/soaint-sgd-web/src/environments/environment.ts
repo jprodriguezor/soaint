@@ -10,7 +10,9 @@
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const hostMock = 'http://localhost:9000/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+
 
 export const environment = {
   production: false,
@@ -54,6 +56,7 @@ export const environment = {
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
+  motivoNoCreacionUd_endpoint:"motivo-no-creacon-ud-gateway-api",
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,
@@ -127,6 +130,11 @@ export const environment = {
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
   gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
+  listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
+  listar_documentos_archivados: `${host}/unidad-documental-gateway-api/listar-documentos-archivados/`,
+  crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
+  listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
+  actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
   
 };

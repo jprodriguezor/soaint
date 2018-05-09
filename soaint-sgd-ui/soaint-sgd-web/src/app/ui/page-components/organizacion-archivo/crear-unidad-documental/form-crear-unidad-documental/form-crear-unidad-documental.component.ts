@@ -10,6 +10,7 @@ import {UnidadDocumentalDTO} from "../../../../../domain/unidadDocumentalDTO";
 import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unidad-documental.api";
 import {SolicitudCreacionUDDto} from "../../../../../domain/solicitudCreacionUDDto";
 import {isNullOrUndefined} from "util";
+import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 
 
 @Component({
@@ -35,7 +36,13 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
   @Output() onCreateUnidadDocumental:EventEmitter<any>  = new EventEmitter;
 
 
-  constructor(private fb:FormBuilder,store:Store<RootState>,serieService:SerieService,private confirmationService:ConfirmationService,private udService:UnidadDocumentalApiService) {
+  constructor(private fb:FormBuilder,
+              store:Store<RootState>,
+              serieService:SerieService,
+              private confirmationService:ConfirmationService,
+              private udService:UnidadDocumentalApiService,
+              private solicitudService:SolicitudCreacionUdService
+              ) {
 
     super(store,serieService);
 
@@ -138,7 +145,13 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
         this.udService.crear(data)
         .subscribe(() => {
 
-          this.onCreateUnidadDocumental.emit(data)
+          this.onCreateUnidadDocumental.emit(data);
+
+          data.codigoDependencia = this.dependenciaSelected.codigo;
+
+          data.codigoSede = this.dependenciaSelected.codSede;
+
+          this.solicitudService.actualizarSolicitudes(data);
 
         }, error => {});
 

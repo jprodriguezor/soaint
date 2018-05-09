@@ -224,9 +224,16 @@ public class CorrespondenciaControl {
             String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
                     comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
+            String tipoRadicacion = "";
+            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+            }
+
             correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
                     correspondencia.getCodSede(),
-                    correspondencia.getCodTipoCmc(),
+                    tipoRadicacion,
                     String.valueOf(anno), consecutivo));
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
@@ -1002,10 +1009,31 @@ public class CorrespondenciaControl {
             String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
                     comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
+            String tipoRadicacion = "";
+            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+            }
+
             correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
                     correspondencia.getCodSede(),
-                    correspondencia.getCodTipoCmc(),
+                    tipoRadicacion,
                     String.valueOf(anno), consecutivo));
+
+            String endpoint = System.getProperty("ecm-api-endpoint");
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+            correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
+                co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
+                        .nroRadicado(correspondencia.getNroRadicado())
+                        .idDocumento(ppdDoc.getIdeEcm())
+                        .build();
+                Response response = wt.path("/modificarMetadatosDocumentoECM/")
+                        .request()
+                        .put(Entity.json(dto));
+            });
+
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());

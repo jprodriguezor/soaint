@@ -159,16 +159,23 @@ public class ECMClient {
                 .put(Entity.json(dtoList));
     }
 
-    public Response DetalleUnidadDocumental(String idUnidadDocumental) {
+    public Response detalleUnidadDocumental(String idUnidadDocumental) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/verDetalleUnidadDocumentalECM/" + idUnidadDocumental)
                 .request()
                 .get();
     }
 
-    public Response documentosPorArchivar() {
+    public Response documentosPorArchivar(final String codigoDependencia) {
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/devolverDocumentosPorArchivarECM/")
+        return wt.path("/devolverDocumentosPorArchivarECM/" + codigoDependencia)
+                .request()
+                .get();
+    }
+
+    public Response documentosArchivados(String codigoDependencia) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/obtenerDocumentosArchivadosECM/" + codigoDependencia)
                 .request()
                 .get();
     }
@@ -179,5 +186,28 @@ public class ECMClient {
         return wt.path("/modificarUnidadesDocumentalesECM")
                 .request()
                 .put(Entity.json(unidadesDocumentalesDTO));
+    }
+
+    public Response subirDocumentosUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO) {
+        log.info("SubirDocumentosUnidadDocumentalGatewayApi - [trafic] - Subir Documentos a Unidades Documentales");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosUnidadDocumentalECM")
+                .request()
+                .post(Entity.json(unidadDocumentalDTO));
+    }
+
+    public Response subirDocumentosPorArchivar(List<DocumentoDTO> documentoDTOS) {
+        log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/subirDocumentosTemporalesECM")
+                .request()
+                .post(Entity.json(documentoDTOS));
+    }
+
+    public Response restablecerArchivarDocumentoTask(String idproceso, String idtarea) {
+        log.info("Unidad Documental - [trafic] - Invocando Servicio Remoto Salvar Tarea Archivar Documento: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
+                .request().get();
     }
 }

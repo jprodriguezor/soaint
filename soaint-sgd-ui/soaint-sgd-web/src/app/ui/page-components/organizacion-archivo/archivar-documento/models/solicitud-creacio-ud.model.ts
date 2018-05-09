@@ -10,9 +10,6 @@ export class SolicitudCreacioUdModel{
   set Solicitudes(value:SolicitudCreacionUDDto[]) { this._solicitudes = value}
 
   Solicitar(){
-
-    this._solicitudService.solicitarUnidadDocumental( this.Solicitudes);
+    this._solicitudService.solicitarUnidadDocumental({solicitudesUnidadDocumentalDTOS:this.Solicitudes});
   }
-
-
 }

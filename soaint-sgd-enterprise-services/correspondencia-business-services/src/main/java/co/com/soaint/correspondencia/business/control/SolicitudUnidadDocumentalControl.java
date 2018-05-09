@@ -8,19 +8,20 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.sql.Timestamp;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static com.oracle.jrockit.jfr.ContentType.Timestamp;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +52,7 @@ public class SolicitudUnidadDocumentalControl {
             }
             em.flush();
 
+
             return true;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -70,6 +72,7 @@ public class SolicitudUnidadDocumentalControl {
     public void insertarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         try {
+            solicitudUnidadDocumental.setFechaHora(new Date());
             TvsSolicitudUnidadDocumental unidadDocumental = this.tvsSolicitudUnidadDocumentalTransform(solicitudUnidadDocumental);
             em.persist(unidadDocumental);
         } catch (Exception ex) {
@@ -100,7 +103,7 @@ public class SolicitudUnidadDocumentalControl {
                     .descriptor1(solicitudUnidadDocumental.getDescriptor1())
                     .descriptor2(solicitudUnidadDocumental.getDescriptor2())
                     .estado(solicitudUnidadDocumental.getEstado())
-                    .fecHora(new Date())
+                    .fecHora(solicitudUnidadDocumental.getFechaHora())
                     .idConstante(solicitudUnidadDocumental.getIdConstante())
                     .idSolicitante(solicitudUnidadDocumental.getIdSolicitante())
                     .nro(solicitudUnidadDocumental.getNro())
@@ -127,23 +130,24 @@ public class SolicitudUnidadDocumentalControl {
      */
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo(Date fechaIni, Date fechaFin, String codSede, String codDependencia) throws BusinessException, SystemException {
         try {
-            if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
-                throw ExceptionBuilder.newBuilder()
-                .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
-                .buildBusinessException();
+            log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo");
+
+            if (fechaIni != null && fechaIni != null) {
+                if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
+                    throw ExceptionBuilder.newBuilder()
+                            .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
+                            .buildBusinessException();
+            }
+
+            Timestamp fecIn = fechaIni == null ? null : new Timestamp(fechaIni.getTime());
+            Timestamp fecFin = fechaFin == null ? null : new Timestamp(fechaFin.getTime());
 
             List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", SolicitudUnidadDocumentalDTO.class)
-                    .setParameter("FECHA_INI", fechaIni, TemporalType.DATE)
-                    .setParameter("FECHA_FIN", fechaFin, TemporalType.DATE)
+                    .setParameter("FECHA_INI", fecIn)
+                    .setParameter("FECHA_FIN", fecFin)
                     .setParameter("COD_SEDE", codSede)
                     .setParameter("COD_DEP", codDependencia)
                     .getResultList();
-
-            if (solicitudUnidadDocumentalDTOList.isEmpty()) {
-                throw ExceptionBuilder.newBuilder()
-                        .withMessage("correspondencia.not_exist_by_periodo_and_dependencia_and_sede")
-                        .buildBusinessException();
-            }
 
             return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
 
@@ -159,12 +163,57 @@ public class SolicitudUnidadDocumentalControl {
         }
     }
 
+    /**
+     * @param fechaSolicitud
+     * @param ideSolicitante
+     * @param codSede
+     * @param codDependencia
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(Date fechaSolicitud, String ideSolicitante,String codSede, String codDependencia) throws BusinessException, SystemException {
+        try {
+            log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante");
+
+
+            Date fechaIni = null;
+            Date fechaFin = null;
+
+            if(fechaSolicitud != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(fechaSolicitud);
+                calendar.add(Calendar.DATE, 1);
+
+                fechaIni = new Date(fechaSolicitud.getTime());;
+                fechaFin = calendar.getTime();;
+            }
+
+            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitante", SolicitudUnidadDocumentalDTO.class)
+                    .setParameter("FECHA_INI", fechaIni, TemporalType.TIMESTAMP)
+                    .setParameter("FECHA_FIN", fechaFin, TemporalType.TIMESTAMP)
+                    .setParameter("ID_SOL", ideSolicitante)
+                    .setParameter("COD_SEDE", codSede)
+                    .setParameter("COD_DEP", codDependencia)
+                    .getResultList();
+
+            return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
+
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("BD query Error obteniendo las solicitudes.")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - actualizarSolicitudUnidadDocumental");
 
         try{
             TvsSolicitudUnidadDocumental unidadDocumental = TvsSolicitudUnidadDocumental.newInstance()
-                    .ideSolicitud(new BigInteger(solicitudUnidadDocumentalDTO.getIdSolicitud()))
+                    .ideSolicitud(solicitudUnidadDocumentalDTO.getIdSolicitud())
                     .id(solicitudUnidadDocumentalDTO.getId())
                     .nro(solicitudUnidadDocumentalDTO.getNro())
                     .idSolicitante(solicitudUnidadDocumentalDTO.getIdSolicitante())

@@ -6,6 +6,8 @@ import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -178,7 +180,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", mensajeRespuesta.getCodMensaje());
             UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -227,7 +229,9 @@ public class ContentControlAlfrescoTest {
                     detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (BusinessException e) {
-            e.printStackTrace();
+            logger.error("Error BusinessException: {}", e);
+        } catch (Exception e) {
+            logger.error("Error Exception: {}", e);
         }
     }
 
@@ -260,7 +264,7 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testFindUDByIdSuccess() {
+    public void testFindUDByIdSuccess() throws Exception {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -269,7 +273,7 @@ public class ContentControlAlfrescoTest {
             //Obtener la unidad documental
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
-                    getUDById(unidadDocumentalDTO.getId(), conexion.getSession());
+                    getUDById(unidadDocumentalDTO.getId(),true, conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
@@ -311,7 +315,7 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             logger.error("Error: {}", e);
         }
     }
@@ -349,11 +353,48 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void obtenerVersionesDocumento() {
+    public void testSubirVersionarDocumentoGeneradoSuccess() {
+        //Probar obtener Versiones
+        //Adicionar documento para version
+        assertEquals("0000", contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE").getCodMensaje());
+
+        //Eliminar la version del documento
+        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+    }
+
+    @Test
+    public void testObtenerVersionesDocumentoSuccess() {
+        //Probar obtener Versiones
+        //Adicionar documento para version
+        mensajeRespuesta1 = contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE");
+
+        //Obtener Versiones de documento
+        assertEquals("0000", contentControlAlfresco.obtenerVersionesDocumento(conexion.getSession(), documentoDTO.getIdDocumento()).getCodMensaje());
+        //Eliminar la version del documento
+        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+    }
+
+    @Test
+    public void testmodificarMetadatosDocumentoSuccess() {
+
+        assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
+    }
+
+    @Test
+    public void testobtenerPropiedadesDocumentoSuccess() {
+        CmisObject cmisObjectDocument = conexion.getSession().getObject(documentoDTO.getIdDocumento());
+        assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document)cmisObjectDocument));
+    }
+
+    @Test
+    public void testObtenerConexionSuccess(){
+
+        assertNotNull(contentControlAlfresco.obtenerConexion());
     }
 
     @Test
     public void crearLinkDocumentosApoyo() {
+
     }
 
     @Test
@@ -366,19 +407,6 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void subirDocumentoUnidadDocumentalECM() {
-    }
-
-    @Test
-    public void subirVersionarDocumentoGenerado() {
-    }
-
-    @Test
-    public void modificarMetadatosDocumento() {
-    }
-
-
-    @Test
-    public void obtenerPropiedadesDocumento() {
     }
 
     @Test

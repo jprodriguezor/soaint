@@ -28,8 +28,21 @@ import java.util.List;
 @Table(name = "TVS_SOLICITUD_UD")
 @NamedQueries({
     @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
-    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT t FROM TvsSolicitudUnidadDocumental t " +
-            "WHERE t.codDependencia = :COD_DEP AND t.codDependencia = :COD_SEDE AND t.fecHora >= :FECHA_INI AND t.fecHora <= :FECHA_FIN"),
+    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
+            "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            "FROM TvsSolicitudUnidadDocumental t " +
+            "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
+            "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
+            "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora <= :FECHA_FIN))"),
+    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitante", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
+            "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            "FROM TvsSolicitudUnidadDocumental t " +
+            "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
+            "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
+            "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
+            "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+
@@ -52,7 +65,7 @@ public class TvsSolicitudUnidadDocumental implements Serializable {
     @Column(name = "ID_CONSTANTE")
     private String idConstante;
     @Column(name = "FEC_HORA")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecHora;
     @Basic(optional = false)
     @Column(name = "NOMBRE_UNIDAD_DOCUMENTAL")

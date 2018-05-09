@@ -32,8 +32,8 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   task: TareaDTO = null;
  @Input() processName = '';
  @Input() taskName = "";
-  isActive = true;
-  hasToContinue: boolean;
+ @Input() isActive = true;
+   hasToContinue: boolean;
 
   activeTaskUnsubscriber: Subscription;
   infoUnsubscriber: Subscription;

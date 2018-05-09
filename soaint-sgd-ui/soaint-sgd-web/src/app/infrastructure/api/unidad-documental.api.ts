@@ -35,6 +35,7 @@ export class UnidadDocumentalApiService {
     return this._api.post(environment.gestionar_unidades_documentales_endpoint, payload)
   }
 
+
   noTramitarUnidadesDocumentales(payload: any){
 
     //return this._api.post("",payload)
@@ -53,12 +54,28 @@ export class UnidadDocumentalApiService {
       .map( response => response.response.unidadDocumental);
   }
 
+  listarDocumentosPorArchivar():Observable<any>{
+
+    return this._api.list(environment.listar_documentos_archivar);
+  }
+
+  archivarDocumento(payload:any):Observable<any>{
+
+    return Observable.empty();
+
+  }
+
+  listarDocumentosArchivadosPorFuncionario(idFuncionario): Observable<any[]>{
+
+    return this._api.list(environment.listar_documentos_archivados+"/"+idFuncionario);
+  }
+
   ActualizarDisposicionFinal(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO> {
     return Observable.of({
       codMensaje: '00000',
       contenidoDependenciaTrdDTOS: null,
       documentoDTOList: null,
-      mensaje: 'OperaciÃ³n completada satisfactoriamente',
+      mensaje: 'Operación completada satisfactoriamente',
       response: null,
     });
   }
