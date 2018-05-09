@@ -311,7 +311,7 @@ public class CorrespondenciaWebApi {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
 
-        return SolicitudUnidadDocumentalDTO.newInstance().build();
-//        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+//        return SolicitudUnidadDocumentalDTO.newInstance().build();
+        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 }
