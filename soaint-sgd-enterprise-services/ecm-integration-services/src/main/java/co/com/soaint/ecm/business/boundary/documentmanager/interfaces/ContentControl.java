@@ -217,8 +217,6 @@ public interface ContentControl extends Serializable {
      */
     MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
-    void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
-
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
 
     /**

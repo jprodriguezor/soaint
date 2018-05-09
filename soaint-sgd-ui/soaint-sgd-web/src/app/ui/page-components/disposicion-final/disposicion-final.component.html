@@ -2,13 +2,19 @@
 
     <div class="ui-g">
       <div class="ui-sm-6 ui-g-6">
-        <h2>Disposición Final</h2>
+        <div class="ui-g-12">
+            <h2 class="text-left page-title">Disposición final</h2>
+          </div>
+          <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
+            <h3 class="text-left page-subtitle">Aprobar informe de disposición final</h3>
+          </div>
       </div>
 
       <div class="ui-sm-6 ui-g-6 text-right">
-        <button pButton type="button" label="Aprobar" style="width:auto;margin-bottom:10px;"></button>
-        <button pButton type="button" label="Rechazar" style="width:auto;margin-bottom:10px;"></button>
-        </div>
+        <button pButton type="button" label="Aprobar" style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Aprobado')"></button>
+        <button pButton type="button" label="Rechazar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Rechazado')"></button>
+        <button pButton type="button" label="Finalizar"  style="width:auto;margin-bottom:10px;" (click)="state.Finalizar()"></button>
+      </div>
     </div>
   </div>
 
@@ -20,19 +26,21 @@
                     <div class="ui-sm-12 ui-g-3 ui-lg-3">
                         <div class="ui-g form-group">
                             <div class="ui-g-12">
-                                <label for="tipoDisposicionFinal"><span class="text-danger">*</span>Tipo disposición final</label>
+                                <label for="tiposDisposicionFinal"><span class="text-danger">*</span>Tipo disposición final</label>
                             </div>
                             <div class="ui-g-12 md-dropdownfield">
-                                <p-dropdown [options]="state.tiposDisposicionFinal$ | async | dropdownItem"
-                                            id="dependencia"
-                                            formControlName="tipoDisposicionFinal"
-                                            placeholder="Seleccione"
-                                            [autoWidth]="false"
-                                            (onBlur)="OnBlurEvents('tipoDisposicionFinal')">
-                                </p-dropdown>
+                                <p-multiSelect 
+                                    id="dependencia" 
+                                    [options]="listaDisposiciones | dropdownItemString"
+                                    formControlName="tiposDisposicionFinal" 
+                                    [panelStyle]="{minWidth:'12em'}"
+                                    defaultLabel="Seleccione"
+                                    selectedItemsLabel="{0} disposiciones seleccionadas"
+                                    (onBlur)="OnBlurEvents('tiposDisposicionFinal')">                                    
+                                </p-multiSelect>
                                 <div class="ui-message ui-messages-error"
-                                    *ngIf="validations.tipoDisposicionFinal">
-                                    {{ validations.tipoDisposicionFinal }}
+                                    *ngIf="validations.tiposDisposicionFinal">
+                                    {{ validations.tiposDisposicionFinal }}
                                 </div>
                             </div>
                         </div>
@@ -206,16 +214,17 @@
                             <label for="sede">Ejecutar selección</label>
                         </div>
                         <div class="ui-g-12 md-dropdownfield">
-                            <p-dropdown
-                                        id="ejecutarSeleccion"
-                                        placeholder="Seleccione"
-                                        [autoWidth]="false">
+                            <p-dropdown [options]="listaDisposicionesEjecutar | dropdownItemString"
+                                id="ejecutarseleccion"
+                                [(ngModel)]="tipoDisposicion"
+                                placeholder="Seleccione"
+                                [autoWidth]="false">
                             </p-dropdown>
                         </div>
                     </div>
                 </div>
                 <div class="ui-sm-12 ui-g-3 ui-lg-3">
-                    <button pButton label="Ejecutar" style="width:auto;margin-left:5px;margin-top:20px;" type="button"></button>
+                    <button [disabled]="tipoDisposicion === ''" pButton label="Ejecutar" style="width:auto;margin-left:5px;margin-top:20px;" type="button" (click)="AplicarDisposicion()"></button>
                 </div>
             </div>
 
@@ -226,11 +235,9 @@
                         [rows]="10"
                         [responsive]="true"
                         [value]="state.ListadoUnidadDocumental"
-                        dataKey="dependencia"
                         [(selection)]="state.unidadesSeleccionadas"
-                        [headerCheckboxToggleAllPages]="true"
-                        [stacked]="stacked"
                         emptyMessage="No hay resultados que mostrar">
+                        <p-column selectionMode="multiple" [style]="{'width':'50px'}"></p-column>
                         <p-column field="subserie" header="Nombre serie/subserie" [sortable]="true"></p-column>
                         <p-column field="codigoUnidadDocumental" header="Identificador unidad documental" [sortable]="true"></p-column>
                         <p-column field="nombreUnidadDocumental" header="Nombre unidad documental" [sortable]="true"></p-column>
@@ -246,17 +253,15 @@
                         <p-column field="fechaExternaFinal" header="Fecha externa final" [sortable]="true"></p-column>
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
                         <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
-                        <p-column header="Consultar unidad conservación" [style]="{'width':'120px','text-align':'center'}">
+                        <p-column field="disposicion" header="Disposición" [sortable]="true"></p-column>
+                        <p-column field="aprobado" header="Aprobado/Rechazado" [sortable]="true"></p-column>
+                        <p-column  header="Notas" [style]="{'width':'120px','text-align':'center'}">                             
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                              <button type="button" pButton label="Ver" (click)="state.GetDetalleUnidadUnidadDocumental(i)"
-                                      class="ui-button ui-button-icon ui-button-success"
-                              ></button>
+                                <button pButton type="button" style="width: 35px; float: right"
+                                    (click)="AgregarNotas(i)" icon="ui-icon-arrow-forward">
+                                 </button>
                             </ng-template>
-                        </p-column>
-                        <p-column  header="Disposición" [sortable]="true"></p-column>
-                        <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>
-                        <p-column  header="Notas" ></p-column>
-
+                            </p-column>
                     </p-dataTable>
                 </div>
             </div>
@@ -276,4 +281,16 @@
     <p-header>
     </p-header>
     <app-detalle-unidad-conservacion [state]="state"></app-detalle-unidad-conservacion>
+</p-dialog>
+
+<p-dialog
+    [visible]="abrirNotas"
+    modal="modal"
+    [responsive]="true"
+    [closable]="true"
+    [width]="800"
+    (onHide)="CerrarNotas()">
+    <p-header>
+    </p-header>
+    <app-popup-unidad-documental-notas [state]="state" [index]="indexUnidadSeleccionada" (completado)="CerrarNotas()" ></app-popup-unidad-documental-notas>
 </p-dialog>
