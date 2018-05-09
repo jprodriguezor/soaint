@@ -6,6 +6,8 @@ import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
@@ -178,7 +180,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", mensajeRespuesta.getCodMensaje());
             UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -313,7 +315,7 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             logger.error("Error: {}", e);
         }
     }
@@ -379,11 +381,20 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void obtenerPropiedadesDocumento() {
+    public void testobtenerPropiedadesDocumentoSuccess() {
+        CmisObject cmisObjectDocument = conexion.getSession().getObject(documentoDTO.getIdDocumento());
+        assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document)cmisObjectDocument));
+    }
+
+    @Test
+    public void testObtenerConexionSuccess(){
+
+        assertNotNull(contentControlAlfresco.obtenerConexion());
     }
 
     @Test
     public void crearLinkDocumentosApoyo() {
+
     }
 
     @Test

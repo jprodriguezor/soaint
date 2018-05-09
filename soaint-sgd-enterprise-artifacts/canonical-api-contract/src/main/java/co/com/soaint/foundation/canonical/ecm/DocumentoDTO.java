@@ -43,7 +43,6 @@ public class DocumentoDTO implements Serializable {
     private String tamano;
     private String tipoPadreAdjunto;//xTipo = principal o anexo
     private String versionLabel;
-    private String nombreUnidadDocumental;
     private byte[] documento;
     private String[] nroRadicadoReferido;
 

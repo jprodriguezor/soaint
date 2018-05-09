@@ -21,91 +21,6 @@ import java.util.Optional;
 @Service
 public interface ContentControl extends Serializable {
 
-    // Class Properties ECM
-    String CLASE_BASE = "claseBase";
-    String CLASE_DEPENDENCIA = "claseDependencia";
-    String CLASE_SERIE = "claseSerie";
-    String CLASE_SUBSERIE = "claseSubserie";
-    String CLASE_UNIDAD_DOCUMENTAL = "claseUnidadDocumental";
-    String CMCOR = "cmcor:";
-
-    //******************
-    //* properties ECM *
-    //******************
-
-    // CM_Unidad_Administrativa
-    String CMCOR_DEP_CODIGO = CMCOR + "CodigoDependencia";
-    String CMCOR_DEP_CODIGO_UAP = CMCOR + "CodigoUnidadAdminPadre";
-
-    //CM_Unidad_Documental
-    String CMCOR_UD_ACCION = CMCOR + "accion";
-    String CMCOR_UD_FECHA_INICIAL = CMCOR + "fechaInicial";
-    String CMCOR_UD_INACTIVO = CMCOR + "inactivo";
-    String CMCOR_UD_UBICACION_TOPOGRAFICA = CMCOR + "ubicacionTopografica";
-    String CMCOR_UD_FECHA_FINAL = CMCOR + "fechaFinal";
-    String CMCOR_UD_FECHA_CIERRE = CMCOR + "fechaCierre";
-    String CMCOR_UD_ID = CMCOR + "id";
-    String CMCOR_UD_FASE_ARCHIVO = CMCOR + "faseArchivo";
-    String CMCOR_UD_SOPORTE = CMCOR + "soporte";
-    String CMCOR_UD_CODIGO = CMCOR + "codigoUnidadDocumental";
-    String CMCOR_UD_DESCRIPTOR_2 = CMCOR + "descriptor2";
-    String CMCOR_UD_DESCRIPTOR_1 = CMCOR + "descriptor1";
-    String CMCOR_UD_CERRADA = CMCOR + "cerrada";
-    String CMCOR_UD_OBSERVACIONES = CMCOR + "observaciones";
-    String CMCOR_UD_DISPOSICION = CMCOR + "disposicion";
-    String CMCOR_UD_ESTADO = CMCOR + "estado";
-
-    //CM_Unidad_Base
-    String CMCOR_UB_CODIGO = CMCOR + "CodigoBase";
-
-    //CM_Serie
-    String CMCOR_SER_CODIGO = CMCOR + "CodigoSerie";
-
-    //CM_SubSerie
-    String CMCOR_SS_CODIGO = CMCOR + "CodigoSubserie";
-
-    //CM_DocumentoPersonalizado
-    String CMCOR_NRO_RADICADO = CMCOR + "NroRadicado";
-    String CMCOR_NOMBRE_REMITENTE = CMCOR + "NombreRemitente";
-    String CMCOR_TIPOLOGIA_DOCUMENTAL = CMCOR + "TipologiaDocumental";
-    String CMCOR_TIPO_DOCUMENTO = CMCOR + "xTipo";
-    String CMCOR_NUMERO_REFERIDO = CMCOR + "xNumeroReferido";
-    String CMCOR_ID_DOC_PRINCIPAL = CMCOR + "xIdentificadorDocPrincipal";
-
-    // ECM sms Error
-    String ECM_ERROR = "ECM_ERROR";
-    String ECM_ERROR_DUPLICADO = "ECM ERROR DUPLICADO";
-    String EXISTE_CARPETA = "Existe la Carpeta: ";
-
-    // ECM sms
-    String COMUNICACIONES_INTERNAS_RECIBIDAS = "Comunicaciones Oficiales Internas Recibidas ";
-    String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
-    String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
-    String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
-    String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
-    String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
-    String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
-    String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
-    String CONTENT_DISPOSITION = "Content-Disposition";
-    String DOCUMENTO = "documento";
-    String APPLICATION_PDF = "application/pdf";
-    String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
-    String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
-    String AVISO_CREA_DOC = "### Se va a crear el documento..";
-    String AVISO_CREA_DOC_ID = "### Documento creado con id ";
-    String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
-    String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
-    String SEPARADOR = "---";
-    String F_CMCOR = "F:cmcor:";
-    String WHERE = " WHERE ";
-    String AND = " AND ";
-    String SELECT_FROM = "SELECT * FROM ";
-    String F = " = 'F:";
-    String UNIDAD_DOCUMENTAL = "unidadDocumental";
-    String NINGUN_RESULTADO_COINCIDE_CON_EL_CRITERIO_DE_BUSQUEDA = "Ningun resultado coincide con el criterio de busqueda";
-    String LIKE = " LIKE '%";
-    String D_CMCOR_CM_DOCUMENTO_PERSONALIZADO = "D:cmcor:CM_DocumentoPersonalizado";
-
     /**
      * Obtener objeto conexion
      *
@@ -232,7 +147,7 @@ public interface ContentControl extends Serializable {
      * @param session             Objeto de conexion
      * @return MensajeRespuesta
      */
-    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
     /**
      * Listar las Unidades Documentales del ECM
@@ -302,14 +217,12 @@ public interface ContentControl extends Serializable {
      */
     MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
 
-    void subirDocumentosCMISPrincipalAnexoUD(Folder folder, List<Document> documentos) throws BusinessException;
-
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
 
     /**
      * Operacion para devolver los documentos por archivar
      */
-    MensajeRespuesta getDocumentosPorArchivar(Session session) throws Exception;
+    MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia, Session session) throws Exception;
 
     /**
      * Metodo para Modificar Unidades Documentales
@@ -318,4 +231,20 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta       Unidad Documental
      */
     MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws Exception;
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param documentoDTOS Lista de documentos a archivar
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) throws Exception;
+
+    /**
+     * Operacion para devolver series o subseries
+     *
+     * @param codigoDependencia Codigo de la dependencia
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws Exception;
 }

@@ -28,6 +28,8 @@ import {Subscription} from 'rxjs/Subscription';
 import { DependenciaApiService } from '../../infrastructure/api/dependencia.api';
 import { DependenciaDTO } from 'app/domain/dependenciaDTO';
 import {Subject} from 'rxjs/Subject';
+import { ROUTES_PATH } from '../../app.route-names';
+import { go } from '@ngrx/router-store';
 
 @Injectable()
 export class StateUnidadDocumentalService {
@@ -98,11 +100,14 @@ export class StateUnidadDocumentalService {
         });
     }
 
-    GetListadosSeries(codigodependencia): Observable<SerieDTO[]> {
-        return this.serieSubserieApiService.ListarSerieSubserie({
+    GetListadosSeries(codigodependencia): void {
+        this.serieSubserieApiService.ListarSerieSubserie({
             idOrgOfc: codigodependencia,
         })
-        .map(map => map.listaSerie);
+        .map(map => map.listaSerie)
+        .subscribe(response => {
+            this.ListadoSeries = response;
+        });
     }
 
     GetSubSeries(codigoserie: string, codigodependencia: string): Observable<SubserieDTO[]>{
@@ -213,6 +218,57 @@ export class StateUnidadDocumentalService {
         .subscribe(response => {
            this.ManageActionResponse(response);
         });
+    }
+
+    AplicarDisposicion(tipodisposicion: string) {
+        const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
+        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
+            const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'Seleccionar')
+            _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
+            _listado.push(_current);
+            return _listado;
+        }, []);
+        this.ListadoActualizadoSubject.next();  
+    }
+
+    AprobarTransferencia() {
+
+    }
+
+    RechazarTransferencia() {
+        
+    }
+
+    ActualizarEstadoDisposicionFinal(estado: string) {
+        const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
+        const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'Seleccionar');
+        if(existeDisposicionSeleccionar) {
+            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar. Recuerde actualizar."'}));        
+        } else {
+            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
+                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item === _current)
+                _current.aprobado = item_seleccionado ? estado : _current.aprobado;
+                _listado.push(_current);
+                return _listado;
+            }, []);
+            this.ListadoActualizadoSubject.next(); 
+        }
+   
+    }
+
+    ActualizarDisposicionFinal() {
+        this.unidadDocumentalApiService.ActualizarDisposicionFinal([])
+        .subscribe(response => {
+            this.ManageActionResponse(response);
+            if(response.codMensaje === '0000') {
+                this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+            }           
+        });
+        
+    }
+
+    GuardarObservacion(unidadDocumental: UnidadDocumentalDTO, index: number) {
+        this.ListadoUnidadDocumental[index] = unidadDocumental;
     }
 
     ManageActionResponse(response: MensajeRespuestaDTO) {

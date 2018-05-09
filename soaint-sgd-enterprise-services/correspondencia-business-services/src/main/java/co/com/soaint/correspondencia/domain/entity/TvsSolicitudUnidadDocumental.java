@@ -47,7 +47,10 @@ import java.util.List;
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+
             "t.idSolicitante = :ID_SOL, t.estado = :EST , t.accion = :ACC , t.observaciones = :OBS " +
-            "WHERE t.ideSolicitud = :IDE_SOL")
+            "WHERE t.ideSolicitud = :IDE_SOL"),
+        @NamedQuery(name = "TvsSolicitudUM.countByIdSolicitud", query = "SELECT COUNT(*) " +
+                "FROM TvsSolicitudUnidadDocumental t " +
+                "WHERE TRIM(t.ideSolicitud) = TRIM(:IDE_SOL)")
         })
 @javax.persistence.TableGenerator(name = "COR_SOLICITUD_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_SOLICITUD_SEQ", allocationSize = 1)
