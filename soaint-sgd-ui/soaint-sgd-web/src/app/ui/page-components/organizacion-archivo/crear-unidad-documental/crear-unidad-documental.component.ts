@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CreateUDActionType, EventChangeActionArgs} from "./crear-unidad-documental";
 import {SolicitudCreacionUDDto} from "../../../../domain/solicitudCreacionUDDto";
 import {UnidadDocumentalApiService} from "../../../../infrastructure/api/unidad-documental.api";
@@ -17,12 +17,13 @@ import {
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {SolicitudCreacioUdModel} from "../archivar-documento/models/solicitud-creacio-ud.model";
 import {FuncionariosService} from "../../../../infrastructure/api/funcionarios.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'app-crear-unidad-documental',
   templateUrl: './crear-unidad-documental.component.html',
 })
-export class CrearUnidadDocumentalComponent implements OnInit {
+export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
   $action = CreateUDActionType;
 
@@ -40,6 +41,8 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
    form:FormGroup;
 
+   subscriptions:Subscription[];
+
   constructor(private _store:Store<RootState>,
               private _taskSandbox:TaskSandbox,
               private _solicitudService:SolicitudCreacionUdService,
@@ -54,19 +57,21 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
   ngOnInit() {
 
-    this._store.select(getActiveTask).subscribe( task =>{
+    this.subscriptions.push(
+      this._store.select(getActiveTask).subscribe( task =>{
 
-      this.task = task;
+        this.task = task;
 
-      this.form.get('sede').setValue(task.variables.codSede);
-      this.form.get('dependencia').setValue(task.variables.codDependencia);
-      this.form.get('fechaSolicitud').setValue(task.variables.fechaSolicitud);
+        this.form.get('sede').setValue(task.variables.codSede);
+        this.form.get('dependencia').setValue(task.variables.codDependencia);
+        this.form.get('fechaSolicitud').setValue(task.variables.fechaSolicitud);
 
-      this._funcionarioService.getFuncionarioById(task.variables.idSolicitante)
-        .subscribe(funcionario => this.form.get('solicitante').setValue(funcionario.nombre));
+        this._funcionarioService.getFuncionarioById(task.variables.idSolicitante)
+          .subscribe(funcionario => this.form.get('solicitante').setValue(funcionario.nombre));
 
-      this.actualizarSolicitudesTramitadas();
-    });
+        this.actualizarSolicitudesTramitadas();
+      })
+    );
 
     }
 
@@ -99,10 +104,7 @@ export class CrearUnidadDocumentalComponent implements OnInit {
                                         codDependencia:this.task.variables.codDependencia,
                                         idSolicitante: this.task.variables.idSolicitante
                                       });
-
-
-
-   }
+  }
 
    finalizar(){
 
@@ -113,4 +115,8 @@ export class CrearUnidadDocumentalComponent implements OnInit {
 
      });
    }
+
+   ngOnDestroy(){
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
 }

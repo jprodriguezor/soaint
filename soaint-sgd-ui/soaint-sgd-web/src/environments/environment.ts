@@ -10,7 +10,6 @@
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
 const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-const hostMock = 'http://localhost:9000/soaint-sgd-web-api-gateway/apis';
 const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 

@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ArchivarDocumentoModel} from "./models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "./models/solicitud-creacio-ud.model";
 import {SolicitudCreacionUdService} from "../../../../infrastructure/api/solicitud-creacion-ud.service";
-import {UnidadDocumentalApiService} from "../../../../infrastructure/api/unidad-documental.api";
 import {Sandbox as TaskSandbox} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox";
 import {TareaDTO} from "../../../../domain/tareaDTO";
 import {State as RootState} from "../../../../infrastructure/redux-store/redux-reducers";
@@ -11,18 +10,16 @@ import {getActiveTask} from "../../../../infrastructure/state-management/tareasD
 import {Subscription} from "rxjs/Subscription";
 import {SeleccionarUnidadDocumentalComponent} from "./components/seleccionar-unidad-documental/seleccionar-unidad-documental.component";
 import {ArchivarDocumentoApiService} from "../../../../infrastructure/api/archivar-documento.api";
-import {StatusDTO} from "../../produccion-documental/models/StatusDTO";
 import {isNullOrUndefined} from "util";
-import {DependenciaDTO} from "../../../../domain/dependenciaDTO";
 import {
   getAuthenticatedFuncionario,
   getSelectedDependencyGroupFuncionario
 } from "../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import moment = require("moment");
 import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 import {go} from "@ngrx/router-store";
 import {ROUTES_PATH} from "../../../../app.route-names";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-archivar-documento',
@@ -62,9 +59,8 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
   ngOnInit() {
 
-    this.afterTaskCompleteSubscriptor =  afterTaskComplete.subscribe( t => this._store.dispatch(go(['/' + ROUTES_PATH.workspace])));
-
-    this._store.select(getActiveTask).subscribe(task => {
+   this.subscriptions.push(
+     this._store.select(getActiveTask).subscribe(task => {
 
        if(task){
 
@@ -76,15 +72,15 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
              if(!isNullOrUndefined(response.archivarDocumentoModel))
 
-             this.archivarDocumentoModel = response.archivarDocumentoModel;
+               this.archivarDocumentoModel = response.archivarDocumentoModel;
            }
          })
        }
-     });
+     })
+  );
 
-    this._store.select(getSelectedDependencyGroupFuncionario).subscribe( () => this.currentPage = 1);
-
-  }
+   this.subscriptions.push(this._store.select(getSelectedDependencyGroupFuncionario).subscribe( () => this.currentPage = 1));
+   }
 
   next(){
     this.currentPage++;
@@ -112,32 +108,29 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
    }
   solicitarCreacionUd(){
 
-    this.solicitudUDModel.Solicitar().subscribe( () => {
+    this.subscriptions.push(this.solicitudUDModel.Solicitar().subscribe( () => {
 
       this.solicitudUDModel.Solicitudes = [];
 
-
-
-      combineLatest(this._store.select(getSelectedDependencyGroupFuncionario)
-        ,this._store.select(getAuthenticatedFuncionario)).subscribe(([dependencia,funcionario]) => {
-         this._taskSandbox.completeTaskDispatch({
-           idProceso: this.task.idProceso,
-           idDespliegue: this.task.idDespliegue,
-           idTarea: this.task.idTarea,
-           parametros: {
-            creacionUD: 1,
-            codSede: dependencia.codSede,
-            codDependencia: dependencia.codigo,
-            idSolicitante:funcionario.id,
-            fechaSolicitud: moment().format('YYYY-MM-DD')
-          }
-        });
-      });
-
-
-
+      this.subscriptions.push(
+        combineLatest(this._store.select(getSelectedDependencyGroupFuncionario)
+          ,this._store.select(getAuthenticatedFuncionario)).subscribe(([dependencia,funcionario]) => {
+          this._taskSandbox.completeTaskDispatch({
+            idProceso: this.task.idProceso,
+            idDespliegue: this.task.idDespliegue,
+            idTarea: this.task.idTarea,
+            parametros: {
+              creacionUD: 1,
+              codSede: dependencia.codSede,
+              codDependencia: dependencia.codigo,
+              idSolicitante:funcionario.id,
+              fechaSolicitud: moment().format('YYYY-MM-DD')
+            }
+          });
+        })
+      );
       this.selectUd.form.reset();
-    });
+    }));
   }
 
   toggleEnableButtonNext(section:string){
@@ -166,8 +159,8 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(): void {
 
-     this.afterTaskCompleteSubscriptor.unsubscribe();
+    // this.afterTaskCompleteSubscriptor.unsubscribe();
 
-    // this.subscriptions.forEach( subscrption => subscrption.unsubscribe());
+    this.subscriptions.forEach( subscrption => subscrption.unsubscribe());
   }
 }

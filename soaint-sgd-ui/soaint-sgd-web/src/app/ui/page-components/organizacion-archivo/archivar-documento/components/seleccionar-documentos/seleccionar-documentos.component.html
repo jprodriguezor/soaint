@@ -95,7 +95,33 @@
     </div>
   </div>
   <div class="ui-g-12 padding-top">
-    <app-lista-documentos-archivados ></app-lista-documentos-archivados>
+    <p-panel header="Documentos archivados">
+      <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="documentosArchivados$|async">
+        <p-column >
+          <ng-template  pTemplate="body" let-index="rowIndex">
+            {{index}}
+          </ng-template>
+        </p-column>
+        <p-column header="Identificador de unidad documental" [sortable]="true" field="id"></p-column>
+        <p-column header="Nombre de unidad documental" [sortable]="true" field="nombreUnidadDocumental"></p-column>
+        <p-column header="Serie/subserie" [sortable]="true" >
+          <ng-template let-col let-row="rowData" pTemplate="body">
+            {{row.Serie}}/{{row.subSerie}}
+          </ng-template>
+        </p-column>
+        <p-column header="Fecha y hora de archivo" [sortable]="true">
+          <ng-template let-col let-row="rowData" pTemplate="body">
+            {{ row.fechaCreacion | date:'dd/MM/yyyy'}}
+          </ng-template>
+        </p-column>
+        <p-column header="identificacion documento" [sortable]="true" field="idDocumento">
+
+        </p-column>
+        <p-column header="Tipologia documental" [sortable]="true" field="tipologiaDocumental"></p-column>
+        <p-column header="Nombre/ Asunto Documento" [sortable]="true" field="nombreDocumento"></p-column>
+      </p-dataTable>
+    </p-panel>
   </div>
 </div>
 

@@ -11,14 +11,13 @@ import {getSelectedDependencyGroupFuncionario} from "../../../../../../../infras
 })
 export class ListaDocumentosArchivadosComponent implements OnInit {
 
-   listaDocumentos$:Observable<any[]> = Observable.empty();
+  @Input() listaDocumentos$:Observable<any[]> = Observable.empty();
 
-  constructor(private _udService:UnidadDocumentalApiService,private _store:Store<RootState> ) { }
+  constructor( ) { }
 
   ngOnInit() {
 
-    this.listaDocumentos$ = this._store.select(getSelectedDependencyGroupFuncionario)
-                              .switchMap( dependencia => this._udService.listarDocumentosArchivadosPorDependencia(dependencia.codigo), (outer,inner) => inner)
+
 
   }
 

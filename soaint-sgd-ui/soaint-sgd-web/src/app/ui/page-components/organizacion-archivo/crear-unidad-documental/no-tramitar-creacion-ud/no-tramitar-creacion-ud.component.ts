@@ -28,7 +28,7 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
   motivo$:Observable<ConstanteDTO[]>;
 
-  unsubscriber:Subscription;
+  subscriptions:Subscription[];
 
   @Input() solicitudModel:SolicitudCreacioUdModel;
 
@@ -85,13 +85,17 @@ ngOnChanges(){
 
        solicitud.accion = "No Tramitar UD";
 
-        this._solicitudService.actualizarSolicitudes(solicitud)
-         .subscribe(() => {
+       this.subscriptions.push(
+         this._solicitudService.actualizarSolicitudes(solicitud)
+           .subscribe(() => {
 
-           this.onNoTramitarUnidadDocumental.emit();
+             this.onNoTramitarUnidadDocumental.emit();
 
-            this.solicitudModel.removeAtIndex();
-         }, error => {});
+             this.solicitudModel.removeAtIndex();
+           }, error => {})
+       );
+
+
      },
      reject: () => {}
    });
@@ -100,12 +104,14 @@ ngOnChanges(){
 
     this._sandbox.loadMotivoNoCreacionUdDispatch();
 
-    this.unsubscriber = this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
+    this.subscriptions.push(
+      this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
+    ) ;
   }
 
   ngOnDestroy(): void {
 
-    this.unsubscriber.unsubscribe();
+    this.subscriptions.forEach( subscription => subscription.unsubscribe());
   }
 
 

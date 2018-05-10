@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../domain/constanteDTO';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -39,7 +39,9 @@ export class DatosRemitenteComponent implements OnInit {
   constructor(private _store: Store<State>,
               private formBuilder: FormBuilder,
               private _funcionarioSandbox: FuncionariosSandbox,
-              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox) {
+              private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
+              private changeDetector:ChangeDetectorRef
+              ) {
   }
 
   ngOnInit() {
@@ -54,7 +56,6 @@ export class DatosRemitenteComponent implements OnInit {
 
 
     this.sedeAdministrativaSuggestions$
-
       .subscribe(sedes => {
 
         combineLatest(this._store.select(getSelectedDependencyGroupFuncionario),this._store.select(getAuthenticatedFuncionario))
@@ -70,11 +71,9 @@ export class DatosRemitenteComponent implements OnInit {
 
       });
 
-
-
    this.listenForChanges();
 
-
+     this.changeDetector.detectChanges();
   }
 
   initForm() {

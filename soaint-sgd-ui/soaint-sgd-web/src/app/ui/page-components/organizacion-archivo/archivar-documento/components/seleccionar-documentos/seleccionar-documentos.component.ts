@@ -73,29 +73,30 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   private FillListasDocumentos(){
 
-    const observable = this._store.select(getSelectedDependencyGroupFuncionario).share();
+    const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
     this.setDocumentosPorArvichar(observable);
 
-    this.documentosArchivados$ = observable.switchMap(dependencia => this._udService
-      .listarDocumentosArchivadosPorDependencia(dependencia));
+    this.documentosArchivados$ = observable.switchMap(dependencia =>  this._udService
+      .listarDocumentosArchivadosPorDependencia(dependencia.codigo));
   }
 
   private setDocumentosPorArvichar(observable:Observable<DependenciaDTO>){
 
-    observable.switchMap(dependencia => {
+    this.subscriptions.push(
+      observable.switchMap(dependencia => {
 
-      return this._udService.listarDocumentosPorArchivar(dependencia.codigo)
-        .map( response => response.documentoDTOList.map( doc => {
+        return this._udService.listarDocumentosPorArchivar(dependencia.codigo)
+          .map( response => response.documentoDTOList.map( doc => {
 
-          doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
-          doc.isAttachment = true;
-          return doc;
-        }),(outer,inner) => inner);
-    })
-      .subscribe(documentos => this.documentos = documentos);
-
-  }
+            doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
+            doc.isAttachment = true;
+            return doc;
+          }),(outer,inner) => inner);
+      })
+        .subscribe(documentos => this.documentos = documentos)
+    );
+    }
 
   toggleDocuments(event:any,checked:boolean){
 
@@ -126,6 +127,7 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
     console.log("enter to method");
 
+    this.subscriptions.push(
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependecia => {
 
         const formData = new FormData();
@@ -137,8 +139,11 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
         formData.append("codigoDependencia",dependecia.codigo);
 
-        this._udService.subirDocumentosParaArchivar(formData).subscribe();
-      });
+        this.subscriptions.push( this._udService.subirDocumentosParaArchivar(formData).subscribe());
+      })
+    );
+
+
   }
 
   eliminarDocumento(idEcm,index){
@@ -171,7 +176,7 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   ngOnDestroy(): void {
 
-    //this.subscriptions.forEach( subscription => subscription.unsubscribe());
+    this.subscriptions.forEach( subscription => subscription.unsubscribe());
   }
 
 }

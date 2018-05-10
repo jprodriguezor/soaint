@@ -68,7 +68,7 @@ export class UnidadDocumentalApiService {
   listarDocumentosArchivadosPorDependencia(codDependencia): Observable<any[]>{
 
     return this._api.list(environment.listar_documentos_archivados+codDependencia)
-               .map(response => response.documentoDTOList);
+               .map(response => response.response.documentos);
   }
 
   subirDocumentosParaArchivar(documentos: FormData):Observable<any>{
@@ -81,7 +81,7 @@ export class UnidadDocumentalApiService {
       codMensaje: '00000',
       contenidoDependenciaTrdDTOS: null,
       documentoDTOList: null,
-      mensaje: 'Operación completada satisfactoriamente',
+      mensaje: 'Operaciï¿½n completada satisfactoriamente',
       response: null,
     });
   }

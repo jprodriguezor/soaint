@@ -103,7 +103,7 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
   }
 
 
-  docLoaded() {
+  docLoaded() { console.log("Probando");
     this.loadingService.dismissLoading();
   }
 
