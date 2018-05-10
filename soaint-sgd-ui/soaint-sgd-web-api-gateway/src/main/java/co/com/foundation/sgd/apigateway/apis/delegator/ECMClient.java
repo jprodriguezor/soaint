@@ -10,6 +10,7 @@ import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,12 +198,36 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response subirDocumentosPorArchivar(List<DocumentoDTO> documentoDTOS) {
+    public Response subirDocumentosPorArchivar(MultipartFormDataInput formDataInput) {
         log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/subirDocumentosTemporalesECM")
-                .request()
-                .post(Entity.json(documentoDTOS));
+        if (null == formDataInput) {
+            log.error("Esta vacia la lista Multipart");
+            return Response.serverError().build();
+        }
+        try {
+            final Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
+            final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
+            final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
+            final Collection<InputPart> values = _files.values();
+
+            for (InputPart inputPart:
+                    values) {
+                final DocumentoDTO tmpDto = new DocumentoDTO();
+                InputStream result = inputPart.getBody(InputStream.class, null);
+                tmpDto.setDocumento(IOUtils.toByteArray(result));
+                tmpDto.setCodigoDependencia(dependencyCode);
+                tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
+                documentoDTOS.add(documentoDTOS.size(), tmpDto);
+            }
+            final WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            return wt.path("/subirDocumentosTemporalesECM")
+                    .request()
+                    .post(Entity.json(documentoDTOS));
+
+        } catch (IOException e) {
+            log.error("Error del Sistema {}", e.getMessage());
+            return Response.serverError().build();
+        }
     }
 
     public Response restablecerArchivarDocumentoTask(String idproceso, String idtarea) {

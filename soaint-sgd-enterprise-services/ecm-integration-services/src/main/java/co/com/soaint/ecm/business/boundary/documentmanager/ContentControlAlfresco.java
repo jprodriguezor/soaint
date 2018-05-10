@@ -1985,16 +1985,34 @@ public class ContentControlAlfresco implements ContentControl {
             throw new Exception("No se ha especificado el codigo de la dependencia");
         }
         final List<UnidadDocumentalDTO> listaDocumentosArchivados = getListaDocumentosArchivados(codigoDependencia, session);
-        final List<DocumentoDTO> response = new ArrayList<>();
+        final List<Map<String, Object>> mapList = new ArrayList<>();
         listaDocumentosArchivados.forEach(unidadDocumentalDTO -> {
             final List<DocumentoDTO> listaDocumentos = unidadDocumentalDTO.getListaDocumentos();
-            if (!listaDocumentos.isEmpty()) {
-                response.addAll(unidadDocumentalDTO.getListaDocumentos());
-            }
+            listaDocumentos.forEach(documentoDTO -> {
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", unidadDocumentalDTO.getId());
+                item.put("nombreUnidadDocumental", unidadDocumentalDTO.getNombreUnidadDocumental());
+                final Optional<Folder> optionalFolder = getUDFolderById(unidadDocumentalDTO.getId(), session);
+                item.put("subSerie", "");
+                optionalFolder.ifPresent(folder -> {
+                    final Folder folderParent = folder.getFolderParent();
+                    final String ss = folderParent.getName();
+                    item.put("subSerie", ss);
+                });
+                item.put("fechaCreacion", documentoDTO.getFechaCreacion());
+                item.put("idDocumento", StringUtils.isEmpty(documentoDTO.getNroRadicado()) ?
+                        documentoDTO.getIdDocumento() : documentoDTO.getNroRadicado());
+                item.put("tipologiaDocumental", documentoDTO.getTipologiaDocumental());
+                item.put("nombreDocumento", documentoDTO.getNombreDocumento());
+
+                mapList.add(mapList.size(), item);
+            });
         });
+        final Map<String, Object> response = new HashMap<>();
+        response.put("documentos", mapList);
         return MensajeRespuesta
                 .newInstance()
-                .documentoDTOList(response)
+                .response(response)
                 .codMensaje(ConstantesECM.SUCCESS_COD)
                 .mensaje(ConstantesECM.SUCCESS).build();
     }
@@ -2118,22 +2136,20 @@ public class ContentControlAlfresco implements ContentControl {
                 queryResults) {
             final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
             final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-            String idUnidadDocumental = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
-            idUnidadDocumental = StringUtils.isEmpty(idUnidadDocumental) ? "" : idUnidadDocumental.trim();
-            if ("".equals(idUnidadDocumental)) {
-                final List<DocumentoDTO> documentsFromFolder = getDocumentsFromFolder(udFolder);
-                if (!documentsFromFolder.isEmpty()) {
-                    final UnidadDocumentalDTO dto = transformarUnidadDocumental(udFolder);
-                    documentsFromFolder.forEach(documentoDTO -> {
-                        String idDoc = !StringUtils.isEmpty(documentoDTO.getIdDocumento()) ?
-                                documentoDTO.getIdDocumento() : documentoDTO.getIdDocumentoPadre();
-                        if (StringUtils.isEmpty(documentoDTO.getNroRadicado())) {
-                            documentoDTO.setNroRadicado(StringUtils.isEmpty(idDoc) ? "" : idDoc);
-                        }
-                    });
-                    dto.setListaDocumentos(documentsFromFolder);
-                    unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), dto);
-                }
+            final String idUnidadDocumental = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
+            final Optional<UnidadDocumentalDTO> optionalDto = getUDById(idUnidadDocumental, true, session);
+
+            if (optionalDto.isPresent()) {
+                final UnidadDocumentalDTO dto = optionalDto.get();
+                final List<DocumentoDTO> listaDocumentos = dto.getListaDocumentos();
+                listaDocumentos.forEach(documentoDTO -> {
+                    String idDoc = !StringUtils.isEmpty(documentoDTO.getIdDocumento()) ?
+                            documentoDTO.getIdDocumento() : documentoDTO.getIdDocumentoPadre();
+                    if (StringUtils.isEmpty(documentoDTO.getNroRadicado())) {
+                        documentoDTO.setNroRadicado(StringUtils.isEmpty(idDoc) ? "" : idDoc);
+                    }
+                });
+                unidadDocumentalDTOS.add(unidadDocumentalDTOS.size(), dto);
             }
         }
         return unidadDocumentalDTOS;
