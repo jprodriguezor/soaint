@@ -9,7 +9,6 @@ import lombok.ToString;
  */
 @Getter
 @AllArgsConstructor
-@ToString
 public enum EstadosEnum {
 
     CREADO("Created"), LISTO("Ready"), RESERVADO("Reserved"), ENPROGRESO("InProgress"), SUSPENDIDO("Suspended"), COMPLETADO("Completed"), FALLIDO("Failed"), ERROR("Error"), SALIDO("Exited"), OBSOLETO("Obsolete");
