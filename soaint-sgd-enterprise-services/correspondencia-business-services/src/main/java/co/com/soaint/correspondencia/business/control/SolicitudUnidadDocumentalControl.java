@@ -130,7 +130,7 @@ public class SolicitudUnidadDocumentalControl {
         try {
             log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo");
 
-            if (fechaIni != null && fechaIni != null) {
+            if (fechaIni != null && fechaFin != null) {
                 if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
                     throw ExceptionBuilder.newBuilder()
                             .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
