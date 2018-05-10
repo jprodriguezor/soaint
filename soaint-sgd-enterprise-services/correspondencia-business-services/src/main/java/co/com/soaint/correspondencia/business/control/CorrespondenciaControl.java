@@ -224,16 +224,16 @@ public class CorrespondenciaControl {
             String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
                     comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
-            String tipoRadicacion = "";
-            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-            }
+//            String tipoRadicacion = "";
+//            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+//                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+//                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+//                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+//            }
 
             correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
                     correspondencia.getCodSede(),
-                    tipoRadicacion,
+                    correspondencia.getCodTipoCmc(),
                     String.valueOf(anno), consecutivo));
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
