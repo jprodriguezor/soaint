@@ -118,13 +118,9 @@ export class DatosRemitenteComponent implements OnInit,OnDestroy {
 
         const funcionario = ViewFilterHook.applyFilter('rdpdr-funcionario-selected',false);
 
-        console.log('funcionario',funcionario);
-
         if( funcionario !== false){
 
           this.funcionariosSuggestions$.subscribe( funcs =>{
-
-            console.log("funcionarios",funcs);
 
             let found = funcs.find( f => f.id == funcionario.id);
 
