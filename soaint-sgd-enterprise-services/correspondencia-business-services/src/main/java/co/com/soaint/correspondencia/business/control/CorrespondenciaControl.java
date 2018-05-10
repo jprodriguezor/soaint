@@ -1034,7 +1034,6 @@ public class CorrespondenciaControl {
                         .put(Entity.json(dto));
             });
 
-
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
