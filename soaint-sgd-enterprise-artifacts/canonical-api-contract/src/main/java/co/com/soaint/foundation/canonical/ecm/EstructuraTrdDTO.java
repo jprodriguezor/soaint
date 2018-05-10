@@ -2,6 +2,7 @@
 package co.com.soaint.foundation.canonical.ecm;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/estructuraTrd/1.0.0")
+@ToString
 public class EstructuraTrdDTO {
 
     private List<OrganigramaDTO>  organigramaItemList;

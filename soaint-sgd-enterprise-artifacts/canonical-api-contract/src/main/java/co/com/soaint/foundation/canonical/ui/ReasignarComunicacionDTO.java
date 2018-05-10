@@ -14,6 +14,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/reasignar-comunicacion/1.0.0")
+@ToString
 public class ReasignarComunicacionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

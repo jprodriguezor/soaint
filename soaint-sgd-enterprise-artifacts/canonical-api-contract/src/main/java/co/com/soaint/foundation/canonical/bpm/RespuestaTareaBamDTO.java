@@ -1,12 +1,8 @@
 package co.com.soaint.foundation.canonical.bpm;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -17,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/respuestatarea/1.0.0")
+@ToString
 public class RespuestaTareaBamDTO {
 
     private int pk;

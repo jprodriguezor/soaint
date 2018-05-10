@@ -6,9 +6,9 @@ package co.com.soaint.foundation.canonical.ecm;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,7 @@ import java.util.Map;
 @Data
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/mensajeRespuesta/1.0.0")
+@ToString
 public class MensajeRespuesta {
 
     private String codMensaje;
