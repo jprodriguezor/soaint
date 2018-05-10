@@ -398,6 +398,17 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
+    public void testObtenerDocumentosArchivadosSuccess() {
+        try {
+            assertEquals("0000", contentControlAlfresco.obtenerDocumentosArchivados("10001040", conexion.getSession()).getCodMensaje());
+           contentControlAlfresco.obtenerDocumentosArchivados("", conexion.getSession());
+        } catch (Exception e) {
+            assertEquals("No se ha especificado el codigo de la dependencia",e.getMessage());
+        }
+
+    }
+
+    @Test
     public void getDocumentsFromFolder() {
 
     }
