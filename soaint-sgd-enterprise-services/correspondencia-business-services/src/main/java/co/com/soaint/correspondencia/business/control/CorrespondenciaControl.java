@@ -1025,6 +1025,7 @@ public class CorrespondenciaControl {
             WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
             correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
+                log.info("Se modificara el documento con NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
                 co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
                         .nroRadicado(correspondencia.getNroRadicado())
                         .idDocumento(ppdDoc.getIdeEcm())
@@ -1032,6 +1033,7 @@ public class CorrespondenciaControl {
                 Response response = wt.path("/modificarMetadatosDocumentoECM/")
                         .request()
                         .put(Entity.json(dto));
+                log.info("Response del cambio de radicado " + response.toString());
             });
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),

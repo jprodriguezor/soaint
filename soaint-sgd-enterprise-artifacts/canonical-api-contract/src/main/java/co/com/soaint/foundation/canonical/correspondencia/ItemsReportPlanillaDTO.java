@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +19,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
+@ToString
 public class ItemsReportPlanillaDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

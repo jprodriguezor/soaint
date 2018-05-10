@@ -1,14 +1,9 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ppd-documento/1.0.0")
+@ToString
 public class PpdDocumentosFullDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
