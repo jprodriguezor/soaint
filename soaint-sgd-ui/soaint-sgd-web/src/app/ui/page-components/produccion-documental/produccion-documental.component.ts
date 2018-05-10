@@ -169,7 +169,7 @@ export class ProduccionDocumentalComponent implements OnInit, OnDestroy, TaskFor
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: currentStatus || this.getCurrentStatus(),
     };
-    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe(()=>{});
+    this._produccionDocumentalApi.guardarEstadoTarea(tareaDTO).subscribe();
   }
 
   updateEstadoTarea() {

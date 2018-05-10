@@ -13,6 +13,7 @@ import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/soli
 import {ConstanteDTO} from "../../../../../domain/constanteDTO";
 import {Observable} from "rxjs/Observable";
 import  {Sandbox as ConstanteSandbox} from "../../../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox";
+import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
 
 @Component({
   selector: 'app-no-tramitar-creacion-ud',
@@ -29,7 +30,7 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
   unsubscriber:Subscription;
 
-  @Input() solicitud:SolicitudCreacionUDDto;
+  @Input() solicitudModel:SolicitudCreacioUdModel;
 
   @Output() onNoTramitarUnidadDocumental:EventEmitter<any> = new EventEmitter;
 
@@ -54,11 +55,16 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
 ngOnChanges(){
 
+    if(this.solicitudModel.SelectedIndex == -1)
+      return;
+
+    const solicitud = this.solicitudModel.SolicitudSelected;
+
    this.form.setValue({
-     'identificador':this.solicitud.id,
-     'nombre':this.solicitud.nombreUnidadDocumental,
-     'descriptor1':this.solicitud.descriptor1,
-     'descriptor2':this.solicitud.descriptor2,
+     'identificador':solicitud.id,
+     'nombre':solicitud.nombreUnidadDocumental,
+     'descriptor1':solicitud.descriptor1,
+     'descriptor2':solicitud.descriptor2,
      'motivo' : null,
      'observaciones': null,
    });
@@ -72,14 +78,19 @@ ngOnChanges(){
      icon: 'fa fa-question-circle',
      accept: () => {
 
+       const solicitud = this.solicitudModel.SolicitudSelected;
+
        if(!isNullOrUndefined(this.form.get('motivo')))
-         this.solicitud.motivo =  this.form.get('motivo').value;
+         solicitud.motivo =  this.form.get('motivo').value;
 
-       this.solicitud.accion = "No Tramitar UD";
+       solicitud.accion = "No Tramitar UD";
 
-        this._solicitudService.actualizarSolicitudes(this.solicitud)
+        this._solicitudService.actualizarSolicitudes(solicitud)
          .subscribe(() => {
-           this.onNoTramitarUnidadDocumental.emit(this.solicitud);
+
+           this.onNoTramitarUnidadDocumental.emit();
+
+            this.solicitudModel.removeAtIndex();
          }, error => {});
      },
      reject: () => {}

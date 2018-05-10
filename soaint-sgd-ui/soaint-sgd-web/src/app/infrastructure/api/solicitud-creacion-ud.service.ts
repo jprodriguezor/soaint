@@ -21,38 +21,23 @@ private task:TareaDTO;
     this._store.select(getActiveTask).subscribe(activeTask => {this.task = activeTask});
 
   }
-  solicitarUnidadDocumental(listaSolicitudes:any){
+  solicitarUnidadDocumental(listaSolicitudes:any):Observable<any>{
 
-
-    if(this.task.idProceso == "process.archivar-documento"){
-
-      return this._api.post(environment.crear_solicitud_ud,listaSolicitudes)
-        .subscribe(() => {
-
-          this._taskSandbox.completeTaskDispatch({
-            idProceso: this.task.idProceso,
-            idDespliegue: this.task.idDespliegue,
-            idTarea: this.task.idTarea,
-            parametros: {
-              creacionUD: 1,
-            }
-          });
-        });
-
-
-
-    }
+      return this._api.post(environment.crear_solicitud_ud,listaSolicitudes);
   }
 
   crearSolicitudCreacionUD(payload:any):Observable<any>{
 
-   // return  Observable.of(oa_dataSource.crear_solicitud_ud);
+  // return  Observable.of(oa_dataSource.crear_solicitud_ud);
+
+    console.log(payload);
 
     return this._api.post(environment.crear_solicitud_ud,payload);
   }
 
   listarSolicitudes(payload:any):Observable<any>{
-    return this._api.list(environment.listar_solicitud_ud,payload);
+    return this._api.list(environment.listar_solicitud_ud,payload)
+      .map(response => response.solicitudesUnidadDocumentalDTOS);
   }
 
   actualizarSolicitudes(payload:any):Observable<any>{

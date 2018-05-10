@@ -78,6 +78,8 @@ import {SeleccionarDocumentosComponent} from "./ui/page-components/organizacion-
 import {DireccionToTextPipe} from './ui/bussiness-components/datos-direccion/direccion-to-text.pipe';
 import { DisposicionFinalComponent } from './ui/page-components/disposicion-final/disposicion-final.component';
 import {AdjuntarDocumentoComponent} from "./ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component";
+import {ArchivarDocumentoApiService} from "./infrastructure/api/archivar-documento.api";
+import {FuncionariosService} from "./infrastructure/api/funcionarios.service";
 
 @NgModule({
   imports: [
@@ -208,6 +210,8 @@ import {AdjuntarDocumentoComponent} from "./ui/page-components/radicacion-salida
     SolicitudCreacionUdService,
     RadicacionSalidaService,
     UnidadDocumentalApiService,
+    ArchivarDocumentoApiService,
+    FuncionariosService,
     customHttpProvider()
   ],
   bootstrap: [AppComponent]

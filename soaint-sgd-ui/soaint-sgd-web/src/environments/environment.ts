@@ -3,15 +3,14 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
 // const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-const hostMock = 'http://localhost:9000/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 
 export const environment = {
@@ -127,7 +126,7 @@ export const environment = {
     // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
-  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+  archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/subir-documentos-unidad-documental`,
   gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
   detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
   listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
@@ -135,6 +134,8 @@ export const environment = {
   crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
   listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
+  restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
+  subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
 };
 
 export const process_info = {
