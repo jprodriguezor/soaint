@@ -1,64 +1,4 @@
 <div class="ui-g ui-fluid">
-  <div class="ui-g-12" >
-    <div class="card card-w-title">
-      <p-panel header="Informacion solicitud unidad documental" [style]="{border: 'none'}">
-        <div class="ui-g ui-fluid" [formGroup]="form" >
-          <div class="ui-g-9 ui-sm-12">
-            <div class="ui-g-6 ui-sm-6">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="sede">Sede Administrativa</label>
-                </div>
-                <div class="ui-g-12">
-                  <input type="text" pInputText  id="sede" formControlName="sede" >
-                </div>
-              </div>
-            </div>
-            <div class="ui-g-6 ui-sm-6">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="dependencia">Dependencia</label>
-                </div>
-                <div class="ui-g-12">
-                  <input type="text" pInputText  id="dependencia" formControlName="dependencia"  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="ui-g-12">
-            <div class="ui-g-3 ui-sm-6">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="sede">Fecha Inicial</label>
-                </div>
-                <div class="ui-g-12">
-                  <p-calendar formControlName="fechaInicio"></p-calendar>
-                </div>
-              </div>
-            </div>
-            <div class="ui-g-3 ui-sm-6">
-              <div class="ui-g form-group">
-                <div class="ui-g-12">
-                  <label for="sede">Fecha Final</label>
-                </div>
-                <div class="ui-g-12">
-                  <p-calendar formControlName="fechaFin"></p-calendar>
-                </div>
-              </div>
-            </div>
-            <div class="ui-g-5 ui-sm-5">
-              <div class="ui-g form-group" style="position: relative;height: 70px;">
-                <button type="button" label="Filtrar" pButton  style="width:auto;bottom:0;position: absolute;" (click)="filtrarSolicitud()"></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </p-panel>
-    </div>
-  </div>
-</div>
-
-<div class="ui-g ui-fluid">
   <div class="ui-g-12">
     <div class="card card-w-title">
       <p-panel header="Unidades documentales solicitadas" [style]="{border: 'none'}">
@@ -87,8 +27,8 @@
           <p-column field="descriptor2" header="Descriptor 2"></p-column>
           <p-column field="observaciones" header="Observaciones"></p-column>
           <p-column  header="Accion">
-            <ng-template pTemplate="body" let-row="rowData">
-              <p-dropdown  (onChange)="selectAction($event)"
+            <ng-template pTemplate="body" let-row="rowData" let-index="rowIndex">
+              <p-dropdown  (onChange)="selectAction(index,$event)"
                            [options] = '[{value:null,label:"Seleccione una accion"},{value:$action.createUD,label:"Crear Unidad Documental"},{value:$action.noTramiteUD,label:"No tramitar UD"}]'
                            [style]="{width:'100%'}"
                            [disabled] = "solicitudSelected === undefined || row.nro !== solicitudSelected.nro"
