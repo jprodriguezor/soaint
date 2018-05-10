@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.bpm;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Map;
@@ -18,6 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/entradatarea/1.0.0")
+@ToString
 public class EntradaTareaDTO {
     private Long idTarea;
     private String usuario;

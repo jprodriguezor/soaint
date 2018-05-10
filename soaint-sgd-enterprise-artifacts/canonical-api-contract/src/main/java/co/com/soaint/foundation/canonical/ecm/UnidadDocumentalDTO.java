@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.ecm;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Calendar;
@@ -24,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
+@ToString
 public class UnidadDocumentalDTO {
 
     private String accion;
