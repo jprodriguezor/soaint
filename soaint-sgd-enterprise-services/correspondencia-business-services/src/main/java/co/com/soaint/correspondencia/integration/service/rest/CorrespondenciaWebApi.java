@@ -21,7 +21,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.xml.ws.Response;
+import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -227,10 +227,13 @@ public class CorrespondenciaWebApi {
      */
     @POST
     @Path("/correspondencia/crear-solicitud-um")
-    public ResponseEntity<ResponseStatus> crearSolicitudUnidadDocumental(@Valid SolicitudesUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
+    public Response crearSolicitudUnidadDocumental(@Valid SolicitudesUnidadDocumentalDTO solicitudUnidadDocumental) throws BusinessException, SystemException {
         log.info("processing rest request - crearSolicitudUnidadDocumental");
         boundary.crearSolicitudUnidadDocumental(solicitudUnidadDocumental);
-        return new ResponseEntity<>( ResponseStatus.of(true), HttpStatus.CREATED );
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(ResponseStatus.of(true))
+                .build();
     }
 
     /**
@@ -311,7 +314,7 @@ public class CorrespondenciaWebApi {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
 
-        return SolicitudUnidadDocumentalDTO.newInstance().build();
-//        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+//        return SolicitudUnidadDocumentalDTO.newInstance().build();
+        return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 }

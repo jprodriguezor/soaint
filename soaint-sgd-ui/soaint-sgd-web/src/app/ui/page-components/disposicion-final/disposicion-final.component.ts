@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, IterableDiffers } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { TareaDTO } from 'app/domain/tareaDTO';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
@@ -10,6 +10,11 @@ import {VALIDATION_MESSAGES} from 'app/shared/validation-messages';
 import {Subscription} from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
 import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-documentales/models/enums/unidad.documental.accion.enum';
+import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
+import { Store } from '@ngrx/store';
+import { State } from 'app/infrastructure/redux-store/redux-reducers';
+import { SerieDTO } from 'app/domain/serieDTO';
+import { SubserieDTO } from 'app/domain/subserieDTO';
 
 @Component({
   selector: 'disposicion-final',
@@ -20,40 +25,42 @@ import { UnidadDocumentalAccion } from 'app/ui/page-components/unidades-document
 export class DisposicionFinalComponent implements OnInit, OnDestroy {
 
     state: StateUnidadDocumentalService;
-    stacked: boolean;
-
-    unidadesDocumentales$: Observable<UnidadDocumentalDTO[]> = Observable.of([]);
-
     // form
     formBuscar: FormGroup;
     validations: any = {};
     subscribers: Array<Subscription> = [];
-
-    listaDisposiciones: any[];
-    selectedItemsListaDisposiciones: any[];
-
-    // control de cambios en array
-    differ: any;
+    tipoDisposicion = '';
+    listadoSeries$: Observable<SerieDTO[]> = Observable.of([]);
+    listaDisposiciones: any[] = [
+      'Conservación total', 'Eliminar', 'Seleccionar', 'Microfilmar', 'Digitalizar', 'Todas'
+    ];
+    listaDisposicionesEjecutar: any[] = [
+      'Conservación total', 'Eliminar',
+    ];
+    
+    indexUnidadSeleccionada: number = null;
+    abrirNotas = false;
 
     constructor(
               private formBuilder: FormBuilder,
               private _changeDetectorRef: ChangeDetectorRef,
               private _unidadDocumentalStateService: StateUnidadDocumentalService,
               private fb: FormBuilder,
-              private _differs: IterableDiffers,
               private _detectChanges: ChangeDetectorRef,
+              private _store: Store<State>
             ) {
       this.state = _unidadDocumentalStateService;
     }
 
     ngOnInit() {      
       this.InitForm();
+      this.SetListadoSubscriptions();
       this.StateLoadData();
     }
 
     InitForm() {
       this.formBuscar = this.fb.group({
-       tipoDisposicionFinal: [null],
+       tiposDisposicionFinal: [null, [Validators.required]],
        sede: [null],
        dependencia: [null],
        serie: [null],
@@ -63,30 +70,36 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
        descriptor1: [''],
        descriptor2: [''],
       });
+      this.SetFormSubscriptions();
    }
 
     StateLoadData() {
       this.state.GetListadoSedes();
-      this.state.Listar(this.GetPayload());
+      this.state.ListadoUnidadDocumental = [];
     }
+
 
     ngOnDestroy() {
-
+      this.subscribers.forEach(obs => {
+        obs.unsubscribe();
+      });
     }
 
-    transponer() {
-        this.stacked = !this.stacked;
-    }
     ResetForm() {
       this.formBuscar.reset();
       this.state.ListadoSubseries = [];
+      this.state.ListadoSeries = [];
+      this.state.dependencias = [];
+      this.state.ListadoUnidadDocumental = [];
+      this.state.unidadesSeleccionadas = [];
+      this._detectChanges.detectChanges();
     }
 
     OnBlurEvents(control: string) {
       this.SetValidationMessages(control);
     }
   
-    SetValidationMessages(control: string) {
+  SetValidationMessages(control: string) {
       const formControl = this.formBuscar.get(control);
       if (formControl.touched && formControl.invalid) {
         const error_keys = Object.keys(formControl.errors);
@@ -95,7 +108,7 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
       } else {
           this.validations[control] = '';
       }
-    }
+  }
   
   SetFormSubscriptions() {
     this.subscribers.push(
@@ -107,58 +120,85 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
       this.subscribers.push(
         this.formBuscar.get('dependencia').valueChanges.distinctUntilChanged().subscribe(value => {
           this.formBuscar.controls['serie'].reset();   
-          this.state.ListadoSeries = [];      
-          this.state.GetListadosSeries(value.codigo);
-        }));
+          this.state.ListadoSeries = []; 
+          if(value) {
+              this.state.GetListadosSeries(value.codigo);
+          }
+      }));
       
       this.subscribers.push(
           this.formBuscar.get('serie').valueChanges.distinctUntilChanged().subscribe(value => {
-            this.formBuscar.controls['subserie'].reset();         
-            this.state.GetSubSeries(value, this.formBuscar.controls['dependencia'].value.codigo)
-            .subscribe(result => {
-              this.state.ListadoSubseries =  result;  
-              if(result.length) {
-                this.formBuscar.controls['subserie'].setValidators(Validators.required);
-                this.formBuscar.updateValueAndValidity();
-              }             
-             });;
+            this.formBuscar.controls['subserie'].reset(); 
+            const coddependencia = this.formBuscar.controls['dependencia'].value || null; 
+            if(coddependencia) {
+              this.state.GetSubSeries(value, coddependencia.codigo )
+              .subscribe(result => {
+                this.state.ListadoSubseries =  result;                          
+               });
+            }      
+
        }));
-        this.formBuscar.updateValueAndValidity();
   }
 
-  GetPayload(): UnidadDocumentalDTO {
-    
-            const payload: UnidadDocumentalDTO = {};
-    
-            if (this.formBuscar.controls['dependencia'].value) {
-                payload.codigoDependencia = this.formBuscar.controls['dependencia'].value;
-            }   
-            if (this.formBuscar.controls['serie'].value) {
-                payload.codigoSerie = this.formBuscar.controls['serie'].value;
-            }
-            if (this.formBuscar.controls['subserie'].value) {
-                payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
-            }
-            if (this.formBuscar.controls['identificador'].value) {
-                payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
-            }
-            if (this.formBuscar.controls['nombre'].value) {
-                payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
-            }
-            if (this.formBuscar.controls['descriptor1'].value) {
-                payload.descriptor1 = this.formBuscar.controls['descriptor1'].value;
-            }
-            if (this.formBuscar.controls['descriptor2'].value) {
-                payload.descriptor1 = this.formBuscar.controls['descriptor2'].value;
-            }
-    
-            return payload;
+  SetListadoSubscriptions() {
+    this.subscribers.push(this.state.ListadoActualizado$.subscribe(()=>{       
+      this._detectChanges.detectChanges();
+    }));
+  }
+
+  AplicarDisposicion() {
+    this.state.AplicarDisposicion(this.tipoDisposicion);
+  }
+
+  AgregarNotas(index: number) {
+    this.indexUnidadSeleccionada = index;
+    this.abrirNotas = true;
+  }
+
+
+  CerrarNotas() {
+    this.abrirNotas = false;
+  }
+
+  GetPayload(): UnidadDocumentalDTO {    
+        const payload: UnidadDocumentalDTO = {};
+
+        if (this.formBuscar.controls['tiposDisposicionFinal'].value) {
+          // payload.disposicion = this.formBuscar.controls['tiposDisposicionFinal'].value;
+        } 
+        if (this.formBuscar.controls['dependencia'].value) {
+          payload.codigoDependencia = this.formBuscar.controls['dependencia'].value;
+        }   
+        if (this.formBuscar.controls['serie'].value) {
+          payload.codigoSerie = this.formBuscar.controls['serie'].value;
         }
-  
-    ngDoCheck() {
-      const change = this.differ.diff(this.state.ListadoUnidadDocumental);
-      if (change) {
-        this._detectChanges.detectChanges();
+        if (this.formBuscar.controls['subserie'].value) {
+          payload.codigoSubSerie = this.formBuscar.controls['subserie'].value;
+        }
+        if (this.formBuscar.controls['identificador'].value) {
+          payload.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
+        }
+        if (this.formBuscar.controls['nombre'].value) {
+          payload.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;
+        }
+        if (this.formBuscar.controls['descriptor1'].value) {
+          payload.descriptor1 = this.formBuscar.controls['descriptor1'].value;
+        }
+        if (this.formBuscar.controls['descriptor2'].value) {
+          payload.descriptor1 = this.formBuscar.controls['descriptor2'].value;
+        }
+    
+        return payload;
+    }
+
+    Finalizar() {
+      if(this.state.ListadoUnidadDocumental.length) {
+        const item_pendiente = this.state.ListadoUnidadDocumental.find(_item => _item.aprobado === null || _item.aprobado === '');
+        if(item_pendiente) {
+          this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'Recuerde que debe aprobar/rechazar todas las unidades documentales'}));
+        } else {
+          this.state.ActualizarDisposicionFinal();
+        }
       }
     }
 

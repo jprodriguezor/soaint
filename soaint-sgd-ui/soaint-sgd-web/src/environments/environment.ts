@@ -135,6 +135,8 @@ export const environment = {
   crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
   listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
+  guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
+  
 };
 
 export const process_info = {
@@ -172,6 +174,10 @@ export const process_info = {
   },
   'process.archivar-documento': {
     displayValue : 'Organización y Archivo',
+    show: true,
+  },
+  'proceso.transferencia-documentales': {
+    displayValue : 'Transferencias documentales',
     show: true,
   }
 

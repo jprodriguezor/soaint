@@ -195,10 +195,7 @@ export class UnidadesDocumentalesComponent implements TaskForm, OnInit {
           this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
         } else if (this.task.variables.codDependencia) {
             this.codDependencia = this.task.variables.codDependencia
-            this.State.GetListadosSeries(this.codDependencia)
-            .subscribe(resp => {
-              this.State.ListadoSeries = resp;
-            });          
+            this.State.GetListadosSeries(this.codDependencia);
         }
     });
   }
