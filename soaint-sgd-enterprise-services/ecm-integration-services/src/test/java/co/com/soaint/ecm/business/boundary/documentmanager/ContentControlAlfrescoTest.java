@@ -62,6 +62,8 @@ public class ContentControlAlfrescoTest {
         documentoDTO.setDocumento(documento.getBytes());
         documentoDTO.setSede("1000_VICEPRESIDENCIA ADMINISTRATIVA");
         documentoDTO.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        documentoDTO.setCodigoSede("1000");
+        documentoDTO.setCodigoDependencia("10001040");
 
         //
         //crear conexion
@@ -98,6 +100,8 @@ public class ContentControlAlfrescoTest {
         documentoDTO1.setDocumento(documento.getBytes());
         documentoDTO1.setSede("1000_VICEPRESIDENCIA ADMINISTRATIVA");
         documentoDTO1.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        documentoDTO1.setCodigoSede("1000");
+        documentoDTO1.setCodigoDependencia("10001040");
         //Crear documentoDTO diferente
         documentoDTO2 = new DocumentoDTO();
         documentoDTO2.setTipoDocumento("application/pdf");
@@ -401,9 +405,28 @@ public class ContentControlAlfrescoTest {
     public void testObtenerDocumentosArchivadosSuccess() {
         try {
             assertEquals("0000", contentControlAlfresco.obtenerDocumentosArchivados("10001040", conexion.getSession()).getCodMensaje());
-           contentControlAlfresco.obtenerDocumentosArchivados("", conexion.getSession());
+            contentControlAlfresco.obtenerDocumentosArchivados("", conexion.getSession());
         } catch (Exception e) {
-            assertEquals("No se ha especificado el codigo de la dependencia",e.getMessage());
+            assertEquals("No se ha especificado el codigo de la dependencia", e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void testSubirDocumentosTemporalesUDSuccess()  {
+        ArrayList<DocumentoDTO> listaDocs = new ArrayList();
+        listaDocs.add(documentoDTO);
+        listaDocs.add(documentoDTO1);
+
+        try {
+            assertEquals("0000", contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs, conexion.getSession()).getCodMensaje());
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+            contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
+
+            ArrayList<DocumentoDTO> listaDocs1 = new ArrayList();
+            contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs1, conexion.getSession());
+        } catch (Exception e) {
+           assertEquals("La lista de documentos esta vacia",e.getMessage());
         }
 
     }
