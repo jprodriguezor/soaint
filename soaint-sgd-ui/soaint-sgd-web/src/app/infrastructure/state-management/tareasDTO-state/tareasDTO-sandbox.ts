@@ -15,7 +15,8 @@ import {
   TASK_GESTION_PRODUCCION_MULTIPLE, TASK_GESTIONAR_UNIDADES_DOCUMENTALES, TASK_PRODUCIR_DOCUMENTO,
   TASK_RADICACION_ENTRADA, TASK_REVISAR_DOCUMENTO, TASK_GESTIONAR_DEVOLUCIONES, TASK_CORREGIR_RADICACION,
   TASK_RADICACION_SALIDA, TASK_RADICACION_DOCUMENTO_SALIDA, TASK_ARCHIVAR_DOCUMENTO, TASK_CREAR_UNIDAD_DOCUMENTAL,
-  TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO, TASK_COMPLETAR_DATOS_DISTRIBUCION
+  TASK_APROBAR_DISPOSICION_FINAL, TASK_ADJUNTAR_DOCUMENTO, TASK_COMPLETAR_DATOS_DISTRIBUCION, TASK_VERIFICAR_TRANSFERENCIA_DOCUMENTAL,
+  TASK_APROBAR_TRANSFERENCIA_DOCUMENTAL
 } from './task-properties';
 import {StartProcessAction} from '../procesoDTO-state/procesoDTO-actions';
 import {Subscription} from 'rxjs/Subscription';
@@ -198,6 +199,14 @@ export class Sandbox {
         this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.completarDatosDistribucion}`, task]));
         break;
 
+       case TASK_APROBAR_TRANSFERENCIA_DOCUMENTAL:
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.transferenciasDocumentales}/1`, task]));
+        break;
+
+        case TASK_VERIFICAR_TRANSFERENCIA_DOCUMENTAL:
+        this._store.dispatch(go([`/${ROUTES_PATH.task}/${ROUTES_PATH.transferenciasDocumentales}/2`, task]));
+        break;
+
       default:
         this._store.dispatch(go(['/' + ROUTES_PATH.task + '/' + ROUTES_PATH.workspace, task]));
     }
@@ -243,6 +252,10 @@ export class Sandbox {
 
     return this._api.list(environment.taskStatus_endpoint+'/'+idProceso+'/'+idTarea);
 
+  }
+
+  guardarEstadoTarea(task: TareaDTO){    
+      return this._api.post(environment.taskStatus_endpoint, task);    
   }
 
 

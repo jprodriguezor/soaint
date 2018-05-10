@@ -69,6 +69,8 @@ PendingRequestInterceptor extends HttpInterceptor {
 
       this.requestQueuee.splice(index,1);
 
+      console.log("peticiones count",this.requestQueuee.length)
+
        if(this.requestQueuee.length == 0){
         this.loadingService.dismissLoading();
       }

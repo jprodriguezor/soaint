@@ -3,14 +3,15 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
-const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
+// const host = 'http://192.168.1.81:28080/soaint-sgd-web-api-gateway/apis';
+// const ecmHost = 'http://192.168.1.81:28080/ecm-integration-services/apis/ecm';
 
 // const host = 'http://192.168.1.181:28080/soaint-sgd-web-api-gateway/apis';
 // const ecmHost = 'http://192.168.1.181:28080/ecm-integration-services/apis/ecm';
 
-// const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
-// const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
+const host = 'http://192.168.3.242:28080/soaint-sgd-web-api-gateway/apis';
+const hostMock = 'http://localhost:9000/soaint-sgd-web-api-gateway/apis';
+const ecmHost = 'http://192.168.3.242:28080/ecm-integration-services/apis/ecm';
 
 
 export const environment = {
@@ -136,6 +137,8 @@ export const environment = {
   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
   restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
+  guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
+
 };
 
 export const process_info = {
@@ -173,6 +176,10 @@ export const process_info = {
   },
   'process.archivar-documento': {
     displayValue : 'Organización y Archivo',
+    show: true,
+  },
+  'proceso.transferencia-documentales': {
+    displayValue : 'Transferencias documentales',
     show: true,
   }
 

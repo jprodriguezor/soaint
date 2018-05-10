@@ -45,6 +45,10 @@ export class UnidadDocumentalApiService {
 
   }
 
+  quickSave(payload: any) {
+    return this._api.post(environment.salvarCorrespondenciaEntrada_endpoint, payload);
+  }
+
   listarUnidadesDocumentales(payload:any):Observable<any[]>{
 
     return this._api.post(environment.listar_unidad_documental_endpoint,payload)
@@ -70,6 +74,16 @@ export class UnidadDocumentalApiService {
   subirDocumentosParaArchivar(documentos: FormData):Observable<any>{
 
    return  this._api.sendFile(environment.subir_documentos_por_archivar,documentos,[]);
+  }
+
+  ActualizarDisposicionFinal(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO> {
+    return Observable.of({
+      codMensaje: '00000',
+      contenidoDependenciaTrdDTOS: null,
+      documentoDTOList: null,
+      mensaje: 'Operación completada satisfactoriamente',
+      response: null,
+    });
   }
 
 }

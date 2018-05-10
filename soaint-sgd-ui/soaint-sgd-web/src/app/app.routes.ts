@@ -28,6 +28,7 @@ import {DisposicionFinalComponent} from './ui/page-components/disposicion-final/
 import {RadicarDocumentoProducidoComponent} from "./ui/page-components/radicacion-salida/radicar-documento-producido.component";
 import {ArchivarDocumentoComponent} from "./ui/page-components/organizacion-archivo/archivar-documento/archivar-documento.component";
 import {DistribucionComponent} from "./ui/page-components/radicacion-salida/components/distribucion/distribucion.component";
+import {TransferenciasDocumentalesComponent} from './ui/page-components/transferencias-documentales/transferencias-documentales.component'
 
 export const routes: Routes = [
   {path: '', redirectTo: ROUTES_PATH.dashboard, pathMatch: 'full'},
@@ -111,15 +112,16 @@ export const routes: Routes = [
         canActivate:[AuthenticatedGuard]
       },
       {
-      	path: ROUTES_PATH.disposicionFinal,
-        component: DisposicionFinalComponent,
-        canActivate: [AuthenticatedGuard]
-      },
-      {
       	path: ROUTES_PATH.completarDatosDistribucion,
         component: DistribucionComponent,
         canActivate: [AuthenticatedGuard]
-      }
+      },
+      {
+        path: ROUTES_PATH.transferenciasDocumentales+ '/:status',
+        component: TransferenciasDocumentalesComponent,
+        canActivate: [AuthenticatedGuard]
+      },
+
     ]
   },
   {path: ROUTES_PATH.workspace, component: WorkspaceComponent, canActivate: [AuthenticatedGuard]},
@@ -162,7 +164,12 @@ export const routes: Routes = [
   {
     path: ROUTES_PATH.securityRole,
     component: SecurityRoleComponent
-  }
+  },
+  {
+    path: ROUTES_PATH.disposicionFinal,
+    component: DisposicionFinalComponent,
+    canActivate: [AuthenticatedGuard]
+  },
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);

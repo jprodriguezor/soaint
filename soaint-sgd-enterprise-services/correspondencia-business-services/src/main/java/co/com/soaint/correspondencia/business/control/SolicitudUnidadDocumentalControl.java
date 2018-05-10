@@ -51,8 +51,6 @@ public class SolicitudUnidadDocumentalControl {
                 this.insertarSolicitudUnidadDocumental(s);
             }
             em.flush();
-
-
             return true;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);

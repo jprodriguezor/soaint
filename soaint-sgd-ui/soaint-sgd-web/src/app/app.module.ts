@@ -80,6 +80,8 @@ import { DisposicionFinalComponent } from './ui/page-components/disposicion-fina
 import {AdjuntarDocumentoComponent} from "./ui/page-components/radicacion-salida/components/adjuntar-documento/adjuntar-documento.component";
 import {ArchivarDocumentoApiService} from "./infrastructure/api/archivar-documento.api";
 import {FuncionariosService} from "./infrastructure/api/funcionarios.service";
+import { TransferenciasDocumentalesComponent } from './ui/page-components/transferencias-documentales/transferencias-documentales.component';
+import { PopupUnidadDocumentalNotasComponent } from './ui/bussiness-components/popup-unidad-documental-notas/popup-unidad-documental-notas.component';
 
 @NgModule({
   imports: [
@@ -195,6 +197,8 @@ import {FuncionariosService} from "./infrastructure/api/funcionarios.service";
     FormEnvioComponent,
     ArchivarDocumentoComponent,
     SeleccionarDocumentosComponent,
+    TransferenciasDocumentalesComponent,
+    PopupUnidadDocumentalNotasComponent,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
