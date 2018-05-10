@@ -317,4 +317,17 @@ public class CorrespondenciaWebApi {
 //        return SolicitudUnidadDocumentalDTO.newInstance().build();
         return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-correspondencia-referido/{nro_radicado}")
+    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws SystemException, BusinessException {
+        log.info("processing rest request - enviar correo radicar correspondencia");
+        return boundary.consultarNroRadicadoCorrespondenciaRefereida(nroRadicado);
+    }
 }

@@ -208,4 +208,13 @@ public class GestionarCorrespondencia {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         return gestionarSolicitudUnidadDocumental.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws BusinessException, SystemException {
+       return control.consultarNroRadicadoCorrespondenciaRefereida(nroRadicado);
+    }
 }

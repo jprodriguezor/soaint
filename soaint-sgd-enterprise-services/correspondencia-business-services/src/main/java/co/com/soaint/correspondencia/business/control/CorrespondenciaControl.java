@@ -1078,12 +1078,22 @@ public class CorrespondenciaControl {
         request.setSubject(asunto);
         log.info("processing rest request - asunto: "+request.getSubject());
 
+        //------------------- Inicio Attachments ------------------------------------------------------//
         String endpoint = System.getProperty("ecm-api-endpoint");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        //Estos son para los documentos de la correspondencia con ese número de radicado
         co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
         Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
                 .request()
                 .post(Entity.json(dto));
+
+        //Estos son para los documentos de la correspondencia con ese número de radicado referido
+        // TODO Traer el nroRadicado de la correspondencia por referido - nroRadRef =
+//        co.com.soaint.foundation.canonical.ecm.DocumentoDTO dtoRef = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadRef).build();
+//        Response responseReferido = wt.path("/obtenerDocumentosAdjuntosECM/")
+//                .request()
+//                .post(Entity.json(dto));
 //
         ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
         if (response.getStatus() == HttpStatus.OK.value()) {
@@ -1109,6 +1119,7 @@ public class CorrespondenciaControl {
                         .buildSystemException();
             }
         }
+        //------------------- Fin Attachments ------------------------------------------------------//
         request.setAttachmentsList(attachmentsList);
 
         final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
@@ -1188,5 +1199,30 @@ public class CorrespondenciaControl {
             throw new BusinessException("system.error.correo.enviado");
         }
 
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("CorCorrespondencia.findByNroRadicadoCorrespodenciaReferida", CorrespondenciaDTO.class)
+                    .setParameter("NRO_RAD", nroRadicado)
+                    .getSingleResult();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred", n);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_not_exist_by_ideDocumento")
+                    .withRootException(n)
+                    .buildBusinessException();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
     }
 }

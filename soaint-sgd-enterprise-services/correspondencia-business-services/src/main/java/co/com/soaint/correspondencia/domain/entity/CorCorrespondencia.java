@@ -83,7 +83,14 @@ import java.util.List;
                 "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
         @NamedQuery(name = "CorCorrespondencia.updateIdeInstancia", query = "UPDATE CorCorrespondencia c " +
                 "SET c.ideInstancia = :IDE_INSTANCIA " +
-                "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)")})
+                "WHERE TRIM(c.nroRadicado) = TRIM(:NRO_RADICADO)"),
+        @NamedQuery(name = "CorCorrespondencia.findByNroRadicadoCorrespodenciaReferida", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO " +
+                "(c.ideDocumento, c.descripcion, c.tiempoRespuesta, c.codUnidadTiempo, c.codMedioRecepcion, c.fecRadicado, " +
+                "c.nroRadicado, c.codTipoCmc, c.reqDistFisica, c.ideInstancia, c.codFuncRadica, " +
+                "c.codSede, c.codDependencia, c.reqDigita, c.nroGuia, c.codEmpMsj, c.fecVenGestion, c.codEstado) " +
+                "FROM CorCorrespondencia c " +
+                "INNER JOIN corReferidoList cr ON cr.corCorrespondencia.ideDocumento = c.ideDocumento " +
+                "WHERE cr.nroRadicado = :NRO_RAD ")})
 @javax.persistence.TableGenerator(name = "COR_CORRESPONDENCIA_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_CORRESPONDENCIA_SEQ", allocationSize = 1)
 public class CorCorrespondencia implements Serializable {
