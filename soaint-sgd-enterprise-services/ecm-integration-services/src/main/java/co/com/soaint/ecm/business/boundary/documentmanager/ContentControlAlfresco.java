@@ -1390,7 +1390,7 @@ public class ContentControlAlfresco implements ContentControl {
         try {
             final Optional<Folder> optionalFolder = getUDFolderById(unidadDocumentalDTO.getId(), session);
             if (!optionalFolder.isPresent()) {
-                throw new Exception("No se ha identificado el id de la Unidad Documental");
+                throw new Exception("No existe la unidad documental con id " + unidadDocumentalDTO.getId());
             }
             final Folder targetFolder = optionalFolder.get();
             final List<DocumentoDTO> listaDocumentos = unidadDocumentalDTO.getListaDocumentos();
@@ -1552,7 +1552,7 @@ public class ContentControlAlfresco implements ContentControl {
         } catch (CmisConstraintException cce) {
             logger.error(ConstantesECM.ECM_ERROR, cce);
             response.setCodMensaje("2222");
-            response.setMensaje(configuracion.getPropiedad(ConstantesECM.ECM_ERROR));
+            response.setMensaje("El nombre del documento('" + documentoDTO.getNombreDocumento() + "') no cumple con el estandar de nombres del ECM");
         } catch (Exception e) {
             logger.error(ConstantesECM.ERROR_TIPO_EXCEPTION, e);
             response.setCodMensaje("2222");
@@ -1746,6 +1746,10 @@ public class ContentControlAlfresco implements ContentControl {
             properties.put(ConstantesECM.CMCOR_TIPOLOGIA_DOCUMENTAL, documentoDTO.getTipologiaDocumental());
         }
         logger.info(ConstantesECM.AVISO_CREA_DOC);
+        final String docName = !StringUtils.isEmpty(documentoDTO.getNombreDocumento()) ?
+                documentoDTO.getNombreDocumento().trim() : "";
+        documentoDTO.setNombreDocumento(docName);
+        properties.put(PropertyIds.NAME, docName);
         Document newDocument = carpetaTarget.getFolder().createDocument(properties, contentStream, VersioningState.MAJOR);
 
         idDocumento = newDocument.getId();
@@ -1996,7 +2000,11 @@ public class ContentControlAlfresco implements ContentControl {
                 item.put("subSerie", "");
                 optionalFolder.ifPresent(folder -> {
                     final Folder folderParent = folder.getFolderParent();
-                    final String ss = folderParent.getName();
+                    String ss = folderParent.getName();
+                    if (ss.contains("_")) {
+                        final String[] ssArray = ss.split("_");
+                        ss = ssArray[ssArray.length - 1];
+                    }
                     item.put("subSerie", ss);
                 });
                 item.put("fechaCreacion", documentoDTO.getFechaCreacion());

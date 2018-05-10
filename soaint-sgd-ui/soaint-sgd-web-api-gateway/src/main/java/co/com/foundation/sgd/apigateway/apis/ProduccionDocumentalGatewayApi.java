@@ -67,8 +67,6 @@ public class ProduccionDocumentalGatewayApi {
         return Response.status(response.getStatus()).entity(responseObject).build();
     }
 
-
-
     @POST
     @Path("/versionar-documento")
     @Produces(MediaType.APPLICATION_JSON)
@@ -102,6 +100,7 @@ public class ProduccionDocumentalGatewayApi {
             log.info(clientResponse);
 
         } catch (Exception ex) {
+            log.error("Exepcion arrojada en la captura de datos del multipart");
             return this.EcmErrorMessage(ex);
         }
 
