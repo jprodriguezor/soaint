@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ConstanteDTO} from '../../../../../domain/constanteDTO';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -21,7 +21,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
   templateUrl: './datos-remitente.component.html',
   styleUrls: ['./datos-remitente.component.css']
 })
-export class DatosRemitenteComponent implements OnInit {
+export class DatosRemitenteComponent implements OnInit,OnDestroy {
 
   form: FormGroup;
   validations: any = {};
@@ -60,6 +60,7 @@ export class DatosRemitenteComponent implements OnInit {
 
         combineLatest(this._store.select(getSelectedDependencyGroupFuncionario),this._store.select(getAuthenticatedFuncionario))
           .subscribe(([dependency,funcionario]) =>{
+
 
             this.form.get('sedeAdministrativa').setValue(sedes.find( sedeDto => sedeDto.codigo == dependency.codSede ));
 
@@ -117,11 +118,13 @@ export class DatosRemitenteComponent implements OnInit {
 
         const funcionario = ViewFilterHook.applyFilter('rdpdr-funcionario-selected',false);
 
-        console.log(funcionario);
+        console.log('funcionario',funcionario);
 
         if( funcionario !== false){
 
           this.funcionariosSuggestions$.subscribe( funcs =>{
+
+            console.log("funcionarios",funcs);
 
             let found = funcs.find( f => f.id == funcionario.id);
 
@@ -130,12 +133,13 @@ export class DatosRemitenteComponent implements OnInit {
 
           } );
 
-          ViewFilterHook.removeFilter('rdpdr-funcionario-selected');
-
-        }
+          }
       }
     });
   }
 
+  ngOnDestroy(){
 
+    ViewFilterHook.removeFilter('rdpdr-funcionario-selected');
+  }
 }
