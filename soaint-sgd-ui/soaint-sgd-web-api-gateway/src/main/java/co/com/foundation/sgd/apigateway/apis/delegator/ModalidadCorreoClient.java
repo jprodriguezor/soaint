@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 @Log4j2
 
-public class ModalidadCorreoClient implements ApiClient {
+public class ModalidadCorreoClient  {
 
     private String endpoint  =  SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 

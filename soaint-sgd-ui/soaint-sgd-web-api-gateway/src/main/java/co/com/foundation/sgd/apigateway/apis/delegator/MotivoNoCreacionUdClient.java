@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 @ApiDelegator
 @Log4j2
 
-public class MotivoNoCreacionUdClient implements ApiClient{
+public class MotivoNoCreacionUdClient {
 
     private String endpoint  =  SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
