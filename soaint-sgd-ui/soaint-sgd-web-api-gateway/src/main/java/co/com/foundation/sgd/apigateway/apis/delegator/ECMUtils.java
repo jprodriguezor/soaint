@@ -11,7 +11,7 @@ import java.util.*;
  */
 public final class ECMUtils {
 
-    public static Map<String, InputPart> findFiles(MultipartFormDataInput file) {
+    public static  Map<String,InputPart> findFiles( MultipartFormDataInput file){
 
         Map<String, InputPart> files = new HashMap<>();
         Collection<List<InputPart>> inputParts = file.getFormDataMap().values();
