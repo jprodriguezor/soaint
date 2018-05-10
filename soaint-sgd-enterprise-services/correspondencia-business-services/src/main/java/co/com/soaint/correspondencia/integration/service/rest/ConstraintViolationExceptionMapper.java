@@ -44,7 +44,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 
     private String prepareMessage(String clase, String path, String paquete, String value) {
         if (path == null) return "No validation error set.";
-        else if (clase.equals(null)) clase = "No class error set.";
+        else if (clase == null ) clase = "No class error set.";
         String[] parsePath = path.split("\\.", -1);
         return paquete + ": " + clase + ": " + "Error obteniendo el " + parsePath[2] + " en el metodo " + parsePath[0] + " con valor " + value;
     }
