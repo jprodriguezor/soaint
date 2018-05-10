@@ -273,7 +273,7 @@ public class ContentControlAlfrescoTest {
             //Obtener la unidad documental
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
-                    getUDById(unidadDocumentalDTO.getId(),true, conexion.getSession());
+                    getUDById(unidadDocumentalDTO.getId(), true, conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
@@ -383,22 +383,23 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testobtenerPropiedadesDocumentoSuccess() {
         CmisObject cmisObjectDocument = conexion.getSession().getObject(documentoDTO.getIdDocumento());
-        assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document)cmisObjectDocument));
+        assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document) cmisObjectDocument));
     }
 
     @Test
-    public void testObtenerConexionSuccess(){
+    public void testObtenerConexionSuccess() {
 
         assertNotNull(contentControlAlfresco.obtenerConexion());
     }
 
     @Test
-    public void crearLinkDocumentosApoyo() {
-
+    public void testGetDocumentosPorArchivarSuccess() throws Exception {
+        assertEquals("0000", contentControlAlfresco.getDocumentosPorArchivar("10001040", conexion.getSession()).getCodMensaje());
     }
 
     @Test
     public void getDocumentsFromFolder() {
+
     }
 
     @Test
@@ -424,5 +425,10 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void generarArbol() {
+    }
+
+    @Test
+    public void crearLinkDocumentosApoyo() {
+
     }
 }
