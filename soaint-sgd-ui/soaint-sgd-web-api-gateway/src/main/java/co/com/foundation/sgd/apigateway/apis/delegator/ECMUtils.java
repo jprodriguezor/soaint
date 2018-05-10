@@ -9,22 +9,22 @@ import java.util.*;
 /**
  * Created by diony on 05/02/2018.
  */
-public class ECMUtils {
+public final class ECMUtils {
 
-    public static  Map<String,InputPart> findFiles( MultipartFormDataInput file){
+    public static Map<String, InputPart> findFiles(MultipartFormDataInput file) {
 
-        List<String> ecmIds = new ArrayList<>();
-        Map<String,InputPart> files = new HashMap<String, InputPart>();
+        Map<String, InputPart> files = new HashMap<>();
         Collection<List<InputPart>> inputParts = file.getFormDataMap().values();
-        inputParts.stream().forEach(parts -> parts.forEach(part -> {
-            String name = findName(part); if(!"".equals(name)) files.put(name,part);
+        inputParts.forEach(parts -> parts.forEach(part -> {
+            String name = findName(part);
+            if (!"".equals(name)) files.put(name, part);
         }));
 
         return files;
     }
 
 
-    public static String findName(InputPart part) {
+    static String findName(InputPart part) {
         String fileName = "";
         MultivaluedMap<String, String> headers = part.getHeaders();
         String[] contentDispositionHeader = headers.getFirst("Content-Disposition").split(";");
