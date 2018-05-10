@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Input,
+  Component, EventEmitter, Input,
   OnDestroy,
-  OnInit,
+  OnInit, Output,
   ViewEncapsulation
 } from '@angular/core';
 import {State as RootState} from '../../../infrastructure/redux-store/redux-reducers';
@@ -38,6 +38,8 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   activeTaskUnsubscriber: Subscription;
   infoUnsubscriber: Subscription;
 
+  @Output() onFinalizar:EventEmitter<any> = new EventEmitter;
+
   constructor(private _store: Store<RootState>, private _changeDetector: ChangeDetectorRef) {
   }
 
@@ -70,6 +72,9 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   }
 
   navigateBack() {
+
+    this.onFinalizar.emit();
+
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
