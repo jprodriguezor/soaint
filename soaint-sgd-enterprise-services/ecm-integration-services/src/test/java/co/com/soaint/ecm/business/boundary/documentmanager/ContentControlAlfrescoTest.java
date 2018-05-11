@@ -96,6 +96,7 @@ public class ContentControlAlfrescoTest {
         //Se crea el documento
 
         mensajeRespuesta = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
+        documentoDTO.setIdDocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
         //Crear documentoDTO diferente
         documentoDTO1 = new DocumentoDTO();
         documentoDTO1.setTipoDocumento("application/pdf");
@@ -487,11 +488,15 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void subirDocumentosUnidadDocumental() {
-    }
-
-    @Test
-    public void subirDocumentoUnidadDocumentalECM() {
+    public void testSubirDocumentosUnidadDocumentalECMSuccess() {
+        try {
+            List<DocumentoDTO> documentoDTOS= new ArrayList<>();
+            documentoDTOS.add(documentoDTO);
+            unidadDocumentalDTO.setListaDocumentos(documentoDTOS);
+           assertEquals("0000",contentControlAlfresco.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO,conexion.getSession()).getCodMensaje()) ;
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
