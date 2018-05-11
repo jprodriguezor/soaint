@@ -85,5 +85,19 @@ export  const oa_dataSource = {
         nombreDocumento:"Documento 3"
       },
     ]
-  }
+  },
+  tipologiasDocumentales:[
+    {
+      id: 1,
+      nombre: "Tipologia 1"
+    },
+    {
+      id: 2,
+      nombre: "Tipologia 2"
+    },
+    {
+      id: 3,
+      nombre: "Tipologia 3"
+    },
+  ],
 };

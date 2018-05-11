@@ -76,7 +76,7 @@
         </p-column>
         <p-column header="Tipologia Documental" >
           <ng-template pTemplate="body">
-            <p-dropdown [options]="[]" placeholder="Seleccione" ></p-dropdown>
+            <p-dropdown [options]="[]" placeholder="Seleccione" (onBlur)="updateDocumentMeta(index,'tipologiaDcoumental')" [(ngModel)] = "tipologiaDocumental" ></p-dropdown>
           </ng-template>
         </p-column>
 
@@ -118,7 +118,9 @@
         <p-column header="identificacion documento" [sortable]="true" field="idDocumento">
 
         </p-column>
-        <p-column header="Tipologia documental" [sortable]="true" field="tipologiaDocumental"></p-column>
+        <p-column header="Tipologia documental" [sortable]="true" field="tipologiaDocumental">
+
+        </p-column>
         <p-column header="Nombre/ Asunto Documento" [sortable]="true" field="nombreDocumento"></p-column>
       </p-dataTable>
     </p-panel>
