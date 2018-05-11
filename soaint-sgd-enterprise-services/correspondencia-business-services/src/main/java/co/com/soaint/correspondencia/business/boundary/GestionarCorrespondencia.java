@@ -214,7 +214,7 @@ public class GestionarCorrespondencia {
      * @return
      * @throws SystemException
      */
-    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws BusinessException, SystemException {
-       return control.consultarNroRadicadoCorrespondenciaRefereida(nroRadicado);
+    public String consultarNroRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+       return control.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
     }
 }

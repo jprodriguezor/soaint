@@ -314,7 +314,6 @@ public class CorrespondenciaWebApi {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
 
-//        return SolicitudUnidadDocumentalDTO.newInstance().build();
         return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
     }
 
@@ -326,8 +325,13 @@ public class CorrespondenciaWebApi {
      */
     @GET
     @Path("/correspondencia/obtener-correspondencia-referido/{nro_radicado}")
-    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws SystemException, BusinessException {
-        log.info("processing rest request - enviar correo radicar correspondencia");
-        return boundary.consultarNroRadicadoCorrespondenciaRefereida(nroRadicado);
+    public Response consultarNroRadicadoCorrespondenciaReferida(@PathParam("nro_radicado") final String nroRadicado) throws SystemException, BusinessException {
+        log.info("processing rest request - consultarNroRadicadoCorrespondenciaReferida.");
+
+        String nroRadicadoReferido = boundary.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(Json.createObjectBuilder().add("nroRadicado",nroRadicadoReferido).build())
+                .build();
     }
 }

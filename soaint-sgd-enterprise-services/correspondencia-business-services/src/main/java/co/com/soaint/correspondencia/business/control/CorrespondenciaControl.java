@@ -224,13 +224,6 @@ public class CorrespondenciaControl {
             String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
                     comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
-//            String tipoRadicacion = "";
-//            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-//                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-//                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-//                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-//            }
-
             correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
                     correspondencia.getCodSede(),
                     correspondencia.getCodTipoCmc(),
@@ -1206,23 +1199,7 @@ public class CorrespondenciaControl {
      * @return
      * @throws SystemException
      */
-    public CorrespondenciaDTO consultarNroRadicadoCorrespondenciaRefereida(String nroRadicado) throws BusinessException, SystemException {
-        try {
-            return em.createNamedQuery("CorCorrespondencia.findByNroRadicadoCorrespodenciaReferida", CorrespondenciaDTO.class)
-                    .setParameter("NRO_RAD", nroRadicado)
-                    .getSingleResult();
-        } catch (NoResultException n) {
-            log.error("Business Control - a business error has occurred", n);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("correspondencia.correspondencia_not_exist_by_ideDocumento")
-                    .withRootException(n)
-                    .buildBusinessException();
-        } catch (Exception ex) {
-            log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
-        }
+    public String consultarNroRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+        return referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
     }
 }
