@@ -133,8 +133,6 @@ public class UnidadDocumentalGatewayApi {
         return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
-
-
     @PUT
     @Path("/modificar-unidades-documentales")
     @JWTTokenSecurity

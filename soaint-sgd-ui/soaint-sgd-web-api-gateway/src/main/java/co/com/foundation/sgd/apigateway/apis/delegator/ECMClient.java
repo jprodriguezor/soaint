@@ -207,7 +207,7 @@ public class ECMClient {
         try {
             log.info("Procesando la informacion del multipart");
             final Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
-            log.info("Devolviendo Mapa de Documentos ");
+            log.info("Devolviendo Mapa de Documentos");
             _files.forEach((fileName, inputPart) -> log.info("Nombre Archivo: {}, => documento: {}", fileName, inputPart));
             final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
             log.info("Codigo de Dependencia: {}", dependencyCode);
