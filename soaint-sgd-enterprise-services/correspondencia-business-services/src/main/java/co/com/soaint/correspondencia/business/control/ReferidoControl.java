@@ -71,17 +71,11 @@ public class ReferidoControl {
                     .setParameter("NRO_RAD", nroRadicado)
                     .getSingleResult();
         } catch (NoResultException n) {
-            log.error("Business Control - a business error has occurred", n);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("CorReferido.findByNroRadicadoCorrespodenciaReferida")
-                    .withRootException(n)
-                    .buildBusinessException();
+            log.error("Business Control - a business error has occurred ", n);
+            return null;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
-            throw ExceptionBuilder.newBuilder()
-                    .withMessage("system.generic.error")
-                    .withRootException(ex)
-                    .buildSystemException();
+            return null;
         }
     }
 }

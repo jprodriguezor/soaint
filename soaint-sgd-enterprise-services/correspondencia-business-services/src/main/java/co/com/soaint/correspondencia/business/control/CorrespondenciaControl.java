@@ -1132,11 +1132,14 @@ public class CorrespondenciaControl {
         // TODO Traer el nroRadicado de la correspondencia por referido - nroRadRef =
 
         ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+
         this.obtenerDocumentosECMporNroRadicado(nroRadicado).forEach(attachment -> {
             attachmentsList.add(attachment);
         });
 
-        this.obtenerDocumentosECMporNroRadicado(referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado)).forEach(attachment -> {
+        String nroRadicadoReferido = referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        if (nroRadicadoReferido != null)
+        this.obtenerDocumentosECMporNroRadicado(nroRadicadoReferido).forEach(attachment -> {
             attachmentsList.add(attachment);
         });
 
