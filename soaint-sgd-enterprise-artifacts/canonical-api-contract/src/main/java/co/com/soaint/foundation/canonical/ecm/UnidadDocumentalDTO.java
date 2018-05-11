@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
-@ToString
+@ToString(includeFieldNames = false, of = "nombreUnidadDocumental")
 public class UnidadDocumentalDTO {
 
     private String accion;

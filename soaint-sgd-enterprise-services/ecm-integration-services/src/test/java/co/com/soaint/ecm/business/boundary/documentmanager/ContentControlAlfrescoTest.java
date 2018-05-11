@@ -5,7 +5,7 @@ import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -143,13 +143,17 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testDescargarDocumentoSuccess() {
         //Prueba Existosa para descargar documento
-        assertEquals("0000", contentControlAlfresco.descargarDocumento(mensajeRespuesta.getDocumentoDTOList().get(0), conexion.getSession()).getCodMensaje());
+        try {
+            assertEquals("0000", contentControlAlfresco.descargarDocumento(mensajeRespuesta.getDocumentoDTOList().get(0), conexion.getSession()).getCodMensaje());
 
-        //Prueba para descargar documento que no existe
-        DocumentoDTO documentoDTO2 = new DocumentoDTO();
-        documentoDTO2.setIdDocumento("sdasdasdasd");
-        assertEquals("2222", contentControlAlfresco.
-                descargarDocumento(documentoDTO2, conexion.getSession()).getCodMensaje());
+            //Prueba para descargar documento que no existe
+            DocumentoDTO documentoDTO2 = new DocumentoDTO();
+            documentoDTO2.setIdDocumento("sdasdasdasd");
+            assertEquals("2222", contentControlAlfresco.
+                    descargarDocumento(documentoDTO2, conexion.getSession()).getCodMensaje());
+        } catch (Exception e) {
+            logger.error("");
+        }
     }
 
     @Test
@@ -190,7 +194,7 @@ public class ContentControlAlfrescoTest {
         try {
             assertEquals("0000", contentControlAlfresco.
                     listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             e.printStackTrace();
         }
     }
@@ -228,7 +232,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", contentControlAlfresco.
                     detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             logger.error("Error BusinessException: {}", e);
         } catch (Exception e) {
             logger.error("Error Exception: {}", e);
@@ -280,7 +284,7 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             logger.error("Error: {}", e);
         }
     }
@@ -334,7 +338,7 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             logger.error("Error: {}", e);
         } catch (Exception e) {
             logger.error("Error actualizando la UD: {}", e);
