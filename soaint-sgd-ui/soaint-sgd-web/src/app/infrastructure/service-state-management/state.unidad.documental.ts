@@ -222,13 +222,19 @@ export class StateUnidadDocumentalService {
 
     AplicarDisposicion(tipodisposicion: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
-            const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'Seleccionar')
-            _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
-            _listado.push(_current);
-            return _listado;
-        }, []);
-        this.ListadoActualizadoSubject.next();  
+        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 'Seleccionar');
+        if(existeSeleccionar) {
+            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
+                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'Seleccionar')
+                _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
+                _listado.push(_current);
+                return _listado;
+            }, []);
+            this.ListadoActualizadoSubject.next();  
+        } else {
+            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'No hay unidades seleccionadas con disposición final "Seleccionar".'}));       
+            
+        }
     }
 
     AprobarTransferencia() {
@@ -242,8 +248,12 @@ export class StateUnidadDocumentalService {
     ActualizarEstadoDisposicionFinal(estado: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'Seleccionar');
+        const requiereObservaciones = unidadesSeleccionadas.find(_item => (_item.observaciones === '' || _item.observaciones === null) && estado === 'Rechazado');
+        if (requiereObservaciones) {
+            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales pendiente de notas.'}));       
+        }
         if(existeDisposicionSeleccionar) {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar. Recuerde actualizar."'}));        
+            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar". Recuerde actualizar.'}));        
         } else {
             this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
                 const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item === _current)
