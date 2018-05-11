@@ -1,8 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
-import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
-import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
@@ -21,7 +19,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
