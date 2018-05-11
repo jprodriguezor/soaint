@@ -20,7 +20,6 @@ import {ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-transferencias-documentales',
   templateUrl: './transferencias-documentales.component.html',
-  styleUrls: ['./transferencias-documentales.component.css']
 })
 export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, OnDestroy {
 
@@ -37,6 +36,11 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
   formTransferencia: FormGroup;
   validations: any = {};
   subscribers: Array<Subscription> = [];
+
+  // dialog
+  abrirNotas = false;
+  indexUnidadSeleccionada: number = null;
+
   constructor(    
     private state: StateUnidadDocumentalService,
     private _store: Store<State>,
@@ -128,6 +132,15 @@ export class TransferenciasDocumentalesComponent implements TaskForm, OnInit, On
             payload: payload
           };
           this._taskSandBox.guardarEstadoTarea(tareaDto).subscribe(() => {});
+  }
+
+  AgregarNotas(index: number) {
+    this.indexUnidadSeleccionada = index;
+    this.abrirNotas = true;
+  }
+
+  CerrarNotas() {
+    this.abrirNotas = false;
   }
 
   ngOnDestroy() {

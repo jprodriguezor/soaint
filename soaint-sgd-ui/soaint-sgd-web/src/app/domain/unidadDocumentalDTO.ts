@@ -25,6 +25,6 @@ export interface  UnidadDocumentalDTO {
     aprobado?: string;
     accion?: string;
     seleccionado?: boolean;
-    observacion?: string;
+    observaciones?: string;
     listaDocumentos?: any;
 }
