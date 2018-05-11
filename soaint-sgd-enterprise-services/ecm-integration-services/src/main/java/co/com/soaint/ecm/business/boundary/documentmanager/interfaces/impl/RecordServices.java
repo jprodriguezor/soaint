@@ -190,7 +190,7 @@ public class RecordServices implements IRecordServices {
      * @return MensajeRespuesta
      */
     @Override
-    public MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
+    public MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
         log.info("Ejecutando MensajeRespuesta gestionarUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO)");
         gestionarUnidadDocumental(unidadDocumentalDTO);
         return MensajeRespuesta.newInstance()
@@ -198,12 +198,12 @@ public class RecordServices implements IRecordServices {
                 .build();
     }
 
-    private void gestionarUnidadDocumental(final UnidadDocumentalDTO unidadDocumentalDTO) throws Exception {
+    private void gestionarUnidadDocumental(final UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException {
         if (ObjectUtils.isEmpty(unidadDocumentalDTO) || StringUtils.isEmpty(unidadDocumentalDTO.getId())) {
-            throw new Exception("No se ha especificado el Id de la Unidad Documental");
+            throw new SystemException("No se ha especificado el Id de la Unidad Documental");
         }
         if (StringUtils.isEmpty(unidadDocumentalDTO.getAccion())) {
-            throw new Exception("No se ha especificado la accion a realizar");
+            throw new SystemException("No se ha especificado la accion a realizar");
         }
         final AccionUsuario accionUsuario = AccionUsuario.valueOf(unidadDocumentalDTO.getAccion().toUpperCase());
         final Optional<Folder> optionalFolder = obtenerRecordFolder(unidadDocumentalDTO.getId());
@@ -221,7 +221,7 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    private void reactivarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws Exception {
+    private void reactivarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
 
         abrirUnidadDocumental(udRecordFolder, unidadDocumental);
 
@@ -255,7 +255,7 @@ public class RecordServices implements IRecordServices {
      * @return MensajeRespuesta
      */
     @Override
-    public MensajeRespuesta gestionarUnidadesDocumentalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception {
+    public MensajeRespuesta gestionarUnidadesDocumentalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException {
         log.info("Ejecutando MensajeRespuesta gestionarUnidadesDocumentalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTO)");
         for (UnidadDocumentalDTO unidadDocumentalDTO :
                 unidadDocumentalDTOS) {
@@ -268,7 +268,7 @@ public class RecordServices implements IRecordServices {
     }
 
     @Override
-    public Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws Exception {
+    public Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) {
         final Conexion conexion = contentControl.obtenerConexion();
         final Optional<UnidadDocumentalDTO> optionalUnidadDocumentalDTO = contentControl.
                 getUDById(idUnidadDocumental, true, conexion.getSession());
@@ -336,7 +336,7 @@ public class RecordServices implements IRecordServices {
                 .put(Entity.json(properties.toString()));
     }
 
-    private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws Exception {
+    private void abrirUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
         final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
         if (isClosed) {
             final Calendar currentDay = GregorianCalendar.getInstance();
@@ -357,7 +357,7 @@ public class RecordServices implements IRecordServices {
         actualizarUnidadDocumental(unidadDocumental);
     }
 
-    private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws Exception {
+    private void cerrarUnidadDocumental(Folder udRecordFolder, UnidadDocumentalDTO unidadDocumental) throws SystemException {
         final boolean isClosed = !ObjectUtils.isEmpty(udRecordFolder) ? udRecordFolder.getPropertyValue(RMA_IS_CLOSED) : false;
         if (!isClosed) {
             final Conexion conexion = contentControl.obtenerConexion();
@@ -532,7 +532,7 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    private Optional<Folder> obtenerRecordCategory(UnidadDocumentalDTO dto, Session session) throws BusinessException {
+    private Optional<Folder> obtenerRecordCategory(UnidadDocumentalDTO dto, Session session) {
 
         String query = "SELECT * FROM rmc:rmarecordCategoryCustomProperties";
         boolean where = false;
@@ -562,7 +562,6 @@ public class RecordServices implements IRecordServices {
             }
         } catch (Exception ex) {
             log.error(errorSistema);
-            throw new BusinessException(errorSistemaGenerico);
         } finally {
             log.info("fin - obtenerRecordCategory ");
         }
@@ -706,7 +705,7 @@ public class RecordServices implements IRecordServices {
         return (String) mensajeRespuestaAux.getResponse().get("idUnidadDocumental");
     }
 
-    private void actualizarUnidadDocumental(UnidadDocumentalDTO documentalDTO) throws Exception {
+    private void actualizarUnidadDocumental(UnidadDocumentalDTO documentalDTO) throws SystemException {
         final Conexion conexion = contentControl.obtenerConexion();
         final boolean documental = contentControl.actualizarUnidadDocumental(documentalDTO, conexion.getSession());
         if (documental) {
@@ -1025,7 +1024,7 @@ public class RecordServices implements IRecordServices {
         return nodoId;
     }
 
-    private void eliminarObjECM(BaseTypeId type, String id) throws Exception {
+    private void eliminarObjECM(BaseTypeId type, String id) throws SystemException {
         final String path = ((type == BaseTypeId.CMIS_DOCUMENT) ? "/records/" : "/record-folders/") + id;
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         try {
@@ -1039,7 +1038,10 @@ public class RecordServices implements IRecordServices {
             }
         } catch (Exception e) {
             log.error("Mensaje de Error: " + e.getMessage());
-            throw e;
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage(e.getMessage())
+                    .withRootException(e)
+                    .buildSystemException();
         }
     }
 }

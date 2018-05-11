@@ -44,7 +44,7 @@ public interface IRecordServices {
      * @param unidadDocumentalDTO  Obj Unidad Documental
      * @return MensajeRespuesta
      */
-    MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws Exception;
+    MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException;
 
     /**
      * Metodo para abrir/cerrar una unidad documental
@@ -52,7 +52,7 @@ public interface IRecordServices {
      * @param unidadDocumentalDTOS Lista de Unidad Documental
      * @return MensajeRespuesta
      */
-    MensajeRespuesta gestionarUnidadesDocumentalesECM(final List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception;
+    MensajeRespuesta gestionarUnidadesDocumentalesECM(final List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException;
 
     /**
      * Metodo para Obtener un recordFolder
@@ -60,5 +60,5 @@ public interface IRecordServices {
      * @param idUnidadDocumental     Id Unidad Documental
      * @return Folder folder
      */
-    Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws Exception;
+    Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws SystemException;
 }

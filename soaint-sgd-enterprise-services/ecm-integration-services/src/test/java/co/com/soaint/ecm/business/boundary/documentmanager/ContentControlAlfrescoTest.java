@@ -6,6 +6,7 @@ import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -143,13 +144,19 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testDescargarDocumentoSuccess() {
         //Prueba Existosa para descargar documento
-        assertEquals("0000", contentControlAlfresco.descargarDocumento(mensajeRespuesta.getDocumentoDTOList().get(0), conexion.getSession()).getCodMensaje());
+        try {
+            assertEquals("0000", contentControlAlfresco.
+                    descargarDocumento(mensajeRespuesta.getDocumentoDTOList().get(0), conexion.getSession()).getCodMensaje());
 
-        //Prueba para descargar documento que no existe
-        DocumentoDTO documentoDTO2 = new DocumentoDTO();
-        documentoDTO2.setIdDocumento("sdasdasdasd");
-        assertEquals("2222", contentControlAlfresco.
-                descargarDocumento(documentoDTO2, conexion.getSession()).getCodMensaje());
+            //Prueba para descargar documento que no existe
+            DocumentoDTO documentoDTO2 = new DocumentoDTO();
+            documentoDTO2.setIdDocumento("sdasdasdasd");
+            assertEquals("2222", contentControlAlfresco.
+                    descargarDocumento(documentoDTO2, conexion.getSession()).getCodMensaje());
+        }catch (Exception e) {
+            logger.error("Ocurrio un error en el Servidor", e);
+        }
+
     }
 
     @Test
@@ -190,7 +197,7 @@ public class ContentControlAlfrescoTest {
         try {
             assertEquals("0000", contentControlAlfresco.
                     listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -209,7 +216,8 @@ public class ContentControlAlfrescoTest {
 
         //Prueba cuadno viene vacio el idDocumento
         try {
-            assertEquals("11111", contentControlAlfresco.obtenerDetallesDocumentoDTO(null, conexion.getSession()).getCodMensaje());
+            assertEquals("11111", contentControlAlfresco.
+                    obtenerDetallesDocumentoDTO(null, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -228,8 +236,8 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", contentControlAlfresco.
                     detallesUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        } catch (BusinessException e) {
-            logger.error("Error BusinessException: {}", e);
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
         } catch (Exception e) {
             logger.error("Error Exception: {}", e);
         }
@@ -280,7 +288,9 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
+            logger.error("Error: {}", e);
+        } catch (Exception e) {
             logger.error("Error: {}", e);
         }
     }
@@ -324,7 +334,8 @@ public class ContentControlAlfrescoTest {
     public void testActualizarUnidadDocumentalSuccess() {
         try {
             //Se crea la Unidad Documental
-            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+                    crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
 
             UnidadDocumentalDTO unidadDocumentalDTOInsertada = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
             //Modificar el valor de la UD
@@ -334,7 +345,7 @@ public class ContentControlAlfrescoTest {
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
 
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             logger.error("Error: {}", e);
         } catch (Exception e) {
             logger.error("Error actualizando la UD: {}", e);
