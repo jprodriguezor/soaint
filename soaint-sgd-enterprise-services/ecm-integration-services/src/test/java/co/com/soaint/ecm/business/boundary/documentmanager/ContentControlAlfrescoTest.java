@@ -12,8 +12,12 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
+import org.apache.chemistry.opencmis.commons.enums.VersioningState;
+import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -24,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -443,7 +449,40 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void getDocumentsFromFolder() {
+    public void testGetDocumentsFromFolderSuccess() {
+        try{
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+        UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+
+        //Obtener la unidad documental
+        final Optional<Folder> optionalFolder = contentControlAlfresco.
+                getUDFolderById(unidadDocumentalDTO.getId(), conexion.getSession());
+
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
+            properties.put(PropertyIds.NAME, "Doc Pruba");
+
+            ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(documentoDTO.getDocumento().length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(documentoDTO.getDocumento()
+            ));
+
+            optionalFolder.ifPresent(optionalFolder1 ->optionalFolder1.createDocument(properties, contentStream, VersioningState.MAJOR));
+
+            optionalFolder.ifPresent(optionalFolder1 -> {
+                try {
+                   assertNotNull( contentControlAlfresco.getDocumentsFromFolder(optionalFolder1).get(0).getIdDocumento());
+                } catch (SystemException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
+    } catch (SystemException e) {
+        logger.error("Error: {}", e);
+    } catch (Exception e) {
+        logger.error("Error: {}", e);
+    }
 
     }
 
