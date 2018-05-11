@@ -19,7 +19,7 @@ import javax.ws.rs.Produces;
 @Path("/departamentos-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "DepartamentosWebApi", description = "")
+@Api(value = "DepartamentosWebApi")
 public class DepartamentosWebApi {
 
     @Autowired

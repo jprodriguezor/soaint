@@ -26,7 +26,7 @@ import java.util.List;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "PlantillaWebApi", description = "")
+@Api(value = "PlantillaWebApi")
 public class PlantillaWebApi {
 
     @Autowired
