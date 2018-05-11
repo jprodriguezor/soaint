@@ -3,7 +3,7 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.foundation.canonical.ecm.*;
-import co.com.soaint.foundation.framework.exceptions.BusinessException;
+import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -46,7 +46,7 @@ public interface ContentControl extends Serializable {
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector) throws IOException;
+    MensajeRespuesta subirDocumentoPrincipalAdjunto(Session session, DocumentoDTO documentoDTO, String selector);
 
     /**
      * Metodo para crear Link a un documento dentro de la carpeta Documentos de apoyo
@@ -66,7 +66,7 @@ public interface ContentControl extends Serializable {
      * @return ide de documento
      * @throws IOException exception
      */
-    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector) throws IOException;
+    MensajeRespuesta subirVersionarDocumentoGenerado(Session session, DocumentoDTO documento, String selector);
 
     /**
      * Obtener documento Adjunto dado id Documento Principal
@@ -76,7 +76,7 @@ public interface ContentControl extends Serializable {
      * @return Lista de documentos adjuntos
      * @throws IOException exception
      */
-    MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento) throws IOException;
+    MensajeRespuesta obtenerDocumentosAdjuntos(Session session, DocumentoDTO documento);
 
     /**
      * Obtener versiones del documento dado id Documento
@@ -86,7 +86,7 @@ public interface ContentControl extends Serializable {
      * @return Lista de documentos adjuntos
      * @throws IOException exception
      */
-    MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc) throws IOException;
+    MensajeRespuesta obtenerVersionesDocumento(Session session, String idDoc);
 
     /**
      * Modificar documento Content
@@ -99,7 +99,7 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      * @throws IOException exception
      */
-    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente) throws IOException;
+    MensajeRespuesta modificarMetadatosDocumento(Session session, String idDocumento, String nroRadicado, String tipologiaDocumental, String nombreRemitente);
 
 
     /**
@@ -109,7 +109,7 @@ public interface ContentControl extends Serializable {
      * @param session      Objeto conexion
      * @return Se retorna el documento
      */
-    MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws IOException;
+    MensajeRespuesta descargarDocumento(DocumentoDTO documentoDTO, Session session) throws SystemException;
 
     /**
      * MOver documento
@@ -138,7 +138,7 @@ public interface ContentControl extends Serializable {
      * @param session           Objeto de conexion
      * @return Objeto de dependencia que contiene las sedes o las dependencias buscadas
      */
-    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws BusinessException, Exception;
+    MensajeRespuesta devolverSerieSubSerie(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws SystemException;
 
     /**
      * Servicio que crea las unidades documentales del ECM
@@ -147,14 +147,14 @@ public interface ContentControl extends Serializable {
      * @param session             Objeto de conexion
      * @return MensajeRespuesta
      */
-    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
+    MensajeRespuesta crearUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException;
 
     /**
      * Listar las Unidades Documentales del ECM
      *
      * @return Mensaje de respuesta
      */
-    MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws BusinessException;
+    MensajeRespuesta listarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException;
 
     /**
      * Metodo para listar los documentos de una Unidad Documental
@@ -163,7 +163,7 @@ public interface ContentControl extends Serializable {
      * @param session     Objeto conexion de Alfresco
      * @return MensajeRespuesta con los detalles del documento
      */
-    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws Exception;
+    MensajeRespuesta obtenerDetallesDocumentoDTO(String idDocumento, Session session) throws SystemException;
 
     /**
      * Metodo para devolver la Unidad Documental
@@ -171,7 +171,7 @@ public interface ContentControl extends Serializable {
      * @param idUnidadDocumental Id Unidad Documental
      * @return MensajeRespuesta      Unidad Documntal
      */
-    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws Exception;
+    MensajeRespuesta detallesUnidadDocumental(String idUnidadDocumental, Session session) throws SystemException;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -181,7 +181,7 @@ public interface ContentControl extends Serializable {
      * @param session            Objeto conexion de Alfresco
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
-    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, boolean fullDocuments, Session session) throws Exception;
+    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, boolean fullDocuments, Session session);
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -199,7 +199,7 @@ public interface ContentControl extends Serializable {
      * @param session             Objeto conexion de Alfresco
      * @return boolean true/false
      */
-    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
+    boolean actualizarUnidadDocumental(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException;
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
@@ -207,7 +207,7 @@ public interface ContentControl extends Serializable {
      * @param folder Obj ECm
      * @return List<DocumentoDTO> Lista de los documentos de la carpeta
      */
-    List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws Exception;
+    List<DocumentoDTO> getDocumentsFromFolder(Folder folder) throws SystemException;
 
     /**
      * Metodo para devolver la Unidad Documental
@@ -215,14 +215,14 @@ public interface ContentControl extends Serializable {
      * @param unidadDocumentalDTO     Obj Unidad Documental
      * @return MensajeRespuesta       Unidad Documental
      */
-    MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws Exception;
+    MensajeRespuesta subirDocumentosUnidadDocumentalECM(UnidadDocumentalDTO unidadDocumentalDTO, Session session) throws SystemException;
 
     Map<String, Object> obtenerPropiedadesDocumento(Document document);
 
     /**
      * Operacion para devolver los documentos por archivar
      */
-    MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia, Session session) throws Exception;
+    MensajeRespuesta getDocumentosPorArchivar(final String codigoDependencia, Session session) throws SystemException;
 
     /**
      * Metodo para Modificar Unidades Documentales
@@ -230,7 +230,7 @@ public interface ContentControl extends Serializable {
      * @param unidadDocumentalDTOS    Lista de unidades a modificar
      * @return MensajeRespuesta       Unidad Documental
      */
-    MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws Exception;
+    MensajeRespuesta modificarUnidadesDocumentales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws SystemException;
 
     /**
      * Operacion para devolver series o subseries
@@ -238,7 +238,7 @@ public interface ContentControl extends Serializable {
      * @param documentoDTOS Lista de documentos a archivar
      * @return MensajeRespuesta
      */
-    MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) throws Exception;
+    MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) throws SystemException;
 
     /**
      * Operacion para devolver series o subseries
@@ -246,5 +246,5 @@ public interface ContentControl extends Serializable {
      * @param codigoDependencia Codigo de la dependencia
      * @return MensajeRespuesta
      */
-    MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws Exception;
+    MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws SystemException;
 }
