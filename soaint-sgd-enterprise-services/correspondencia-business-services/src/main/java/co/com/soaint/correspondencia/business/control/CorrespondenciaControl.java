@@ -1202,6 +1202,7 @@ public class CorrespondenciaControl {
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
+                        // TODO buscar un funcionario de esa dependencia y poner--- sugerencia
                             else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
                         log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
                     }
