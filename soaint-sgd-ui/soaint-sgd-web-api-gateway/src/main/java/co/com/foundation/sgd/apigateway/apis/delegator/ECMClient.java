@@ -205,10 +205,15 @@ public class ECMClient {
             return Response.serverError().build();
         }
         try {
+            log.info("Procesando la informacion del multipart");
             final Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
+            log.info("Devolviendo Mapa de Documentos ");
+            _files.forEach((fileName, inputPart) -> log.info("Nombre Archivo: {}, => documento: {}", fileName, inputPart));
             final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
+            log.info("Codigo de Dependencia: {}", dependencyCode);
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             final Collection<InputPart> values = _files.values();
+            log.info("Cantidad de Documentos: {}", values.size());
 
             for (InputPart inputPart:
                     values) {
@@ -219,6 +224,7 @@ public class ECMClient {
                 tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
                 documentoDTOS.add(documentoDTOS.size(), tmpDto);
             }
+            log.info("Cantidad de Documentos DTOs: {}", documentoDTOS.size());
             final WebTarget wt = ClientBuilder.newClient().target(endpoint);
             return wt.path("/subirDocumentosTemporalesECM")
                     .request()
