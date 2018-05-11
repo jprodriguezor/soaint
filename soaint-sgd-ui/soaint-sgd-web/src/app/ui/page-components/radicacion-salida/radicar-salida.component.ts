@@ -146,16 +146,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
   radicarSalida() {
 
-    const radicacionEntradaFormPayload: any = {
-       generales: this.datosGenerales.form.value,
-       descripcionAnexos: this.datosGenerales.descripcionAnexos,
-       radicadosReferidos: this.datosGenerales.radicadosReferidos,
-       task: this.task,
-       destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
-       destinatarioExt:this.datosContacto.listaDestinatariosExternos,
-       remitente:this.datosRemitente.form.value,
-       datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
-    };
+    const radicacionEntradaFormPayload: any =  this.buildPayload();
 
     const comunicacionOficialDTV = new RadicacionSalidaDTV(radicacionEntradaFormPayload, this._store);
 
@@ -221,6 +212,20 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       this.radicacion = null;
       this.hideTicketRadicado();
     });
+  }
+
+  protected  buildPayload(): any{
+
+    return {
+      generales: this.datosGenerales.form.value,
+      descripcionAnexos: this.datosGenerales.descripcionAnexos,
+      radicadosReferidos: this.datosGenerales.radicadosReferidos,
+      task: this.task,
+      destinatarioInterno:this.datosContacto.listaDestinatariosInternos,
+      destinatarioExt:this.datosContacto.listaDestinatariosExternos,
+      remitente:this.datosRemitente.form.value,
+      datosEnvio:this.datosEnvio !== undefined ? this.datosEnvio.form.value: undefined
+    };
   }
 
   protected buildTaskCompleteParameters(generales:any,noRadicado:any):any{

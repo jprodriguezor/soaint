@@ -62,7 +62,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
 
               resp.datosGenerales.reqDigit = 2;
               if(!isNullOrUndefined(this.task.variables.numeroRadicado))
-                resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
+              resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
               resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
 
               this.datosGenerales$.next(resp.datosGenerales);
@@ -105,6 +105,15 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
       numeroRadicado:noRadicado,
       requiereDistribucion:generales.reqDistFisica ? "1" : "2"
     }
+  }
+
+  protected buildPayload():any{
+
+    let payload = super.buildPayload();
+
+    payload.generales.ideEcm = this.ideEcm;
+
+    return payload;
   }
 
   radicacionButtonIsShown():boolean {

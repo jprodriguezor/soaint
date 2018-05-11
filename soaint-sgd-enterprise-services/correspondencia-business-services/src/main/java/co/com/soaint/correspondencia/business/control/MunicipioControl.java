@@ -1,6 +1,5 @@
 package co.com.soaint.correspondencia.business.control;
 
-import co.com.soaint.foundation.canonical.correspondencia.DepartamentoDTO;
 import co.com.soaint.foundation.canonical.correspondencia.MunicipioDTO;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -14,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

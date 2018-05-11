@@ -25,6 +25,7 @@ export  interface  RadicacionFormInterface{
     hasAnexos?: any,
     ideDocumento: any,
     idePpdDocumento: any,
+    ideEcm?:any
   },
   remitente: {
   ideAgente?: any,

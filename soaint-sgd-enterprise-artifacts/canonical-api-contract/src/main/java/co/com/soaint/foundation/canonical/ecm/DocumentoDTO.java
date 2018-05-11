@@ -21,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/cor-agente/1.0.0")
-@ToString
+@ToString(of = "nombreDocumento", includeFieldNames = false)
 public class DocumentoDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,9 +43,4 @@ public class DocumentoDTO implements Serializable {
     private String versionLabel;
     private byte[] documento;
     private String[] nroRadicadoReferido;
-
-    @Override
-    public String toString() {
-        return nombreDocumento;
-    }
 }

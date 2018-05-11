@@ -16,6 +16,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {Subscription} from "rxjs/Subscription";
 import {DependenciaDTO} from "../../../../../../domain/dependenciaDTO";
 import {environment} from "../../../../../../../environments/environment";
+import {TipologiaDocumentaService} from "../../../../../../infrastructure/api/tipologia-documenta.service";
 
 @Component({
   selector: 'app-seleccionar-documentos',
@@ -43,16 +44,23 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   idDocumento:string;
 
+  tipologiaDocumental:string;
+
   subscriptions:Subscription[] = [];
+
+  tipologiaDocumentales$:Observable<any[]>;
 
   constructor(private _confirmationService:ConfirmationService,
               private _udService:UnidadDocumentalApiService,
-              private _store:Store<RootState>
+              private _store:Store<RootState>,
+              private _tipologiaService:TipologiaDocumentaService
   ) { }
 
   ngOnInit() {
 
     this.FillListasDocumentos();
+
+    this.tipologiaDocumentales$ = this._tipologiaService.getTiplogiasDocumentales();
   }
 
   confirmArchivarDocumentos(){
@@ -170,6 +178,8 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
       case "nombreDocumento" : this.documentos[index][field] = this.nombreDocumento;
         break;
       case "idDocumento" : this.documentos[index][field] = this.idDocumento;
+        break;
+      case "tipologiaDocumental":  this.documentos[index][field] = this.tipologiaDocumental;
         break;
     }
   }

@@ -79,7 +79,7 @@ export  abstract class RadicacionBase {
       nroFolios: generales.numeroFolio, // 'Numero Folio',
       nroAnexos: this.source.descripcionAnexos.length, // 'Numero anexos',
       codEstDoc: null,
-      ideEcm: null
+      ideEcm: !isNullOrUndefined(generales.ideEcm) ? generales.ideEcm : null
     };
   }
 
