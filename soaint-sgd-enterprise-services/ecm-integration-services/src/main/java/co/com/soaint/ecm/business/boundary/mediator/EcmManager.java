@@ -262,4 +262,37 @@ public class EcmManager implements Serializable {
         log.info("processing rest request - Obtener Documentos archivados ECM");
         return contentManager.obtenerDocumentosArchivados(codigoDependencia);
     }
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param dependenciaTrdDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta listarDependenciaMultipleECM(ContenidoDependenciaTrdDTO dependenciaTrdDTO) throws SystemException {
+        log.info("processing rest request - Obtener las sedes, dependencias, series o subseries");
+        return contentManager.listarDependenciaMultiple(dependenciaTrdDTO);
+    }
+
+    /**
+     * Crear carpeta en el Record
+     *
+     * @param disposicionFinalDTO Obj con el DTO Unidad Documental y l listado de las disposiciones
+     * @return Mensaje de respuesta
+     */
+    public MensajeRespuesta listarUdDisposicionFinal(DisposicionFinalDTO disposicionFinalDTO) throws SystemException {
+        log.info("processing rest request - Listar las unidades documentales que hay culminado su tiempo de retencion");
+        return contentManager.listarUdDisposicionFinal(disposicionFinalDTO);
+    }
+
+    /**
+     * Metodo para cerrar una o varias unidades documentales
+     *
+     * @param unidadDocumentalDTOS   Lista Unidades Documentales para aprobar/rechazar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta aprobarRechazarDisposicionesFinales(List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException {
+        log.info("Ejecutando metodo MensajeRespuesta aprobarRechazarDisposicionesFinalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS)");
+        return contentManager.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOS);
+    }
 }

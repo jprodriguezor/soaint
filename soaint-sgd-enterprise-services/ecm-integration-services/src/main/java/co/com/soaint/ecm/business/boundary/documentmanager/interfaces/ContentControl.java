@@ -2,18 +2,17 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Creado por Dasiel
@@ -247,4 +246,28 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      */
     MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws SystemException;
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param dependenciaTrdDTO Objeto que contiene los datos de filtrado
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta listarDependenciaMultiple(ContenidoDependenciaTrdDTO dependenciaTrdDTO, Session session) throws SystemException;
+
+    /**
+     * Crear carpeta en el Record
+     *
+     * @param disposicionFinalDTO Obj con el DTO Unidad Documental y l listado de las disposiciones
+     * @return Mensaje de respuesta
+     */
+    MensajeRespuesta listarUdDisposicionFinal(DisposicionFinalDTO disposicionFinalDTO, Session session) throws SystemException;
+
+    /**
+     * Metodo para cerrar una o varias unidades documentales
+     *
+     * @param unidadDocumentalDTOS   Lista Unidades Documentales para aprobar/rechazar
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta aprobarRechazarDisposicionesFinales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws SystemException;
 }
