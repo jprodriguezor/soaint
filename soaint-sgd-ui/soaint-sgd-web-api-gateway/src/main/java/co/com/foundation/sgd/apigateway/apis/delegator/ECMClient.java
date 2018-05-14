@@ -2,7 +2,10 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -26,10 +29,6 @@ public class ECMClient {
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
     private String record_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL);
     private String corresponencia_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
-
-    // mensajes de error
-    private String MensajeErrorGenerico = "Ocurrió un error inesperado con el servicio ECM";
-
 
     public ECMClient() {
         super();
@@ -148,37 +147,6 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response listarUnidadesDocumentalesDisposicion(DisposicionFinalDTO disposicionFinal) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/listar-unidades-documentales-disposicion")
-                                .request()
-                                .post(Entity.json(disposicionFinal));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-    }
-
-    public Response aprobarRechazarUnidadesDocumentalesDisposicion(List<UnidadDocumentalDTO> unidadesDocumentales) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
-                                .request()
-                                .put(Entity.json(unidadesDocumentales));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-
-    }
-
     public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
         log.info("AbrirCerrarReactivarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
@@ -240,30 +208,30 @@ public class ECMClient {
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             final Collection<InputPart> values = _files.values();
             log.info("Cantidad de Documentos: {}", values.size());
+
             for (InputPart inputPart:
                     values) {
-                MensajeRespuesta response = subirDocumentoPorArchivar(inputPart, dependencyCode);
-                if ("0000".equals(response.getCodMensaje())) {
-                    Map<String, Object> objectMap = response.getResponse();
-                    DocumentoDTO dto = (DocumentoDTO) objectMap.get("documento");
-                    documentoDTOS.add(documentoDTOS.size(), dto);
-                }
+                final DocumentoDTO tmpDto = new DocumentoDTO();
+                InputStream result = inputPart.getBody(InputStream.class, null);
+                tmpDto.setDocumento(IOUtils.toByteArray(result));
+                tmpDto.setCodigoDependencia(dependencyCode);
+                tmpDto.setTipoDocumento("application/pdf");
+                tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
+                documentoDTOS.add(documentoDTOS.size(), tmpDto);
             }
             log.info("Cantidad de Documentos DTOs: {}", documentoDTOS.size());
-            MensajeRespuesta mensajeRespuesta = MensajeRespuesta.newInstance()
-                    .codMensaje("0000")
-                    .documentoDTOList(documentoDTOS)
-                    .codMensaje("Operacion realizada satisfactoriamente")
-                    .build();
-            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
-        } catch (IOException e) {
+            final WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            return wt.path("/subirDocumentosTemporalesECM")
+                    .request()
+                    .post(Entity.json(documentoDTOS));
+
+        } catch (Exception e) {
             log.error("Error del Sistema {}", e.getMessage());
-            MensajeRespuesta mensajeRespuesta = MensajeRespuesta.newInstance()
+            MensajeRespuesta respuesta = MensajeRespuesta.newInstance()
                     .codMensaje("1223")
-                    .documentoDTOList(new ArrayList<>())
-                    .codMensaje("Ocurrio un error al suibir los documentos!!")
+                    .mensaje(e.getMessage())
                     .build();
-            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
+            return Response.status(Response.Status.OK).entity(respuesta).build();
         }
     }
 
@@ -272,18 +240,5 @@ public class ECMClient {
         WebTarget wt = ClientBuilder.newClient().target(corresponencia_endpoint);
         return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
-    }
-
-    private MensajeRespuesta subirDocumentoPorArchivar(InputPart inputPart, String depCode) throws IOException {
-        final DocumentoDTO tmpDto = new DocumentoDTO();
-        InputStream result = inputPart.getBody(InputStream.class, null);
-        tmpDto.setDocumento(IOUtils.toByteArray(result));
-        tmpDto.setCodigoDependencia(depCode);
-        tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
-        tmpDto.setTipoDocumento("application/pdf");
-        final WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        final Response response = wt.path("/subirDocumentoTemporalECM").request()
-                .post(Entity.json(tmpDto));
-        return response.readEntity(MensajeRespuesta.class);
     }
 }
