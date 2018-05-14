@@ -246,13 +246,28 @@ public class CorrespondenciaClient {
                 .post(Entity.json(solicitudes));
     }
 
-    public Response listarSolicitudUnidadDocumental(String codSede,String codDependencia,String idSolicitante,String fechaSolicitud){
+    public Response listarSolicitudUnidadDocumentalNoTramitadas(String codSede,String codDependencia,String idSolicitante,String fechaSolicitud){
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
-        return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um")
+        return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante-sin-tramitar")
+                .queryParam("cod_sede", codSede)
+                .queryParam("cod_dependencia", codDependencia)
+                .queryParam("id_solicitante", idSolicitante)
+                .queryParam("fecha_in", fechaSolicitud)
+                .request()
+                .get();
+    }
+
+    public Response listarSolicitudUnidadDocumentalTramitadas(String codSede,String codDependencia,String idSolicitante,String fechaSolicitud){
+
+        log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
+
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        return wt.path("/correspondencia-web-api/correspondencia/obtener-solicitud-um-solicitante")
                 .queryParam("cod_sede", codSede)
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("id_solicitante", idSolicitante)
