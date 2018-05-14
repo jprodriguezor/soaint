@@ -90,7 +90,7 @@ public class UnidadDocumentalGatewayApi {
         log.info("ListarrUnidadesDocumentalesGatewayApi - [trafic] - listar unidades documentales disposicion final");
         Response response = ecmClient.listarUnidadesDocumentalesDisposicion(disposicionFinal);
         String responseContent = response.readEntity(String.class);
-        return Response.status(response.getStatus()).entity(responseContent).build();;
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
     @POST
