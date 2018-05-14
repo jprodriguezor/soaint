@@ -42,6 +42,16 @@ import java.util.List;
             "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
             "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
+            "AND (t.accion IS NOT NULL) " +
+            "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
+    @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
+            "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            "FROM TvsSolicitudUnidadDocumental t " +
+            "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
+            "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
+            "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
+            "AND (t.accion IS NULL) " +
             "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
@@ -50,7 +60,14 @@ import java.util.List;
             "WHERE t.ideSolicitud = :IDE_SOL"),
         @NamedQuery(name = "TvsSolicitudUM.countByIdSolicitud", query = "SELECT COUNT(*) " +
                 "FROM TvsSolicitudUnidadDocumental t " +
-                "WHERE TRIM(t.ideSolicitud) = TRIM(:IDE_SOL)")
+                "WHERE TRIM(t.ideSolicitud) = TRIM(:IDE_SOL)"),
+        @NamedQuery(name = "TvsSolicitudUM.countByNombreUDSolicitud", query = "SELECT COUNT(*) " +
+                "FROM TvsSolicitudUnidadDocumental t " +
+                "WHERE TRIM(t.nombreUD) = TRIM(:NOM_UD)"),
+        @NamedQuery(name = "TvsSolicitudUM.countByIdNombreUDSolicitud", query = "SELECT COUNT(*) " +
+                "FROM TvsSolicitudUnidadDocumental t " +
+                "WHERE TRIM(t.nombreUD) = TRIM(:NOM_UD)" +
+                "AND TRIM(t.ideSolicitud) = TRIM(:IDE_SOL)")
         })
 @javax.persistence.TableGenerator(name = "COR_SOLICITUD_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_SOLICITUD_SEQ", allocationSize = 1)

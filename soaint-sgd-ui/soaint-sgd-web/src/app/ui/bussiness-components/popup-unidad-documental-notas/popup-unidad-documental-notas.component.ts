@@ -58,12 +58,12 @@ export class PopupUnidadDocumentalNotasComponent implements OnInit {
       this.form.reset();
       this.form.controls['serie'].setValue(this.unidadSeleccionada.nombreSubSerie);
       this.form.controls['identificador'].setValue(this.unidadSeleccionada.id);
-      this.form.controls['observaciones'].setValue(this.unidadSeleccionada.observacion);
+      this.form.controls['observaciones'].setValue(this.unidadSeleccionada.observaciones);
     }
   }
 
   Guardar() {
-    this.unidadSeleccionada.observacion = this.form.controls['observaciones'].value;
+    this.unidadSeleccionada.observaciones = this.form.controls['observaciones'].value;
     this.state.GuardarObservacion(this.unidadSeleccionada, this.index);
     this.completado.emit(true);
   }

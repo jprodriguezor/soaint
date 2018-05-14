@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.json.Json;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -283,6 +284,39 @@ public class CorrespondenciaWebApi {
             Date fechaInicial = fechaI == null ? null : dateFormat.parse(fechaI);
 
             return boundary.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(fechaInicial,ideSolicitante,codigoSede,codigoDependencia);
+
+        } catch (ParseException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param codigoSede
+     * @param codigoDependencia
+     * @param ideSolicitante
+     * @param fechaI
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-solicitud-um-solicitante-sin-tramitar")
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(
+                                                                                    @QueryParam("cod_sede") final String codigoSede,
+                                                                                    @QueryParam("cod_dependencia") final String codigoDependencia,
+                                                                                    @QueryParam("id_solicitante") final String ideSolicitante,
+                                                                                    @QueryParam("fecha_in") final String fechaI) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicial = fechaI == null ? null : dateFormat.parse(fechaI);
+
+            return boundary.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(fechaInicial,ideSolicitante,codigoSede,codigoDependencia);
 
         } catch (ParseException ex) {
             throw ExceptionBuilder.newBuilder()
