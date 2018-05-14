@@ -1119,17 +1119,6 @@ public class CorrespondenciaControl {
         log.info("processing rest request - asunto: "+request.getSubject());
 
         //------------------- Inicio Attachments ------------------------------------------------------//
-//        String endpoint = System.getProperty("ecm-api-endpoint");
-//        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-//
-//        //Estos son para los documentos de la correspondencia con ese número de radicado
-//        co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
-//        Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
-//                .request()
-//                .post(Entity.json(dto));
-
-        //Estos son para los documentos de la correspondencia con ese número de radicado referido
-        // TODO Traer el nroRadicado de la correspondencia por referido - nroRadRef =
 
         ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
 
@@ -1143,29 +1132,6 @@ public class CorrespondenciaControl {
             attachmentsList.add(attachment);
         });
 
-//        if (response.getStatus() == HttpStatus.OK.value()) {
-//            MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
-//            if (mensajeRespuesta.getCodMensaje().equals("0000")) {
-//                final List<co.com.soaint.foundation.canonical.ecm.DocumentoDTO> documentoDTOList = mensajeRespuesta.getDocumentoDTOList();
-//                log.info("processing rest request - documentoDTOList.size(): "+documentoDTOList.size());
-//
-//                if (mensajeRespuesta.getDocumentoDTOList() != null || !mensajeRespuesta.getDocumentoDTOList().isEmpty()) {
-//                    documentoDTOList.forEach(documento -> {
-//                        Attachment doc =  new Attachment();
-//                        doc.setAttachments(documento.getDocumento());
-//                        doc.setContentTypeattachment(documento.getTipoDocumento());
-//                        doc.setNameAttachments(documento.getNombreDocumento());
-//                        attachmentsList.add(doc);
-//                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-//                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
-//                    });
-//                }
-//            } else{
-//                throw ExceptionBuilder.newBuilder()
-//                        .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
-//                        .buildSystemException();
-//            }
-//        }
         //------------------- Fin Attachments ------------------------------------------------------//
         request.setAttachmentsList(attachmentsList);
 
@@ -1202,7 +1168,6 @@ public class CorrespondenciaControl {
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                        // TODO buscar un funcionario de esa dependencia y poner--- sugerencia
                             else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
                         log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
                     }
