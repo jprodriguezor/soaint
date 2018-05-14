@@ -283,7 +283,7 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testFindUDByIdSuccess() throws Exception {
+    public void testGetUDByIdSuccess() throws Exception {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -500,16 +500,24 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void subirDocumentosCMISPrincipalAnexoUD() {
-    }
+    public void testModificarUnidadesDocumentalesSuccess(){
 
-    @Test
-    public void listaDocumentosDTOUnidadDocumental() {
-    }
 
-    @Test
-    public void listarDocsDadoIdUD() {
+        List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
 
+        try {
+
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            unidadDocumentalDTO.setNombreUnidadDocumental("DepPruebaModificarUnidadesDocumentales");
+            unidadDocumentalDTOList.add(unidadDocumentalDTO);
+
+            assertEquals("0000",contentControlAlfresco.modificarUnidadesDocumentales(unidadDocumentalDTOList,conexion.getSession()).getCodMensaje());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),conexion.getSession());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
