@@ -2,7 +2,7 @@
             <div class="ui-g ui-fluid">
               <div class="ui-g-12">
                 <p-radioButton #bud  name="section" label="Buscar unidad documental" [(ngModel)]="operation" value="bUnidadDocumental" (click)="changeSection('bUnidadDocumental')"  ></p-radioButton>
-                <p-radioButton #scud name="section" label="Solicitar creeacion de unidad documental" [(ngModel)]="operation" value="solicitarUnidadDocumental" (click)="changeSection('solicitarUnidadDocumental')"></p-radioButton>
+                <p-radioButton #scud name="section" label="Solicitar creación de unidad documental" [(ngModel)]="operation" value="solicitarUnidadDocumental" (click)="changeSection('solicitarUnidadDocumental')"></p-radioButton>
               </div>
               <div [formGroup]="form">
                 <div class="ui-g-12">
@@ -165,7 +165,7 @@
               <div class="ui-g-12">
                 <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
                              [paginator]="true" [rows]="10" [responsive]="true" [value]="unidadesDocumentales$|async"
-                             (onRowSelect)="selectUnidadDocumental($event)"
+                             (onRowSelect)="selectUnidadDocumental($event)" (onRowUnselect)="deselectUnidadDocumental($event)"
                 >
                   <p-column selectionMode="single" [style]="{'width':'50px'}" *ngIf="operation=='bUnidadDocumental'"></p-column>
                   <p-column  header="Item" [style]="{'width':'50px'}">

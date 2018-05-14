@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -23,6 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/asignar-tramite/1.0.0")
+@ToString
 public class AsignacionTramiteDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

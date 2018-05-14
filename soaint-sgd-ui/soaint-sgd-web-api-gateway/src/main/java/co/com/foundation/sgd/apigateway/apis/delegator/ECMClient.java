@@ -2,7 +2,6 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.soaint.foundation.canonical.bpm.EntradaProcesoDTO;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
@@ -10,22 +9,18 @@ import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @ApiDelegator
 @Log4j2
@@ -197,12 +192,42 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response subirDocumentosPorArchivar(List<DocumentoDTO> documentoDTOS) {
+    public Response subirDocumentosPorArchivar(MultipartFormDataInput formDataInput) {
         log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
-        return wt.path("/subirDocumentosTemporalesECM")
-                .request()
-                .post(Entity.json(documentoDTOS));
+        if (null == formDataInput) {
+            log.error("Esta vacia la lista Multipart");
+            return Response.serverError().build();
+        }
+        try {
+            log.info("Procesando la informacion del multipart");
+            final Map<String, InputPart> _files = ECMUtils.findFiles(formDataInput);
+            log.info("Devolviendo Mapa de Documentos");
+            _files.forEach((fileName, inputPart) -> log.info("Nombre Archivo: {}, => documento: {}", fileName, inputPart));
+            final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
+            log.info("Codigo de Dependencia: {}", dependencyCode);
+            final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
+            final Collection<InputPart> values = _files.values();
+            log.info("Cantidad de Documentos: {}", values.size());
+
+            for (InputPart inputPart:
+                    values) {
+                final DocumentoDTO tmpDto = new DocumentoDTO();
+                InputStream result = inputPart.getBody(InputStream.class, null);
+                tmpDto.setDocumento(IOUtils.toByteArray(result));
+                tmpDto.setCodigoDependencia(dependencyCode);
+                tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
+                documentoDTOS.add(documentoDTOS.size(), tmpDto);
+            }
+            log.info("Cantidad de Documentos DTOs: {}", documentoDTOS.size());
+            final WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            return wt.path("/subirDocumentosTemporalesECM")
+                    .request()
+                    .post(Entity.json(documentoDTOS));
+
+        } catch (IOException e) {
+            log.error("Error del Sistema {}", e.getMessage());
+            return Response.serverError().build();
+        }
     }
 
     public Response restablecerArchivarDocumentoTask(String idproceso, String idtarea) {

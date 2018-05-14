@@ -1,4 +1,4 @@
-import {Component, ContentChildren, EventEmitter, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
+import {Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import  {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -16,6 +16,7 @@ import {Subscription} from "rxjs/Subscription";
 import {SupertypeSeries} from "../../shared/supertype-series";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {isNullOrUndefined} from "util";
+import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
 
 @Component({
   selector: 'app-lista-solicitud-crear-ud',
@@ -28,6 +29,8 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
   form:FormGroup;
   dependenciaSelected:DependenciaDTO;
 
+  @Input() solicitudModel:SolicitudCreacioUdModel;
+
   solicitudes$:Observable<SolicitudCreacionUDDto[]> = Observable.empty();
 
   seriesObservable$:Observable<SerieDTO[]>;
@@ -36,9 +39,6 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   solicitudSelected:SolicitudCreacionUDDto;
 
-  dependenciaSelected$ : Observable<any>;
-
-  globalDependencySubscriptor:Subscription;
 
   @ViewChildren(Dropdown) dropdowns : QueryList<Dropdown>;
 
@@ -46,71 +46,39 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   task:TareaDTO;
 
-  currentAction?:string;
+    constructor(private _store:Store<RootState>,private solicitudService: SolicitudCreacionUdService) {
 
-  constructor(private fb:FormBuilder,private _store:Store<RootState>,private solicitudService: SolicitudCreacionUdService) {
-
-    this.formInit();
-
-    this._store.select(getSelectedDependencyGroupFuncionario).subscribe( response => {
-
-      this.dependenciaSelected = response;
-
-      this.form.controls["sede"].setValue(response.nomSede);
-      this.form.controls["dependencia"].setValue(response.nombre);
-
-    });
-
-    this._store.select(getActiveTask).subscribe( activeTask => {
+      this._store.select(getActiveTask).subscribe( activeTask => {
       this.task = activeTask;
     });
 
   }
+   selectRow(evt){
 
-  private formInit(){
-    this.form =  this.fb.group({
-      "sede"        : [{value:null,disabled:true}],
-      "dependencia" : [{value:null,disabled:true}],
-      "fechaInicio" : [null],
-      "fechaFin"    : [null]
-    });
+     this.solicitudModel.selectSolicitud(evt.data);
   }
 
-  filtrarSolicitud(){
-
-    let request:any = {
-      codSede: this.dependenciaSelected.codSede,
-      codDependencia: this.dependenciaSelected.codigo,
-    };
-
-    if(!isNullOrUndefined(this.form.get("fechaInicio").value))
-      request.fechaIni = this.form.get("fechaInicio").value;
-
-    if(!isNullOrUndefined(this.form.get("fechaFin").value))
-      request.fechaFin = this.form.get("fechaFin").value;
-
-
-
-    this.solicitudes$ = this.solicitudService.listarSolicitudes(request);
-                           // .map( r => r.response.unidadesDocumental);
-  }
-
-  selectRow(evt){
-
-     this.solicitudSelected = evt.data;
-  }
-
-  selectAction(evt?){
+  selectAction(index,evt?){
 
   const actionEvent = Object.assign({},
      {solicitud:this.solicitudSelected},
-     {action:this.dropdowns.toArray()[this.solicitudSelected.nro].value},
+     {action:this.dropdowns.toArray()[index].value},
      {nativeEvent:evt}
      );
 
     this.changeAction.emit(actionEvent);
   }
 
-ngOnInit(){}
+ngOnInit(){
+
+
+
+    this.solicitudes$ =  this.solicitudService.listarSolicitudes({
+      codSede:this.task.variables.codSede,
+      codDependencia:this.task.variables.codDependencia,
+      idSolicitante: this.task.variables.idSolicitante,
+      fechaSolicitud:this.task.variables.fechaSolicitud
+    });
+}
 
 }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SupertypeSeries} from "../../shared/supertype-series";
 import  {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -8,16 +8,18 @@ import {Observable} from "rxjs/Observable";
 import {ConfirmationService} from "primeng/primeng";
 import {UnidadDocumentalDTO} from "../../../../../domain/unidadDocumentalDTO";
 import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unidad-documental.api";
-import {SolicitudCreacionUDDto} from "../../../../../domain/solicitudCreacionUDDto";
 import {isNullOrUndefined} from "util";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
+import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
+import {DependenciaDTO} from "../../../../../domain/dependenciaDTO";
+import {Subscription} from "rxjs/Subscription";
 
 
 @Component({
   selector: 'app-form-crear-unidad-documental',
   templateUrl: './form-crear-unidad-documental.component.html',
 })
-export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implements  OnChanges{
+export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implements  OnChanges,OnDestroy{
 
   form:FormGroup;
 
@@ -27,13 +29,14 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
 
   subserieObservable2$:Observable<any[]>;
 
-  UDSelected:UnidadDocumentalDTO;
+
+  @Input() solicitudModel:SolicitudCreacioUdModel;
 
   unidadesDocumentales$:Observable<UnidadDocumentalDTO[]>;
 
-  @Input() solicitud?:SolicitudCreacionUDDto;
-
   @Output() onCreateUnidadDocumental:EventEmitter<any>  = new EventEmitter;
+
+  subscriptions:Subscription[];
 
 
   constructor(private fb:FormBuilder,
@@ -142,18 +145,22 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
           accion:"Creación UD"
         };
 
-        this.udService.crear(data)
-        .subscribe(() => {
+       this.subscriptions.push(
+         this.udService.crear(data)
+           .subscribe(() => {
 
-          this.onCreateUnidadDocumental.emit(data);
+             this.onCreateUnidadDocumental.emit();
 
-          data.codigoDependencia = this.dependenciaSelected.codigo;
+             data.codigoDependencia = this.dependenciaSelected.codigo;
 
-          data.codigoSede = this.dependenciaSelected.codSede;
+             data.codigoSede = this.dependenciaSelected.codSede;
 
-          this.solicitudService.actualizarSolicitudes(data);
+             this.solicitudService.actualizarSolicitudes(data);
 
-        }, error => {});
+             this.solicitudModel.removeAtIndex();
+
+           }, error => {})
+       );
 
       },
       reject: () => {
@@ -164,26 +171,32 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
 
   ngOnChanges(){
 
-    if(this.solicitud){
+    if(this.solicitudModel.SelectedIndex > -1){
+
+      const solicitud = this.solicitudModel.SolicitudSelected;
 
       this.subseriesObservable$ = this.dependenciaSelected$.switchMap( dependencia => this
         ._serieSubserieService
-        .getSubseriePorDependenciaSerie(dependencia.codigo,this.solicitud.codigoSerie)
+        .getSubseriePorDependenciaSerie(dependencia.codigo,solicitud.codigoSerie)
         .map(list => {
           list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
           return list;
         }),(out,inner) => inner );
 
 
-      this.form.get("serie").setValue(this.solicitud.codigoSerie);
-      this.form.get('subserie').setValue(this.solicitud.codigoSubSerie);
-      this.form.get('identificador').setValue(this.solicitud.id);
-      this.form.get("nombre").setValue(this.solicitud.nombreUnidadDocumental);
-      this.form.get("descriptor1").setValue(this.solicitud.descriptor1);
-      this.form.get("descriptor2").setValue(this.solicitud.descriptor2);
-      this.form.get("observaciones").setValue(this.solicitud.observaciones);
-
+      this.form.get("serie").setValue(solicitud.codigoSerie);
+      this.form.get('subserie').setValue(solicitud.codigoSubSerie);
+      this.form.get('identificador').setValue(solicitud.id);
+      this.form.get("nombre").setValue(solicitud.nombreUnidadDocumental);
+      this.form.get("descriptor1").setValue(solicitud.descriptor1);
+      this.form.get("descriptor2").setValue(solicitud.descriptor2);
+      this.form.get("observaciones").setValue(solicitud.observaciones);
 
     }
+  }
+
+  ngOnDestroy(){
+
+    this.subscriptions.forEach( subscription => subscription.unsubscribe());
   }
 }

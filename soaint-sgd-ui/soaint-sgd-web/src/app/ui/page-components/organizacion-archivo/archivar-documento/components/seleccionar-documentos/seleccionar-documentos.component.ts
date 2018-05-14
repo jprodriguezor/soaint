@@ -1,11 +1,22 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ArchivarDocumentoModel} from "../../models/archivar-documento.model";
 import {ConfirmationService} from "primeng/primeng";
 import {UnidadDocumentalApiService} from "../../../../../../infrastructure/api/unidad-documental.api";
 import {Observable} from "rxjs/Observable";
 import {Store} from "@ngrx/store";
 import  {State as RootState} from "../../../../../../infrastructure/redux-store/redux-reducers";
-import {getAuthenticatedFuncionario} from "../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+import {
+  getAuthenticatedFuncionario,
+  getSelectedDependencyGroupFuncionario
+} from "../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
+import {isNullOrUndefined} from "util";
+import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {AnexoDTO} from "../../../../produccion-documental/models/DocumentoDTO";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {Subscription} from "rxjs/Subscription";
+import {DependenciaDTO} from "../../../../../../domain/dependenciaDTO";
+import {environment} from "../../../../../../../environments/environment";
+import {TipologiaDocumentaService} from "../../../../../../infrastructure/api/tipologia-documenta.service";
 
 @Component({
   selector: 'app-seleccionar-documentos',
@@ -13,91 +24,87 @@ import {getAuthenticatedFuncionario} from "../../../../../../infrastructure/stat
   styleUrls: ['./seleccionar-documentos.component.css'],
   providers:[ConfirmationService]
 })
-export class SeleccionarDocumentosComponent implements OnInit {
+export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   @Input() archivarDocumentoModel:ArchivarDocumentoModel;
 
-  documentos$:Observable<any[]>;
+    documentos:any[];
 
   documentosArchivados$:Observable<any[]>;
 
+  documentosAdjuntos:any[];
+
   documentPreview:boolean = false;
+
+  dependenciaSelected:DependenciaDTO;
 
   idEcm:any;
 
+  nombreDocumento:string;
+
+  idDocumento:string;
+
+  tipologiaDocumental:string;
+
+  subscriptions:Subscription[] = [];
+
+  tipologiaDocumentales$:Observable<any[]>;
+
   constructor(private _confirmationService:ConfirmationService,
               private _udService:UnidadDocumentalApiService,
-              private _store:Store<RootState>
+              private _store:Store<RootState>,
+              private _tipologiaService:TipologiaDocumentaService
   ) { }
 
   ngOnInit() {
-    this.documentos$ =  this._udService.listarDocumentosPorArchivar()
-      .map( response => this.groupByDependencie(response.documentoDTOList));
-  }
 
-  private groupByDependencie( docs: any[]):any[]{
+    this.FillListasDocumentos();
 
-    if(docs.length === 0)
-      return [];
-
-    const documentos = docs.sort( (a,b) => {
-
-      if(a.codigoDependencia == b.codigoDependencia)
-        return 0;
-
-      return  a.codigoDependencia >= b.codigoDependencia ? 1 : -1;
-    });
-
-    let documentDependency = [];
-
-
-    let currentDependency = documentos[0].codigoDependencia;
-
-    documentos.forEach( (doc,index) => {
-
-      if(index === 0 || doc.codigoDependencia != currentDependency){
-
-        documentDependency.push([doc]);
-
-        if(index === 0)
-          return;
-
-        currentDependency = doc.codigoDependencia;
-        return;
-      }
-
-      documentDependency[documentDependency.length - 1].push(doc);
-
-    });
-
-    return documentDependency;
-
+    this.tipologiaDocumentales$ = this._tipologiaService.getTiplogiasDocumentales();
   }
 
   confirmArchivarDocumentos(){
 
     this._confirmationService.confirm({
-      message: '¿Está seguro de archivar el documento en la carpeta XXXXX?',
+      message: `¿Está seguro de archivar el documento en la carpeta ${this.archivarDocumentoModel.UnidadDocumental.nombreUnidadDocumental}?`,
       header: 'Confirmacion',
       icon: 'fa fa-question-circle',
       accept: () => {
-
-        this._udService.archivarDocumento(this.archivarDocumentoModel)
-          .subscribe(() => {
-
-            this.documentos$ =  this._udService.listarDocumentosPorArchivar()
-                                    .map( response => this.groupByDependencie(response.documentoDTOList));
-
-            this.documentosArchivados$ =  this._store.select(getAuthenticatedFuncionario)
-                                              .switchMap( func => this._udService.listarDocumentosArchivadosPorFuncionario(func.id),(outer,inner) => inner)
-
-          });
+      this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
+          .subscribe(this.FillListasDocumentos);
       },
       reject: () => {
 
       }
     });
   }
+
+  private FillListasDocumentos(){
+
+    const observable = this._store.select(getSelectedDependencyGroupFuncionario);
+
+    this.setDocumentosPorArvichar(observable);
+
+    this.documentosArchivados$ = observable.switchMap(dependencia =>  this._udService
+      .listarDocumentosArchivadosPorDependencia(dependencia.codigo));
+  }
+
+  private setDocumentosPorArvichar(observable:Observable<DependenciaDTO>){
+
+    this.subscriptions.push(
+      observable.switchMap(dependencia => {
+
+        return this._udService.listarDocumentosPorArchivar(dependencia.codigo)
+          .map( response => response.documentoDTOList.map( doc => {
+
+            doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
+            doc.isAttachment = true;
+            return doc;
+          }),(outer,inner) => inner);
+      })
+        .subscribe(documentos => this.documentos = documentos)
+    );
+    }
 
   toggleDocuments(event:any,checked:boolean){
 
@@ -122,6 +129,64 @@ export class SeleccionarDocumentosComponent implements OnInit {
   hidePdf(){
 
     this.documentPreview = false;
+  }
+
+  uploadDocuments(event:any){
+
+    console.log("enter to method");
+
+    this.subscriptions.push(
+      this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependecia => {
+
+        const formData = new FormData();
+
+
+        console.log("catchin dependencia");
+
+        formData.append('files[]',event.files);
+
+        formData.append("codigoDependencia",dependecia.codigo);
+
+        this.subscriptions.push( this._udService.subirDocumentosParaArchivar(formData).subscribe());
+      })
+    );
+
+
+  }
+
+  eliminarDocumento(idEcm,index){
+
+    // usar api documento ecm
+
+    this.documentosAdjuntos.splice(index,1);
+  }
+
+  agregarAdjuntos(){
+
+  this.documentos = this.documentosAdjuntos.map( doc => Object.assign({isAttachment:true,identificador:doc.idDocumento},doc));
+
+  }
+
+  onErrorUpload(event){
+
+    console.log("Hola");
+  }
+
+  updateDocumentMeta(index,field){
+
+    switch (field){
+      case "nombreDocumento" : this.documentos[index][field] = this.nombreDocumento;
+        break;
+      case "idDocumento" : this.documentos[index][field] = this.idDocumento;
+        break;
+      case "tipologiaDocumental":  this.documentos[index][field] = this.tipologiaDocumental;
+        break;
+    }
+  }
+
+  ngOnDestroy(): void {
+
+    this.subscriptions.forEach( subscription => subscription.unsubscribe());
   }
 
 }

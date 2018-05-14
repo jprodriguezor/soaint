@@ -116,7 +116,7 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
    crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
    listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
-   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/archivar_documento`,
+   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/subir-documentos-unidad-documental`,
    gestionar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/gestionar-unidades-documentales`,
    detalle_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/detalle-unidad-documental/`,
    listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
@@ -124,7 +124,12 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
    listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
    actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
+   restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
+   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
+   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
+
  };
+
  export const process_info = {
    'proceso.correspondencia-entrada': {
      displayValue: 'Correspondencia de entrada',
@@ -161,10 +166,10 @@ const ecmHost = 'http://192.168.1.152:28080/ecm-integration-services/apis/ecm';
    'process.archivar-documento': {
      displayValue : 'Organización y Archivo',
      show: true,
-   }   ,
+   },
    'proceso.transferencia-documentales': {
      displayValue : 'Transferencias documentales',
-     show: false,
+     show: true,
    }
 
  };

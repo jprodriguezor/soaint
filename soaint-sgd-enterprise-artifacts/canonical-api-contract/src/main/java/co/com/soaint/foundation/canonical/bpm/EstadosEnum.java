@@ -2,6 +2,7 @@ package co.com.soaint.foundation.canonical.bpm;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Created by Arce on 6/9/2017.

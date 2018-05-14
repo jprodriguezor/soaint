@@ -1,8 +1,9 @@
 import index from "@angular/cli/lib/cli";
+import {UnidadDocumentalDTO} from "../../../../../domain/unidadDocumentalDTO";
 
 export  class ArchivarDocumentoModel{
 
-  constructor(private _unidadDocumental:any ="",private _documentos:any[] = []){}
+  constructor(private _unidadDocumental:UnidadDocumentalDTO =null,private _documentos:any[] = []){}
 
   get UnidadDocumental(){ return this._unidadDocumental}
 
@@ -12,45 +13,16 @@ export  class ArchivarDocumentoModel{
 
   set Documentos(value:any[]){this._documentos = value}
 
-  Archivar(){
 
+   getUnidadDocumentalParaSalvar():UnidadDocumentalDTO{
 
-  }
-  GroupDocumentByDependencia():any[]{
-
-    if(this.Documentos.length === 0)
-      return [];
-
-    const documentos = [...this.Documentos].sort( (a,b) => {
-
-      if(a.codigoDependencia == b.codigoDependencia)
-        return 0;
-
-      return  a.codigoDependencia >= b.codigoDependencia ? 1 : -1;
-    });
-
-    let documentDependency = [];
-
-
-    let currentDependency = documentos[0].codigoDependencia;
-
-    documentos.forEach( (doc,index) => {
-
-      if(index === 0 || doc.codigoDependencia != currentDependency){
-
-        documentDependency.push([doc]);
-
-        if(index === 0)
-        return;
-
-        currentDependency = doc.codigoDependencia;
-        return;
-      }
-
-      documentDependency[documentDependency.length - 1].push(doc);
-
-    });
-
-    return documentDependency;
-  }
+     return {
+       id:this.UnidadDocumental.id,
+       listaDocumentos:this.Documentos.map( doc => {
+         delete  doc.identificador;
+         delete doc.isAttachment;
+         return doc;
+       })
+     }
+   }
 }

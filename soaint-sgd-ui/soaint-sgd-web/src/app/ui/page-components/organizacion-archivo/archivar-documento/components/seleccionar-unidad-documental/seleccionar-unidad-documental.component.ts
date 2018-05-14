@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../../../../shared/validation-messages';
-import {ConfirmationService} from "primeng/primeng";
 import {Observable} from "rxjs/Observable";
 import {State as RootState} from "../../../../../../infrastructure/redux-store/redux-reducers";
 import {Store} from "@ngrx/store";
@@ -14,17 +13,13 @@ import {
 } from "../../../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {DependenciaDTO} from "../../../../../../domain/dependenciaDTO";
 import {Subscription} from "rxjs/Subscription";
-import {SolicitudCreacionUDDto} from "../../../../../../domain/solicitudCreacionUDDto";
 import {SolicitudCreacionUdService} from "../../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SerieDTO} from "../../../../../../domain/serieDTO";
 import {UnidadDocumentalDTO} from "../../../../../../domain/unidadDocumentalDTO";
-import {afterTaskComplete} from "../../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
-import {go} from "@ngrx/router-store";
-import {ROUTES_PATH} from "../../../../../../app.route-names";
 import {UnidadDocumentalApiService} from "../../../../../../infrastructure/api/unidad-documental.api";
 import {ArchivarDocumentoModel} from "../../models/archivar-documento.model";
 import {SolicitudCreacioUdModel} from "../../models/solicitud-creacio-ud.model";
-import {isNullOrUndefined, isUndefined} from "util";
+import {isNullOrUndefined} from "util";
 import {Guid} from "../../../../../../infrastructure/utils/guid-generator";
 
 
@@ -40,9 +35,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   @Output() onChangeSection:EventEmitter<string> = new EventEmitter;
 
-  form: FormGroup;
+  @Output() onSelectUD:EventEmitter<any> = new EventEmitter;
 
-  series: Array<any> = [];
+  @Output() onDeselectUD:EventEmitter<any> = new EventEmitter;
+
+  form: FormGroup;
 
   operation:string = "bUnidadDocumental";
 
@@ -50,21 +47,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   unidadesDocumentales$:Observable<UnidadDocumentalDTO[]>;
 
-  unidadesDocumentales:UnidadDocumentalDTO[];
 
-  unidadDocumentalSelected:UnidadDocumentalDTO;
-
-  documentos$:Observable<any[]>;
 
   globalDependencySubscriptor:Subscription;
 
-  afterTaskCompleteSubscriptor:Subscription;
-
-  subseries: Array<any> = [];
-
-  solicitudes:SolicitudCreacionUDDto[] = [];
-
-  subseriesObservable$:Observable<any[]>;
+   subseriesObservable$:Observable<any[]>;
 
   dependenciaSelected$ : Observable<any>;
 
@@ -75,8 +62,6 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   validations: any = {};
 
   visiblePopup:boolean = false;
-
-  currentPage:number = 1;
 
    constructor(
      private formBuilder: FormBuilder
@@ -108,8 +93,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
      this.globalDependencySubscriptor.unsubscribe();
 
-     this.afterTaskCompleteSubscriptor.unsubscribe();
-  }
+     }
 
   ngOnInit(): void {
 
@@ -128,10 +112,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
           });
         this.dependenciaSelected = result;
     });
-
-   this.afterTaskCompleteSubscriptor =  afterTaskComplete.subscribe( t => this._store.dispatch(go(['/' + ROUTES_PATH.workspace])));
   }
-
 
   addSolicitud(){
 
@@ -155,6 +136,8 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
          });
 
          this.unidadesDocumentales$ = Observable.of(this.solicitudModel.Solicitudes);
+
+         this.form.reset();
        });
 
 
@@ -226,12 +209,14 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
     //  this.visiblePopup = true;
 
-      this.unidadesDocumentales$ = this._udService.Listar({
+      this.unidadesDocumentales$ = this._store.select(getSelectedDependencyGroupFuncionario).switchMap( dependencia => this._udService.Listar({
+        codigoDependencia : dependencia.codigo,
         codigoSerie:this.form.get('serie').value,
         codigoSubSerie: this.form.get('subserie').value,
         id: this.form.get('identificador').value,
         nombreUnidadDocumental:this.form.get('nombre').value
-      });
+      }));
+
     }
 
     changeSection( section:string){
@@ -242,7 +227,14 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
     selectUnidadDocumental(evt){
 
      this.archivarDocumentoModel.UnidadDocumental = evt.data;
+
+     this.onSelectUD.emit(evt.data);
     }
+
+  deselectUnidadDocumental(evt){
+
+     this.onDeselectUD.emit(evt.data);
+  }
 
 
 }

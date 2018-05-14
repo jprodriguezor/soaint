@@ -16,7 +16,7 @@ import javax.ws.rs.*;
 @Path("/constantes-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "ConstantesWebApi", description = "")
+@Api(value = "ConstantesWebApi")
 public class ConstantesWebApi {
 
     @Autowired

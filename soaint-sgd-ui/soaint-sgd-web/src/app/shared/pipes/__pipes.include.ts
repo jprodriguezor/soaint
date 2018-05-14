@@ -11,6 +11,7 @@ import { CountryPhonePipe } from './countryPhone-input.pipe';
 import { MobilePhonePipe } from './mobile-input.pipe';
 import { DateFormatPipe, DateTimeFormatPipe } from './date.pipe';
 import { ToActiveString } from './boolean-transform.pipe';
+import {TipologiaDocumentalPipePipe} from "./tipologia-documental-pipe.pipe";
 
 export const PIPES = [
     EllipsisPipe,
@@ -27,6 +28,7 @@ export const PIPES = [
     DropdownItemPipeSingle,
     DropdownItemPipeString,
     ToActiveString,
+    TipologiaDocumentalPipePipe
 ];
 
 export const PIPES_AS_PROVIDERS = [

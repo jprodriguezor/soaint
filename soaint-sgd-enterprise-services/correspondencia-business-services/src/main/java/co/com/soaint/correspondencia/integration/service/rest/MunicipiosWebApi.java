@@ -18,7 +18,7 @@ import java.util.List;
 @Path("/municipios-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "MunicipiosWebApi", description = "")
+@Api(value = "MunicipiosWebApi")
 public class MunicipiosWebApi {
 
     @Autowired

@@ -1,11 +1,11 @@
 package co.com.soaint.foundation.canonical.seguridad;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @Data()

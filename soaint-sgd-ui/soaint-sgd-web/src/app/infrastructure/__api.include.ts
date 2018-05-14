@@ -12,6 +12,7 @@ import { ConstanteApiService } from './api/constantes.api';
 import { CorrespondenciaApiService } from './api/correspondencia.api';
 import { DependenciaApiService } from './api/dependencia.api';
 import { LocalizacionApiService } from './api/localizacion.api';
+import {TipologiaDocumentaService} from "./api/tipologia-documenta.service";
 
 export const API_SERVICES = [
   ApiBase,
@@ -27,7 +28,8 @@ export const API_SERVICES = [
   ConstanteApiService,
   CorrespondenciaApiService,
   DependenciaApiService,
-  LocalizacionApiService
+  LocalizacionApiService,
+  TipologiaDocumentaService
 ];
 
 export {

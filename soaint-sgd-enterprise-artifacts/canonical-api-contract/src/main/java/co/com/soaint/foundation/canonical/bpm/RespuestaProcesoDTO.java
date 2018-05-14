@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.bpm;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/respuestaproceso/1.0.0")
+@ToString
 public class RespuestaProcesoDTO {
     private String codigoProceso;
     private String estado;

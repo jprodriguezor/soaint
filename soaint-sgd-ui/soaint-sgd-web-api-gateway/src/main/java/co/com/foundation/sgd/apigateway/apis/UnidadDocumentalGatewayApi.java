@@ -4,10 +4,10 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,10 +122,13 @@ public class UnidadDocumentalGatewayApi {
 
     @POST
     @Path("/subir-documentos-por-archivar")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @JWTTokenSecurity
-    public Response subirDocumentosPorArchivar(@RequestBody List<DocumentoDTO> documentoDTOS) {
+    public Response subirDocumentosPorArchivar(MultipartFormDataInput formDataInputs) {
         log.info("SubirDocumentosPorArchivarGatewayApi - [trafic] - Subir documentos por archivar");
-        Response response = ecmClient.subirDocumentosPorArchivar(documentoDTOS);
+
+        Response response = ecmClient.subirDocumentosPorArchivar(formDataInputs);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

@@ -169,7 +169,7 @@ public class OrganigramaAdministrativoControl {
      * @return
      */
     public OrganigramaItemDTO consultarPadreDeSegundoNivel(BigInteger ideOrgaAdmin) {
-        System.out.println(ideOrgaAdmin);
+        log.info(ideOrgaAdmin);
         OrganigramaItemDTO organigramaItem = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoByIdeOrgaAdmin", OrganigramaItemDTO.class)
                 .setParameter("IDE_ORGA_ADMIN", ideOrgaAdmin)
                 .setHint("org.hibernate.cacheable", true)
@@ -178,7 +178,7 @@ public class OrganigramaAdministrativoControl {
         if (organigramaItem.getIdOrgaAdminPadre() == null) {
             return null;
         }
-        System.out.println(organigramaItem.getIdOrgaAdminPadre());
+        log.info(organigramaItem.getIdOrgaAdminPadre());
         Boolean esPadreSegundoNivel = false;
 
         while (!esPadreSegundoNivel) {

@@ -30,7 +30,12 @@ import javax.persistence.*;
                 "(c.ideReferido, c.nroRadRef) " +
                 "FROM CorReferido c " +
                 "INNER JOIN c.corCorrespondencia co " +
-                "WHERE co.ideDocumento = :IDE_DOCUMENTO")})
+                "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorReferido.findByNroRadicadoCorrespodenciaReferida", query = "SELECT co.nroRadicado " +
+                "FROM CorReferido cr " +
+                "INNER JOIN cr.corCorrespondencia co " +
+                "WHERE TRIM(cr.nroRadRef) = TRIM(:NRO_RAD) ")
+})
 @javax.persistence.TableGenerator(name = "COR_REFERIDO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_REFERIDO_SEQ", allocationSize = 1)
 public class CorReferido implements Serializable {

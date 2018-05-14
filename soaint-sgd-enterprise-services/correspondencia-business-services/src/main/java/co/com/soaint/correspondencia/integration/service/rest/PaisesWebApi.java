@@ -26,7 +26,7 @@ import javax.ws.rs.Produces;
 @Path("/paises-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "PaisesWebApi", description = "")
+@Api(value = "PaisesWebApi")
 public class PaisesWebApi {
 
     @Autowired

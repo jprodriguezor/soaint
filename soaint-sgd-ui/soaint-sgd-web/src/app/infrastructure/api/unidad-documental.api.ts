@@ -27,8 +27,9 @@ export class UnidadDocumentalApiService {
     .map(response => response.response.unidadDocumental);
   }
 
-   crear(unidadDocumental: UnidadDocumentalDTO) {
+   crear(unidadDocumental: UnidadDocumentalDTO):Observable<any> {
      return this._api.post(environment.crear_unidad_documental, unidadDocumental);
+
    }
 
   gestionarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
@@ -54,20 +55,25 @@ export class UnidadDocumentalApiService {
       .map( response => response.response.unidadDocumental);
   }
 
-  listarDocumentosPorArchivar():Observable<any>{
+  listarDocumentosPorArchivar(codDependencia):Observable<any>{
 
-    return this._api.list(environment.listar_documentos_archivar);
+    return this._api.list(environment.listar_documentos_archivar+codDependencia);
   }
 
   archivarDocumento(payload:any):Observable<any>{
 
-    return Observable.empty();
-
+    return this._api.post(environment.archivar_documento_endpoint,payload);
   }
 
-  listarDocumentosArchivadosPorFuncionario(idFuncionario): Observable<any[]>{
+  listarDocumentosArchivadosPorDependencia(codDependencia): Observable<any[]>{
 
-    return this._api.list(environment.listar_documentos_archivados+"/"+idFuncionario);
+    return this._api.list(environment.listar_documentos_archivados+codDependencia)
+               .map(response => response.response.documentos);
+  }
+
+  subirDocumentosParaArchivar(documentos: FormData):Observable<any>{
+
+   return  this._api.sendFile(environment.subir_documentos_por_archivar,documentos,[]);
   }
 
   ActualizarDisposicionFinal(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO> {
@@ -75,7 +81,7 @@ export class UnidadDocumentalApiService {
       codMensaje: '00000',
       contenidoDependenciaTrdDTOS: null,
       documentoDTOList: null,
-      mensaje: 'Operación completada satisfactoriamente',
+      mensaje: 'Operaciï¿½n completada satisfactoriamente',
       response: null,
     });
   }
