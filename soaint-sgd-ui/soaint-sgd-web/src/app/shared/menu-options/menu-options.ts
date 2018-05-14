@@ -9,7 +9,7 @@ export const MENU_OPTIONS = [
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
   {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]}
 ];
-
+  
 
 export const PROCESS_OPTION = {
   label: 'Procesos', icon: 'dashboard', expanded: true,
