@@ -2,7 +2,10 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -26,10 +29,6 @@ public class ECMClient {
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL);
     private String record_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL);
     private String corresponencia_endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
-
-    // mensajes de error
-    private String MensajeErrorGenerico = "Ocurrió un error inesperado con el servicio ECM";
-
 
     public ECMClient() {
         super();
@@ -148,37 +147,6 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
-    public Response listarUnidadesDocumentalesDisposicion(DisposicionFinalDTO disposicionFinal) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/listar-unidades-documentales-disposicion")
-                                .request()
-                                .post(Entity.json(disposicionFinal));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-    }
-
-    public Response aprobarRechazarUnidadesDocumentalesDisposicion(List<UnidadDocumentalDTO> unidadesDocumentales) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
-                                .request()
-                                .put(Entity.json(unidadesDocumentales));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-
-    }
-
     public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
         log.info("AbrirCerrarReactivarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);
@@ -247,6 +215,7 @@ public class ECMClient {
                 InputStream result = inputPart.getBody(InputStream.class, null);
                 tmpDto.setDocumento(IOUtils.toByteArray(result));
                 tmpDto.setCodigoDependencia(dependencyCode);
+                tmpDto.setTipoDocumento("application/pdf");
                 tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
                 documentoDTOS.add(documentoDTOS.size(), tmpDto);
             }
@@ -256,9 +225,13 @@ public class ECMClient {
                     .request()
                     .post(Entity.json(documentoDTOS));
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error del Sistema {}", e.getMessage());
-            return Response.serverError().build();
+            MensajeRespuesta respuesta = MensajeRespuesta.newInstance()
+                    .codMensaje("1223")
+                    .mensaje(e.getMessage())
+                    .build();
+            return Response.status(Response.Status.OK).entity(respuesta).build();
         }
     }
 

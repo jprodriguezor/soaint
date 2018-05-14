@@ -490,7 +490,7 @@ public class ContentControlAlfresco implements ContentControl {
                 final StringBuilder inSentence = new StringBuilder();
                 for (int i = 0; i < lenght; i++) {
                     final String disposition = disposicionList.get(i).toLowerCase();
-                    final String comma = (i == lenght - 1) ? "" : ";";
+                    final String comma = (i == lenght - 1) ? "" : ",";
                     inSentence.append("'").append(disposition).append("'").append(comma);
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + inSentence.toString() + ")";
@@ -2240,14 +2240,21 @@ public class ContentControlAlfresco implements ContentControl {
                 .mensaje("Listado devuelto satisfactoriamente").build();
     }
 
-    void eliminarUnidadDocumental(String idUnidadDocumental, Session session) throws SystemException {
+    public MensajeRespuesta eliminarUnidadDocumental(String idUnidadDocumental, Session session) throws SystemException {
         recordServices.eliminarRecordFolder(idUnidadDocumental);
         Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
         if (optionalFolder.isPresent()) {
             Folder folder = optionalFolder.get();
             folder.deleteTree(true, UnfileObject.DELETE, true);
+            return MensajeRespuesta.newInstance()
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.SUCCESS)
+                    .build();
         } else {
-            throw new SystemException("Ocurrio un error al eliminar la unidad documental '" + idUnidadDocumental + "'");
+            return MensajeRespuesta.newInstance()
+                    .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                    .mensaje("Ocurrio un error al eliminar la unidad documental '" + idUnidadDocumental + "'")
+                    .build();
         }
     }
 
