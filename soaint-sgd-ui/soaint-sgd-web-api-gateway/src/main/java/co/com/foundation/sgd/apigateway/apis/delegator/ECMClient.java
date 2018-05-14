@@ -208,25 +208,30 @@ public class ECMClient {
             final List<DocumentoDTO> documentoDTOS = new ArrayList<>();
             final Collection<InputPart> values = _files.values();
             log.info("Cantidad de Documentos: {}", values.size());
-
             for (InputPart inputPart:
                     values) {
-                final DocumentoDTO tmpDto = new DocumentoDTO();
-                InputStream result = inputPart.getBody(InputStream.class, null);
-                tmpDto.setDocumento(IOUtils.toByteArray(result));
-                tmpDto.setCodigoDependencia(dependencyCode);
-                tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
-                documentoDTOS.add(documentoDTOS.size(), tmpDto);
+                MensajeRespuesta response = subirDocumentoPorArchivar(inputPart, dependencyCode);
+                if ("0000".equals(response.getCodMensaje())) {
+                    Map<String, Object> objectMap = response.getResponse();
+                    DocumentoDTO dto = (DocumentoDTO) objectMap.get("documento");
+                    documentoDTOS.add(documentoDTOS.size(), dto);
+                }
             }
             log.info("Cantidad de Documentos DTOs: {}", documentoDTOS.size());
-            final WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            return wt.path("/subirDocumentosTemporalesECM")
-                    .request()
-                    .post(Entity.json(documentoDTOS));
-
+            MensajeRespuesta mensajeRespuesta = MensajeRespuesta.newInstance()
+                    .codMensaje("0000")
+                    .documentoDTOList(documentoDTOS)
+                    .codMensaje("Operacion realizada satisfactoriamente")
+                    .build();
+            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
         } catch (IOException e) {
             log.error("Error del Sistema {}", e.getMessage());
-            return Response.serverError().build();
+            MensajeRespuesta mensajeRespuesta = MensajeRespuesta.newInstance()
+                    .codMensaje("1223")
+                    .documentoDTOList(new ArrayList<>())
+                    .codMensaje("Ocurrio un error al suibir los documentos!!")
+                    .build();
+            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
         }
     }
 
@@ -235,5 +240,18 @@ public class ECMClient {
         WebTarget wt = ClientBuilder.newClient().target(corresponencia_endpoint);
         return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
+    }
+
+    private MensajeRespuesta subirDocumentoPorArchivar(InputPart inputPart, String depCode) throws IOException {
+        final DocumentoDTO tmpDto = new DocumentoDTO();
+        InputStream result = inputPart.getBody(InputStream.class, null);
+        tmpDto.setDocumento(IOUtils.toByteArray(result));
+        tmpDto.setCodigoDependencia(depCode);
+        tmpDto.setNombreDocumento(ECMUtils.findName(inputPart));
+        tmpDto.setTipoDocumento("application/pdf");
+        final WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        final Response response = wt.path("/subirDocumentoTemporalECM").request()
+                .post(Entity.json(tmpDto));
+        return response.readEntity(MensajeRespuesta.class);
     }
 }
