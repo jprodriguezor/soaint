@@ -16,7 +16,7 @@ import javax.ws.rs.*;
 @Path("/anexo-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "AnexoWebApi", description = "")
+@Api(value = "AnexoWebApi")
 public class AnexoWebApi {
 
     @Autowired
@@ -38,17 +38,6 @@ public class AnexoWebApi {
     @Path("anexo/{nroRadicado}")
     public AnexosFullDTO listarAnexosPorNroRadicado(@PathParam("nroRadicado") final String nroRadicado) throws SystemException {
         log.info("processing rest request - listar anexos por nroRadicado");
-//        AnexoFullDTO anexoFullDTO = new AnexoFullDTO();
-//        anexoFullDTO.setCodAnexo("anexoCode");
-//        anexoFullDTO.setCodTipoSoporte("codeSop");
-//        anexoFullDTO.setDescripcion("Descripcion");
-//        anexoFullDTO.setDescTipoAnexo("DescTipoAnexo");
-//        anexoFullDTO.setDescTipoSoporte("DescTipoSoporte");
-//        anexoFullDTO.setIdeAnexo(new BigInteger("200"));
-//
-//        AnexosFullDTO anexosFullDTO = new AnexosFullDTO();
-//        anexosFullDTO.setAnexos(new ArrayList<>());
-//        anexosFullDTO.getAnexos().add(anexoFullDTO);
         return boundary.listarAnexosByNroRadicado(nroRadicado);
     }
 

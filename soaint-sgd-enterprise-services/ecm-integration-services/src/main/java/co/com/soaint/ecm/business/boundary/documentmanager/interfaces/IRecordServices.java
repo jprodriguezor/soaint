@@ -1,14 +1,16 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
-import co.com.soaint.foundation.canonical.ecm.EntradaRecordDTO;
-import co.com.soaint.foundation.canonical.ecm.EstructuraTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.ecm.util.SystemParameters;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +46,7 @@ public interface IRecordServices {
      * @param unidadDocumentalDTO  Obj Unidad Documental
      * @return MensajeRespuesta
      */
-    MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws Exception;
+    MensajeRespuesta gestionarUnidadDocumentalECM(final UnidadDocumentalDTO unidadDocumentalDTO) throws SystemException;
 
     /**
      * Metodo para abrir/cerrar una unidad documental
@@ -52,7 +54,7 @@ public interface IRecordServices {
      * @param unidadDocumentalDTOS Lista de Unidad Documental
      * @return MensajeRespuesta
      */
-    MensajeRespuesta gestionarUnidadesDocumentalesECM(final List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws Exception;
+    MensajeRespuesta gestionarUnidadesDocumentalesECM(final List<UnidadDocumentalDTO> unidadDocumentalDTOS) throws SystemException;
 
     /**
      * Metodo para Obtener un recordFolder
@@ -60,5 +62,24 @@ public interface IRecordServices {
      * @param idUnidadDocumental     Id Unidad Documental
      * @return Folder folder
      */
-    Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws Exception;
+    Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) throws SystemException;
+
+    /**
+     * Eliminar carpeta record
+     *
+     * @param idUnidadDocumental Id de la Ud por el que se hara la busqueda en el ECM
+     * @return Void
+     */
+    default void eliminarRecordFolder(String idUnidadDocumental) throws SystemException {
+        Optional<Folder> optionalFolder = obtenerRecordFolder(idUnidadDocumental);
+        if (optionalFolder.isPresent()) {
+            Folder recordFolder = optionalFolder.get();
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+            Response response = wt.path("/record-folders/" + recordFolder.getId())
+                    .request().delete();
+            if (response.getStatus() != HttpURLConnection.HTTP_NO_CONTENT) {
+                throw new SystemException("Ocurrio un error al eliminar la carpeta de registro");
+            }
+        }
+    }
 }

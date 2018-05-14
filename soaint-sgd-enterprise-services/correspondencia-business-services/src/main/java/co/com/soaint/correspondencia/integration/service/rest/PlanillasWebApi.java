@@ -25,7 +25,7 @@ import javax.ws.rs.*;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "PlanillasWebApi", description = "")
+@Api(value = "PlanillasWebApi")
 public class PlanillasWebApi {
 
     @Autowired

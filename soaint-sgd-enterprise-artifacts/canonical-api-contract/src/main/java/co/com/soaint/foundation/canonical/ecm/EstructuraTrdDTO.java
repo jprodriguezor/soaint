@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import java.util.List;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/estructuraTrd/1.0.0")
 @ToString
-public class EstructuraTrdDTO {
+public class EstructuraTrdDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<OrganigramaDTO>  organigramaItemList;
     private List<ContenidoDependenciaTrdDTO> contenidoDependenciaList;

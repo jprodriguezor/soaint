@@ -173,7 +173,13 @@
             </p-column>
             <p-column field="soporte" header="Soporte"></p-column>
             <p-column  header="Aprobado/Rechazado" [sortable]="true"></p-column>
-            <p-column  header="Notas" ></p-column>
+            <p-column  header="Notas" [style]="{'width':'120px','text-align':'center'}">                             
+                <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
+                    <button pButton type="button" style="width: 35px; float: right"
+                        (click)="AgregarNotas(i)" icon="ui-icon-arrow-forward">
+                     </button>
+                </ng-template>
+                </p-column>
           </p-dataTable>
         </div>
       </p-panel>
@@ -182,17 +188,28 @@
 </div>
 
 <p-dialog
-[visible]="State.AbrirDetalle | async"
-modal="modal"
-[responsive]="true"
-[closable]="true"
-positionTop="20"
-[style]="{'position':'absolute'}"
-[width]="800"
-(onHide)="State.CerrarDetalle()">
-<p-header>
-
-</p-header>
+    [visible]="State.AbrirDetalle | async"
+    modal="modal"
+    [responsive]="true"
+    [closable]="true"
+    positionTop="20"
+    [style]="{'position':'absolute'}"
+    [width]="800"
+    (onHide)="State.CerrarDetalle()">
+    <p-header>
+    </p-header>
 <app-detalle-unidad-conservacion [state]="State"></app-detalle-unidad-conservacion>
+</p-dialog>
+
+<p-dialog
+    [visible]="abrirNotas"
+    modal="modal"
+    [responsive]="true"
+    [closable]="true"
+    [width]="800"
+    (onHide)="CerrarNotas()">
+    <p-header>
+    </p-header>
+<app-popup-unidad-documental-notas [state]="state" [index]="indexUnidadSeleccionada" (completado)="CerrarNotas()" ></app-popup-unidad-documental-notas>
 </p-dialog>
 

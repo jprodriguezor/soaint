@@ -3,6 +3,7 @@ package co.com.soaint.foundation.canonical.ecm;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,10 +21,13 @@ import java.util.List;
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/contenidoDependencia/1.0.0")
 @ToString
-public class ContenidoDependenciaTrdDTO {
+public class ContenidoDependenciaTrdDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String idOrgAdm;
     private String idOrgOfc;
+    private String codSede;
     private String codSerie;
     private String nomSerie;
     private String codSubSerie;
@@ -32,8 +36,10 @@ public class ContenidoDependenciaTrdDTO {
     private Long retArchivoCentral;
     private String procedimiento;
     private int diposicionFinal;
-    private List<SerieDTO> listaSerie;
-    private List<SubSerieDTO> listaSubSerie;
 
+    private List<SubSerieDTO> listaSubSerie;
+    private List<SerieDTO> listaSerie;
+    private List<OrganigramaDTO> listaDependencia;
+    private List<SedeDTO> listaSede;
 
 }
