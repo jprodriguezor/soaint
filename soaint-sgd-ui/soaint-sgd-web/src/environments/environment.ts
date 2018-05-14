@@ -137,6 +137,9 @@ export const environment = {
   restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
+  listar_unidades_documentales_disposicion_endpoint: `${host}/unidad-documental-gateway-api/listar-unidades-documentales-disposicion`,
+  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`
+  
 
 };
 
@@ -179,7 +182,7 @@ export const process_info = {
   },
   'proceso.transferencia-documentales': {
     displayValue : 'Transferencias documentales',
-    show: true,
+    show: false,
   }
 
 };

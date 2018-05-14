@@ -15,6 +15,7 @@ import { getActiveTask } from 'app/infrastructure/state-management/tareasDTO-sta
 import { async } from '@angular/core/testing';
 import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import { UnidadDocumentalDTO } from '../../domain/unidadDocumentalDTO';
+import { DisposicionFinalDTO } from '../../domain/DisposicionFinalDTO';
 import { ConfirmationService } from 'primeng/primeng';
 import { PushNotificationAction } from '../../infrastructure/state-management/notifications-state/notifications-actions';
 import { MensajeRespuestaDTO } from 'app/domain/MensajeRespuestaDTO';
@@ -54,7 +55,9 @@ export class StateUnidadDocumentalService {
     NoUnidadesSeleccionadas = 'No hay unidades documentales seleccionadas';
     validations: any = {};
     subscribers: Array<Subscription> = [];
+
     ultimolistarPayload: UnidadDocumentalDTO = {};
+    ultimolistarDisposicionPayload: DisposicionFinalDTO = {};
 
     // gestionar unidad documental
     OpcionSeleccionada: number;
@@ -128,6 +131,17 @@ export class StateUnidadDocumentalService {
         this.ultimolistarPayload = payload;
         this.unidadesSeleccionadas = [];
         this.unidadDocumentalApiService.Listar(payload)
+        .subscribe(response => {
+            let ListadoMapeado = response.length ? response : [];            
+            this.ListadoUnidadDocumental = [...ListadoMapeado]; 
+            this.ListadoActualizadoSubject.next();           
+        });
+    }
+
+    ListarDisposicionFinal(payload?: DisposicionFinalDTO, value?: any) {
+        this.ultimolistarDisposicionPayload = payload;
+        this.unidadesSeleccionadas = [];
+        this.unidadDocumentalApiService.listarUnidadesDocumentalesDisposicion(this.ultimolistarDisposicionPayload)
         .subscribe(response => {
             let ListadoMapeado = response.length ? response : [];            
             this.ListadoUnidadDocumental = [...ListadoMapeado]; 
@@ -222,7 +236,7 @@ export class StateUnidadDocumentalService {
 
     AplicarDisposicion(tipodisposicion: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 'Seleccionar');
+        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 's');
         if(existeSeleccionar) {
             this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
                 const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'Seleccionar')
@@ -237,17 +251,9 @@ export class StateUnidadDocumentalService {
         }
     }
 
-    AprobarTransferencia() {
-
-    }
-
-    RechazarTransferencia() {
-        
-    }
-
     ActualizarEstadoDisposicionFinal(estado: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'Seleccionar');
+        const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 's');
         const requiereObservaciones = unidadesSeleccionadas.find(_item => (_item.observaciones === '' || _item.observaciones === null) && estado === 'Rechazado');
         if (requiereObservaciones) {
             this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales pendiente de notas.'}));       
@@ -257,7 +263,7 @@ export class StateUnidadDocumentalService {
         } else {
             this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
                 const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item === _current)
-                _current.aprobado = item_seleccionado ? estado : _current.aprobado;
+                _current.estado = item_seleccionado ? estado : _current.estado;
                 _listado.push(_current);
                 return _listado;
             }, []);
@@ -267,14 +273,13 @@ export class StateUnidadDocumentalService {
     }
 
     ActualizarDisposicionFinal() {
-        this.unidadDocumentalApiService.ActualizarDisposicionFinal([])
+        this.unidadDocumentalApiService.aprobarRechazarUnidadesDocumentalesDisposicion(this.ListadoUnidadDocumental)
         .subscribe(response => {
             this.ManageActionResponse(response);
             if(response.codMensaje === '0000') {
                 this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
             }           
-        });
-        
+        });        
     }
 
     GuardarObservacion(unidadDocumental: UnidadDocumentalDTO, index: number) {

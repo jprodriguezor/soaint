@@ -4,6 +4,7 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMClient;
 import co.com.foundation.sgd.apigateway.apis.delegator.UnidadDocumentalClient;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DisposicionFinalDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import lombok.extern.log4j.Log4j2;
@@ -32,7 +33,6 @@ public class UnidadDocumentalGatewayApi {
     @Autowired
     private ECMClient ecmClient;
 
-    private String MensajeErrorGenerico = "Ocurrió un error inesperado con el servicio ECM";
 
     public UnidadDocumentalGatewayApi() {
         super();
@@ -77,17 +77,30 @@ public class UnidadDocumentalGatewayApi {
     @Path("/gestionar-unidades-documentales")
     @JWTTokenSecurity
     public Response abrirUnidadesDocumentales(@RequestBody List<UnidadDocumentalDTO> unidadesDocumentalesDTO ) {
-        try{
-            log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
-            Response response = ecmClient.abrirCerrarReactivarUnidadDocumental(unidadesDocumentalesDTO);
-            String responseContent = response.readEntity(String.class);
-            return Response.status(response.getStatus()).entity(responseContent).build();
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
+         log.info("AbrirUnidadesDocumentalesGatewayApi - [trafic] - abrir unidades documentales");
+         Response response = ecmClient.abrirCerrarReactivarUnidadDocumental(unidadesDocumentalesDTO);
+         String responseContent = response.readEntity(String.class);
+         return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @POST
+    @Path("/listar-unidades-documentales-disposicion")
+    @JWTTokenSecurity
+    public Response listarUnidadesDocumentalesDisposicion(@RequestBody DisposicionFinalDTO disposicionFinal ) {
+        log.info("ListarrUnidadesDocumentalesGatewayApi - [trafic] - listar unidades documentales disposicion final");
+        Response response = ecmClient.listarUnidadesDocumentalesDisposicion(disposicionFinal);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();;
+    }
+
+    @POST
+    @Path("/aprobar-rechazar-disposiciones-finales")
+    @JWTTokenSecurity
+    public Response aprobarRechazarUnidadesDocumentalesDisposicion(@RequestBody List<UnidadDocumentalDTO> unidadDocumental ) {
+        log.info("Aprobar/Rechazar UnidadesDocumentalesGatewayApi - [trafic] - aprobar rechazar unidades documentales disposicion");
+        Response response = ecmClient.aprobarRechazarUnidadesDocumentalesDisposicion(unidadDocumental);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
     }
 
     @GET
