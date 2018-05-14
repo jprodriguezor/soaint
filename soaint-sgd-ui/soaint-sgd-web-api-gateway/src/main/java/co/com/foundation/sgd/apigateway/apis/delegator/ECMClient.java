@@ -2,10 +2,7 @@ package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.infrastructure.ApiDelegator;
 import co.com.foundation.sgd.utils.SystemParameters;
-import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
-import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -148,35 +145,19 @@ public class ECMClient {
     }
 
     public Response listarUnidadesDocumentalesDisposicion(DisposicionFinalDTO disposicionFinal) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/listar-unidades-documentales-disposicion")
-                                .request()
-                                .post(Entity.json(disposicionFinal));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/listar-unidades-documentales-disposicion")
+                            .request()
+                            .post(Entity.json(disposicionFinal));
+        return response;
     }
 
     public Response aprobarRechazarUnidadesDocumentalesDisposicion(List<UnidadDocumentalDTO> unidadesDocumentales) {
-        try {
-            WebTarget wt = ClientBuilder.newClient().target(endpoint);
-            Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
-                                .request()
-                                .put(Entity.json(unidadesDocumentales));
-            return response;
-        }
-        catch (Exception ex) {
-            log.info(ex.getMessage());
-            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
-            return Response.ok().entity(respuestaEntity).build();
-        }
-
+         WebTarget wt = ClientBuilder.newClient().target(endpoint);
+         Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
+                             .request()
+                             .put(Entity.json(unidadesDocumentales));
+         return response;
     }
 
     public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
