@@ -1992,6 +1992,32 @@ public class ContentControlAlfresco implements ContentControl {
                 .build();
     }
 
+    /**
+     * Operacion para Subir documentos a una UD temporal ECM
+     *
+     * @param documentoDTO Obj de documento DTO a archivar
+     * @return MensajeRespuesta
+     */
+    @Override
+    public MensajeRespuesta subirDocumentoTemporalUD(DocumentoDTO documentoDTO, Session session) throws SystemException {
+        log.info("processing rest request - Subir Documento temporal ECM");
+        final Optional<DocumentoDTO> optionalDocumentoDTO = subirDocumentoDtoTemp(documentoDTO, session);
+        if (optionalDocumentoDTO.isPresent()) {
+            documentoDTO = optionalDocumentoDTO.get();
+            final Map<String, Object> mapResponse = new HashMap<>();
+            mapResponse.put("documento", documentoDTO);
+            return MensajeRespuesta.newInstance()
+                    .response(mapResponse)
+                    .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
+                    .mensaje(ConstantesECM.SUCCESS)
+                    .build();
+        }
+        return MensajeRespuesta.newInstance()
+                .codMensaje(ConstantesECM.ERROR_COD_MENSAJE)
+                .mensaje("Ocurrio un error al subir el documento")
+                .build();
+    }
+
     @Override
     public MensajeRespuesta obtenerDocumentosArchivados(String codigoDependencia, Session session) throws SystemException {
         log.info("Se procede a obtener los documentos archivados");
@@ -2243,18 +2269,21 @@ public class ContentControlAlfresco implements ContentControl {
         if (ObjectUtils.isEmpty(documentoDTO)) {
             throw new SystemException("No se ha especificado el documento");
         }
+        if (StringUtils.isEmpty(documentoDTO.getNombreDocumento())) {
+            throw new SystemException("No se ha especificado el nombre del documento");
+        }
         final String codigoDependencia = documentoDTO.getCodigoDependencia();
         if (StringUtils.isEmpty(codigoDependencia)) {
             throw new SystemException("No se ha especificado el codigo de la dependencia");
+        }
+        if (ObjectUtils.isEmpty(documentoDTO.getDocumento())) {
+            throw new SystemException("El documento no contiene informacion");
         }
         final Optional<Carpeta> optionalCarpeta = getFolderBy(ConstantesECM.CLASE_DEPENDENCIA, ConstantesECM.CMCOR_DEP_CODIGO, codigoDependencia, session);
         if (optionalCarpeta.isPresent()) {
             Folder tmpFolder = optionalCarpeta.get().getFolder();
             if (ObjectUtils.isEmpty(tmpFolder)) {
                 throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + "'" + codigoDependencia + "'");
-            }
-            if (StringUtils.isEmpty(documentoDTO.getNombreDocumento())) {
-                throw new SystemException("Especifique el nombre del documento");
             }
             final String docName = documentoDTO.getNombreDocumento();
             final int index = docName.lastIndexOf('.');
@@ -2287,6 +2316,7 @@ public class ContentControlAlfresco implements ContentControl {
                 Map<String, Object> properties = new HashMap<>();
                 properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
                 properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
+                properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, documentoDTO.getTipoDocumento());
                 ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
                 Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
                 documentoDTO = transformarDocumento(document);

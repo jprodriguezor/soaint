@@ -456,6 +456,24 @@ public class EcmIntegrationServicesClientRest {
     }
 
     /**
+     * Operacion para Subir documentos a una UD temporal ECM
+     *
+     * @param documentoDTO Obj de documento DTO a archivar
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/subirDocumentoTemporalECM/")
+    public MensajeRespuesta subirDocumentoTemporalUDECM(@RequestBody DocumentoDTO documentoDTO) {
+        log.info("processing rest request - Subir Documento temporal ECM");
+        try {
+            return fEcmManager.subirDocumentoTemporalUD(documentoDTO);
+        } catch (Exception e) {
+            log.error("Error en operacion - Subir Documento temporal ECM ", e);
+            return this.getSmsErrorResponse(e);
+        }
+    }
+
+    /**
      * Crear carpeta en el Record
      *
      * @param disposicionFinalDTO Obj con el DTO Unidad Documental y l listado de las disposiciones

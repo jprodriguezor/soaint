@@ -295,4 +295,15 @@ public class EcmManager implements Serializable {
         log.info("Ejecutando metodo MensajeRespuesta aprobarRechazarDisposicionesFinalesECM(List<UnidadDocumentalDTO> unidadDocumentalDTOS)");
         return contentManager.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOS);
     }
+
+    /**
+     * Operacion para Subir documentos a una UD temporal ECM
+     *
+     * @param documentoDTO Obj de documento DTO a archivar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta subirDocumentoTemporalUD(DocumentoDTO documentoDTO) throws SystemException {
+        log.info("processing rest request - Subir Documento temporal ECM");
+        return contentManager.subirDocumentoTemporalUD(documentoDTO);
+    }
 }

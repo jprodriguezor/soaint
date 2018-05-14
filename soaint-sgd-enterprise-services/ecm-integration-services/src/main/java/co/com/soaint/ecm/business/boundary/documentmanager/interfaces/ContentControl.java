@@ -240,6 +240,14 @@ public interface ContentControl extends Serializable {
     MensajeRespuesta subirDocumentosTemporalesUD(List<DocumentoDTO> documentoDTOS, Session session) throws SystemException;
 
     /**
+     * Operacion para Subir documentos a una UD temporal ECM
+     *
+     * @param documentoDTO Obj de documento DTO a archivar
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta subirDocumentoTemporalUD(DocumentoDTO documentoDTO, Session session) throws SystemException;
+
+    /**
      * Operacion para devolver series o subseries
      *
      * @param codigoDependencia Codigo de la dependencia
