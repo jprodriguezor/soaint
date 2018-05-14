@@ -50,11 +50,18 @@ export class PopupAgregarObservacionesComponent implements OnInit {
 
   loadObservations() {
     this._asignacionSandbox.obtenerObservaciones(this.idDocumento).subscribe((results) => {
-      this.observaciones = [...results.observaciones];
+      let observacionesResponse: ObservacionDTO[] =  results.observaciones;
+      observacionesResponse =  observacionesResponse.reduce((_listado, _current) => { // ajustar valApellido2 = null
+        _current.valApellido2 = _current.valApellido2 || '';
+        _listado.push(_current)
+        return _listado;
+      }, []);    
+      this.observaciones = [...observacionesResponse];
       this.countObservaciones.emit(this.observaciones.length);
       this._changeDetectorRef.detectChanges();
     });
   }
+
 
   listenForErrors() {
     this.bindToValidationErrorsOf('observacion');

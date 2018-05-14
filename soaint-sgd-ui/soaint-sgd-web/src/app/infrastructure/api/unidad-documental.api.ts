@@ -59,7 +59,9 @@ export class UnidadDocumentalApiService {
   listarUnidadesDocumentalesDisposicion(payload: DisposicionFinalDTO): Observable<UnidadDocumentalDTO[]>{
     
         return this._api.post(environment.listar_unidades_documentales_disposicion_endpoint, payload)
-          .map( response => response.response.unidadesDocumentales);
+          .map( response => {
+            return  response.response ? response.response.unidadesDocumentales : Observable.of([]);
+          });
   }
 
   aprobarRechazarUnidadesDocumentalesDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{

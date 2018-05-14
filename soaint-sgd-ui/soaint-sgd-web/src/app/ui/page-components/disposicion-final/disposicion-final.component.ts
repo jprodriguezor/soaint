@@ -169,13 +169,16 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
   }
 
   GetPayload(): DisposicionFinalDTO {    
-        const payload: DisposicionFinalDTO = {};
+        const payload: DisposicionFinalDTO = {
+          disposicionFinalList: [],
+          unidadDocumentalDTO: {}
+        };
 
         if (this.formBuscar.controls['tiposDisposicionFinal'].value) {
           payload.disposicionFinalList = this.formBuscar.controls['tiposDisposicionFinal'].value;
         } 
         if (this.formBuscar.controls['dependencia'].value) {
-          payload.unidadDocumentalDTO.codigoDependencia = this.formBuscar.controls['dependencia'].value;
+          payload.unidadDocumentalDTO.codigoDependencia = this.formBuscar.controls['dependencia'].value.codigo;
         }   
         if (this.formBuscar.controls['serie'].value) {
           payload.unidadDocumentalDTO.codigoSerie = this.formBuscar.controls['serie'].value;
