@@ -42,6 +42,7 @@ import java.util.List;
             "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
             "AND (:ID_SOL IS NULL OR t.idSolicitante = :ID_SOL) " +
+            "AND (t.accion IS NULL) " +
             "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
