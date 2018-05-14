@@ -516,10 +516,25 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000",contentControlAlfresco.modificarUnidadesDocumentales(unidadDocumentalDTOList,conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),conexion.getSession());
         } catch (SystemException e) {
-            e.printStackTrace();
+            assertNotNull(e);
         }
     }
 
+    @Test
+    public void testEliminarUnidadDocumentalSuccess(){
+        MensajeRespuesta mensajeRespuesta = null;
+        try {
+            unidadDocumentalDTO.setId("12121212");
+            mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            assertEquals("0000",contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),conexion.getSession()).getCodMensaje());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+
+
+    }
     @Test
     public void generarArbol() {
     }
