@@ -33,15 +33,15 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     tipoDisposicion = '';
     listadoSeries$: Observable<SerieDTO[]> = Observable.of([]);
     listaDisposiciones: any[] = [
-      'Conservación total', 
-      'Eliminar', 
-      'Seleccionar', 
-      'Microfilmar', 
-      'Digitalizar',
+      { label:'Conservación total', value: 'CT' }, 
+      { label:'Eliminar', value: 'E' },
+      { label:'Seleccionar', value: 'S' }, 
+      { label:'Microfilmar', value: 'M' }, 
+      { label:'Digitalizar', value: 'D' },
     ];
     listaDisposicionesEjecutar: any[] = [
-      'Conservación total', 
-      'Eliminar',
+      { label:'Conservación total', value: 'CT' }, 
+      { label:'Eliminar', value: 'E' },
     ];
     
     indexUnidadSeleccionada: number = null;
@@ -187,7 +187,7 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
           payload.unidadDocumentalDTO.codigoSubSerie = this.formBuscar.controls['subserie'].value;
         }
         if (this.formBuscar.controls['identificador'].value) {
-          payload.unidadDocumentalDTO.codigoUnidadDocumental = this.formBuscar.controls['identificador'].value;
+          payload.unidadDocumentalDTO.id = this.formBuscar.controls['identificador'].value;
         }
         if (this.formBuscar.controls['nombre'].value) {
           payload.unidadDocumentalDTO.nombreUnidadDocumental = this.formBuscar.controls['nombre'].value;

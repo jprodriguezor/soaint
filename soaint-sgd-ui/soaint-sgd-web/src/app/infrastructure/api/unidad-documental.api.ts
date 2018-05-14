@@ -66,8 +66,8 @@ export class UnidadDocumentalApiService {
 
   aprobarRechazarUnidadesDocumentalesDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
     
-        return this._api.post(environment.listar_unidades_documentales_disposicion_endpoint, payload)
-          .map( response => response.response.unidadDocumental);
+        return this._api.post(environment.aprobar_rechazar_unidades_documentales_endpoint, payload)
+          .map( response => response);
   }
 
   listarDocumentosPorArchivar(codDependencia):Observable<any>{

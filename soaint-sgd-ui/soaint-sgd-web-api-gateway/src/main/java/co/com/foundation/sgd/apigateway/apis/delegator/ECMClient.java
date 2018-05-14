@@ -147,6 +147,38 @@ public class ECMClient {
                 .post(Entity.json(unidadDocumentalDTO));
     }
 
+    public Response listarUnidadesDocumentalesDisposicion(DisposicionFinalDTO disposicionFinal) {
+        try {
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            Response response = wt.path("/listar-unidades-documentales-disposicion")
+                                .request()
+                                .post(Entity.json(disposicionFinal));
+            return response;
+        }
+        catch (Exception ex) {
+            log.info(ex.getMessage());
+            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
+            return Response.ok().entity(respuestaEntity).build();
+        }
+
+    }
+
+    public Response aprobarRechazarUnidadesDocumentalesDisposicion(List<UnidadDocumentalDTO> unidadesDocumentales) {
+        try {
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+            Response response = wt.path("/aprobar-rechazar-disposiciones-finales")
+                                .request()
+                                .put(Entity.json(unidadesDocumentales));
+            return response;
+        }
+        catch (Exception ex) {
+            log.info(ex.getMessage());
+            MensajeRespuesta respuestaEntity = new MensajeRespuesta("11111", MensajeErrorGenerico, null, null);
+            return Response.ok().entity(respuestaEntity).build();
+        }
+
+    }
+
     public Response abrirCerrarReactivarUnidadDocumental(List<UnidadDocumentalDTO> dtoList) {
         log.info("AbrirCerrarReactivarUnidadesDocumentalesECMClient - [trafic] - cerrar unidades documentales");
         WebTarget wt = ClientBuilder.newClient().target(record_endpoint);

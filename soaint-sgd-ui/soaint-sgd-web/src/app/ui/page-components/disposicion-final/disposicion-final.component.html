@@ -13,7 +13,7 @@
       <div class="ui-sm-6 ui-g-6 text-right">
         <button pButton type="button" label="Aprobar" style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Aprobado')"></button>
         <button pButton type="button" label="Rechazar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Rechazado')"></button>
-        <button pButton type="button" label="Finalizar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarDisposicionFinal()"></button>
+        <button pButton type="button" label="Finalizar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarDisposicionFinal()" [disabled]="!state.ListadoUnidadDocumental.length"></button>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
                             <div class="ui-g-12 md-dropdownfield">
                                 <p-multiSelect 
                                     id="dependencia" 
-                                    [options]="listaDisposiciones | dropdownItemString"
+                                    [options]="listaDisposiciones"
                                     formControlName="tiposDisposicionFinal" 
                                     [panelStyle]="{minWidth:'12em'}"
                                     defaultLabel="Seleccione"
@@ -214,7 +214,7 @@
                             <label for="sede">Ejecutar selección</label>
                         </div>
                         <div class="ui-g-12 md-dropdownfield">
-                            <p-dropdown [options]="listaDisposicionesEjecutar | dropdownItemString"
+                            <p-dropdown [options]="listaDisposicionesEjecutar"
                                 id="ejecutarseleccion"
                                 [(ngModel)]="tipoDisposicion"
                                 placeholder="Seleccione"

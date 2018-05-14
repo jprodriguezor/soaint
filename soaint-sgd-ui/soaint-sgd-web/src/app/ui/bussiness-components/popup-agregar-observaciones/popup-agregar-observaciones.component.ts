@@ -38,7 +38,6 @@ export class PopupAgregarObservacionesComponent implements OnInit {
     this.listenForErrors();
   }
 
-
   ngOnInit(): void {
   }
 
@@ -61,7 +60,6 @@ export class PopupAgregarObservacionesComponent implements OnInit {
       this._changeDetectorRef.detectChanges();
     });
   }
-
 
   listenForErrors() {
     this.bindToValidationErrorsOf('observacion');

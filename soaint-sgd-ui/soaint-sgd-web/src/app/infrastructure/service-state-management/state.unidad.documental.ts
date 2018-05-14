@@ -236,10 +236,10 @@ export class StateUnidadDocumentalService {
 
     AplicarDisposicion(tipodisposicion: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 's');
+        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
         if(existeSeleccionar) {
             this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
-                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'Seleccionar')
+                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'S')
                 _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
                 _listado.push(_current);
                 return _listado;
@@ -253,12 +253,11 @@ export class StateUnidadDocumentalService {
 
     ActualizarEstadoDisposicionFinal(estado: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 's');
+        const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
         const requiereObservaciones = unidadesSeleccionadas.find(_item => (_item.observaciones === '' || _item.observaciones === null) && estado === 'Rechazado');
         if (requiereObservaciones) {
             this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales pendiente de notas.'}));       
-        }
-        if(existeDisposicionSeleccionar) {
+        } else if(existeDisposicionSeleccionar) {
             this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar". Recuerde actualizar.'}));        
         } else {
             this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
@@ -289,8 +288,8 @@ export class StateUnidadDocumentalService {
     ManageActionResponse(response: MensajeRespuestaDTO) {
         const mensajeRespuesta: MensajeRespuestaDTO = response;
         const mensajeSeverity = (mensajeRespuesta.codMensaje === '0000') ? 'success' : 'error';
-        this.Listar(this.ultimolistarPayload);
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
+        this.Listar(this.ultimolistarPayload);
     }
 
 
