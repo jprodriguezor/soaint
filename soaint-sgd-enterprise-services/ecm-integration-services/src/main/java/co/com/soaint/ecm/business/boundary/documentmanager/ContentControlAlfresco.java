@@ -4,7 +4,6 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
@@ -13,8 +12,6 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -33,7 +30,6 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundExcept
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -486,31 +482,34 @@ public class ContentControlAlfresco implements ContentControl {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
-                final int lenght = disposicionList.size();
-                final StringBuilder inSentence = new StringBuilder();
-                for (int i = 0; i < lenght; i++) {
-                    String disposition = disposicionList.get(i).toUpperCase();
-                    final String comma = (i == lenght - 1) ? "" : ",";
-                    switch (disposition) {
-                        case "CT":
-                            disposition = "conservacion total";
-                            break;
-                        case "E":
-                            disposition = "eliminar";
-                            break;
-                        case "S":
-                            disposition = "seleccionar";
-                            break;
-                        case "M":
-                            disposition = "microfilmar";
-                            break;
-                        case "D":
-                            disposition = "digitalizar";
-                            break;
+                final StringBuilder in = new StringBuilder();
+                for (final String disposition :
+                        disposicionList) {
+                    final String comma = in.length() == 0 ? "" : ",";
+                    FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
                     }
-                    inSentence.append("'").append(disposition).append("'").append(comma);
+                    dispositionType = FinalDispositionType.ELIMINAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.MICROFILMAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.DIGITALIZAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
+                    in.append(comma).append(dispositionType.getInDispositions());
                 }
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + inSentence.toString() + ")";
+                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
                         " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " = '" + PhaseType.ARCHIVO_CENTRAL.getTexto() + "'";
                 log.info("Ejecutar consulta {}", query);
@@ -2139,11 +2138,11 @@ public class ContentControlAlfresco implements ContentControl {
             throw new SystemException("No se ha identificado la Unidad Documental");
         }
         try {
-            List<String> disposicionFinalList = disposicionFinalDTO.getDisposicionFinalList();
-            List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(disposicionFinalList, dto, session);
+            final List<String> disposicionFinalList = disposicionFinalDTO.getDisposicionFinalList();
+            final List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(disposicionFinalList, dto, session);
             unidadDocumentalDTOS.forEach(unidadDocumentalDTO -> {
                 final String idUnidadDocumental = unidadDocumentalDTO.getId();
-                Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                final Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
                 optionalFolder.ifPresent(folder -> {
                     final String[] serieSubserie = getSerieSubSerie(optionalFolder.get(), session);
                     final String serieName = serieSubserie[0];
@@ -2153,20 +2152,7 @@ public class ContentControlAlfresco implements ContentControl {
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
                     unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    String disposicion = unidadDocumentalDTO.getDisposicion().toUpperCase();
-                    disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
-                    if (FinalDispositionType.CONSERVACION_TOTAL.getTexto().equals(disposicion) || "CONSERVACION TOTAL".equals(disposicion)) {
-                        disposicion = "CT";
-                    } else if (FinalDispositionType.DIGITALIZAR.getTexto().equals(disposicion) || "DIGITALIZAR".equals(disposicion)) {
-                        disposicion = "D";
-                    } else if (FinalDispositionType.ELIMINAR.getTexto().equals(disposicion) || "ELIMINAR".equals(disposicion)) {
-                        disposicion = "E";
-                    } else if (FinalDispositionType.MICROFILMAR.getTexto().equals(disposicion) || "MICROFILMAR".equals(disposicion)) {
-                        disposicion = "M";
-                    } else {
-                        disposicion = "S";
-                    }
-                    unidadDocumentalDTO.setDisposicion(disposicion);
+                    unidadDocumentalDTO.setDisposicion(getAbrevDisposition(unidadDocumentalDTO.getDisposicion()));
                 });
             });
             final Map<String, Object> responseMap = new HashMap<>();
@@ -2194,25 +2180,14 @@ public class ContentControlAlfresco implements ContentControl {
         }
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
-            String disposition = (StringUtils.isEmpty(dto.getDisposicion()) ? "" : dto.getDisposicion()).toUpperCase();
+            String disposicion = dto.getDisposicion();
             final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toLowerCase();
-            if ("aprobado".equals(estado) && (FinalDispositionType.ELIMINAR.getTexto().equals(disposition) || "ELIMINAR".equals(disposition))) {
+            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
                 eliminarUnidadDocumental(idUnidadDocumental, session);
             } else {
                 Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
                 if (optionalFolder.isPresent()) {
-                    if ("CT".equals(disposition)) {
-                        disposition = "conservacion total";
-                    } else if ("E".equals(disposition)) {
-                        disposition = "eliminar";
-                    } else if ("S".equals(disposition)) {
-                        disposition = "seleccionar";
-                    } else if ("M".equals(disposition)) {
-                        disposition = "microfilmar";
-                    } else if ("D".equals(disposition)) {
-                        disposition = "digitalizar";
-                    }
-                    dto.setDisposicion(disposition.toLowerCase());
+                    dto.setDisposicion(getAbrevDisposition(disposicion));
                     updateProperties(optionalFolder.get(), dto);
                 }
             }
@@ -2581,5 +2556,25 @@ public class ContentControlAlfresco implements ContentControl {
         final String serieName = folderBySerieCode.isPresent() ?
                 folderBySerieCode.get().getFolder().getName() : "";
         return new String[] {serieName, subSerieName};
+    }
+
+    private String getAbrevDisposition(String disposicion) {
+        disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
+        if (FinalDispositionType.CONSERVACION_TOTAL.containsDisposition(disposicion)) {
+            return "CT";
+        }
+        if (FinalDispositionType.DIGITALIZAR.containsDisposition(disposicion)) {
+            return "D";
+        }
+        if (FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
+            return "E";
+        }
+        if (FinalDispositionType.MICROFILMAR.containsDisposition(disposicion)) {
+            return "M";
+        }
+        if (FinalDispositionType.SELECCIONAR.containsDisposition(disposicion)) {
+            return "S";
+        }
+        return "";
     }
 }

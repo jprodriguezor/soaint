@@ -6,18 +6,14 @@ import co.com.foundation.sgd.apigateway.apis.delegator.ECMUtils;
 import co.com.foundation.sgd.apigateway.security.annotations.JWTTokenSecurity;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import com.sun.corba.se.impl.orbutil.ObjectStreamClassUtil_1_3;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.resteasy.util.GenericType;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import org.springframework.http.HttpStatus;
+
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -162,9 +158,18 @@ public class DigitalizarDocumentoGatewayApi {
     @GET
     @Path("/obtener-documentos-asociados/{idDocumento}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obtenerdocumentosasociados(@PathParam("idDocumento") String idDocumento) {
+    public Response obtenerdocumentosasociadosID(@PathParam("idDocumento") String idDocumento) {
         log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm: " + idDocumento);
-        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociados(idDocumento);
+        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociadosID(idDocumento);
+        return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
+    }
+
+    @GET
+    @Path("/obtener-documentos-asociados-radicado/{nroRadicado}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obtenerdocumentosasociadosNroRadicado(@PathParam("nroRadicado") String nroRadicado) {
+        log.info("DigitalizarDocumentoGatewayApi - [trafic] - obteniendo Documento asociados desde el ecm broRadicado: " + nroRadicado);
+        MensajeRespuesta mensajeRespuesta = client.findDocumentosAsociadosRadicado(nroRadicado);
         return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
     }
 
