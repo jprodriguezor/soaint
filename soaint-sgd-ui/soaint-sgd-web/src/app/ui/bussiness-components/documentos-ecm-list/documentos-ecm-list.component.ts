@@ -123,7 +123,7 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
   }
 
   hideDocument() {
-    this.docSrc = '';
+   this.viewerManager = null;
   }
 
 
