@@ -489,8 +489,25 @@ public class ContentControlAlfresco implements ContentControl {
                 final int lenght = disposicionList.size();
                 final StringBuilder inSentence = new StringBuilder();
                 for (int i = 0; i < lenght; i++) {
-                    final String disposition = disposicionList.get(i).toLowerCase();
+                    String disposition = disposicionList.get(i).toUpperCase();
                     final String comma = (i == lenght - 1) ? "" : ",";
+                    switch (disposition) {
+                        case "CT":
+                            disposition = "conservacion total";
+                            break;
+                        case "E":
+                            disposition = "eliminar";
+                            break;
+                        case "S":
+                            disposition = "seleccionar";
+                            break;
+                        case "M":
+                            disposition = "microfilmar";
+                            break;
+                        case "D":
+                            disposition = "digitalizar";
+                            break;
+                    }
                     inSentence.append("'").append(disposition).append("'").append(comma);
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + inSentence.toString() + ")";
@@ -2136,15 +2153,15 @@ public class ContentControlAlfresco implements ContentControl {
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
                     unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    String disposicion = unidadDocumentalDTO.getDisposicion().toLowerCase();
+                    String disposicion = unidadDocumentalDTO.getDisposicion().toUpperCase();
                     disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
-                    if (FinalDispositionType.CONSERVACION_TOTAL.getTexto().equals(disposicion)) {
+                    if (FinalDispositionType.CONSERVACION_TOTAL.getTexto().equals(disposicion) || "CONSERVACION TOTAL".equals(disposicion)) {
                         disposicion = "CT";
-                    } else if (FinalDispositionType.DIGITALIZAR.getTexto().equals(disposicion)) {
+                    } else if (FinalDispositionType.DIGITALIZAR.getTexto().equals(disposicion) || "DIGITALIZAR".equals(disposicion)) {
                         disposicion = "D";
-                    } else if (FinalDispositionType.ELIMINAR.getTexto().equals(disposicion)) {
+                    } else if (FinalDispositionType.ELIMINAR.getTexto().equals(disposicion) || "ELIMINAR".equals(disposicion)) {
                         disposicion = "E";
-                    } else if (FinalDispositionType.MICROFILMAR.getTexto().equals(disposicion)) {
+                    } else if (FinalDispositionType.MICROFILMAR.getTexto().equals(disposicion) || "MICROFILMAR".equals(disposicion)) {
                         disposicion = "M";
                     } else {
                         disposicion = "S";
@@ -2177,13 +2194,25 @@ public class ContentControlAlfresco implements ContentControl {
         }
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
-            final String disposicion = (StringUtils.isEmpty(dto.getDisposicion()) ? "" : dto.getDisposicion()).toLowerCase();
+            String disposition = (StringUtils.isEmpty(dto.getDisposicion()) ? "" : dto.getDisposicion()).toUpperCase();
             final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toLowerCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getTexto().equals(disposicion)) {
+            if ("aprobado".equals(estado) && (FinalDispositionType.ELIMINAR.getTexto().equals(disposition) || "ELIMINAR".equals(disposition))) {
                 eliminarUnidadDocumental(idUnidadDocumental, session);
             } else {
                 Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
                 if (optionalFolder.isPresent()) {
+                    if ("CT".equals(disposition)) {
+                        disposition = "conservacion total";
+                    } else if ("E".equals(disposition)) {
+                        disposition = "eliminar";
+                    } else if ("S".equals(disposition)) {
+                        disposition = "seleccionar";
+                    } else if ("M".equals(disposition)) {
+                        disposition = "microfilmar";
+                    } else if ("D".equals(disposition)) {
+                        disposition = "digitalizar";
+                    }
+                    dto.setDisposicion(disposition.toLowerCase());
                     updateProperties(optionalFolder.get(), dto);
                 }
             }
@@ -2292,9 +2321,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (ObjectUtils.isEmpty(tmpFolder)) {
                 throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + "'" + codigoDependencia + "'");
             }
-            final String docName = documentoDTO.getNombreDocumento();
-            final int index = docName.lastIndexOf('.');
-            documentoDTO.setNombreDocumento((index > 0) ? docName.split(".")[0] : docName);
+            documentoDTO.setNombreDocumento(documentoDTO.getNombreDocumento().trim());
             final ItemIterable<CmisObject> children = tmpFolder.getChildren();
             final Iterator<CmisObject> iterator = children.iterator();
 
@@ -2317,9 +2344,6 @@ public class ContentControlAlfresco implements ContentControl {
             }
             if (!ObjectUtils.isEmpty(folder)) {
                 byte[] bytes = documentoDTO.getDocumento();
-                String documento = Arrays.toString(bytes);
-                log.info("Document Name: {}", docName);
-                log.info("Document Content: {}", documento);
                 Map<String, Object> properties = new HashMap<>();
                 properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
                 properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
