@@ -480,12 +480,12 @@ public class CorrespondenciaGatewayApi {
 
     public  Response listarSolicitudUnidadTramitadas(@QueryParam("codSede") final String codSede,
                                            @QueryParam("codDependencia") final String codDependencia,
-                                           @QueryParam("idSolicitante") final String fechaIni,
-                                           @QueryParam("fechaSolicitud") final String fechaFin ){
+                                           @QueryParam("idSolicitante") final String fechaIni
+                                           ){
 
         log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
 
-        Response response = client.listarSolicitudUnidadDocumentalTramitadas(codSede,codDependencia,fechaIni,fechaFin);
+        Response response = client.listarSolicitudUnidadDocumentalTramitadas(codSede,codDependencia,fechaIni);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

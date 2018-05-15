@@ -261,7 +261,7 @@ public class CorrespondenciaClient {
                 .get();
     }
 
-    public Response listarSolicitudUnidadDocumentalTramitadas(String codSede,String codDependencia,String idSolicitante,String fechaSolicitud){
+    public Response listarSolicitudUnidadDocumentalTramitadas(String codSede,String codDependencia,String idSolicitante){
 
         log.info("Delegator: listar Solicitud de unidad documentales - [trafic] - Modificar Unidades Documentales");
 
@@ -271,7 +271,6 @@ public class CorrespondenciaClient {
                 .queryParam("cod_sede", codSede)
                 .queryParam("cod_dependencia", codDependencia)
                 .queryParam("id_solicitante", idSolicitante)
-                .queryParam("fecha_in", fechaSolicitud)
                 .request()
                 .get();
     }
