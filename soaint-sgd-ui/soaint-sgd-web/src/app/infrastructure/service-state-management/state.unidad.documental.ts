@@ -31,6 +31,8 @@ import { DependenciaDTO } from 'app/domain/dependenciaDTO';
 import {Subject} from 'rxjs/Subject';
 import { ROUTES_PATH } from '../../app.route-names';
 import { go } from '@ngrx/router-store';
+import {LoadingService} from './../../infrastructure/utils/loading.service';
+
 
 @Injectable()
 export class StateUnidadDocumentalService {
@@ -74,7 +76,8 @@ export class StateUnidadDocumentalService {
         private confirmationService: ConfirmationService,
         private _appRef: ApplicationRef,
         private _dependenciaGrupoSandbox: DependenciaGrupoSandbox,
-        private _dependenciaApiService: DependenciaApiService
+        private _dependenciaApiService: DependenciaApiService,
+        private loading: LoadingService
     ) {
     }
 
@@ -235,20 +238,26 @@ export class StateUnidadDocumentalService {
     }
 
     AplicarDisposicion(tipodisposicion: string) {
-        const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
-        const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
-        if(existeSeleccionar) {
-            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
-                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'S')
-                _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
-                _listado.push(_current);
-                return _listado;
-            }, []);
-            this.ListadoActualizadoSubject.next();  
-        } else {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'No hay unidades seleccionadas con disposición final "Seleccionar".'}));       
+        
+            const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
+            const existeSeleccionar = this.unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
+            if (unidadesSeleccionadas.length) {
+                if(existeSeleccionar) {
+                        this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
+                            const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item.id === _current.id && _item.disposicion === 'S')
+                            _current.disposicion = item_seleccionado ? tipodisposicion : _current.disposicion;
+                            _listado.push(_current);
+                            return _listado;
+                        }, []);
+                        this.ListadoActualizadoSubject.next();  
+                        this._store.dispatch(new PushNotificationAction({severity: 'success', summary: 'Se aplicó la disposición final satisfactoriamente.'}));       
+                } else {
+                    this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'No hay unidades seleccionadas con disposición final "Seleccionar".'}));       
+                    
+                }
+            }
             
-        }
+
     }
 
     ActualizarEstadoDisposicionFinal(estado: string) {
@@ -267,6 +276,8 @@ export class StateUnidadDocumentalService {
                 return _listado;
             }, []);
             this.ListadoActualizadoSubject.next(); 
+            this._store.dispatch(new PushNotificationAction({severity: 'success', summary: 'Se actualizó el estado de la unidad documental satisfactoriamente.'}));       
+           
         }
    
     }

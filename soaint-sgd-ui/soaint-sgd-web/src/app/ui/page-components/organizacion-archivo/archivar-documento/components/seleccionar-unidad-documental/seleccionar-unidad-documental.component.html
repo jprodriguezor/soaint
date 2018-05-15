@@ -198,6 +198,11 @@
     <button type="button" pButton  (click)="closePopup()" label="Aceptar"></button>
   </p-footer>
 </p-dialog>
-
+   <p-confirmDialog #cd>
+            <p-footer>
+              <button type="button" pButton icon="fa-close" label="No" (click)="cd.reject()"></button>
+              <button type="button" pButton icon="fa-check" label="Si" (click)="cd.accept()"></button>
+            </p-footer>
+   </p-confirmDialog>
 
 
