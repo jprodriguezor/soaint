@@ -222,6 +222,44 @@ public class ContentControlAlfrescoTest {
             e.printStackTrace();
         }
     }
+    @Test
+    public void testListarUnidadDocumentalSinAccionSuccess(){
+        //Se llenan los datos de la unidad documental
+        UnidadDocumentalDTO unidadDocumentalDTO1 = new UnidadDocumentalDTO();
+        unidadDocumentalDTO1.setInactivo(true);
+        //Calendar calendar
+        Calendar gregorianCalendar = GregorianCalendar.getInstance();
+        unidadDocumentalDTO1.setFechaCierre(gregorianCalendar);
+        unidadDocumentalDTO1.setId("1118");
+        unidadDocumentalDTO1.setFechaExtremaInicial(gregorianCalendar);
+        unidadDocumentalDTO1.setSoporte("electronico");
+        unidadDocumentalDTO1.setNombreUnidadDocumental("UnidadDocumentalTest");
+        unidadDocumentalDTO1.setFechaExtremaFinal(gregorianCalendar);
+        unidadDocumentalDTO1.setCerrada(true);
+        unidadDocumentalDTO1.setCodigoSubSerie("02312");
+        unidadDocumentalDTO1.setCodigoSerie("0231");
+        unidadDocumentalDTO1.setCodigoDependencia("10001040");
+        unidadDocumentalDTO1.setDescriptor1("3434");
+        unidadDocumentalDTO1.setDescriptor2("454545");
+        unidadDocumentalDTO1.setAccion("");
+        unidadDocumentalDTO1.setInactivo(false);
+        unidadDocumentalDTO1.setCerrada(false);
+        unidadDocumentalDTO1.setEstado("Abierto");
+        unidadDocumentalDTO1.setDisposicion("SSS");
+
+        //Crear unidad documental
+        try {
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+                    crearUnidadDocumental(unidadDocumentalDTO1, conexion.getSession());
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+
+            assertEquals("0000", contentControlAlfresco.
+                    listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testObtenerDetallesDocumentoDTOSuccess() {
@@ -463,20 +501,20 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testmodificarMetadatosDocumentoFail() {
+    public void testModificarMetadatosDocumentoFail() {
         DocumentoDTO documentoDTO12 = new DocumentoDTO();
         documentoDTO12.setIdDocumento("qwqwqwqw");
         assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
     }
 
     @Test
-    public void testmodificarMetadatosDocumentoSuccess() {
+    public void testModificarMetadatosDocumentoSuccess() {
 
         assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
     }
 
     @Test
-    public void testobtenerPropiedadesDocumentoSuccess() {
+    public void testObtenerPropiedadesDocumentoSuccess() {
         CmisObject cmisObjectDocument = conexion.getSession().getObject(documentoDTO.getIdDocumento());
         assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document) cmisObjectDocument));
     }
