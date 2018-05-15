@@ -41,7 +41,7 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    form:FormGroup;
 
-   subscriptions:Subscription[];
+   subscriptions:Subscription[] = [];
 
   constructor(private _store:Store<RootState>,
               private _taskSandbox:TaskSandbox,
@@ -99,12 +99,14 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    actualizarSolicitudesTramitadas(){
 
-    this.solicitudesProcesadas$ =  this._solicitudService.listarSolicitudes({
+    this.solicitudesProcesadas$ =  this._solicitudService.listarSolicitudesTramitadas({
                                         codSede:this.task.variables.codSede,
                                         codDependencia:this.task.variables.codDependencia,
                                         idSolicitante: this.task.variables.idSolicitante
                                       });
   }
+
+
 
    finalizar(){
 

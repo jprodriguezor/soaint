@@ -35,8 +35,13 @@ private task:TareaDTO;
     return this._api.post(environment.crear_solicitud_ud,payload);
   }
 
-  listarSolicitudes(payload:any):Observable<any>{
-    return this._api.list(environment.listar_solicitud_ud,payload)
+  listarSolicitudesNoTramitadas(payload:any):Observable<any>{
+    return this._api.list(environment.listar_solicitud_ud_no_tramitadas,payload)
+      .map(response => response.solicitudesUnidadDocumentalDTOS);
+  }
+
+  listarSolicitudesTramitadas(payload:any):Observable<any>{
+    return this._api.list(environment.listar_solicitud_ud_tramitadas,payload)
       .map(response => response.solicitudesUnidadDocumentalDTOS);
   }
 

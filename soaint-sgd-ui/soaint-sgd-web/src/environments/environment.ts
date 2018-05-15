@@ -132,14 +132,15 @@ export const environment = {
   listar_documentos_archivar:  `${host}/unidad-documental-gateway-api/listar-documentos-por-archivar/`,
   listar_documentos_archivados: `${host}/unidad-documental-gateway-api/listar-documentos-archivados/`,
   crear_solicitud_ud: `${host}/correspondencia-gateway-api/crear-solicitud-unidad-documental/`,
-  listar_solicitud_ud: `${host}/correspondencia-gateway-api/listar-solicitud-unidad-documental/`,
+  listar_solicitud_ud_no_tramitadas: `${host}/correspondencia-gateway-api/listar-solicitud-ud-no-tramitadas/`,
+  listar_solicitud_ud_tramitadas: `${host}/correspondencia-gateway-api/listar-solicitud-ud-tramitadas/`,
   actualizar_solicitud_ud: `${host}/correspondencia-gateway-api/actualizar-solicitud-unidad-documental/`,
   restablecer_archivar_documento: `${host}/unidad-documental-gateway-api/restablecer-archivar-documento-task/`,
   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
   listar_unidades_documentales_disposicion_endpoint: `${host}/unidad-documental-gateway-api/listar-unidades-documentales-disposicion`,
   aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`
-  
+
 
 };
 

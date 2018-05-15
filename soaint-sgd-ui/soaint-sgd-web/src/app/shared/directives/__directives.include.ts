@@ -4,6 +4,7 @@ import { ClearValidatorsDirective } from './form/clear-validators.directive';
 import { CountryPhoneDirective } from './form/country-phone-input.directive';
 import { MobilePhoneDirective } from './form/mobile-phone-input.directive';
 import { OptionalEmailValidatorDirective } from './form/optional-email-validator.directive';
+import {HtmlContentDirective} from "./html-content.directive";
 
 export const DIRECTIVES = [
   PrintDirective,
@@ -11,5 +12,6 @@ export const DIRECTIVES = [
   ClearValidatorsDirective,
   MobilePhoneDirective,
   CountryPhoneDirective,
-  OptionalEmailValidatorDirective
+  OptionalEmailValidatorDirective,
+  HtmlContentDirective
 ];

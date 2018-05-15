@@ -26,6 +26,8 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   $action = CreateUDActionType;
 
+  action:CreateUDActionType;
+
   form:FormGroup;
   dependenciaSelected:DependenciaDTO;
 
@@ -61,8 +63,8 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
   selectAction(index,evt?){
 
   const actionEvent = Object.assign({},
-     {solicitud:this.solicitudSelected},
-     {action:this.dropdowns.toArray()[index].value},
+     {solicitud:this.solicitudModel.SolicitudSelected},
+     {action:this.action},
      {nativeEvent:evt}
      );
 
@@ -71,14 +73,12 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
 ngOnInit(){
 
-
-
-    this.solicitudes$ =  this.solicitudService.listarSolicitudes({
+     this.solicitudService.listarSolicitudesNoTramitadas({
       codSede:this.task.variables.codSede,
       codDependencia:this.task.variables.codDependencia,
       idSolicitante: this.task.variables.idSolicitante,
       fechaSolicitud:this.task.variables.fechaSolicitud
-    });
+    }).subscribe( solicitudes => { this.solicitudModel.Solicitudes = solicitudes});
 }
 
 }

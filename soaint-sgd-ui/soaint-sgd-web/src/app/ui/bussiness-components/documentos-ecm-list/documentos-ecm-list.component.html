@@ -34,7 +34,7 @@
             </p-column>
             <p-column  header="Ver Documento">
               <ng-template pTemplate="item" let-row="rowData"  >
-                <button type="button" pButton label="Ver Documento" (click)="showDocument(row.idDocumento)"></button>
+                <button type="button" pButton label="Ver Documento" (click)="showDocument(row)"></button>
               </ng-template>
             </p-column>
             <p-column header="Acciones" [style]="{'width':'265px','text-align':'center'}" *ngIf="versionar" >
@@ -58,7 +58,7 @@
           </p-dataTable>
 
         </div>
-        <div class="ui-g-12 padding-top" *ngIf="docSrc!==''">
+        <div class="ui-g-12 padding-top" *ngIf="viewerManager != null">
           <p-panel>
             <p-header>
               <div class="ui-g ui-fluid">
@@ -70,10 +70,16 @@
                 </div>
               </div>
             </p-header>
-            <p-blockUI [(blocked)]="isLoading" ></p-blockUI>
-            <div class="pdf-container" >
-              <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5" (after-load-complete)="docLoaded()" ></pdf-viewer>
-            </div>
+            <ng-template [ngIf]=" $viewer.PDF == viewerManager" [ngIfElse]="htmlContent">
+              <p-blockUI [(blocked)]="isLoading" *ngIf="" ></p-blockUI>
+              <div class="pdf-container" >
+                <pdf-viewer [src]="docSrc" [show-all]="true" [zoom]="1.5" (after-load-complete)="docLoaded()" ></pdf-viewer>
+              </div>
+            </ng-template>
+
+            <ng-template #htmlContent>
+             <div id="content-html" style="padding: 10px" appHtmlContent [content]="contentHtml"></div>
+            </ng-template>
           </p-panel>
         </div>
         </div>
