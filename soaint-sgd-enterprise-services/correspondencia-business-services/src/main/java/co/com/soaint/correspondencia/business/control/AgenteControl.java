@@ -218,6 +218,27 @@ public class AgenteControl {
     }
 
     /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoMail(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgenteMail", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param ideAgente
      * @return
      * @throws BusinessException
