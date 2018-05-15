@@ -1,14 +1,12 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild, ViewEncapsulation, AfterViewInit, ChangeDetectorRef} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, AfterViewInit, ChangeDetectorRef} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {State} from 'app/infrastructure/redux-store/redux-reducers';
 import 'rxjs/add/operator/single';
-import {ComunicacionOficialDTO} from '../../../domain/comunicacionOficialDTO';
 import {ApiBase} from '../../../infrastructure/api/api-base';
 import {environment} from '../../../../environments/environment';
 import {LoadingService} from '../../../infrastructure/utils/loading.service';
 import {FileUpload} from 'primeng/primeng';
 import { VersionDocumentoDTO } from '../../page-components/produccion-documental/models/DocumentoDTO';
-import { DocumentoEcmDTO } from '../../../domain/documentoEcmDTO';
 import {Sandbox as TaskSandBox} from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 import { MessagingService, ProduccionDocumentalApiService } from '../../../infrastructure/__api.include';
 import { TareaDTO } from '../../../domain/tareaDTO';
@@ -16,7 +14,12 @@ import {Subscription} from 'rxjs/Subscription';
 import {getActiveTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { PushNotificationAction } from '../../../infrastructure/state-management/notifications-state/notifications-actions';
 import {Observable} from 'rxjs/Observable';
+import {Utf8Helper} from "../../../shared/utf8";
 
+export enum ViewerType {
+  PDF = 1,
+  HTML = 2
+}
 
 @Component({
   selector: 'app-documentos-ecm-list',
@@ -35,10 +38,15 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
   docSrc = '';
   isLoading = false;
 
+ readonly  $viewer = ViewerType;
+
   documentsList: Array<any>;
   uploadUrl: String;
   editable = true;
   loading = false;
+  viewerManager: ViewerType;
+
+  contentHtml:string = "";
 
   selectedFile = '';
 
@@ -93,13 +101,29 @@ export class DocumentosECMListComponent implements OnInit, OnChanges, AfterViewI
     this.versionar = data.versionar;
   }
 
-  showDocument(idDocumento: string) {
-    this.loadingService.presentLoading();
-    this.docSrc = environment.obtenerDocumento + idDocumento;
+  showDocument(documento: any) {
+
+    switch (documento.tipoDocumento) {
+
+      case "application/pdf":
+        this.loadingService.presentLoading();
+        this.docSrc = environment.obtenerDocumento + documento.idDocumento;
+        this.viewerManager = ViewerType.PDF;
+        break;
+      case "text/html" :
+
+
+        this.contentHtml = Utf8Helper.decode(atob(documento.documento));
+
+        console.log("contenido html",this.contentHtml);
+        this.viewerManager = ViewerType.HTML;
+
+    }
+
   }
 
   hideDocument() {
-    this.docSrc = '';
+   this.viewerManager = null;
   }
 
 

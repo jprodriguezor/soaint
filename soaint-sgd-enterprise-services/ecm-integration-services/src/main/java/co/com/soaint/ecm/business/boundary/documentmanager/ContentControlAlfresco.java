@@ -4,7 +4,6 @@ import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Configu
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl.RecordServices;
 import co.com.soaint.ecm.domain.entity.*;
 import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.ecm.util.SystemParameters;
@@ -13,8 +12,6 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -33,7 +30,6 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundExcept
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -486,14 +482,34 @@ public class ContentControlAlfresco implements ContentControl {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
-                final int lenght = disposicionList.size();
-                final StringBuilder inSentence = new StringBuilder();
-                for (int i = 0; i < lenght; i++) {
-                    final String disposition = disposicionList.get(i).toLowerCase();
-                    final String comma = (i == lenght - 1) ? "" : ",";
-                    inSentence.append("'").append(disposition).append("'").append(comma);
+                final StringBuilder in = new StringBuilder();
+                for (final String disposition :
+                        disposicionList) {
+                    final String comma = in.length() == 0 ? "" : ",";
+                    FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.ELIMINAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.MICROFILMAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.DIGITALIZAR;
+                    if (dispositionType.containsDisposition(disposition)) {
+                        in.append(comma).append(dispositionType.getInDispositions());
+                        continue;
+                    }
+                    dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
+                    in.append(comma).append(dispositionType.getInDispositions());
                 }
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + inSentence.toString() + ")";
+                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
                         " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " = '" + PhaseType.ARCHIVO_CENTRAL.getTexto() + "'";
                 log.info("Ejecutar consulta {}", query);
@@ -2122,11 +2138,11 @@ public class ContentControlAlfresco implements ContentControl {
             throw new SystemException("No se ha identificado la Unidad Documental");
         }
         try {
-            List<String> disposicionFinalList = disposicionFinalDTO.getDisposicionFinalList();
-            List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(disposicionFinalList, dto, session);
+            final List<String> disposicionFinalList = disposicionFinalDTO.getDisposicionFinalList();
+            final List<UnidadDocumentalDTO> unidadDocumentalDTOS = listarUnidadesDocumentales(disposicionFinalList, dto, session);
             unidadDocumentalDTOS.forEach(unidadDocumentalDTO -> {
                 final String idUnidadDocumental = unidadDocumentalDTO.getId();
-                Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+                final Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
                 optionalFolder.ifPresent(folder -> {
                     final String[] serieSubserie = getSerieSubSerie(optionalFolder.get(), session);
                     final String serieName = serieSubserie[0];
@@ -2136,20 +2152,7 @@ public class ContentControlAlfresco implements ContentControl {
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
                     unidadDocumentalDTO.setNombreSubSerie(currentFolderFatherName);
-                    String disposicion = unidadDocumentalDTO.getDisposicion().toLowerCase();
-                    disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
-                    if (FinalDispositionType.CONSERVACION_TOTAL.getTexto().equals(disposicion)) {
-                        disposicion = "CT";
-                    } else if (FinalDispositionType.DIGITALIZAR.getTexto().equals(disposicion)) {
-                        disposicion = "D";
-                    } else if (FinalDispositionType.ELIMINAR.getTexto().equals(disposicion)) {
-                        disposicion = "E";
-                    } else if (FinalDispositionType.MICROFILMAR.getTexto().equals(disposicion)) {
-                        disposicion = "M";
-                    } else {
-                        disposicion = "S";
-                    }
-                    unidadDocumentalDTO.setDisposicion(disposicion);
+                    unidadDocumentalDTO.setDisposicion(getAbrevDisposition(unidadDocumentalDTO.getDisposicion()));
                 });
             });
             final Map<String, Object> responseMap = new HashMap<>();
@@ -2177,13 +2180,14 @@ public class ContentControlAlfresco implements ContentControl {
         }
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
-            final String disposicion = (StringUtils.isEmpty(dto.getDisposicion()) ? "" : dto.getDisposicion()).toLowerCase();
+            String disposicion = dto.getDisposicion();
             final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toLowerCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getTexto().equals(disposicion)) {
+            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
                 eliminarUnidadDocumental(idUnidadDocumental, session);
             } else {
                 Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
                 if (optionalFolder.isPresent()) {
+                    dto.setDisposicion(getAbrevDisposition(disposicion));
                     updateProperties(optionalFolder.get(), dto);
                 }
             }
@@ -2292,9 +2296,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (ObjectUtils.isEmpty(tmpFolder)) {
                 throw new SystemException(ConstantesECM.NO_EXISTE_DEPENDENCIA + "'" + codigoDependencia + "'");
             }
-            final String docName = documentoDTO.getNombreDocumento();
-            final int index = docName.lastIndexOf('.');
-            documentoDTO.setNombreDocumento((index > 0) ? docName.split(".")[0] : docName);
+            documentoDTO.setNombreDocumento(documentoDTO.getNombreDocumento().trim());
             final ItemIterable<CmisObject> children = tmpFolder.getChildren();
             final Iterator<CmisObject> iterator = children.iterator();
 
@@ -2317,9 +2319,6 @@ public class ContentControlAlfresco implements ContentControl {
             }
             if (!ObjectUtils.isEmpty(folder)) {
                 byte[] bytes = documentoDTO.getDocumento();
-                String documento = Arrays.toString(bytes);
-                log.info("Document Name: {}", docName);
-                log.info("Document Content: {}", documento);
                 Map<String, Object> properties = new HashMap<>();
                 properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
                 properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
@@ -2557,5 +2556,25 @@ public class ContentControlAlfresco implements ContentControl {
         final String serieName = folderBySerieCode.isPresent() ?
                 folderBySerieCode.get().getFolder().getName() : "";
         return new String[] {serieName, subSerieName};
+    }
+
+    private String getAbrevDisposition(String disposicion) {
+        disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
+        if (FinalDispositionType.CONSERVACION_TOTAL.containsDisposition(disposicion)) {
+            return "CT";
+        }
+        if (FinalDispositionType.DIGITALIZAR.containsDisposition(disposicion)) {
+            return "D";
+        }
+        if (FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
+            return "E";
+        }
+        if (FinalDispositionType.MICROFILMAR.containsDisposition(disposicion)) {
+            return "M";
+        }
+        if (FinalDispositionType.SELECCIONAR.containsDisposition(disposicion)) {
+            return "S";
+        }
+        return "";
     }
 }

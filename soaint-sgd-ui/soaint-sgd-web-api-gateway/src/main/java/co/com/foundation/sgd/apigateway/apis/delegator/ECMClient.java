@@ -116,10 +116,15 @@ public class ECMClient {
                 .delete();
     }
 
-    public MensajeRespuesta findDocumentosAsociados(String idDocumento) {
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+    public MensajeRespuesta findDocumentosAsociadosID(String idDocumento) {
         DocumentoDTO dto = DocumentoDTO.newInstance().idDocumento(idDocumento).build();
-        Response response = wt.path("/obtenerDocumentosAdjuntosECM").request().post(Entity.json(dto));
+        Response response = getDocumentosAsociados(dto);
+        return response.readEntity(MensajeRespuesta.class);
+    }
+
+    public MensajeRespuesta findDocumentosAsociadosRadicado(String nroRadicado) {
+        DocumentoDTO dto = DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
+        Response response = getDocumentosAsociados(dto);
         return response.readEntity(MensajeRespuesta.class);
     }
 
@@ -253,5 +258,10 @@ public class ECMClient {
         WebTarget wt = ClientBuilder.newClient().target(corresponencia_endpoint);
         return wt.path("/tarea-web-api/tarea/" + idproceso + "/" + idtarea)
                 .request().get();
+    }
+
+    private Response getDocumentosAsociados(DocumentoDTO documentoDTO) {
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        return wt.path("/obtenerDocumentosAdjuntosECM").request().post(Entity.json(documentoDTO));
     }
 }
