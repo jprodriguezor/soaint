@@ -1,9 +1,6 @@
 package co.com.soaint.foundation.canonical.ecm;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -19,13 +16,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder(builderMethodName = "newInstance")
+@EqualsAndHashCode(callSuper = false)
+@ToString(includeFieldNames = false, of = "nomOrg")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/ecm/organigrama/1.0.0")
-public class OrganigramaDTO {
+public class OrganigramaDTO extends BaseDTO {
+
+    private static final long serialVersionUID = 1L;
 
     private Long ideOrgaAdmin;
     private String codOrg;
     private String nomOrg;
     private String tipo;
+
+    @Builder(toBuilder = true, builderMethodName = "newInstance")
+    public OrganigramaDTO(String codigoBase, String nombreBase, Long ideOrgaAdmin,
+                          String codOrg, String nomOrg, String tipo) {
+        super(codigoBase, nombreBase);
+        this.ideOrgaAdmin = ideOrgaAdmin;
+        this.codOrg = codOrg;
+        this.nomOrg = nomOrg;
+        this.tipo = tipo;
+    }
 }

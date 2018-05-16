@@ -16,7 +16,6 @@ public enum DiposicionFinalEnum {
     INTERRUMPIR("4", "cutoff"),
     INCORPORACION("5", "accession");
 
-
     private final String codigo;
     private final String nombre;
 

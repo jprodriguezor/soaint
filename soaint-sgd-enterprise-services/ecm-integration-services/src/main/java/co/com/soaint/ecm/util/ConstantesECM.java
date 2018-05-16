@@ -6,6 +6,7 @@ public final class ConstantesECM {
 
     // Class Properties ECM
     public static final String CLASE_BASE = "claseBase";
+    public static final String CLASE_SEDE = "claseSede";
     public static final String CLASE_DEPENDENCIA = "claseDependencia";
     public static final String CLASE_SERIE = "claseSerie";
     public static final String CLASE_SUBSERIE = "claseSubserie";
@@ -80,9 +81,10 @@ public final class ConstantesECM {
     public static final String NO_EXISTE_DEPENDENCIA = "En la estructura no existe la Dependencia: ";
     public static final String NO_EXISTE_SEDE = "En la estructura no existe la sede: ";
     public static final String SEPARADOR = "---";
-    public static final String SUCCESS_COD = "0000";
+    public static final String SUCCESS_COD_MENSAJE = "0000";
     public static final String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
     public static final String SUCCESS = "SUCCESS";
+    public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
 
     private ConstantesECM(){}
 }
