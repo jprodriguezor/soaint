@@ -259,9 +259,16 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   eliminarDocumento(idEcm,index){
 
-    // usar api documento ecm
+    this.subscriptions.push(this._udService.eliminarDocumento(idEcm).subscribe( () => {
 
-    this.documentosAdjuntos.splice(index,1);
+      this.documentosAdjuntos.splice(index,1);
+      this.documentosAdjuntos = [... this.documentosAdjuntos];
+
+      this.changeDetectorRef.detectChanges();
+
+    }));
+
+
   }
 
   agregarAdjuntos(){
