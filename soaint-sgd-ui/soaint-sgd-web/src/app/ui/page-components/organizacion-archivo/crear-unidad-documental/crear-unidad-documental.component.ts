@@ -43,7 +43,6 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    subscriptions:Subscription[] = [];
 
-   @ViewChild("listaSolicitudeNoTramitadas") listaSolicitudesNoTramitadas:ListaSolicitudCrearUdComponent;
 
   constructor(private _store:Store<RootState>,
               private _taskSandbox:TaskSandbox,
@@ -62,7 +61,6 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
     this.subscriptions.push(
       this._store.select(getActiveTask).subscribe( task =>{
-
         this.task = task;
 
         this.form.get('sede').setValue(task.variables.codSede);
@@ -100,7 +98,7 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    closePopup(){}
 
-   actualizarSolicitudesTramitadas(){
+   actualizarSolicitudesTramitadas(event?){
 
     this.solicitudesProcesadas$ =  this._solicitudService.listarSolicitudesTramitadas({
                                         codSede:this.task.variables.codSede,
@@ -108,7 +106,7 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
                                         idSolicitante: this.task.variables.idSolicitante
                                       });
 
-
+    this.currentAction = null;
   }
 
 

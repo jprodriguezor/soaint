@@ -34,7 +34,7 @@ import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud
 })
 export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
-  action:CreateUDActionType;
+ action:CreateUDActionType;
 
   form:FormGroup;
   dependenciaSelected:DependenciaDTO;
@@ -52,9 +52,7 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   @ViewChildren(Dropdown) dropdowns : QueryList<Dropdown>;
 
-  @ViewChild("tq") dataTable:DataTable;
-
-  @Output() changeAction: EventEmitter<EventChangeActionArgs> = new EventEmitter;
+   @Output() changeAction: EventEmitter<EventChangeActionArgs> = new EventEmitter;
 
   task:TareaDTO;
 
@@ -103,15 +101,6 @@ ngOnInit(){
     });
 }
 
-
-LoadChanges(){
-
-      if(this.solicitudModel){
-
-         this.dataTable.value = this.solicitudModel.Solicitudes;
-         this.changeDetector.detectChanges();
-      }
-}
 
 
 }
