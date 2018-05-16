@@ -3,19 +3,12 @@
     <div class="card card-w-title">
       <p-panel header="Unidades documentales solicitadas" [style]="{border: 'none'}">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true" [value]="(solicitudes$|async)" (onRowSelect) = "selectRow($event)" #tq>
-          <p-column [style]="{width: '40px'}">
-            <ng-template pTemplate="body">
-              <p-radioButton></p-radioButton>
-            </ng-template>
-          </p-column>
-          <p-column  header="Fecha y hora solicitud">
-            <ng-template pTemplate="body" let-row="rowData">
-              {{row.fechaHora|date:"short"}}
-            </ng-template>
-          </p-column>
-          <p-column field="nro" header="No solicitud creacion UD"></p-column>
-          <p-column field="solicitante" header="Usuario solicitante"></p-column>
+                     [paginator]="true" [rows]="10" [responsive]="true"
+                     [value]="solicitudModel.Solicitudes"
+                     [selection]="solicitudModel.SolicitudSelected"
+                     (onRowSelect) = "selectRow($event)"
+                     #tq>
+          <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
           <p-column  header="Nombre serie/subserie" [style]="{width:'100px'}">
             <ng-template pTemplate="body" let-row="rowData" >
                {{row.codigoSerie}}/{{row.codigoSubSerie}}
@@ -27,11 +20,12 @@
           <p-column field="descriptor2" header="Descriptor 2"></p-column>
           <p-column field="observaciones" header="Observaciones"></p-column>
           <p-column  header="Accion">
-            <ng-template pTemplate="body" let-row="rowData" let-index="rowIndex">
+            <ng-template pTemplate="body"  let-index="rowIndex">
               <p-dropdown  (onChange)="selectAction(index,$event)"
-                           [options] = '[{value:null,label:"Seleccione una accion"},{value:$action.createUD,label:"Crear Unidad Documental"},{value:$action.noTramiteUD,label:"No tramitar UD"}]'
+                           [options] = '[{value:null,label:"Seleccione una accion"},{value:"Creación UD",label:"Crear Unidad Documental"},{value:"No tramitar creación UD",label:"No tramitar UD"}]'
                            [style]="{width:'100%'}"
-                           [disabled] = "solicitudSelected === undefined || row.nro !== solicitudSelected.nro"
+                           [disabled] = "index != solicitudModel.SelectedIndex"
+                           [(ngModel)]="row.accion"
               >
               </p-dropdown>
             </ng-template>

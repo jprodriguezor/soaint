@@ -57,7 +57,7 @@ export class UnidadDocumentalApiService {
   }
 
   listarUnidadesDocumentalesDisposicion(payload: DisposicionFinalDTO): Observable<UnidadDocumentalDTO[]>{
-    
+
         return this._api.post(environment.listar_unidades_documentales_disposicion_endpoint, payload)
           .map( response => {
             return  response.response ? response.response.unidadesDocumentales : Observable.of([]);
@@ -65,7 +65,7 @@ export class UnidadDocumentalApiService {
   }
 
   aprobarRechazarUnidadesDocumentalesDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
-    
+
         return this._api.post(environment.aprobar_rechazar_unidades_documentales_endpoint, payload)
           .map( response => response);
   }
@@ -89,6 +89,15 @@ export class UnidadDocumentalApiService {
   subirDocumentosParaArchivar(documentos: FormData):Observable<any>{
 
    return  this._api.sendFile(environment.subir_documentos_por_archivar,documentos,[]);
+  }
+
+  obtenerDocumentoPorNoRadicado(nroRadicado):Observable<any>{
+    return this._api.list( `${environment.obtenerDocumento_nro_radicado_endpoint}/${nroRadicado}`);
+  }
+
+  eliminarDocumento(idEcm):Observable<any>{
+
+   return  this._api.delete(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${idEcm}`);
   }
 
 

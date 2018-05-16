@@ -1434,6 +1434,10 @@ public class ContentControlAlfresco implements ContentControl {
                 CmisObject documentObj = session.getObject(new ObjectIdImpl(documentoDTO.getIdDocumento()));
                 if (documentObj.getType().getId().startsWith("D:cmcor:")) {
                     Document document = (Document) documentObj;
+                    final String docName = documentoDTO.getNombreDocumento();
+                    if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
+                        document.rename(docName);
+                    }
                     final List<Folder> parents = document.getParents();
                     final Optional<Folder> sourceTarget = parents.parallelStream()
                             .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
@@ -1879,24 +1883,26 @@ public class ContentControlAlfresco implements ContentControl {
             documento.setIdDocumento(idDoc);
             ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
-            for (QueryResult qResult : resultsPrincipalAdjunto) {
+            if (resultsPrincipalAdjunto.getPageNumItems() != 0) {
+                resultsPrincipalAdjunto.forEach(queryResult -> {
+                    String[] parts = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID).toString().split(";");
+                    String idDocumento = parts[0];
 
-                String[] parts = qResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID).toString().split(";");
-                String idDocumento = parts[0];
-
-                log.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName(PropertyIds.NAME).getValues().get(0).toString());
-                ObjectId a = new ObjectIdImpl(idDocumento);
-                CmisObject object = session.getObject(a);
-                Document delDoc = (Document) object;
-                //Se borra el documento pero no todas las versiones solo la ultima
-                delDoc.delete(false);
-                log.info("Se logro eliminar el documento");
+                    log.info("Se procede a eliminar el documento: " + queryResult.getPropertyByQueryName(PropertyIds.NAME).getValues().get(0).toString());
+                    ObjectId a = new ObjectIdImpl(idDocumento);
+                    CmisObject object = session.getObject(a);
+                    Document delDoc = (Document) object;
+                    //Se borra el documento pero no todas las versiones solo la ultima
+                    delDoc.delete(false);
+                    log.info("Se logro eliminar el documento");
+                });
+                return true;
             }
-            return Boolean.TRUE;
+            return false;
 
         } catch (CmisObjectNotFoundException e) {
             log.error("No se pudo eliminar el documento :", e);
-            return Boolean.FALSE;
+            return false;
         }
     }
 
@@ -2040,7 +2046,7 @@ public class ContentControlAlfresco implements ContentControl {
         if (StringUtils.isEmpty(codigoDependencia)) {
             throw new SystemException("No se ha especificado el codigo de la dependencia");
         }
-        final List<Folder> folderList = getUDListByDependencyCode(codigoDependencia, session);
+        final List<Folder> folderList = getUDListWithIDBy(codigoDependencia, session);
         final List<Map<String, Object>> mapList = new ArrayList<>();
 
         for (Folder folder :
@@ -2219,7 +2225,7 @@ public class ContentControlAlfresco implements ContentControl {
             throw new SystemException("Especifique el codigo de la dependencia");
         }
         final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + codigoDependencia + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
         for (QueryResult queryResult :
@@ -2326,24 +2332,28 @@ public class ContentControlAlfresco implements ContentControl {
                 ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
                 Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
                 documentoDTO = transformarDocumento(document);
-                final String idDoc = document.getPropertyValue(PropertyIds.OBJECT_ID);
-                documentoDTO.setNroRadicado(idDoc.split(";")[0]);
+                documentoDTO.setNroRadicado(documentoDTO.getIdDocumento());
                 return Optional.of(documentoDTO);
             }
         }
         return Optional.empty();
     }
 
-    private List<Folder> getUDListByDependencyCode(final String dependencyCode, final Session session) {
+    private List<Folder> getUDListWithIDBy(final String dependencyCode, final Session session) {
         final List<Folder> folderList = new ArrayList<>();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + dependencyCode + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + dependencyCode + "%'" +
+                " AND " + ConstantesECM.CMCOR_UD_ID + " IS NOT NULL" +
+                " AND " + ConstantesECM.CMCOR_UD_ID + " <> ''";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         for (QueryResult queryResult :
                 queryResults) {
             final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
             final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-            folderList.add(folderList.size(), udFolder);
+            final String id = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
+            if (!StringUtils.isEmpty(id.trim())) {
+                folderList.add(folderList.size(), udFolder);
+            }
         }
         return folderList;
     }

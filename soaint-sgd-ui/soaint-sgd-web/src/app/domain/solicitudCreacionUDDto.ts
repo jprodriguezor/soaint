@@ -14,5 +14,6 @@ fechaHora?:string;
 nro?:string;
 idSolicitante?:string;
 motivo?:string;
-accion?:string
+accion?:string;
+idSolicitud?:number
 }

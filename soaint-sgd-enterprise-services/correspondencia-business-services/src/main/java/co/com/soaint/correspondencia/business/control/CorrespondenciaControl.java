@@ -1135,7 +1135,7 @@ public class CorrespondenciaControl {
         //------------------- Fin Attachments ------------------------------------------------------//
         request.setAttachmentsList(attachmentsList);
 
-        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
+        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
         log.info("Destinatarios list" + destinatariosList.toString());
 
         if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
@@ -1153,8 +1153,9 @@ public class CorrespondenciaControl {
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal()!=null){
                             if (agenteDTO.getIndOriginal().equals("TP-DESP")){
-                                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                                else parameters.put("#USER#", funcionario.getNomFuncionario());
+                                    String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : funcionario.getNomFuncionario();
+                                    log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
+                                    parameters.put("#USER#", usuario);
                             }
                         }
 
@@ -1166,10 +1167,12 @@ public class CorrespondenciaControl {
             } else{
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
-                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
+                        if (agenteDTO.getIndOriginal().equals("TP-DESP")) {
+                            String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : agenteDTO.getNombre();
+                            log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
+                            parameters.put("#USER#", usuario);
+                        }
+                        log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
                     }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
@@ -1183,14 +1186,15 @@ public class CorrespondenciaControl {
         });
 
         if (!parameters.containsKey("#USER#"))
-            throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
+            parameters.put("#USER#", "");
 
-        if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
-        datosContactoDTOS.forEach(datosContactoDTO -> {
-            destinatarios.add(datosContactoDTO.getCorrElectronico());
+        if (datosContactoDTOS != null || !datosContactoDTOS.isEmpty())
+            datosContactoDTOS.forEach(datosContactoDTO -> {
+                log.info("processing rest request - agenteDTO.getNombre(): "+ datosContactoDTO.getCorrElectronico());
+                destinatarios.add(datosContactoDTO.getCorrElectronico());
         });
 
-        log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
+        log.info("processing rest request - destinatarios: "+destinatarios.toString());
 
         if (destinatarios == null || destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
                 .withMessage("No existen destinatarios para enviar correo.")
@@ -1211,7 +1215,6 @@ public class CorrespondenciaControl {
             log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
             throw new BusinessException("system.error.correo.enviado");
         }
-
     }
 
     /**

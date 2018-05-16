@@ -17,7 +17,7 @@
                                                   (onDeselectUD)="setEnableButtonNext(false)"
               ></app-seleccionar-unidad-documental>
 
-              <app-seleccionar-documentos *ngIf="currentPage  === 2" [archivarDocumentoModel]= "archivarDocumentoModel" ></app-seleccionar-documentos>
+              <app-seleccionar-documentos *ngIf="currentPage  === 2" [archivarDocumentoModel]= "archivarDocumentoModel" [nroRadicado]="nroRadicado" ></app-seleccionar-documentos>
 
               <div class="ui-g ui-fluid">
                 <div class="ui-g-12" style="padding-top: 20px">

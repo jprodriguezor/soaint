@@ -52,7 +52,7 @@
                   <label >Motivo del tramite</label>
                 </div>
                 <div class="ui-g-9 ui-sm-9">
-                  <p-dropdown formControlName="motivo" [options]="motivo$|async|dropdownItemSingle" ></p-dropdown>
+                  <p-dropdown formControlName="motivo" [options]="motivo$|async|dropdownItemSingle" placeholder="Seleccione el motivo"></p-dropdown>
                 </div>
               </div>
             </div>
@@ -72,6 +72,12 @@
 
           </div>
           <div class="ui-g-12 text-right">
+            <p-confirmDialog #cd>
+              <p-footer>
+                <button type="button" pButton icon="fa-close" label="No" (click)="cd.reject()"></button>
+                <button type="button" pButton icon="fa-check" label="Si" (click)="cd.accept()"></button>
+              </p-footer>
+            </p-confirmDialog>
             <button type="button" label="Aceptar" pButton style="width: auto" (click)="noTramitarCreacionUnidadesDocumentales()"></button>
           </div>
         </div>

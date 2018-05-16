@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SupertypeSeries} from "../../shared/supertype-series";
 import  {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -11,15 +11,14 @@ import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unid
 import {isNullOrUndefined} from "util";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
-import {DependenciaDTO} from "../../../../../domain/dependenciaDTO";
-import {Subscription} from "rxjs/Subscription";
+
 
 
 @Component({
   selector: 'app-form-crear-unidad-documental',
   templateUrl: './form-crear-unidad-documental.component.html',
 })
-export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implements  OnChanges,OnDestroy{
+export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implements  OnChanges{
 
   form:FormGroup;
 
@@ -36,15 +35,14 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
 
   @Output() onCreateUnidadDocumental:EventEmitter<any>  = new EventEmitter;
 
-  subscriptions:Subscription[];
-
 
   constructor(private fb:FormBuilder,
               store:Store<RootState>,
               serieService:SerieService,
               private confirmationService:ConfirmationService,
               private udService:UnidadDocumentalApiService,
-              private solicitudService:SolicitudCreacionUdService
+              private solicitudService:SolicitudCreacionUdService,
+              private changeDetector:ChangeDetectorRef
               ) {
 
     super(store,serieService);
@@ -145,22 +143,20 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
           accion:"Creación UD"
         };
 
-       this.subscriptions.push(
-         this.udService.crear(data)
-           .subscribe(() => {
+        this.udService.crear(data)
+        .subscribe(() => {
 
-             this.onCreateUnidadDocumental.emit();
+          data.codigoDependencia = this.dependenciaSelected.codigo;
 
-             data.codigoDependencia = this.dependenciaSelected.codigo;
+          data.codigoSede = this.dependenciaSelected.codSede;
 
-             data.codigoSede = this.dependenciaSelected.codSede;
+          this.solicitudService.actualizarSolicitudes(this.solicitudModel.SolicitudSelected).subscribe( () => this.onCreateUnidadDocumental.emit() );
 
-             this.solicitudService.actualizarSolicitudes(data);
+          this.solicitudModel.removeAtIndex();
 
-             this.solicitudModel.removeAtIndex();
+          this.changeDetector.detectChanges();
 
-           }, error => {})
-       );
+        }, error => {});
 
       },
       reject: () => {
@@ -193,10 +189,5 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
       this.form.get("observaciones").setValue(solicitud.observaciones);
 
     }
-  }
-
-  ngOnDestroy(){
-
-    this.subscriptions.forEach( subscription => subscription.unsubscribe());
   }
 }
