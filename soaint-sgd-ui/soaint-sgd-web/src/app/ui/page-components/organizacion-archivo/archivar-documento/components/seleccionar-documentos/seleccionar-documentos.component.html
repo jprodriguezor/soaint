@@ -3,13 +3,14 @@
   <div class="ui-g ui-fluid">
     <div class="ui-g-12">
 
-      <p-fileUpload chooseLabel="Buscar"
+      <p-fileUpload #uploader
+                    chooseLabel="Buscar"
                     uploadLabel="Subir"
                     cancelLabel="Cancelar"
                     [multiple]="true"
                     customUpload="true"
                     accept="application/pdf"
-                    (uploadHandler)="uploadDocuments($event)"
+                    (uploadHandler)="uploadDocuments($event,uploader)"
                     (onError)="onErrorUpload($event)"
                     name="file[]"
 
@@ -18,14 +19,20 @@
         <button type="button" label="Refrescar" pButton style="width: auto"></button>
       </div>
       <div class="padding-top">
-        <p-dataTable  emptyMessage="No se encontraron resultados" selectionMode="multiple"
+        <p-dataTable  emptyMessage="No se encontraron resultados"
                       [responsive]="true" [value]="documentosAdjuntos">
           <p-column header="ID" field="idDocumento"></p-column>
           <p-column header="Nombre" field="nombreDocumento"></p-column>
           <p-column >
             <ng-template pTemplate="body" let-col let-row="rowData" let-index="rowIndex">
-              <button type="button" pButton label="Ver Detalles" (click)="showDocumento(row.idDocumento)"></button>
-              <button type="button" pButton label="Eliminar" (click)="eliminarDocumento(row.idDocumento,index)"></button>
+              <div class="ui-fluid ui-g ui-g-12">
+                <div class="ui-g ui-g-6">
+                  <button type="button" pButton label="Ver Detalles" (click)="showDocumento(row.idDocumento)" style="width: 100px"></button>
+                </div>
+                <div class="ui-g ui-g-6">
+                  <button type="button" pButton label="Eliminar" (click)="eliminarDocumento(row.idDocumento,index)" style="width: 100px"></button>
+                </div>
+              </div>
             </ng-template>
           </p-column>
         </p-dataTable>
@@ -42,41 +49,47 @@
   <div class="ui-g-12 padding-top">
     <p-panel header="Documentos para archivar" [style]="{border:'none'}">
       <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                   [paginator]="true" [rows]="10" [responsive]="true" [value]="documentos"
+                   [paginator]="true" [rows]="10" [responsive]="true" [(value)]="documentos"
                    (onRowSelect)="toggleDocuments($event,true)" (onRowUnselect)="toggleDocuments($event,false)"
       >
         <p-column [style]="{'width':'50px'}" selectionMode="multiple" >
 
         </p-column>
         <p-column header="Fecha y hora de archivo" [sortable]="true" >
-          <ng-template let-col let-row="rowData" pTemplate="body">
+          <ng-template let-col let-row="rowData" let-index="rowIndex" pTemplate="body">
+            {{index}}
             {{row.fechaCreacion | date:'dd/MM/yyyy HH:mm'}}
           </ng-template>
         </p-column>
         <p-column header="Identificador de documento" [sortable]="true" >
-          <ng-template let-col let-row="rowData" pTemplate="body">
-            <input type="text" pInputText *ngIf="!row.isAttachment" (blur)="updateDocumentMeta(index,'identificador')" [(ngModel)]="idDocumento" />
-            <div *ngIf="row.isAttachment" >
+          <ng-template let-col let-row="rowData" let-index="rowIndex" pTemplate="body">
+            <input type="text" pInputText *ngIf="row.isAttachment" (blur)="updateDocumentMeta(index,'identificador')" [(ngModel)]="row.idDocumento" />
+            <div *ngIf="!row.isAttachment" >
               {{row.identificador}}
             </div>
           </ng-template>
         </p-column>
         <p-column header="Nombre/asunto documento" [sortable]="true" >
           <ng-template let-col let-row="rowData" pTemplate="body" let-index="rowIndex">
-            <input type="text" pInputText *ngIf="!row.isAttachment" [value]="row.nombreDocumento" (blur)="updateDocumentMeta(index,'nombreDocumento')" [(ngModel)]="nombreDocumento"/>
-            <div *ngIf="row.isAttachment" >
+            <input type="text" pInputText *ngIf="row.isAttachment" [value]="row.nombreDocumento" (blur)="updateDocumentMeta(index,'nombreDocumento')" [(ngModel)]="row.nombreDocumento"/>
+            <div *ngIf="!row.isAttachment" >
               {{row.nombreDocumento}}
             </div>
           </ng-template>
         </p-column>
         <p-column header="Ver" >
-          <ng-template pTemplate="body" let-col let-row="rowData" pTemplate="body">
+          <ng-template  let-col let-row="rowData" pTemplate="body">
             <a href="" (click)="ShowDocument(row.idDocumento)" >Ver</a>
           </ng-template>
         </p-column>
         <p-column header="Tipologia Documental" >
-          <ng-template pTemplate="body">
-            <p-dropdown [options]="[]" placeholder="Seleccione" (onBlur)="updateDocumentMeta(index,'tipologiaDcoumental')" [(ngModel)] = "tipologiaDocumental" ></p-dropdown>
+          <ng-template pTemplate="body" let-col let-row="rowData">
+            <p-dropdown [options]="tipologiaDocumentales$|async|tipologiaDocumentalPipe"
+                        placeholder="Seleccione"
+                        (onBlur)="updateDocumentMeta(index,'tipologiaDcoumental')"
+                        [(ngModel)] = "row.tipologiaDocumental"
+                        [disabled]="!IsSelected(row.idDocumento)"
+            ></p-dropdown>
           </ng-template>
         </p-column>
 
@@ -97,12 +110,7 @@
   <div class="ui-g-12 padding-top">
     <p-panel header="Documentos archivados">
       <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
-                   [paginator]="true" [rows]="10" [responsive]="true" [value]="documentosArchivados$|async">
-        <p-column >
-          <ng-template  pTemplate="body" let-index="rowIndex">
-            {{index}}
-          </ng-template>
-        </p-column>
+                   [paginator]="true" [rows]="10" [responsive]="true" [value]="documentosArchivados">
         <p-column header="Identificador de unidad documental" [sortable]="true" field="id"></p-column>
         <p-column header="Nombre de unidad documental" [sortable]="true" field="nombreUnidadDocumental"></p-column>
         <p-column header="Serie/subserie" [sortable]="true" >

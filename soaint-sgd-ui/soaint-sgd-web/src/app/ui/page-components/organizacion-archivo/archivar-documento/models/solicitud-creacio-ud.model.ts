@@ -23,7 +23,16 @@ export class SolicitudCreacioUdModel{
 
   selectSolicitud(solicitud:SolicitudCreacionUDDto){
 
-    const index = this.Solicitudes.findIndex( sol => sol.nro == solicitud.nro);
+    console.log("solicitud",solicitud)
+    console.log("solicitudes",this.Solicitudes);
+
+    const index = this.Solicitudes.findIndex( sol => {
+
+     console.log("sol",sol);
+     console.log("solicitud",solicitud);
+
+      return sol.nro == solicitud.nro;
+    });
 
     this.SelectedIndex = isNullOrUndefined(index) ? -1 : index;
   }
