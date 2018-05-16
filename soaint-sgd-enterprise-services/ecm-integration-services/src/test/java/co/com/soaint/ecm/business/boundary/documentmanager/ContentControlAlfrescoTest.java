@@ -39,6 +39,7 @@ public class ContentControlAlfrescoTest {
     @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
+    private String urLecm = System.getProperty("URLecm");
 
     private DocumentoDTO documentoDTO;
     private MensajeRespuesta mensajeRespuesta;
@@ -79,7 +80,7 @@ public class ContentControlAlfrescoTest {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+        parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
