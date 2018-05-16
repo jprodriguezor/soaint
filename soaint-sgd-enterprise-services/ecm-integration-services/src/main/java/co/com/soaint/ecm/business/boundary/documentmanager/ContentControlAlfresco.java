@@ -1879,24 +1879,26 @@ public class ContentControlAlfresco implements ContentControl {
             documento.setIdDocumento(idDoc);
             ItemIterable<QueryResult> resultsPrincipalAdjunto = getPrincipalAdjuntosQueryResults(session, documento);
 
-            for (QueryResult qResult : resultsPrincipalAdjunto) {
+            if (resultsPrincipalAdjunto.getPageNumItems() != 0) {
+                resultsPrincipalAdjunto.forEach(queryResult -> {
+                    String[] parts = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID).toString().split(";");
+                    String idDocumento = parts[0];
 
-                String[] parts = qResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID).toString().split(";");
-                String idDocumento = parts[0];
-
-                log.info("Se procede a eliminar el documento: " + qResult.getPropertyByQueryName(PropertyIds.NAME).getValues().get(0).toString());
-                ObjectId a = new ObjectIdImpl(idDocumento);
-                CmisObject object = session.getObject(a);
-                Document delDoc = (Document) object;
-                //Se borra el documento pero no todas las versiones solo la ultima
-                delDoc.delete(false);
-                log.info("Se logro eliminar el documento");
+                    log.info("Se procede a eliminar el documento: " + queryResult.getPropertyByQueryName(PropertyIds.NAME).getValues().get(0).toString());
+                    ObjectId a = new ObjectIdImpl(idDocumento);
+                    CmisObject object = session.getObject(a);
+                    Document delDoc = (Document) object;
+                    //Se borra el documento pero no todas las versiones solo la ultima
+                    delDoc.delete(false);
+                    log.info("Se logro eliminar el documento");
+                });
+                return true;
             }
-            return Boolean.TRUE;
+            return false;
 
         } catch (CmisObjectNotFoundException e) {
             log.error("No se pudo eliminar el documento :", e);
-            return Boolean.FALSE;
+            return false;
         }
     }
 

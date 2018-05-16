@@ -1135,7 +1135,7 @@ public class CorrespondenciaControl {
         //------------------- Fin Attachments ------------------------------------------------------//
         request.setAttachmentsList(attachmentsList);
 
-        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
+        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
         log.info("Destinatarios list" + destinatariosList.toString());
 
         if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
@@ -1168,8 +1168,8 @@ public class CorrespondenciaControl {
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
-                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
+                            else parameters.put("#USER#", agenteDTO.getNombre());
+                        log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
                     }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
@@ -1186,8 +1186,9 @@ public class CorrespondenciaControl {
             throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
 
         if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
-        datosContactoDTOS.forEach(datosContactoDTO -> {
-            destinatarios.add(datosContactoDTO.getCorrElectronico());
+            datosContactoDTOS.forEach(datosContactoDTO -> {
+                log.info("processing rest request - agenteDTO.getNombre(): "+ datosContactoDTO.getCorrElectronico());
+                destinatarios.add(datosContactoDTO.getCorrElectronico().toString());  // no añade el correo recibiendo datos de contactocon correo
         });
 
         log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
@@ -1211,7 +1212,6 @@ public class CorrespondenciaControl {
             log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
             throw new BusinessException("system.error.correo.enviado");
         }
-
     }
 
     /**
