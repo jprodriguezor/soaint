@@ -1,8 +1,10 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
-import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.foundation.canonical.ecm.*;
+import co.com.soaint.foundation.canonical.ecm.ContenidoDependenciaTrdDTO;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
+import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
+import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -222,8 +224,9 @@ public class ContentControlAlfrescoTest {
             e.printStackTrace();
         }
     }
+
     @Test
-    public void testListarUnidadDocumentalSinAccionSuccess(){
+    public void testListarUnidadDocumentalSinAccionSuccess() {
         //Se llenan los datos de la unidad documental
         UnidadDocumentalDTO unidadDocumentalDTO1 = new UnidadDocumentalDTO();
         unidadDocumentalDTO1.setInactivo(true);
@@ -552,8 +555,9 @@ public class ContentControlAlfrescoTest {
             contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
             contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
 
-            ArrayList<DocumentoDTO> listaDocs1 = new ArrayList();
-            contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs1, conexion.getSession());
+//            ArrayList<DocumentoDTO> listaDocs1 = new ArrayList();
+//            contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs1, conexion.getSession());
+
         } catch (Exception e) {
             assertEquals("La lista de documentos esta vacia", e.getMessage());
         }
@@ -644,7 +648,7 @@ public class ContentControlAlfrescoTest {
             assertEquals("0000", contentControlAlfresco.modificarUnidadesDocumentales(unidadDocumentalDTOList, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (SystemException e) {
-            assertEquals("No se ha introducido la unidad documental a modificar",e.getReason());
+            assertEquals("No se ha introducido la unidad documental a modificar", e.getReason());
         }
     }
 
@@ -669,6 +673,20 @@ public class ContentControlAlfrescoTest {
             unidadDocumentalDTOFail.setId("NoId");
 
             assertEquals("1224", contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOFail.getId(), conexion.getSession()).getCodMensaje());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSubirDocumentoTemporalSuccessUD() {
+        try {
+            MensajeRespuesta mensajeRespuesta= contentControlAlfresco.subirDocumentoTemporalUD(documentoDTO,conexion.getSession());
+           assertEquals("0000",mensajeRespuesta.getCodMensaje());
+
+            DocumentoDTO documentoDTOA = (DocumentoDTO) mensajeRespuesta.getResponse().get("documento");
+
+           contentControlAlfresco.eliminardocumento(documentoDTOA.getIdDocumento(),conexion.getSession());
         } catch (SystemException e) {
             e.printStackTrace();
         }
