@@ -1434,6 +1434,10 @@ public class ContentControlAlfresco implements ContentControl {
                 CmisObject documentObj = session.getObject(new ObjectIdImpl(documentoDTO.getIdDocumento()));
                 if (documentObj.getType().getId().startsWith("D:cmcor:")) {
                     Document document = (Document) documentObj;
+                    final String docName = documentoDTO.getNombreDocumento();
+                    if (!StringUtils.isEmpty(docName) && !docName.equals(document.getName())) {
+                        document.rename(docName);
+                    }
                     final List<Folder> parents = document.getParents();
                     final Optional<Folder> sourceTarget = parents.parallelStream()
                             .filter(folder -> folder.getType().getId().startsWith("F:cmcor:CM_Unidad_Documental") &&
@@ -2221,7 +2225,7 @@ public class ContentControlAlfresco implements ContentControl {
             throw new SystemException("Especifique el codigo de la dependencia");
         }
         final String query = "SELECT * FROM " + ConstantesECM.CMCOR + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL) +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + codigoDependencia + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + codigoDependencia + "'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         final List<DocumentoDTO> dtos = new ArrayList<>();
         for (QueryResult queryResult :
@@ -2328,8 +2332,7 @@ public class ContentControlAlfresco implements ContentControl {
                 ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(bytes.length), documentoDTO.getTipoDocumento(), new ByteArrayInputStream(bytes));
                 Document document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
                 documentoDTO = transformarDocumento(document);
-                final String idDoc = document.getPropertyValue(PropertyIds.OBJECT_ID);
-                documentoDTO.setNroRadicado(idDoc.split(";")[0]);
+                documentoDTO.setNroRadicado(documentoDTO.getIdDocumento());
                 return Optional.of(documentoDTO);
             }
         }
