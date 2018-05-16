@@ -106,6 +106,7 @@ public class SolicitudUnidadDocumentalControl {
                     .idSolicitante(solicitudUnidadDocumental.getIdSolicitante())
                     .nro(solicitudUnidadDocumental.getNro())
                     .observaciones(solicitudUnidadDocumental.getObservaciones())
+                    .motivo(solicitudUnidadDocumental.getMotivo())
                     .build();
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
@@ -315,6 +316,7 @@ public class SolicitudUnidadDocumentalControl {
                 .setParameter("EST", solicitudUnidadDocumentalDTO.getEstado())
                 .setParameter("ACC", solicitudUnidadDocumentalDTO.getAccion())
                 .setParameter("OBS", solicitudUnidadDocumentalDTO.getObservaciones())
+                .setParameter("MOT", solicitudUnidadDocumentalDTO.getMotivo())
                 .executeUpdate();
 
                 return solicitudUnidadDocumentalDTO;

@@ -30,14 +30,14 @@ import java.util.List;
     @NamedQuery(name = "TvsSolicitudUM.findAll", query = "SELECT t FROM TvsSolicitudUnidadDocumental t"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
-            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
             "FROM TvsSolicitudUnidadDocumental t " +
             "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
             "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora <= :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitante", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
-            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
             "FROM TvsSolicitudUnidadDocumental t " +
             "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
@@ -46,7 +46,7 @@ import java.util.List;
             "AND ((:FECHA_INI IS NULL OR t.fecHora >= :FECHA_INI) AND (:FECHA_FIN IS NULL OR t.fecHora < :FECHA_FIN))"),
     @NamedQuery(name = "TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.SolicitudUnidadDocumentalDTO " +
             "(t.ideSolicitud, t.id, t.idConstante, t.fecHora, t.nombreUD, t.descriptor1, t.descriptor2, t.nro, t.codSerie, t.codSubserie, t.codSede,"+
-            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones)" +
+            " t.codDependencia, t.idSolicitante, t.estado, t.accion, t.observaciones, t.motivo)" +
             "FROM TvsSolicitudUnidadDocumental t " +
             "WHERE (:COD_DEP IS NULL OR t.codDependencia = :COD_DEP) " +
             "AND (:COD_SEDE IS NULL OR t.codSede = :COD_SEDE) " +
@@ -56,7 +56,7 @@ import java.util.List;
     @NamedQuery(name = "TvsSolicitudUM.actualizarSolicitudUnidadDocumental", query = "UPDATE TvsSolicitudUnidadDocumental t " +
             "SET  t.id = :ID, t.idConstante = :ID_CONST , t.fecHora = :FECH, t.nombreUD = :NOMBREUD, t.descriptor1 = :DESCP1, "+
             "t.descriptor2 = :DESCP2, t.nro = :NRO, t.codSerie = :COD_SER, t.codSubserie = :COD_SUBS, t.codSede = :COD_SED, t.codDependencia = :COD_DEP, "+
-            "t.idSolicitante = :ID_SOL, t.estado = :EST , t.accion = :ACC , t.observaciones = :OBS " +
+            "t.idSolicitante = :ID_SOL, t.estado = :EST , t.accion = :ACC , t.observaciones = :OBS, t.motivo= :MOT " +
             "WHERE t.ideSolicitud = :IDE_SOL"),
         @NamedQuery(name = "TvsSolicitudUM.countByIdSolicitud", query = "SELECT COUNT(*) " +
                 "FROM TvsSolicitudUnidadDocumental t " +
@@ -120,4 +120,6 @@ public class TvsSolicitudUnidadDocumental implements Serializable {
     private String accion;
     @Column(name = "OBSERVACIONES")
     private String observaciones;
+    @Column(name = "MOTIVO")
+    private String motivo;
 }
