@@ -1153,8 +1153,9 @@ public class CorrespondenciaControl {
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal()!=null){
                             if (agenteDTO.getIndOriginal().equals("TP-DESP")){
-                                if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                                else parameters.put("#USER#", funcionario.getNomFuncionario());
+                                    String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : funcionario.getNomFuncionario();
+                                    log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
+                                    parameters.put("#USER#", usuario);
                             }
                         }
 
@@ -1166,9 +1167,11 @@ public class CorrespondenciaControl {
             } else{
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP"))
-                            if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                            else parameters.put("#USER#", agenteDTO.getNombre());
+                        if (agenteDTO.getIndOriginal().equals("TP-DESP")) {
+                            String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : agenteDTO.getNombre();
+                            log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
+                            parameters.put("#USER#", usuario);
+                        }
                         log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
                     }
 
@@ -1183,15 +1186,15 @@ public class CorrespondenciaControl {
         });
 
         if (!parameters.containsKey("#USER#"))
-            throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
+            parameters.put("#USER#", "");
 
-        if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
+        if (datosContactoDTOS != null || !datosContactoDTOS.isEmpty())
             datosContactoDTOS.forEach(datosContactoDTO -> {
                 log.info("processing rest request - agenteDTO.getNombre(): "+ datosContactoDTO.getCorrElectronico());
-                destinatarios.add(datosContactoDTO.getCorrElectronico().toString());  // no añade el correo recibiendo datos de contactocon correo
+                destinatarios.add(datosContactoDTO.getCorrElectronico());
         });
 
-        log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
+        log.info("processing rest request - destinatarios: "+destinatarios.toString());
 
         if (destinatarios == null || destinatarios.isEmpty()) throw ExceptionBuilder.newBuilder()
                 .withMessage("No existen destinatarios para enviar correo.")
