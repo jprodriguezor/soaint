@@ -16,10 +16,9 @@ import {
   getSelectedDependencyGroupFuncionario
 } from "../../../../infrastructure/state-management/funcionarioDTO-state/funcionarioDTO-selectors";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
-import {go} from "@ngrx/router-store";
-import {ROUTES_PATH} from "../../../../app.route-names";
 import * as moment from "moment";
+import {SeleccionarDocumentosComponent} from "./components/seleccionar-documentos/seleccionar-documentos.component";
+import {Sandbox as AsigSandbox} from "../../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
 
 @Component({
   selector: 'app-archivar-documento',
@@ -42,11 +41,14 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
    task:TareaDTO;
 
+   nroRadicado ;
    selectUd:SeleccionarUnidadDocumentalComponent;
 
   idEstadoTarea = '0000';
 
-  afterTaskCompleteSubscriptor :Subscription;
+  @ViewChild('seleccionarDocumentosComponent')
+  seleccionarDocumentosComponent:SeleccionarDocumentosComponent;
+
 
    constructor( private _solicitudService:SolicitudCreacionUdService,
                private  _taskSandbox:TaskSandbox,
@@ -66,20 +68,40 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
          this.task = task;
 
-         this._archivarDocumentoApi.getTaskData(task.idInstanciaProceso,task.idTarea).subscribe( response => {
 
-           if(response){
 
-             if(!isNullOrUndefined(response.archivarDocumentoModel))
+         this.subscriptions.push(
+           this._archivarDocumentoApi.getTaskData(task.idInstanciaProceso,task.idTarea).subscribe( response => {
 
-               this.archivarDocumentoModel = response.archivarDocumentoModel;
-           }
-         })
+             if(response){
+
+               if(!isNullOrUndefined(response.archivarDocumentoModel))
+
+                 this.archivarDocumentoModel = response.archivarDocumentoModel;
+             }
+           })
+         );
+
+         if(!isNullOrUndefined(this.task.variables.numeroRadicado)){
+
+           this.nroRadicado = this.task.variables.numeroRadicado;
+         }
        }
      })
   );
 
-   this.subscriptions.push(this._store.select(getSelectedDependencyGroupFuncionario).subscribe( () => this.currentPage = 1));
+   this.subscriptions.push(this._store.select(getSelectedDependencyGroupFuncionario).subscribe( () => {
+
+     if(this.currentPage == 1)
+       return;
+
+     this.seleccionarDocumentosComponent.DropSubscriptions();
+
+     this.currentPage = 1;
+
+     this.enableButtonNext = false;
+
+   }));
    }
 
   next(){

@@ -30,6 +30,8 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   @Input() archivarDocumentoModel:ArchivarDocumentoModel;
 
+  @Input() nroRadicado ;
+
     documentos:any[];
 
   documentosArchivados:any[];
@@ -74,11 +76,16 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
       icon: 'fa fa-question-circle',
       accept: () => {
 
-        const validDocuments = this.archivarDocumentoModel
+        const validDocuments = [this.archivarDocumentoModel
                                .Documentos
-                               .every( document => !isNullOrUndefined(document.tipologiaDocumental));
+                               .every( document => !isNullOrUndefined(document.tipologiaDocumental))];
 
-        if(!validDocuments){
+        if(!isNullOrUndefined(this.nroRadicado)){
+
+          validDocuments.push( this.documentos.length == this.archivarDocumentoModel.Documentos.length)
+        }
+
+        if(!validDocuments.every( r => r)){
 
           this._store.dispatch(new PushNotificationAction({
             severity: 'error', summary: 'Algun documento que desea archivar no tiene la tipologia documental. Revise e agregela'
@@ -100,7 +107,19 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
-    this.setDocumentosPorArvichar(observable);
+    if(!isNullOrUndefined(this.nroRadicado)){
+
+      this.subscriptions.push(this._udService
+        .obtenerDocumentoPorNoRadicado(this.nroRadicado)
+        .subscribe( documents => {
+          this.documentos = documents.documentoDTOList;
+          this.changeDetectorRef.detectChanges();
+        })
+      )
+    }
+
+    else
+     this.setDocumentosPorArvichar(observable);
 
     this.subscriptions.push(observable.switchMap(dependencia =>  this._udService
       .listarDocumentosArchivadosPorDependencia(dependencia.codigo))
