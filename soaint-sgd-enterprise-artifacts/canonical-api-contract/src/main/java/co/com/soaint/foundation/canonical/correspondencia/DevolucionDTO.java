@@ -1,11 +1,6 @@
 package co.com.soaint.foundation.canonical.correspondencia;
 
-import co.com.soaint.foundation.canonical.correspondencia.AgenteDTO;
-import co.com.soaint.foundation.canonical.correspondencia.PpdTrazDocumentoDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -26,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(builderMethodName = "newInstance")
 @XmlRootElement(namespace = "http://soaint.com/domain-artifacts/devolucion/1.0.0")
+@ToString
 public class DevolucionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

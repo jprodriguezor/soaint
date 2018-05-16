@@ -29,7 +29,7 @@ import java.math.BigInteger;
 @Path("/organigrama-web-api")
 @Produces({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "OrganigramaAdministrativoWebApi", description = "")
+@Api(value = "OrganigramaAdministrativoWebApi")
 public class OrganigramaAdministrativoWebApi {
 
     @Autowired

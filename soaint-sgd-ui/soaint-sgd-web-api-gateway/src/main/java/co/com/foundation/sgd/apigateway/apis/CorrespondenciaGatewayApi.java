@@ -459,17 +459,33 @@ public class CorrespondenciaGatewayApi {
     }
 
     @GET
-    @Path("/listar-solicitud-unidad-documental")
+    @Path("/listar-solicitud-ud-no-tramitadas")
     @JWTTokenSecurity
 
-    public  Response listarSolicitudUnidad(@QueryParam("codSede") final String codSede,
+    public  Response listarSolicitudUnidadNoTramitadas(@QueryParam("codSede") final String codSede,
                                            @QueryParam("codDependencia") final String codDependencia,
                                            @QueryParam("idSolicitante") final String fechaIni,
                                            @QueryParam("fechaSolicitud") final String fechaFin ){
 
         log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
 
-        Response response = client.listarSolicitudUnidadDocumental(codSede,codDependencia,fechaIni,fechaFin);
+        Response response = client.listarSolicitudUnidadDocumentalNoTramitadas(codSede,codDependencia,fechaIni,fechaFin);
+        String responseContent = response.readEntity(String.class);
+        return Response.status(response.getStatus()).entity(responseContent).build();
+    }
+
+    @GET
+    @Path("/listar-solicitud-ud-tramitadas")
+    @JWTTokenSecurity
+
+    public  Response listarSolicitudUnidadTramitadas(@QueryParam("codSede") final String codSede,
+                                           @QueryParam("codDependencia") final String codDependencia,
+                                           @QueryParam("idSolicitante") final String fechaIni
+                                           ){
+
+        log.info("UnidadDocumentalGatewayApi: Listar Solicitude de Unidaddes documentales");
+
+        Response response = client.listarSolicitudUnidadDocumentalTramitadas(codSede,codDependencia,fechaIni);
         String responseContent = response.readEntity(String.class);
         return Response.status(response.getStatus()).entity(responseContent).build();
     }

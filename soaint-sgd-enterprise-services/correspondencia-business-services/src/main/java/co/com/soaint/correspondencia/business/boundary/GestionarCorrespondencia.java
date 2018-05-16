@@ -200,6 +200,20 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     *
+     * @param fechaIni
+     * @param ideSolicitante
+     * @param codDependencia
+     * @param codSede
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(Date fechaIni, String ideSolicitante, String codSede, String codDependencia) throws BusinessException, SystemException {
+        return gestionarSolicitudUnidadDocumental.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(fechaIni, ideSolicitante, codSede, codDependencia);
+    }
+
+    /**
      * @param solicitudUnidadDocumentalDTO
      * @return
      * @throws BusinessException
@@ -207,5 +221,14 @@ public class GestionarCorrespondencia {
      */
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         return gestionarSolicitudUnidadDocumental.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public String consultarNroRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+       return control.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
     }
 }

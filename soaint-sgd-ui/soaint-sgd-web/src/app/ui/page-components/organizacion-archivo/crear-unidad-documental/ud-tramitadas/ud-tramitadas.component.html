@@ -3,7 +3,7 @@
     <div class="card card-w-title">
       <p-panel header="Unidades documentales tramitadas" [style]="{border: 'none'}">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true" [value]="solicitudesProcesadas|async">
+                     [paginator]="true" [rows]="10" [responsive]="true" [value]="solicitudesProcesadas$|async">
           <p-column  header="Nombre serie/subserie">
             <ng-template pTemplate="body" let-row="rowData">
             {{row.codigoSerie}}/{{row.codigoSubSerie}}

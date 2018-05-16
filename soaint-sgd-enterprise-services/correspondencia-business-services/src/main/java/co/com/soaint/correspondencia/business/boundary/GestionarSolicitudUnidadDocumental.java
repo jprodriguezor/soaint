@@ -9,9 +9,7 @@ import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +65,20 @@ public class GestionarSolicitudUnidadDocumental {
      */
     public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(Date fechaIni, String ideSolicitante, String codSede, String codDependencia) throws BusinessException, SystemException {
         return control.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante(fechaIni, ideSolicitante, codSede, codDependencia);
+    }
+
+    /**
+     *
+     * @param fechaIni
+     * @param ideSolicitante
+     * @param codDependencia
+     * @param codSede
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(Date fechaIni, String ideSolicitante, String codSede, String codDependencia) throws BusinessException, SystemException {
+        return control.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(fechaIni, ideSolicitante, codSede, codDependencia);
     }
 
     /**

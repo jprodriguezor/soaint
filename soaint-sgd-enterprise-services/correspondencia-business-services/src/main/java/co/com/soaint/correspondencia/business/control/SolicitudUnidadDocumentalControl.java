@@ -114,7 +114,6 @@ public class SolicitudUnidadDocumentalControl {
                     .withRootException(ex)
                     .buildSystemException();
         }
-
     }
 
     /**
@@ -130,7 +129,7 @@ public class SolicitudUnidadDocumentalControl {
         try {
             log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependenciaIntervalo");
 
-            if (fechaIni != null && fechaIni != null) {
+            if (fechaIni != null && fechaFin != null) {
                 if(fechaIni.getTime() > fechaFin.getTime() || fechaIni.getTime() == fechaFin.getTime())
                     throw ExceptionBuilder.newBuilder()
                             .withMessage("La fecha final no puede ser igual o menor que la fecha inicial.")
@@ -207,6 +206,51 @@ public class SolicitudUnidadDocumentalControl {
     }
 
     /**
+     * @param fechaSolicitud
+     * @param ideSolicitante
+     * @param codSede
+     * @param codDependencia
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(Date fechaSolicitud, String ideSolicitante,String codSede, String codDependencia) throws BusinessException, SystemException {
+        try {
+            log.info("Se entra al metodo obtenerSolicitudUnidadDocumentalSedeDependencialSolicitante");
+
+
+            Date fechaIni = null;
+            Date fechaFin = null;
+
+            if(fechaSolicitud != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(fechaSolicitud);
+                calendar.add(Calendar.DATE, 1);
+
+                fechaIni = new Date(fechaSolicitud.getTime());;
+                fechaFin = calendar.getTime();;
+            }
+
+            List<SolicitudUnidadDocumentalDTO> solicitudUnidadDocumentalDTOList = em.createNamedQuery("TvsSolicitudUM.obtenerSolicitudUnidadDocumentalSedeDependenciaSolicitanteSinTramitar", SolicitudUnidadDocumentalDTO.class)
+                    .setParameter("FECHA_INI", fechaIni, TemporalType.TIMESTAMP)
+                    .setParameter("FECHA_FIN", fechaFin, TemporalType.TIMESTAMP)
+                    .setParameter("ID_SOL", ideSolicitante)
+                    .setParameter("COD_SEDE", codSede)
+                    .setParameter("COD_DEP", codDependencia)
+                    .getResultList();
+
+            return SolicitudesUnidadDocumentalDTO.newInstance().solicitudesUnidadDocumentalDTOS(solicitudUnidadDocumentalDTOList).build();
+
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("BD query Error obteniendo las solicitudes.")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param IdSolicitud
      * @return
      */
@@ -214,6 +258,26 @@ public class SolicitudUnidadDocumentalControl {
         try {
             long cantidad = em.createNamedQuery("TvsSolicitudUM.countByIdSolicitud", Long.class)
                     .setParameter("IDE_SOL", IdSolicitud)
+                    .getSingleResult();
+            return cantidad > 0;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param IdSolicitud
+     * @return
+     */
+    public Boolean verificarByIdNombreUMSolicitud(BigInteger IdSolicitud, String nombreUD) throws SystemException {
+        try {
+            long cantidad = em.createNamedQuery("TvsSolicitudUM.countByIdNombreUDSolicitud", Long.class)
+                    .setParameter("IDE_SOL", IdSolicitud)
+                    .setParameter("NOM_UD", nombreUD)
                     .getSingleResult();
             return cantidad > 0;
         } catch (Exception ex) {

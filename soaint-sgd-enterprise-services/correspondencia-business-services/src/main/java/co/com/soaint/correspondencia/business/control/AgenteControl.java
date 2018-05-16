@@ -1,8 +1,6 @@
 package co.com.soaint.correspondencia.business.control;
 
 import co.com.soaint.correspondencia.domain.entity.CorAgente;
-import co.com.soaint.correspondencia.domain.entity.DctAsigUltimo;
-import co.com.soaint.correspondencia.domain.entity.DctAsignacion;
 import co.com.soaint.correspondencia.domain.entity.TvsDatosContacto;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
@@ -21,7 +19,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -208,6 +205,27 @@ public class AgenteControl {
     public List<AgenteDTO> listarDestinatariosByIdeDocumento(BigInteger ideDocumento) throws SystemException {
         try {
             return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgente", AgenteDTO.class)
+                    .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
+                    .setParameter("IDE_DOCUMENTO", ideDocumento)
+                    .getResultList();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param ideDocumento
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<AgenteDTO> listarDestinatariosByIdeDocumentoMail(BigInteger ideDocumento) throws SystemException {
+        try {
+            return em.createNamedQuery("CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgenteMail", AgenteDTO.class)
                     .setParameter("COD_TIP_AGENT", TipoAgenteEnum.DESTINATARIO.getCodigo())
                     .setParameter("IDE_DOCUMENTO", ideDocumento)
                     .getResultList();

@@ -216,7 +216,7 @@ export class Sandbox {
     this._store.dispatch(new actions.CompleteTaskAction(payload));
   }
 
-  completeBackTaskDispatch(payload: any) {
+   completeBackTaskDispatch(payload: any) {
     this._store.dispatch(new actions.CompleteBackTaskAction(payload));
   }
 

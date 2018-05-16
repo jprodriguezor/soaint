@@ -6,7 +6,7 @@ import {LoadingService} from '../../infrastructure/utils/loading.service';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import {ObjectHelper} from "../object-extends";
-import * as lodash from 'lodash';
+
 
 export class
 PendingRequestInterceptor extends HttpInterceptor {
@@ -68,6 +68,8 @@ PendingRequestInterceptor extends HttpInterceptor {
       const index = this.requestQueuee.findIndex( request => ObjectHelper.similar(r,request));
 
       this.requestQueuee.splice(index,1);
+
+      console.log("peticiones count",this.requestQueuee.length)
 
        if(this.requestQueuee.length == 0){
         this.loadingService.dismissLoading();

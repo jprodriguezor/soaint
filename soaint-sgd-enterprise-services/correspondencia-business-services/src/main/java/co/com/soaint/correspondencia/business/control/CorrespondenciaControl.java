@@ -8,6 +8,7 @@ import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
@@ -224,16 +225,9 @@ public class CorrespondenciaControl {
             String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
                     comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
 
-            String tipoRadicacion = "";
-            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
-                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
-                    if (corAgente.getIndOriginal().equals("TP-DESP"))
-                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
-            }
-
             correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
                     correspondencia.getCodSede(),
-                    tipoRadicacion,
+                    correspondencia.getCodTipoCmc(),
                     String.valueOf(anno), consecutivo));
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
@@ -1025,6 +1019,7 @@ public class CorrespondenciaControl {
             WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
             correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
+                log.info("Se modificara el documento con NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
                 co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
                         .nroRadicado(correspondencia.getNroRadicado())
                         .idDocumento(ppdDoc.getIdeEcm())
@@ -1032,8 +1027,8 @@ public class CorrespondenciaControl {
                 Response response = wt.path("/modificarMetadatosDocumentoECM/")
                         .request()
                         .put(Entity.json(dto));
+                log.info("Response del cambio de radicado " + response.toString());
             });
-
 
             dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
                     correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
@@ -1057,34 +1052,18 @@ public class CorrespondenciaControl {
         }
     }
 
-    /**
-     * @param nroRadicado
-     * @return
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
-        log.info("processing rest request - dentro enviar correo radicar correspondencia salida");
-
-        HashMap<String,String> parameters = new HashMap<String, String>();
-        MailRequestDTO request = new MailRequestDTO( "PA001" );
-        log.info("processing rest request - template: "+request.getTemplate());
-
-        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(nroRadicado);
-        log.info("processing rest request - ideDocumento correspondencia: "+correspondenciaDTO.getIdeDocumento().toString());
-
-        String asunto = "Respuesta "+nroRadicado+" "+correspondenciaDTO.getFecRadicado()+".";
-        request.setSubject(asunto);
-        log.info("processing rest request - asunto: "+request.getSubject());
+    private ArrayList<Attachment> obtenerDocumentosECMporNroRadicado(String nroRadicado) throws SystemException{
 
         String endpoint = System.getProperty("ecm-api-endpoint");
         WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+
         co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance().nroRadicado(nroRadicado).build();
         Response response = wt.path("/obtenerDocumentosAdjuntosECM/")
                 .request()
                 .post(Entity.json(dto));
-//
-        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+
         if (response.getStatus() == HttpStatus.OK.value()) {
             MensajeRespuesta mensajeRespuesta = response.readEntity(MensajeRespuesta.class);
             if (mensajeRespuesta.getCodMensaje().equals("0000")) {
@@ -1107,10 +1086,56 @@ public class CorrespondenciaControl {
                         .withMessage("correspondencia.error consultando servicio de negocio obtenerDocumentosAdjuntosECM")
                         .buildSystemException();
             }
+
         }
+        return attachmentsList;
+    }
+
+    private ArrayList<Attachment> obtenerDocumentosECMporNroRadicado(ArrayList<Attachment> origen, ArrayList<Attachment> destino) throws SystemException{
+        origen.forEach(attachment -> {
+            destino.add(attachment);
+        });
+        return destino;
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public Boolean sendMail(String nroRadicado) throws BusinessException, SystemException {
+        log.info("processing rest request - dentro enviar correo radicar correspondencia salida");
+
+        HashMap<String,String> parameters = new HashMap<String, String>();
+        MailRequestDTO request = new MailRequestDTO( "PA001" );
+        log.info("processing rest request - template: "+request.getTemplate());
+
+        CorrespondenciaDTO correspondenciaDTO = this.consultarCorrespondenciaByNroRadicado(nroRadicado);
+        log.info("processing rest request - ideDocumento correspondencia: "+correspondenciaDTO.getIdeDocumento().toString());
+
+        String asunto = "Respuesta "+nroRadicado+" "+correspondenciaDTO.getFecRadicado()+".";
+        request.setSubject(asunto);
+        log.info("processing rest request - asunto: "+request.getSubject());
+
+        //------------------- Inicio Attachments ------------------------------------------------------//
+
+        ArrayList<Attachment> attachmentsList = new ArrayList<Attachment>();
+
+        this.obtenerDocumentosECMporNroRadicado(nroRadicado).forEach(attachment -> {
+            attachmentsList.add(attachment);
+        });
+
+        String nroRadicadoReferido = referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        if (nroRadicadoReferido != null)
+        this.obtenerDocumentosECMporNroRadicado(nroRadicadoReferido).forEach(attachment -> {
+            attachmentsList.add(attachment);
+        });
+
+        //------------------- Fin Attachments ------------------------------------------------------//
         request.setAttachmentsList(attachmentsList);
 
-        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumento(correspondenciaDTO.getIdeDocumento());
+        final List<AgenteDTO> destinatariosList= this.agenteControl.listarDestinatariosByIdeDocumentoMail(correspondenciaDTO.getIdeDocumento());
         log.info("Destinatarios list" + destinatariosList.toString());
 
         if (destinatariosList == null || destinatariosList.isEmpty()) throw ExceptionBuilder.newBuilder()
@@ -1143,8 +1168,8 @@ public class CorrespondenciaControl {
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal().equals("TP-DESP"))
                             if (agenteDTO.getCodTipoPers().equals("TP-PERA")) parameters.put("#USER#", "");
-                            else parameters.put("#USER#", organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
-                        log.info("processing rest request - agenteDTO.getNombre(): "+organigramaAdministrativoControl.consultarNombreFuncionarioByCodOrg(agenteDTO.getCodDependencia()).get(0));
+                            else parameters.put("#USER#", agenteDTO.getNombre());
+                        log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
                     }
 
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
@@ -1161,8 +1186,9 @@ public class CorrespondenciaControl {
             throw ExceptionBuilder.newBuilder().withMessage("No existe un destinatario principal.").buildBusinessException();
 
         if (datosContactoDTOS == null || datosContactoDTOS.isEmpty())
-        datosContactoDTOS.forEach(datosContactoDTO -> {
-            destinatarios.add(datosContactoDTO.getCorrElectronico());
+            datosContactoDTOS.forEach(datosContactoDTO -> {
+                log.info("processing rest request - agenteDTO.getNombre(): "+ datosContactoDTO.getCorrElectronico());
+                destinatarios.add(datosContactoDTO.getCorrElectronico().toString());  // no añade el correo recibiendo datos de contactocon correo
         });
 
         log.info("processing rest request - agenteDTO.getNombre(): "+destinatarios.toString());
@@ -1186,6 +1212,14 @@ public class CorrespondenciaControl {
             log.info("processing rest request - error enviar correo radicar correspondencia"+e.getMessage());
             throw new BusinessException("system.error.correo.enviado");
         }
+    }
 
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public String consultarNroRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+        return referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
     }
 }

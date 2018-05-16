@@ -7,12 +7,9 @@ export const MENU_OPTIONS = [
   {label: 'Asignar comunicaciones', icon: 'subject', routerLink: ['/' + ROUTES_PATH.asignacionComunicaciones]},
   {label: 'Radicación Contingencia', icon: 'subject', routerLink: ['/' + ROUTES_PATH.cargaMasiva]},
   {label: 'Distribución física', icon: 'subject', routerLink: ['/' + ROUTES_PATH.distribucionFisica]},
-  {label: 'Archivar Documento', icon: 'subject', routerLink: ['/' + ROUTES_PATH.archivarDocumento]},
-  {label: 'Seleccionar Documentos', icon: 'subject', routerLink: ['/' + ROUTES_PATH.seleccionarDocumentos]},
-  {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]},
-
+  {label: 'Disposición Final', icon: 'subject', routerLink: ['/' + ROUTES_PATH.disposicionFinal]}
 ];
-
+  
 
 export const PROCESS_OPTION = {
   label: 'Procesos', icon: 'dashboard', expanded: true,

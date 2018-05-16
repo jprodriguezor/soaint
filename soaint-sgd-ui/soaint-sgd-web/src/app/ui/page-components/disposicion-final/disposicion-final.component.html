@@ -13,7 +13,7 @@
       <div class="ui-sm-6 ui-g-6 text-right">
         <button pButton type="button" label="Aprobar" style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Aprobado')"></button>
         <button pButton type="button" label="Rechazar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarEstadoDisposicionFinal('Rechazado')"></button>
-        <button pButton type="button" label="Finalizar"  style="width:auto;margin-bottom:10px;" (click)="state.Finalizar()"></button>
+        <button pButton type="button" label="Finalizar"  style="width:auto;margin-bottom:10px;" (click)="state.ActualizarDisposicionFinal()" [disabled]="!state.ListadoUnidadDocumental.length"></button>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
                             <div class="ui-g-12 md-dropdownfield">
                                 <p-multiSelect 
                                     id="dependencia" 
-                                    [options]="listaDisposiciones | dropdownItemString"
+                                    [options]="listaDisposiciones"
                                     formControlName="tiposDisposicionFinal" 
                                     [panelStyle]="{minWidth:'12em'}"
                                     defaultLabel="Seleccione"
@@ -195,7 +195,7 @@
                             <div class="ui-g form-group">
                                 <div class="ui-g-12 md-dropdownfield">
                                     <button pButton label="Limpiar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="ResetForm()" ></button>
-                                    <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="state.Listar()" [disabled]="formBuscar.invalid"></button>
+                                    <button pButton label="Listar" style="width:auto;margin-left:5px;margin-top:20px;float:right;" type="button" (click)="Listar()" [disabled]="formBuscar.invalid"></button>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +214,7 @@
                             <label for="sede">Ejecutar selección</label>
                         </div>
                         <div class="ui-g-12 md-dropdownfield">
-                            <p-dropdown [options]="listaDisposicionesEjecutar | dropdownItemString"
+                            <p-dropdown [options]="listaDisposicionesEjecutar"
                                 id="ejecutarseleccion"
                                 [(ngModel)]="tipoDisposicion"
                                 placeholder="Seleccione"
@@ -254,7 +254,7 @@
                         <p-column field="fechaCierreTramite" header="Fecha cierre tramite" [sortable]="true"></p-column>
                         <p-column field="soporte" header="Soporte" [sortable]="true"></p-column>
                         <p-column field="disposicion" header="Disposición" [sortable]="true"></p-column>
-                        <p-column field="aprobado" header="Aprobado/Rechazado" [sortable]="true"></p-column>
+                        <p-column field="estado" header="Aprobado/Rechazado" [sortable]="true"></p-column>
                         <p-column  header="Notas" [style]="{'width':'120px','text-align':'center'}">                             
                             <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
                                 <button pButton type="button" style="width: 35px; float: right"

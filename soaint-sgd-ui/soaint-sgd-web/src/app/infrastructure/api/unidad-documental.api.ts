@@ -3,6 +3,7 @@ import {ApiBase} from './api-base';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 import {UnidadDocumentalDTO} from '../../domain/unidadDocumentalDTO';
+import {DisposicionFinalDTO} from '../../domain/DisposicionFinalDTO';
 import { MensajeRespuestaDTO } from '../../domain/MensajeRespuestaDTO';
 
 @Injectable()
@@ -27,8 +28,9 @@ export class UnidadDocumentalApiService {
     .map(response => response.response.unidadDocumental);
   }
 
-   crear(unidadDocumental: UnidadDocumentalDTO) {
+   crear(unidadDocumental: UnidadDocumentalDTO):Observable<any> {
      return this._api.post(environment.crear_unidad_documental, unidadDocumental);
+
    }
 
   gestionarUnidadesDocumentales(payload: any): Observable<MensajeRespuestaDTO> {
@@ -54,30 +56,46 @@ export class UnidadDocumentalApiService {
       .map( response => response.response.unidadDocumental);
   }
 
-  listarDocumentosPorArchivar():Observable<any>{
+  listarUnidadesDocumentalesDisposicion(payload: DisposicionFinalDTO): Observable<UnidadDocumentalDTO[]>{
 
-    return this._api.list(environment.listar_documentos_archivar);
+        return this._api.post(environment.listar_unidades_documentales_disposicion_endpoint, payload)
+          .map( response => {
+            return  response.response ? response.response.unidadesDocumentales : Observable.of([]);
+          });
+  }
+
+  aprobarRechazarUnidadesDocumentalesDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
+
+        return this._api.post(environment.aprobar_rechazar_unidades_documentales_endpoint, payload)
+          .map( response => response);
+  }
+
+  listarDocumentosPorArchivar(codDependencia):Observable<any>{
+
+    return this._api.list(environment.listar_documentos_archivar+codDependencia);
   }
 
   archivarDocumento(payload:any):Observable<any>{
 
-    return Observable.empty();
+    return this._api.post(environment.archivar_documento_endpoint,payload);
+  }
+
+  listarDocumentosArchivadosPorDependencia(codDependencia): Observable<any[]>{
+
+    return this._api.list(environment.listar_documentos_archivados+codDependencia)
+               .map(response => response.response.documentos);
+  }
+
+  subirDocumentosParaArchivar(documentos: FormData):Observable<any>{
+
+   return  this._api.sendFile(environment.subir_documentos_por_archivar,documentos,[]);
+  }
+
+  obtenerDocumentoPorNoRadicado(nroRadicado):Observable<any>{
+
+    return this._api.list( `${environment.obtenerDocumento_nro_radicado_endpoint}/${nroRadicado}`);
 
   }
 
-  listarDocumentosArchivadosPorFuncionario(idFuncionario): Observable<any[]>{
-
-    return this._api.list(environment.listar_documentos_archivados+"/"+idFuncionario);
-  }
-
-  ActualizarDisposicionFinal(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO> {
-    return Observable.of({
-      codMensaje: '00000',
-      contenidoDependenciaTrdDTOS: null,
-      documentoDTOList: null,
-      mensaje: 'Operación completada satisfactoriamente',
-      response: null,
-    });
-  }
 
 }

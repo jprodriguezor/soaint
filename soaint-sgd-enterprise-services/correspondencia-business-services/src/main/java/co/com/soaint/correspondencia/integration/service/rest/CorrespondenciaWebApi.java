@@ -1,32 +1,22 @@
 package co.com.soaint.correspondencia.integration.service.rest;
 
 import co.com.soaint.correspondencia.business.boundary.GestionarCorrespondencia;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionOficialFullDTO;
-import co.com.soaint.foundation.canonical.correspondencia.ComunicacionesOficialesDTO;
-import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.foundation.canonical.correspondencia.*;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import com.google.common.base.Optional;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +31,7 @@ import java.util.List;
 @Produces({"application/json", "application/xml"})
 @Consumes({"application/json", "application/xml"})
 @Log4j2
-@Api(value = "CorrespondenciaWebApi", description = "")
+@Api(value = "CorrespondenciaWebApi")
 public class CorrespondenciaWebApi {
 
     @Autowired
@@ -304,6 +294,39 @@ public class CorrespondenciaWebApi {
     }
 
     /**
+     * @param codigoSede
+     * @param codigoDependencia
+     * @param ideSolicitante
+     * @param fechaI
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-solicitud-um-solicitante-sin-tramitar")
+    public SolicitudesUnidadDocumentalDTO obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(
+                                                                                    @QueryParam("cod_sede") final String codigoSede,
+                                                                                    @QueryParam("cod_dependencia") final String codigoDependencia,
+                                                                                    @QueryParam("id_solicitante") final String ideSolicitante,
+                                                                                    @QueryParam("fecha_in") final String fechaI) throws BusinessException, SystemException {
+        log.info("processing rest request - crearSolicitudUnidadDocumental");
+
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicial = fechaI == null ? null : dateFormat.parse(fechaI);
+
+            return boundary.obtenerSolicitudUnidadDocumentalSedeDependencialSolicitanteSinTramitar(fechaInicial,ideSolicitante,codigoSede,codigoDependencia);
+
+        } catch (ParseException ex) {
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param solicitudUnidadDocumentalDTO
      * @return
      * @throws BusinessException
@@ -314,7 +337,24 @@ public class CorrespondenciaWebApi {
     public SolicitudUnidadDocumentalDTO actualizarSolicitudUnidadDocumental(SolicitudUnidadDocumentalDTO solicitudUnidadDocumentalDTO) throws BusinessException, SystemException {
         log.info("processing rest request - updateSolicitudUnidadDocumental");
 
-//        return SolicitudUnidadDocumentalDTO.newInstance().build();
         return boundary.actualizarSolicitudUnidadDocumental(solicitudUnidadDocumentalDTO);
+    }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    @GET
+    @Path("/correspondencia/obtener-correspondencia-referido/{nro_radicado}")
+    public Response consultarNroRadicadoCorrespondenciaReferida(@PathParam("nro_radicado") final String nroRadicado) throws SystemException, BusinessException {
+        log.info("processing rest request - consultarNroRadicadoCorrespondenciaReferida.");
+
+        String nroRadicadoReferido = boundary.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(Json.createObjectBuilder().add("nroRadicado",nroRadicadoReferido).build())
+                .build();
     }
 }

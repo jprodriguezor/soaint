@@ -1,17 +1,74 @@
 <div class="ui-fluid crear-unidad-documental">
-  <app-task-container [isActive]="false">
+  <app-task-container (onFinalizar)="finalizar()" [isActive]="true" >
     <div customActions>
-      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" ></button>
+      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()" ></button>
     </div>
     <div taskBody>
 
-      <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)"></app-lista-solicitud-crear-ud>
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12" >
+          <div class="card card-w-title">
+            <p-panel header="Informacion solicitud unidad documental" [style]="{border: 'none'}">
+              <div class="ui-g ui-fluid" [formGroup]="form" >
+                <div class="ui-g-12">
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="sede">Sede Administrativa</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" pInputText  id="sede" formControlName="sede" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="dependencia">Dependencia</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" pInputText  id="dependencia" formControlName="dependencia"  >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="sede">Solicitante</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input type="text" pInputText formControlName="solicitante">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-3 ui-sm-6">
+                    <div class="ui-g form-group">
+                      <div class="ui-g-12">
+                        <label for="sede">Fecha Solicitud</label>
+                      </div>
+                      <div class="ui-g-12">
+                        <input pInputText formControlName="fechaSolicitud" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-panel>
+          </div>
+        </div>
+      </div>
 
-      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD" [solicitud]="solicitudSelected"  (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-no-tramitar-creacion-ud>
+      <ng-template *ngIf="solicitudModel.SelectedIndex != -1">
 
-      <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD" [solicitud]="solicitudSelected"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-form-crear-unidad-documental>
+      </ng-template>
 
-      <app-ud-tramitadas [solicitudesProcesadas]="solicitudesProcesadas$" ></app-ud-tramitadas>
+      <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)" [solicitudModel]="solicitudModel"  ></app-lista-solicitud-crear-ud>
+
+      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD"     (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" [solicitudModel]="solicitudModel" ></app-no-tramitar-creacion-ud>
+
+      <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD" [solicitudModel]="solicitudModel"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-form-crear-unidad-documental>
+
+      <app-ud-tramitadas [solicitudesProcesadas$]="solicitudesProcesadas$" ></app-ud-tramitadas>
 
       <p-dialog header="Alerta" [(visible)]="visiblePopup" modal="modal" >
         <div class="text-center">
