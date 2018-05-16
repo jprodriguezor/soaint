@@ -89,10 +89,6 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
                                ];
 
-        if(!isNullOrUndefined(this.nroRadicado)){
-
-          validDocuments.push( this.documentos.length == this.archivarDocumentoModel.Documentos.length)
-        }
 
         if(!validDocuments.every( r => r)){
 
@@ -101,10 +97,21 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
           }));
            return ;
         }
+
+        if(!isNullOrUndefined(this.nroRadicado)){
+
+         if (this.documentos.length > this.archivarDocumentoModel.Documentos.length){
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'error', summary: 'Debe seleccionar todos los documentos'
+            }));
+            return ;
+          }
+        }
+
       this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
           .subscribe(response  =>{
               if(response.codMensaje == '0000'){
-                this.FillListasDocumentos();
+                this.FillListasDocumentos(true);
               }
               else{
                 this._store.dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
@@ -117,21 +124,20 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     });
   }
 
-  private FillListasDocumentos(){
-
-
+  private FillListasDocumentos( archivado:boolean= false){
 
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
     if(!isNullOrUndefined(this.nroRadicado)){
 
+      if(!archivado)
       this.subscriptions.push(this._udService
         .obtenerDocumentoPorNoRadicado(this.nroRadicado)
         .subscribe( documents => {
           this.documentos = documents.documentoDTOList;
           this.changeDetectorRef.detectChanges();
         })
-      )
+      );
     }
 
     else
