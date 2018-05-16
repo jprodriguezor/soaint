@@ -14,13 +14,15 @@ import {ConstanteDTO} from "../../../../../domain/constanteDTO";
 import {Observable} from "rxjs/Observable";
 import  {Sandbox as ConstanteSandbox} from "../../../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
+import {SupertypeSeries} from "../../shared/supertype-series";
+import {getMotivoNoCreacionUDArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/motivo-no-creacion-ud-selectors";
 
 @Component({
   selector: 'app-no-tramitar-creacion-ud',
   templateUrl: './no-tramitar-creacion-ud.component.html',
   providers:[ConfirmationService]
 })
-export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy {
+export class NoTramitarCreacionUdComponent  implements OnInit,OnDestroy {
 
   form:FormGroup;
 
@@ -28,7 +30,7 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
 
   motivo$:Observable<ConstanteDTO[]>;
 
-  subscriptions:Subscription[];
+  subscriptions:Subscription[] = [];
 
   @Input() solicitudModel:SolicitudCreacioUdModel;
 
@@ -52,23 +54,6 @@ export class NoTramitarCreacionUdComponent implements OnInit,OnChanges,OnDestroy
     });
   }
 
-
-ngOnChanges(){
-
-    if(this.solicitudModel.SelectedIndex == -1)
-      return;
-
-    const solicitud = this.solicitudModel.SolicitudSelected;
-
-   this.form.setValue({
-     'identificador':solicitud.id,
-     'nombre':solicitud.nombreUnidadDocumental,
-     'descriptor1':solicitud.descriptor1,
-     'descriptor2':solicitud.descriptor2,
-     'motivo' : null,
-     'observaciones': null,
-   });
-}
 
  noTramitarCreacionUnidadesDocumentales(){
 
@@ -102,16 +87,33 @@ ngOnChanges(){
  }
   ngOnInit(): void {
 
-    this._sandbox.loadMotivoNoCreacionUdDispatch();
+     this._sandbox.loadMotivoNoCreacionUdDispatch();
+
+     this.motivo$ = this._store.select(getMotivoNoCreacionUDArrayData);
 
     this.subscriptions.push(
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
     ) ;
+
+    console.log("here");
+
+    if(this.solicitudModel.SelectedIndex == -1)
+      return;
+
+    const solicitud = this.solicitudModel.SolicitudSelected;
+
+    console.log("solnc",this.solicitudModel.SolicitudSelected);
+
+    this.form.get('identificador').setValue(solicitud.id);
+    this.form.get("nombre").setValue(solicitud.nombreUnidadDocumental);
+    this.form.get("descriptor1").setValue(solicitud.descriptor1);
+    this.form.get("descriptor2").setValue(solicitud.descriptor2);
   }
 
   ngOnDestroy(): void {
 
     this.subscriptions.forEach( subscription => subscription.unsubscribe());
+
   }
 
 

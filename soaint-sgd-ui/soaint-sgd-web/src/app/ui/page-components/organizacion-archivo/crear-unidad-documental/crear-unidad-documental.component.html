@@ -62,9 +62,9 @@
 
       </ng-template>
 
-      <app-lista-solicitud-crear-ud (changeAction)="actualizarSolicitudesTramitadas()" [solicitudModel]="solicitudModel"  ></app-lista-solicitud-crear-ud>
+      <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)" [solicitudModel]="solicitudModel"  ></app-lista-solicitud-crear-ud>
 
-      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD"    (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-no-tramitar-creacion-ud>
+      <app-no-tramitar-creacion-ud *ngIf="currentAction==$action.noTramiteUD"     (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" [solicitudModel]="solicitudModel" ></app-no-tramitar-creacion-ud>
 
       <app-form-crear-unidad-documental *ngIf="currentAction==$action.createUD" [solicitudModel]="solicitudModel"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-form-crear-unidad-documental>
 

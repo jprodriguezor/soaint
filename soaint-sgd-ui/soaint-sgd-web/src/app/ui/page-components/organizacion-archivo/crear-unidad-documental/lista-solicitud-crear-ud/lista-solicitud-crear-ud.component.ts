@@ -1,4 +1,14 @@
-import {Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren
+} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import  {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -33,8 +43,6 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   @Input() solicitudModel:SolicitudCreacioUdModel;
 
-  solicitudes$:Observable<SolicitudCreacionUDDto[]> = Observable.empty();
-
   seriesObservable$:Observable<SerieDTO[]>;
 
   subseriesObservable$:Observable<any[]>;
@@ -48,7 +56,11 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   task:TareaDTO;
 
-    constructor(private _store:Store<RootState>,private solicitudService: SolicitudCreacionUdService) {
+    constructor(
+      private _store:Store<RootState>
+      ,private solicitudService: SolicitudCreacionUdService
+      ,private changeDetector:ChangeDetectorRef
+    ) {
 
       this._store.select(getActiveTask).subscribe( activeTask => {
       this.task = activeTask;
@@ -62,11 +74,15 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   selectAction(index,evt?){
 
+      console.log("accion",evt.value);
+
   const actionEvent = Object.assign({},
      {solicitud:this.solicitudModel.SolicitudSelected},
-     {action:this.action},
+     {action:evt.value},
      {nativeEvent:evt}
      );
+
+  this.action = evt.value;
 
     this.changeAction.emit(actionEvent);
   }
@@ -78,7 +94,10 @@ ngOnInit(){
       codDependencia:this.task.variables.codDependencia,
       idSolicitante: this.task.variables.idSolicitante,
       fechaSolicitud:this.task.variables.fechaSolicitud
-    }).subscribe( solicitudes => { this.solicitudModel.Solicitudes = solicitudes});
+    }).subscribe( solicitudes => {
+      this.solicitudModel.Solicitudes = solicitudes;
+      this.changeDetector.detectChanges();
+    });
 }
 
 }
