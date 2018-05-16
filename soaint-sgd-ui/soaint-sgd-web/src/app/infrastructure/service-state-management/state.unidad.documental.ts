@@ -256,8 +256,6 @@ export class StateUnidadDocumentalService {
                     
                 }
             }
-            
-
     }
 
     ActualizarEstadoDisposicionFinal(estado: string) {
@@ -280,9 +278,7 @@ export class StateUnidadDocumentalService {
                 this._store.dispatch(new PushNotificationAction({severity: 'success', summary: 'Se actualizó el estado de la unidad documental satisfactoriamente.'}));       
                
             }
-        }
-        
-   
+        }    
     }
 
     ActualizarDisposicionFinal() {
@@ -305,7 +301,5 @@ export class StateUnidadDocumentalService {
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
         this.Listar(this.ultimolistarPayload);
     }
-
-
 
 }
