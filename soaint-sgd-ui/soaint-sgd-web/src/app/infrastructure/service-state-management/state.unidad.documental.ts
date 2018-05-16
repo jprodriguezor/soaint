@@ -256,30 +256,29 @@ export class StateUnidadDocumentalService {
                     
                 }
             }
-            
-
     }
 
     ActualizarEstadoDisposicionFinal(estado: string) {
         const unidadesSeleccionadas = this.GetUnidadesSeleccionadas();
         const existeDisposicionSeleccionar = unidadesSeleccionadas.find(_item => _item.disposicion === 'S');
         const requiereObservaciones = unidadesSeleccionadas.find(_item => (_item.observaciones === '' || _item.observaciones === null) && estado === 'Rechazado');
-        if (requiereObservaciones) {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales pendiente de notas.'}));       
-        } else if(existeDisposicionSeleccionar) {
-            this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar". Recuerde actualizar.'}));        
-        } else {
-            this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
-                const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item === _current)
-                _current.estado = item_seleccionado ? estado : _current.estado;
-                _listado.push(_current);
-                return _listado;
-            }, []);
-            this.ListadoActualizadoSubject.next(); 
-            this._store.dispatch(new PushNotificationAction({severity: 'success', summary: 'Se actualizó el estado de la unidad documental satisfactoriamente.'}));       
-           
-        }
-   
+        if(unidadesSeleccionadas.length) {
+            if (requiereObservaciones) {
+                this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales pendiente de notas.'}));       
+            } else if(existeDisposicionSeleccionar) {
+                this._store.dispatch(new PushNotificationAction({severity: 'warn', summary: 'Hay unidades documentales con disposición final "Seleccionar". Recuerde actualizar.'}));        
+            } else {
+                this.ListadoUnidadDocumental = this.ListadoUnidadDocumental.reduce((_listado, _current) => {
+                    const item_seleccionado = this.unidadesSeleccionadas.find(_item => _item === _current)
+                    _current.estado = item_seleccionado ? estado : _current.estado;
+                    _listado.push(_current);
+                    return _listado;
+                }, []);
+                this.ListadoActualizadoSubject.next(); 
+                this._store.dispatch(new PushNotificationAction({severity: 'success', summary: 'Se actualizó el estado de la unidad documental satisfactoriamente.'}));       
+               
+            }
+        }    
     }
 
     ActualizarDisposicionFinal() {
@@ -302,7 +301,5 @@ export class StateUnidadDocumentalService {
         this._store.dispatch(new PushNotificationAction({severity: mensajeSeverity, summary: mensajeRespuesta.mensaje}));
         this.Listar(this.ultimolistarPayload);
     }
-
-
 
 }
