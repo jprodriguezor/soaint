@@ -3,7 +3,11 @@
     <div class="card card-w-title">
       <p-panel header="Unidades documentales solicitadas" [style]="{border: 'none'}">
         <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="single"
-                     [paginator]="true" [rows]="10" [responsive]="true" [value]="solicitudModel.Solicitudes" (onRowSelect) = "selectRow($event)" #tq>
+                     [paginator]="true" [rows]="10" [responsive]="true"
+                     [value]="solicitudModel.Solicitudes"
+                     [selection]="solicitudModel.SolicitudSelected"
+                     (onRowSelect) = "selectRow($event)"
+                     #tq>
           <p-column selectionMode="single" [style]="{'width':'50px'}"></p-column>
           <p-column  header="Nombre serie/subserie" [style]="{width:'100px'}">
             <ng-template pTemplate="body" let-row="rowData" >
@@ -18,10 +22,10 @@
           <p-column  header="Accion">
             <ng-template pTemplate="body"  let-index="rowIndex">
               <p-dropdown  (onChange)="selectAction(index,$event)"
-                           [options] = '[{value:null,label:"Seleccione una accion"},{value:$action.createUD,label:"Crear Unidad Documental"},{value:$action.noTramiteUD,label:"No tramitar UD"}]'
+                           [options] = '[{value:null,label:"Seleccione una accion"},{value:"Creación UD",label:"Crear Unidad Documental"},{value:"No tramitar creación UD",label:"No tramitar UD"}]'
                            [style]="{width:'100%'}"
                            [disabled] = "index != solicitudModel.SelectedIndex"
-                           [(ngModel)]="solicitudModel.Solicitudes[index].accion"
+                           [(ngModel)]="row.accion"
               >
               </p-dropdown>
             </ng-template>

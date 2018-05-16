@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {VALIDATION_MESSAGES} from '../../../../../../shared/validation-messages';
 import {Observable} from "rxjs/Observable";
@@ -72,6 +72,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
      ,private _solicitudUDService:SolicitudCreacionUdService
      ,private _udService:UnidadDocumentalApiService
      ,private _confirmationService:ConfirmationService
+     ,private  changeDetector:ChangeDetectorRef
    ) {
 
     this.dependenciaSelected$ = this._store.select(getSelectedDependencyGroupFuncionario);
@@ -125,7 +126,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
        this.subscriptions.push(
          this._store.select(getAuthenticatedFuncionario).subscribe( funcionario => {
 
-           this.solicitudModel.Solicitudes.push({
+           this.solicitudModel.Solicitudes= [ ... this.solicitudModel.Solicitudes,{
              codigoSede:this.dependenciaSelected.codSede,
              codigoDependencia:this.dependenciaSelected.codigo,
              codigoSerie: this.getControlValue("serie"),
@@ -138,9 +139,12 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
              nro:  Guid.next(),
              estado: "",
              idSolicitante: funcionario.id.toString()
-           });
+           }];
+
 
            this.unidadesDocumentales$ = Observable.of(this.solicitudModel.Solicitudes);
+
+           this.changeDetector.detectChanges();
 
            this.form.reset();
          })
@@ -225,7 +229,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
       this.subscriptions.push( observable.subscribe( uds => {
 
-        if(uds.length == 0){ console.log("No hay nada");
+        if(uds.length == 0){
           this._confirmationService.confirm({
             message: 'El sistema no encuentra la unidad documental que está buscando.\n Por favor, solicite su creación',
             header: 'Resultados no encontrados',

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SupertypeSeries} from "../../shared/supertype-series";
 import  {State as RootState} from "../../../../../infrastructure/redux-store/redux-reducers";
@@ -41,7 +41,8 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
               serieService:SerieService,
               private confirmationService:ConfirmationService,
               private udService:UnidadDocumentalApiService,
-              private solicitudService:SolicitudCreacionUdService
+              private solicitudService:SolicitudCreacionUdService,
+              private changeDetector:ChangeDetectorRef
               ) {
 
     super(store,serieService);
@@ -152,6 +153,8 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
           this.solicitudService.actualizarSolicitudes(this.solicitudModel.SolicitudSelected).subscribe( () => this.onCreateUnidadDocumental.emit() );
 
           this.solicitudModel.removeAtIndex();
+
+          this.changeDetector.detectChanges();
 
         }, error => {});
 

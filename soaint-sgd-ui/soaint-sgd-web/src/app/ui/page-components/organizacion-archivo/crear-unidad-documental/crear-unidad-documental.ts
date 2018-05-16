@@ -6,4 +6,6 @@ export  interface  EventChangeActionArgs{
   solicitud:SolicitudCreacionUDDto;
 }
 
-export  enum CreateUDActionType {   createUD ,  noTramiteUD }
+export type CreateUDActionType = "Creación UD"|"No tramitar creación UD";
+
+

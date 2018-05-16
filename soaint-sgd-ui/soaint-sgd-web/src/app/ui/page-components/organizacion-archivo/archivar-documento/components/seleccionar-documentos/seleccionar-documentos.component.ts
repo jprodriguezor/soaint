@@ -69,16 +69,25 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
   }
 
   confirmArchivarDocumentos(){
-
     this._confirmationService.confirm({
       message: `¿Está seguro de archivar el documento en la carpeta ${this.archivarDocumentoModel.UnidadDocumental.nombreUnidadDocumental}?`,
       header: 'Confirmacion',
       icon: 'fa fa-question-circle',
       accept: () => {
 
+        if(  this.archivarDocumentoModel.Documentos.length == 0){
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'error', summary: 'Debe seleccionar algun documento para archivar'
+          }));
+
+          return;
+        }
+
         const validDocuments = [this.archivarDocumentoModel
                                .Documentos
-                               .every( document => !isNullOrUndefined(document.tipologiaDocumental))];
+                               .every( document => !isNullOrUndefined(document.tipologiaDocumental))
+
+                               ];
 
         if(!isNullOrUndefined(this.nroRadicado)){
 
@@ -87,15 +96,20 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
         if(!validDocuments.every( r => r)){
 
-          this._store.dispatch(new PushNotificationAction({
+              this._store.dispatch(new PushNotificationAction({
             severity: 'error', summary: 'Algun documento que desea archivar no tiene la tipologia documental. Revise e agregela'
           }));
-
-          return;
+           return ;
         }
-
       this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
-          .subscribe(this.FillListasDocumentos);
+          .subscribe(response  =>{
+              if(response.codMensaje == '0000'){
+                this.FillListasDocumentos();
+              }
+              else{
+                this._store.dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
+              }
+          });
       },
       reject: () => {
 
@@ -104,6 +118,8 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
   }
 
   private FillListasDocumentos(){
+
+
 
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -149,17 +165,38 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     );
     }
 
-  toggleDocuments(event:any,checked:boolean){
+  toggleDocuments(event:any,checked?:boolean){
 
-    if(checked)
-     this.archivarDocumentoModel.Documentos.push(event.data);
+
+    if(!isNullOrUndefined(event.checked)){
+      checked = event.checked;
+    }
+
+    if(checked){
+      if(!isNullOrUndefined(event.data)){
+        const index = this.archivarDocumentoModel.Documentos.findIndex( document => document.idDocumento == event.data.idDcoumento);
+
+         if(isNullOrUndefined(index) || index == -1)
+         this.archivarDocumentoModel.Documentos.push(event.data);
+        else
+          this.archivarDocumentoModel.Documentos[index] = event.data;
+      }
+      else
+        this.archivarDocumentoModel.Documentos = this.documentos;
+      }
     else{
 
-      const index  = this.archivarDocumentoModel.Documentos
-                     .findIndex( document => document.idDocumento == event.data.idDocumento);
+      if(!isNullOrUndefined(event.data)){
+        const index  = this.archivarDocumentoModel.Documentos
+          .findIndex( document => document.idDocumento == event.data.idDocumento);
 
-      this.archivarDocumentoModel.Documentos.splice(index,1);
+        this.archivarDocumentoModel.Documentos.splice(index,1);
+      }
+      else
+        this.archivarDocumentoModel.Documentos = [];
+
     }
+    console.log("documentos por archivar", this.archivarDocumentoModel.Documentos);
   }
 
   showDocumento(idDocumento){
@@ -176,21 +213,16 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   uploadDocuments(event:any,uploader:FileUpload){
 
-    console.log("enter to method");
-
-    this.subscriptions.push(
+      this.subscriptions.push(
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependecia => {
 
         const formData = new FormData();
 
 
-        console.log("catchin dependencia");
-
         event.files.forEach( file => {
           formData.append('file',file,file.name);
         });
 
-       // formData.append('files[]',event.files);
 
         formData.append("codigoDependencia",dependecia.codigo);
 
@@ -227,9 +259,16 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   eliminarDocumento(idEcm,index){
 
-    // usar api documento ecm
+    this.subscriptions.push(this._udService.eliminarDocumento(idEcm).subscribe( () => {
 
-    this.documentosAdjuntos.splice(index,1);
+      this.documentosAdjuntos.splice(index,1);
+      this.documentosAdjuntos = [... this.documentosAdjuntos];
+
+      this.changeDetectorRef.detectChanges();
+
+    }));
+
+
   }
 
   agregarAdjuntos(){
@@ -245,19 +284,21 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   onErrorUpload(event){
 
-    console.log("Hola");
+
   }
 
-  updateDocumentMeta(index,field){
+  updateDocumentMeta(row,evento){
 
-    switch (field){
-      case "nombreDocumento" : this.documentos[index][field] = this.nombreDocumento;
-        break;
-      case "idDocumento" : this.documentos[index][field] = this.idDocumento;
-        break;
-      case "tipologiaDocumental":  this.documentos[index][field] = this.tipologiaDocumental;
-        break;
-    }
+    const dIndex = this.archivarDocumentoModel.Documentos
+                      .findIndex( document => document.idDocumento ==  row.idDocumento);
+
+    this.archivarDocumentoModel.Documentos[dIndex]= row;
+
+    console.log("documentos por archivar dropdowns",this.archivarDocumentoModel.Documentos);
+
+    if(!isNullOrUndefined(evento.originalEvent))
+      evento.originalEvent.stopPropagation();
+
   }
 
   DropSubscriptions(){

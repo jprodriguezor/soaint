@@ -92,9 +92,12 @@ export class UnidadDocumentalApiService {
   }
 
   obtenerDocumentoPorNoRadicado(nroRadicado):Observable<any>{
-
     return this._api.list( `${environment.obtenerDocumento_nro_radicado_endpoint}/${nroRadicado}`);
+  }
 
+  eliminarDocumento(idEcm):Observable<any>{
+
+   return  this._api.delete(`${environment.pd_gestion_documental.eliminarVersionDocumento}/${idEcm}`);
   }
 
 

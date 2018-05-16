@@ -47,4 +47,5 @@ public class SolicitudUnidadDocumentalDTO implements Serializable {
     private String estado;
     private String accion;
     private String observaciones;
+    private String motivo;
 }
