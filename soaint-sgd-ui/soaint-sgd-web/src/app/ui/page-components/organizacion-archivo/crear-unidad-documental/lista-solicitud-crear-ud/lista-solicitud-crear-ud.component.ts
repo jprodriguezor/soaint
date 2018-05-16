@@ -76,11 +76,15 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   selectAction(index,evt?){
 
+      console.log("accion",evt.value);
+
   const actionEvent = Object.assign({},
      {solicitud:this.solicitudModel.SolicitudSelected},
-     {action:this.action},
+     {action:evt.value},
      {nativeEvent:evt}
      );
+
+  this.action = evt.value;
 
     this.changeAction.emit(actionEvent);
   }

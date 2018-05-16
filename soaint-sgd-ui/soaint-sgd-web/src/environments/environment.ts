@@ -55,7 +55,7 @@ export const environment = {
   prefijoCuadrante_endpoint: `${host}/prefijo-cuadrante-gateway-api`,
   orientacion_endpoint: `${host}/orientacion-gateway-api`,
   tipoVia_endpoint: `${host}/tipo-via-gateway-api`,
-  motivoNoCreacionUd_endpoint:"motivo-no-creacion-ud-gateway-api",
+  motivoNoCreacionUd_endpoint:`${host}/motivo-no-creacion-ud-gateway-api`,
   radicarComunicacion_endpoint: `${host}/correspondencia-gateway-api/radicar`,
   radicarSalida_endpoint:`${host}/correspondencia-gateway-api/radicar_salida`,
   listarCorrespondencia_endpoint: `${host}/correspondencia-gateway-api/listar-comunicaciones`,

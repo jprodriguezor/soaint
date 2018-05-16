@@ -15,6 +15,7 @@ import {Observable} from "rxjs/Observable";
 import  {Sandbox as ConstanteSandbox} from "../../../../../infrastructure/state-management/constanteDTO-state/constanteDTO-sandbox";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
 import {SupertypeSeries} from "../../shared/supertype-series";
+import {getMotivoNoCreacionUDArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/motivo-no-creacion-ud-selectors";
 
 @Component({
   selector: 'app-no-tramitar-creacion-ud',
@@ -86,7 +87,9 @@ export class NoTramitarCreacionUdComponent  implements OnInit,OnDestroy {
  }
   ngOnInit(): void {
 
-    this._sandbox.loadMotivoNoCreacionUdDispatch();
+     this._sandbox.loadMotivoNoCreacionUdDispatch();
+
+     this.motivo$ = this._store.select(getMotivoNoCreacionUDArrayData);
 
     this.subscriptions.push(
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
