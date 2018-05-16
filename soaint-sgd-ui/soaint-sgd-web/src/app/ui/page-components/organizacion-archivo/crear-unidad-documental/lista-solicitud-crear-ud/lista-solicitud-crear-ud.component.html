@@ -25,8 +25,7 @@
                            [options] = '[{value:null,label:"Seleccione una accion"},{value:"Creación UD",label:"Crear Unidad Documental"},{value:"No tramitar creación UD",label:"No tramitar UD"}]'
                            [style]="{width:'100%'}"
                            [disabled] = "index != solicitudModel.SelectedIndex"
-                           *ngIf="solicitudModel.Solicitudes.length > index "
-                           [(ngModel)]="solicitudModel.Solicitudes[index].accion"
+                           [(ngModel)]="row.accion"
               >
               </p-dropdown>
             </ng-template>

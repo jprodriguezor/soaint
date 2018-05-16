@@ -69,16 +69,25 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
   }
 
   confirmArchivarDocumentos(){
-
     this._confirmationService.confirm({
       message: `¿Está seguro de archivar el documento en la carpeta ${this.archivarDocumentoModel.UnidadDocumental.nombreUnidadDocumental}?`,
       header: 'Confirmacion',
       icon: 'fa fa-question-circle',
       accept: () => {
 
+        if(  this.archivarDocumentoModel.Documentos.length == 0){
+          this._store.dispatch(new PushNotificationAction({
+            severity: 'error', summary: 'Debe seleccionar algun documento para archivar'
+          }));
+
+          return;
+        }
+
         const validDocuments = [this.archivarDocumentoModel
                                .Documentos
-                               .every( document => !isNullOrUndefined(document.tipologiaDocumental))];
+                               .every( document => !isNullOrUndefined(document.tipologiaDocumental))
+
+                               ];
 
         if(!isNullOrUndefined(this.nroRadicado)){
 
@@ -87,15 +96,20 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
         if(!validDocuments.every( r => r)){
 
-          this._store.dispatch(new PushNotificationAction({
+              this._store.dispatch(new PushNotificationAction({
             severity: 'error', summary: 'Algun documento que desea archivar no tiene la tipologia documental. Revise e agregela'
           }));
-
-          return;
+           return ;
         }
-
       this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
-          .subscribe(this.FillListasDocumentos);
+          .subscribe(response  =>{
+              if(response.codMensaje == '0000'){
+                this.FillListasDocumentos();
+              }
+              else{
+                this._store.dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
+              }
+          });
       },
       reject: () => {
 
@@ -104,6 +118,8 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
   }
 
   private FillListasDocumentos(){
+
+
 
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
@@ -149,17 +165,38 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     );
     }
 
-  toggleDocuments(event:any,checked:boolean){
+  toggleDocuments(event:any,checked?:boolean){
 
-    if(checked)
-     this.archivarDocumentoModel.Documentos.push(event.data);
+
+    if(!isNullOrUndefined(event.checked)){
+      checked = event.checked;
+    }
+
+    if(checked){
+      if(!isNullOrUndefined(event.data)){
+        const index = this.archivarDocumentoModel.Documentos.findIndex( document => document.idDocumento == event.data.idDcoumento);
+
+         if(isNullOrUndefined(index) || index == -1)
+         this.archivarDocumentoModel.Documentos.push(event.data);
+        else
+          this.archivarDocumentoModel.Documentos[index] = event.data;
+      }
+      else
+        this.archivarDocumentoModel.Documentos = this.documentos;
+      }
     else{
 
-      const index  = this.archivarDocumentoModel.Documentos
-                     .findIndex( document => document.idDocumento == event.data.idDocumento);
+      if(!isNullOrUndefined(event.data)){
+        const index  = this.archivarDocumentoModel.Documentos
+          .findIndex( document => document.idDocumento == event.data.idDocumento);
 
-      this.archivarDocumentoModel.Documentos.splice(index,1);
+        this.archivarDocumentoModel.Documentos.splice(index,1);
+      }
+      else
+        this.archivarDocumentoModel.Documentos = [];
+
     }
+    console.log("documentos por archivar", this.archivarDocumentoModel.Documentos);
   }
 
   showDocumento(idDocumento){
@@ -243,16 +280,18 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   }
 
-  updateDocumentMeta(index,field){
+  updateDocumentMeta(row,evento){
 
-    switch (field){
-      case "nombreDocumento" : this.documentos[index][field] = this.nombreDocumento;
-        break;
-      case "idDocumento" : this.documentos[index][field] = this.idDocumento;
-        break;
-      case "tipologiaDocumental":  this.documentos[index][field] = this.tipologiaDocumental;
-        break;
-    }
+    const dIndex = this.archivarDocumentoModel.Documentos
+                      .findIndex( document => document.idDocumento ==  row.idDocumento);
+
+    this.archivarDocumentoModel.Documentos[dIndex]= row;
+
+    console.log("documentos por archivar dropdowns",this.archivarDocumentoModel.Documentos);
+
+    if(!isNullOrUndefined(evento.originalEvent))
+      evento.originalEvent.stopPropagation();
+
   }
 
   DropSubscriptions(){

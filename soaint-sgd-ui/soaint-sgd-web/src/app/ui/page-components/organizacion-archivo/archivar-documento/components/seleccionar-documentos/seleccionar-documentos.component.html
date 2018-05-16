@@ -48,9 +48,10 @@
 <div  class="ui-g ui-fluid">
   <div class="ui-g-12 padding-top">
     <p-panel header="Documentos para archivar" [style]="{border:'none'}">
-      <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple"
+      <p-dataTable emptyMessage="No se encontraron resultados" selectionMode="multiple" (onHeaderCheckboxToggle)="toggleDocuments($event)"
                    [paginator]="true" [rows]="10" [responsive]="true" [(value)]="documentos"
                    (onRowSelect)="toggleDocuments($event,true)" (onRowUnselect)="toggleDocuments($event,false)"
+
       >
         <p-column [style]="{'width':'50px'}" selectionMode="multiple" >
 
@@ -63,15 +64,22 @@
         </p-column>
         <p-column header="Identificador de documento" [sortable]="true" >
           <ng-template let-col let-row="rowData" let-index="rowIndex" pTemplate="body">
-            <input type="text" pInputText *ngIf="row.isAttachment" (blur)="updateDocumentMeta(index,'identificador')" [(ngModel)]="row.idDocumento" />
+            {{row.identificador}}
+           <!-- <input type="text" pInputText *ngIf="row.isAttachment"
+                   (keyup)="updateDocumentMeta(row,$event)"
+                   [disabled]="!IsSelected(row.idDocumento)"
+                   [(ngModel)]="row.idDocumento" />
             <div *ngIf="!row.isAttachment" >
               {{row.identificador}}
-            </div>
+            </div>-->
           </ng-template>
         </p-column>
         <p-column header="Nombre/asunto documento" [sortable]="true" >
           <ng-template let-col let-row="rowData" pTemplate="body" let-index="rowIndex">
-            <input type="text" pInputText *ngIf="row.isAttachment" [value]="row.nombreDocumento" (blur)="updateDocumentMeta(index,'nombreDocumento')" [(ngModel)]="row.nombreDocumento"/>
+            <input type="text" pInputText *ngIf="row.isAttachment" [value]="row.nombreDocumento"
+                   (keyup)="updateDocumentMeta(row,$event)"
+                   [disabled]="!IsSelected(row.idDocumento)"
+                   [(ngModel)]="row.nombreDocumento"/>
             <div *ngIf="!row.isAttachment" >
               {{row.nombreDocumento}}
             </div>
@@ -83,12 +91,12 @@
           </ng-template>
         </p-column>
         <p-column header="Tipologia Documental" >
-          <ng-template pTemplate="body" let-col let-row="rowData">
+          <ng-template pTemplate="body" let-col let-row="rowData" let-index="rowIndex">
             <p-dropdown [options]="tipologiaDocumentales$|async|tipologiaDocumentalPipe"
                         placeholder="Seleccione"
-                        (onBlur)="updateDocumentMeta(index,'tipologiaDcoumental')"
                         [(ngModel)] = "row.tipologiaDocumental"
                         [disabled]="!IsSelected(row.idDocumento)"
+                        (onChange)="updateDocumentMeta(row,$event)"
             ></p-dropdown>
           </ng-template>
         </p-column>
