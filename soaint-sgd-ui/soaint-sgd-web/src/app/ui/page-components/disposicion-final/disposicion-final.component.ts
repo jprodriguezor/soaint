@@ -67,8 +67,8 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
     InitForm() {
       this.formBuscar = this.fb.group({
        tiposDisposicionFinal: [null, [Validators.required]],
-       sede: [null],
-       dependencia: [null],
+       sede: [null, [Validators.required]],
+       dependencia: [null, [Validators.required]],
        serie: [null],
        subserie: [null],
        identificador: [''],

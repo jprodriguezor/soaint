@@ -2040,7 +2040,7 @@ public class ContentControlAlfresco implements ContentControl {
         if (StringUtils.isEmpty(codigoDependencia)) {
             throw new SystemException("No se ha especificado el codigo de la dependencia");
         }
-        final List<Folder> folderList = getUDListByDependencyCode(codigoDependencia, session);
+        final List<Folder> folderList = getUDListWithIDBy(codigoDependencia, session);
         final List<Map<String, Object>> mapList = new ArrayList<>();
 
         for (Folder folder :
@@ -2334,16 +2334,21 @@ public class ContentControlAlfresco implements ContentControl {
         return Optional.empty();
     }
 
-    private List<Folder> getUDListByDependencyCode(final String dependencyCode, final Session session) {
+    private List<Folder> getUDListWithIDBy(final String dependencyCode, final Session session) {
         final List<Folder> folderList = new ArrayList<>();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
-                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " = '" + dependencyCode + "'";
+                " WHERE " + ConstantesECM.CMCOR_DEP_CODIGO + " LIKE '" + dependencyCode + "%'" +
+                " AND " + ConstantesECM.CMCOR_UD_ID + " IS NOT NULL" +
+                " AND " + ConstantesECM.CMCOR_UD_ID + " <> ''";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         for (QueryResult queryResult :
                 queryResults) {
             final String objectId = queryResult.getPropertyValueByQueryName(PropertyIds.OBJECT_ID);
             final Folder udFolder = (Folder) session.getObject(session.createObjectId(objectId));
-            folderList.add(folderList.size(), udFolder);
+            final String id = udFolder.getPropertyValue(ConstantesECM.CMCOR_UD_ID);
+            if (!StringUtils.isEmpty(id.trim())) {
+                folderList.add(folderList.size(), udFolder);
+            }
         }
         return folderList;
     }
