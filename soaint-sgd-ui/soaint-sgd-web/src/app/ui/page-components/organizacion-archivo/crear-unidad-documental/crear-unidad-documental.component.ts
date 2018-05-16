@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CreateUDActionType, EventChangeActionArgs} from "./crear-unidad-documental";
 import {SolicitudCreacionUDDto} from "../../../../domain/solicitudCreacionUDDto";
 import {UnidadDocumentalApiService} from "../../../../infrastructure/api/unidad-documental.api";
@@ -18,14 +18,14 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {SolicitudCreacioUdModel} from "../archivar-documento/models/solicitud-creacio-ud.model";
 import {FuncionariosService} from "../../../../infrastructure/api/funcionarios.service";
 import {Subscription} from "rxjs/Subscription";
+import {ListaSolicitudCrearUdComponent} from "./lista-solicitud-crear-ud/lista-solicitud-crear-ud.component";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'app-crear-unidad-documental',
   templateUrl: './crear-unidad-documental.component.html',
 })
 export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
-
-  $action = CreateUDActionType;
 
   currentAction:CreateUDActionType;
 
@@ -43,11 +43,14 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    subscriptions:Subscription[] = [];
 
+   @ViewChild("listaSolicitudeNoTramitadas") listaSolicitudesNoTramitadas:ListaSolicitudCrearUdComponent;
+
   constructor(private _store:Store<RootState>,
               private _taskSandbox:TaskSandbox,
               private _solicitudService:SolicitudCreacionUdService,
               private fb:FormBuilder,
-              private _funcionarioService:FuncionariosService
+              private _funcionarioService:FuncionariosService,
+              private changeDetector: ChangeDetectorRef
               ) {
 
     this.formInit();
@@ -104,6 +107,8 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
                                         codDependencia:this.task.variables.codDependencia,
                                         idSolicitante: this.task.variables.idSolicitante
                                       });
+
+
   }
 
 

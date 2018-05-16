@@ -64,11 +64,9 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
    this.subscriptions.push(
      this._store.select(getActiveTask).subscribe(task => {
 
+       this.task = task;
+
        if(task){
-
-         this.task = task;
-
-
 
          this.subscriptions.push(
            this._archivarDocumentoApi.getTaskData(task.idInstanciaProceso,task.idTarea).subscribe( response => {
@@ -149,6 +147,7 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
               fechaSolicitud: moment().format('YYYY-MM-DD')
             }
           });
+
         })
       );
       this.selectUd.form.reset();
@@ -169,14 +168,16 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
   finalizar(){
 
-    this._taskSandbox.completeTaskDispatch({
-      idProceso: this.task.idProceso,
-      idDespliegue: this.task.idDespliegue,
-      idTarea: this.task.idTarea,
-      parametros:{
-        creacionUD: 0
-      }
-    });
+     if(!isNullOrUndefined(this.task)){
+       this._taskSandbox.completeTaskDispatch({
+         idProceso: this.task.idProceso,
+         idDespliegue: this.task.idDespliegue,
+         idTarea: this.task.idTarea,
+         parametros:{
+           creacionUD: 0
+         }
+       });
+     }
   }
 
   ngOnDestroy(): void {
