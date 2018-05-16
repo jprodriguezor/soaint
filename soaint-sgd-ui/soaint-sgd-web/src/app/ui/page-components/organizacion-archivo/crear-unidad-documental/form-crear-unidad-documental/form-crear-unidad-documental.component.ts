@@ -145,13 +145,11 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
         this.udService.crear(data)
         .subscribe(() => {
 
-          this.onCreateUnidadDocumental.emit();
-
           data.codigoDependencia = this.dependenciaSelected.codigo;
 
           data.codigoSede = this.dependenciaSelected.codSede;
 
-          this.solicitudService.actualizarSolicitudes(data);
+          this.solicitudService.actualizarSolicitudes(data).subscribe( () => this.onCreateUnidadDocumental.emit() );
 
           this.solicitudModel.removeAtIndex();
 

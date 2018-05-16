@@ -43,8 +43,6 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   @Input() solicitudModel:SolicitudCreacioUdModel;
 
-  solicitudes$:Observable<SolicitudCreacionUDDto[]> = Observable.empty();
-
   seriesObservable$:Observable<SerieDTO[]>;
 
   subseriesObservable$:Observable<any[]>;
