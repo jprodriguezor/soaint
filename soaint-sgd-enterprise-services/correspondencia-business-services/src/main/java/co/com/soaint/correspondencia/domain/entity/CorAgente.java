@@ -83,6 +83,14 @@ import java.util.List;
                 "INNER JOIN c.dctAsigUltimoList dau " +
                 "WHERE c.codTipAgent = :COD_TIP_AGENT " +
                 "AND co.ideDocumento = :IDE_DOCUMENTO"),
+        @NamedQuery(name = "CorAgente.findDestinatariosByIdeDocumentoAndCodTipoAgenteMail", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
+                "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
+                "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
+                "c.codEstado, c.fecAsignacion, c.codTipAgent, c.indOriginal) " +
+                "FROM CorAgente c " +
+                "INNER JOIN c.corCorrespondencia co " +
+                "WHERE c.codTipAgent = :COD_TIP_AGENT " +
+                "AND co.ideDocumento = :IDE_DOCUMENTO"),
         @NamedQuery(name = "CorAgente.findRemitentesByIdeDocumentoAndCodTipoAgente", query = "SELECT NEW co.com.soaint.foundation.canonical.correspondencia.AgenteDTO " +
                 "(c.ideAgente, c.codTipoRemite, c.codTipoPers, c.nombre, c.razonSocial, c.nit, c.codCortesia, " +
                 "c.codEnCalidad, c.ideFunci, c.codTipDocIdent, c.nroDocuIdentidad, c.codSede, c.codDependencia, " +
