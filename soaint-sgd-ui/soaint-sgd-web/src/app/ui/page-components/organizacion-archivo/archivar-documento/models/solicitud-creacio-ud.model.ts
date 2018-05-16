@@ -43,6 +43,9 @@ export class SolicitudCreacioUdModel{
     this.SelectedIndex = -1;
 
     this.Solicitudes.splice(idx,1);
-  }
+
+    this.Solicitudes = [... this.Solicitudes];
+
+    }
 
 }

@@ -95,14 +95,10 @@ export class NoTramitarCreacionUdComponent  implements OnInit,OnDestroy {
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependencia => this.dependenciaSelected = dependencia )
     ) ;
 
-    console.log("here");
-
     if(this.solicitudModel.SelectedIndex == -1)
       return;
 
     const solicitud = this.solicitudModel.SolicitudSelected;
-
-    console.log("solnc",this.solicitudModel.SolicitudSelected);
 
     this.form.get('identificador').setValue(solicitud.id);
     this.form.get("nombre").setValue(solicitud.nombreUnidadDocumental);

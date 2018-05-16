@@ -176,21 +176,16 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   uploadDocuments(event:any,uploader:FileUpload){
 
-    console.log("enter to method");
-
-    this.subscriptions.push(
+      this.subscriptions.push(
       this._store.select(getSelectedDependencyGroupFuncionario).subscribe( dependecia => {
 
         const formData = new FormData();
 
 
-        console.log("catchin dependencia");
-
         event.files.forEach( file => {
           formData.append('file',file,file.name);
         });
 
-       // formData.append('files[]',event.files);
 
         formData.append("codigoDependencia",dependecia.codigo);
 
@@ -245,7 +240,7 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   onErrorUpload(event){
 
-    console.log("Hola");
+
   }
 
   updateDocumentMeta(index,field){

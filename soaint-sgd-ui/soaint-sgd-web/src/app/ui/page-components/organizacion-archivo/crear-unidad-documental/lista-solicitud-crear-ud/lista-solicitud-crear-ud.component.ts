@@ -3,10 +3,10 @@ import {
   Component,
   ContentChildren,
   EventEmitter,
-  Input,
+  Input, OnChanges,
   OnInit,
   Output,
-  QueryList,
+  QueryList, ViewChild,
   ViewChildren
 } from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -18,7 +18,7 @@ import {getActiveTask} from "../../../../../infrastructure/state-management/tare
 import {TareaDTO} from "../../../../../domain/tareaDTO";
 import {Observable} from "rxjs/Observable";
 import {SolicitudCreacionUDDto} from "../../../../../domain/solicitudCreacionUDDto";
-import {Dropdown} from "primeng/primeng";
+import {DataTable, Dropdown} from "primeng/primeng";
 import {CreateUDActionType, EventChangeActionArgs} from "../crear-unidad-documental";
 import {SerieService} from "../../../../../infrastructure/api/serie.service";
 import {SerieDTO} from "../../../../../domain/serieDTO";
@@ -34,8 +34,6 @@ import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud
 })
 export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
-  $action = CreateUDActionType;
-
   action:CreateUDActionType;
 
   form:FormGroup;
@@ -49,8 +47,12 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   solicitudSelected:SolicitudCreacionUDDto;
 
+  solicitudes$:Observable<any[]>;
+
 
   @ViewChildren(Dropdown) dropdowns : QueryList<Dropdown>;
+
+  @ViewChild("tq") dataTable:DataTable;
 
   @Output() changeAction: EventEmitter<EventChangeActionArgs> = new EventEmitter;
 
@@ -74,7 +76,7 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   selectAction(index,evt?){
 
-      console.log("accion",evt.value);
+
 
   const actionEvent = Object.assign({},
      {solicitud:this.solicitudModel.SolicitudSelected},
@@ -84,7 +86,7 @@ export class ListaSolicitudCrearUdComponent  implements  OnInit{
 
   this.action = evt.value;
 
-    this.changeAction.emit(actionEvent);
+   this.changeAction.emit(actionEvent);
   }
 
 ngOnInit(){
@@ -96,8 +98,20 @@ ngOnInit(){
       fechaSolicitud:this.task.variables.fechaSolicitud
     }).subscribe( solicitudes => {
       this.solicitudModel.Solicitudes = solicitudes;
+      this.solicitudes$ = Observable.of(solicitudes);
       this.changeDetector.detectChanges();
     });
 }
+
+
+LoadChanges(){
+
+      if(this.solicitudModel){
+
+         this.dataTable.value = this.solicitudModel.Solicitudes;
+         this.changeDetector.detectChanges();
+      }
+}
+
 
 }
