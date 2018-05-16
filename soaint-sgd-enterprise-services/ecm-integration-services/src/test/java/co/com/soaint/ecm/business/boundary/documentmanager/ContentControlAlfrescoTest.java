@@ -36,6 +36,7 @@ public class ContentControlAlfrescoTest {
     @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
+    private final String ECM_ENDPOINT_TEST = System.getProperty("ecm-endpoint-test");
 
     private DocumentoDTO documentoDTO;
     private MensajeRespuesta mensajeRespuesta;
@@ -74,7 +75,7 @@ public class ContentControlAlfrescoTest {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+        parameter.put(SessionParameter.ATOMPUB_URL, ECM_ENDPOINT_TEST);
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
