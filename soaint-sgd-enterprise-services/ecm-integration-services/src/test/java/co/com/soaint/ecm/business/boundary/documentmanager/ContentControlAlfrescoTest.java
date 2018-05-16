@@ -773,7 +773,7 @@ UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
             //Calendar calendar
             Calendar gregorianCalendar = GregorianCalendar.getInstance();
             unidadDocumentalDTOTest.setFechaCierre(gregorianCalendar);
-            unidadDocumentalDTOTest.setId("1118");
+            unidadDocumentalDTOTest.setId("11181");
             unidadDocumentalDTOTest.setFechaExtremaInicial(gregorianCalendar);
             unidadDocumentalDTOTest.setSoporte("electronico");
             unidadDocumentalDTOTest.setNombreUnidadDocumental("UnidadDocumentalTest");
@@ -785,10 +785,10 @@ UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
             unidadDocumentalDTOTest.setDescriptor1("3434");
             unidadDocumentalDTOTest.setDescriptor2("454545");
             unidadDocumentalDTOTest.setAccion("");
-            unidadDocumentalDTOTest.setInactivo(false);
             unidadDocumentalDTOTest.setCerrada(false);
             unidadDocumentalDTOTest.setEstado("Abierto");
             unidadDocumentalDTOTest.setDisposicion("Eliminar");
+            unidadDocumentalDTOTest.setFaseArchivo("archivo central");
 
             DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTOTest, conexion.getSession());
