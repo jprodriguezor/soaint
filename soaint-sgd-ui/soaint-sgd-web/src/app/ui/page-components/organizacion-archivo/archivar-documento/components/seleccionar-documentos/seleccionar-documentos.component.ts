@@ -111,7 +111,7 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
       this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
           .subscribe(response  =>{
               if(response.codMensaje == '0000'){
-                this.FillListasDocumentos(true);
+                this.FillListasDocumentos();
               }
               else{
                 this._store.dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
@@ -124,24 +124,11 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     });
   }
 
-  private FillListasDocumentos( archivado:boolean= false){
+  private FillListasDocumentos(){
 
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
-    if(!isNullOrUndefined(this.nroRadicado)){
-
-      if(!archivado)
-      this.subscriptions.push(this._udService
-        .obtenerDocumentoPorNoRadicado(this.nroRadicado)
-        .subscribe( documents => {
-          this.documentos = documents.documentoDTOList;
-          this.changeDetectorRef.detectChanges();
-        })
-      );
-    }
-
-    else
-     this.setDocumentosPorArvichar(observable);
+    this.setDocumentosPorArvichar(observable);
 
     this.subscriptions.push(observable.switchMap(dependencia =>  this._udService
       .listarDocumentosArchivadosPorDependencia(dependencia.codigo))
@@ -155,20 +142,35 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   private setDocumentosPorArvichar(observable:Observable<DependenciaDTO>){
 
-    this.subscriptions.push(
-      observable.switchMap(dependencia => {
+    let newObservable:Observable<any[]>;
+
+    if(!isNullOrUndefined(this.nroRadicado)){
+
+     newObservable=  combineLatest(observable.switchMap(dependencia =>  this._udService.listarDocumentosArchivadosPorDependencia(dependencia.codigo)),
+                                   this._udService.obtenerDocumentoPorNoRadicado(this.nroRadicado).map( r => r.documentoDTOList))
+                            .map(([archivados,radicados]) => radicados.filter( d => archivados.every( a => a.idDocumento != d.idDocumento)))
+                            .map(docs => docs.map( doc => {
+                                doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
+                                doc.isAttachment = false;
+                                return doc;
+                              }));
+    }
+
+    else
+      newObservable = observable.switchMap(dependencia => {
 
         return this._udService.listarDocumentosPorArchivar(dependencia.codigo)
           .map( response => response.documentoDTOList.map( doc => {
-
-
             doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
             doc.isAttachment = false;
             return doc;
           }),(outer,inner) => inner);
-      })
-        .subscribe(documentos => {  this.documentos = documentos; this.changeDetectorRef.detectChanges();})
-    );
+      });
+
+    this.subscriptions.push( newObservable.subscribe(documentos => {
+      this.documentos = documentos;
+      this.changeDetectorRef.detectChanges();
+    }));
     }
 
   toggleDocuments(event:any,checked?:boolean){
