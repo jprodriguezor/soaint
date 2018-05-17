@@ -102,6 +102,11 @@ export function reducer(state = initialState, action: Actions) {
         activeTask: null
       });
     }
+    case ActionTypes.RESET_TASK : {
+      return tassign(state, {
+        activeTask: null
+      });
+    }
 
     default:
       return state;

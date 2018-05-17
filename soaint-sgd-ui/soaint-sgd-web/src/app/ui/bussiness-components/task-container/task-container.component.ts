@@ -14,10 +14,11 @@ import {Observable} from 'rxjs/Observable';
 import {getActiveTask, getNextTask} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import {TareaDTO} from '../../../domain/tareaDTO';
 import {go} from '@ngrx/router-store';
-import {ContinueWithNextTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
+import {ContinueWithNextTaskAction, ResetTaskAction} from '../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions';
 import {ROUTES_PATH} from '../../../app.route-names';
 import {process_info} from '../../../../environments/environment';
 import {isNullOrUndefined} from "util";
+import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tareasDTO-state/tareasDTO-sandbox';
 
 
 @Component({
@@ -40,7 +41,9 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
 
   @Output() onFinalizar:EventEmitter<any> = new EventEmitter;
 
-  constructor(private _store: Store<RootState>, private _changeDetector: ChangeDetectorRef) {
+  constructor(private _store: Store<RootState>, 
+              private _changeDetector: ChangeDetectorRef,
+              private _taskSandBox: TaskSandBox) {
   }
 
   ngOnInit() {
@@ -66,7 +69,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
         if (activeTask === null) {
           this.isActive = false;
           this.hasToContinue = hasNextTask !== null;
-          this._changeDetector.detectChanges();
+          // this._changeDetector.detectChanges();
         }
       });
   }
@@ -87,5 +90,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
     if(!isNullOrUndefined(this.infoUnsubscriber))
     this.infoUnsubscriber.unsubscribe();
     this.activeTaskUnsubscriber.unsubscribe();
+    this._store.dispatch(new ResetTaskAction());
+
   }
 }
