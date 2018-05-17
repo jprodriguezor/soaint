@@ -49,7 +49,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, TaskForm {
   @Input() dependencias: Array<any> = [];
   @Input() dependenciaSelected: any;
   @Output() onSelectDependencia: EventEmitter<any> = new EventEmitter();
-  
+
   activeTask = false;
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
@@ -72,7 +72,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, TaskForm {
     this.activeTaskUnsubscriber = this._store.select(getActiveTask)
     .subscribe(activeTask => {
       this.task = activeTask;
-      this.activeTask = (!isNullOrUndefined(this.task));
+      // this.activeTask = (!isNullOrUndefined(this.task));
     });
   }
 
