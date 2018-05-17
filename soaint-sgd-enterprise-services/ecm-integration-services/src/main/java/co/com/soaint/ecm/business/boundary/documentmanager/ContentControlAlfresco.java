@@ -2441,6 +2441,9 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             }
 
+            unidadDocumentalDTO.setSoporte("Electrónico");
+            unidadDocumentalDTO.setInactivo(false);
+            unidadDocumentalDTO.setCerrada(false);
             final Map<String, Object> props = updateProperties(null, unidadDocumentalDTO);
             props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL));
             log.info("Making the tmpFolder!!!");
