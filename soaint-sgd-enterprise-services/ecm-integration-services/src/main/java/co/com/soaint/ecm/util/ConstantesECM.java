@@ -66,9 +66,12 @@ public final class ConstantesECM {
     public static final String COMUNICACIONES_INTERNAS_ENVIADAS = "Comunicaciones Oficiales Internas Enviadas ";
     public static final String COMUNICACIONES_EXTERNAS_RECIBIDAS = "Comunicaciones Oficiales Externas Recibidas ";
     public static final String COMUNICACIONES_EXTERNAS_ENVIADAS = "Comunicaciones Oficiales Externas Enviadas ";
+
     public static final String TIPO_COMUNICACION_INTERNA = "0231.02311_Comunicaciones Oficiales Internas";
     public static final String TIPO_COMUNICACION_EXTERNA = "0231.02312_Comunicaciones Oficiales Externas";
+
     public static final String DOCUMENTOS_POR_ARCHIVAR = "DOCUMENTOS POR ARCHIVAR";
+
     public static final String ERROR_TIPO_EXCEPTION = "### Error tipo Exception----------------------------- :";
     public static final String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
