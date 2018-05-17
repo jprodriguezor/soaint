@@ -20,6 +20,9 @@ import * as moment from "moment";
 import {SeleccionarDocumentosComponent} from "./components/seleccionar-documentos/seleccionar-documentos.component";
 import {Sandbox as AsigSandbox} from "../../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
 import {Observable} from "rxjs/Observable";
+import {ROUTES_PATH} from "../../../../app.route-names";
+import {go} from "@ngrx/router-store";
+import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 
 @Component({
   selector: 'app-archivar-documento',
@@ -110,6 +113,10 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
      this.enableButtonNext = false;
 
    }));
+
+    this.subscriptions.push(afterTaskComplete.subscribe(() => {
+      this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+    }));
    }
 
   next(){
