@@ -147,13 +147,15 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     if(!isNullOrUndefined(this.nroRadicado)){
 
      newObservable=  combineLatest(observable.switchMap(dependencia =>  this._udService.listarDocumentosArchivadosPorDependencia(dependencia.codigo)),
-                                   this._udService.obtenerDocumentoPorNoRadicado(this.nroRadicado).map( r => r.documentoDTOList))
-                            .map(([archivados,radicados]) => radicados.filter( d => archivados.every( a => a.idDocumento != d.idDocumento)))
-                            .map(docs => docs.map( doc => {
-                                doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
-                                doc.isAttachment = false;
-                                return doc;
-                              }));
+                                   this._udService.obtenerDocumentoPorNoRadicado(this.nroRadicado).map( r => r.documentoDTOList.map(
+                                   doc => {
+                                       doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
+                                       doc.isAttachment = false;
+                                       return doc;
+                                     }
+                                   )))
+                            .map(([archivados,radicados]) => { console.log("archivados",archivados); console.log("radicados",radicados) ;return radicados.filter( d => archivados.every( a => a.idDocumento != d.identificador))});
+
     }
 
     else
