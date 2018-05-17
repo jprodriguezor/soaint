@@ -196,9 +196,6 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
-
    selectSerie(evt)
   {
 
