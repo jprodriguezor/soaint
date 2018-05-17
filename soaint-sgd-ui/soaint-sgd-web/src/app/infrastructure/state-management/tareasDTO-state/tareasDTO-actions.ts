@@ -30,6 +30,8 @@ export const ActionTypes = {
   CONTINUE_WITH_NEXT_TASK: type('[TareaDTO] ContinueWithNextTaskAction'),
   GET_TASK_STATS: type('[TareaDTO] GetTaskStatsAction'),
   GET_TASK_STATS_SUCCESS: type('[TareaDTO] GetTaskStatsSuccessAction'),
+  RESET_TASK: type('[TareaDTO] ResetTaskAction'),
+
 };
 
 export class FilterAction implements Action {
@@ -221,6 +223,11 @@ export class GetTaskStatsSuccessAction implements Action {
   }
 }
 
+export class ResetTaskAction implements Action {
+  type = ActionTypes.RESET_TASK;
+  constructor(public payload?: any) { }
+}
+
 export type Actions =
   FilterAction |
   LoadAction |
@@ -242,7 +249,8 @@ export type Actions =
   ContinueWithNextTaskAction |
   ScheduleNextTaskAction |
   GetTaskStatsAction |
-  GetTaskStatsSuccessAction
+  GetTaskStatsSuccessAction |
+  ResetTaskAction
   ;
 
 
