@@ -11,6 +11,7 @@ import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unid
 import {isNullOrUndefined} from "util";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
+import {PushNotificationAction} from "../../../../../infrastructure/state-management/notifications-state/notifications-actions";
 
 
 
@@ -144,7 +145,15 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
         };
 
         this.udService.crear(data)
-        .subscribe(() => {
+        .subscribe((response) => {
+
+          if(response.codMensaje != '0000'){
+            this._store
+              .dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
+
+            return;            
+          }
+
 
           data.codigoDependencia = this.dependenciaSelected.codigo;
 
