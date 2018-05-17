@@ -207,7 +207,10 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     console.log("documentos por archivar", this.archivarDocumentoModel.Documentos);
   }
 
-  showDocumento(idDocumento){
+  showDocumento(idDocumento,evento?){
+
+    if(!isNullOrUndefined(evento))
+      evento.preventDefault();
 
     this.idEcm = idDocumento;
 
