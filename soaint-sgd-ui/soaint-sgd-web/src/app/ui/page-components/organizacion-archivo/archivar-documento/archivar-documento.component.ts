@@ -115,7 +115,9 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
    }));
 
     this.subscriptions.push(afterTaskComplete.subscribe(() => {
-      this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+
+      if(!this.showSolicitarButton)
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
     }));
    }
 
@@ -184,6 +186,11 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
 
   finalizar(){
+
+     if(this.showSolicitarButton){
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+       return;
+     }
 
      if(!isNullOrUndefined(this.task)){
        this._taskSandbox.completeTaskDispatch({
