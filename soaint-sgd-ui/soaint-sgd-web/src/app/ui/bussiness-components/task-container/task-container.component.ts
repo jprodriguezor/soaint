@@ -69,7 +69,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
         if (activeTask === null) {
           this.isActive = false;
           this.hasToContinue = hasNextTask !== null;
-          // this._changeDetector.detectChanges();
+          this._changeDetector.detectChanges();
         }
       });
   }

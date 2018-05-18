@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
 import { TaskForm } from '../../../../shared/interfaces/task-form.interface';
 import { TareaDTO } from '../../../../domain/tareaDTO';
-import { getActiveTask } from '../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import { getActiveTask, isOpenTask } from '../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
 import { isNullOrUndefined } from 'util';
 import { afterTaskComplete } from '../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 
@@ -30,7 +30,7 @@ import { afterTaskComplete } from '../../../../infrastructure/state-management/t
                       placeholder="Seleccione"
                       [filter]="true"
                       [autoWidth]="false"
-                      [disabled]="activeTask"
+                      [disabled]="isOpenTask"
           >
           </p-dropdown>
         </div>
@@ -50,7 +50,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, TaskForm {
   @Input() dependenciaSelected: any;
   @Output() onSelectDependencia: EventEmitter<any> = new EventEmitter();
   
-  activeTask = false;
+  isOpenTask = false;
   task: TareaDTO;
   activeTaskUnsubscriber: Subscription;
 
@@ -69,10 +69,9 @@ export class AppMenuComponent implements OnInit, OnDestroy, TaskForm {
       this.onSelectDependencia.emit(value);
     });
 
-    this.activeTaskUnsubscriber = this._store.select(getActiveTask)
-    .subscribe(activeTask => {
-      this.task = activeTask;
-      this.activeTask = (!isNullOrUndefined(this.task));
+    this.activeTaskUnsubscriber = this._store.select(isOpenTask)
+    .subscribe(inTask => {      
+      this.isOpenTask = inTask;
     });
   }
 
