@@ -158,6 +158,32 @@ public class CorrespondenciaControl {
     }
 
     /**
+     * @param codSede
+     * @param codTipoCmc
+     * @param anno
+     * @param consecutivo
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    private String procesarNroRadicadoSalida(String codSede, String codTipoCmc, String anno, String consecutivo) throws BusinessException, SystemException {
+        try {
+            String nRadicado = codSede
+                    .concat(codTipoCmc)
+                    .concat(anno)
+                    .concat(consecutivo);
+            if (verificarByNroRadicado(nRadicado))
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage("correspondencia.correspondencia_duplicated_nroRadicado")
+                        .buildBusinessException();
+            return nRadicado;
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        }
+    }
+
+    /**
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
@@ -366,24 +392,6 @@ public class CorrespondenciaControl {
             CorrespondenciaFullDTO correspondenciaFullDTO = correspondenciaTransformToFull(correspondenciaDTO);
 
             return consultarComunicacionOficialFullByCorrespondencia(correspondenciaFullDTO);
-
-//            List<AgenteFullDTO> agentes = new ArrayList<>();
-//            CorrespondenciaFullDTO correspondenciaFullDTO = CorrespondenciaFullDTO.newInstance().build();
-//            List<AnexoFullDTO> anexos = new ArrayList<>();
-//            List<PpdDocumentoFullDTO> documentos = new ArrayList<>();
-//            List<DatosContactoFullDTO> datosContacto = new ArrayList<>();
-//            List<ReferidoDTO> referidos = new ArrayList<>();
-
-//            ComunicacionOficialFullDTO comunicacionOficialFullDTO = ComunicacionOficialFullDTO.newInstance()
-//                    .agentes(agentes)
-//                    .anexos(anexos)
-//                    .ppdDocumentos(documentos)
-//                    .datosContactos(datosContacto)
-//                    .referidos(referidos)
-//                    .correspondencia(correspondenciaFullDTO)
-//                    .build();
-//
-//            return comunicacionOficialFullDTO;
 
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
@@ -1016,7 +1024,7 @@ public class CorrespondenciaControl {
                         tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
             }
 
-            correspondencia.setNroRadicado(procesarNroRadicado(correspondencia.getNroRadicado(),
+            correspondencia.setNroRadicado(procesarNroRadicadoSalida(
                     correspondencia.getCodSede(),
                     tipoRadicacion,
                     String.valueOf(anno), consecutivo));
@@ -1025,7 +1033,7 @@ public class CorrespondenciaControl {
             WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
             correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
-                log.info("Se modificara el documento con NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
+                log.info("Se modificara el documento con el NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
                 co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
                         .nroRadicado(correspondencia.getNroRadicado())
                         .idDocumento(ppdDoc.getIdeEcm())
