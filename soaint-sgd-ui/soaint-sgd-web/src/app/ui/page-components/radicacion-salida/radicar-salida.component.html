@@ -21,7 +21,9 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales #datosGenerales (onChangeTipoDistribucion)="changeValidationAbility($event)" [tipoRadicacion]="tipoRadicacion" ></app-datos-generales>
+          <app-datos-generales #datosGenerales  [tipoComunicacion]="'S'"
+                               (onChangeTipoDistribucion)="changeValidationAbility($event)"
+                               [tipoRadicacion]="tipoRadicacion" ></app-datos-generales>
         </p-tabPanel>
 
         <p-tabPanel header="Datos destinatarios" leftIcon="ui-icon-assignment">

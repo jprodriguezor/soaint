@@ -33,6 +33,7 @@ import {FileUpload} from 'primeng/primeng';
 import {DocumentDownloaded} from '../../events/DocumentDownloaded';
 import {DocumentUploaded} from '../../events/DocumentUploaded';
 import {TASK_PRODUCIR_DOCUMENTO} from "../../../../../infrastructure/state-management/tareasDTO-state/task-properties";
+import {getTipoComunicacionArrayData} from "../../../../../infrastructure/state-management/constanteDTO-state/selectors/tipo-comunicacion-selectors";
 
 @Component({
   selector: 'pd-datos-generales',
@@ -118,7 +119,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       }
       );
 
-    this.tiposComunicacion$ = this._produccionDocumentalApi.getTiposComunicacionSalida({});
+    this.tiposComunicacion$ = this._store.select(getTipoComunicacionArrayData).map( tipoComunicaciones => tipoComunicaciones.filter(tipo => tipo.codigo[0] =='S'));
     this.tiposAnexo$ = this._produccionDocumentalApi.getTiposAnexo({});
     this.tiposPlantilla$ = this._produccionDocumentalApi.getTiposPlantilla({});
     this.listenForErrors();

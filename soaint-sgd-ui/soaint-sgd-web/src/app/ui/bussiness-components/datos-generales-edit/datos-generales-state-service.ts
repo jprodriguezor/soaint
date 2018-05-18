@@ -115,7 +115,8 @@ export class DatosGeneralesStateService {
 
   LoadData(): void {
     // tipo de comunicacion seleccionada
-    this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
+    this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData)
+                                            .map(tipo_comunicaciones => tipo_comunicaciones.filter(tipo => tipo.codigo[0] == 'E'));
     this.tipoComunicacionSuggestions$
     .subscribe(result => {
         const selected = result.find(_item => _item.codigo === this.dataform.tipoComunicacion);
