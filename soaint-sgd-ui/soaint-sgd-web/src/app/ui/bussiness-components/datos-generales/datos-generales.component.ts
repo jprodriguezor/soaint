@@ -69,6 +69,8 @@ export class DatosGeneralesComponent implements OnInit {
   @Input()
   mediosRecepcionInput: ConstanteDTO = null;
 
+  @Input() tipoComunicacion ;
+
   @Output()
   onChangeTipoComunicacion: EventEmitter<any> = new EventEmitter();
 
@@ -126,7 +128,8 @@ export class DatosGeneralesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData);
+    this.tipoComunicacionSuggestions$ = this._store.select(getTipoComunicacionArrayData)
+                                            .map(tipo_comunicaciones => tipo_comunicaciones.filter(tipo => tipo.codigo[0] == this.tipoComunicacion));
     this.unidadTiempoSuggestions$ = this._store.select(getUnidadTiempoArrayData);
     this.tipoAnexosSuggestions$ = this._store.select(getTipoAnexosArrayData);
     this.medioRecepcionSuggestions$ = this._store.select(getMediosRecepcionArrayData);
