@@ -783,9 +783,15 @@ public class CorrespondenciaControl {
     public CorrespondenciaDTO consultarCorrespondenciaByNroRadicado(String nroRadicado) throws BusinessException, SystemException {
         log.info("processing rest request - CorrespondenciaControl-consultarCorrespondenciaByNroRadicado");
         try {
-            return em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
+
+            List<CorrespondenciaDTO> correspondencias =  em.createNamedQuery("CorCorrespondencia.findByNroRadicado", CorrespondenciaDTO.class)
                     .setParameter("NRO_RADICADO", nroRadicado)
-                    .getSingleResult();
+                    .getResultList();
+            if(correspondencias.size()>1) throw ExceptionBuilder.newBuilder()
+                    .withMessage("correspondencia.correspondencia_by_nroRadicado_duplicated")
+                    .buildBusinessException();
+            return correspondencias.get(0);
+
         } catch (NoResultException n) {
             log.error("Business Control - a business error has occurred", n);
             throw ExceptionBuilder.newBuilder()
