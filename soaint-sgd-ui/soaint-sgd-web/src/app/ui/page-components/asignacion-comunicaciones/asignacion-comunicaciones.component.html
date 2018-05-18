@@ -184,15 +184,13 @@
     </div>
   </div>
 
-  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [style]="{'position':'absolute'}"
+  <p-dialog [visible]="detailsDialogVisible$ | async" modal="modal" [responsive]="true" 
             (onHide)="hideDetailsDialog()" [width]="1000">
 
     <app-detalles-asignacion #detallesView></app-detalles-asignacion>
   </p-dialog>
 
-  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [style]="{'position':'absolute'}"
+  <p-dialog [visible]="justificationDialogVisible$ | async" modal="modal" [responsive]="true" 
             (onHide)="hideJustificationPopup()" [width]="800">
     <p-header>
       Redireccionar
@@ -209,8 +207,7 @@
       </div>
     </p-footer>
   </p-dialog>
-  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" positionTop="20"
-            [style]="{'position':'absolute'}"
+  <p-dialog [visible]="agregarObservacionesDialogVisible$ | async" modal="modal" [responsive]="true" 
             (onHide)="hideAddObservationsPopup()" [width]="800">
     <p-header>
       Observaciones
