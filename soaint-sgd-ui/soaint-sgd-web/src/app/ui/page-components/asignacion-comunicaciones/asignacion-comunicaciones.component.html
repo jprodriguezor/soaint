@@ -218,8 +218,7 @@
     <app-popup-agregar-observaciones #popupAgregarObservaciones></app-popup-agregar-observaciones>
 
   </p-dialog>
-  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"
-            [style]="{'position':'absolute'}" [contentStyle]="{'height':'auto'}"
+  <p-dialog [visible]="rejectDialogVisible$ | async" modal="modal" [responsive]="true"            
             (onHide)="hideRejectDialog()" [width]="800">
     <p-header>
       Devolver
