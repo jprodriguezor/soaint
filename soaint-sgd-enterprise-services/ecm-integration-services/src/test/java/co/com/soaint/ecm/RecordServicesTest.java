@@ -37,20 +37,28 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath:spring/core-config.xml"})
 public class RecordServicesTest {
 
+//    static {
+//        System.setProperty(SystemParameters.API_SEARCH_ALFRESCO,"http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD,"http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS,"admin");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER,"admin");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT,"http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+//    }
     @Autowired
     private IRecordServices recordServices;
     @Autowired
+    private ContentControl contentControl;
+    @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
-    private Conexion conexion;
-    String idSubCategoria = "";
-    private String idPadre = "";
-    @Value("${protocolo}")
-    private String protocolo = "";
-    @Value("${mensaje.error.sistema}")
-    private String errorSistema = "";
-    @Value("${mensaje.error.sistema.generico}")
-    private String errorSistemaGenerico = "";
     @Value("${header.accept}")
     private String headerAccept = "";
     @Value("${header.authorization}")
@@ -65,82 +73,29 @@ public class RecordServicesTest {
     private String encoding = "";
     @Value("${nodeType}")
     private String tipoNodo = "";
-    @Value("${recordCategory}")
-    private String recordCategoria = "";
-    @Value("${tag.propiedades}")
-    private String tagPropiedades = "";
-    @Value("${recordCarpeta}")
-    private String recordCarpeta = "";
-    @Value("${id.sitio.record.manager}")
-    private String idRecordManager = "";
-    @Value("${api.service.alfresco}")
-    private String apiServiceAlfresco = "";
-    @Value("${tag.nombre}")
-    private String nombre = "";
-    @Value("${tag.descripcion}")
-    private String descripcion = "";
-    @Value("${tag.periodo}")
-    private String periodo = "";
-    @Value("${tag.localizacion}")
-    private String localizacion = "";
-    @Value("${tag.propiedad.periodo}")
-    private String propiedadPeriodo = "";
-    @Value("${tag.evento.completar}")
-    private String eventoCompletar = "";
-    @Value("${tag.evento}")
-    private String evento = "";
-    @Value("${valor.periodo}")
-    private String valorPeriodo = "";
-    @Value("${valor.mensaje.descripcion}")
-    private String mensajeDescripcion = "";
 
-    private String codigoOrgAUX = " ";
-    private String idSerie = "";
-    private Map<String, String> codigosRecord = new HashMap<>();
-    private Map<String, String> propiedades = new HashMap<>();
-    private Map<String, String> codigosSubseries = new HashMap<>();
-    private Map<String, Object> disposicion = new HashMap<>();
 
-    UnidadDocumentalDTO unidadDocumentalDTO =new UnidadDocumentalDTO();
-    private String urLecm = System.getProperty("URLecm");
+    UnidadDocumentalDTO unidadDocumentalDTO;
+    MensajeRespuesta mensajeRespuesta;
+    MensajeRespuesta mensajeRespuestaUnidadDocumentalContent;
+
     @Before
     public void setUp() throws Exception {
 
-        conexion = new Conexion();
-        //
-        //crear conexion
 
-
-        //Inicializar coneccion
-        Map<String, String> parameter = new HashMap<>();
-        // Credenciales del usuario
-        parameter.put(SessionParameter.USER, "admin");
-        parameter.put(SessionParameter.PASSWORD, "admin");
-
-        // configuracion de conexion
-        parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
-        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
-        parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-        parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
-
-        // Object factory de Alfresco
-        parameter.put(SessionParameter.OBJECT_FACTORY_CLASS, "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
-
-        // Crear Sesion
-        SessionFactory factory = SessionFactoryImpl.newInstance();
-        conexion.setSession(factory.getRepositories(parameter).get(0).createSession());
 
 
 //Se llenan los datos de la unidad documental
         unidadDocumentalDTO = new UnidadDocumentalDTO();
+
         unidadDocumentalDTO.setInactivo(true);
         //Calendar calendar
         Calendar gregorianCalendar = GregorianCalendar.getInstance();
         unidadDocumentalDTO.setFechaCierre(gregorianCalendar);
-        unidadDocumentalDTO.setId("1118");
+        unidadDocumentalDTO.setId("111122223333");
         unidadDocumentalDTO.setFechaExtremaInicial(gregorianCalendar);
         unidadDocumentalDTO.setSoporte("electronico");
-        unidadDocumentalDTO.setNombreUnidadDocumental("UnidadDocumentalTest");
+        unidadDocumentalDTO.setNombreUnidadDocumental("RecordFolderTest");
         unidadDocumentalDTO.setFechaExtremaFinal(gregorianCalendar);
         unidadDocumentalDTO.setCerrada(true);
         unidadDocumentalDTO.setCodigoSubSerie("02312");
@@ -154,23 +109,20 @@ public class RecordServicesTest {
         unidadDocumentalDTO.setEstado("Abierto");
         unidadDocumentalDTO.setDisposicion("Eliminar");
 
-        MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
-                crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
-
-         unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+//        MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+//                crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+//
+//        unidadDocumentalDTOResultante = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
     }
 
     @After
     public void tearDown() throws Exception {
-        contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
-        //Eliminar Record Folder
-            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-            wt.path("/record-folders/" + unidadDocumentalDTO.getId())
-                    .request()
-                    .header(headerAuthorization, valueAuthorization + " " + encoding)
-                    .header(headerAccept, valueApplicationType)
-                    .delete();
+        if (null!=mensajeRespuestaUnidadDocumentalContent){
+            UnidadDocumentalDTO unidadDocumentalDTO1=(UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+        contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO1.getId(), contentControl.obtenerConexion().getSession());
+        }
+
     }
 
     @Test
@@ -181,13 +133,17 @@ public class RecordServicesTest {
     public void crearCarpetaRecord() {
         EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
         try {
-            entradaRecordDTO.setDependencia("1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
-            entradaRecordDTO.setSede("1000_VICEPRESIDENCIA");
+            entradaRecordDTO.setDependencia("10001040");
+            entradaRecordDTO.setSede("1000");
             entradaRecordDTO.setNombreCarpeta("RecordFolderTest");
             entradaRecordDTO.setSerie("0231");
             entradaRecordDTO.setSubSerie("02312");
 
-            recordServices.crearCarpetaRecord(entradaRecordDTO);
+            mensajeRespuesta= recordServices.crearCarpetaRecord(entradaRecordDTO);
+
+            assertEquals("0000",mensajeRespuesta.getCodMensaje());
+
+
         } catch (SystemException e) {
             e.printStackTrace();
         }
@@ -204,8 +160,16 @@ public class RecordServicesTest {
     @Test
     public void obtenerRecordFolder() {
         final Optional<Folder> optionalDocumentalDTO;
+        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
         try {
-            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTO.getId());
+
+
+            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOTest.setAccion("CERRAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+
+            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTOTest.getId());
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
         } catch (SystemException e) {

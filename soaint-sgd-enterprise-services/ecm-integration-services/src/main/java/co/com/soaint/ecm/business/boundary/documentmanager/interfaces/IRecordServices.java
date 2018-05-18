@@ -70,16 +70,5 @@ public interface IRecordServices {
      * @param idUnidadDocumental Id de la Ud por el que se hara la busqueda en el ECM
      * @return Void
      */
-    default void eliminarRecordFolder(String idUnidadDocumental) throws SystemException {
-        Optional<Folder> optionalFolder = obtenerRecordFolder(idUnidadDocumental);
-        if (optionalFolder.isPresent()) {
-            Folder recordFolder = optionalFolder.get();
-            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
-            Response response = wt.path("/record-folders/" + recordFolder.getId())
-                    .request().delete();
-            if (response.getStatus() != HttpURLConnection.HTTP_NO_CONTENT) {
-                throw new SystemException("Ocurrio un error al eliminar la carpeta de registro");
-            }
-        }
-    }
+    void eliminarRecordFolder(String idUnidadDocumental) throws SystemException;
 }

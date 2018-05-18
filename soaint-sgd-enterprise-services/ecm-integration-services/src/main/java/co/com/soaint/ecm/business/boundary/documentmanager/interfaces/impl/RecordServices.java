@@ -266,7 +266,21 @@ public class RecordServices implements IRecordServices {
         respuesta.setCodMensaje("0000");
         return respuesta;
     }
-
+    public void eliminarRecordFolder(String idUnidadDocumental) throws SystemException {
+        Optional<Folder> optionalFolder = obtenerRecordFolder(idUnidadDocumental);
+        if (optionalFolder.isPresent()) {
+            Folder recordFolder = optionalFolder.get();
+            WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
+            Response response = wt.path("/record-folders/" + recordFolder.getId())
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header(headerAccept, valueApplicationType)
+                    .delete();
+            if (response.getStatus() != HttpURLConnection.HTTP_NO_CONTENT) {
+                throw new SystemException("Ocurrio un error al eliminar la carpeta de registro");
+            }
+        }
+    }
     @Override
     public Optional<Folder> obtenerRecordFolder(String idUnidadDocumental) {
         final Conexion conexion = contentControl.obtenerConexion();
