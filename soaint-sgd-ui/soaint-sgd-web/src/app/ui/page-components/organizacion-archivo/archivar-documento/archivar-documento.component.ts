@@ -19,6 +19,10 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import * as moment from "moment";
 import {SeleccionarDocumentosComponent} from "./components/seleccionar-documentos/seleccionar-documentos.component";
 import {Sandbox as AsigSandbox} from "../../../../infrastructure/state-management/asignacionDTO-state/asignacionDTO-sandbox";
+import {Observable} from "rxjs/Observable";
+import {ROUTES_PATH} from "../../../../app.route-names";
+import {go} from "@ngrx/router-store";
+import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
 
 @Component({
   selector: 'app-archivar-documento',
@@ -49,6 +53,8 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
   @ViewChild('seleccionarDocumentosComponent')
   seleccionarDocumentosComponent:SeleccionarDocumentosComponent;
 
+  @ViewChild('selectUD') selectUD:SeleccionarUnidadDocumentalComponent;
+
 
    constructor( private _solicitudService:SolicitudCreacionUdService,
                private  _taskSandbox:TaskSandbox,
@@ -69,13 +75,20 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
        if(task){
 
          this.subscriptions.push(
-           this._archivarDocumentoApi.getTaskData(task.idInstanciaProceso,task.idTarea).subscribe( response => {
+           this._archivarDocumentoApi.getTaskData(task.idInstanciaProceso,'0000').subscribe( response => {
 
-             if(response){
+             if(!isNullOrUndefined(response.payload)){
 
-               if(!isNullOrUndefined(response.archivarDocumentoModel))
-
-                 this.archivarDocumentoModel = response.archivarDocumentoModel;
+               const payload = response.payload;
+               if(!isNullOrUndefined(payload.data))
+                 this.selectUD.form.setValue(payload.data);
+               if(!isNullOrUndefined(payload.operation))
+                this.selectUD.operation = payload.operation;
+               if(!isNullOrUndefined(payload.solicitudes)){
+                 this.solicitudUDModel.Solicitudes = payload.solicitudes;
+                 if(payload.operation== "solicitarUnidadDocumental")
+                  this.selectUD.unidadesDocumentales$ = Observable.of(this.solicitudUDModel.Solicitudes);
+               }
              }
            })
          );
@@ -100,6 +113,12 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
      this.enableButtonNext = false;
 
    }));
+
+    this.subscriptions.push(afterTaskComplete.subscribe(() => {
+
+      if(!this.showSolicitarButton)
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+    }));
    }
 
   next(){
@@ -117,15 +136,15 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
       idTareaProceso: this.idEstadoTarea,
       idInstanciaProceso: this.task.idInstanciaProceso,
       payload: {
-        archivarDocumentoModel:this.archivarDocumentoModel
+        data: this.selectUD.form.value,
+        operation: this.selectUD.operation,
+        solicitudes: this.solicitudUDModel.Solicitudes
       },
     };
 
-     this._archivarDocumentoApi.guardarEstadoTarea(tareaDTO);
+     this._archivarDocumentoApi.guardarEstadoTarea(tareaDTO).subscribe();
   }
-   @ViewChild("selectUD")  private set SelectUdComponent(selectUd:SeleccionarUnidadDocumentalComponent){
-     this.selectUd = selectUd;
-   }
+
   solicitarCreacionUd(){
 
     this.subscriptions.push(this.solicitudUDModel.Solicitar().subscribe( () => {
@@ -150,7 +169,7 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
         })
       );
-      this.selectUd.form.reset();
+      this.selectUD.form.reset();
     }));
   }
 
@@ -167,6 +186,11 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
 
   finalizar(){
+
+     if(this.showSolicitarButton){
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+       return;
+     }
 
      if(!isNullOrUndefined(this.task)){
        this._taskSandbox.completeTaskDispatch({

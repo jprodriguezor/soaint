@@ -89,10 +89,6 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
                                ];
 
-        if(!isNullOrUndefined(this.nroRadicado)){
-
-          validDocuments.push( this.documentos.length == this.archivarDocumentoModel.Documentos.length)
-        }
 
         if(!validDocuments.every( r => r)){
 
@@ -101,6 +97,17 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
           }));
            return ;
         }
+
+        if(!isNullOrUndefined(this.nroRadicado)){
+
+         if (this.documentos.length > this.archivarDocumentoModel.Documentos.length){
+            this._store.dispatch(new PushNotificationAction({
+              severity: 'error', summary: 'Debe seleccionar todos los documentos'
+            }));
+            return ;
+          }
+        }
+
       this._udService.archivarDocumento(this.archivarDocumentoModel.getUnidadDocumentalParaSalvar())
           .subscribe(response  =>{
               if(response.codMensaje == '0000'){
@@ -119,23 +126,9 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   private FillListasDocumentos(){
 
-
-
     const observable = this._store.select(getSelectedDependencyGroupFuncionario);
 
-    if(!isNullOrUndefined(this.nroRadicado)){
-
-      this.subscriptions.push(this._udService
-        .obtenerDocumentoPorNoRadicado(this.nroRadicado)
-        .subscribe( documents => {
-          this.documentos = documents.documentoDTOList;
-          this.changeDetectorRef.detectChanges();
-        })
-      )
-    }
-
-    else
-     this.setDocumentosPorArvichar(observable);
+    this.setDocumentosPorArvichar(observable);
 
     this.subscriptions.push(observable.switchMap(dependencia =>  this._udService
       .listarDocumentosArchivadosPorDependencia(dependencia.codigo))
@@ -149,20 +142,37 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
 
   private setDocumentosPorArvichar(observable:Observable<DependenciaDTO>){
 
-    this.subscriptions.push(
-      observable.switchMap(dependencia => {
+    let newObservable:Observable<any[]>;
+
+    if(!isNullOrUndefined(this.nroRadicado)){
+
+     newObservable=  combineLatest(observable.switchMap(dependencia =>  this._udService.listarDocumentosArchivadosPorDependencia(dependencia.codigo)),
+                                   this._udService.obtenerDocumentoPorNoRadicado(this.nroRadicado).map( r => r.documentoDTOList.map(
+                                   doc => {
+                                       doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
+                                       doc.isAttachment = false;
+                                       return doc;
+                                     }
+                                   )))
+                            .map(([archivados,radicados]) => { console.log("archivados",archivados); console.log("radicados",radicados) ;return radicados.filter( d => archivados.every( a => a.idDocumento != d.identificador))});
+
+    }
+
+    else
+      newObservable = observable.switchMap(dependencia => {
 
         return this._udService.listarDocumentosPorArchivar(dependencia.codigo)
           .map( response => response.documentoDTOList.map( doc => {
-
-
             doc.identificador = !isNullOrUndefined(doc.nroRadicado) && doc.nroRadicado != 'null' ? doc.nroRadicado : doc.idDocumento;
             doc.isAttachment = false;
             return doc;
           }),(outer,inner) => inner);
-      })
-        .subscribe(documentos => {  this.documentos = documentos; this.changeDetectorRef.detectChanges();})
-    );
+      });
+
+    this.subscriptions.push( newObservable.subscribe(documentos => {
+      this.documentos = documentos;
+      this.changeDetectorRef.detectChanges();
+    }));
     }
 
   toggleDocuments(event:any,checked?:boolean){
@@ -199,7 +209,10 @@ export class SeleccionarDocumentosComponent implements OnInit,OnDestroy {
     console.log("documentos por archivar", this.archivarDocumentoModel.Documentos);
   }
 
-  showDocumento(idDocumento){
+  showDocumento(idDocumento,evento?){
+
+    if(!isNullOrUndefined(evento))
+      evento.preventDefault();
 
     this.idEcm = idDocumento;
 

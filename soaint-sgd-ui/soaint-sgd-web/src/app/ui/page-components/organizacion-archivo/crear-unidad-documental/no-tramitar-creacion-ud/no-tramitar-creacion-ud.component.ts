@@ -74,7 +74,7 @@ export class NoTramitarCreacionUdComponent  implements OnInit,OnDestroy {
          this._solicitudService.actualizarSolicitudes(solicitud)
            .subscribe(() => {
 
-             this.onNoTramitarUnidadDocumental.emit();
+             this.onNoTramitarUnidadDocumental.emit({action:"No tramitar creación UD"});
 
              this.solicitudModel.removeAtIndex();
            }, error => {})

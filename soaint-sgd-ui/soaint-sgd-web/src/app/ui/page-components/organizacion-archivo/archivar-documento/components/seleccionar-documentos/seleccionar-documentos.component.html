@@ -87,7 +87,7 @@
         </p-column>
         <p-column header="Ver" >
           <ng-template  let-col let-row="rowData" pTemplate="body">
-            <a href="" (click)="ShowDocument(row.idDocumento)" >Ver</a>
+            <a href="#" (click)="showDocumento(row.idDocumento,$event)" >Ver</a>
           </ng-template>
         </p-column>
         <p-column header="Tipologia Documental" >

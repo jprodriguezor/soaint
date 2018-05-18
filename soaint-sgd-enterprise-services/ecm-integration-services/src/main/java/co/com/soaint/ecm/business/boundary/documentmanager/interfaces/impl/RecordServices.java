@@ -1,5 +1,6 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
+import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresco;
 import co.com.soaint.ecm.business.boundary.documentmanager.configuration.Utilities;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
@@ -22,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -389,15 +391,7 @@ public class RecordServices implements IRecordServices {
                         udRecordFolder.getId() : createAndRetrieveId(unidadDocumental);
 
                 for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
-                    //Se declara el record
-                    String s = declararRecord(documentoDTO.getIdDocumento());
-                    log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
-                    //Se completa el record
-                    String s1 = completeRecord(documentoDTO.getIdDocumento());
-                    log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
-                    //Se archiva el record
-                    String s2 = fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
-                    log.info("Archivando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s2);
+                    completeRecordFile(documentoDTO, idRecordFolder);
                 }
 
                 final String idUnidadDocumental = unidadDocumental.getId();
@@ -411,6 +405,18 @@ public class RecordServices implements IRecordServices {
             unidadDocumental.setInactivo(false);
         }
         actualizarUnidadDocumental(unidadDocumental);
+    }
+
+    private void completeRecordFile(DocumentoDTO documentoDTO, final String idRecordFolder) throws SystemException {
+        //Se declara el record
+        String s = declararRecord(documentoDTO);
+        log.info("Declarando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s);
+        //Se completa el record
+        String s1 = completeRecord(documentoDTO.getIdDocumento());
+        log.info("Completando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s1);
+        //Se archiva el record
+        String s2 = fileRecord(documentoDTO.getIdDocumento(), idRecordFolder);
+        log.info("Archivando '{}' como record con id {}", documentoDTO.getNombreDocumento(), s2);
     }
 
     /**
@@ -508,11 +514,12 @@ public class RecordServices implements IRecordServices {
     /**
      * Permite declarar un documento como record
      *
-     * @param idDocumentoContent Identificador del documento dentro del content
+     * @param documentoDTO Obj documento dentro del content
      * @return el id del record creado
      * @throws SystemException SystemException
      */
-    private String declararRecord(String idDocumentoContent) throws SystemException {
+    private String declararRecord(DocumentoDTO documentoDTO) throws SystemException {
+        final String idDocumentoContent = documentoDTO.getIdDocumento();
         log.info("iniciar - Declarar como record el documento con id: {}", idDocumentoContent);
         try {
             WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
@@ -525,9 +532,31 @@ public class RecordServices implements IRecordServices {
                 throw ExceptionBuilder.newBuilder()
                         .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
                         .buildBusinessException();
-            } else {
-                return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
             }
+            final String fatherId = obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
+            final Map<String, String> query = new HashMap<>();
+            final JSONObject parametro = new JSONObject();
+            final String tipologiaDocumental = !StringUtils.isEmpty(documentoDTO.getTipologiaDocumental()) ?
+                    documentoDTO.getTipologiaDocumental() : "";
+            final String referencia = StringUtils.isEmpty(documentoDTO.getNroRadicado()) ?
+                    idDocumentoContent : documentoDTO.getNroRadicado();
+
+            query.put("rmc:referencia", referencia);
+            query.put("rmc:tipologia_documental", tipologiaDocumental);
+            parametro.put("properties", query);
+
+            response = wt.path("/records/" + idDocumentoContent)
+                    .request()
+                    .header(headerAuthorization, valueAuthorization + " " + encoding)
+                    .header(headerAccept, valueApplicationType)
+                    .put(Entity.json(parametro.toString()));
+
+            if (response.getStatus() != 200) {
+                throw ExceptionBuilder.newBuilder()
+                        .withMessage(errorNegocioFallo + response.getStatus() + response.getStatusInfo().toString())
+                        .buildBusinessException();
+            }
+            return fatherId;
 
         } catch (BusinessException e) {
             log.error(e.getMessage());
@@ -754,7 +783,6 @@ public class RecordServices implements IRecordServices {
             } else {
                 return obtenerIdPadre(new JSONObject(response.readEntity(String.class)));
             }
-
         } catch (BusinessException e) {
             log.error(e.getMessage());
             throw ExceptionBuilder.newBuilder()

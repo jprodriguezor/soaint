@@ -20,7 +20,7 @@
           <p-column field="descriptor2" header="Descriptor 2"></p-column>
           <p-column field="observaciones" header="Observaciones"></p-column>
           <p-column  header="Accion">
-            <ng-template pTemplate="body"  let-index="rowIndex">
+            <ng-template pTemplate="body"  let-index="rowIndex" let-row="rowData">
               <p-dropdown  (onChange)="selectAction(index,$event)"
                            [options] = '[{value:null,label:"Seleccione una accion"},{value:"Creación UD",label:"Crear Unidad Documental"},{value:"No tramitar creación UD",label:"No tramitar UD"}]'
                            [style]="{width:'100%'}"

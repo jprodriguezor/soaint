@@ -11,6 +11,7 @@ import {UnidadDocumentalApiService} from "../../../../../infrastructure/api/unid
 import {isNullOrUndefined} from "util";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
+import {PushNotificationAction} from "../../../../../infrastructure/state-management/notifications-state/notifications-actions";
 
 
 
@@ -139,18 +140,25 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
           nombreUnidadDocumental:this.form.get('nombre').value,
           descriptor1: !isNullOrUndefined(this.form.get('descriptor1')) ? this.form.get('descriptor1').value: "",
           descriptor2: !isNullOrUndefined(this.form.get('descriptor2')) ? this.form.get('descriptor2').value: "",
-          observaciones:this.form.get('observaciones').value,
-          accion:"Creación UD"
+          observaciones:this.form.get('observaciones').value
         };
 
         this.udService.crear(data)
-        .subscribe(() => {
+        .subscribe((response) => {
+
+          if(response.codMensaje != '0000'){
+            this._store
+              .dispatch(new PushNotificationAction({ severity: 'error', summary: response.mensaje}));
+
+            return;
+          }
+
 
           data.codigoDependencia = this.dependenciaSelected.codigo;
 
           data.codigoSede = this.dependenciaSelected.codSede;
 
-          this.solicitudService.actualizarSolicitudes(this.solicitudModel.SolicitudSelected).subscribe( () => this.onCreateUnidadDocumental.emit() );
+          this.solicitudService.actualizarSolicitudes(this.solicitudModel.SolicitudSelected).subscribe( () => this.onCreateUnidadDocumental.emit({action:"Creación UD"}) );
 
           this.solicitudModel.removeAtIndex();
 

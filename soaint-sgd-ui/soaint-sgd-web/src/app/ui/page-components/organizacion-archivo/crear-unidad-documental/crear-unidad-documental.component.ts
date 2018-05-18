@@ -20,6 +20,9 @@ import {FuncionariosService} from "../../../../infrastructure/api/funcionarios.s
 import {Subscription} from "rxjs/Subscription";
 import {ListaSolicitudCrearUdComponent} from "./lista-solicitud-crear-ud/lista-solicitud-crear-ud.component";
 import {isNullOrUndefined} from "util";
+import {afterTaskComplete} from "../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {ROUTES_PATH} from "../../../../app.route-names";
+import {go} from "@ngrx/router-store";
 
 @Component({
   selector: 'app-crear-unidad-documental',
@@ -43,7 +46,8 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    subscriptions:Subscription[] = [];
 
-   @ViewChild("listaSolicitudeNoTramitadas") listaSolicitudesNoTramitadas:ListaSolicitudCrearUdComponent;
+
+
 
   constructor(private _store:Store<RootState>,
               private _taskSandbox:TaskSandbox,
@@ -63,6 +67,8 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
     this.subscriptions.push(
       this._store.select(getActiveTask).subscribe( task =>{
 
+        if(isNullOrUndefined(task))
+          return;
         this.task = task;
 
         this.form.get('sede').setValue(task.variables.codSede);
@@ -75,6 +81,10 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
         this.actualizarSolicitudesTramitadas();
       })
     );
+
+   this.subscriptions.push(afterTaskComplete.subscribe(() => {
+     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+   }));
 
     }
 
@@ -100,7 +110,7 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
 
    closePopup(){}
 
-   actualizarSolicitudesTramitadas(){
+   actualizarSolicitudesTramitadas(event?){
 
     this.solicitudesProcesadas$ =  this._solicitudService.listarSolicitudesTramitadas({
                                         codSede:this.task.variables.codSede,
@@ -108,7 +118,7 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
                                         idSolicitante: this.task.variables.idSolicitante
                                       });
 
-
+    this.currentAction = null;
   }
 
 
@@ -118,9 +128,10 @@ export class CrearUnidadDocumentalComponent implements OnInit,OnDestroy {
      this._taskSandbox.completeTaskDispatch({
        idProceso: this.task.idProceso,
        idDespliegue: this.task.idDespliegue,
-       idTarea: this.task.idTarea,
-
+       idTarea: this.task.idTarea
      });
+
+
    }
 
    ngOnDestroy(){

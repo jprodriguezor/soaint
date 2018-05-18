@@ -1,10 +1,11 @@
 <div class="ui-fluid crear-unidad-documental">
-  <app-task-container (onFinalizar)="finalizar()" [isActive]="true" >
-    <div customActions>
-      <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()" ></button>
-    </div>
-    <div taskBody>
+  <app-task-container  >
 
+    <div taskBody>
+      <div  class="page-buttons text-right">
+        <button pButton type="button" label="Guardar" style="width: auto; margin-bottom: 10px" (click)="save()" ></button>
+        <button pButton type="button"  class="ui-button-success" label="Finalizar" style="width: auto; margin-bottom: 10px" (click)="finalizar()" ></button>
+      </div>
       <div class="ui-g ui-fluid">
         <div class="ui-g-12" >
           <div class="card card-w-title">
@@ -62,11 +63,11 @@
 
       </ng-template>
 
-      <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)" [solicitudModel]="solicitudModel"  #listaSolicitudeNoTramitadas ></app-lista-solicitud-crear-ud>
+      <app-lista-solicitud-crear-ud (changeAction)="selectAction($event)" [solicitudModel]="solicitudModel"  #listaSolicitudeNoTramitadas  ></app-lista-solicitud-crear-ud>
 
-      <app-no-tramitar-creacion-ud *ngIf="currentAction =='No tramitar creación UD'"     (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas()" [solicitudModel]="solicitudModel" ></app-no-tramitar-creacion-ud>
+      <app-no-tramitar-creacion-ud *ngIf="currentAction =='No tramitar creación UD'"     (onNoTramitarUnidadDocumental)="actualizarSolicitudesTramitadas($event)" [solicitudModel]="solicitudModel"  ></app-no-tramitar-creacion-ud>
 
-      <app-form-crear-unidad-documental *ngIf="currentAction=='Creación UD'" [solicitudModel]="solicitudModel"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas()" ></app-form-crear-unidad-documental>
+      <app-form-crear-unidad-documental *ngIf="currentAction=='Creación UD'" [solicitudModel]="solicitudModel"  (onCreateUnidadDocumental)="actualizarSolicitudesTramitadas($event)" ></app-form-crear-unidad-documental>
 
       <app-ud-tramitadas [solicitudesProcesadas$]="solicitudesProcesadas$" ></app-ud-tramitadas>
 

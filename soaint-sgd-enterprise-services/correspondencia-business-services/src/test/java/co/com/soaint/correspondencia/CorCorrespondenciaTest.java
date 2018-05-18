@@ -1,5 +1,6 @@
 package co.com.soaint.correspondencia;
 
+import co.com.soaint.correspondencia.domain.entity.CorAgente;
 import co.com.soaint.foundation.canonical.correspondencia.CorrespondenciaDTO;
 import co.com.soaint.correspondencia.domain.entity.CorCorrespondencia;
 
@@ -58,12 +59,13 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
         assertEquals(coresp.getNroRadicado(), NRO_RADICADO);
 
     }
+
     @Test
     public void test_CorCorrespondenciafindByIdeDocumento_success() throws SystemException {
 
         //given
         String namedQuery = "CorCorrespondencia.findByIdeDocumento";
-       BigInteger IDE_DOCUMENTO=new BigInteger("837");
+        BigInteger IDE_DOCUMENTO = new BigInteger("837");
         //when
         CorrespondenciaDTO coresp = createNamedQuery(namedQuery, CorrespondenciaDTO.class)
                 .setParameter("IDE_DOCUMENTO", IDE_DOCUMENTO)
@@ -73,13 +75,14 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
         assertEquals(coresp.getIdeDocumento(), IDE_DOCUMENTO);
 
     }
+
     @Test
     public void test_CorCorrespondenciafindIdeDocumentoByNroRadicado_success() throws SystemException {
 
         //given
         String namedQuery = "CorCorrespondencia.findIdeDocumentoByNroRadicado";
         String NRO_RADICADO = "1040TP-CMCOE2017000002";
-        BigInteger IDE_DOCUMENTO=new BigInteger("837");
+        BigInteger IDE_DOCUMENTO = new BigInteger("837");
         //when
         BigInteger coresp = createNamedQuery(namedQuery, BigInteger.class)
                 .setParameter("NRO_RADICADO", NRO_RADICADO)
@@ -90,13 +93,14 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
         assertEquals(coresp, IDE_DOCUMENTO);
 
     }
+
     @Test
     public void test_CorCorrespondenciacountByNroRadicado_success() throws SystemException {
 
         //given
         String namedQuery = "CorCorrespondencia.countByNroRadicado";
         String NRO_RADICADO = "1040TP-CMCOE2017000002";
-        Long cant=new Long("1");
+        Long cant = new Long("1");
         //when
         Long coresp = createNamedQuery(namedQuery, Long.class)
                 .setParameter("NRO_RADICADO", NRO_RADICADO)
@@ -107,21 +111,22 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
         assertEquals(coresp, cant);
 
     }
+
     @Test
     public void test_CorCorrespondenciamaxNroRadicadoByCodSedeAndCodTipoCMC_success() throws SystemException {
 
         //given
         String namedQuery = "CorCorrespondencia.maxNroRadicadoByCodSedeAndCodTipoCMC";
         String COD_SEDE = "1040";
-        String COD_TIPO_CMC= "TP-CMCOE";
-        String NRO_RADICADO= "1040TP-CMCOE2017000002";
+        String COD_TIPO_CMC = "TP-CMCOE";
+        String NRO_RADICADO = "1040TP-CMCOE2017000002";
 
         //when
         String coresp = createNamedQuery(namedQuery, String.class)
                 .setParameter("COD_SEDE", COD_SEDE)
                 .setParameter("COD_TIPO_CMC", COD_TIPO_CMC)
-                .setParameter("RESERVADO_INI","80")
-                .setParameter("RESERVADO_FIN","100")
+                .setParameter("RESERVADO_INI", "80")
+                .setParameter("RESERVADO_FIN", "100")
                 .getSingleResult();
 
         //then
@@ -135,7 +140,7 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
 
         //given
         String namedQuery = "CorCorrespondencia.findFechaVenGestionByIdeDocumento";
-        BigInteger IDE_DOCUMENTO=new BigInteger("837");
+        BigInteger IDE_DOCUMENTO = new BigInteger("837");
 
         //when
         Date coresp = createNamedQuery(namedQuery, Date.class)
@@ -152,7 +157,7 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
         String namedQueryUpdate = "CorCorrespondencia.updateEstado";
         String namedQuery = "CorCorrespondencia.findByNroRadicado";
         String NRO_RADICADO = "1040TP-CMCOE2017000002";
-        String COD_ESTADO="AS";
+        String COD_ESTADO = "AS";
 
         //when
         createNamedQuery(namedQueryUpdate)
@@ -166,16 +171,22 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
 
         //then
         assertNotNull(coresp);
-        assertEquals(NRO_RADICADO,coresp.get(0).getNroRadicado());
+        for (CorrespondenciaDTO cor :
+                coresp) {
+            if (cor.getNroRadicado().equals(NRO_RADICADO))
+                assertEquals(COD_ESTADO, cor.getCodEstado());
+
+        }
 
     }
+
     @Test
     public void test_CorCorrespondenciaupdateIdeInstancia_success() {
         //given
         String namedQueryUpdate = "CorCorrespondencia.updateIdeInstancia";
         String namedQuery = "CorCorrespondencia.findByNroRadicado";
         String NRO_RADICADO = "1040TP-CMCOE2017000002";
-        String IDE_INSTANCIA="33144";
+        String IDE_INSTANCIA = "33144";
 
         //when
         createNamedQuery(namedQueryUpdate)
@@ -189,7 +200,11 @@ public class CorCorrespondenciaTest extends JPAHibernateContextTest {
 
         //then
         assertNotNull(coresp);
-        assertEquals(NRO_RADICADO,coresp.get(0).getNroRadicado());
+        for (CorrespondenciaDTO cor :
+                coresp) {
+            if (cor.getNroRadicado().equals(NRO_RADICADO))
+                assertEquals(IDE_INSTANCIA, cor.getIdeInstancia());
 
+        }
     }
 }

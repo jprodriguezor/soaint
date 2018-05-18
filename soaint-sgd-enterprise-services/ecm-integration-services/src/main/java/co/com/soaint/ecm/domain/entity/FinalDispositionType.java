@@ -1,17 +1,20 @@
 package co.com.soaint.ecm.domain.entity;
 
-import org.springframework.util.StringUtils;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+@Getter(value = AccessLevel.PRIVATE)
 public enum FinalDispositionType implements Serializable {
 
-    CONSERVACION_TOTAL("Conservacion Total", "Conservación Total", "ct"),
-    ELIMINAR("Eliminar", "e", ""),
-    SELECCIONAR("Seleccionar", "s", ""),
-    MICROFILMAR("Microfilmar", "m", ""),
-    DIGITALIZAR("Digitalizar", "d", "");
+    CONSERVACION_TOTAL("CT", "Conservacion Total", "Conservación Total"),
+    ELIMINAR("E", "Eliminar", ""),
+    SELECCIONAR("S", "Seleccionar", ""),
+    MICROFILMAR("M", "Microfilmar", ""),
+    DIGITALIZAR("D", "Digitalizar", "");
 
     private static final Long serialVersionUID = 1L;
 
@@ -21,36 +24,61 @@ public enum FinalDispositionType implements Serializable {
     private final List<String> allMicrofilmar = new ArrayList<>();
     private final List<String> allDigitalizar = new ArrayList<>();
 
-    FinalDispositionType(String s, String s1, String s3) {
+    FinalDispositionType(String key, String s0, String s1) {
+        switch (key) {
+            case "CT":
+                allTotalConservation.add(allTotalConservation.size(), key);
+                allTotalConservation.add(allTotalConservation.size(), key.toLowerCase());
+                allTotalConservation.add(allTotalConservation.size(), s0);
+                allTotalConservation.add(allTotalConservation.size(), s0.toUpperCase());
+                allTotalConservation.add(allTotalConservation.size(), s0.toLowerCase());
+                allTotalConservation.add(allTotalConservation.size(), s1);
+                allTotalConservation.add(allTotalConservation.size(), s1.toUpperCase());
+                allTotalConservation.add(allTotalConservation.size(), s1.toLowerCase());
+                break;
+            case "E":
+                allEliminar.add(allEliminar.size(), key);
+                allEliminar.add(allEliminar.size(), key.toLowerCase());
+                allEliminar.add(allEliminar.size(), s0);
+                allEliminar.add(allEliminar.size(), s0.toUpperCase());
+                allEliminar.add(allEliminar.size(), s0.toLowerCase());
+                break;
+            case "S":
+                allSeleccionar.add(allSeleccionar.size(), key);
+                allSeleccionar.add(allSeleccionar.size(), key.toLowerCase());
+                allSeleccionar.add(allSeleccionar.size(), s0);
+                allSeleccionar.add(allSeleccionar.size(), s0.toUpperCase());
+                allSeleccionar.add(allSeleccionar.size(), s0.toLowerCase());
+                break;
+            case "M":
+                allMicrofilmar.add(allMicrofilmar.size(), key);
+                allMicrofilmar.add(allMicrofilmar.size(), key.toLowerCase());
+                allMicrofilmar.add(allMicrofilmar.size(), s0);
+                allMicrofilmar.add(allMicrofilmar.size(), s0.toUpperCase());
+                allMicrofilmar.add(allMicrofilmar.size(), s0.toLowerCase());
+                break;
+            case "D":
+                allDigitalizar.add(allDigitalizar.size(), key);
+                allDigitalizar.add(allDigitalizar.size(), key.toLowerCase());
+                allDigitalizar.add(allDigitalizar.size(), s0);
+                allDigitalizar.add(allDigitalizar.size(), s0.toUpperCase());
+                allDigitalizar.add(allDigitalizar.size(), s0.toLowerCase());
+                break;
+        }
+    }
 
-        allTotalConservation.add(allTotalConservation.size(), s);
-        allTotalConservation.add(allTotalConservation.size(), s.toUpperCase());
-        allTotalConservation.add(allTotalConservation.size(), s1);
-        allTotalConservation.add(allTotalConservation.size(), s1.toUpperCase());
-
-        allEliminar.add(allEliminar.size(), s);
-        allEliminar.add(allEliminar.size(), s.toUpperCase());
-        allEliminar.add(allEliminar.size(), s1);
-        allEliminar.add(allEliminar.size(), s1.toUpperCase());
-
-        allSeleccionar.add(allSeleccionar.size(), s);
-        allSeleccionar.add(allSeleccionar.size(), s.toUpperCase());
-        allSeleccionar.add(allSeleccionar.size(), s1);
-        allSeleccionar.add(allSeleccionar.size(), s1.toUpperCase());
-
-        allMicrofilmar.add(allMicrofilmar.size(), s);
-        allMicrofilmar.add(allMicrofilmar.size(), s.toUpperCase());
-        allMicrofilmar.add(allMicrofilmar.size(), s1);
-        allMicrofilmar.add(allMicrofilmar.size(), s1.toUpperCase());
-
-        allDigitalizar.add(allDigitalizar.size(), s);
-        allDigitalizar.add(allDigitalizar.size(), s.toUpperCase());
-        allDigitalizar.add(allDigitalizar.size(), s1);
-        allDigitalizar.add(allDigitalizar.size(), s1.toUpperCase());
-
-        if (!StringUtils.isEmpty(s3)) {
-            allTotalConservation.add(allTotalConservation.size(), s3);
-            allTotalConservation.add(allTotalConservation.size(), s3.toUpperCase());
+    public String getKey() {
+        switch (this) {
+            case SELECCIONAR:
+                return allSeleccionar.get(0);
+            case MICROFILMAR:
+                return allMicrofilmar.get(0);
+            case DIGITALIZAR:
+                return allDigitalizar.get(0);
+            case ELIMINAR:
+                return allEliminar.get(0);
+            default:
+                return allTotalConservation.get(0);
         }
     }
 
@@ -64,27 +92,25 @@ public enum FinalDispositionType implements Serializable {
                 return allDigitalizar.contains(disposition);
             case ELIMINAR:
                 return allEliminar.contains(disposition);
-            case CONSERVACION_TOTAL:
-                return allTotalConservation.contains(disposition);
             default:
-                return false;
+                return allTotalConservation.contains(disposition);
         }
     }
 
     public String getInDispositions() {
         switch (this) {
             case SELECCIONAR:
-                return getInDispositions(allSeleccionar);
+                return getInDispositions(getAllSeleccionar());
             case MICROFILMAR:
-                return getInDispositions(allMicrofilmar);
+                return getInDispositions(getAllMicrofilmar());
             case DIGITALIZAR:
-                return getInDispositions(allDigitalizar);
+                return getInDispositions(getAllDigitalizar());
             case ELIMINAR:
-                return getInDispositions(allEliminar);
+                return getInDispositions(getAllEliminar());
             case CONSERVACION_TOTAL:
-                return getInDispositions(allTotalConservation);
+                return getInDispositions(getAllTotalConservation());
             default:
-                return "";
+                return "''";
         }
     }
 

@@ -511,7 +511,7 @@ public class ContentControlAlfresco implements ContentControl {
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
-                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " = '" + PhaseType.ARCHIVO_CENTRAL.getTexto() + "'";
+                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " IN (" + PhaseType.ARCHIVO_CENTRAL.getInPhases() + ")";
                 log.info("Ejecutar consulta {}", query);
             }
             return listarUnidadesDocumentales(query, dto, session);
@@ -1742,7 +1742,7 @@ public class ContentControlAlfresco implements ContentControl {
 
                 Optional<Carpeta> comunicacionOficialInOutDentro = carpetasDeComunicacionOficialDentro.stream()
                         .filter(p -> p.getFolder().getName().contains(tipoComunicacionSelector)).findFirst();
-                carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", ConstantesECM.CLASE_SUBSERIE, comunicacionOficialInOut.get(), null));
+                carpetaTarget = comunicacionOficialInOutDentro.orElseGet(() -> crearCarpeta(comunicacionOficialInOut.get(), tipoComunicacionSelector + year, "11", ConstantesECM.CLASE_UNIDAD_DOCUMENTAL, comunicacionOficialInOut.get(), null));
             }
             idDocumento = crearDocumentoDevolverId(documentoDTO, response, bytes, properties, documentoDTOList, carpetaTarget);
             //Creando el mensaje de respuesta
@@ -2441,6 +2441,9 @@ public class ContentControlAlfresco implements ContentControl {
                 }
             }
 
+            unidadDocumentalDTO.setSoporte("Electrónico");
+            unidadDocumentalDTO.setInactivo(false);
+            unidadDocumentalDTO.setCerrada(false);
             final Map<String, Object> props = updateProperties(null, unidadDocumentalDTO);
             props.put(PropertyIds.OBJECT_TYPE_ID, "F:cmcor:" + configuracion.getPropiedad(ConstantesECM.CLASE_UNIDAD_DOCUMENTAL));
             log.info("Making the tmpFolder!!!");
@@ -2570,20 +2573,25 @@ public class ContentControlAlfresco implements ContentControl {
 
     private String getAbrevDisposition(String disposicion) {
         disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
-        if (FinalDispositionType.CONSERVACION_TOTAL.containsDisposition(disposicion)) {
-            return "CT";
+        FinalDispositionType dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
+        if (dispositionType.containsDisposition(disposicion)) {
+            return dispositionType.getKey();
         }
-        if (FinalDispositionType.DIGITALIZAR.containsDisposition(disposicion)) {
-            return "D";
+        dispositionType = FinalDispositionType.DIGITALIZAR;
+        if (dispositionType.containsDisposition(disposicion)) {
+            return dispositionType.getKey();
         }
-        if (FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
-            return "E";
+        dispositionType = FinalDispositionType.ELIMINAR;
+        if (dispositionType.containsDisposition(disposicion)) {
+            return dispositionType.getKey();
         }
-        if (FinalDispositionType.MICROFILMAR.containsDisposition(disposicion)) {
-            return "M";
+        dispositionType = FinalDispositionType.MICROFILMAR;
+        if (dispositionType.containsDisposition(disposicion)) {
+            return dispositionType.getKey();
         }
-        if (FinalDispositionType.SELECCIONAR.containsDisposition(disposicion)) {
-            return "S";
+        dispositionType = FinalDispositionType.SELECCIONAR;
+        if (dispositionType.containsDisposition(disposicion)) {
+            return dispositionType.getKey();
         }
         return "";
     }

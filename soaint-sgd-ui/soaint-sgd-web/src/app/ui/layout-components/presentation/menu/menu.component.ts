@@ -6,6 +6,14 @@ import {MenuItem} from 'primeng/primeng';
 import {AdminLayoutComponent} from '../../container/admin-layout/admin-layout.component';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs/Subscription';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import {State as RootState} from '../../../../infrastructure/redux-store/redux-reducers';
+import { TaskForm } from '../../../../shared/interfaces/task-form.interface';
+import { TareaDTO } from '../../../../domain/tareaDTO';
+import { getActiveTask, isOpenTask } from '../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-selectors';
+import { isNullOrUndefined } from 'util';
+import { afterTaskComplete } from '../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers';
 
 @Component({
   selector: 'app-menu',
@@ -22,6 +30,7 @@ import {Subscription} from 'rxjs/Subscription';
                       placeholder="Seleccione"
                       [filter]="true"
                       [autoWidth]="false"
+                      [disabled]="isOpenTask"
           >
           </p-dropdown>
         </div>
@@ -32,7 +41,7 @@ import {Subscription} from 'rxjs/Subscription';
         visible="true"></ul>
   `
 })
-export class AppMenuComponent implements OnInit, OnDestroy {
+export class AppMenuComponent implements OnInit, OnDestroy, TaskForm {
   form: FormGroup;
   formSubscription: Subscription;
   @Input() reset: boolean;
@@ -40,9 +49,15 @@ export class AppMenuComponent implements OnInit, OnDestroy {
   @Input() dependencias: Array<any> = [];
   @Input() dependenciaSelected: any;
   @Output() onSelectDependencia: EventEmitter<any> = new EventEmitter();
+  
+  isOpenTask = false;
+  task: TareaDTO;
+  activeTaskUnsubscriber: Subscription;
 
   constructor(@Inject(forwardRef(() => AdminLayoutComponent)) public app: AdminLayoutComponent,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private _store: Store<RootState>
+            ) {
   }
 
   ngOnInit() {
@@ -53,10 +68,16 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     this.formSubscription = this.form.get('dependencia').valueChanges.distinctUntilChanged().subscribe(value => {
       this.onSelectDependencia.emit(value);
     });
+
+    this.activeTaskUnsubscriber = this._store.select(isOpenTask)
+    .subscribe(inTask => {      
+      this.isOpenTask = inTask;
+    });
   }
 
   ngOnDestroy() {
     this.formSubscription.unsubscribe();
+    this.activeTaskUnsubscriber.unsubscribe();
   }
 
   changeTheme(theme) {
@@ -65,6 +86,10 @@ export class AppMenuComponent implements OnInit, OnDestroy {
 
     themeLink.href = 'assets/theme/theme-' + theme + '.css';
     layoutLink.href = 'assets/layout/css/layout-' + theme + '.css';
+  }
+
+  save(): Observable<any> {
+    return  Observable.of(true).delay(5000);
   }
 
 }
@@ -178,4 +203,6 @@ export class AppSubMenuComponent {
       this.activeIndex = null;
     }
   }
+
+
 }
