@@ -39,7 +39,7 @@ public class ContentControlAlfrescoTest {
     @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
-    private String urLecm = System.getProperty("URLecm");
+    private String urLecm = System.getProperty("BUSINESS_PLATFORM_ENDPOINT");
 
     private DocumentoDTO documentoDTO;
     private MensajeRespuesta mensajeRespuesta;
