@@ -18,6 +18,6 @@ public class TvsOrgaAdminXFunciPkPk implements Serializable {
     @Basic(optional = false)
     private String codOrgaAdmi;
     @JoinColumn(name = "IDE_FUNCI", referencedColumnName = "IDE_FUNCI")
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Funcionarios funcionario;
 }
