@@ -22,7 +22,7 @@
     <div taskBody>
       <p-tabView [activeIndex]="tabIndex" (onChange)="updateTabIndex($event)">
         <p-tabPanel header="Datos generales" leftIcon="ui-icon-assignment">
-          <app-datos-generales #datosGenerales [editable]="editable"
+          <app-datos-generales #datosGenerales [editable]="editable" [tipoComunicacion]="'E'"
                                [mediosRecepcionInput]="mediosRecepcionDefaultSelection$ | async"
                                (onChangeTipoComunicacion)="setTipoComunicacion($event)"></app-datos-generales>
         </p-tabPanel>

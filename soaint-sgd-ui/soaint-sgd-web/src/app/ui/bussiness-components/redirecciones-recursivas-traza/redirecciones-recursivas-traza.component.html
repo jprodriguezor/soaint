@@ -9,11 +9,7 @@
     <p-header>Redirecciones / Devoluciones Fallidas</p-header>
     <p-column field="nroDocuIdentidad" header="Número Radicado" [sortable]="true"></p-column>
     <p-column field="nombre" header="Asunto" [sortable]="true"></p-column>
-    <p-column field="numRedirecciones" header="Número de Redirecciones" [sortable]="true">
-      <ng-template let-col let-rfallidas="rowData" pTemplate="body">
-        {{rfallidas[col.field] - 1}}
-      </ng-template>
-    </p-column>
+    <p-column field="numRedirecciones" header="Número de Redirecciones" [sortable]="true"></p-column>
     <p-column header="Acciones" [style]="{'width':'120px','text-align':'center'}" *ngIf="editable === true">
       <ng-template let-tipoades="rowData" let-i="rowIndex" pTemplate="item">
         <button type="button" label="Continuar" pButton (click)="ejecutarRedireccionOrigen(i)"

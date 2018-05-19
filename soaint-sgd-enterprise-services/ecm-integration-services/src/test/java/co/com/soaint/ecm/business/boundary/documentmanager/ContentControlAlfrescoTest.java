@@ -39,7 +39,7 @@ public class ContentControlAlfrescoTest {
     @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
-    private String urLecm = System.getProperty("URLecm");
+    private String urLecm = System.getProperty("BUSINESS_PLATFORM_ENDPOINT");
 
     private DocumentoDTO documentoDTO;
     private MensajeRespuesta mensajeRespuesta;
@@ -81,6 +81,7 @@ public class ContentControlAlfrescoTest {
 
         // configuracion de conexion
         parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
+//        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
@@ -384,7 +385,7 @@ public class ContentControlAlfrescoTest {
     }
 
     @Test
-    public void testGetUDByIdSuccess() throws Exception {
+    public void testGetUDByIdTrueSuccess() throws Exception {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -402,6 +403,30 @@ public class ContentControlAlfrescoTest {
 
         } catch (SystemException e) {
             logger.error("Error SystemException: {}", e);
+        } catch (Exception e) {
+            logger.error("Error: {}", e);
+        }
+    }
+
+    @Test
+    public void testGetUDByIdFalseSuccess() throws Exception {
+        try {
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+                    crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            //Obtener la unidad documental
+
+            final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
+                    getUDById(unidadDocumentalDTO.getId(), false, conexion.getSession());
+
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
+        } catch (SystemException e) {
+            logger.error("Error: {}", e);
         } catch (Exception e) {
             logger.error("Error: {}", e);
         }
@@ -434,9 +459,13 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testMovDocumentoSuccess() {
-        contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        assertEquals("0000",contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL").getCodMensaje());
     }
+    @Test
+    public void testMovDocumentoNoExisteDocumento() {
+        assertEquals("00006",contentControlAlfresco.movDocumento(conexion.getSession(), "idNoValidoDeDocumento", "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL").getCodMensaje());
 
+    }
     @Test
     public void testGetUDFolderByIdSuccess() {
         try {
@@ -817,7 +846,7 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testListarUdDisposicionFinalSuccess() {
         try {
-UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
+            UnidadDocumentalDTO unidadDocumentalDTOTest;
             //Se llenan los datos de la unidad documental
             unidadDocumentalDTOTest = new UnidadDocumentalDTO();
             unidadDocumentalDTOTest.setInactivo(true);
@@ -853,17 +882,66 @@ UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
             disposicionFinalList.add("Eliminar");
             disposicionFinalList.add("Digitalizar");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
-            contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession());
+            assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
         } catch (SystemException e) {
             assertEquals("No se ha identificado la Unidad Documental", e.getMessage());
         }
     }
 
-
     @Test
-    public void crearLinkDocumentosApoyo() {
+    public void testAprobarRechazarDisposicionesFinalesSuccess() {
+        List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+        try {
+            UnidadDocumentalDTO unidadDocumentalDTOTest;
+            //Se llenan los datos de la unidad documental
+            unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+            unidadDocumentalDTOTest.setInactivo(true);
+            //Calendar calendar
+            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+            unidadDocumentalDTOTest.setFechaCierre(gregorianCalendar);
+            unidadDocumentalDTOTest.setId("11181");
+            unidadDocumentalDTOTest.setFechaExtremaInicial(gregorianCalendar);
+            unidadDocumentalDTOTest.setSoporte("electronico");
+            unidadDocumentalDTOTest.setNombreUnidadDocumental("UnidadDocumentalTest");
+            unidadDocumentalDTOTest.setFechaExtremaFinal(gregorianCalendar);
+            unidadDocumentalDTOTest.setCerrada(true);
+            unidadDocumentalDTOTest.setCodigoSubSerie("02312");
+            unidadDocumentalDTOTest.setCodigoSerie("0231");
+            unidadDocumentalDTOTest.setCodigoDependencia("10001040");
+            unidadDocumentalDTOTest.setDescriptor1("3434");
+            unidadDocumentalDTOTest.setDescriptor2("454545");
+            unidadDocumentalDTOTest.setAccion("");
+            unidadDocumentalDTOTest.setCerrada(false);
+            unidadDocumentalDTOTest.setEstado("Abierto");
+            unidadDocumentalDTOTest.setDisposicion("Eliminar");
+            unidadDocumentalDTOTest.setFaseArchivo("archivo central");
+
+            DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTOTest, conexion.getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOList.add(unidadDocumentalDTOTest1);
+            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
+            List<String> disposicionFinalList = new ArrayList<>();
+            disposicionFinalList.add("Conservacion Total");
+            disposicionFinalList.add("Microfilmar");
+            disposicionFinalList.add("seleccionar");
+            disposicionFinalList.add("Eliminar");
+            disposicionFinalList.add("Digitalizar");
+            disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
+            contentControlAlfresco.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOList, conexion.getSession());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
+        } catch (SystemException e) {
+        }
     }
 
-
+    @Test
+    public void testAprobarRechazarDisposicionesFinalesListaVaciaFail() {
+        List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+        try {
+            contentControlAlfresco.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOList, conexion.getSession());
+        } catch (SystemException e) {
+            assertEquals("La lista de unidades documentales enviada esta vacia", e.getMessage());
+        }
+    }
 }

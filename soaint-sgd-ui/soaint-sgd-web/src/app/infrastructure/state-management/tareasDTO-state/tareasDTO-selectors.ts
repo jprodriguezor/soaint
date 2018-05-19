@@ -23,6 +23,8 @@ export const getNextTask = (state: rootStore.State) => state.tareas.nextTask;
 
 export const taskStats = (state: rootStore.State) => state.tareas.stats;
 
+export const isOpenTask = (state: rootStore.State) => state.tareas.openTask;
+
 //export  const completeTask = ()
 
 

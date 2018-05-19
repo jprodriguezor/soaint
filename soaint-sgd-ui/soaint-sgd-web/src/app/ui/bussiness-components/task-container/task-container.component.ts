@@ -28,7 +28,7 @@ import { Sandbox as TaskSandBox } from 'app/infrastructure/state-management/tare
   encapsulation: ViewEncapsulation.None,
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaskContainerComponent implements OnInit {
+export class TaskContainerComponent implements OnInit, OnDestroy {
 
   task: TareaDTO = null;
  @Input() processName = '';
@@ -41,7 +41,7 @@ export class TaskContainerComponent implements OnInit {
 
   @Output() onFinalizar:EventEmitter<any> = new EventEmitter;
 
-  constructor(private _store: Store<RootState>,
+  constructor(private _store: Store<RootState>, 
               private _changeDetector: ChangeDetectorRef,
               private _taskSandBox: TaskSandBox) {
   }
@@ -69,7 +69,7 @@ export class TaskContainerComponent implements OnInit {
         if (activeTask === null) {
           this.isActive = false;
           this.hasToContinue = hasNextTask !== null;
-           this._changeDetector.detectChanges();
+          this._changeDetector.detectChanges();
         }
       });
   }
@@ -78,35 +78,19 @@ export class TaskContainerComponent implements OnInit {
 
     this.onFinalizar.emit();
 
-  //  this.dropSubscription();
-
     this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
   }
 
 
   navigateToNextTask() {
-
-   // this.dropSubscription();
-
     this._store.dispatch(new ContinueWithNextTaskAction());
-  }
-
- private  dropSubscription() {
-
-    if(!isNullOrUndefined(this.infoUnsubscriber))
-      this.infoUnsubscriber.unsubscribe();
-    this.activeTaskUnsubscriber.unsubscribe();
-
-    if(isNullOrUndefined(this.task ))
-       return;
-
-     this._store.dispatch(new ResetTaskAction());
-
   }
 
   ngOnDestroy() {
     if(!isNullOrUndefined(this.infoUnsubscriber))
-      this.infoUnsubscriber.unsubscribe();
+    this.infoUnsubscriber.unsubscribe();
     this.activeTaskUnsubscriber.unsubscribe();
+    this._store.dispatch(new ResetTaskAction());
+
   }
 }
