@@ -13,7 +13,6 @@ import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.BusinessException;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import com.itextpdf.text.DocumentException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
@@ -31,9 +30,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExists
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
