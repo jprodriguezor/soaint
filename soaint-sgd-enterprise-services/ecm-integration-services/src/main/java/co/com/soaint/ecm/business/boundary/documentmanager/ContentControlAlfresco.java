@@ -347,7 +347,7 @@ public class ContentControlAlfresco implements ContentControl {
                 UnidadDocumentalDTO documentalDTO = transformarUnidadDocumental(unidadDocumentalFolder);
                 List<DocumentoDTO> documentoDTOS = getDocumentsFromFolder(unidadDocumentalFolder);
                 if (!fullDocuments) {
-                    optionalFolder = recordServices.obtenerRecordFolder(idUnidadDocumental);
+                    optionalFolder = recordServices.getRecordFolderByUdId(idUnidadDocumental);
                     List<DocumentoDTO> documentosRecord = optionalFolder.isPresent() ?
                             getDocumentsFromFolder(optionalFolder.get()) : new ArrayList<>();
                     for (DocumentoDTO documentoDTO :
@@ -360,6 +360,17 @@ public class ContentControlAlfresco implements ContentControl {
             }
         } catch (Exception e) {
             log.error("Error ocurrido: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, Session session) {
+        log.info("Ejecutando UnidadDocumentalDTO getUDById(String idUnidadDocumental, Session session)");
+        Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
+        if (optionalFolder.isPresent()) {
+            Folder folder = optionalFolder.get();
+            return Optional.of(transformarUnidadDocumental(folder));
         }
         return Optional.empty();
     }

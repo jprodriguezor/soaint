@@ -88,6 +88,7 @@ public final class ConstantesECM {
     public static final String OPERACION_COMPLETADA_SATISFACTORIAMENTE = "Operacion completada satisfactoriamente";
     public static final String SUCCESS = "SUCCESS";
     public static final String NO_RESULT_MATCH = "Ningun resultado coincide con el criterio de busqueda";
+    public static final String RMC_X_IDENTIFICADOR = "rmc:xIdentificador";
 
     private ConstantesECM(){}
 }

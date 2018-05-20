@@ -139,7 +139,7 @@ public class RecordServicesTest {
             entradaRecordDTO.setSerie("0231");
             entradaRecordDTO.setSubSerie("02312");
 
-            mensajeRespuesta= recordServices.crearCarpetaRecord(entradaRecordDTO);
+            mensajeRespuesta= recordServices.crearCarpetaRecord("");
 
             assertEquals("0000",mensajeRespuesta.getCodMensaje());
 
@@ -158,7 +158,7 @@ public class RecordServicesTest {
     }
 
 //    @Test
-//    public void obtenerRecordFolder() {
+//    public void getRecordFolderByUdId() {
 //        final Optional<Folder> optionalDocumentalDTO;
 //        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
 //        try {
@@ -169,7 +169,7 @@ public class RecordServicesTest {
 //            unidadDocumentalDTOTest.setAccion("CERRAR");
 //            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
 //
-//            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTOTest.getId());
+//            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
 //            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
 //                    assertNotNull(unidadDocumentalDTO1.getId()));
 //        } catch (SystemException e) {
