@@ -131,18 +131,39 @@ public class RecordServicesTest {
 
     @Test
     public void crearCarpetaRecord() {
-        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
         try {
-            entradaRecordDTO.setDependencia("10001040");
-            entradaRecordDTO.setSede("1000");
-            entradaRecordDTO.setNombreCarpeta("RecordFolderTest");
-            entradaRecordDTO.setSerie("0231");
-            entradaRecordDTO.setSubSerie("02312");
+            UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
 
-            mensajeRespuesta= recordServices.crearCarpetaRecord(entradaRecordDTO);
+            unidadDocumentalDTOT.setInactivo(true);
+            //Calendar calendar
+            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+            unidadDocumentalDTOT.setFechaCierre(gregorianCalendar);
+            unidadDocumentalDTOT.setId("111122223333");
+            unidadDocumentalDTOT.setFechaExtremaInicial(gregorianCalendar);
+            unidadDocumentalDTOT.setSoporte("electronico");
+            unidadDocumentalDTOT.setNombreUnidadDocumental("RecordFolderTest1");
+            unidadDocumentalDTOT.setFechaExtremaFinal(gregorianCalendar);
+            unidadDocumentalDTOT.setCerrada(false);
+            unidadDocumentalDTOT.setCodigoSubSerie("02312");
+            unidadDocumentalDTOT.setCodigoSerie("0231");
+            unidadDocumentalDTOT.setCodigoDependencia("10001040");
+            unidadDocumentalDTOT.setDescriptor1("3434");
+            unidadDocumentalDTOT.setDescriptor2("454545");
+            unidadDocumentalDTOT.setAccion("ABRIR");
+            unidadDocumentalDTOT.setInactivo(false);
+            unidadDocumentalDTOT.setCerrada(false);
+            unidadDocumentalDTOT.setEstado("Abierto");
+            unidadDocumentalDTOT.setDisposicion("Eliminar");
+
+            MensajeRespuesta mensajeRespuestaT = contentControlAlfresco.
+                crearUnidadDocumental(unidadDocumentalDTO, contentControl.obtenerConexion().getSession());
+
+        UnidadDocumentalDTO unidadDocumentalDTOTR = (UnidadDocumentalDTO) mensajeRespuestaT.getResponse().get("unidadDocumental");
+            mensajeRespuesta= recordServices.crearCarpetaRecord(unidadDocumentalDTOTR.getId());
 
             assertEquals("0000",mensajeRespuesta.getCodMensaje());
 
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTR.getId(), contentControl.obtenerConexion().getSession());
 
         } catch (SystemException e) {
             e.printStackTrace();
@@ -172,7 +193,7 @@ public class RecordServicesTest {
     public void testGestionarUnidadDocumentalECMAbrirUnidadDocumentalSuccess() {
         unidadDocumentalDTO.setAccion("ABRIR");
         try {
-            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTO);
+          assertEquals("0000", recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTO).getCodMensaje());
         } catch (SystemException e) {
 
         }
@@ -183,9 +204,8 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void obtenerRecordFolder() {
+    public void testGetRecordFolderByUdIdSuccess() {
         final Optional<Folder> optionalDocumentalDTO;
-        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
         try {
 
 
@@ -194,7 +214,7 @@ public class RecordServicesTest {
             unidadDocumentalDTOTest.setAccion("CERRAR");
             recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
 
-            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTOTest.getId());
+            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
         } catch (SystemException e) {
