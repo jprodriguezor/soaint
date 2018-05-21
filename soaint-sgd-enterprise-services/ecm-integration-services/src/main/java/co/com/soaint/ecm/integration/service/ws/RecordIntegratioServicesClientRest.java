@@ -58,15 +58,15 @@ public class RecordIntegratioServicesClientRest {
     /**
      * Crear carpeta en el Record
      *
-     * @param entrada carpeta a crear
+     * @param idUnidadDocumental id de la UD a crear en el record
      * @return Mensaje de respuesta
      */
     @POST
     @Path("/crearCarpetaRecord/")
-    public MensajeRespuesta crearCarpetaRecord(EntradaRecordDTO entrada) throws SystemException {
+    public MensajeRespuesta crearCarpetaRecord(String idUnidadDocumental) throws SystemException {
         logger.info("processing rest request - Crear carpeta Record");
         try {
-            return record.crearCarpetaRecord(entrada);
+            return record.crearCarpetaRecord(idUnidadDocumental);
         } catch (RuntimeException e) {
             logger.error("Error en operacion - crearCarpetaRecord ", e);
             MensajeRespuesta respuesta = new MensajeRespuesta();

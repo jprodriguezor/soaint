@@ -39,7 +39,7 @@ public class ContentControlAlfrescoTest {
     @Autowired
     private ContentControlAlfresco contentControlAlfresco;
 
-    private String urLecm = System.getProperty("URLecm");
+    private String urLecm = System.getProperty("BUSINESS_PLATFORM_ENDPOINT");
 
     private DocumentoDTO documentoDTO;
     private MensajeRespuesta mensajeRespuesta;
@@ -81,6 +81,7 @@ public class ContentControlAlfrescoTest {
 
         // configuracion de conexion
         parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
+//        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
@@ -154,8 +155,8 @@ public class ContentControlAlfrescoTest {
 
     @After
     public void afterFunct() {
-        contentControlAlfresco.eliminardocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
         try {
+            contentControlAlfresco.eliminardocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
         } catch (SystemException e) {
             e.printStackTrace();
@@ -308,7 +309,11 @@ public class ContentControlAlfrescoTest {
         //Probar que sube documento EE correctemante
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
@@ -317,8 +322,12 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.
                 subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EI");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.
-                eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.
+                    eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
@@ -326,7 +335,11 @@ public class ContentControlAlfrescoTest {
         //Probar que sube documento EE correctemante
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "SI");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
@@ -335,8 +348,12 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.
                 subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "OTHER");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.
-                eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.
+                    eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
@@ -345,8 +362,12 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.
                 subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "SE");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.
-                eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.
+                    eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
@@ -355,12 +376,16 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.
                 subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO2, "PD");
         assertEquals("0000", mensajeRespuesta.getCodMensaje());
-        contentControlAlfresco.
-                eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.
+                    eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        }
     }
 
     @Test
-    public void testGetUDByIdSuccess() throws Exception {
+    public void testGetUDByIdTrueSuccess() throws Exception {
         try {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
                     crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
@@ -370,6 +395,30 @@ public class ContentControlAlfrescoTest {
 
             final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
                     getUDById(unidadDocumentalDTO.getId(), true, conexion.getSession());
+
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
+        } catch (SystemException e) {
+            logger.error("Error SystemException: {}", e);
+        } catch (Exception e) {
+            logger.error("Error: {}", e);
+        }
+    }
+
+    @Test
+    public void testGetUDByIdFalseSuccess() throws Exception {
+        try {
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.
+                    crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            UnidadDocumentalDTO unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            //Obtener la unidad documental
+
+            final Optional<UnidadDocumentalDTO> optionalDocumentalDTO = contentControlAlfresco.
+                    getUDById(unidadDocumentalDTO.getId(), false, conexion.getSession());
 
             optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
                     assertNotNull(unidadDocumentalDTO1.getId()));
@@ -388,21 +437,35 @@ public class ContentControlAlfrescoTest {
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
         //Probar documento se sube correctamente
         assertEquals("0000", mensajeRespuesta1.getCodMensaje());
-        assertTrue(contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession()));
+        try {
+            contentControlAlfresco.eliminardocumento(mensajeRespuesta1.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
+            assertTrue(true);
+        } catch (SystemException e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
     public void testEliminardocumentoFalseSuccess() {
         DocumentoDTO documentoDTO13 = new DocumentoDTO();
         documentoDTO13.setIdDocumento("WEWEWE");
-        assertFalse(contentControlAlfresco.eliminardocumento(documentoDTO13.getIdDocumento(), conexion.getSession()));
+        try {
+            contentControlAlfresco.eliminardocumento(documentoDTO13.getIdDocumento(), conexion.getSession());
+            fail("Si continua hasta aqui entonces falla");
+        } catch (SystemException e) {
+            assertTrue(true);
+        }
     }
 
     @Test
     public void testMovDocumentoSuccess() {
-        contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL");
+        assertEquals("0000",contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL").getCodMensaje());
     }
+    @Test
+    public void testMovDocumentoNoExisteDocumento() {
+        assertEquals("00006",contentControlAlfresco.movDocumento(conexion.getSession(), "idNoValidoDeDocumento", "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL").getCodMensaje());
 
+    }
     @Test
     public void testGetUDFolderByIdSuccess() {
         try {
@@ -454,7 +517,11 @@ public class ContentControlAlfrescoTest {
         documentoDTO1.setIdDocumentoPadre(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento());
         mensajeRespuesta1 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
         assertNotNull(contentControlAlfresco.obtenerDocumentosAdjuntos(conexion.getSession(), documentoDTO).getDocumentoDTOList());
-        contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            logger.error("Error Eliminando: {}", e);
+        }
 
     }
 
@@ -465,7 +532,11 @@ public class ContentControlAlfrescoTest {
         assertEquals("0000", contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE").getCodMensaje());
 
         //Eliminar la version del documento
-        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -486,7 +557,11 @@ public class ContentControlAlfrescoTest {
         assertEquals("0000", contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO4, "EE").getCodMensaje());
 
         //Eliminar la version del documento
-        contentControlAlfresco.eliminardocumento(documentoDTO4.getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(documentoDTO4.getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -498,7 +573,11 @@ public class ContentControlAlfrescoTest {
         //Obtener Versiones de documento
         assertEquals("0000", contentControlAlfresco.obtenerVersionesDocumento(conexion.getSession(), documentoDTO.getIdDocumento()).getCodMensaje());
         //Eliminar la version del documento
-        contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+        try {
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -553,7 +632,7 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testSubirDocumentosTemporalesUDSuccess() {
-        ArrayList<DocumentoDTO> listaDocs = new ArrayList();
+        ArrayList<DocumentoDTO> listaDocs = new ArrayList<>();
         listaDocs.add(documentoDTO);
         listaDocs.add(documentoDTO1);
 
@@ -767,7 +846,7 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testListarUdDisposicionFinalSuccess() {
         try {
-UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
+            UnidadDocumentalDTO unidadDocumentalDTOTest;
             //Se llenan los datos de la unidad documental
             unidadDocumentalDTOTest = new UnidadDocumentalDTO();
             unidadDocumentalDTOTest.setInactivo(true);
@@ -803,17 +882,66 @@ UnidadDocumentalDTO unidadDocumentalDTOTest=new UnidadDocumentalDTO();
             disposicionFinalList.add("Eliminar");
             disposicionFinalList.add("Digitalizar");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
-            contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession());
+            assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
         } catch (SystemException e) {
             assertEquals("No se ha identificado la Unidad Documental", e.getMessage());
         }
     }
 
-
     @Test
-    public void crearLinkDocumentosApoyo() {
+    public void testAprobarRechazarDisposicionesFinalesSuccess() {
+        List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+        try {
+            UnidadDocumentalDTO unidadDocumentalDTOTest;
+            //Se llenan los datos de la unidad documental
+            unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+            unidadDocumentalDTOTest.setInactivo(true);
+            //Calendar calendar
+            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+            unidadDocumentalDTOTest.setFechaCierre(gregorianCalendar);
+            unidadDocumentalDTOTest.setId("11181");
+            unidadDocumentalDTOTest.setFechaExtremaInicial(gregorianCalendar);
+            unidadDocumentalDTOTest.setSoporte("electronico");
+            unidadDocumentalDTOTest.setNombreUnidadDocumental("UnidadDocumentalTest");
+            unidadDocumentalDTOTest.setFechaExtremaFinal(gregorianCalendar);
+            unidadDocumentalDTOTest.setCerrada(true);
+            unidadDocumentalDTOTest.setCodigoSubSerie("02312");
+            unidadDocumentalDTOTest.setCodigoSerie("0231");
+            unidadDocumentalDTOTest.setCodigoDependencia("10001040");
+            unidadDocumentalDTOTest.setDescriptor1("3434");
+            unidadDocumentalDTOTest.setDescriptor2("454545");
+            unidadDocumentalDTOTest.setAccion("");
+            unidadDocumentalDTOTest.setCerrada(false);
+            unidadDocumentalDTOTest.setEstado("Abierto");
+            unidadDocumentalDTOTest.setDisposicion("Eliminar");
+            unidadDocumentalDTOTest.setFaseArchivo("archivo central");
+
+            DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTOTest, conexion.getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOList.add(unidadDocumentalDTOTest1);
+            disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
+            List<String> disposicionFinalList = new ArrayList<>();
+            disposicionFinalList.add("Conservacion Total");
+            disposicionFinalList.add("Microfilmar");
+            disposicionFinalList.add("seleccionar");
+            disposicionFinalList.add("Eliminar");
+            disposicionFinalList.add("Digitalizar");
+            disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
+            contentControlAlfresco.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOList, conexion.getSession());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
+        } catch (SystemException e) {
+        }
     }
 
-
+    @Test
+    public void testAprobarRechazarDisposicionesFinalesListaVaciaFail() {
+        List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+        try {
+            contentControlAlfresco.aprobarRechazarDisposicionesFinales(unidadDocumentalDTOList, conexion.getSession());
+        } catch (SystemException e) {
+            assertEquals("La lista de unidades documentales enviada esta vacia", e.getMessage());
+        }
+    }
 }

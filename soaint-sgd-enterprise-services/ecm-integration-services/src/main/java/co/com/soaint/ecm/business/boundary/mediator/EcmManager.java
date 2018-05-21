@@ -151,9 +151,9 @@ public class EcmManager implements Serializable {
      * @param idDoc Identificador del documento dentro del ECM
      * @return True en exito false en error
      */
-    public boolean eliminarDocumentoECM(String idDoc) {
+    public void eliminarDocumentoECM(String idDoc) throws SystemException {
         log.info("### Eliminando documento del content..");
-        return contentManager.eliminarDocumento(idDoc);
+        contentManager.eliminarDocumento(idDoc);
     }
 
     /**
@@ -305,5 +305,16 @@ public class EcmManager implements Serializable {
     public MensajeRespuesta subirDocumentoTemporalUD(DocumentoDTO documentoDTO) throws SystemException {
         log.info("processing rest request - Subir Documento temporal ECM");
         return contentManager.subirDocumentoTemporalUD(documentoDTO);
+    }
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param documentoDTO Obj con el tag a agregar
+     * @return MensajeRespuesta
+     */
+    public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) throws SystemException {
+        log.info("processing rest request - Estampar la etiquta de radicacion");
+        return contentManager.estamparEtiquetaRadicacion(documentoDTO);
     }
 }
