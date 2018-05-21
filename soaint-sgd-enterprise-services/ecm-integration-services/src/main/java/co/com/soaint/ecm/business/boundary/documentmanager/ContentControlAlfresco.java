@@ -2371,7 +2371,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (!ObjectUtils.isEmpty(dto.getEstado())) {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
             } else {
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'true'";
+                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
                 final StringBuilder in = new StringBuilder();
