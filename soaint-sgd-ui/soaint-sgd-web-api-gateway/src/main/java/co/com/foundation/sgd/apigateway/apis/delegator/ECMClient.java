@@ -69,6 +69,13 @@ public class ECMClient {
         return response.readEntity(MensajeRespuesta.class);
     }
 
+    public MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO) {
+        log.info("Digitalizar Documento - [trafic] - Invocando Servicio Remoto Estampar Documento Radicacion Salida: " + endpoint);
+        WebTarget wt = ClientBuilder.newClient().target(endpoint);
+        Response response = wt.path("/estampar-etiqueta-radicacion/")
+                .request().post(Entity.json(documentoDTO));
+        return response.readEntity(MensajeRespuesta.class);
+    }
 
     public List<MensajeRespuesta> uploadDocumentsAsociates(String parentId, Map<String, InputPart> files, String sede, String dependencia, String tipoComunicacion, String numero, String[] referidoList) {
         List<MensajeRespuesta> mensajeRespuestas = new ArrayList<>();

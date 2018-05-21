@@ -7,7 +7,7 @@ import java.util.List;
 public enum PhaseType implements Serializable {
 
     ARCHIVO_CENTRAL("AC", "Archivo Central", ""),
-    ARCHIVO_GESTION("AG", "Archivo Gestión", "Archivo Gestion");
+    ARCHIVO_GESTION("AG", "Archivo Gestion", "Archivo Gestión");
 
     private static final Long serialVersionUID = 1L;
 
@@ -33,6 +33,33 @@ public enum PhaseType implements Serializable {
                 allManagementFile.add(allManagementFile.size(), s1.toLowerCase());
                 allManagementFile.add(allManagementFile.size(), s1.toUpperCase());
                 break;
+        }
+    }
+
+    public String getValueAt(int position) {
+        switch (this) {
+            case ARCHIVO_CENTRAL:
+                final int centralFileSize = allCentralFile.size();
+                if (position >= 0 && position < centralFileSize) {
+                    return allCentralFile.get(position);
+                }
+                break;
+            default:
+                final int managementFileSize = allManagementFile.size();
+                if (position >= 0 && position < managementFileSize) {
+                    return allManagementFile.get(position);
+                }
+                break;
+        }
+        return "";
+    }
+
+    public boolean containPhase(String phase) {
+        switch (this) {
+            case ARCHIVO_CENTRAL:
+                return allCentralFile.contains(phase);
+            default:
+                return allManagementFile.contains(phase);
         }
     }
 

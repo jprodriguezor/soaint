@@ -243,14 +243,9 @@ public class EcmIntegrationServicesClientRest {
     public boolean eliminarDocumentoECM(@PathParam("idDocumento") String idDocumento) {
         log.info("processing rest request - Eliminar Documento ECM");
         try {
-            boolean respuesta;
-            respuesta = fEcmManager.eliminarDocumentoECM(idDocumento);
-            if (respuesta)
-                log.info("Documento eliminado con exito");
-            else
-                log.info("No se pudo eliminar el documento");
-            return respuesta;
-        } catch (RuntimeException e) {
+            fEcmManager.eliminarDocumentoECM(idDocumento);
+            return true;
+        } catch (Exception e) {
             log.error("Error servicio eliminando documento ", e);
             return false;
         }
@@ -288,6 +283,24 @@ public class EcmIntegrationServicesClientRest {
             return fEcmManager.listarDependenciaMultipleECM(dependenciaTrdDTO);
         } catch (Exception e) {
             log.error("Error en operacion - Obtener las sedes, dependencias, series o subseries ECM ", e);
+            return this.getSmsErrorResponse(e);
+        }
+    }
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param documentoDTO Obj con el tag a agregar
+     * @return MensajeRespuesta
+     */
+    @POST
+    @Path("/estampar-etiqueta-radicacion/")
+    public MensajeRespuesta estamparEtiquetaRadicacionECM(@RequestBody DocumentoDTO documentoDTO) {
+        log.info("processing rest request - Estampar la etiquta de radicacion");
+        try {
+            return fEcmManager.estamparEtiquetaRadicacion(documentoDTO);
+        } catch (Exception e) {
+            log.error("Error en operacion - Estampar la etiquta de radicacion ", e);
             return this.getSmsErrorResponse(e);
         }
     }
