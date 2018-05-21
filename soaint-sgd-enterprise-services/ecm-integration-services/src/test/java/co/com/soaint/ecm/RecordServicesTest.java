@@ -37,21 +37,21 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath:spring/core-config.xml"})
 public class RecordServicesTest {
 
-//    static {
-//        System.setProperty(SystemParameters.API_SEARCH_ALFRESCO,"http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
-//    }
-//    static {
-//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD,"http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
-//    }
-//    static {
-//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS,"admin");
-//    }
-//    static {
-//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER,"admin");
-//    }
-//    static {
-//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT,"http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
-//    }
+    static {
+        System.setProperty(SystemParameters.API_SEARCH_ALFRESCO,"http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
+    }
+    static {
+        System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD,"http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
+    }
+    static {
+        System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS,"admin");
+    }
+    static {
+        System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER,"admin");
+    }
+    static {
+        System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT,"http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+    }
     @Autowired
     private IRecordServices recordServices;
     @Autowired
@@ -150,33 +150,58 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void gestionarUnidadDocumentalECM() {
+    public void testGestionarUnidadDocumentalECMNoIdUnidadDocumentalFail() {
+        UnidadDocumentalDTO unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+        try {
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+        } catch (SystemException e) {
+            assertEquals("No se ha especificado el Id de la Unidad Documental",e.getMessage());
+        }
+    }
+    @Test
+    public void testGestionarUnidadDocumentalECMNoAccionUnidadDocumentalFail() {
+        UnidadDocumentalDTO unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+        unidadDocumentalDTOTest.setId("112233");
+        try {
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+        } catch (SystemException e) {
+            assertEquals("No se ha especificado la accion a realizar",e.getMessage());
+        }
+    }
+    @Test
+    public void testGestionarUnidadDocumentalECMAbrirUnidadDocumentalSuccess() {
+        unidadDocumentalDTO.setAccion("ABRIR");
+        try {
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTO);
+        } catch (SystemException e) {
+
+        }
     }
 
     @Test
     public void gestionarUnidadesDocumentalesECM() {
     }
 
-//    @Test
-//    public void obtenerRecordFolder() {
-//        final Optional<Folder> optionalDocumentalDTO;
-//        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
-//        try {
-//
-//
-//            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
-//            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
-//            unidadDocumentalDTOTest.setAccion("CERRAR");
-//            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
-//
-//            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTOTest.getId());
-//            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
-//                    assertNotNull(unidadDocumentalDTO1.getId()));
-//        } catch (SystemException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//    }
+    @Test
+    public void obtenerRecordFolder() {
+        final Optional<Folder> optionalDocumentalDTO;
+        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
+        try {
+
+
+            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOTest.setAccion("CERRAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+
+            optionalDocumentalDTO = recordServices.obtenerRecordFolder(unidadDocumentalDTOTest.getId());
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
 }
