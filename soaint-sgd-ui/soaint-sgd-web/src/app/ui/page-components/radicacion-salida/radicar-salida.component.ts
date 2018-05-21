@@ -168,6 +168,13 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
+      this.radicacion.ppdDocumentoList= [{
+        ideEcm:comunicacionOficialDTV.getDocumento().ideEcm,
+        asunto:"",
+        nroFolios:0,
+        nroAnexos:0
+
+      }];
       this.editable = false;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
@@ -188,6 +195,19 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
         this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
       }
+
+      const self = this;
+
+      setTimeout( () =>{ self.uploadTemplate(
+        self.radicacion.correspondencia.codDependencia,
+        self.radicacion.correspondencia.nroRadicado,
+        comunicacionOficialDTV.getDocumento().ideEcm
+      )},1000)
+
+      this.uploadTemplate(this.radicacion.correspondencia.codDependencia,
+                          this.radicacion.correspondencia.nroRadicado,
+                          comunicacionOficialDTV.getDocumento().ideEcm
+       );
 
       this.disableEditionOnForms();
 
@@ -214,6 +234,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       this._changeDetectorRef.detectChanges();
     });
   }
+
+  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){}
 
   protected  buildPayload(): any{
 

@@ -140,8 +140,9 @@ export const environment = {
   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
   listar_unidades_documentales_disposicion_endpoint: `${host}/unidad-documental-gateway-api/listar-unidades-documentales-disposicion`,
-  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`
+  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`,
 
+  upload_template:`${host}/digitalizar-documento-gateway-api/estampar-etiqueta-radicacion`,
 
 };
 
