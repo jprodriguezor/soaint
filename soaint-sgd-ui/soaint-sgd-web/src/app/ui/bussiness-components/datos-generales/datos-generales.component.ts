@@ -125,6 +125,7 @@ export class DatosGeneralesComponent implements OnInit {
     this.bindToValidationErrorsOf('tipoAnexosDescripcion');
     this.bindToValidationErrorsOf('empresaMensajeria');
     this.bindToValidationErrorsOf('numeroGuia');
+    this.bindToValidationErrorsOf('medioRecepcion');
   }
 
   ngOnInit(): void {
