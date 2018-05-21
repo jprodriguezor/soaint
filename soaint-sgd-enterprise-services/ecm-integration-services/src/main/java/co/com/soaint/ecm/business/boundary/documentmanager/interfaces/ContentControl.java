@@ -128,7 +128,7 @@ public interface ContentControl extends Serializable {
      * @param session Objeto de conexion al Alfresco
      * @return Retorna true si borró con exito y false si no
      */
-    boolean eliminardocumento(String idDoc, Session session);
+    void eliminardocumento(String idDoc, Session session) throws SystemException;
 
     /**
      * Servicio que devuelve el listado de las Series y de las Dependencias del ECM
@@ -278,4 +278,12 @@ public interface ContentControl extends Serializable {
      * @return MensajeRespuesta
      */
     MensajeRespuesta aprobarRechazarDisposicionesFinales(List<UnidadDocumentalDTO> unidadDocumentalDTOS, Session session) throws SystemException;
+
+    /**
+     * Operacion para devolver sedes, dependencias, series o subseries
+     *
+     * @param documentoDTO Obj con el tag a agregar
+     * @return MensajeRespuesta
+     */
+    MensajeRespuesta estamparEtiquetaRadicacion(DocumentoDTO documentoDTO, Session session) throws SystemException;
 }

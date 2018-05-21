@@ -7,6 +7,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordSer
 import co.com.soaint.ecm.domain.entity.AccionUsuario;
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.DiposicionFinalEnum;
+import co.com.soaint.ecm.domain.entity.PhaseType;
 import co.com.soaint.ecm.util.SystemParameters;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -387,7 +388,11 @@ public class RecordServices implements IRecordServices {
                 unidadDocumental.setCerrada(true);
                 unidadDocumental.setInactivo(true);
 
-                String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
+                if (!PhaseType.ARCHIVO_CENTRAL.containPhase(unidadDocumental.getFaseArchivo())) {
+                    unidadDocumental.setFaseArchivo(PhaseType.ARCHIVO_GESTION.getValueAt(1));
+                }
+
+                final String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
                         udRecordFolder.getId() : createAndRetrieveId(unidadDocumental);
 
                 for (DocumentoDTO documentoDTO : unidadDocumental.getListaDocumentos()) {
