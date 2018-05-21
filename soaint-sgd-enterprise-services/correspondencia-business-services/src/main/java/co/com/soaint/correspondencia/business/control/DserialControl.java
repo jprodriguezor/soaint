@@ -81,6 +81,7 @@ public class DserialControl {
      * @param codFuncionarioRadica
      * @throws SystemException
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateConsecutivo(String codSede, String codDependencia, String codTipoCmc, String anno,
                                   String consecutivoRadicado, String codFuncionarioRadica) throws SystemException {
         try {

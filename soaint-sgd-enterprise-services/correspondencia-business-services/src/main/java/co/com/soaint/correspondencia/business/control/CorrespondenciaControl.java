@@ -161,32 +161,37 @@ public class CorrespondenciaControl {
      * @param codSede
      * @param codTipoCmc
      * @param anno
-     * @param consecutivo
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
-    private String procesarNroRadicadoSalida(String codSede, String codDependencia, String codFunci, String codTipoCmc, String anno, String consecutivo) throws BusinessException, SystemException {
+    private String procesarNroRadicadoSalida(String codSede, String codDependencia, String codFunci, String codTipoCmc, String anno) throws  SystemException {
         try {
-            if (consecutivo == null)
-            consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(codSede,codTipoCmc, String.valueOf(anno));
+            String nRadicado;
 
-            String nRadicado = codSede
-                    .concat(codTipoCmc)
-                    .concat(anno)
-                    .concat(consecutivo);
-            if (verificarByNroRadicado(nRadicado)){
-                if (!dserialControl.verificarConsecutivo(codSede,codTipoCmc,anno,consecutivo)){
+            do {
+                String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(codSede,codTipoCmc, String.valueOf(anno));
+                nRadicado = codSede
+                        .concat(codTipoCmc)
+                        .concat(anno)
+                        .concat(consecutivo);
+
+                dserialControl.updateConsecutivo(codSede, codDependencia,
+                        codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
+            }
+            while (verificarByNroRadicado(nRadicado));
+
+/*                if (!dserialControl.verificarConsecutivo(codSede,codTipoCmc,anno,consecutivo)){
                         dserialControl.updateConsecutivo(codSede, codDependencia,
                             codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
                 }
-                procesarNroRadicadoSalida(codSede, codDependencia, codFunci, codTipoCmc, anno, consecutivo+1);
-            }
-            dserialControl.updateConsecutivo(codSede, codDependencia,
-                    codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
+                return procesarNroRadicadoSalida(codSede, codDependencia, codFunci, codTipoCmc, anno, consecutivo+1);*/
+//
+//            dserialControl.updateConsecutivo(codSede, codDependencia,
+//                    codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
 
             return nRadicado;
-        } catch (BusinessException e) {
+        } catch (SystemException e) {
             log.error("Business Control - a business error has occurred", e);
             throw e;
         }
@@ -901,13 +906,15 @@ public class CorrespondenciaControl {
 
     private Boolean verificarAgenteEnListaDTO(CorAgente agente, List<AgenteDTO> corAgenteList){
 
-        Boolean result = false;
-        for (AgenteDTO agenteDTO : corAgenteList) {
-            if(agente.getIdeAgente().equals(agenteDTO.getIdeAgente())) {
-                result = true;
-            }
-        }
-        return result;
+//        Boolean result = false;
+//        for (AgenteDTO agenteDTO : corAgenteList) {
+//            if(agente.getIdeAgente().equals(agenteDTO.getIdeAgente())) {
+//                result = true;
+//            }
+//        }
+        return corAgenteList.stream()
+                .map(AgenteDTO::getIdeAgente)
+                .anyMatch(ideAgente -> ideAgente.equals(agente.getIdeAgente()));
     }
 
     private Boolean verificarAgenteEnLista(CorAgente agente, List<CorAgente> corAgenteList){
@@ -928,6 +935,7 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
 
+    @Transactional
     public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
 
@@ -936,21 +944,28 @@ public class CorrespondenciaControl {
 
             //------------------------------------------
             List<CorAgente> agentes = correspondencia.getCorAgenteList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
+            List<DctAsignacion> dctAsignacionList = correspondencia.getDctAsignacionList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
             log.info("Lisado de agentes antes de posible modificacion" + agentes.toString());
             List<AgenteDTO> agenteDTOList = comunicacionOficialDTO.getAgenteList();
 
-            agentes.forEach(corAgente -> {
-                if (!this.verificarAgenteEnListaDTO(corAgente, agenteDTOList)){ // tengo que eliminar del listado el agente y la asignacion que no llegó en el DTO
-                    correspondencia.getCorAgenteList().remove(corAgente);
+//            agentes.forEach(corAgente -> {
+//                if (!this.verificarAgenteEnListaDTO(corAgente, agenteDTOList)){ // tengo que eliminar del listado el agente y la asignacion que no llegó en el DTO
+//
+//                    dctAsignacionList.forEach(dctAsignacion -> {
+//                        if (dctAsignacion.getCorAgente().getIdeAgente().equals(corAgente.getIdeAgente()))
+//                            correspondencia.getDctAsignacionList().remove(dctAsignacion);
+//                    });
+//                    correspondencia.getCorAgenteList().remove(corAgente);
+//                }
+//            });
 
-                    correspondencia.getDctAsignacionList().forEach(dctAsignacion -> {
-                        if (dctAsignacion.getCorAgente().getIdeAgente() == corAgente.getIdeAgente())
-                            correspondencia.getDctAsignacionList().remove(dctAsignacion);
+            correspondencia.getCorAgenteList().stream()
+                    .filter(corAgente -> !this.verificarAgenteEnListaDTO(corAgente, agenteDTOList))
+                    .forEach(corAgente -> {
+                        correspondencia.getCorAgenteList().remove(corAgente);
+                        correspondencia.removeAsignacionByAgente(corAgente);
                     });
-                }
-            });
 
-//            em.merge(correspondencia);
 //            em.flush();
 
             log.info("Lisado de agentes despues de eliminacion agente " + agentes.toString());
@@ -990,8 +1005,8 @@ public class CorrespondenciaControl {
 
                         correspondencia.getDctAsignacionList().add(dctAsignacion);
                         correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
-                        em.merge(correspondencia);
-                        em.flush();
+//                        em.merge(correspondencia);
+//                        em.flush();
                     } else { // si no es destinatario
 
                     }
@@ -1044,7 +1059,7 @@ public class CorrespondenciaControl {
             }
 
             if (comunicacionOficialDTO.getReferidoList() != null)
-                comunicacionOficialDTO.getReferidoList().stream().forEach(referidoDTO -> {
+                comunicacionOficialDTO.getReferidoList().forEach(referidoDTO -> {
                     if (em.find(CorReferido.class, referidoDTO.getIdeReferido()) == null){
                         CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
                         corReferido.setCorCorrespondencia(correspondencia);
@@ -1053,7 +1068,7 @@ public class CorrespondenciaControl {
                 });
 
             em.merge(correspondencia);
-            em.flush();
+//            em.flush();
 
             log.info("Actualizacion exitosa de la comunicacion");
             return "1";
@@ -1134,7 +1149,7 @@ public class CorrespondenciaControl {
                     correspondencia.getCodDependencia(),
                     correspondencia.getCodFuncRadica(),
                     tipoRadicacion,
-                    String.valueOf(anno), null));
+                    String.valueOf(anno)));
 
             String endpoint = System.getProperty("ecm-api-endpoint");
             WebTarget wt = ClientBuilder.newClient().target(endpoint);
@@ -1263,7 +1278,6 @@ public class CorrespondenciaControl {
                 .withMessage("No existen destinatarios para enviar correo.")
                 .buildSystemException();
 
-//        List<DatosContactoDTO> datosContactoDTOS = new ArrayList<>();
         final List<String> destinatarios = new ArrayList<String>();
 
         destinatariosList.forEach((AgenteDTO agenteDTO) -> {
@@ -1273,8 +1287,8 @@ public class CorrespondenciaControl {
                     FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(agenteDTO.getIdeFunci());
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal()!=null){
-                            if (agenteDTO.getIndOriginal().equals("TP-DESP")){
-                                    String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : funcionario.getNomFuncionario();
+                            if (agenteDTO.getIndOriginal() == "TP-DESP"){
+                                    String usuario = (agenteDTO.getCodTipoPers() == null || agenteDTO.getCodTipoPers().equals("TP-PERA"))? "" : funcionario.getNomFuncionario();
                                     log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
                                     parameters.put("#USER#", usuario);
                             }
@@ -1288,9 +1302,9 @@ public class CorrespondenciaControl {
             } else{
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
-                        if (agenteDTO.getIndOriginal().equals("TP-DESP")) {
-                            String usuario = ((agenteDTO.getCodTipoPers().equals("TP-PERA")))? "" : agenteDTO.getNombre();
-                            log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers().toString() +" " +agenteDTO.getIndOriginal().toString());
+                        if (agenteDTO.getIndOriginal() == "TP-DESP") {
+                            String usuario = (agenteDTO.getCodTipoPers() == null || agenteDTO.getCodTipoPers().equals("TP-PERA"))? "" : agenteDTO.getNombre();
+                            log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
                             parameters.put("#USER#", usuario);
                         }
                         log.info("processing rest request - agenteDTO.getNombre(): "+ agenteDTO.getNombre());
@@ -1299,8 +1313,6 @@ public class CorrespondenciaControl {
                     List<DatosContactoDTO> datosContacto = datosContactoControl.consultarDatosContactoByAgentesCorreo(agenteDTO);
                     log.info("processing rest request - datosContactoDTOS.size(): "+ datosContacto.size());
                     for (DatosContactoDTO contactoDTO : datosContacto) {
-                        // TODO verificar que se agregue el correo electronico a la lista de destinatarios
-//                        datosContactoDTOS.add(contactoDTO);
                         destinatarios.add(contactoDTO.getCorrElectronico());
                     }
                 }catch (Exception ex) {
@@ -1311,13 +1323,6 @@ public class CorrespondenciaControl {
 
         if (!parameters.containsKey("#USER#"))
             parameters.put("#USER#", "");
-
-//        log.info("processing rest request - datosContactoDTOS.size() terminando el ciclo: "+ datosContactoDTOS.size());
-//        if (datosContactoDTOS != null || !datosContactoDTOS.isEmpty())
-//            datosContactoDTOS.forEach(datosContactoDTO -> {
-//                log.info("processing rest request - agenteDTO.getNombre(): "+ datosContactoDTO.getCorrElectronico());
-//                destinatarios.add(datosContactoDTO.getCorrElectronico()); // No se añaden datos de contacto?
-//        });
 
         log.info("processing rest request - destinatarios: "+destinatarios.toString());
 

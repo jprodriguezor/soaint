@@ -148,5 +148,11 @@ public class CorCorrespondencia implements Serializable {
     private List<DctAsigUltimo> dctAsigUltimoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
     private List<CorReferido> corReferidoList;
-    
+
+
+    public void removeAsignacionByAgente(CorAgente agente) {
+        dctAsignacionList.stream()
+                .filter(dctAsignacion -> dctAsignacion.getCorAgente().getIdeAgente().equals(agente.getIdeAgente()))
+                .forEach(dctAsignacion -> dctAsignacionList.remove(dctAsignacion));
+    }
 }
