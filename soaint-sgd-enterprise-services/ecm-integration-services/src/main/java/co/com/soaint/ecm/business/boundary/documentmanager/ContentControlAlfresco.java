@@ -2368,14 +2368,10 @@ public class ContentControlAlfresco implements ContentControl {
                 AccionUsuario accionUsuario = AccionUsuario.valueOf(dto.getAccion().toUpperCase());
                 return listarUnidadesDocumentalesPorAccion(accionUsuario, query, session);
             }
-            if (!ObjectUtils.isEmpty(dto.getInactivo())) {
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_INACTIVO + " = '" + dto.getInactivo() + "'";
-            }
-            if (!ObjectUtils.isEmpty(dto.getCerrada())) {
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = '" + dto.getCerrada() + "'";
-            }
             if (!ObjectUtils.isEmpty(dto.getEstado())) {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
+            } else {
+                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'true'";
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
                 final StringBuilder in = new StringBuilder();
