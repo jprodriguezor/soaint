@@ -196,6 +196,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
       }
 
+      this._changeDetectorRef.detectChanges();
+
       const self = this;
 
       setTimeout( () =>{ self.uploadTemplate(
@@ -376,22 +378,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         if (!results) {
           return;
         }
-
         this.restoreByPayload(results);
 
-        // generales
-
-
-        // if (results.contactInProgress) {
-        //   const retry = setInterval(() => {
-        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-        //       clearInterval(retry);
-        //     }
-        //   }, 400)
-        // }
-
-      });
+        });
     }
   }
 
