@@ -2,17 +2,18 @@ package co.com.soaint.ecm.business.boundary.documentmanager.interfaces;
 
 import co.com.soaint.ecm.domain.entity.Carpeta;
 import co.com.soaint.ecm.domain.entity.Conexion;
-import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.*;
-import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
-import org.apache.chemistry.opencmis.client.api.*;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Creado por Dasiel
@@ -181,6 +182,15 @@ public interface ContentControl extends Serializable {
      * @return UnidadDocumentalDTO si existe, null si no existe
      */
     Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, boolean fullDocuments, Session session);
+
+    /**
+     * Metodo que busca una Unidad Documental en el ECM
+     *
+     * @param idUnidadDocumental Id de la Unidad Documental
+     * @param session            Objeto conexion de Alfresco
+     * @return UnidadDocumentalDTO si existe, null si no existe
+     */
+    Optional<UnidadDocumentalDTO> getUDById(String idUnidadDocumental, Session session);
 
     /**
      * Metodo que busca una Unidad Documental en el ECM
