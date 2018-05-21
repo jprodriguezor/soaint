@@ -182,4 +182,39 @@ public class DigitalizarDocumentoGatewayApi {
         return Response.status(response.getStatus()).entity(removed).build();
     }
 
+    @POST
+    @Path("/estampar-etiqueta-radicacion/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @JWTTokenSecurity
+    public Response estamparEtiquetaRadicacion(MultipartFormDataInput formDataInput) {
+        if (null == formDataInput) {
+            log.error("Esta vacio el Multipart");
+            return Response.serverError().build();
+        }
+        try {
+            log.info("Procesando la informacion del multipart");
+            final String dependencyCode = formDataInput.getFormDataPart("codigoDependencia", String.class, null);
+            final String nroRadicado = formDataInput.getFormDataPart("nroRadicado", String.class, null);
+            final String idDocumento = formDataInput.getFormDataPart("idDocumento", String.class, null);
+            InputStream inputStream = formDataInput.getFormDataPart("documento", InputStream.class, null);
+
+            MensajeRespuesta mensajeRespuesta = client.estamparEtiquetaRadicacion(DocumentoDTO.newInstance()
+                    .codigoDependencia(dependencyCode)
+                    .nroRadicado(nroRadicado)
+                    .idDocumento(idDocumento)
+                    .documento(IOUtils.toByteArray(inputStream))
+                    .build());
+            return Response.status(Response.Status.OK).entity(mensajeRespuesta).build();
+
+        } catch (Exception e) {
+            log.error("Error del Sistema {}", e.getMessage());
+            MensajeRespuesta respuesta = MensajeRespuesta.newInstance()
+                    .codMensaje("1223")
+                    .mensaje(e.getMessage())
+                    .build();
+            return Response.status(Response.Status.OK).entity(respuesta).build();
+        }
+    }
+
 }
