@@ -31,7 +31,11 @@ import java.util.Date;
                 "FROM TvsDserial t " +
                 "WHERE t.codSede = :COD_SEDE AND t.codCmc = :COD_CMC " +
                 "AND t.valAno = :ANNO AND NOT t.valConsecutivoRad BETWEEN :RESERVADO_I AND :RESERVADO_F " +
-                "GROUP BY t.codSede, t.codCmc, t.valAno")
+                "GROUP BY t.codSede, t.codCmc, t.valAno"),
+        @NamedQuery(name = "TvsDserial.consultarConsecutivoExiste", query = "SELECT COUNT(*) " +
+                "FROM TvsDserial t " +
+                "WHERE t.codSede = :COD_SEDE AND t.codCmc = :COD_CMC " +
+                "AND t.valAno = :ANNO AND t.valConsecutivoRad = :RESERVADO ")
 })
 @javax.persistence.TableGenerator(name = "TVS_DSERIAL_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "TVS_DSERIAL_SEQ", allocationSize = 1)

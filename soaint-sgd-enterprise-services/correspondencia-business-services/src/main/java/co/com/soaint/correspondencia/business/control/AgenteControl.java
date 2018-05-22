@@ -605,6 +605,7 @@ public class AgenteControl {
             CorAgente destinatario = em.getReference(CorAgente.class, destinatarioDTO.getAgenteDestinatario().getIdeAgente());
             destinatario.setCodDependencia(destinatarioDTO.getAgenteDestinatario().getCodDependencia());
             destinatario.setCodSede(destinatarioDTO.getAgenteDestinatario().getCodSede());
+
             asignacionControl.actualizarAsignacion(destinatario.getIdeAgente(), destinatario.getCorCorrespondencia().getIdeDocumento(),
                     destinatario.getCodDependencia(), destinatarioDTO.getIdeFuncionarioCreaModifica());
 
@@ -646,11 +647,7 @@ public class AgenteControl {
             remitente.setCodTipAgent(remitenteDTO.getAgenteRemitente().getCodTipAgent());
             remitente.setIndOriginal(remitenteDTO.getAgenteRemitente().getIndOriginal());
 
-            CorAgente agente = CorAgente.newInstance()
-                    .ideAgente(remitenteDTO.getAgenteRemitente().getIdeAgente())
-                    .build();
-
-            DatosContactoControl datosContactoControl = new DatosContactoControl();
+            DatosContactoControl datosContactoControl;
             for (DatosContactoDTO datosContactoDTO : remitenteDTO.getDatosContactoList()) {
                 TvsDatosContacto datosCont = em.find(TvsDatosContacto.class, datosContactoDTO.getIdeContacto());
                 if (datosCont == null) {

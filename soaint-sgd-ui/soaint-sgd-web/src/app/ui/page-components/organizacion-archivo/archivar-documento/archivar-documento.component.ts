@@ -50,6 +50,8 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
   idEstadoTarea = '0000';
 
+  activeTarea:boolean = true;
+
   @ViewChild('seleccionarDocumentosComponent')
   seleccionarDocumentosComponent:SeleccionarDocumentosComponent;
 
@@ -170,6 +172,8 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
         })
       );
       this.selectUD.form.reset();
+      this.activeTarea = true;
+
     }));
   }
 
@@ -186,11 +190,6 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
 
 
   finalizar(){
-
-     if(this.showSolicitarButton){
-       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
-       return;
-     }
 
      if(!isNullOrUndefined(this.task)){
        this._taskSandbox.completeTaskDispatch({

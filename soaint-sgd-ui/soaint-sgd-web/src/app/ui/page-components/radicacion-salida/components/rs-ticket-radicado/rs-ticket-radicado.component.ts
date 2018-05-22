@@ -5,6 +5,7 @@ import {
   DESTINATARIO_INTERNO,
   DESTINATARIO_PRINCIPAL
 } from '../../../../../shared/bussiness-properties/radicacion-properties';
+import {Guid} from "../../../../../infrastructure/utils/guid-generator";
 
 export class RsTicketRadicado implements  TicketRadicado {
 
@@ -40,9 +41,11 @@ export class RsTicketRadicado implements  TicketRadicado {
   selector: 'rs-ticket-radicado',
   templateUrl: './rs-ticket-radicado.component.html',
 })
-export class RsTicketRadicadoComponent implements OnInit {
+export class RsTicketRadicadoComponent  {
 
   ticket?: RsTicketRadicado;
+
+   @Input() idTicket= Guid.next();
 
   constructor() { }
 
@@ -51,9 +54,7 @@ export class RsTicketRadicadoComponent implements OnInit {
 
   setDataTicketRadicado(ticket: RsTicketRadicado) {
 
-    console.log(ticket);
-
-    this.ticket = ticket;
+     this.ticket = ticket;
   }
 
 }

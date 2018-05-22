@@ -5,10 +5,7 @@
  */
 package co.com.soaint.correspondencia.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
+@ToString(exclude = {"corCorrespondencia","dctAsignacionList","corPlanAgenList","tvsDatosContactoList","dctAsigUltimoList"})
 @Table(name = "COR_AGENTE")
 @NamedQueries({
         @NamedQuery(name = "CorAgente.findAll", query = "SELECT c FROM CorAgente c"),
