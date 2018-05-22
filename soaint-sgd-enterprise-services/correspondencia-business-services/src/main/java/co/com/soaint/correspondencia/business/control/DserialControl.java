@@ -81,6 +81,7 @@ public class DserialControl {
      * @param codFuncionarioRadica
      * @throws SystemException
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateConsecutivo(String codSede, String codDependencia, String codTipoCmc, String anno,
                                   String consecutivoRadicado, String codFuncionarioRadica) throws SystemException {
         try {
@@ -93,6 +94,31 @@ public class DserialControl {
                     .valAno(anno)
                     .build());
             em.flush();
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
+     * @param codSede
+     * @param codTipoCmc
+     * @param anno
+     * @param consecutivoRadicado
+     * @throws SystemException
+     */
+    public Boolean verificarConsecutivo(String codSede, String codTipoCmc, String anno,
+                                  String consecutivoRadicado) throws SystemException {
+        try {
+            return em.createNamedQuery("TvsDserial.consultarConsecutivoExiste", Long.class)
+                    .setParameter("COD_SEDE", codSede)
+                    .setParameter("COD_CMC", codTipoCmc)
+                    .setParameter("ANNO", anno)
+                    .setParameter("RESERVADO", consecutivoRadicado)
+                    .getSingleResult()>0;
         } catch (Exception ex) {
             log.error("Business Control - a system error has occurred", ex);
             throw ExceptionBuilder.newBuilder()
