@@ -981,17 +981,17 @@ public class CorrespondenciaControl {
                                 .build();
                         em.persist(dctAsignacion);
 
-//                        DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance()
-//                                .corAgente(dctAsignacion.getCorAgente())
-//                                .corCorrespondencia(dctAsignacion.getCorCorrespondencia())
-//                                .ideUsuarioCreo(dctAsignacion.getCorCorrespondencia().getCodFuncRadica())
-//                                .ideUsuarioCambio(new BigInteger(dctAsignacion.getCorCorrespondencia().getCodFuncRadica()))
-//                                .dctAsignacion(dctAsignacion)
-//                                .build();
-//                        em.persist(dctAsigUltimo);
+                        DctAsigUltimo dctAsigUltimo = DctAsigUltimo.newInstance()
+                                .corAgente(dctAsignacion.getCorAgente())
+                                .corCorrespondencia(dctAsignacion.getCorCorrespondencia())
+                                .ideUsuarioCreo(dctAsignacion.getCorCorrespondencia().getCodFuncRadica())
+                                .ideUsuarioCambio(new BigInteger(dctAsignacion.getCorCorrespondencia().getCodFuncRadica()))
+                                .dctAsignacion(dctAsignacion)
+                                .build();
+                        em.persist(dctAsigUltimo);
 
                         correspondencia.getDctAsignacionList().add(dctAsignacion);
-//                        correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
+                        correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
 //                        em.merge(correspondencia);
 //                        em.flush();
                     }
