@@ -8,6 +8,8 @@ import {ViewFilterHook} from "../../../shared/ViewHooksHelper";
 import {Subject} from "rxjs/Subject";
 import {isNullOrUndefined} from "util";
 import * as domtoimage from 'dom-to-image';
+import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payload,interface";
+import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 
 @Component({
   selector: 'app-radicar-documento-producido',
@@ -54,6 +56,17 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
               resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
               resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
 
+              if(resp.datosGenerales.reqDistFisica){
+                const payload: LoadNextTaskPayload = {
+                  idProceso: this.task.idProceso,
+                  idInstanciaProceso: this.task.idInstanciaProceso,
+                  idDespliegue: this.task.idDespliegue
+                };
+                this._store.dispatch(new ScheduleNextTaskAction(payload));
+              }
+              else
+                this._store.dispatch(new ScheduleNextTaskAction(null));
+
               this.datosGenerales$.next(resp.datosGenerales);
               this.ideEcm = resp.datosGenerales.listaVersionesDocumento[0].id;
 
@@ -68,6 +81,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
         });
     }
   }
+
+  ngAfterViewInit(){}
 
 
   ngOnDestroy() {
