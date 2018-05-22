@@ -264,12 +264,18 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
     changeSection( section:string){
 
+      this.solicitudModel.Solicitudes = [];
+
+      this.unidadesDocumentales$ = Observable.empty();
+
       this.onChangeSection.emit(section);
     }
 
     selectUnidadDocumental(evt){
 
      this.archivarDocumentoModel.UnidadDocumental = evt.data;
+
+
 
      this.onSelectUD.emit(evt.data);
     }
