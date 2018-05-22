@@ -22,4 +22,9 @@ export class RadicacionSalidaService {
     return this._api.list(`${endpoint}/${idproceso}/${idtarea}`);
   }
 
+  uploadTemplate(payload:FormData){
+
+    return this._api.sendFile(environment.upload_template,payload,[]);
+  }
+
 }

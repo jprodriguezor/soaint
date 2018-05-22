@@ -96,25 +96,25 @@ export const environment = {
   actualizarComunicacion_endpoint: `${host}/correspondencia-gateway-api/actualizar-comunicacion`,
   restablecerCorrespondenciaEntrada_endpoint: `${host}/correspondencia-gateway-api/restablecer_correspondencia_entrada`,
   listarAnexos_endpoint: `${host}/correspondencia-gateway-api/listar-anexos/`,
-    // Produccion Documental
-  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
-  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
-  pd_gestion_documental : {
-      subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
-      eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
-      obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
-      subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
-      eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
-      // ECM Endpoints
-      obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
-      obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
-  },
+  // Produccion Documental
+  pd_ejecutar_proyeccion_multiple: `${host}/produccion-documental-gateway-api/ejecutar-proyeccion-multiple`,
+  pd_obtenerDatosDocXnroRadicado: `${host}/produccion-documental-gateway-api/datos-documento`,
+  pd_gestion_documental : {
+    subirAnexo: `${host}/produccion-documental-gateway-api/agregar-anexo`,
+    eliminarAnexo: `${host}/produccion-documental-gateway-api/eliminar-anexo`,
+    obtenerVersionesDocumento : `${host}/produccion-documental-gateway-api/obtener-versiones-documento`,
+    subirDocumentoVersionado : `${host}/produccion-documental-gateway-api/versionar-documento`,
+    eliminarVersionDocumento : `${host}/produccion-documental-gateway-api/eliminar-version`,
+    // ECM Endpoints
+    obtenerVersionDocumento : `${ecmHost}/descargarDocumentoVersionECM`,
+    obtenerDocumentoPorId: `${ecmHost}/descargarDocumentoECM`,
+  },
   listar_serie_subserie: `${host}/unidad-documental-gateway-api/listado-serie-subserie`,
 
   // Archivar Documento
 
   ad_obtener_serie_subserie : `${ecmHost}/devolverSerieOSubserie`,
-    // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
+  // http://192.168.1.81:28080/ecm-integration-services/apis/ecm/descargarDocumentoECM/?identificadorDoc=02f2f035-b791-4ec3-b6c0-714dc3dfe95f
   crear_unidad_documental : `${host}/unidad-documental-gateway-api/crear-unidad-documental`,
   listar_unidad_documental_endpoint: `${host}/unidad-documental-gateway-api/listar-unidad-documental`,
   archivar_documento_endpoint: `${host}/unidad-documental-gateway-api/subir-documentos-unidad-documental`,
@@ -130,8 +130,9 @@ export const environment = {
   subir_documentos_por_archivar: `${host}/unidad-documental-gateway-api/subir-documentos-por-archivar`,
   guardar_transferencia_documental_endpoint: `${host}/unidad-documental-gateway-api/salvar-transferencia-documental`,
   listar_unidades_documentales_disposicion_endpoint: `${host}/unidad-documental-gateway-api/listar-unidades-documentales-disposicion`,
-  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`
+  aprobar_rechazar_unidades_documentales_endpoint: `${host}/unidad-documental-gateway-api/aprobar-rechazar-disposiciones-finales`,
 
+  upload_template:`${host}/digitalizar-documento-gateway-api/estampar-etiqueta-radicacion`,
 
 };
 
