@@ -38,6 +38,7 @@ import {getTipoComunicacionArrayData} from "../../../../../infrastructure/state-
 @Component({
   selector: 'pd-datos-generales',
   templateUrl: './datos-generales.component.html',
+  styleUrls:['./datos-generales.component.css']
 })
 
 export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
@@ -47,6 +48,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
   validations: any = {};
 
   taskData: TareaDTO;
+  screenData:any;
 
   funcionarioLog: FuncionarioDTO;
 
@@ -114,6 +116,8 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
           this._changeDetectorRef.detectChanges();
+
+          this.screenData = Object.assign({},this.taskData.variables);
         }
 
       }
@@ -260,10 +264,10 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('nombreDocumento', doc.nombre);
       formData.append('tipoDocumento', doc.tipo);
       if(this.taskData !== null){
-        formData.append('sede', this.taskData.variables.nombreSede);
-        formData.append('dependencia', this.taskData.variables.nombreDependencia);
-        formData.append('codigoDependencia', this.taskData.variables.codDependencia);
-        formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+        formData.append('sede', this.screenData.nombreSede);
+        formData.append('dependencia', this.screenData.nombreDependencia);
+        formData.append('codigoDependencia', this.screenData.codDependencia);
+        formData.append('nroRadicado', this.screenData.numeroRadicado || null);
         formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
       }
 
@@ -277,12 +281,13 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
           doc.id = docEcmResp && docEcmResp.idDocumento || (new Date()).toTimeString();
           doc.version = docEcmResp && docEcmResp.versionLabel || '1.0';
           versiones.push(doc);
-          console.log(versiones);
+
           this.listaVersionesDocumento = [...versiones];
-          console.log(this.listaVersionesDocumento);
+
         //  this.form.get('tipoPlantilla').reset();
           this.resetCurrentVersion();
           this.messagingService.publish(new DocumentUploaded(docEcmResp));
+          this._changeDetectorRef.detectChanges();
         } else {
           this._store.dispatch(new PushNotificationAction({severity: 'error', summary: resp.mensaje}));
         }
@@ -321,10 +326,10 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
       if(this.taskData !== null){
-      formData.append('sede', this.taskData.variables.nombreSede);
-      formData.append('codigoDependencia', this.taskData.variables.codDependencia);
-      formData.append('dependencia', this.taskData.variables.nombreDependencia);
-      formData.append('nroRadicado', this.taskData.variables && this.taskData.variables.numeroRadicado || null);
+      formData.append('sede', this.screenData.nombreSede);
+      formData.append('codigoDependencia', this.screenData.codDependencia);
+      formData.append('dependencia', this.screenData.nombreDependencia);
+      formData.append('nroRadicado', this.screenData.numeroRadicado || null);
       formData.append("selector",this.taskData.nombre == TASK_PRODUCIR_DOCUMENTO ? 'PD' : 'Otra cosa');
 
       }

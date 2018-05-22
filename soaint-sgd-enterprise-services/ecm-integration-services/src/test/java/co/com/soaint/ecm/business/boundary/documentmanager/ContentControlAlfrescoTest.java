@@ -82,6 +82,10 @@ public class ContentControlAlfrescoTest {
         // configuracion de conexion
         parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
 //        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+
+
+
+
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
@@ -146,7 +150,6 @@ public class ContentControlAlfrescoTest {
         unidadDocumentalDTO.setDescriptor1("3434");
         unidadDocumentalDTO.setDescriptor2("454545");
         unidadDocumentalDTO.setAccion("ABRIR");
-        unidadDocumentalDTO.setInactivo(false);
         unidadDocumentalDTO.setCerrada(false);
         unidadDocumentalDTO.setEstado("Abierto");
         unidadDocumentalDTO.setDisposicion("Eliminar");
@@ -155,9 +158,10 @@ public class ContentControlAlfrescoTest {
 
     @After
     public void afterFunct() {
+
         try {
             contentControlAlfresco.eliminardocumento(mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), conexion.getSession());
-            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(), conexion.getSession());
+
         } catch (SystemException e) {
             e.printStackTrace();
         }
@@ -634,6 +638,10 @@ public class ContentControlAlfrescoTest {
     public void testSubirDocumentosTemporalesUDSuccess() {
         ArrayList<DocumentoDTO> listaDocs = new ArrayList<>();
         listaDocs.add(documentoDTO);
+       MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
+        documentoDTO1.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
+
+
         listaDocs.add(documentoDTO1);
 
         try {
@@ -698,6 +706,7 @@ public class ContentControlAlfrescoTest {
             documentoDTOS.add(documentoDTO);
             unidadDocumentalDTO.setListaDocumentos(documentoDTOS);
             assertEquals("0000", contentControlAlfresco.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),conexion.getSession());
         } catch (SystemException e) {
             e.printStackTrace();
         }
@@ -846,32 +855,31 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testListarUdDisposicionFinalSuccess() {
         try {
-            UnidadDocumentalDTO unidadDocumentalDTOTest;
-            //Se llenan los datos de la unidad documental
-            unidadDocumentalDTOTest = new UnidadDocumentalDTO();
-            unidadDocumentalDTOTest.setInactivo(true);
-            //Calendar calendar
-            Calendar gregorianCalendar = GregorianCalendar.getInstance();
-            unidadDocumentalDTOTest.setFechaCierre(gregorianCalendar);
-            unidadDocumentalDTOTest.setId("11181");
-            unidadDocumentalDTOTest.setFechaExtremaInicial(gregorianCalendar);
-            unidadDocumentalDTOTest.setSoporte("electronico");
-            unidadDocumentalDTOTest.setNombreUnidadDocumental("UnidadDocumentalTest");
-            unidadDocumentalDTOTest.setFechaExtremaFinal(gregorianCalendar);
-            unidadDocumentalDTOTest.setCerrada(true);
-            unidadDocumentalDTOTest.setCodigoSubSerie("02312");
-            unidadDocumentalDTOTest.setCodigoSerie("0231");
-            unidadDocumentalDTOTest.setCodigoDependencia("10001040");
-            unidadDocumentalDTOTest.setDescriptor1("3434");
-            unidadDocumentalDTOTest.setDescriptor2("454545");
-            unidadDocumentalDTOTest.setAccion("");
-            unidadDocumentalDTOTest.setCerrada(false);
-            unidadDocumentalDTOTest.setEstado("Abierto");
-            unidadDocumentalDTOTest.setDisposicion("Eliminar");
-            unidadDocumentalDTOTest.setFaseArchivo("archivo central");
+//            UnidadDocumentalDTO testListarUdDisposicionFinalSuccessUD;
+//            //Se llenan los datos de la unidad documental
+//            testListarUdDisposicionFinalSuccessUD = new UnidadDocumentalDTO();
+//            testListarUdDisposicionFinalSuccessUD.setInactivo(true);
+//            //Calendar calendar
+//            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+//            testListarUdDisposicionFinalSuccessUD.setFechaCierre(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setId("11181");
+//            testListarUdDisposicionFinalSuccessUD.setFechaExtremaInicial(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setSoporte("electronico");
+//            testListarUdDisposicionFinalSuccessUD.setNombreUnidadDocumental("UnidadDocumentalTestDD");
+//            testListarUdDisposicionFinalSuccessUD.setFechaExtremaFinal(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setCerrada(true);
+//            testListarUdDisposicionFinalSuccessUD.setCodigoSubSerie("02312");
+//            testListarUdDisposicionFinalSuccessUD.setCodigoSerie("0231");
+//            testListarUdDisposicionFinalSuccessUD.setCodigoDependencia("10001040");
+//            testListarUdDisposicionFinalSuccessUD.setDescriptor1("3434");
+//            testListarUdDisposicionFinalSuccessUD.setDescriptor2("454545");
+//            testListarUdDisposicionFinalSuccessUD.setAccion("");
+//            testListarUdDisposicionFinalSuccessUD.setEstado("Abierto");
+//            testListarUdDisposicionFinalSuccessUD.setDisposicion("Eliminar");
+//            testListarUdDisposicionFinalSuccessUD.setFaseArchivo("archivo central");
 
             DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
-            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTOTest, conexion.getSession());
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
             UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
             disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);

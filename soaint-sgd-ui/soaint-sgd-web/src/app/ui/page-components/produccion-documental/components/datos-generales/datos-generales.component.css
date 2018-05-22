@@ -1,0 +1,4 @@
+.btn-disabled {
+  opacity: .35;
+  filter: Alpha(Opacity=35);
+}

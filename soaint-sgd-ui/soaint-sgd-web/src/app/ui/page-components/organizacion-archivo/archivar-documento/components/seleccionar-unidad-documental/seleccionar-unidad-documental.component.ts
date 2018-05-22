@@ -63,8 +63,6 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   validations: any = {};
 
-
-
    constructor(
      private formBuilder: FormBuilder
      , private serieSubSerieService:SerieService
@@ -183,10 +181,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   listenForBlurEvents(control: string) {
     const ac = this.form.get(control);
+    this.validations[control] = null;
     if (ac.touched && ac.invalid) {
       const error_keys = Object.keys(ac.errors);
       const last_error_key = error_keys[error_keys.length - 1];
-      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      this.validations[control] = [...VALIDATION_MESSAGES[last_error_key]];
     }
   }
 
