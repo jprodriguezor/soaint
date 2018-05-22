@@ -1,4 +1,4 @@
- <form [formGroup]="form" *ngIf="taskData">
+ <form [formGroup]="form" >
     <p-panel header="Datos Generales" [style]="{border: 'none'}">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom>
@@ -11,7 +11,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                                <label style="color: inherit">{{taskData !== undefined ? taskData.variables.usuarioProyector: ''}}</label>
+                                <label style="color: inherit">{{screenData !== undefined ? screenData.usuarioProyector: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield">
-                                <label style="color: inherit; position: relative">{{taskData!== undefined ? taskData.variables.nombreSede: ''}}</label>
+                                <label style="color: inherit; position: relative">{{screenData!== undefined ? screenData.nombreSede: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         </div>
                         <div class="ui-g-12">
                             <span class="md-inputfield" >
-                                <label style="color: inherit; position: relative">{{taskData!== undefined ? taskData.variables.nombreDependencia: ''}}</label>
+                                <label style="color: inherit; position: relative">{{screenData!== undefined ? screenData.nombreDependencia: ''}}</label>
                             </span>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
         </div>
     </p-panel>
 
-    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="taskData!== undefined && taskData.variables.numeroRadicado">
+    <p-panel header="Radicado asociado" [style]="{border: 'none'}" *ngIf="screenData!== undefined && screenData.numeroRadicado">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12" padding-bottom style="max-height: 68px">
                 <div class="ui-sm-12 ui-md-3 ui-g-3 ui-lg-3">
@@ -75,7 +75,7 @@
                         <div class="ui-g-12">
                             <span class="md-inputfield">
                   <label
-                    style="color: inherit">{{(taskData !=undefined ? taskData.variables.fechaRadicacion : 0) | date:'dd/MM/yyyy hh:mm a'}}</label>
+                    style="color: inherit">{{(screenData !=undefined ? screenData.fechaRadicacion : 0) | date:'dd/MM/yyyy hh:mm a'}}</label>
               </span>
                         </div>
                     </div>
@@ -90,16 +90,18 @@
                         <div class="ui-g-12">
                             <span class="md-inputfield">
                   <label
-                    style="color: inherit">{{taskData !== undefined ? taskData.variables.numeroRadicado : ''}}</label>
+                    style="color: inherit">{{screenData !== undefined ? screenData.numeroRadicado : ''}}</label>
               </span>
                         </div>
                     </div>
                 </div>
-                <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="taskData !== undefined && taskData.variables.numeroRadicado">
+                <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6" *ngIf="screenData !== undefined && screenData.numeroRadicado">
                     <div class="ui-g form-group">
                         <div class="ui-g-12">
                             <button pButton type="button" label="Ver documento" style="width:auto;float:right;margin-top:5px;"
-                                    (click)="obtenerDocumentoRadicado();">
+                                    (click)="obtenerDocumentoRadicado();"
+
+                            >
               </button>
                         </div>
                     </div>
@@ -145,7 +147,7 @@
                             <button pButton label="Cargar" [disabled]="!form.valid || listaVersionesDocumento.length > 0" style="width:auto;" type="button"
                                   (click)="mostrarVersionDocumento(-1);"></button>
                         </div>
-                        <div class="ui-sm-12 ui-g-8 ui-lg-6">
+                        <div class="ui-sm-12 ui-g-8 ui-lg-6" [ngClass]="{'btn-disabled':listaVersionesDocumento.length > 0}">
                             <p-fileUpload #versionUploader
                                           mode="basic"
                                           auto="true"
@@ -154,6 +156,7 @@
                                           customUpload="true"
                                           (uploadHandler)="attachDocument($event,versionUploader)"
                                           (onError)="onErrorUpload($event)"
+                                          [disabled]="listaVersionesDocumento.length > 0"
                             ></p-fileUpload>
                         </div>
                     </div>
