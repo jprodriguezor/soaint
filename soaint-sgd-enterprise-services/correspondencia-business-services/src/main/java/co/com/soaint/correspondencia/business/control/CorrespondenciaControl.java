@@ -907,12 +907,6 @@ public class CorrespondenciaControl {
 
     private Boolean verificarAgenteEnListaDTO(CorAgente agente, List<AgenteDTO> corAgenteList){
 
-//        Boolean result = false;
-//        for (AgenteDTO agenteDTO : corAgenteList) {
-//            if(agente.getIdeAgente().equals(agenteDTO.getIdeAgente())) {
-//                result = true;
-//            }
-//        }
         return corAgenteList.stream()
                 .map(AgenteDTO::getIdeAgente)
                 .filter(Objects::nonNull)
@@ -950,17 +944,6 @@ public class CorrespondenciaControl {
             log.info("Lisado de agentes antes de posible modificacion" + agentes.toString());
             List<AgenteDTO> agenteDTOList = comunicacionOficialDTO.getAgenteList();
 
-//            agentes.forEach(corAgente -> {
-//                if (!this.verificarAgenteEnListaDTO(corAgente, agenteDTOList)){ // tengo que eliminar del listado el agente y la asignacion que no llegó en el DTO
-//
-//                    dctAsignacionList.forEach(dctAsignacion -> {
-//                        if (dctAsignacion.getCorAgente().getIdeAgente().equals(corAgente.getIdeAgente()))
-//                            correspondencia.getDctAsignacionList().remove(dctAsignacion);
-//                    });
-//                    correspondencia.getCorAgenteList().remove(corAgente);
-//                }
-//            });
-
             List<CorAgente> agentesAEliminar = correspondencia.getCorAgenteList().stream()
                     .filter(corAgente -> !this.verificarAgenteEnListaDTO(corAgente, agenteDTOList))
                     .peek(correspondencia::removeAsignacionByAgente)
@@ -983,7 +966,6 @@ public class CorrespondenciaControl {
                     em.persist(agente);
                     agenteDTO.setIdeAgente(agente.getIdeAgente());
 
-//                    if(verificarAgenteEnLista(agente, agentes)) correspondencia
                     //----------------------asignacion--------------
                     if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
                         DctAsignacion dctAsignacion = DctAsignacion.newInstance()
@@ -1009,10 +991,7 @@ public class CorrespondenciaControl {
                         correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
 //                        em.merge(correspondencia);
 //                        em.flush();
-                    } else { // si no es destinatario
-
                     }
-                    //------------------------------------
                 }  //------ si existe el agente en la correspondencia
 
                 log.info("Lisado de agentes despues de posible modificacion" + agentes.toString());
@@ -1036,8 +1015,6 @@ public class CorrespondenciaControl {
                             .build();
                     agenteControl.actualizarRemitente(remitente);
                 }
-
-//            correspondencia.setCorAgenteList(agentes);
 
             //-------------------------------------------------------
 
