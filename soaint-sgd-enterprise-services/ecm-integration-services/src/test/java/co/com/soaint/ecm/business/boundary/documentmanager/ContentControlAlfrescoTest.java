@@ -80,8 +80,12 @@ public class ContentControlAlfrescoTest {
         parameter.put(SessionParameter.PASSWORD, "admin");
 
         // configuracion de conexion
-//        parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
-        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+        parameter.put(SessionParameter.ATOMPUB_URL, urLecm);
+//        parameter.put(SessionParameter.ATOMPUB_URL, "http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+
+
+
+
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         parameter.put(SessionParameter.REPOSITORY_ID, "-default-");
 
@@ -146,7 +150,6 @@ public class ContentControlAlfrescoTest {
         unidadDocumentalDTO.setDescriptor1("3434");
         unidadDocumentalDTO.setDescriptor2("454545");
         unidadDocumentalDTO.setAccion("ABRIR");
-        unidadDocumentalDTO.setInactivo(false);
         unidadDocumentalDTO.setCerrada(false);
         unidadDocumentalDTO.setEstado("Abierto");
         unidadDocumentalDTO.setDisposicion("Eliminar");
@@ -852,31 +855,31 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testListarUdDisposicionFinalSuccess() {
         try {
-            UnidadDocumentalDTO testListarUdDisposicionFinalSuccessUD;
-            //Se llenan los datos de la unidad documental
-            testListarUdDisposicionFinalSuccessUD = new UnidadDocumentalDTO();
-            testListarUdDisposicionFinalSuccessUD.setInactivo(true);
-            //Calendar calendar
-            Calendar gregorianCalendar = GregorianCalendar.getInstance();
-            testListarUdDisposicionFinalSuccessUD.setFechaCierre(gregorianCalendar);
-            testListarUdDisposicionFinalSuccessUD.setId("11181");
-            testListarUdDisposicionFinalSuccessUD.setFechaExtremaInicial(gregorianCalendar);
-            testListarUdDisposicionFinalSuccessUD.setSoporte("electronico");
-            testListarUdDisposicionFinalSuccessUD.setNombreUnidadDocumental("UnidadDocumentalTestDD");
-            testListarUdDisposicionFinalSuccessUD.setFechaExtremaFinal(gregorianCalendar);
-            testListarUdDisposicionFinalSuccessUD.setCerrada(true);
-            testListarUdDisposicionFinalSuccessUD.setCodigoSubSerie("02312");
-            testListarUdDisposicionFinalSuccessUD.setCodigoSerie("0231");
-            testListarUdDisposicionFinalSuccessUD.setCodigoDependencia("10001040");
-            testListarUdDisposicionFinalSuccessUD.setDescriptor1("3434");
-            testListarUdDisposicionFinalSuccessUD.setDescriptor2("454545");
-            testListarUdDisposicionFinalSuccessUD.setAccion("");
-            testListarUdDisposicionFinalSuccessUD.setEstado("Abierto");
-            testListarUdDisposicionFinalSuccessUD.setDisposicion("Eliminar");
-            testListarUdDisposicionFinalSuccessUD.setFaseArchivo("archivo central");
+//            UnidadDocumentalDTO testListarUdDisposicionFinalSuccessUD;
+//            //Se llenan los datos de la unidad documental
+//            testListarUdDisposicionFinalSuccessUD = new UnidadDocumentalDTO();
+//            testListarUdDisposicionFinalSuccessUD.setInactivo(true);
+//            //Calendar calendar
+//            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+//            testListarUdDisposicionFinalSuccessUD.setFechaCierre(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setId("11181");
+//            testListarUdDisposicionFinalSuccessUD.setFechaExtremaInicial(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setSoporte("electronico");
+//            testListarUdDisposicionFinalSuccessUD.setNombreUnidadDocumental("UnidadDocumentalTestDD");
+//            testListarUdDisposicionFinalSuccessUD.setFechaExtremaFinal(gregorianCalendar);
+//            testListarUdDisposicionFinalSuccessUD.setCerrada(true);
+//            testListarUdDisposicionFinalSuccessUD.setCodigoSubSerie("02312");
+//            testListarUdDisposicionFinalSuccessUD.setCodigoSerie("0231");
+//            testListarUdDisposicionFinalSuccessUD.setCodigoDependencia("10001040");
+//            testListarUdDisposicionFinalSuccessUD.setDescriptor1("3434");
+//            testListarUdDisposicionFinalSuccessUD.setDescriptor2("454545");
+//            testListarUdDisposicionFinalSuccessUD.setAccion("");
+//            testListarUdDisposicionFinalSuccessUD.setEstado("Abierto");
+//            testListarUdDisposicionFinalSuccessUD.setDisposicion("Eliminar");
+//            testListarUdDisposicionFinalSuccessUD.setFaseArchivo("archivo central");
 
             DisposicionFinalDTO disposicionFinalDTO = new DisposicionFinalDTO();
-            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(testListarUdDisposicionFinalSuccessUD, conexion.getSession());
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
             UnidadDocumentalDTO unidadDocumentalDTOTest1 = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
 
             disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);

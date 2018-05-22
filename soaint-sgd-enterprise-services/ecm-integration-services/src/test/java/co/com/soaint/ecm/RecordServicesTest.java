@@ -37,21 +37,21 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath:spring/core-config.xml"})
 public class RecordServicesTest {
 
-    static {
-        System.setProperty(SystemParameters.API_SEARCH_ALFRESCO,"http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
-    }
-    static {
-        System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD,"http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
-    }
-    static {
-        System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS,"admin");
-    }
-    static {
-        System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER,"admin");
-    }
-    static {
-        System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT,"http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
-    }
+//    static {
+//        System.setProperty(SystemParameters.API_SEARCH_ALFRESCO,"http://192.168.3.245:8080/alfresco/api/-default-/public/search/versions/1/search");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_RECORD,"http://192.168.3.245:8080/alfresco/api/-default-/public/gs/versions/1");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_PASS,"admin");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_USER,"admin");
+//    }
+//    static {
+//        System.setProperty(SystemParameters.BUSINESS_PLATFORM_ENDPOINT,"http://192.168.3.245:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom");
+//    }
     @Autowired
     private IRecordServices recordServices;
     @Autowired
