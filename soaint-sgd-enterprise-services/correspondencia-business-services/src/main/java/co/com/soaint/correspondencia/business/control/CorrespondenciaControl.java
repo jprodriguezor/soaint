@@ -5,6 +5,7 @@ import co.com.foundation.cartridge.email.model.MailRequestDTO;
 import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
 import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
@@ -961,8 +962,10 @@ public class CorrespondenciaControl {
                 if (agenteDTO.getIdeAgente() == null){
                     CorAgente agente;
                     agente = agenteControl.corAgenteTransform(agenteDTO);
+                    agente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
                     agente.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorAgenteList().add(agente);
+//                    agente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
                     em.persist(agente);
                     agenteDTO.setIdeAgente(agente.getIdeAgente());
 
