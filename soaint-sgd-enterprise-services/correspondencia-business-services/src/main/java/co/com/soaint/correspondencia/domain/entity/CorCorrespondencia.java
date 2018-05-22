@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -136,23 +137,24 @@ public class CorCorrespondencia implements Serializable {
     private String codClaseEnvio;
     @Column(name = "COD_MODALIDAD_ENVIO")
     private String codModalidadEnvio;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorAgente> corAgenteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<DctAsignacion> dctAsignacionList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorPlanAgen> corPlanAgenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<PpdDocumento> ppdDocumentoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<DctAsigUltimo> dctAsigUltimoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corCorrespondencia", orphanRemoval = true)
     private List<CorReferido> corReferidoList;
 
 
     public void removeAsignacionByAgente(CorAgente agente) {
-        dctAsignacionList.stream()
+        List<DctAsignacion> dctAsignacions = dctAsignacionList.stream()
                 .filter(dctAsignacion -> dctAsignacion.getCorAgente().getIdeAgente().equals(agente.getIdeAgente()))
-                .forEach(dctAsignacion -> dctAsignacionList.remove(dctAsignacion));
+                .collect(Collectors.toList());
+        dctAsignacions.forEach(dctAsignacion -> dctAsignacionList.remove(dctAsignacion));
     }
 }

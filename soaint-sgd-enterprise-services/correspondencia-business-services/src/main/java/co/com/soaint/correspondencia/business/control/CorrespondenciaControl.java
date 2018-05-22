@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -914,6 +915,7 @@ public class CorrespondenciaControl {
 //        }
         return corAgenteList.stream()
                 .map(AgenteDTO::getIdeAgente)
+                .filter(Objects::nonNull)
                 .anyMatch(ideAgente -> ideAgente.equals(agente.getIdeAgente()));
     }
 
@@ -944,7 +946,7 @@ public class CorrespondenciaControl {
 
             //------------------------------------------
             List<CorAgente> agentes = correspondencia.getCorAgenteList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
-            List<DctAsignacion> dctAsignacionList = correspondencia.getDctAsignacionList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
+//            List<DctAsignacion> dctAsignacionList = correspondencia.getDctAsignacionList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
             log.info("Lisado de agentes antes de posible modificacion" + agentes.toString());
             List<AgenteDTO> agenteDTOList = comunicacionOficialDTO.getAgenteList();
 
@@ -959,12 +961,12 @@ public class CorrespondenciaControl {
 //                }
 //            });
 
-            correspondencia.getCorAgenteList().stream()
+            List<CorAgente> agentesAEliminar = correspondencia.getCorAgenteList().stream()
                     .filter(corAgente -> !this.verificarAgenteEnListaDTO(corAgente, agenteDTOList))
-                    .forEach(corAgente -> {
-                        correspondencia.getCorAgenteList().remove(corAgente);
-                        correspondencia.removeAsignacionByAgente(corAgente);
-                    });
+                    .peek(correspondencia::removeAsignacionByAgente)
+                    .collect(Collectors.toList());
+
+            correspondencia.getCorAgenteList().removeAll(agentesAEliminar); // no elimino el agente
 
 //            em.flush();
 
@@ -1067,7 +1069,7 @@ public class CorrespondenciaControl {
                     }
                 });
 
-            em.merge(correspondencia);
+            em.persist(correspondencia);
 //            em.flush();
 
             log.info("Actualizacion exitosa de la comunicacion");
