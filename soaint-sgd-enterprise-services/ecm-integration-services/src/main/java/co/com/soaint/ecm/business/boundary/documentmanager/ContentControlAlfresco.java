@@ -1185,8 +1185,8 @@ public class ContentControlAlfresco implements ContentControl {
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
-            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toLowerCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
+            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
+            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getKey().equals(disposicion)) {
                 eliminarUnidadDocumental(idUnidadDocumental, session);
             } else {
                 Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
@@ -1629,23 +1629,23 @@ public class ContentControlAlfresco implements ContentControl {
     private String getAbrevDisposition(String disposicion) {
         disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
         FinalDispositionType dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.DIGITALIZAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.ELIMINAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.MICROFILMAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.SELECCIONAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         return "";
@@ -2379,31 +2379,31 @@ public class ContentControlAlfresco implements ContentControl {
                         disposicionList) {
                     final String comma = in.length() == 0 ? "" : ",";
                     FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append(dispositionType.getName());
                         continue;
                     }
                     dispositionType = FinalDispositionType.ELIMINAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append(dispositionType.getName());
                         continue;
                     }
                     dispositionType = FinalDispositionType.MICROFILMAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append(dispositionType.getName());
                         continue;
                     }
                     dispositionType = FinalDispositionType.DIGITALIZAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append(dispositionType.getName());
                         continue;
                     }
                     dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-                    in.append(comma).append(dispositionType.getInDispositions());
+                    in.append(comma).append(dispositionType.getName());
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
-                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " IN (" + PhaseType.ARCHIVO_CENTRAL.getInPhases() + ")";
+                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " LIKE '" + PhaseType.ARCHIVO_CENTRAL.getName() + "%'";
                 log.info("Ejecutar consulta {}", query);
             } else {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
