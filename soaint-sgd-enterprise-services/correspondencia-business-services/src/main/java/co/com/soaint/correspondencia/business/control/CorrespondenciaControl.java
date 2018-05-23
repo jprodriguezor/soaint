@@ -1209,7 +1209,7 @@ public class CorrespondenciaControl {
         return attachmentsList;
     }
 
-    private ArrayList<Attachment> obtenerDocumentosECMporNroRadicado(ArrayList<Attachment> origen, ArrayList<Attachment> destino) throws SystemException{
+    private ArrayList<Attachment> mezclarDocumentosECMporNroRadicado(ArrayList<Attachment> origen, ArrayList<Attachment> destino) throws SystemException{
         origen.forEach(attachment -> {
             destino.add(attachment);
         });
