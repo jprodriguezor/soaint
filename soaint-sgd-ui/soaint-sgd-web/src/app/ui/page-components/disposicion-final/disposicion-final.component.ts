@@ -210,6 +210,8 @@ export class DisposicionFinalComponent implements OnInit, OnDestroy {
         } else {
           this.state.ActualizarDisposicionFinal();
         }
+      } else {
+        this._store.dispatch(new PushNotificationAction({severity: 'warning', summary: 'No hay unidades documentales para actualizar'}));
       }
     }
 
