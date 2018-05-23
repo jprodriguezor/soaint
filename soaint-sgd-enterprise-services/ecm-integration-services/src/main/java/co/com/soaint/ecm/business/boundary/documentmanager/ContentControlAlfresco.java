@@ -411,6 +411,7 @@ public class ContentControlAlfresco implements ContentControl {
         }
         return response;
     }
+
     /**
      * Metodo para mover carpetas dentro de Alfresco
      *
@@ -1150,7 +1151,7 @@ public class ContentControlAlfresco implements ContentControl {
                     final String[] serieSubserie = getSerieSubSerie(optionalFolder.get(), session);
                     final String serieName = serieSubserie[0];
                     final String subSerieName = serieSubserie[1];
-                    String currentFolderFatherName = StringUtils.isEmpty(serieName) ? subSerieName : serieName;
+                    String currentFolderFatherName = !StringUtils.isEmpty(subSerieName) ? subSerieName : serieName;
                     final int index = currentFolderFatherName.indexOf('_');
                     currentFolderFatherName = index != -1 ? currentFolderFatherName.substring(index + 1) : currentFolderFatherName;
                     unidadDocumentalDTO.setNombreSerie(currentFolderFatherName);
@@ -1229,20 +1230,21 @@ public class ContentControlAlfresco implements ContentControl {
                 throw new SystemException("Ocurrio un error inesperado");
             }
 
-            byte[] stampedPdf = contentStamper
+            final byte[] stampedPdf = contentStamper
                     .getStampedDocument(documentoDTO.getDocumento(), getDocumentBytes(document));
 
             documentoDTO.setNombreDocumento(document.getName());
 
             Map<String, Object> properties = obtenerPropiedadesDocumento(document);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
-            properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento());
+            properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento() + ".pdf");
             properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, ConstantesECM.APPLICATION_PDF);
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
 
             eliminardocumento(documentoDTO.getIdDocumento(), session);
 
-            ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento(), BigInteger.valueOf(stampedPdf.length), ConstantesECM.APPLICATION_PDF, new ByteArrayInputStream(stampedPdf));
+            final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento() + ".pdf",
+                    BigInteger.valueOf(stampedPdf.length), ConstantesECM.APPLICATION_PDF, new ByteArrayInputStream(stampedPdf));
             folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
             return MensajeRespuesta.newInstance()
@@ -1621,7 +1623,7 @@ public class ContentControlAlfresco implements ContentControl {
                 folderBySubSerieCode.get().getFolder().getName() : "";
         final String serieName = folderBySerieCode.isPresent() ?
                 folderBySerieCode.get().getFolder().getName() : "";
-        return new String[] {serieName, subSerieName};
+        return new String[]{serieName, subSerieName};
     }
 
     private String getAbrevDisposition(String disposicion) {
@@ -2370,8 +2372,6 @@ public class ContentControlAlfresco implements ContentControl {
             }
             if (!ObjectUtils.isEmpty(dto.getEstado())) {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_ESTADO + " = '" + dto.getEstado() + "'";
-            } else {
-                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
             }
             if (!ObjectUtils.isEmpty(disposicionList)) {
                 final StringBuilder in = new StringBuilder();
@@ -2405,6 +2405,8 @@ public class ContentControlAlfresco implements ContentControl {
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
                         " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " IN (" + PhaseType.ARCHIVO_CENTRAL.getInPhases() + ")";
                 log.info("Ejecutar consulta {}", query);
+            } else {
+                query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";
             }
             return listarUnidadesDocumentales(query, dto, session);
 
