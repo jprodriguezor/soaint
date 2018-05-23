@@ -12,16 +12,18 @@ if(Worker !== undefined || localStorage !== undefined ){
 
       var key = localStorage.key(i);
 
-      items =  JSON.parse(localStorage.getItem(key));
+      response =  JSON.parse(localStorage.getItem(key))[0].response;
 
-      obj = obj.concat(items);
+       if(response.constantes )
+       obj = obj.concat(response.constantes);
     }
 
-    return obj;
+     return obj;
   }
 
   worker.addEventListener("message",() => {
-    localStorage.clear();
+
+      localStorage.clear();
   },false);
   worker.postMessage(getContants());
 }
