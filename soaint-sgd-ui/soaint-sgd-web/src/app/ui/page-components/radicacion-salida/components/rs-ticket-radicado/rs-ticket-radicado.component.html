@@ -1,4 +1,4 @@
-<div id="ticket-rad" class="ticket-panel" style="display: table" *ngIf="ticket">
+<div id="{{idTicket}}" class="ticket-panel" style="display: table;border: dashed 1pt; float: right;margin: -0.625em -1em;padding: 0.625em 1em" *ngIf="ticket">
   <div>
     <div style="padding-top: 0 !important; padding-bottom: 0 !important;">
       <div style="position: absolute; float: left;">
@@ -83,5 +83,6 @@
 
   </div>
 </div>
+<div style="clear: both"></div>
 
 

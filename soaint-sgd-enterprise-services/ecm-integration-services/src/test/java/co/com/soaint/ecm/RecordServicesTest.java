@@ -131,18 +131,39 @@ public class RecordServicesTest {
 
     @Test
     public void crearCarpetaRecord() {
-        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
         try {
-            entradaRecordDTO.setDependencia("10001040");
-            entradaRecordDTO.setSede("1000");
-            entradaRecordDTO.setNombreCarpeta("RecordFolderTest");
-            entradaRecordDTO.setSerie("0231");
-            entradaRecordDTO.setSubSerie("02312");
+            UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
 
-            mensajeRespuesta= recordServices.crearCarpetaRecord("");
+            unidadDocumentalDTOT.setInactivo(true);
+            //Calendar calendar
+            Calendar gregorianCalendar = GregorianCalendar.getInstance();
+            unidadDocumentalDTOT.setFechaCierre(gregorianCalendar);
+            unidadDocumentalDTOT.setId("111122223333");
+            unidadDocumentalDTOT.setFechaExtremaInicial(gregorianCalendar);
+            unidadDocumentalDTOT.setSoporte("electronico");
+            unidadDocumentalDTOT.setNombreUnidadDocumental("RecordFolderTest1");
+            unidadDocumentalDTOT.setFechaExtremaFinal(gregorianCalendar);
+            unidadDocumentalDTOT.setCerrada(false);
+            unidadDocumentalDTOT.setCodigoSubSerie("02312");
+            unidadDocumentalDTOT.setCodigoSerie("0231");
+            unidadDocumentalDTOT.setCodigoDependencia("10001040");
+            unidadDocumentalDTOT.setDescriptor1("3434");
+            unidadDocumentalDTOT.setDescriptor2("454545");
+            unidadDocumentalDTOT.setAccion("ABRIR");
+            unidadDocumentalDTOT.setInactivo(false);
+            unidadDocumentalDTOT.setCerrada(false);
+            unidadDocumentalDTOT.setEstado("Abierto");
+            unidadDocumentalDTOT.setDisposicion("Eliminar");
+
+            MensajeRespuesta mensajeRespuestaT = contentControlAlfresco.
+                crearUnidadDocumental(unidadDocumentalDTO, contentControl.obtenerConexion().getSession());
+
+        UnidadDocumentalDTO unidadDocumentalDTOTR = (UnidadDocumentalDTO) mensajeRespuestaT.getResponse().get("unidadDocumental");
+            mensajeRespuesta= recordServices.crearCarpetaRecord(unidadDocumentalDTOTR.getId());
 
             assertEquals("0000",mensajeRespuesta.getCodMensaje());
 
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTR.getId(), contentControl.obtenerConexion().getSession());
 
         } catch (SystemException e) {
             e.printStackTrace();
@@ -150,33 +171,57 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void gestionarUnidadDocumentalECM() {
+    public void testGestionarUnidadDocumentalECMNoIdUnidadDocumentalFail() {
+        UnidadDocumentalDTO unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+        try {
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+        } catch (SystemException e) {
+            assertEquals("No se ha especificado el Id de la Unidad Documental",e.getMessage());
+        }
+    }
+    @Test
+    public void testGestionarUnidadDocumentalECMNoAccionUnidadDocumentalFail() {
+        UnidadDocumentalDTO unidadDocumentalDTOTest = new UnidadDocumentalDTO();
+        unidadDocumentalDTOTest.setId("112233");
+        try {
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+        } catch (SystemException e) {
+            assertEquals("No se ha especificado la accion a realizar",e.getMessage());
+        }
+    }
+    @Test
+    public void testGestionarUnidadDocumentalECMAbrirUnidadDocumentalSuccess() {
+        unidadDocumentalDTO.setAccion("ABRIR");
+        try {
+          assertEquals("0000", recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTO).getCodMensaje());
+        } catch (SystemException e) {
+
+        }
     }
 
     @Test
     public void gestionarUnidadesDocumentalesECM() {
     }
 
-//    @Test
-//    public void getRecordFolderByUdId() {
-//        final Optional<Folder> optionalDocumentalDTO;
-//        EntradaRecordDTO entradaRecordDTO = new EntradaRecordDTO();
-//        try {
-//
-//
-//            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
-//            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
-//            unidadDocumentalDTOTest.setAccion("CERRAR");
-//            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
-//
-//            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
-//            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
-//                    assertNotNull(unidadDocumentalDTO1.getId()));
-//        } catch (SystemException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//    }
+    @Test
+    public void testGetRecordFolderByUdIdSuccess() {
+        final Optional<Folder> optionalDocumentalDTO;
+        try {
+
+
+            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOTest.setAccion("CERRAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+
+            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
 }

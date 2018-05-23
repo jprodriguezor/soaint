@@ -32,6 +32,7 @@ import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payl
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {isNullOrUndefined} from "util";
 
 
 declare const require: any;
@@ -168,6 +169,13 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
     this._sandbox.radicar(this.radicacion).subscribe((response) => {
       this.barCodeVisible = true;
       this.radicacion = response;
+      this.radicacion.ppdDocumentoList= [{
+        ideEcm:comunicacionOficialDTV.getDocumento().ideEcm,
+        asunto:"",
+        nroFolios:0,
+        nroAnexos:0
+
+      }];
       this.editable = false;
       this.datosGenerales.form.get('fechaRadicacion').setValue(moment(this.radicacion.correspondencia.fecRadicado).format('DD/MM/YYYY hh:mm'));
       this.datosGenerales.form.get('nroRadicado').setValue(this.radicacion.correspondencia.nroRadicado);
@@ -188,6 +196,21 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
         this.ticketRadicado.setDataTicketRadicado(this.createTicketDestInterno(destinatarioPrincipal));
       }
+
+      this._changeDetectorRef.detectChanges();
+
+      const self = this;
+
+      setTimeout( () =>{ self.uploadTemplate(
+        self.radicacion.correspondencia.codDependencia,
+        self.radicacion.correspondencia.nroRadicado,
+        comunicacionOficialDTV.getDocumento().ideEcm
+      )},1000)
+
+      this.uploadTemplate(this.radicacion.correspondencia.codDependencia,
+                          this.radicacion.correspondencia.nroRadicado,
+                          comunicacionOficialDTV.getDocumento().ideEcm
+       );
 
       this.disableEditionOnForms();
 
@@ -214,6 +237,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       this._changeDetectorRef.detectChanges();
     });
   }
+
+  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){}
 
   protected  buildPayload(): any{
 
@@ -354,22 +379,9 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
         if (!results) {
           return;
         }
-
         this.restoreByPayload(results);
 
-        // generales
-
-
-        // if (results.contactInProgress) {
-        //   const retry = setInterval(() => {
-        //     if (typeof this.datosRemitente.datosContactos !== 'undefined') {
-        //       this.datosRemitente.datosContactos.form.patchValue(results.contactInProgress);
-        //       clearInterval(retry);
-        //     }
-        //   }, 400)
-        // }
-
-      });
+        });
     }
   }
 
@@ -405,7 +417,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     this.activeTaskUnsubscriber.unsubscribe();
 
-    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    if(!isNullOrUndefined(this.reqDigitInmediataUnsubscriber))
+     this.reqDigitInmediataUnsubscriber.unsubscribe();
 
   }
 

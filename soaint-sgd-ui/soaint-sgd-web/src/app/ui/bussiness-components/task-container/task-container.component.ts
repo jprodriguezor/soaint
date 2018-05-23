@@ -33,7 +33,9 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
   task: TareaDTO = null;
  @Input() processName = '';
  @Input() taskName = "";
- @Input() isActive = true;
+ isActive = true;
+ @Input() forceHiddenButtons = false;
+
    hasToContinue: boolean;
 
   activeTaskUnsubscriber: Subscription;
@@ -41,7 +43,7 @@ export class TaskContainerComponent implements OnInit, OnDestroy {
 
   @Output() onFinalizar:EventEmitter<any> = new EventEmitter;
 
-  constructor(private _store: Store<RootState>, 
+  constructor(private _store: Store<RootState>,
               private _changeDetector: ChangeDetectorRef,
               private _taskSandBox: TaskSandBox) {
   }

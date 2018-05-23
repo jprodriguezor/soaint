@@ -63,8 +63,6 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   validations: any = {};
 
-
-
    constructor(
      private formBuilder: FormBuilder
      , private serieSubSerieService:SerieService
@@ -83,7 +81,7 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
   initForm() {
     this.form = this.formBuilder.group({
       'serie': [null, Validators.required],
-      'subserie': [null, Validators.required],
+      'subserie': [null],
       'identificador': [null, Validators.required],
       'nombre': [null, Validators.required],
       'descriptor1': [null],
@@ -116,6 +114,13 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
        });
      this.dependenciaSelected = result;
    }));
+
+   this.form.get("subserie").valueChanges.subscribe(v => {  console.log("value",v)
+
+     if(isNullOrUndefined(v))
+       this.form.get("subserie").setErrors({required:true});
+
+   })
 
   }
 
@@ -176,10 +181,11 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
   listenForBlurEvents(control: string) {
     const ac = this.form.get(control);
+    this.validations[control] = null;
     if (ac.touched && ac.invalid) {
       const error_keys = Object.keys(ac.errors);
       const last_error_key = error_keys[error_keys.length - 1];
-      this.validations[control] = VALIDATION_MESSAGES[last_error_key];
+      this.validations[control] = [...VALIDATION_MESSAGES[last_error_key]];
     }
   }
 
@@ -206,7 +212,19 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
         .map(list => {
           list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
           return list;
-        })
+        }).do(list => {
+
+           if(list.length  == 1)
+              this.form.get("subserie").setErrors(null);
+           else{
+             const v = this.form.get("subserie").value;
+
+             if(isNullOrUndefined(v))
+               this.form.get("subserie").setErrors({required:true});
+           }
+
+          this.changeDetector.detectChanges();
+      })
       : Observable.empty();
   }
 
@@ -246,12 +264,18 @@ export class SeleccionarUnidadDocumentalComponent implements OnInit, OnDestroy {
 
     changeSection( section:string){
 
+      this.solicitudModel.Solicitudes = [];
+
+      this.unidadesDocumentales$ = Observable.empty();
+
       this.onChangeSection.emit(section);
     }
 
     selectUnidadDocumental(evt){
 
      this.archivarDocumentoModel.UnidadDocumental = evt.data;
+
+
 
      this.onSelectUD.emit(evt.data);
     }

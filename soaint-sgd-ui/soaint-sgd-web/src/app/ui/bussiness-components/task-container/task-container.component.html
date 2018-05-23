@@ -6,7 +6,7 @@
     <h3 class="text-left page-subtitle">{{ taskName }}</h3>
   </div>
   <div class="ui-sm-12 ui-md-6 ui-g-6 ui-lg-6">
-    <div class="page-buttons text-right">
+    <div class="page-buttons text-right" *ngIf="!forceHiddenButtons">
       <ng-content select="[customActions]">
 
       </ng-content>
