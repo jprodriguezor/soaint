@@ -1,35 +1,18 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
-import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresco;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentStamper;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorker;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
-import com.itextpdf.tool.xml.css.CssFile;
-import com.itextpdf.tool.xml.css.StyleAttrCSSResolver;
-import com.itextpdf.tool.xml.exceptions.CssResolverException;
-import com.itextpdf.tool.xml.html.Tags;
-import com.itextpdf.tool.xml.parser.XMLParser;
-import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
-import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
-import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
-import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
-import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import lombok.extern.log4j.Log4j2;
-import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 @Log4j2
@@ -50,11 +33,14 @@ public final class ContentStamperImpl implements ContentStamper {
             final Charset UTF8_CHARSET = Charset.forName("UTF-8");
             final String htmlCad = new String(htmlBytes, UTF8_CHARSET);
             final InputStream inputStream = new ByteArrayInputStream((top() + htmlCad + bottom()).getBytes(UTF8_CHARSET));
-            XMLWorkerHelper.getInstance().parseXHtml(writer, document, inputStream);
 
             Image image = Image.getInstance(stamperImg);
-            image.setAbsolutePosition(470F, 770F);
+            image.setAbsolutePosition(400F, 720F);
+            image.scalePercent(40);
             document.add(image);
+
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, inputStream);
+
             document.close();
             return outputStream.toByteArray();
         } catch (Exception e) {
@@ -74,7 +60,7 @@ public final class ContentStamperImpl implements ContentStamper {
                 "<head>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "<div style=\"font-size: 9px\">";
+                "<div style=\"font-size: 12px\">";
     }
 
     private String bottom() {
