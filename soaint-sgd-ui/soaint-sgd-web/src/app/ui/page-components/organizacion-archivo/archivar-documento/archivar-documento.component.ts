@@ -201,6 +201,9 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
          }
        });
      }
+     else
+       this._store.dispatch(go(['/' + ROUTES_PATH.workspace]));
+
   }
 
   ngOnDestroy(): void {
