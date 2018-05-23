@@ -1285,7 +1285,6 @@ public class CorrespondenciaControl {
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
                         if (agenteDTO.getIndOriginal() == "TP-DESP") {
-//                            String usuario = agenteDTO.getNombre();
                             String usuario = (agenteDTO.getNombre() == null)? "" : agenteDTO.getNombre();
                             log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
                             parameters.put("#USER#", usuario);
