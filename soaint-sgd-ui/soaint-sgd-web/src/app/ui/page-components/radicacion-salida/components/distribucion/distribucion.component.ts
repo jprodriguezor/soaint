@@ -10,6 +10,8 @@ import {State as RootState} from "../../../../../infrastructure/redux-store/redu
 import {Store} from "@ngrx/store";
 import {Observable} from "rxjs/Observable";
 import {afterTaskComplete} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-reducers";
+import {LoadNextTaskPayload} from "../../../../../shared/interfaces/start-process-payload,interface";
+import {ScheduleNextTaskAction} from "../../../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 
 @Component({
   selector: 'app-distribucion',
@@ -41,7 +43,10 @@ export class DistribucionComponent implements OnInit {
 
     this.activeTaskUnsubscriber = this._store.select(getActiveTask).subscribe(activeTask => {
 
-      this.task = activeTask;
+      this.task = activeTask;     
+
+
+      this._store.dispatch(new ScheduleNextTaskAction(null));
 
     });
 

@@ -115,9 +115,9 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
         if (this.taskData && this.taskData.variables) {
           this.taskData.variables.nombreDependencia = results.dependencias.find((element) => element.codigo === this.taskData.variables.codDependencia).nombre;
           this.taskData.variables.nombreSede = results.dependencias.find((element) => element.codSede === this.taskData.variables.codigoSede).nomSede;
-          this._changeDetectorRef.detectChanges();
-
           this.screenData = Object.assign({},this.taskData.variables);
+
+          this._changeDetectorRef.detectChanges();
         }
 
       }

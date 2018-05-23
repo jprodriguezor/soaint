@@ -182,6 +182,7 @@ public class RecordServices implements IRecordServices {
         parametro.put("query", query);
         Map<String, Object> mapProperties = new HashMap<>();
         mapProperties.put(ConstantesECM.RMC_X_IDENTIFICADOR, documentalDTO.getId());
+        mapProperties.put("rmc:xFaseArchivo", PhaseType.ARCHIVO_GESTION.getValueAt(1));
 
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", documentalDTO.getNombreUnidadDocumental());
@@ -322,10 +323,22 @@ public class RecordServices implements IRecordServices {
         }
     }
 
-    private Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
+    public Response modificarRecordFolder(UnidadDocumentalDTO documentalDTO) {
         JSONObject properties = new JSONObject();
         Map<String, Object> nombreMap = new HashMap<>();
-        nombreMap.put(RMA_IS_CLOSED, documentalDTO.getCerrada());
+        if (!ObjectUtils.isEmpty(documentalDTO.getCerrada())) {
+            nombreMap.put(RMA_IS_CLOSED, documentalDTO.getCerrada());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getFaseArchivo())) {
+            nombreMap.put("rmc:xFaseArchivo", documentalDTO.getFaseArchivo());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getEstado())) {
+            nombreMap.put("rmc:xEstado", documentalDTO.getEstado());
+        }
+        if (!StringUtils.isEmpty(documentalDTO.getDisposicion())) {
+            nombreMap.put("rmc:xDisposicion", documentalDTO.getDisposicion());
+        }
+
         properties.put("properties", nombreMap);
         WebTarget wt = ClientBuilder.newClient().target(SystemParameters.getParameter(SystemParameters.BUSINESS_PLATFORM_RECORD));
         return wt.path("/record-folders/" + documentalDTO.getId())
