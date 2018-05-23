@@ -1245,6 +1245,9 @@ public class CorrespondenciaControl {
         });
 
         String nroRadicadoReferido = referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        log.info("processing rest request - nroRadicado: "+nroRadicado);
+        log.info("processing rest request - nroRadicadoReferido: "+nroRadicadoReferido);
+
         if (nroRadicadoReferido != null)
         this.obtenerDocumentosECMporNroRadicado(nroRadicadoReferido).forEach(attachment -> {
             attachmentsList.add(attachment);
