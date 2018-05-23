@@ -18,7 +18,7 @@ import java.io.FileReader;
 public abstract class JPAHibernateContextTest {
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     @Before
     public void initializeDatabase(){

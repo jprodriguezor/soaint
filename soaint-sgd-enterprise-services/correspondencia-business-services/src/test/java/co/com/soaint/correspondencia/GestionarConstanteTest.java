@@ -41,7 +41,7 @@ public class GestionarConstanteTest extends  JPAHibernateTest {
         String estado = "ACTIVO";
 
             List<ConstanteDTO> constantes = constantesControl.listarConstantesByEstado(estado);
-            assertEquals(3, constantes.size());
+            assertEquals(2, constantes.size());
             assertEquals("CODIGO1", constantes.get(0).getCodigo());
 
     }
