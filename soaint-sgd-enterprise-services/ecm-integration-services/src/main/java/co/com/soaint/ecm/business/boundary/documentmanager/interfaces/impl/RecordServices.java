@@ -182,7 +182,7 @@ public class RecordServices implements IRecordServices {
         parametro.put("query", query);
         Map<String, Object> mapProperties = new HashMap<>();
         mapProperties.put(ConstantesECM.RMC_X_IDENTIFICADOR, documentalDTO.getId());
-        mapProperties.put("rmc:xFaseArchivo", PhaseType.ARCHIVO_GESTION.getValueAt(1));
+        mapProperties.put("rmc:xFaseArchivo", PhaseType.ARCHIVO_GESTION.getName());
 
         JSONObject carpeta = new JSONObject();
         carpeta.put("name", documentalDTO.getNombreUnidadDocumental());
@@ -376,8 +376,9 @@ public class RecordServices implements IRecordServices {
                 unidadDocumental = optionalDto.get();
                 unidadDocumental.setCerrada(true);
                 unidadDocumental.setInactivo(true);
-                if (!PhaseType.ARCHIVO_CENTRAL.containPhase(unidadDocumental.getFaseArchivo())) {
-                    unidadDocumental.setFaseArchivo(PhaseType.ARCHIVO_GESTION.getValueAt(1));
+                final String faseArchivo = unidadDocumental.getFaseArchivo();
+                if (StringUtils.isEmpty(faseArchivo) || !PhaseType.ARCHIVO_CENTRAL.getName().equals(faseArchivo)) {
+                    unidadDocumental.setFaseArchivo(PhaseType.ARCHIVO_GESTION.getName());
                 }
                 final String idRecordFolder = (!ObjectUtils.isEmpty(udRecordFolder)) ?
                         udRecordFolder.getId() : crearCarpetaRecord(unidadDocumental);

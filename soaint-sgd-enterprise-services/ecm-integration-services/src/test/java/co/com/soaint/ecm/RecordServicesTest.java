@@ -197,8 +197,25 @@ public class RecordServicesTest {
         } catch (SystemException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void testReactivarUDSuccess() {
+        final Optional<Folder> optionalDocumentalDTO;
+        try {
 
 
+            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOTest.setAccion("CERRAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+            unidadDocumentalDTOTest.setAccion("REACTIVAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
 
+            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -31,10 +31,10 @@ import javax.persistence.*;
                 "FROM CorReferido c " +
                 "INNER JOIN c.corCorrespondencia co " +
                 "WHERE co.ideDocumento = :IDE_DOCUMENTO"),
-        @NamedQuery(name = "CorReferido.findByNroRadicadoCorrespodenciaReferida", query = "SELECT co.nroRadicado " +
+        @NamedQuery(name = "CorReferido.findByNroRadicadoCorrespodenciaReferida", query = "SELECT cr.nroRadRef " +
                 "FROM CorReferido cr " +
                 "INNER JOIN cr.corCorrespondencia co " +
-                "WHERE TRIM(cr.nroRadRef) = TRIM(:NRO_RAD) ")
+                "WHERE TRIM(co.nroRadicado) = TRIM(:NRO_RAD) ")
 })
 @javax.persistence.TableGenerator(name = "COR_REFERIDO_GENERATOR", table = "TABLE_GENERATOR", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_VALUE", pkColumnValue = "COR_REFERIDO_SEQ", allocationSize = 1)
