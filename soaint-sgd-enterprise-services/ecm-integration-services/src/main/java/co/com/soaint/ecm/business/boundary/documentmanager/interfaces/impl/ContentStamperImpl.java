@@ -6,22 +6,22 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 @Log4j2
 @BusinessControl
-public class ContentStamperImpl implements ContentStamper {
+public final class ContentStamperImpl implements ContentStamper {
 
     private static final Long serialVersionUID = 155L;
 
-    private final Rectangle RECTANGLE = new Rectangle(120, 120);
-
+    private ContentStamperImpl() {}
 
     @Override
     public byte[] getStampedDocument(byte[] stamperImg, byte[] htmlBytes) throws SystemException {
@@ -30,13 +30,17 @@ public class ContentStamperImpl implements ContentStamper {
             PdfWriter writer = PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(htmlBytes));
+            final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+            final String htmlCad = new String(htmlBytes, UTF8_CHARSET);
+            final InputStream inputStream = new ByteArrayInputStream((top() + htmlCad + bottom()).getBytes(UTF8_CHARSET));
 
             Image image = Image.getInstance(stamperImg);
-            image.scaleToFit(RECTANGLE);
-            //image.scalePercent(20);
-            image.setAbsolutePosition(470F, 770F);
+            image.setAbsolutePosition(400F, 720F);
+            image.scalePercent(40);
             document.add(image);
+
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, inputStream);
+
             document.close();
             return outputStream.toByteArray();
         } catch (Exception e) {
@@ -45,5 +49,23 @@ public class ContentStamperImpl implements ContentStamper {
                     .withRootException(e)
                     .buildSystemException();
         }
+    }
+
+    private String top() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<!DOCTYPE html\n" +
+                "        PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n" +
+                "        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
+                "<head>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<div style=\"font-size: 12px\">";
+    }
+
+    private String bottom() {
+        return "</div>\n" +
+                "</body>\n" +
+                "</html>";
     }
 }

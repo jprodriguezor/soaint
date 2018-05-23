@@ -32,6 +32,7 @@ import {LoadNextTaskPayload} from "../../../shared/interfaces/start-process-payl
 import {ScheduleNextTaskAction} from "../../../infrastructure/state-management/tareasDTO-state/tareasDTO-actions";
 import {TASK_RADICACION_DOCUMENTO_SALIDA} from "../../../infrastructure/state-management/tareasDTO-state/task-properties";
 import {PushNotificationAction} from "../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {isNullOrUndefined} from "util";
 
 
 declare const require: any;
@@ -416,7 +417,8 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
     this.activeTaskUnsubscriber.unsubscribe();
 
-    this.reqDigitInmediataUnsubscriber.unsubscribe();
+    if(!isNullOrUndefined(this.reqDigitInmediataUnsubscriber))
+     this.reqDigitInmediataUnsubscriber.unsubscribe();
 
   }
 
