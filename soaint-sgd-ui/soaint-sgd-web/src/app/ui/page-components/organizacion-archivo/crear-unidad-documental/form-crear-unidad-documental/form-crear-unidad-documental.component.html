@@ -35,7 +35,7 @@
                     formControlName="subserie"
                     [autoWidth]="false"
                   ></p-dropdown>
-                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].invalid && form.controls['subserie'].touched">
+                  <div class="ui-message ui-messages-error"  *ngIf="form.controls['subserie'].hasError('required') && form.controls['subserie'].touched">
                     <p *ngIf="form.controls['subserie'].hasError('required')">
                       Debe  de Seleccionar un numero de serie
                     </p>
@@ -271,7 +271,7 @@
             </p-panel>
           </div>
           <div class="ui-g-12 text-right">
-            <button type="button" label="Crear UD" pButton style="width: auto" (click)="crearUD()"></button>
+            <button type="button" label="Crear UD" pButton style="width: auto" (click)="crearUD()" [disabled]="form.invalid"></button>
           </div>
         </div>
       </p-panel>

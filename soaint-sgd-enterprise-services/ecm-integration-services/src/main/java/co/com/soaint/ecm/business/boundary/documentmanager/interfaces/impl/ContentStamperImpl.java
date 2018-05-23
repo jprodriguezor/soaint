@@ -35,7 +35,7 @@ public final class ContentStamperImpl implements ContentStamper {
             final InputStream inputStream = new ByteArrayInputStream((top() + htmlCad + bottom()).getBytes(UTF8_CHARSET));
 
             Image image = Image.getInstance(stamperImg);
-            image.setAbsolutePosition(400F, 720F);
+            image.setAbsolutePosition(380F, 700F);
             image.scalePercent(40);
             document.add(image);
 

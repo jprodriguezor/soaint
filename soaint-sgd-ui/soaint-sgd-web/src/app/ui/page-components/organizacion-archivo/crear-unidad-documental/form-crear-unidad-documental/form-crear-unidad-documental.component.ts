@@ -12,6 +12,7 @@ import {isNullOrUndefined} from "util";
 import {SolicitudCreacionUdService} from "../../../../../infrastructure/api/solicitud-creacion-ud.service";
 import {SolicitudCreacioUdModel} from "../../archivar-documento/models/solicitud-creacio-ud.model";
 import {PushNotificationAction} from "../../../../../infrastructure/state-management/notifications-state/notifications-actions";
+import {createElementCssSelector} from "@angular/compiler";
 
 
 
@@ -60,7 +61,7 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
 
     this.form = this.fb.group({
       serie:[null,Validators.required],
-      subserie:[null,Validators.required],
+      subserie:[null],
       identificador:[null,Validators.required],
       nombre:[null,Validators.required],
       descriptor1:[null],
@@ -197,5 +198,43 @@ export class FormCrearUnidadDocumentalComponent extends SupertypeSeries implemen
       this.form.get("observaciones").setValue(solicitud.observaciones);
 
     }
+  }
+
+  ngOnInit(){
+
+   super.ngOnInit();
+
+    this.form.get("subserie").valueChanges.subscribe(v => {
+
+      if(isNullOrUndefined(v))
+        this.form.get("subserie").setErrors({required:true});
+
+    });
+  }
+
+  selectSerie(evt)
+  {
+
+    this.subseriesObservable$ = evt ?
+      this
+        ._serieSubserieService
+        .getSubseriePorDependenciaSerie(this.dependenciaSelected.codigo,evt.value)
+        .map(list => {
+          list.unshift({codigoSubSerie:null,nombreSubSerie:"Seleccione"});
+          return list;
+        }).do(list => {
+
+        if(list.length  == 1)
+          this.form.get("subserie").setErrors(null);
+        else{
+          const v = this.form.get("subserie").value;
+
+          if(isNullOrUndefined(v))
+            this.form.get("subserie").setErrors({required:true});
+        }
+
+        this.changeDetector.detectChanges();
+      })
+      : Observable.empty();
   }
 }
