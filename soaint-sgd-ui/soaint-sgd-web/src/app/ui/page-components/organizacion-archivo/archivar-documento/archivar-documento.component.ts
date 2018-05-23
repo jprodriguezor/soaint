@@ -185,7 +185,7 @@ export class ArchivarDocumentoComponent implements OnInit,OnDestroy {
   }
 
   setEnableButtonNext(enable:boolean){
-    this.enableButtonNext = enable;
+    this.enableButtonNext = !this.showSolicitarButton && enable;
   }
 
 

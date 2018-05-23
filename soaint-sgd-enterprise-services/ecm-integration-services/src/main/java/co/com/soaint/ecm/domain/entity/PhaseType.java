@@ -1,5 +1,7 @@
 package co.com.soaint.ecm.domain.entity;
 
+import org.springframework.util.StringUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,68 +13,38 @@ public enum PhaseType implements Serializable {
 
     private static final Long serialVersionUID = 1L;
 
-    private final List<String> allCentralFile = new ArrayList<>();
-    private final List<String> allManagementFile = new ArrayList<>();
+    private final List<String> fileList;
 
     PhaseType(String key, String s0, String s1) {
-        switch (key) {
-            case "AC":
-                allCentralFile.add(allCentralFile.size(), key);
-                allCentralFile.add(allCentralFile.size(), key.toLowerCase());
-                allCentralFile.add(allCentralFile.size(), s0);
-                allCentralFile.add(allCentralFile.size(), s0.toLowerCase());
-                allCentralFile.add(allCentralFile.size(), s0.toUpperCase());
-                break;
-            case "AG":
-                allManagementFile.add(allManagementFile.size(), key);
-                allManagementFile.add(allManagementFile.size(), key.toLowerCase());
-                allManagementFile.add(allManagementFile.size(), s0);
-                allManagementFile.add(allManagementFile.size(), s0.toLowerCase());
-                allManagementFile.add(allManagementFile.size(), s0.toUpperCase());
-                allManagementFile.add(allManagementFile.size(), s1);
-                allManagementFile.add(allManagementFile.size(), s1.toLowerCase());
-                allManagementFile.add(allManagementFile.size(), s1.toUpperCase());
-                break;
+        fileList = new ArrayList<>();
+        fileList.add(fileList.size(), key);
+        fileList.add(fileList.size(), key.toLowerCase());
+        fileList.add(fileList.size(), s0);
+        fileList.add(fileList.size(), s0.toLowerCase());
+        fileList.add(fileList.size(), s0.toUpperCase());
+        if (!StringUtils.isEmpty(s1)) {
+            fileList.add(fileList.size(), s1);
+            fileList.add(fileList.size(), s1.toLowerCase());
+            fileList.add(fileList.size(), s1.toUpperCase());
         }
     }
 
     public String getValueAt(int position) {
-        switch (this) {
-            case ARCHIVO_CENTRAL:
-                final int centralFileSize = allCentralFile.size();
-                if (position >= 0 && position < centralFileSize) {
-                    return allCentralFile.get(position);
-                }
-                break;
-            default:
-                final int managementFileSize = allManagementFile.size();
-                if (position >= 0 && position < managementFileSize) {
-                    return allManagementFile.get(position);
-                }
-                break;
+        if (position >= 0 && position < fileList.size()) {
+            return fileList.get(position);
         }
         return "";
     }
 
     public boolean containPhase(String phase) {
-        switch (this) {
-            case ARCHIVO_CENTRAL:
-                return allCentralFile.contains(phase);
-            default:
-                return allManagementFile.contains(phase);
-        }
+        return fileList.contains(phase);
     }
 
     public String getInPhases() {
-        return this == ARCHIVO_CENTRAL ? getInPhases(allCentralFile)
-                : getInPhases(allManagementFile);
-    }
-
-    private String getInPhases(List<String> list) {
-        final int length = list.size();
+        final int length = fileList.size();
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            final String disposition = list.get(i);
+            final String disposition = fileList.get(i);
             final String comma = (i == length - 1) ? "" : ",";
             builder.append("'").append(disposition).append("'").append(comma);
         }
