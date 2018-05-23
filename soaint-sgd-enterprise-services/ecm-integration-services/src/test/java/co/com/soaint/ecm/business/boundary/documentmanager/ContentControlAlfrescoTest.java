@@ -71,7 +71,7 @@ public class ContentControlAlfrescoTest {
     public void testDescargarDocumentoSuccess() {
         //Prueba Existosa para descargar documento
         try {
-            MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnit");
+            MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnittestDescargarDocumentoSuccess");
             assertEquals("0000", contentControlAlfresco.
                     descargarDocumento(mensajeRespuesta.getDocumentoDTOList().get(0), conexion.getSession()).getCodMensaje());
 
@@ -175,7 +175,7 @@ public class ContentControlAlfrescoTest {
 
         //Prueba Existosa para obtenerdetalles de documento
         try {
-            MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnit");
+            MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnittestObtenerDetallesDocumentoDTOSuccess");
             assertEquals("0000", contentControlAlfresco.
                     obtenerDetallesDocumentoDTO(mensajeRespuesta.getDocumentoDTOList().get(0).
                             getIdDocumento(), conexion.getSession()).getCodMensaje());
@@ -377,7 +377,7 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testMovDocumentoSuccess() {
-        MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnit");
+        MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnittestMovDocumentoSuccess");
         assertEquals("0000",contentControlAlfresco.movDocumento(conexion.getSession(), mensajeRespuesta.getDocumentoDTOList().get(0).getIdDocumento(), "Comunicaciones Oficiales Externas Recibidas 2018", "1000.1040_GERENCIA NACIONAL DE GESTION DOCUMENTAL").getCodMensaje());
     }
 
@@ -434,7 +434,7 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testObtenerDocumentosAdjuntosSuccess() {
-        MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnit");
+        MensajeRespuesta mensajeRespuesta = ecmConnectionRule.uploadNewDocument("DocTestJUnittestObtenerDocumentosAdjuntosSuccess");
         DocumentoDTO documentoDTO = mensajeRespuesta.getDocumentoDTOList().get(0);
         DocumentoDTO documentoDTO1 = ecmConnectionRule.newDocumento("TestMetodoSubirDoc1");
         //Probar que sube documento EE correctemante
@@ -454,7 +454,7 @@ public class ContentControlAlfrescoTest {
     public void testSubirVersionarDocumentoGeneradoSuccess() {
         //Probar obtener Versiones
         //Adicionar documento para version
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestSubirVersionarDocumentoGeneradoSuccess");
         assertEquals("0000", contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE").getCodMensaje());
 
         //Eliminar la version del documento
@@ -494,7 +494,7 @@ public class ContentControlAlfrescoTest {
     public void testObtenerVersionesDocumentoSuccess() {
         //Probar obtener Versiones
         //Adicionar documento para version
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestObtenerVersionesDocumentoSuccess");
         MensajeRespuesta  mensajeRespuesta1 = contentControlAlfresco.subirVersionarDocumentoGenerado(conexion.getSession(), documentoDTO, "EE");
 
         //Obtener Versiones de documento
@@ -511,20 +511,20 @@ public class ContentControlAlfrescoTest {
     public void testModificarMetadatosDocumentoFail() {
         DocumentoDTO documentoDTO12 = new DocumentoDTO();
         documentoDTO12.setIdDocumento("qwqwqwqw");
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoFail");
         assertEquals("00006", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO12.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
     }
 
     @Test
     public void testModificarMetadatosDocumentoSuccess() {
 
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestModificarMetadatosDocumentoSuccess");
         assertEquals("0000", contentControlAlfresco.modificarMetadatosDocumento(conexion.getSession(), documentoDTO.getIdDocumento(), "sdsdsd", documentoDTO.getTipologiaDocumental(), "Urbino").getCodMensaje());
     }
 
     @Test
     public void testObtenerPropiedadesDocumentoSuccess() {
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestObtenerPropiedadesDocumentoSuccess");
         CmisObject cmisObjectDocument = conexion.getSession().getObject(documentoDTO.getIdDocumento());
         assertNotNull(contentControlAlfresco.obtenerPropiedadesDocumento((Document) cmisObjectDocument));
     }
@@ -543,7 +543,7 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testObtenerDocumentosArchivadosSuccess() {
         try {
-            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestObtenerDocumentosArchivadosSuccess");
 
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoTemporalUD(documentoDTO, conexion.getSession());
 
@@ -564,8 +564,8 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testSubirDocumentosTemporalesUDSuccess() {
         ArrayList<DocumentoDTO> listaDocs = new ArrayList<>();
-        DocumentoDTO documentoDTO1 = ecmConnectionRule.newDocumento("TestMetodoSubirDoc1");
-        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+        DocumentoDTO documentoDTO1 = ecmConnectionRule.newDocumento("TestMetodoSubirDoc1testSubirDocumentosTemporalesUDSuccess");
+        DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestSubirDocumentosTemporalesUDSuccess");
         listaDocs.add(documentoDTO);
        MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO1, "EE");
         documentoDTO1.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
@@ -574,9 +574,20 @@ public class ContentControlAlfrescoTest {
         listaDocs.add(documentoDTO1);
 
         try {
-            assertEquals("0000", contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs, conexion.getSession()).getCodMensaje());
+            MensajeRespuesta mensajeRespuesta =contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs, conexion.getSession());
+            assertEquals("0000", mensajeRespuesta.getCodMensaje());
             contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
             contentControlAlfresco.eliminardocumento(documentoDTO1.getIdDocumento(), conexion.getSession());
+
+            List<DocumentoDTO> documentoDTOList= mensajeRespuesta.getDocumentoDTOList();
+            documentoDTOList.forEach(doc -> {
+                try {
+                    contentControlAlfresco.eliminardocumento(doc.getIdDocumento(), conexion.getSession());
+                } catch (Exception e) {
+                    new RuntimeException(e);
+                }
+            });
+           
 
 //            ArrayList<DocumentoDTO> listaDocs1 = new ArrayList();
 //            contentControlAlfresco.subirDocumentosTemporalesUD(listaDocs1, conexion.getSession());
@@ -599,7 +610,7 @@ public class ContentControlAlfrescoTest {
             final Optional<Folder> optionalFolder = contentControlAlfresco.
                     getUDFolderById(unidadDocumentalDTO.getId(), conexion.getSession());
 
-            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestGetDocumentsFromFolderSuccess");
             Map<String, Object> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, "D:cmcor:CM_DocumentoPersonalizado");
             properties.put(PropertyIds.NAME, "Doc Pruba");
@@ -631,7 +642,7 @@ public class ContentControlAlfrescoTest {
     public void testSubirDocumentosUnidadDocumentalECMSuccess() {
         try {
             UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
-            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestSubirDocumentosUnidadDocumentalECMSuccess");
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
 
             unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta.getResponse().get("unidadDocumental");
@@ -712,7 +723,7 @@ public class ContentControlAlfrescoTest {
     @Test
     public void testSubirDocumentoTemporalSuccessUD() {
         try {
-            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnit");
+            DocumentoDTO documentoDTO = ecmConnectionRule.existingDocumento("DocTestJUnittestSubirDocumentoTemporalSuccessUD");
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoTemporalUD(documentoDTO, conexion.getSession());
             assertEquals("0000", mensajeRespuesta.getCodMensaje());
 
