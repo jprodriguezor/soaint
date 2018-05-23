@@ -35,7 +35,7 @@ public final class ContentStamperImpl implements ContentStamper {
             final InputStream inputStream = new ByteArrayInputStream((top() + htmlCad + bottom()).getBytes(UTF8_CHARSET));
 
             Image image = Image.getInstance(stamperImg);
-            image.setAbsolutePosition(380F, 700F);
+            image.setAbsolutePosition(350F, 690F);
             image.scalePercent(40);
             document.add(image);
 
@@ -60,7 +60,7 @@ public final class ContentStamperImpl implements ContentStamper {
                 "<head>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "<div style=\"font-size: 12px\">";
+                "<div style=\"font-size: 10px\">";
     }
 
     private String bottom() {
