@@ -1209,7 +1209,7 @@ public class CorrespondenciaControl {
         return attachmentsList;
     }
 
-    private ArrayList<Attachment> obtenerDocumentosECMporNroRadicado(ArrayList<Attachment> origen, ArrayList<Attachment> destino) throws SystemException{
+    private ArrayList<Attachment> mezclarDocumentosECMporNroRadicado(ArrayList<Attachment> origen, ArrayList<Attachment> destino) throws SystemException{
         origen.forEach(attachment -> {
             destino.add(attachment);
         });
@@ -1245,6 +1245,9 @@ public class CorrespondenciaControl {
         });
 
         String nroRadicadoReferido = referidoControl.consultarNroRadicadoCorrespondenciaReferida(nroRadicado);
+        log.info("processing rest request - nroRadicado: "+nroRadicado);
+        log.info("processing rest request - nroRadicadoReferido: "+nroRadicadoReferido);
+
         if (nroRadicadoReferido != null)
         this.obtenerDocumentosECMporNroRadicado(nroRadicadoReferido).forEach(attachment -> {
             attachmentsList.add(attachment);
