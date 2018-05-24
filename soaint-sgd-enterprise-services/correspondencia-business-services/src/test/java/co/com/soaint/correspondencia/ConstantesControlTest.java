@@ -40,7 +40,7 @@ public class ConstantesControlTest {
         //when
         List<ConstanteDTO> constanteDTOList = constantesControl.listarConstantesByEstado(estado);
 
-        //that
+        //then
         assertNotNull(constanteDTOList);
         assertEquals(constanteDTOList.size(), 2);
         assertThat(constanteDTOList.get(0).getCodigo(), is("CODIGO1"));
@@ -56,7 +56,7 @@ public class ConstantesControlTest {
         //when
         List<ConstanteDTO> constanteDTOList = constantesControl.listarConstantesByCodigoAndEstado(codigo,estado);
 
-        //that
+        //then
         assertNotNull(constanteDTOList);
         assertTrue(constanteDTOList.size()>0);
         assertEquals(constanteDTOList.size(), 1);
@@ -72,7 +72,7 @@ public class ConstantesControlTest {
         //when
         List<ConstanteDTO> constanteDTOList = constantesControl.listarConstantesByCodPadreAndEstado(codigo,estado);
 
-        //that
+        //then
         assertNotNull(constanteDTOList);
         assertTrue(constanteDTOList.size()>0);
         assertEquals(constanteDTOList.size(), 1);
@@ -92,7 +92,7 @@ public class ConstantesControlTest {
             codigosResult.add(constanteDTO.getCodigo());
         });
 
-        //that
+        //then
         assertNotNull(constanteDTOList);
         assertTrue(constanteDTOList.size()>2);
         assertEquals(constanteDTOList.size(), 3);
@@ -109,12 +109,22 @@ public class ConstantesControlTest {
         //when
         ConstanteDTO constante = constantesControl.consultarConstanteByCodigo(codigo);
 
-        //that
+        //then
         assertNotNull(constante);
         assertThat(constante.getCodigo(),is("CODIGO1"));
     }
 
     @Test
     public void consultarNombreConstanteByCodigo() {
+        //given
+        String codigo = "CA-TID";
+
+        //when
+        String nombre = constantesControl.consultarNombreConstanteByCodigo(codigo);
+
+        //then
+        assertNotNull(nombre);
+        assertThat(nombre, is("CA-TID-NOM"));
+
     }
 }
