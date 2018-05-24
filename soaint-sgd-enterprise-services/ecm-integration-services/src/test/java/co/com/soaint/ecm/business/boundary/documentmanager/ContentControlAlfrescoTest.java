@@ -913,8 +913,10 @@ public class ContentControlAlfrescoTest {
             documentoDTO.setDocumento(imageInByte);
             documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
             MensajeRespuesta mensajeRespuestaTest = contentControlAlfresco.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
+            documentoDTO=(DocumentoDTO)mensajeRespuestaTest.getResponse().get("documento");
             assertEquals("0000", mensajeRespuestaTest.getCodMensaje());
-            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(),conexion.getSession());
+
         } catch (SystemException e) {
             e.printStackTrace();
         } catch (IOException e) {
