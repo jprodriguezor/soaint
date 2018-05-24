@@ -41,7 +41,7 @@ public class OrganigramaAdministrativoControlTest {
                 .getSingleResult();
         //then
         assertNotNull(raiz);
-        assertEquals("10120141", raiz.getCodOrg());
+        assertEquals("1", raiz.getCodOrg());
     }
 
     @Test
