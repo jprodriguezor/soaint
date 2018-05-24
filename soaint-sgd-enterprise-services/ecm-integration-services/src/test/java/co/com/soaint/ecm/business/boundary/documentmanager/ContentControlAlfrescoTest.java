@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -58,14 +59,6 @@ public class ContentControlAlfrescoTest {
         dependenciaTrdDTO = new ContenidoDependenciaTrdDTO();
         dependenciaTrdDTO.setIdOrgAdm("1000");
         dependenciaTrdDTO.setIdOrgOfc("10001010");
-
-        System.out.println(System.getProperty("ecm-endpoint"));
-        System.out.println(System.getProperty("ecm-pass"));
-        System.out.println(System.getProperty("BUSINESS_PLATFORM_USER"));
-        System.out.println(System.getProperty("API_SEARCH_ALFRESCO"));
-        System.out.println(System.getProperty("BUSINESS_PLATFORM_RECORD"));
-
-
     }
 
     @After
@@ -562,6 +555,16 @@ public class ContentControlAlfrescoTest {
             MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoTemporalUD(documentoDTO, conexion.getSession());
 
             DocumentoDTO documentoDTOA = (DocumentoDTO) mensajeRespuesta.getResponse().get("documento");
+
+
+            UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
+            MensajeRespuesta mensajeRespuesta1 = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta1.getResponse().get("unidadDocumental");
+List<DocumentoDTO> documentoDTOList = new ArrayList<>();
+documentoDTOList.add(documentoDTOA);
+unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
+            contentControlAlfresco.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO,conexion.getSession());
 
             assertEquals("0000", contentControlAlfresco.obtenerDocumentosArchivados("10001040", conexion.getSession()).getCodMensaje());
 
