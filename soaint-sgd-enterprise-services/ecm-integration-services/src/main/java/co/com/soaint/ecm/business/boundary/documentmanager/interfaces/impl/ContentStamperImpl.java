@@ -6,6 +6,7 @@ import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +27,7 @@ public final class ContentStamperImpl implements ContentStamper {
     @Override
     public byte[] getStampedDocument(byte[] stamperImg, byte[] htmlBytes) throws SystemException {
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
-            final Document document = new Document();
+            final Document document = new Document(PageSize.A4);
             PdfWriter writer = PdfWriter.getInstance(document, outputStream);
             document.open();
 

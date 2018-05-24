@@ -1224,7 +1224,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (!(cmisObject instanceof Document)) {
                 throw new SystemException("El ID solicitado no corresponde con el de un documento en el Gestor de documentos");
             }
-            final Document document = (Document) cmisObject;
+            Document document = (Document) cmisObject;
             final Folder folder = getFolderFrom(document);
             if (null == folder) {
                 throw new SystemException("Ocurrio un error inesperado");
@@ -1245,11 +1245,15 @@ public class ContentControlAlfresco implements ContentControl {
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento() + ".pdf",
                     BigInteger.valueOf(stampedPdf.length), ConstantesECM.APPLICATION_PDF, new ByteArrayInputStream(stampedPdf));
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
+            final Map<String, Object> delDoc = new HashMap<>();
+
+            delDoc.put("documento", transformarDocumento(document));
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje(ConstantesECM.SUCCESS)
+                    .response(delDoc)
                     .build();
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
