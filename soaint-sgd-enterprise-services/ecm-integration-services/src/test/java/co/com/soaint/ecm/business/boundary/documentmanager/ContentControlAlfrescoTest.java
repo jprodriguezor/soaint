@@ -888,6 +888,11 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testEstamparEtiquetaRadicacionSuccess() {
+        System.out.println(System.getProperty("ecm-endpoint"));
+        System.out.println(System.getProperty("BUSINESS_PLATFORM_PASS"));
+        System.out.println(System.getProperty("BUSINESS_PLATFORM_USER"));
+        System.out.println(System.getProperty("API_SEARCH_ALFRESCO"));
+        System.out.println(System.getProperty("BUSINESS_PLATFORM_RECORD"));
         DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionSuccess");
         try {
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
