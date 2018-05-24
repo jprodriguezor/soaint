@@ -2393,26 +2393,26 @@ public class ContentControlAlfresco implements ContentControl {
                     final String comma = in.length() == 0 ? "" : ",";
                     FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.ELIMINAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.MICROFILMAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.DIGITALIZAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-                    in.append(comma).append(dispositionType.getName());
+                    in.append(comma).append("'").append(dispositionType.getName()).append("'");
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +

@@ -1,6 +1,7 @@
 package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Conexion;
+import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
@@ -129,6 +130,8 @@ public class ContentControlAlfrescoTest {
     public void testListarUnidadDocumentalSuccess() {
         try {
             UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
+            unidadDocumentalDTO.setAccion("CERRAR");
+            unidadDocumentalDTO.setSoporte("PAPEL");
             assertEquals("0000", contentControlAlfresco.
                     listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
@@ -555,6 +558,16 @@ public class ContentControlAlfrescoTest {
 
             DocumentoDTO documentoDTOA = (DocumentoDTO) mensajeRespuesta.getResponse().get("documento");
 
+
+            UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
+            MensajeRespuesta mensajeRespuesta1 = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, conexion.getSession());
+
+            unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta1.getResponse().get("unidadDocumental");
+List<DocumentoDTO> documentoDTOList = new ArrayList<>();
+documentoDTOList.add(documentoDTOA);
+unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
+            contentControlAlfresco.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO,conexion.getSession());
+
             assertEquals("0000", contentControlAlfresco.obtenerDocumentosArchivados("10001040", conexion.getSession()).getCodMensaje());
 
             contentControlAlfresco.eliminardocumento(documentoDTOA.getIdDocumento(), conexion.getSession());
@@ -816,11 +829,11 @@ public class ContentControlAlfrescoTest {
 
             disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
             List<String> disposicionFinalList = new ArrayList<>();
-            disposicionFinalList.add("Conservacion Total");
-            disposicionFinalList.add("Microfilmar");
-            disposicionFinalList.add("seleccionar");
-            disposicionFinalList.add("Eliminar");
-            disposicionFinalList.add("Digitalizar");
+            disposicionFinalList.add("CT");
+            disposicionFinalList.add("M");
+            disposicionFinalList.add("S");
+            disposicionFinalList.add("E");
+            disposicionFinalList.add("D");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
             assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
@@ -888,6 +901,7 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testEstamparEtiquetaRadicacionSuccess() {
+
         DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionSuccess");
         try {
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
@@ -904,8 +918,10 @@ public class ContentControlAlfrescoTest {
             documentoDTO.setDocumento(imageInByte);
             documentoDTO.setIdDocumento(mensajeRespuesta3.getDocumentoDTOList().get(0).getIdDocumento());
             MensajeRespuesta mensajeRespuestaTest = contentControlAlfresco.estamparEtiquetaRadicacion(documentoDTO, conexion.getSession());
+            documentoDTO=(DocumentoDTO)mensajeRespuestaTest.getResponse().get("documento");
             assertEquals("0000", mensajeRespuestaTest.getCodMensaje());
-            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(), conexion.getSession());
+            contentControlAlfresco.eliminardocumento(documentoDTO.getIdDocumento(),conexion.getSession());
+
         } catch (SystemException e) {
             e.printStackTrace();
         } catch (IOException e) {
