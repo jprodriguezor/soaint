@@ -183,18 +183,18 @@
               </ng-template>
             </p-column>
             <p-column field="fechaExtremaInicial" header="Fecha extrema inicial">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="fechaExtremaFinal" header="Fecha extrema final">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{unidad[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="fechaCierre" header="Fecha cierre trámite">
-              <ng-template let-col="rowData" let-i="rowIndex" pTemplate="body">
-                {{i | date: 'dd/MM/yyyy'}}
+              <ng-template let-col let-unidad="rowData" let-i="rowIndex" pTemplate="body">
+                {{i[col.field] | date: 'dd/MM/yyyy'}}
               </ng-template>
             </p-column>
             <p-column field="soporte" header="Soporte"></p-column>

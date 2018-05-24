@@ -9,10 +9,11 @@ import co.com.soaint.ecm.util.ConstantesECM;
 import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import lombok.extern.log4j.Log4j2;
-import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.ItemIterable;
+import org.apache.chemistry.opencmis.client.api.QueryResult;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Optional;
 
 @Log4j2
 @Component
@@ -29,6 +32,8 @@ public class RecordTaskProcessor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String RMA_DISPOSITION_AS_OF = "rma:recordSearchDispositionActionAsOf";
+
     @Autowired
     private RecordServices recordServices;
 
@@ -36,8 +41,14 @@ public class RecordTaskProcessor implements Serializable {
     private ContentControl contentControl;
 
     @Scheduled(cron = "${scheduling.job.cron}")
-    public void autoCloseExecutor() {
-        log.info("Buscando Unidades documentales con fecha de cierre para hoy {}", GregorianCalendar.getInstance().getTime());
+    public void tasksExecuter() {
+        log.info("Running tasks executer for a day {}", GregorianCalendar.getInstance().getTime());
+        autoCloseExecutor();
+        finishedRetentionTimeExecutor();
+    }
+
+    private void autoCloseExecutor() {
+        log.info("Buscando Unidades documentales con fecha de cierre para el dia de hoy");
 
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM cmcor:CM_Unidad_Documental" +
@@ -69,15 +80,14 @@ public class RecordTaskProcessor implements Serializable {
         });
     }
 
-    @Scheduled(cron = "${scheduling.job.cron}")
-    public void finishedRetentionTimeExecuter() {
+    private void finishedRetentionTimeExecutor() {
         final Calendar currentCalendar = GregorianCalendar.getInstance();
-        log.info("Buscando Unidades documentales que hayan culminado el tiempo de retencion para hoy {}", currentCalendar.getTime());
+        log.info("Buscando Unidades documentales que hayan culminado el tiempo de retencion para hoy");
         final Session session = contentControl.obtenerConexion().getSession();
         final String query = "SELECT * FROM rma:recordSearch WHERE rma:recordSearchDispositionActionName <> 'retain'";
         final ItemIterable<QueryResult> queryResults = session.query(query, false);
         queryResults.forEach(queryResult -> {
-            Calendar dispositionCalendar = queryResult.getPropertyValueByQueryName("rma:recordSearchDispositionActionAsOf");
+            Calendar dispositionCalendar = queryResult.getPropertyValueByQueryName(RMA_DISPOSITION_AS_OF);
             if (!ObjectUtils.isEmpty(dispositionCalendar)) {
                 String idUd = queryResult.getPropertyValueByQueryName(ConstantesECM.RMC_X_IDENTIFICADOR);
                 Optional<UnidadDocumentalDTO> optionalUnidadDocumentalDTO = contentControl
@@ -91,8 +101,10 @@ public class RecordTaskProcessor implements Serializable {
                             recordServices.gestionarUnidadDocumentalECM(dto);
                             dto.setInactivo(true);
                         }
-                        dto.setFaseArchivo(PhaseType.ARCHIVO_CENTRAL.getValueAt(1));
+                        dto.setFaseArchivo(PhaseType.ARCHIVO_CENTRAL.getName());
                         contentControl.actualizarUnidadDocumental(dto, session);
+                        dto.setCerrada(null);
+                        recordServices.modificarRecordFolder(dto);
                     } catch (SystemException e) {
                         log.error("Error: " + e.getMessage());
                     }

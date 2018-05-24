@@ -117,7 +117,7 @@ export const routes: Routes = [
         canActivate: [AuthenticatedGuard]
       },
       {
-        path: ROUTES_PATH.transferenciasDocumentales+ '/:status',
+        path: ROUTES_PATH.transferenciasDocumentales + '/:status',
         component: TransferenciasDocumentalesComponent,
         canActivate: [AuthenticatedGuard]
       },

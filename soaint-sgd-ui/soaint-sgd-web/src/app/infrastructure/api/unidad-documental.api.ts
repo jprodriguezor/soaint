@@ -64,10 +64,28 @@ export class UnidadDocumentalApiService {
           });
   }
 
-  aprobarRechazarUnidadesDocumentalesDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
+  aprobarRechazarUDDisposicion(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
 
         return this._api.post(environment.aprobar_rechazar_unidades_documentales_endpoint, payload)
           .map( response => response);
+  }
+
+  aprobarRechazarUDAprobarTransferencia(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
+
+    return Observable.of({
+      codMensaje: '0000',
+      mensaje: 'Operación Completada',
+      response: []
+    });
+  }
+
+  aprobarRechazarUDVerificarTransferencia(payload: UnidadDocumentalDTO[]): Observable<MensajeRespuestaDTO>{
+
+    return Observable.of({
+      codMensaje: '0000',
+      mensaje: 'Operación Completada',
+      response: []
+    });
   }
 
   listarDocumentosPorArchivar(codDependencia):Observable<any>{

@@ -5,10 +5,7 @@ import co.com.foundation.cartridge.email.model.MailRequestDTO;
 import co.com.foundation.cartridge.email.proxy.MailServiceProxy;
 import co.com.soaint.correspondencia.domain.entity.*;
 import co.com.soaint.foundation.canonical.correspondencia.*;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoAgenteEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoCorrespondenciaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.EstadoDistribucionFisicaEnum;
-import co.com.soaint.foundation.canonical.correspondencia.constantes.TipoAgenteEnum;
+import co.com.soaint.foundation.canonical.correspondencia.constantes.*;
 import co.com.soaint.foundation.canonical.ecm.DocumentoDTO;
 import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
@@ -183,15 +180,6 @@ public class CorrespondenciaControl {
             }
             while (verificarByNroRadicado(nRadicado));
 
-/*                if (!dserialControl.verificarConsecutivo(codSede,codTipoCmc,anno,consecutivo)){
-                        dserialControl.updateConsecutivo(codSede, codDependencia,
-                            codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
-                }
-                return procesarNroRadicadoSalida(codSede, codDependencia, codFunci, codTipoCmc, anno, consecutivo+1);*/
-//
-//            dserialControl.updateConsecutivo(codSede, codDependencia,
-//                    codTipoCmc, String.valueOf(anno), consecutivo, codFunci);
-
             return nRadicado;
         } catch (SystemException e) {
             log.error("Business Control - a business error has occurred", e);
@@ -220,8 +208,9 @@ public class CorrespondenciaControl {
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
 
-            agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica())
-                    .stream().forEach(corAgente -> {
+            List<CorAgente> corAgenteList = agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica());
+            for (CorAgente corAgente : corAgenteList) {
+
                 corAgente.setCorCorrespondencia(correspondencia);
 
                 //----------------------asignacion--------------
@@ -240,7 +229,7 @@ public class CorrespondenciaControl {
                 //------------------------------------
 
                 correspondencia.getCorAgenteList().add(corAgente);
-            });
+            }
 
             PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
             ppdDocumento.setCorCorrespondencia(correspondencia);
@@ -722,13 +711,16 @@ public class CorrespondenciaControl {
         if (diaSiguienteHabil.equals(correspondenciaDTO.getInicioConteo()))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
-        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta());
+//        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta()); // error Dagmar
+        String tiempoRespuesta = (correspondenciaDTO.getTiempoRespuesta()== null)? "0" : correspondenciaDTO.getTiempoRespuesta();
+        Long tiempoDuracionTramite = Long.parseLong(tiempoRespuesta);
         long cantHorasLaborales = horasHabilesDia(horarioLaboral[0], horarioLaboral[1]);
         if (unidadTiempoDias.equals(correspondenciaDTO.getCodUnidadTiempo()))
             tiempoDuracionTramite *= cantHorasLaborales;
 
         SimpleDateFormat formatoHora = new SimpleDateFormat("HH:mm");
         while (tiempoDuracionTramite > 0) {
+
             long horasHabilesDia = horasHabilesDia(formatoHora.format(calendario.getTime()), horarioLaboral[1]);
 
             if (horasHabilesDia >= 0) {
@@ -959,15 +951,17 @@ public class CorrespondenciaControl {
 
             for (AgenteDTO agenteDTO: agenteDTOList){
 
-                if (agenteDTO.getIdeAgente() == null){
+                if (agenteDTO.getIdeAgente() == null){ // si no existe
                     CorAgente agente;
                     agente = agenteControl.corAgenteTransform(agenteDTO);
+                    agenteControl.actualizarIdeFunciAgenteInterno(agente);
                     agente.setCodEstado(EstadoAgenteEnum.SIN_ASIGNAR.getCodigo());
                     agente.setCorCorrespondencia(correspondencia);
                     correspondencia.getCorAgenteList().add(agente);
 //                    agente.setEstadoDistribucion(reqDistFisica.equals(rDistFisica) ? EstadoDistribucionFisicaEnum.SIN_DISTRIBUIR.getCodigo() : null);
                     em.persist(agente);
                     agenteDTO.setIdeAgente(agente.getIdeAgente());
+                    agenteDTO.setIdeFunci(agente.getIdeFunci());
 
                     //----------------------asignacion--------------
                     if (TipoAgenteEnum.DESTINATARIO.getCodigo().equals(agenteDTO.getCodTipAgent())) {
@@ -1082,12 +1076,12 @@ public class CorrespondenciaControl {
 
             CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
-            correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
+            correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia())); // dagmar tiene que pasar tiempo de respuesta
             correspondencia.setCorAgenteList(new ArrayList<>());
 
             log.info("Antes de Agente");
             agenteControl.conformarAgentesSalida(comunicacionOficialDTO.getAgenteList(), correspondencia.getReqDistFisica())
-                    .stream().forEach(corAgente -> {
+                    .forEach(corAgente -> {
                 corAgente.setCorCorrespondencia(correspondencia);
                 log.info(corAgente.getTvsDatosContactoList().size());
                 correspondencia.getCorAgenteList().add(corAgente);
