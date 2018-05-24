@@ -824,11 +824,11 @@ public class ContentControlAlfrescoTest {
 
             disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
             List<String> disposicionFinalList = new ArrayList<>();
-            disposicionFinalList.add("Conservacion Total");
-            disposicionFinalList.add("Microfilmar");
-            disposicionFinalList.add("seleccionar");
-            disposicionFinalList.add("Eliminar");
-            disposicionFinalList.add("Digitalizar");
+            disposicionFinalList.add("CT");
+            disposicionFinalList.add("M");
+            disposicionFinalList.add("S");
+            disposicionFinalList.add("E");
+            disposicionFinalList.add("D");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
             assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
