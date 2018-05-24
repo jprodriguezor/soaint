@@ -24,7 +24,6 @@ public class ProcessServiceTest {
 
     @Test
     public void iniciarProceso() {
-        
     }
 
     @Test
