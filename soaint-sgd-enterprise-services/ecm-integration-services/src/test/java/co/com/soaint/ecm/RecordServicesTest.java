@@ -4,8 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresc
 import co.com.soaint.ecm.business.boundary.documentmanager.ECMConnectionRule;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.junit.After;
@@ -177,7 +176,15 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void gestionarUnidadesDocumentalesECM() {
+    public void testGestionarUnidadesDocumentalesECMSuccess() {
+        unidadDocumentalDTO.setAccion("ABRIR");
+        try {
+            List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+            unidadDocumentalDTOList.add(unidadDocumentalDTO);
+            assertEquals("0000", recordServices.gestionarUnidadesDocumentalesECM(unidadDocumentalDTOList).getCodMensaje());
+        } catch (SystemException e) {
+
+        }
     }
 
     @Test
