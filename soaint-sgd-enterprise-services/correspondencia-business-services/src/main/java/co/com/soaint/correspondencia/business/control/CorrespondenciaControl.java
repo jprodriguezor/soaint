@@ -711,7 +711,9 @@ public class CorrespondenciaControl {
         if (diaSiguienteHabil.equals(correspondenciaDTO.getInicioConteo()))
             calendario.setTime(calcularDiaHabilSiguiente(calendario.getTime()));
 
-        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta()); // error Dagmar
+//        Long tiempoDuracionTramite = Long.parseLong(correspondenciaDTO.getTiempoRespuesta()); // error Dagmar
+        String tiempoRespuesta = (correspondenciaDTO.getTiempoRespuesta()== null)? "0" : correspondenciaDTO.getTiempoRespuesta();
+        Long tiempoDuracionTramite = Long.parseLong(tiempoRespuesta);
         long cantHorasLaborales = horasHabilesDia(horarioLaboral[0], horarioLaboral[1]);
         if (unidadTiempoDias.equals(correspondenciaDTO.getCodUnidadTiempo()))
             tiempoDuracionTramite *= cantHorasLaborales;
