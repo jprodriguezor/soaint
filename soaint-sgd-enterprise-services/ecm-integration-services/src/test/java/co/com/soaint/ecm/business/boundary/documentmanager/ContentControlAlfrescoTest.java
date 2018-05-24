@@ -130,6 +130,8 @@ public class ContentControlAlfrescoTest {
     public void testListarUnidadDocumentalSuccess() {
         try {
             UnidadDocumentalDTO unidadDocumentalDTO = ecmConnectionRule.newUnidadDocumental();
+            unidadDocumentalDTO.setAccion("CERRAR");
+            unidadDocumentalDTO.setSoporte("PAPEL");
             assertEquals("0000", contentControlAlfresco.
                     listarUnidadDocumental(unidadDocumentalDTO, conexion.getSession()).getCodMensaje());
         } catch (Exception e) {
