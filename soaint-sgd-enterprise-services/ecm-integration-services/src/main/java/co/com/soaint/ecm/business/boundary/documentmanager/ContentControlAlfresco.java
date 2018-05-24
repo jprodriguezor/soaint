@@ -1224,7 +1224,7 @@ public class ContentControlAlfresco implements ContentControl {
             if (!(cmisObject instanceof Document)) {
                 throw new SystemException("El ID solicitado no corresponde con el de un documento en el Gestor de documentos");
             }
-            final Document document = (Document) cmisObject;
+            Document document = (Document) cmisObject;
             final Folder folder = getFolderFrom(document);
             if (null == folder) {
                 throw new SystemException("Ocurrio un error inesperado");
@@ -1245,11 +1245,15 @@ public class ContentControlAlfresco implements ContentControl {
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento() + ".pdf",
                     BigInteger.valueOf(stampedPdf.length), ConstantesECM.APPLICATION_PDF, new ByteArrayInputStream(stampedPdf));
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
+            final Map<String, Object> delDoc = new HashMap<>();
+
+            delDoc.put("documento", transformarDocumento(document));
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje(ConstantesECM.SUCCESS)
+                    .response(delDoc)
                     .build();
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
@@ -2380,26 +2384,26 @@ public class ContentControlAlfresco implements ContentControl {
                     final String comma = in.length() == 0 ? "" : ",";
                     FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.ELIMINAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.MICROFILMAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.DIGITALIZAR;
                     if (dispositionType.getKey().equals(disposition)) {
-                        in.append(comma).append(dispositionType.getName());
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-                    in.append(comma).append(dispositionType.getName());
+                    in.append(comma).append("'").append(dispositionType.getName()).append("'");
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +

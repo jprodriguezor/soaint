@@ -58,6 +58,14 @@ public class ContentControlAlfrescoTest {
         dependenciaTrdDTO = new ContenidoDependenciaTrdDTO();
         dependenciaTrdDTO.setIdOrgAdm("1000");
         dependenciaTrdDTO.setIdOrgOfc("10001010");
+
+        System.out.println(System.getProperty("ecm-endpoint"));
+        System.out.println(System.getProperty("ecm-pass"));
+        System.out.println(System.getProperty("BUSINESS_PLATFORM_USER"));
+        System.out.println(System.getProperty("API_SEARCH_ALFRESCO"));
+        System.out.println(System.getProperty("BUSINESS_PLATFORM_RECORD"));
+
+
     }
 
     @After
@@ -816,11 +824,11 @@ public class ContentControlAlfrescoTest {
 
             disposicionFinalDTO.setUnidadDocumentalDTO(unidadDocumentalDTOTest1);
             List<String> disposicionFinalList = new ArrayList<>();
-            disposicionFinalList.add("Conservacion Total");
-            disposicionFinalList.add("Microfilmar");
-            disposicionFinalList.add("seleccionar");
-            disposicionFinalList.add("Eliminar");
-            disposicionFinalList.add("Digitalizar");
+            disposicionFinalList.add("CT");
+            disposicionFinalList.add("M");
+            disposicionFinalList.add("S");
+            disposicionFinalList.add("E");
+            disposicionFinalList.add("D");
             disposicionFinalDTO.setDisposicionFinalList(disposicionFinalList);
             assertEquals("0000", contentControlAlfresco.listarUdDisposicionFinal(disposicionFinalDTO, conexion.getSession()).getCodMensaje());
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTest1.getId(), conexion.getSession());
@@ -888,6 +896,7 @@ public class ContentControlAlfrescoTest {
 
     @Test
     public void testEstamparEtiquetaRadicacionSuccess() {
+
         DocumentoDTO documentoDTO = ecmConnectionRule.newDocumento("testEstamparEtiquetaRadicacionSuccess");
         try {
             MensajeRespuesta mensajeRespuesta3 = contentControlAlfresco.subirDocumentoPrincipalAdjunto(conexion.getSession(), documentoDTO, "EE");
