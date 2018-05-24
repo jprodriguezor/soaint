@@ -208,7 +208,7 @@ public class CorrespondenciaControl {
             correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
             correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia()));
 
-            List<CorAgente> corAgenteList = agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica())
+            List<CorAgente> corAgenteList = agenteControl.conformarAgentes(comunicacionOficialDTO.getAgenteList(), comunicacionOficialDTO.getDatosContactoList(), correspondencia.getReqDistFisica());
             for (CorAgente corAgente : corAgenteList) {
 
                 corAgente.setCorCorrespondencia(correspondencia);
