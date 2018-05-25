@@ -5,7 +5,6 @@ import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -21,14 +20,16 @@ import java.io.InputStream;
 public class CargaMasivaClient {
 
     private String endpoint = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
+    
+    private WebTarget wt;
 
     public CargaMasivaClient() {
         super();
+        wt = ClientBuilder.newClient().target(endpoint);
     }
 
     public Response listCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/listadocargamasiva")
                 .request()
                 .get();
@@ -36,7 +37,6 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasiva() {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva")
                 .request()
                 .get();
@@ -44,7 +44,6 @@ public class CargaMasivaClient {
 
     public Response listEstadoCargaMasivaDadoId(String id) {
         log.info("Carga Masiva - [trafic] - listing Carga Masiva dado Id with endpoint: " + endpoint);
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
         return wt.path("/estadocargamasiva/" + id)
                 .request()
                 .get();
@@ -52,7 +51,6 @@ public class CargaMasivaClient {
 
     public Response cargarDocumento(InputPart part, String codigoSede, String codigoDependencia, String codfunRadica, String fileName) {
         log.info("Carga Masiva - [trafic] - Subiendo fichero de carga masiva: ".concat(endpoint));
-        WebTarget wt = ClientBuilder.newClient().target(endpoint);
 
         MultipartFormDataOutput multipart = new MultipartFormDataOutput();
 
