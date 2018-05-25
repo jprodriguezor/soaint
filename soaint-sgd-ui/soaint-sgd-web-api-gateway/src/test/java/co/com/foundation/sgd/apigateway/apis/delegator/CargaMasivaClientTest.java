@@ -1,6 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
+import co.com.foundation.sgd.utils.SystemParameters;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.OutputPart;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -29,16 +31,25 @@ public class CargaMasivaClientTest {
     @Rule
     public EnvironmentRule environmentRule = new EnvironmentRule();
 
+    private String ENDPOINT = SystemParameters.getParameter(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL);
+
     private CargaMasivaClient cargaMasivaClient;
 
     private WebTarget wt;
+    private Client client;
+
 
 
     @Before
     public void setup() {
         cargaMasivaClient = new CargaMasivaClient();
+
+        client = mock(Client.class);
         wt = mock(WebTarget.class);
-        ReflectionTestUtils.setField(cargaMasivaClient, "wt", wt);
+
+        when(client.target(anyString())).thenReturn(wt);
+
+        ReflectionTestUtils.setField(cargaMasivaClient, "client", client);
     }
 
     @Test
@@ -50,6 +61,7 @@ public class CargaMasivaClientTest {
         cargaMasivaClient.listCargaMasiva();
 
         // then
+        verify(client).target(ENDPOINT);
         verify(wt).path("/listadocargamasiva");
     }
 
@@ -62,6 +74,7 @@ public class CargaMasivaClientTest {
         cargaMasivaClient.listEstadoCargaMasiva();
 
         // then
+        verify(client).target(ENDPOINT);
         verify(wt).path("/estadocargamasiva");
     }
 
@@ -75,6 +88,7 @@ public class CargaMasivaClientTest {
         cargaMasivaClient.listEstadoCargaMasivaDadoId(ID_CARGA_MASIVA);
 
         // then
+        verify(client).target(ENDPOINT);
         verify(wt).path("/estadocargamasiva/" + ID_CARGA_MASIVA);
     }
 
@@ -98,6 +112,8 @@ public class CargaMasivaClientTest {
         cargaMasivaClient.cargarDocumento(inputPart, CODIGO_SEDE, CODIGO_DEPENDENCIA, CODIGO_FUN_RADICA, FILENAME);
 
         // then
+        verify(client).target(ENDPOINT);
+
         verify(wt).path(PATH);
 
         ArgumentCaptor<Entity<GenericEntity<MultipartFormDataOutput>>> captor = ArgumentCaptor.forClass(Entity.class);
