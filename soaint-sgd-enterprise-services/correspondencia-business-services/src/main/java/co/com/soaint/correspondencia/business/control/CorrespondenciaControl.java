@@ -1247,7 +1247,6 @@ public class CorrespondenciaControl {
             });
 
             em.persist(correspondencia);
-
             em.flush();
 
             log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
@@ -1291,8 +1290,8 @@ public class CorrespondenciaControl {
                         doc.setContentTypeattachment(documento.getTipoDocumento());
                         doc.setNameAttachments(documento.getNombreDocumento());
                         attachmentsList.add(doc);
-                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento().toString());
-                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento().toString());
+                        log.info("processing rest request - documento.getTipoDocumento(): "+documento.getTipoDocumento());
+                        log.info("processing rest request - documento.getNombreDocumento(): "+documento.getNombreDocumento());
                     });
                 }
             } else{
