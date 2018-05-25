@@ -670,7 +670,15 @@ unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
         }
 
     }
-
+    @Test
+    public void testGetDocumentsFromFolderFail() {
+        Folder foldertest = null;
+        try {
+            assertNotNull(contentControlAlfresco.getDocumentsFromFolder(foldertest));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+    }
     @Test
     public void testSubirDocumentosUnidadDocumentalECMSuccess() {
         try {
