@@ -78,4 +78,23 @@ public class ReferidoControl {
             return null;
         }
     }
+
+    /**
+     * @param nroRadicado
+     * @return
+     * @throws SystemException
+     */
+    public List<String> consultarNrosRadicadoCorrespondenciaReferida(String nroRadicado) throws BusinessException, SystemException {
+        try {
+            return em.createNamedQuery("CorReferido.findByNroRadicadoCorrespodenciaReferida", String.class)
+                    .setParameter("NRO_RAD", nroRadicado)
+                    .getResultList();
+        } catch (NoResultException n) {
+            log.error("Business Control - a business error has occurred ", n);
+            return null;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            return null;
+        }
+    }
 }
