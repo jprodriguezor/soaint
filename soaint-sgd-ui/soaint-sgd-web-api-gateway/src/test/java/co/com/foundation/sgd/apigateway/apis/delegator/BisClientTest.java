@@ -36,7 +36,7 @@ public class BisClientTest {
 
 
     @Test
-    public void shouldGetResponseOfActuaEnCalidadActivos() {
+    public void shouldGetResponseOfBisActivos() {
 
         // when
         Response response = bisClient.list();
