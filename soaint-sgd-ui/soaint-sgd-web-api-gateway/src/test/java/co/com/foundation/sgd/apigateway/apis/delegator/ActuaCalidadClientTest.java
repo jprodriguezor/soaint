@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.is;
 
 @Log4j2
@@ -30,6 +32,10 @@ public class ActuaCalidadClientTest {
     @Autowired
     ActuaCalidadClient actuaCalidadClient;
 
+    @Value("${contants.actuaencalidad.value}")
+    String CODIGO_PADRE;
+
+
     /**
      * Tipo de Remitentes (ActuaEnCalidad)
      * - Apoderado
@@ -46,6 +52,7 @@ public class ActuaCalidadClientTest {
         // then
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         String content = response.readEntity(String.class);
-        assertThat(content, hasJsonPath("$[*]"));
+        assertThat(content, hasJsonPath("$.constantes[*]"));
+        assertThat(content, hasJsonPath("$.constantes[*].codPadre", everyItem(is(CODIGO_PADRE))));
     }
 }
