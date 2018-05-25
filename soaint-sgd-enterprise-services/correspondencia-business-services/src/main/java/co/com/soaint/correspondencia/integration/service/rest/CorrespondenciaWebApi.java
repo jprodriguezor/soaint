@@ -205,10 +205,10 @@ public class CorrespondenciaWebApi {
      */
     @POST
     @Path("/correspondencia/radicar-salida-remitente-destinatario")
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO, Boolean esRemitenteReferidoDestinatario)
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                 throws BusinessException, SystemException {
         log.info("processing rest request - radicar correspondencia salida");
-        return boundary.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO,esRemitenteReferidoDestinatario);
+        return boundary.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO);
     }
 
     /**

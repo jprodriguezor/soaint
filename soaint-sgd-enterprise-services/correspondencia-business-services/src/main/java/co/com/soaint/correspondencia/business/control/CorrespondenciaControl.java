@@ -1151,22 +1151,20 @@ public class CorrespondenciaControl {
     }
 
     /**
-     * @param esRemitenteReferidoDestinatario
      * @param comunicacionOficialDTO
      * @return
      * @throws BusinessException
      * @throws SystemException
      */
     @Transactional
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO,
-                                                                                             Boolean esRemitenteReferidoDestinatario)
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                             throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
 
-            if (esRemitenteReferidoDestinatario){
+            if (comunicacionOficialDTO.getEsRemitenteReferidoDestinatario()){
                 List<String> nrosRadicadoReferido = referidoControl.consultarNrosRadicadoCorrespondenciaReferida(comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
                 if (nrosRadicadoReferido!= null || !nrosRadicadoReferido.isEmpty()) {
                     for (String nro : nrosRadicadoReferido) {
