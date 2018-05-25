@@ -35,7 +35,7 @@ public class MediosRecepcionClientTest {
 
 
     @Test
-    public void shouldGetResponseOfActuaEnCalidadActivos() {
+    public void shouldGetResponseOfMediosRecepcionActivos() {
 
         // when
         Response response = mediosRecepcionClient.list();
