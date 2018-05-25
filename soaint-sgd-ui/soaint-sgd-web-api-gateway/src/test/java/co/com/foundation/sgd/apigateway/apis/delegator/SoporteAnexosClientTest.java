@@ -1,14 +1,15 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
+import co.com.foundation.sgd.apigateway.rules.PropertiesLoaderRule;
 import lombok.extern.log4j.Log4j2;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.ws.rs.core.Response;
 
@@ -28,12 +29,19 @@ public class SoporteAnexosClientTest {
     @Rule
     public EnvironmentRule environmentRule = new EnvironmentRule();
 
-    @Autowired
-    SoporteAnexosClient soporteAnexosClient;
+    @Rule
+    public PropertiesLoaderRule propertiesRule = PropertiesLoaderRule.from("sgd-service.properties");
 
-    @Value("${contants.soporteanexo.value}")
-    String CODIGO_PADRE;
+    private String CODIGO_PADRE = propertiesRule.get("contants.soporteanexo.value");
 
+    private SoporteAnexosClient soporteAnexosClient;
+
+
+    @Before
+    public void setup() {
+        soporteAnexosClient = new SoporteAnexosClient();
+        ReflectionTestUtils.setField(soporteAnexosClient, "tipoValue", CODIGO_PADRE);
+    }
 
     @Test
     public void shouldGetResponseOfSoporteAnexosActivos() {

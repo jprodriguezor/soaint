@@ -1,14 +1,11 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
-import lombok.extern.log4j.Log4j2;
+import co.com.foundation.sgd.apigateway.rules.PropertiesLoaderRule;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.ws.rs.core.Response;
 
@@ -17,22 +14,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.is;
 
-@Log4j2
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-        locations = {"/spring/core-config.xml"}
-
-)
 public class MediosRecepcionClientTest {
+
     @Rule
     public EnvironmentRule environmentRule = new EnvironmentRule();
 
-    @Autowired
-    MediosRecepcionClient mediosRecepcionClient;
+    @Rule
+    public PropertiesLoaderRule propertiesRule = PropertiesLoaderRule.from("sgd-service.properties");
 
-    @Value("${contants.mediorecepcion.value}")
-    String CODIGO_PADRE;
+    private String CODIGO_PADRE = propertiesRule.get("contants.mediorecepcion.value");
 
+    private MediosRecepcionClient mediosRecepcionClient;
+
+    @Before
+    public void setup() {
+        mediosRecepcionClient = new MediosRecepcionClient();
+        ReflectionTestUtils.setField(mediosRecepcionClient, "medRecValue", CODIGO_PADRE);
+    }
 
     @Test
     public void shouldGetResponseOfMediosRecepcionActivos() {
