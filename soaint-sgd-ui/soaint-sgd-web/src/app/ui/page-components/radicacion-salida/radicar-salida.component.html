@@ -30,7 +30,7 @@
           <!--rs-datos-remitente #datosRemitente></rs-datos-remitente-->
           <pd-datos-contacto #datosContacto [taskData]="task"   ></pd-datos-contacto>
 
-          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value">
+          <div class="paddign-top" *ngIf="datosGenerales.form.get('reqDistFisica').value == 1">
             <app-form-envio  #datosEnvio ></app-form-envio>
           </div>
 

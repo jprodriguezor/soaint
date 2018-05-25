@@ -54,9 +54,9 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
               resp.datosGenerales.reqDigit = 2;
               if(!isNullOrUndefined(this.task.variables.numeroRadicado))
               resp.datosGenerales.radicadosReferidos = [{nombre: this.task.variables.numeroRadicado}];
-              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física";
+              resp.datosGenerales.reqDistFisica = resp.datosContacto.distribucion === "física" ? 1:2;
 
-              if(resp.datosGenerales.reqDistFisica){
+              if(resp.datosGenerales.reqDistFisica == 1){
                 const payload: LoadNextTaskPayload = {
                   idProceso: this.task.idProceso,
                   idInstanciaProceso: this.task.idInstanciaProceso,
@@ -141,6 +141,16 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
         this._sandbox.uploadTemplate(formData).subscribe();
 
       });
+
+     /*  domtoimage.toPng(node)
+         .then(function (dataUrl) {
+           let img = new Image();
+           img.src = dataUrl;
+           document.getElementById('ticket-image').appendChild(img);
+         })
+         .catch(function (error) {
+           console.error('oops, something went wrong!', error);
+         });*/
     }
   }
 
