@@ -106,7 +106,7 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void crearCarpetaRecord() {
+    public void testcrearCarpetaRecordSuccess() {
         try {
             UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
 
@@ -140,6 +140,20 @@ public class RecordServicesTest {
             assertEquals("0000",mensajeRespuesta.getCodMensaje());
 
             contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTOTR.getId(), contentControl.obtenerConexion().getSession());
+
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void testcrearCarpetaRecordIdUDFail() {
+        try {
+            UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
+
+            mensajeRespuesta= recordServices.crearCarpetaRecord(unidadDocumentalDTOT.getId());
+
+            assertEquals("1224",mensajeRespuesta.getCodMensaje());
+
 
         } catch (SystemException e) {
             e.printStackTrace();
