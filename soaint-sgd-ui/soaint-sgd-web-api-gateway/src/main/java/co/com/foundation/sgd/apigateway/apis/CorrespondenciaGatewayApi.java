@@ -78,7 +78,7 @@ public class CorrespondenciaGatewayApi {
     @POST
     @Path("/radicar_salida")
     @JWTTokenSecurity
-    public Response radicarSalida(@RequestBody ComunicacionOficialDTO comunicacionOficial) {
+    public Response radicarSalida(@RequestBody ComunicacionOficialRemiteDTO comunicacionOficial) {
 
         log.info("CorrespondenciaGatewayApi - [trafic] - radicar Correspondencia");
         Response response = client.radicarSalida(comunicacionOficial);
