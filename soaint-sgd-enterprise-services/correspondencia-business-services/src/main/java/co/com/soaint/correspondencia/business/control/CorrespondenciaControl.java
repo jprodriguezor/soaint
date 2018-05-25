@@ -928,12 +928,10 @@ public class CorrespondenciaControl {
     public String actualizarComunicacion(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
         try {
 
-            // TODO verificar caso que se mande en la lista un agente nuevo
             CorCorrespondencia correspondencia = em.find(CorCorrespondencia.class ,comunicacionOficialDTO.getCorrespondencia().getIdeDocumento());
 
             //------------------------------------------
-            List<CorAgente> agentes = correspondencia.getCorAgenteList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
-//            List<DctAsignacion> dctAsignacionList = correspondencia.getDctAsignacionList(); // los cambios directos sobre correspondencia.getCorAgenteList() se reflejan en agentes
+            List<CorAgente> agentes = correspondencia.getCorAgenteList();
             log.info("Lisado de agentes antes de posible modificacion" + agentes.toString());
             List<AgenteDTO> agenteDTOList = comunicacionOficialDTO.getAgenteList();
 
@@ -942,12 +940,10 @@ public class CorrespondenciaControl {
                     .peek(correspondencia::removeAsignacionByAgente)
                     .collect(Collectors.toList());
 
-            correspondencia.getCorAgenteList().removeAll(agentesAEliminar); // no elimino el agente
-
-//            em.flush();
+            correspondencia.getCorAgenteList().removeAll(agentesAEliminar);
 
             log.info("Lisado de agentes despues de eliminacion agente " + agentes.toString());
-            log.info("Lisado de agentes despues de eliminacion agente correspondencia" + correspondencia.getCorAgenteList().toString()); // se mantiene el listado con el id cambiado
+            log.info("Lisado de agentes despues de eliminacion agente correspondencia" + correspondencia.getCorAgenteList().toString());
 
             for (AgenteDTO agenteDTO: agenteDTOList){
 
@@ -986,8 +982,6 @@ public class CorrespondenciaControl {
 
                         correspondencia.getDctAsignacionList().add(dctAsignacion);
                         correspondencia.getDctAsigUltimoList().add(dctAsigUltimo);
-//                        em.merge(correspondencia);
-//                        em.flush();
                     }
                 }  //------ si existe el agente en la correspondencia
 
@@ -1012,9 +1006,7 @@ public class CorrespondenciaControl {
                             .build();
                     agenteControl.actualizarRemitente(remitente);
                 }
-
             //-------------------------------------------------------
-
             }
 
             PpdDocumento ppdDocumento = em.find(PpdDocumento.class, comunicacionOficialDTO.getPpdDocumentoList().get(0).getIdePpdDocumento());
@@ -1044,7 +1036,6 @@ public class CorrespondenciaControl {
                 });
 
             em.persist(correspondencia);
-//            em.flush();
 
             log.info("Actualizacion exitosa de la comunicacion");
             return "1";
@@ -1110,9 +1101,6 @@ public class CorrespondenciaControl {
                     correspondencia.getCorReferidoList().add(corReferido);
                 });
 
-//            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
-//                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
-
             String tipoRadicacion = "";
             for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
                 if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
@@ -1142,8 +1130,6 @@ public class CorrespondenciaControl {
                 log.info("Response del cambio de radicado " + response.toString());
             });
 
-//            dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
-//                    correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
             em.persist(correspondencia);
 
             em.flush();
@@ -1179,10 +1165,14 @@ public class CorrespondenciaControl {
                 comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
 
             if (esRemitenteReferidoDestinatario){
-                List<AgenteDTO> agentesReferido = agenteControl.listarRemitentesByIdeDocumento(comunicacionOficialDTO.getCorrespondencia().getIdeDocumento());
-                agentesReferido.forEach(agenteDTO -> {
-                    comunicacionOficialDTO.getAgenteList().add(agenteDTO);
-                });
+                String nroRadicadoReferido = referidoControl.consultarNroRadicadoCorrespondenciaReferida(comunicacionOficialDTO.getCorrespondencia().getNroRadicado());
+                if (nroRadicadoReferido!= null) {
+                    List<AgenteDTO> agentesReferido = agenteControl.listarRemitentesByIdeDocumento(this.consultarCorrespondenciaByNroRadicado(nroRadicadoReferido).getIdeDocumento());
+                    agentesReferido.forEach(agenteDTO -> {
+                        comunicacionOficialDTO.getAgenteList().add(agenteDTO);
+                    });
+                }
+
             }
 
             Calendar cal = Calendar.getInstance();
