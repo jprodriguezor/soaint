@@ -122,7 +122,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
     return conditions.every(condition => condition);
   }
 
-  protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
+  /*protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
 
     const node = document.getElementById("ticket-rad");
 
@@ -142,7 +142,7 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
 
       });
 
-     /*  domtoimage.toPng(node)
+     domtoimage.toPng(node)
          .then(function (dataUrl) {
            let img = new Image();
            img.src = dataUrl;
@@ -150,8 +150,8 @@ export class RadicarDocumentoProducidoComponent extends  RadicarSalidaComponent 
          })
          .catch(function (error) {
            console.error('oops, something went wrong!', error);
-         });*/
+         });
     }
-  }
+  }*/
 
 }
