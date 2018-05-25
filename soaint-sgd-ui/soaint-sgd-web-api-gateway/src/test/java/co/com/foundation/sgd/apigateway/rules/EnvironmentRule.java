@@ -22,20 +22,17 @@ public class EnvironmentRule implements TestRule {
 
         if(!isLocal()) return;
 
-        Properties props = new Properties();
+        if(System.getProperty("java.io.tmpdir") == null)
+            System.setProperty("java.io.tmpdir", "/tmp");
 
-        props.put("java.io.tmpdir", "/tmp");
-
-        props.put(SystemParameters.BACKAPI_ENDPOINT_URL, "http://192.168.3.242:28080/correspondencia-business-services/services");
-        props.put(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL, "http://192.168.3.242:28080/Massive-Loader/massiveloaderapi");
-        props.put(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/bpm-integration-services/apis");
-        props.put(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/ecm-integration-services/apis/ecm");
-        props.put(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/ecm-integration-services/apis/record");
-        props.put(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/funcionario-integration-services/services");
-        props.put(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL, "http://192.168.3.243:28080/kie-server/services/rest/server/containers/instances");
-        props.put(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN, "a3Jpc3Y6a3Jpc3Y=");
-
-        System.setProperties(props);
+        System.setProperty(SystemParameters.BACKAPI_ENDPOINT_URL, "http://192.168.3.242:28080/correspondencia-business-services/services");
+        System.setProperty(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL, "http://192.168.3.242:28080/Massive-Loader/massiveloaderapi");
+        System.setProperty(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/bpm-integration-services/apis");
+        System.setProperty(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/ecm-integration-services/apis/ecm");
+        System.setProperty(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/ecm-integration-services/apis/record");
+        System.setProperty(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/funcionario-integration-services/services");
+        System.setProperty(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL, "http://192.168.3.243:28080/kie-server/services/rest/server/containers/instances");
+        System.setProperty(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN, "a3Jpc3Y6a3Jpc3Y=");
     }
 
     private boolean isLocal() {
