@@ -32,6 +32,7 @@ import static org.junit.Assert.*;
 public class AnexoControlTest  extends JPAHibernateContextTest {
     @Autowired
     private ConstantesControl constantesControl;
+    
     @Autowired
     private AnexoControl anexoDTOCOntrol;
 
