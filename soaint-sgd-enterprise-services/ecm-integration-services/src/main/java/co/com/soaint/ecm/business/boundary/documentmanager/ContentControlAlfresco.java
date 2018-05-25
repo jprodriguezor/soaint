@@ -1236,8 +1236,8 @@ public class ContentControlAlfresco implements ContentControl {
                 throw new SystemException("Ocurrio un error inesperado");
             }
 
-            final DocumentMimeType mimeType = DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType) ?
-                    DocumentMimeType.APPLICATION_HTML : DocumentMimeType.APPLICATION_PDF;
+            final DocumentMimeType mimeType = DocumentMimeType.APPLICATION_PDF.getType().equals(docMimeType) ?
+                    DocumentMimeType.APPLICATION_PDF : DocumentMimeType.APPLICATION_HTML;
 
             final byte[] stampedPdf = contentStamper
                     .getStampedDocument(documentoDTO.getDocumento(), getDocumentBytes(document), mimeType);
