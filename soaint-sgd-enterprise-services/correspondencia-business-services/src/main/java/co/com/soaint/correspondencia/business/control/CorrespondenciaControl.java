@@ -1368,8 +1368,8 @@ public class CorrespondenciaControl {
                     FuncionarioDTO funcionario = funcionarioControl.consultarFuncionarioByIdeFunci(agenteDTO.getIdeFunci());
                     log.info("Funcionario correspondencia" + funcionario.getCorrElectronico()+ " " + funcionario.getNomFuncionario());
                         if (agenteDTO.getIndOriginal()!=null){
-                            if ("TP-DESP".equals(agenteDTO.getIndOriginal())){
-                                if ("TP-PERA".equals(agenteDTO.getCodTipoPers())) parameters.put("#USER#", "");
+                            if ("TP-DESP" == agenteDTO.getIndOriginal()){
+                                if ("TP-PERA" == agenteDTO.getCodTipoPers()) parameters.put("#USER#", "");
                                 else{
                                     String nombre = (funcionario.getNomFuncionario() == null)? "" : funcionario.getNomFuncionario();
                                     log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
@@ -1386,8 +1386,8 @@ public class CorrespondenciaControl {
             } else{
                 try{
                     if (agenteDTO.getIndOriginal()!=null){
-                        if ("TP-DESP".equals(agenteDTO.getIndOriginal())) {
-                            if ("TP-PERA".equals(agenteDTO.getCodTipoPers())) parameters.put("#USER#", "");
+                        if ("TP-DESP" == agenteDTO.getIndOriginal()) {
+                            if ("TP-PERA" == agenteDTO.getCodTipoPers()) parameters.put("#USER#", "");
                             else{
                                 String nombre = (agenteDTO.getNombre() == null)? "" : agenteDTO.getNombre();
                                 log.info("processing rest request - agente: "+agenteDTO.getCodTipoPers() +" " +agenteDTO.getIndOriginal());
