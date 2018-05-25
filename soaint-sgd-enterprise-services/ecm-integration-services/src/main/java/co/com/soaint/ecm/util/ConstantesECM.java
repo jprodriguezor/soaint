@@ -76,7 +76,6 @@ public final class ConstantesECM {
     public static final String ERROR_TIPO_IO = "### Error tipo IO----------------------------- :";
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
     public static final String DOCUMENTO = "documento";
-    public static final String APPLICATION_PDF = "application/pdf";
     public static final String PRODUCCION_DOCUMENTAL = "PRODUCCION DOCUMENTAL ";
     public static final String DOCUMENTOS_APOYO = "DOCUMENTOS DE APOYO ";
     public static final String AVISO_CREA_DOC = "### Se va a crear el documento..";

@@ -109,6 +109,34 @@ public class FuncionariosControl {
     }
 
     /**
+     * @param codDependencia
+     * @return
+     * @throws SystemException
+     */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<FuncionarioDTO> listarFuncionariosByCodDependencia(String codDependencia) throws SystemException {
+        List<FuncionarioDTO> funcionarioDTOList = new ArrayList<>();
+        try {
+            em.createNamedQuery("Funcionarios.findAllByCodOrgaAdmi", FuncionarioDTO.class)
+                    .setParameter("COD_ORGA_ADMI", codDependencia)
+                    .getResultList()
+                    .stream()
+                    .forEach(funcionarioDTO -> {
+                        funcionarioDTO.setDependencias(dependenciaControl.obtenerDependenciasByFuncionario(funcionarioDTO.getIdeFunci()));
+                        funcionarioDTOList.add(funcionarioDTO);
+                    });
+
+            return funcionarioDTOList;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
+    /**
      * @param loginName
      * @return
      * @throws BusinessException
