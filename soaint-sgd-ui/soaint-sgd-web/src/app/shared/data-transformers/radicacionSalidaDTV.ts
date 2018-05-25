@@ -10,6 +10,7 @@ import {CorrespondenciaDTO} from "../../domain/correspondenciaDTO";
 import {RadicacionEntradaFormInterface} from "../interfaces/data-transformers/radicacionEntradaForm.interface";
 import {ContactoDTO} from "../../domain/contactoDTO";
 import {isNullOrUndefined} from "util";
+import {ComunicacionOficialDTO} from "../../domain/comunicacionOficialDTO";
 
 export class RadicacionSalidaDTV extends  RadicacionBase {
 
@@ -91,6 +92,15 @@ export class RadicacionSalidaDTV extends  RadicacionBase {
     });
 
     return agentes;
+  }
+
+  getComunicacionOficial():ComunicacionOficialDTO{
+
+    let comunicacion = super.getComunicacionOficial();
+
+    comunicacion.esRemitenteReferidoDestinatario = this.source.generales.responderRemitente;
+
+    return comunicacion;
   }
 
 

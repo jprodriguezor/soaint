@@ -200,6 +200,7 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
 
       const self = this;
 
+      if(this.mustSendImage(valueGeneral))
       setTimeout( () =>{ self.uploadTemplate(
         self.radicacion.correspondencia.codDependencia,
         self.radicacion.correspondencia.nroRadicado,
@@ -231,6 +232,11 @@ export class RadicarSalidaComponent implements OnInit, AfterContentInit, AfterVi
       this.hideTicketRadicado();
       this._changeDetectorRef.detectChanges();
     });
+  }
+
+  protected mustSendImage(general:any):boolean{
+
+    return general.reqDistFisica == 2 && general.reqDigit == 2
   }
 
   protected uploadTemplate(codDependencia,nroRadicado,ideEcm){
