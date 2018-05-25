@@ -1158,7 +1158,9 @@ public class CorrespondenciaControl {
      * @throws SystemException
      */
     @Transactional
-    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO, Boolean esRemitenteReferidoDestinatario) throws BusinessException, SystemException {
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO,
+                                                                                             Boolean esRemitenteReferidoDestinatario)
+                                                                                                            throws BusinessException, SystemException {
         Date fecha = new Date();
         try {
             if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
