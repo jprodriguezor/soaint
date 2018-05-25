@@ -1,11 +1,13 @@
 package co.com.soaint.ecm.business.boundary.documentmanager.interfaces.impl;
 
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentStamper;
+import co.com.soaint.ecm.domain.entity.DocumentMimeType;
 import co.com.soaint.foundation.framework.annotations.BusinessControl;
 import co.com.soaint.foundation.framework.components.util.ExceptionBuilder;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import lombok.extern.log4j.Log4j2;
@@ -24,26 +26,33 @@ public final class ContentStamperImpl implements ContentStamper {
     private ContentStamperImpl() {}
 
     @Override
-    public byte[] getStampedDocument(byte[] stamperImg, byte[] htmlBytes) throws SystemException {
+    public byte[] getStampedDocument(final byte[] stamperImg, byte[] contentBytes, DocumentMimeType mimeType) throws SystemException {
+        log.info("Ejecutando el metodo que estampa una imagen en un documento HTML y luego lo convierte a PDF");
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
-            final Document document = new Document();
+            final Document document = new Document(PageSize.A4);
             PdfWriter writer = PdfWriter.getInstance(document, outputStream);
             document.open();
 
-            final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-            final String htmlCad = new String(htmlBytes, UTF8_CHARSET);
-            final InputStream inputStream = new ByteArrayInputStream((top() + htmlCad + bottom()).getBytes(UTF8_CHARSET));
+            if (mimeType == DocumentMimeType.APPLICATION_HTML) {
+                final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+                final String htmlCad = new String(contentBytes, UTF8_CHARSET);
+                contentBytes = (top() + htmlCad + bottom()).getBytes(UTF8_CHARSET);
+            }
+
+            final InputStream inputStream = new ByteArrayInputStream(contentBytes);
 
             Image image = Image.getInstance(stamperImg);
-            image.setAbsolutePosition(380F, 700F);
+            image.setAbsolutePosition(350F, 690F);
             image.scalePercent(40);
             document.add(image);
 
             XMLWorkerHelper.getInstance().parseXHtml(writer, document, inputStream);
-
+            byte[] response = outputStream.toByteArray();
+            inputStream.close();
             document.close();
-            return outputStream.toByteArray();
+            return response;
         } catch (Exception e) {
+            log.error("Ocurrio un error al poner la etiqueta en el PDF");
             throw ExceptionBuilder.newBuilder()
                     .withMessage(e.getMessage())
                     .withRootException(e)
@@ -60,7 +69,7 @@ public final class ContentStamperImpl implements ContentStamper {
                 "<head>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "<div style=\"font-size: 12px\">";
+                "<div style=\"font-size: 10px\">";
     }
 
     private String bottom() {

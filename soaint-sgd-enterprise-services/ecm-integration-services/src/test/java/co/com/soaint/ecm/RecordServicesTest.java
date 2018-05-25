@@ -4,8 +4,7 @@ import co.com.soaint.ecm.business.boundary.documentmanager.ContentControlAlfresc
 import co.com.soaint.ecm.business.boundary.documentmanager.ECMConnectionRule;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.ContentControl;
 import co.com.soaint.ecm.business.boundary.documentmanager.interfaces.IRecordServices;
-import co.com.soaint.foundation.canonical.ecm.MensajeRespuesta;
-import co.com.soaint.foundation.canonical.ecm.UnidadDocumentalDTO;
+import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.junit.After;
@@ -177,7 +176,15 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void gestionarUnidadesDocumentalesECM() {
+    public void testGestionarUnidadesDocumentalesECMSuccess() {
+        unidadDocumentalDTO.setAccion("ABRIR");
+        try {
+            List<UnidadDocumentalDTO> unidadDocumentalDTOList = new ArrayList<>();
+            unidadDocumentalDTOList.add(unidadDocumentalDTO);
+            assertEquals("0000", recordServices.gestionarUnidadesDocumentalesECM(unidadDocumentalDTOList).getCodMensaje());
+        } catch (SystemException e) {
+
+        }
     }
 
     @Test
@@ -197,8 +204,25 @@ public class RecordServicesTest {
         } catch (SystemException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void testReactivarUDSuccess() {
+        final Optional<Folder> optionalDocumentalDTO;
+        try {
 
 
+            mensajeRespuestaUnidadDocumentalContent= contentControl.crearUnidadDocumental(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+            UnidadDocumentalDTO unidadDocumentalDTOTest = (UnidadDocumentalDTO)mensajeRespuestaUnidadDocumentalContent.getResponse().get("unidadDocumental");
+            unidadDocumentalDTOTest.setAccion("CERRAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
+            unidadDocumentalDTOTest.setAccion("REACTIVAR");
+            recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTOTest);
 
+            optionalDocumentalDTO = recordServices.getRecordFolderByUdId(unidadDocumentalDTOTest.getId());
+            optionalDocumentalDTO.ifPresent(unidadDocumentalDTO1 ->
+                    assertNotNull(unidadDocumentalDTO1.getId()));
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
     }
 }

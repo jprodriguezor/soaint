@@ -853,9 +853,9 @@ public class ContentControlAlfresco implements ContentControl {
 
         byte[] bytes = documento.getDocumento();
         if ("html".equals(documento.getTipoDocumento())) {
-            documento.setTipoDocumento("text/html");
+            documento.setTipoDocumento(DocumentMimeType.APPLICATION_HTML.getType());
         } else {
-            documento.setTipoDocumento(ConstantesECM.APPLICATION_PDF);
+            documento.setTipoDocumento(DocumentMimeType.APPLICATION_PDF.getType());
         }
 
         if (documento.getIdDocumento() == null) {
@@ -1185,8 +1185,8 @@ public class ContentControlAlfresco implements ContentControl {
         for (UnidadDocumentalDTO dto : unidadDocumentalDTOS) {
             final String idUnidadDocumental = dto.getId();
             String disposicion = dto.getDisposicion();
-            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toLowerCase();
-            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.containsDisposition(disposicion)) {
+            final String estado = (StringUtils.isEmpty(dto.getEstado()) ? "" : dto.getEstado()).toUpperCase();
+            if ("aprobado".equals(estado) && FinalDispositionType.ELIMINAR.getKey().equals(disposicion)) {
                 eliminarUnidadDocumental(idUnidadDocumental, session);
             } else {
                 Optional<Folder> optionalFolder = getUDFolderById(idUnidadDocumental, session);
@@ -1224,32 +1224,45 @@ public class ContentControlAlfresco implements ContentControl {
             if (!(cmisObject instanceof Document)) {
                 throw new SystemException("El ID solicitado no corresponde con el de un documento en el Gestor de documentos");
             }
-            final Document document = (Document) cmisObject;
+            Document document = (Document) cmisObject;
+            String docMimeType = document.getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
+
+            if (!DocumentMimeType.isValidAppMimeType(docMimeType)) {
+                throw new SystemException("El tipo de documento " + docMimeType + " no esta soportado en la Aplicacion");
+            }
+
             final Folder folder = getFolderFrom(document);
             if (null == folder) {
                 throw new SystemException("Ocurrio un error inesperado");
             }
 
+            final DocumentMimeType mimeType = DocumentMimeType.APPLICATION_HTML.getType().equals(docMimeType) ?
+                    DocumentMimeType.APPLICATION_HTML : DocumentMimeType.APPLICATION_PDF;
+
             final byte[] stampedPdf = contentStamper
-                    .getStampedDocument(documentoDTO.getDocumento(), getDocumentBytes(document));
+                    .getStampedDocument(documentoDTO.getDocumento(), getDocumentBytes(document), mimeType);
 
             documentoDTO.setNombreDocumento(document.getName());
 
             Map<String, Object> properties = obtenerPropiedadesDocumento(document);
             properties.put(ConstantesECM.CMCOR_NRO_RADICADO, documentoDTO.getNroRadicado());
             properties.put(PropertyIds.NAME, documentoDTO.getNombreDocumento() + ".pdf");
-            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, ConstantesECM.APPLICATION_PDF);
+            properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, DocumentMimeType.APPLICATION_PDF.getType());
             properties.put(ConstantesECM.CMCOR_TIPO_DOCUMENTO, "Principal");
 
             eliminardocumento(documentoDTO.getIdDocumento(), session);
 
             final ContentStream contentStream = new ContentStreamImpl(documentoDTO.getNombreDocumento() + ".pdf",
-                    BigInteger.valueOf(stampedPdf.length), ConstantesECM.APPLICATION_PDF, new ByteArrayInputStream(stampedPdf));
-            folder.createDocument(properties, contentStream, VersioningState.MAJOR);
+                    BigInteger.valueOf(stampedPdf.length), DocumentMimeType.APPLICATION_PDF.getType(), new ByteArrayInputStream(stampedPdf));
+            document = folder.createDocument(properties, contentStream, VersioningState.MAJOR);
 
+            final Map<String, Object> delDoc = new HashMap<>();
+
+            delDoc.put("documento", transformarDocumento(document));
             return MensajeRespuesta.newInstance()
                     .codMensaje(ConstantesECM.SUCCESS_COD_MENSAJE)
                     .mensaje(ConstantesECM.SUCCESS)
+                    .response(delDoc)
                     .build();
         } catch (Exception e) {
             log.info("Ocurrio un error al estampar la etiqueta");
@@ -1629,23 +1642,23 @@ public class ContentControlAlfresco implements ContentControl {
     private String getAbrevDisposition(String disposicion) {
         disposicion = Utilities.reemplazarCaracteresRaros(disposicion);
         FinalDispositionType dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.DIGITALIZAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.ELIMINAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.MICROFILMAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         dispositionType = FinalDispositionType.SELECCIONAR;
-        if (dispositionType.containsDisposition(disposicion)) {
+        if (dispositionType.getName().equals(disposicion)) {
             return dispositionType.getKey();
         }
         return "";
@@ -2379,31 +2392,31 @@ public class ContentControlAlfresco implements ContentControl {
                         disposicionList) {
                     final String comma = in.length() == 0 ? "" : ",";
                     FinalDispositionType dispositionType = FinalDispositionType.SELECCIONAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.ELIMINAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.MICROFILMAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.DIGITALIZAR;
-                    if (dispositionType.containsDisposition(disposition)) {
-                        in.append(comma).append(dispositionType.getInDispositions());
+                    if (dispositionType.getKey().equals(disposition)) {
+                        in.append(comma).append("'").append(dispositionType.getName()).append("'");
                         continue;
                     }
                     dispositionType = FinalDispositionType.CONSERVACION_TOTAL;
-                    in.append(comma).append(dispositionType.getInDispositions());
+                    in.append(comma).append("'").append(dispositionType.getName()).append("'");
                 }
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_DISPOSICION + " IN (" + in.toString() + ")";
                 query += " AND " + ConstantesECM.CMCOR_UD_INACTIVO + " = 'true'" +
-                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " IN (" + PhaseType.ARCHIVO_CENTRAL.getInPhases() + ")";
+                        " AND " + ConstantesECM.CMCOR_UD_FASE_ARCHIVO + " LIKE '" + PhaseType.ARCHIVO_CENTRAL.getName() + "%'";
                 log.info("Ejecutar consulta {}", query);
             } else {
                 query += (!query.contains(where) ? " WHERE " : " AND ") + ConstantesECM.CMCOR_UD_CERRADA + " = 'false'";

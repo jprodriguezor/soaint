@@ -41,12 +41,6 @@ public class GestionarOrganigramaAdministrativoTest extends JPAHibernateTest {
     }
 
     @Test
-    public void test_consultarElementoRaiz_success() throws SystemException, BusinessException{
-        List<OrganigramaItemDTO> raiz = gestionarOrganigramaAdministrativo.listarDescendientesDirectosDeElementoRayz();
-        assertEquals("1", raiz.get(0).getIdOrgaAdminPadre());
-    }
-
-    @Test
     public void consultarDescendientesDirectos_success() {
         OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
                 .getSingleResult();
@@ -55,24 +49,6 @@ public class GestionarOrganigramaAdministrativoTest extends JPAHibernateTest {
                 .getResultList();
         assertEquals(1, descendientesDirectos.size());
     }
-
-//    @Test
-//    public void test_consultarDescendientesDirectos_failure() {
-//
-//        try {
-//            OrganigramaItemDTO raiz = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarElementoRayz", OrganigramaItemDTO.class)
-//                    .getSingleResult();
-//
-//            List<OrganigramaItemDTO> descendientesDirectos = em.createNamedQuery("TvsOrganigramaAdministrativo.consultarDescendientesDirectos", OrganigramaItemDTO.class)
-//                    .setParameter("ID_PADRE", String.valueOf(raiz.getIdeOrgaAdmin()))
-//                    .getResultList();
-//            assertEquals(null, descendientesDirectos.size());
-//        } catch (Exception e){
-//            assertTrue(e.getCause() instanceof NullPointerException);
-//            log.error("GestionarCorrespondenciaTest - a NullPointerException has occurred", e);
-//        }
-//
-//    }
 
     @Test
     public void test_consultarOrganigrama_success() throws SystemException, BusinessException{
