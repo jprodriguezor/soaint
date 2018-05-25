@@ -1164,6 +1164,121 @@ public class CorrespondenciaControl {
         }
     }
 
+    /**
+     * @param esRemitenteReferidoDestinatario
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialDTO comunicacionOficialDTO, Boolean esRemitenteReferidoDestinatario) throws BusinessException, SystemException {
+        Date fecha = new Date();
+        try {
+            if (comunicacionOficialDTO.getCorrespondencia().getFecRadicado() == null)
+                comunicacionOficialDTO.getCorrespondencia().setFecRadicado(fecha);
+
+            if (esRemitenteReferidoDestinatario){
+                List<AgenteDTO> agentesReferido = agenteControl.listarRemitentesByIdeDocumento(comunicacionOficialDTO.getCorrespondencia().getIdeDocumento());
+                agentesReferido.forEach(agenteDTO -> {
+                    comunicacionOficialDTO.getAgenteList().add(agenteDTO);
+                });
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(comunicacionOficialDTO.getCorrespondencia().getFecRadicado());
+            int anno = cal.get(Calendar.YEAR);
+
+            CorCorrespondencia correspondencia = corCorrespondenciaTransform(comunicacionOficialDTO.getCorrespondencia());
+            correspondencia.setCodEstado(EstadoCorrespondenciaEnum.REGISTRADO.getCodigo());
+            correspondencia.setFecVenGestion(calcularFechaVencimientoGestion(comunicacionOficialDTO.getCorrespondencia())); // dagmar tiene que pasar tiempo de respuesta
+            correspondencia.setCorAgenteList(new ArrayList<>());
+
+            log.info("Antes de Agente");
+            agenteControl.conformarAgentesSalida(comunicacionOficialDTO.getAgenteList(), correspondencia.getReqDistFisica())
+                    .forEach(corAgente -> {
+                corAgente.setCorCorrespondencia(correspondencia);
+                log.info(corAgente.getTvsDatosContactoList().size());
+                correspondencia.getCorAgenteList().add(corAgente);
+            });
+            log.info("Despues de Agente");
+
+            PpdDocumento ppdDocumento = ppdDocumentoControl.ppdDocumentoTransform(comunicacionOficialDTO.getPpdDocumentoList().get(0));
+            ppdDocumento.setCorCorrespondencia(correspondencia);
+
+            if (comunicacionOficialDTO.getAnexoList() != null) {
+                ppdDocumento.setCorAnexoList(new ArrayList<>());
+                comunicacionOficialDTO.getAnexoList().forEach(anexoDTO -> {
+                    CorAnexo corAnexo = anexoControl.corAnexoTransform(anexoDTO);
+                    corAnexo.setPpdDocumento(ppdDocumento);
+                    ppdDocumento.getCorAnexoList().add(corAnexo);
+                });
+
+            }
+
+            correspondencia.getPpdDocumentoList().add(ppdDocumento);
+
+            if (comunicacionOficialDTO.getReferidoList() != null)
+                comunicacionOficialDTO.getReferidoList().forEach(referidoDTO -> {
+                    CorReferido corReferido = referidoControl.corReferidoTransform(referidoDTO);
+                    corReferido.setCorCorrespondencia(correspondencia);
+                    correspondencia.getCorReferidoList().add(corReferido);
+                });
+
+//            String consecutivo = dserialControl.consultarConsecutivoRadicadoByCodSedeAndCodCmcAndAnno(comunicacionOficialDTO.getCorrespondencia().getCodSede(),
+//                    comunicacionOficialDTO.getCorrespondencia().getCodTipoCmc(), String.valueOf(anno));
+
+            String tipoRadicacion = "";
+            for (CorAgente corAgente : correspondencia.getCorAgenteList()) {
+                if (corAgente.getCodTipAgent().equals(TipoAgenteEnum.DESTINATARIO.getCodigo()))
+                    if (corAgente.getIndOriginal().equals("TP-DESP"))
+                        tipoRadicacion = (corAgente.getCodTipoRemite().equals("EXT")) ? "SE" : "SI";
+            }
+
+            correspondencia.setNroRadicado(procesarNroRadicadoSalida(
+                    correspondencia.getCodSede(),
+                    correspondencia.getCodDependencia(),
+                    correspondencia.getCodFuncRadica(),
+                    tipoRadicacion,
+                    String.valueOf(anno)));
+
+            String endpoint = System.getProperty("ecm-api-endpoint");
+            WebTarget wt = ClientBuilder.newClient().target(endpoint);
+
+            correspondencia.getPpdDocumentoList().forEach(ppdDoc -> {
+                log.info("Se modificara el documento con el NroRadicado = " + correspondencia.getNroRadicado() + " y con ID " + ppdDoc.getIdeEcm());
+                co.com.soaint.foundation.canonical.ecm.DocumentoDTO dto = co.com.soaint.foundation.canonical.ecm.DocumentoDTO.newInstance()
+                        .nroRadicado(correspondencia.getNroRadicado())
+                        .idDocumento(ppdDoc.getIdeEcm())
+                        .build();
+                Response response = wt.path("/modificarMetadatosDocumentoECM/")
+                        .request()
+                        .put(Entity.json(dto));
+                log.info("Response del cambio de radicado " + response.toString());
+            });
+
+//            dserialControl.updateConsecutivo(correspondencia.getCodSede(), correspondencia.getCodDependencia(),
+//                    correspondencia.getCodTipoCmc(), String.valueOf(anno), consecutivo, correspondencia.getCodFuncRadica());
+            em.persist(correspondencia);
+
+            em.flush();
+
+            log.info("Correspondencia - radicacion salida exitosa nro-radicado -> " + correspondencia.getNroRadicado());
+            return ComunicacionOficialDTO.newInstance()
+                    .correspondencia(consultarCorrespondenciaByNroRadicado(correspondencia.getNroRadicado()))
+                    .build();
+        } catch (BusinessException e) {
+            log.error("Business Control - a business error has occurred", e);
+            throw e;
+        } catch (Exception ex) {
+            log.error("Business Control - a system error has occurred", ex);
+            throw ExceptionBuilder.newBuilder()
+                    .withMessage("system.generic.error")
+                    .withRootException(ex)
+                    .buildSystemException();
+        }
+    }
+
     private ArrayList<Attachment> obtenerDocumentosECMporNroRadicado(String nroRadicado) throws SystemException{
 
         String endpoint = System.getProperty("ecm-api-endpoint");
