@@ -19,9 +19,13 @@ public class EnvironmentRule implements TestRule {
     }
 
     private void initProperties() {
+
+        if(!isLocal()) return;
+
         Properties props = new Properties();
 
-        props.put("java.io.tmpdir", "file://tmp/jaxrs/");
+        props.put("java.io.tmpdir", "/tmp");
+
         props.put(SystemParameters.BACKAPI_ENDPOINT_URL, "http://192.168.3.242:28080/correspondencia-business-services/services");
         props.put(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL, "http://192.168.3.242:28080/Massive-Loader/massiveloaderapi");
         props.put(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL, "http://192.168.3.242:28080/bpm-integration-services/apis");
@@ -32,5 +36,9 @@ public class EnvironmentRule implements TestRule {
         props.put(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN, "a3Jpc3Y6a3Jpc3Y=");
 
         System.setProperties(props);
+    }
+
+    private boolean isLocal() {
+        return !System.getProperty("user.dir").contains("jenkins");
     }
 }
