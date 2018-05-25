@@ -30,7 +30,7 @@ public class TipoDocumentoClientTest {
     @Autowired
     TipoDocumentoClient tipoDocumentoClient;
 
-    @Value("${contants.tipodestinatario.value}")
+    @Value("${contants.tipodocumento.value}")
     String CODIGO_PADRE;
 
 
