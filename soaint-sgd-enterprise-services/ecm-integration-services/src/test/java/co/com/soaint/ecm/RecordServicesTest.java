@@ -106,7 +106,7 @@ public class RecordServicesTest {
     }
 
     @Test
-    public void crearCarpetaRecord() {
+    public void testcrearCarpetaRecordSuccess() {
         try {
             UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
 
@@ -145,6 +145,20 @@ public class RecordServicesTest {
             e.printStackTrace();
         }
     }
+    @Test
+    public void testcrearCarpetaRecordIdUDFail() {
+        try {
+            UnidadDocumentalDTO unidadDocumentalDTOT=new UnidadDocumentalDTO();
+
+            mensajeRespuesta= recordServices.crearCarpetaRecord(unidadDocumentalDTOT.getId());
+
+            assertEquals("1224",mensajeRespuesta.getCodMensaje());
+
+
+        } catch (SystemException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testGestionarUnidadDocumentalECMNoIdUnidadDocumentalFail() {
@@ -174,7 +188,42 @@ public class RecordServicesTest {
 
         }
     }
+    @Test
+    public void testGestionarUnidadDocumentalECMCerrarUnidadDocumentalSuccess() {
+        try {
+            //Crear el objeto documento
+            DocumentoDTO documentoDTO = localPropertiesRule.newDocumento("DocTestJUnittestObtenerDocumentosArchivadosSuccess");
 
+            //Subo el documento a una UD temporal
+            MensajeRespuesta mensajeRespuesta = contentControlAlfresco.subirDocumentoTemporalUD(documentoDTO, contentControl.obtenerConexion().getSession());
+
+            //Obtengo el id del documento subido
+            documentoDTO = (DocumentoDTO) mensajeRespuesta.getResponse().get("documento");
+
+            //Creo el objeto de la unidad documental a cerrar
+            UnidadDocumentalDTO unidadDocumentalDTO = localPropertiesRule.newUnidadDocumental();
+            MensajeRespuesta mensajeRespuesta1 = contentControlAlfresco.crearUnidadDocumental(unidadDocumentalDTO, contentControl.obtenerConexion().getSession());
+
+            unidadDocumentalDTO = (UnidadDocumentalDTO) mensajeRespuesta1.getResponse().get("unidadDocumental");
+            List<DocumentoDTO> documentoDTOList = new ArrayList<>();
+            documentoDTOList.add(documentoDTO);
+            unidadDocumentalDTO.setListaDocumentos(documentoDTOList);
+            //Subo el documento a la unidad documental que voy a cerrar
+            contentControlAlfresco.subirDocumentosUnidadDocumentalECM(unidadDocumentalDTO,contentControl.obtenerConexion().getSession());
+
+            //Procedo a cerrar la unidad documental para que ademas cree el record
+            unidadDocumentalDTO.setAccion("CERRAR");
+
+            assertEquals("0000", recordServices.gestionarUnidadDocumentalECM(unidadDocumentalDTO).getCodMensaje());
+
+            contentControlAlfresco.eliminarUnidadDocumental(unidadDocumentalDTO.getId(),contentControl.obtenerConexion().getSession());
+
+
+//            contentControlAlfresco.obtenerDocumentosArchivados("", contentControl.obtenerConexion().getSession());
+        } catch (Exception e) {
+            assertEquals("No se ha especificado el codigo de la dependencia", e.getMessage());
+        }
+    }
     @Test
     public void testGestionarUnidadesDocumentalesECMSuccess() {
         unidadDocumentalDTO.setAccion("ABRIR");
