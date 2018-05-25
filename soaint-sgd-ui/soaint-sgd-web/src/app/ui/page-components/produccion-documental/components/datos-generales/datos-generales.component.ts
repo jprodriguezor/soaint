@@ -302,7 +302,10 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
 
   selectAnexo(){
 
-    if(!this.form.get('tipoAnexo').value){
+    if(this.listaVersionesDocumento.length == 0)
+      return false;
+
+    if(!this.form.get('tipoAnexo').value ){
 
       this.alertItem.ShowMessage("Debe de seleccionar un tipo de anexo");
 
@@ -325,6 +328,7 @@ export class PDDatosGeneralesComponent implements OnInit, OnDestroy {
       formData.append('documento', anexo.file, anexo.file.name);
       formData.append('nombreDocumento', anexo.file.name);
       formData.append('tipoDocumento', anexo.file.type);
+      formData.append("idDocumentoPadre",this.listaVersionesDocumento[0].id);
       if(this.taskData !== null){
       formData.append('sede', this.screenData.nombreSede);
       formData.append('codigoDependencia', this.screenData.codDependencia);

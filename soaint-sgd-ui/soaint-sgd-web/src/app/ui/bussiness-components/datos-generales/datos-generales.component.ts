@@ -88,27 +88,35 @@ export class DatosGeneralesComponent implements OnInit {
 
   initForm() {
 
-      this.form = this.formBuilder.group({
-        'fechaRadicacion': [null],
-        'nroRadicado': [null],
-        'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
-        'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
-        'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
-        'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
-        'tipologiaDocumental': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable }, Validators.required],
-        'unidadTiempo': [{value: null, disabled: !this.editable}],
-        'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
-        'inicioConteo': [null],
-        'reqDistFisica': [{value: null, disabled: !this.editable}],
-        'reqDigit': [{value: '1', disabled: !this.editable}],
-        'tiempoRespuesta': [{value: null, disabled: !this.editable}],
-        'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
-        'radicadoReferido': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}],
-        'tipoAnexos': [{value: null, disabled: !this.editable}],
-        'soporteAnexos': [{value: null, disabled: !this.editable}],
-        'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
-        'hasAnexos': [{value: null, disabled: !this.editable}]
-      });
+    let fields:any = {
+      'fechaRadicacion': [null],
+      'nroRadicado': [null],
+      'tipoComunicacion': [{value: null, disabled: !this.editable}, Validators.required],
+      'medioRecepcion': [{value: null, disabled: !this.editable}, Validators.required],
+      'empresaMensajeria': [{value: null, disabled: true}, Validators.required],
+      'numeroGuia': [{value: null, disabled: true}, Validators.compose([Validators.required, Validators.maxLength(8)])],
+      'tipologiaDocumental': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable }, Validators.required],
+      'unidadTiempo': [{value: null, disabled: !this.editable}],
+      'numeroFolio': [{value: null, disabled: !this.editable}, Validators.required],
+      'inicioConteo': [null],
+      'reqDistFisica': [{value: this.tipoRadicacion == RADICACION_SALIDA ? 2 : null, disabled: !this.editable}],
+      'reqDigit': [{value: '1', disabled: !this.editable}],
+      'asunto': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}, Validators.compose([Validators.required, Validators.maxLength(500)])],
+      'radicadoReferido': [{value: null, disabled: (this.editmode) ? this.editable : !this.editable}],
+      'tipoAnexos': [{value: null, disabled: !this.editable}],
+      'soporteAnexos': [{value: null, disabled: !this.editable}],
+      'tipoAnexosDescripcion': [{value: null, disabled: !this.editable}, Validators.maxLength(300)],
+      'hasAnexos': [{value: null, disabled: !this.editable}]
+    };
+
+    if(this.tipoRadicacion == RADICACION_ENTRADA)
+      fields.tiempoRespuesta = [{value: null, disabled: !this.editable}];
+    else{
+      if(this.tipoRadicacion == RADICACION_SALIDA)
+        fields.responderRemitente = [{value:this.showBlockDistribucionDig()}];
+    }
+
+      this.form = this.formBuilder.group(fields);
 
   }
 
@@ -163,17 +171,18 @@ export class DatosGeneralesComponent implements OnInit {
 
     this.dataDefault.subscribe( datosGenerales => {
 
-
-
       this.form.get("tipoComunicacion").setValue(datosGenerales.tipoComunicacion);
       if(datosGenerales.tipologiaDocumental)
       this.form.get("tipologiaDocumental").setValue(datosGenerales.tipologiaDocumental);
-      this.form.get("unidadTiempo").setValue(datosGenerales.unidadTiempo);
+
+      if(this.isRadicacionEntrada()) {
+        this.form.get("unidadTiempo").setValue(datosGenerales.unidadTiempo);
+        this.form.get("tiempoRespuesta").setValue(datosGenerales.tiempoRespuesta);
+      }
       this.form.get("medioRecepcion").setValue(datosGenerales.medioRecepcion);
       this.form.get("empresaMensajeria").setValue(datosGenerales.empresaMensajeria);
       this.form.get("numeroGuia").setValue(datosGenerales.numeroGuia);
       this.form.get("inicioConteo").setValue(datosGenerales.inicioConteo);
-      this.form.get("tiempoRespuesta").setValue(datosGenerales.tiempoRespuesta);
       this.form.get("asunto").setValue(datosGenerales.asunto);
       this.form.get("reqDigit").setValue(datosGenerales.reqDigit);
       this.form.get("reqDistFisica").setValue(datosGenerales.reqDistFisica);
@@ -290,6 +299,15 @@ export class DatosGeneralesComponent implements OnInit {
   showBlockDistribucionDig(){
 
     return ViewFilterHook.applyFilter("app-datos-direccion-show-block-dist-dig",true);
+  }
+
+  isRadicacionEntrada(){
+    return this.tipoRadicacion == RADICACION_ENTRADA;
+  }
+
+  isRadicacionSalida(){
+
+    return this.tipoRadicacion == RADICACION_SALIDA;
   }
 
 }
