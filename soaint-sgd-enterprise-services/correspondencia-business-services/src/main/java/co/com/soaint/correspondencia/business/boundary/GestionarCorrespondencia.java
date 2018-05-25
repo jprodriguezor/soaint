@@ -152,6 +152,17 @@ public class GestionarCorrespondencia {
     }
 
     /**
+     * @param comunicacionOficialDTO
+     * @return
+     * @throws BusinessException
+     * @throws SystemException
+     */
+    public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
+                                                                                                throws BusinessException, SystemException {
+        return control.radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(comunicacionOficialDTO);
+    }
+
+    /**
      * @param nroRadicado
      * @return
      * @throws BusinessException
