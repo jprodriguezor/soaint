@@ -183,6 +183,19 @@ public class CorrespondenciaWebApi {
         return boundary.actualizarComunicacion(comunicacionOficialDTO);
     }
 
+//    /**
+//     * @param comunicacionOficialDTO
+//     * @return
+//     * @throws BusinessException
+//     * @throws SystemException
+//     */
+//    @POST
+//    @Path("/correspondencia/radicar-salida")
+//    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
+//        log.info("processing rest request - radicar correspondencia salida");
+//        return boundary.radicarCorrespondenciaSalida(comunicacionOficialDTO);
+//    }
+
     /**
      * @param comunicacionOficialDTO
      * @return
@@ -191,20 +204,6 @@ public class CorrespondenciaWebApi {
      */
     @POST
     @Path("/correspondencia/radicar-salida")
-    public ComunicacionOficialDTO radicarCorrespondenciaSalida(ComunicacionOficialDTO comunicacionOficialDTO) throws BusinessException, SystemException {
-        log.info("processing rest request - radicar correspondencia salida");
-        return boundary.radicarCorrespondenciaSalida(comunicacionOficialDTO);
-    }
-
-    /**
-     * @param esRemitenteReferidoDestinatario
-     * @param comunicacionOficialDTO
-     * @return
-     * @throws BusinessException
-     * @throws SystemException
-     */
-    @POST
-    @Path("/correspondencia/radicar-salida-remitente-destinatario")
     public ComunicacionOficialDTO radicarCorrespondenciaSalidaRemitenteReferidoADestinatario(ComunicacionOficialRemiteDTO comunicacionOficialDTO)
                                                                                                 throws BusinessException, SystemException {
         log.info("processing rest request - radicar correspondencia salida");
