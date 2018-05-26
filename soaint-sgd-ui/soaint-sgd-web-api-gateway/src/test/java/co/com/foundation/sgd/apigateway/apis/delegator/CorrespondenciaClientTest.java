@@ -27,7 +27,7 @@ public class CorrespondenciaClientTest {
 
     private String API_ENDPOINT = SystemParameters.getParameter(SystemParameters.BACKAPI_ENDPOINT_URL);
 
-    private String DROOLS_ENPOINT = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL);
+    private String DROOLS_ENDPOINT = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL);
 
     private String DROOLS_ACCESS_TOKEN = SystemParameters.getParameter(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN);
 
@@ -68,7 +68,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -219,7 +219,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).put(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).put(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -269,7 +269,7 @@ public class CorrespondenciaClientTest {
         correspondenciaClient.metricasTiempoDrools(payload);
 
         // then
-        verify(client).target(DROOLS_ENPOINT);
+        verify(client).target(DROOLS_ENDPOINT);
         verify(wt).path(path);
 
         verify(requestBuilder).header("Authorization", "Basic " + DROOLS_ACCESS_TOKEN);
@@ -280,7 +280,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(payload).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(payload);
     }
 
     @Test
@@ -294,7 +294,7 @@ public class CorrespondenciaClientTest {
         correspondenciaClient.verificarRedireccionesDrools(payload);
 
         // then
-        verify(client).target(DROOLS_ENPOINT);
+        verify(client).target(DROOLS_ENDPOINT);
         verify(wt).path(path);
 
         verify(requestBuilder).header("Authorization", "Basic " + DROOLS_ACCESS_TOKEN);
@@ -305,7 +305,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(payload).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(payload);
     }
 
     @Test
@@ -326,7 +326,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -406,7 +406,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -427,7 +427,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).put(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -480,7 +480,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -501,7 +501,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).put(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -537,7 +537,7 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).post(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 
     @Test
@@ -585,6 +585,6 @@ public class CorrespondenciaClientTest {
 
         verify(requestBuilder).put(captor.capture());
 
-        assertThat(dto).isSameAs(captor.getValue().getEntity());
+        assertThat(captor.getValue().getEntity()).isSameAs(dto);
     }
 }
