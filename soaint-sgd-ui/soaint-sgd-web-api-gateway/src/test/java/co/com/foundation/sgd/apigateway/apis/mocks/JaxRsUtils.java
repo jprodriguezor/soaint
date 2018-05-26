@@ -12,38 +12,111 @@ import static org.mockito.Mockito.when;
 
 public final class JaxRsUtils {
 
-    public static Invocation.Builder mockPostPath(WebTarget wt, String PATH) {
-        WebTarget webTarget = mock(WebTarget.class);
-        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
-        when(requestBuilder.header(anyString(), any())).thenReturn(requestBuilder);
-        when(requestBuilder.post(any(Entity.class))).thenReturn(mock(Response.class));
-        when(webTarget.request()).thenReturn(requestBuilder);
-        when(wt.path(PATH)).thenReturn(webTarget);
+    private static Response response;
 
-        return requestBuilder;
+    public static Response getResponseMock() {
+        return response;
     }
 
-    public static Invocation.Builder mockPutPath(WebTarget wt, String PATH) {
-        WebTarget webTarget = mock(WebTarget.class);
-        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
-        when(requestBuilder.header(anyString(), any())).thenReturn(requestBuilder);
-        when(requestBuilder.put(any(Entity.class))).thenReturn(mock(Response.class));
-        when(webTarget.request()).thenReturn(requestBuilder);
-        when(wt.path(PATH)).thenReturn(webTarget);
+    public static Invocation.Builder mockPostPath(WebTarget wt, String path) {
+        return mockPostPath(wt, null, path);
+    }
 
-        return requestBuilder;
+    public static Invocation.Builder mockPutPath(WebTarget wt, String path) {
+        return mockPutPath(wt, null, path);
     }
 
     public static WebTarget mockGetPath(WebTarget wt, String path) {
-        Response response = mock(Response.class);
-        WebTarget webTarget = mock(WebTarget.class);
-        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
+        return mockGetPath(wt, null, path);
+    }
+
+    public static WebTarget mockDeletePath(WebTarget wt, String path) {
+        return mockDeletePath(wt, null, path);
+    }
+
+    public static <T> Invocation.Builder mockPostPath(WebTarget wt, Class<T> responseClass, String path) {
+
+        Response response = mockResponse(responseClass);
+        Invocation.Builder requestBuilder = mockRequestBuilder();
+        when(requestBuilder.post(any(Entity.class))).thenReturn(response);
+
+        WebTarget webTarget = mockWebTarget(requestBuilder);
+        when(wt.path(path)).thenReturn(webTarget);
+
+        return requestBuilder;
+    }
+
+    public static <T> Invocation.Builder mockPutPath(WebTarget wt, Class<T> responseClass, String path) {
+
+        Response response = mockResponse(responseClass);
+        Invocation.Builder requestBuilder = mockRequestBuilder();
+        when(requestBuilder.put(any(Entity.class))).thenReturn(response);
+
+        WebTarget webTarget = mockWebTarget(requestBuilder);
+        when(wt.path(path)).thenReturn(webTarget);
+
+        return requestBuilder;
+    }
+
+    public static <T> WebTarget mockGetPath(WebTarget wt, Class<T> responseClass, String path) {
+
+        Response response = mockResponse(responseClass);
+        Invocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.get()).thenReturn(response);
-        when(requestBuilder.header(anyString(), any())).thenReturn(requestBuilder);
-        when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
-        when(webTarget.request()).thenReturn(requestBuilder);
+
+        WebTarget webTarget = mockWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
         return webTarget;
+    }
+
+    public static <T> WebTarget mockDeletePath(WebTarget wt, Class<T> responseClass, String path) {
+
+        Response response = mockResponse(responseClass);
+        Invocation.Builder requestBuilder = mockRequestBuilder();
+        when(requestBuilder.delete()).thenReturn(response);
+
+        WebTarget webTarget = mockWebTarget(requestBuilder);
+        when(wt.path(path)).thenReturn(webTarget);
+
+        return webTarget;
+    }
+
+    private static <T> Response mockResponse(Class<T> responseClass) {
+        response = mock(Response.class);
+
+        if(responseClass != null) {
+
+            T responseEntity = mockResponseEntity(responseClass);
+            when(response.readEntity(responseClass)).thenReturn(responseEntity);
+        }
+
+        return response;
+    }
+
+    private static <T> Invocation.Builder mockRequestBuilder() {
+
+        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
+        when(requestBuilder.header(anyString(), any())).thenReturn(requestBuilder);
+
+        return requestBuilder;
+    }
+
+    private static WebTarget mockWebTarget(Invocation.Builder requestBuilder) {
+        WebTarget webTarget = mock(WebTarget.class);
+        when(webTarget.request()).thenReturn(requestBuilder);
+        when(webTarget.queryParam(anyString(), any())).thenReturn(webTarget);
+        return webTarget;
+    }
+
+    private static <T> T mockResponseEntity(Class<T> responseClass) {
+        T returnedValue;
+        if(responseClass.isAssignableFrom(Boolean.class)){
+            returnedValue = (T) Boolean.FALSE;
+        } else if(responseClass.isAssignableFrom(Integer.class)){
+            returnedValue = (T) Integer.valueOf(0);
+        } else
+            returnedValue = mock(responseClass);
+        return returnedValue;
     }
 }
