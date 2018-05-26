@@ -14,7 +14,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
