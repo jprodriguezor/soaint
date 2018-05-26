@@ -1,13 +1,13 @@
 package co.com.foundation.sgd.apigateway.rules;
 
 import co.com.foundation.sgd.utils.SystemParameters;
+import lombok.extern.log4j.Log4j2;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.util.Properties;
-
+@Log4j2
 public class EnvironmentRule implements TestRule {
 
     private final String PROPERTIES_SOURCE = "endpoints.properties";
@@ -31,7 +31,7 @@ public class EnvironmentRule implements TestRule {
                     .forEach((key, value) -> System.setProperty(key.toString(), value.toString()));
 
         } catch (Exception e) {
-
+            log.error("Error al cargar el fichero 'endpoints.properties' para ejecutar pruebas locales");
         }
     }
 
