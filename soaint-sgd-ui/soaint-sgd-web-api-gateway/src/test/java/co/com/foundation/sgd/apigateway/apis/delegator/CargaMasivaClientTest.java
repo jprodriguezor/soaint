@@ -1,5 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
+import co.com.foundation.sgd.apigateway.apis.mocks.JaxRsUtils;
 import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
 import co.com.foundation.sgd.utils.SystemParameters;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -36,8 +37,8 @@ public class CargaMasivaClientTest {
     private CargaMasivaClient cargaMasivaClient;
 
     private WebTarget wt;
-    private Client client;
 
+    private Client client;
 
 
     @Before
@@ -55,7 +56,7 @@ public class CargaMasivaClientTest {
     @Test
     public void listCargaMasiva() {
         // given
-        mockGetPath("/listadocargamasiva");
+        JaxRsUtils.mockGetPath(wt, "/listadocargamasiva");
 
         // when
         cargaMasivaClient.listCargaMasiva();
@@ -68,7 +69,7 @@ public class CargaMasivaClientTest {
     @Test
     public void listEstadoCargaMasiva() {
         // given
-        mockGetPath("/estadocargamasiva");
+        JaxRsUtils.mockGetPath(wt, "/estadocargamasiva");
 
         // when
         cargaMasivaClient.listEstadoCargaMasiva();
@@ -82,7 +83,7 @@ public class CargaMasivaClientTest {
     public void listEstadoCargaMasivaDadoId() {
         // given
         String ID_CARGA_MASIVA = "151";
-        mockGetPath("/estadocargamasiva/" + ID_CARGA_MASIVA);
+        JaxRsUtils.mockGetPath(wt, "/estadocargamasiva/" + ID_CARGA_MASIVA);
 
         // when
         cargaMasivaClient.listEstadoCargaMasivaDadoId(ID_CARGA_MASIVA);
@@ -105,7 +106,7 @@ public class CargaMasivaClientTest {
 
         when(inputPart.getBody(InputStream.class, null)).thenReturn(mock(InputStream.class));
 
-        Invocation.Builder requestBuilder = mockPostPath(PATH);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, PATH);
 
 
         // when
@@ -143,15 +144,6 @@ public class CargaMasivaClientTest {
         });
     }
 
-    private Invocation.Builder mockPostPath(String PATH) {
-        WebTarget webTarget = mock(WebTarget.class);
-        Invocation.Builder requestBuilder = mock(Invocation.Builder.class);
-        when(requestBuilder.post(any(Entity.class))).thenReturn(mock(Response.class));
-        when(webTarget.request()).thenReturn(requestBuilder);
-        when(wt.path(PATH)).thenReturn(webTarget);
-        return requestBuilder;
-    }
-
     @Test
     public void cargarDocumentoFail() throws IOException {
         // given
@@ -163,7 +155,7 @@ public class CargaMasivaClientTest {
 
         String PATH = "/cargar-fichero";
 
-        Invocation.Builder requestBuilder = mockPostPath(PATH);
+        Invocation.Builder requestBuilder = JaxRsUtils.mockPostPath(wt, PATH);
 
         when(inputPart.getBody(InputStream.class, null)).thenThrow(IOException.class);
 
@@ -180,14 +172,5 @@ public class CargaMasivaClientTest {
         Map<String, OutputPart> formData = captor.getValue().getEntity().getEntity().getFormData();
 
         assertThat(formData.size()).isEqualTo(0);
-    }
-
-    private void mockGetPath(String path) {
-        Response response = mock(Response.class);
-        WebTarget webTarget = mock(WebTarget.class);
-        Invocation.Builder builder = mock(Invocation.Builder.class);
-        when(builder.get()).thenReturn(response);
-        when(webTarget.request()).thenReturn(builder);
-        when(wt.path(path)).thenReturn(webTarget);
     }
 }
