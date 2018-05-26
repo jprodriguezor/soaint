@@ -19,14 +19,6 @@ public class EnvironmentRule implements TestRule {
     }
 
     private void initProperties() {
-        System.out.println(SystemParameters.BACKAPI_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_CARGAMASIVA_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_ENTERPRISE_SERVICE_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_ECM_SERVICE_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_ECM_RECORD_SERVICE_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_FUNCIONARIO_SERVICE_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL + ": " + System.getProperty(SystemParameters.BACKAPI_DROOLS_SERVICE_ENDPOINT_URL));
-        System.out.println(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN + ": " + System.getProperty(SystemParameters.BACKAPI_DROOLS_SERVICE_TOKEN));
 
         if(!isLocal()) return;
 
