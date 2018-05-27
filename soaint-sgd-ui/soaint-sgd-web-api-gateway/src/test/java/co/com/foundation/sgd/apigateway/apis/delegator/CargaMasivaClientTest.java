@@ -1,7 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
-import co.com.foundation.mocks.JaxRsUtils;
-import co.com.foundation.rules.EnvironmentRule;
+import co.com.foundation.test.mocks.JaxRsUtils;
+import co.com.foundation.test.rules.EnvironmentRule;
 import co.com.foundation.sgd.utils.SystemParameters;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
