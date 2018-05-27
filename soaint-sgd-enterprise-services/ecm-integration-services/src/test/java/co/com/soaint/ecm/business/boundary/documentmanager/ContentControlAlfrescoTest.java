@@ -2,7 +2,6 @@ package co.com.soaint.ecm.business.boundary.documentmanager;
 
 import co.com.soaint.ecm.domain.entity.Conexion;
 import co.com.soaint.ecm.domain.entity.DocumentMimeType;
-import co.com.soaint.ecm.domain.entity.Documento;
 import co.com.soaint.foundation.canonical.ecm.*;
 import co.com.soaint.foundation.framework.exceptions.SystemException;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
