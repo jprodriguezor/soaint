@@ -40,6 +40,10 @@ public final class JaxRsUtils {
         Invocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.post(any(Entity.class))).thenReturn(response);
 
+        Invocation invocation = mock(Invocation.class);
+        when(requestBuilder.buildPost(any(Entity.class))).thenReturn(invocation);
+        when(invocation.invoke()).thenReturn(response);
+
         WebTarget webTarget = mockWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
 
@@ -51,6 +55,10 @@ public final class JaxRsUtils {
         Response response = mockResponse(responseClass);
         Invocation.Builder requestBuilder = mockRequestBuilder();
         when(requestBuilder.put(any(Entity.class))).thenReturn(response);
+
+        Invocation invocation = mock(Invocation.class);
+        when(requestBuilder.buildPut(any(Entity.class))).thenReturn(invocation);
+        when(invocation.invoke()).thenReturn(response);
 
         WebTarget webTarget = mockWebTarget(requestBuilder);
         when(wt.path(path)).thenReturn(webTarget);
