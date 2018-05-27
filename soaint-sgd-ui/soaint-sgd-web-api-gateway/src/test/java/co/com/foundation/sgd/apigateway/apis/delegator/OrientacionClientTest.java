@@ -1,8 +1,8 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
 
-import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
-import co.com.foundation.sgd.apigateway.rules.PropertiesLoaderRule;
+import co.com.foundation.rules.EnvironmentRule;
+import co.com.foundation.rules.PropertiesLoaderRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

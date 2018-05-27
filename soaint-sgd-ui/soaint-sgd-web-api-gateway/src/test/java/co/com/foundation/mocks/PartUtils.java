@@ -1,4 +1,4 @@
-package co.com.foundation.sgd.apigateway.apis.mocks;
+package co.com.foundation.mocks;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInputImpl;

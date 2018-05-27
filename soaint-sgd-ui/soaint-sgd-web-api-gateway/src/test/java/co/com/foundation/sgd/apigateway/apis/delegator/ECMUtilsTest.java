@@ -1,6 +1,6 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
-import co.com.foundation.sgd.apigateway.apis.mocks.PartUtils;
+import co.com.foundation.mocks.PartUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.junit.Test;

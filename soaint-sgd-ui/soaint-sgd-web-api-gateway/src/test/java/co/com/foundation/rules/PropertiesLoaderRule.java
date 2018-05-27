@@ -1,4 +1,4 @@
-package co.com.foundation.sgd.apigateway.rules;
+package co.com.foundation.rules;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

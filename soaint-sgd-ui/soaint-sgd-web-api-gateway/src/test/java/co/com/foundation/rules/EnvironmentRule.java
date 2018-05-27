@@ -1,4 +1,4 @@
-package co.com.foundation.sgd.apigateway.rules;
+package co.com.foundation.rules;
 
 import co.com.foundation.sgd.utils.SystemParameters;
 import lombok.extern.log4j.Log4j2;

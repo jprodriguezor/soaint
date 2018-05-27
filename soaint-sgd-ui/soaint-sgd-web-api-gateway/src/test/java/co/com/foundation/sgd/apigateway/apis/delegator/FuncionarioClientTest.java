@@ -1,7 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
-import co.com.foundation.sgd.apigateway.apis.mocks.JaxRsUtils;
-import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
+import co.com.foundation.mocks.JaxRsUtils;
+import co.com.foundation.rules.EnvironmentRule;
 import co.com.foundation.sgd.utils.SystemParameters;
 import co.com.soaint.foundation.canonical.correspondencia.FuncionarioDTO;
 import org.junit.Before;
@@ -14,7 +14,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;

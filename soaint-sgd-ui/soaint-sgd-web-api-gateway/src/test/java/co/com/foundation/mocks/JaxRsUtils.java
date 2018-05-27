@@ -1,4 +1,4 @@
-package co.com.foundation.sgd.apigateway.apis.mocks;
+package co.com.foundation.mocks;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;

@@ -1,7 +1,7 @@
 package co.com.foundation.sgd.apigateway.apis.delegator;
 
-import co.com.foundation.sgd.apigateway.apis.mocks.JaxRsUtils;
-import co.com.foundation.sgd.apigateway.rules.EnvironmentRule;
+import co.com.foundation.mocks.JaxRsUtils;
+import co.com.foundation.rules.EnvironmentRule;
 import co.com.foundation.sgd.utils.SystemParameters;
 import org.junit.Before;
 import org.junit.Rule;
